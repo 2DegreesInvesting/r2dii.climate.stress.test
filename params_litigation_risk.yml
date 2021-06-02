@@ -1,0 +1,51 @@
+default:
+
+  allocation_method: portfolio_weight
+
+  investor_name:
+    investor_name_equity: Meta Investor
+    investor_name_bonds: Meta Investor
+    investor_name_loanbook: Meta Investor
+
+  large_universe_filter:
+    sector_filter:
+      - Power
+      - Oil&Gas
+      - Coal
+      - Automotive
+
+  lists:
+    scenario_geography_list:
+      - Global
+    technology_list:
+      - Electric
+      - Hybrid
+      - ICE
+      - CoalCap
+      - GasCap
+      - HydroCap
+      - NuclearCap
+      - OilCap
+      - RenewablesCap
+      - Oil
+      - Gas
+      - Coal
+
+  scenarios:
+    scenario_to_follow_baseline: NPS
+    scenario_to_follow_ls: SDS
+    scenario_to_follow_ls_aligned: SDS
+
+  litigation:
+    chance_within_target: 0.66
+    start_year: 2019
+    end_year: 2040
+    years_to_litigation_event: 5
+    settlement_factor: 1
+    growth_rate: 0.02
+    discount_rate: 0.03
+    percentage_in_terminal_value: 0.1
+    percentage_rev_transition_sectors: 1
+    net_profit_margin: 0.1
+    backwards_years: 10
+    reset_post_settlement: start
