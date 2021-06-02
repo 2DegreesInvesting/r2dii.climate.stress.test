@@ -37,3 +37,12 @@ vignettes/*.pdf
 
 # R Environment Variables
 .Renviron
+
+### MacOS specific ###
+# Folder view configuration files
+# Mac files
+.DS_STORE
+**/.DS_STORE
+Desktop.ini
+*.icloud
+.Rproj.user
