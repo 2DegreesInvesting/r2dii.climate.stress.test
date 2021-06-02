@@ -1,0 +1,14 @@
+default:
+
+  project_name: liechtenstein_p2020_rerun
+
+  project_internal:
+    twodii_internal: TRUE
+    project_location_ext: ~/path/to/project
+    data_location_ext: ~/path/to/data
+
+  price_data_version: 2020Q4
+
+  calculation_level: portfolio
+
+  company_exclusion: FALSE

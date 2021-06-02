@@ -1,0 +1,101 @@
+#' Extend the scenario pathways based on the fair share approach (now known as
+#' market share approach).  We first ensure that all scenarios are extended to
+#' the same point in time (start of the analysis plus forecast time frame.
+#' Then we take the first value of the production on company level as the start
+#' value and from the second year onward, we calculate the level of production
+#' for a company under the scenarios at hand by applying the relative changes
+#' for the respective years to the absolute values of the previous year.
+#'
+#' @param data A data frame containing the production forecasts of companies
+#'   (in the portfolio). Pre-processed to fit analysis parameters and after
+#'   conversion of power capacity to generation.
+#' @param scenario_data A data frame containing scenario data for the specified
+#'   parameters of the analysis, including the business as usual and target
+#'   scenarios, the relevant scenario geography and time frame for each of the
+#'   technologies.
+#' @param start_analysis Numeric. A vector of length 1 indicating the start
+#'   year of the analysis.
+#' @param end_analysis Numeric. A vector of length 1 indicating the end
+#'   year of the analysis.
+extend_scenario_trajectory <- function(data,
+                                       scenario_data = NULL,
+                                       start_analysis = NULL,
+                                       end_analysis = NULL) {
+  force(data)
+  scenario_data %||% stop("Must provide input for 'scenario_data'", call. = FALSE)
+  start_analysis %||% stop("Must provide input for 'start_analysis'", call. = FALSE)
+  end_analysis %||% stop("Must provide input for 'end_analysis'", call. = FALSE)
+
+  data_has_expected_columns <- all(
+    c(
+      "year", "investor_name", "portfolio_name", "equity_market", "ald_sector",
+      "technology", "scenario", "allocation", "scenario_geography",
+      "plan_tech_prod", "plan_carsten", "scen_tech_prod", "plan_sec_prod",
+      "plan_sec_carsten", "id", "company_name"
+    ) %in% colnames(data)
+  )
+  stopifnot(data_has_expected_columns)
+
+  scenario_data_has_expected_columns <- all(
+    c(
+      "source", "technology", "scenario_geography", "ald_sector", "units",
+      "scenario", "year", "direction", "fair_share_perc"
+    ) %in% colnames(scenario_data)
+  )
+  stopifnot(scenario_data_has_expected_columns)
+
+  data <- data %>%
+    dplyr::select(
+      .data$investor_name, .data$portfolio_name, .data$id, .data$company_name,
+      .data$ald_sector, .data$technology, .data$scenario_geography,
+      .data$allocation, .data$year, .data$scenario, .data$plan_tech_prod,
+      .data$scen_tech_prod
+    ) %>%
+    # TODO: explain magic number
+    dplyr::filter(.data$year <= .env$start_analysis + 5) %>%
+    tidyr::complete(
+      year = seq(.env$start_analysis, .env$end_analysis),
+      tidyr::nesting(
+        !!!rlang::syms(
+          c(
+            "investor_name", "portfolio_name", "id", "company_name", "ald_sector",
+            "technology", "scenario", "allocation", "scenario_geography"
+          )
+        )
+      )
+    )
+
+  data <- data %>%
+    dplyr::left_join(
+      scenario_data,
+      by = c("ald_sector", "technology", "scenario_geography", "scenario", "year")
+    ) %>%
+    dplyr::distinct_all()
+
+  data <- data %>%
+    dplyr::group_by(
+      .data$investor_name, .data$portfolio_name, .data$id, .data$company_name,
+      .data$ald_sector, .data$technology, .data$scenario_geography,
+      .data$allocation, .data$scenario
+    ) %>%
+    dplyr::mutate(
+      scen_tech_prod = dplyr::if_else(
+        .data$year > .env$start_analysis,
+        dplyr::first(.data$scen_tech_prod) * (1 + .data$fair_share_perc),
+        .data$scen_tech_prod
+      )
+    ) %>%
+    dplyr::ungroup() %>%
+    tidyr::pivot_wider(
+      id_cols = c(
+        "investor_name", "portfolio_name", "id", "company_name", "year",
+        "scenario_geography", "ald_sector", "technology", "plan_tech_prod"
+      ),
+      names_from = .data$scenario,
+      values_from = .data$scen_tech_prod
+    ) %>%
+    dplyr::arrange(
+      .data$investor_name, .data$portfolio_name, .data$id, .data$company_name,
+      .data$scenario_geography, .data$ald_sector, .data$technology, .data$year
+    )
+}
