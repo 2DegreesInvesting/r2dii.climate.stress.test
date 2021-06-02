@@ -1,0 +1,8 @@
+technology,capacity_factor,scenario_geography
+HydroCap,0.5,Global
+NuclearCap,0.5,Global
+RenewablesCap,0.5,Global
+BioenergyCap,0.5,Global
+CoalCap,0.5,Global
+GasCap,0.5,Global
+OilCap,0.5,Global
