@@ -39,20 +39,14 @@ source("0_portfolio_input_check_functions.R")
 
 
 cfg_st <- config::get(file = "st_project_settings.yml")
-check_valid_cfg(cfg_st, expected_no_args = 3)
+check_valid_cfg(cfg_st, expected_no_args = 5)
 project_name <- cfg_st$project_name
 twodii_internal <- cfg_st$project_internal$twodii_internal
 project_location_ext <- cfg_st$project_internal$project_location_ext
-data_location_ext <- cfg_st$project_internal$data_location_ext
 price_data_version <- cfg_st$price_data_version
 
 data_location <- file.path(get_st_data_path(), data_path())
 
-data_location <- ifelse(
-  twodii_internal == TRUE,
-  data_location,
-  data_location_ext
-)
 # set input path
 set_project_paths(
   project_name = project_name,

@@ -31,20 +31,13 @@ source("0_portfolio_input_check_functions.R")
 # Specify these data locations in the config file "st_project_settings.yml" in the repo
 
 cfg_st <- config::get(file = "st_project_settings.yml")
-check_valid_cfg(cfg_st, expected_no_args = 3)
+check_valid_cfg(cfg_st, expected_no_args = 5)
 project_name <- cfg_st$project_name
 twodii_internal <- cfg_st$project_internal$twodii_internal
 project_location_ext <- cfg_st$project_internal$project_location_ext
-data_location_ext <- cfg_st$project_internal$data_location_ext
 price_data_version <- cfg_st$price_data_version
 
 data_location <- file.path(get_st_data_path(), data_path())
-
-data_location <- ifelse(
-  twodii_internal == TRUE,
-  data_location,
-  data_location_ext
-)
 
 set_project_paths(project_name, twodii_internal, project_location_ext)
 # TODO: Remove dead code? The option 'r2dii_config' seems unused
