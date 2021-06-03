@@ -45,11 +45,6 @@ investor_name_filter <- investor_name
 # Get analysis parameters from the projects AnalysisParameters.yml - similar to PACTA_analysis
 set_project_parameters(file.path(working_location, "parameter_files",paste0("ProjectParameters_", project_code, ".yml")))
 
-# This sets the pacta file location, should work with data_location_ext from setup_project()
-file_location <- file.path(data_location_ext, "cleaned_files")
-
-
-
 ####################
 #### DATA FILES ####
 ####################
