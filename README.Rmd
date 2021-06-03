@@ -33,6 +33,23 @@ You can install development version from [GitHub](https://github.com/) with:
 devtools::install_github("2DegreesInvesting/r2dii.climate.stress.test")
 ```
 
+Tu run most of the analyses, you will need additional auxiliary data, such as
+scenario data. The specific requirements are outlined below. **TODO**
+
+Before running the code on a local machine, set the path to the data files
+either as an Environment Variable or an R option using:
+
+```
+# shell
+export ST_DATA_PATH="<path to data>"
+```
+
+or in R:
+
+``` r
+options("st_data_path") <- "path to data"
+```
+
 ## Scope
 
 The repository covers climate risk calculations for the following types of risks
