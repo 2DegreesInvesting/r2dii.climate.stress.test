@@ -46,6 +46,17 @@ or in R:
 options("st_data_path") <- "path to data"
 ```
 
+**NOTE:**
+
+The path passed via the environment variable or option is expected to be
+an absolute path that points to the top level of the directory that
+contains the required data. This data directory is, by default, assumed
+to be an R package or a directory which resembles that structure. If in
+your case the data is not stored in a directory that resembles an R
+package with a `data-raw` folder, you should consider structuring your
+data directory that way or otherwise you will need to adjust the input
+to the `data_location()` function throughout the scripts.
+
 ## Scope
 
 The repository covers climate risk calculations for the following types
