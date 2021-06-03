@@ -50,11 +50,10 @@ test_that("baseline and late_sudden values only for excluded company are changed
         technology %in% test_exclude_companies$technology
     )
 
-  attr(input_not_excluded, "spec") <- NULL
-
   testthat::expect_equal(
-    unclass(input_not_excluded),
-    unclass(output_not_excluded)
+    input_not_excluded,
+    output_not_excluded,
+    ignore_attr = TRUE
   )
   testthat::expect_equal(unique(output_not_excluded$baseline), 100)
   testthat::expect_equal(unique(input_excluded$baseline), 100)
