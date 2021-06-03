@@ -36,10 +36,6 @@ setup_project()
 
 #### Project location----------------------------------------
 
-# TODO: ensure this is updated to point to r2dii.stress.test.data
-# TODO: stress_test_path probably won't work anymore for loading data. Replace!
-data_location <- file.path(stress_test_path, data_path())
-
 # Parameters passed from PACTA_analysis web_tool_script_2.R
 pf_name <- portfolio_name_ref_all
 investor_name_filter <- investor_name
@@ -49,8 +45,7 @@ investor_name_filter <- investor_name
 # Get analysis parameters from the projects AnalysisParameters.yml - similar to PACTA_analysis
 set_project_parameters(file.path(working_location, "parameter_files",paste0("ProjectParameters_", project_code, ".yml")))
 
-# This sets the file location, should work with data_location_ext from setup_project(). otherwise use analysis_inputs_path
-# analysis_inputs_path <- set_analysis_inputs_path(twodii_internal, data_location_ext, dataprep_timestamp)
+# This sets the pacta file location, should work with data_location_ext from setup_project()
 file_location <- file.path(data_location_ext, "cleaned_files")
 
 
