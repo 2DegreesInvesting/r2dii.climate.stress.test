@@ -18,6 +18,7 @@ library(tidyselect)
 library(zoo)
 
 
+source(file.path(stress_test_path, "R", "get_st_data_path.R"))
 source(file.path(stress_test_path, "R", "utils.R"))
 source(file.path(stress_test_path, "R", "set_paths.R"))
 source("0_web_functions.R") # This script is sourced from PACTA_analysis, so path is correct

@@ -35,6 +35,7 @@ function_paths <- c(
       "company_asset_value_at_risk.R",
       "convert_cap_to_generation.R",
       "extend_scenario_trajectory.R",
+      "get_st_data_path.R",
       "interpolate_automotive_scenario.R",
       "set_params_st.R",
       "set_paths.R",

@@ -26,6 +26,7 @@ function_paths <- c(
       "exclude_companies.R",
       "extend_scenario_trajectory.R",
       "format_loanbook_st.R",
+      "get_st_data_path.R",
       "interpolate_automotive_scenario.R",
       "merton.R",
       "qa_graphs_st.R",

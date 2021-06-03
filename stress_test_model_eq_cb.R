@@ -25,6 +25,7 @@ function_paths <- c(
       "convert_cap_to_generation.R",
       "exclude_companies.R",
       "extend_scenario_trajectory.R",
+      "get_st_data_path.R",
       "interpolate_automotive_scenario.R",
       "qa_graphs_st.R",
       "set_paths.R",
