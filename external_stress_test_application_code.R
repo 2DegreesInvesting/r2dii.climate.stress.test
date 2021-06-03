@@ -12,13 +12,6 @@ library(tibble)
 library(tidyselect)
 library(tidyr)
 
-if (rstudioapi::isAvailable()) {
-  working_location <- dirname(rstudioapi::getActiveDocumentContext()$path)
-} else {
-  working_location <- getwd()
-}
-
-
 source(file.path("R","utils.R"))
 source(file.path("R","set_paths.R"))
 source("stress_test_model_functions.R")
@@ -44,9 +37,8 @@ project_location_ext <- cfg_st$project_internal$project_location_ext
 data_location_ext <- cfg_st$project_internal$data_location_ext
 price_data_version <- cfg_st$price_data_version
 
-# set internal data location, should potentially be moved as this is directly in repo
-data_location <- file.path(working_location, data_path())
-# if this is moved out of repo, possibly use set_analysis_inputs_path()
+data_location <- file.path(get_st_data_path(), data_path())
+
 data_location <- ifelse(
   twodii_internal == TRUE,
   data_location,
@@ -208,7 +200,7 @@ boe_exposures_eq <- calc_boe_exposures(pacta_exposures = pacta_exposures_eq) %>%
 
 # Results -----------------------------------------------------------------
 
-shocks <- readr::read_csv(data_path("external_stress_test_shocks.csv"), col_types = "cccccn")
+shocks <- readr::read_csv(file.path(data_location, "external_stress_test_shocks.csv"), col_types = "cccccn")
 
 results_dnb <- portfolio %>%
   as.data.frame() %>%

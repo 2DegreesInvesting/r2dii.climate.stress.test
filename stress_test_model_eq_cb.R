@@ -11,8 +11,6 @@ library(highcharter)
 library(stringr)
 library(zoo)
 
-working_location <- getwd()
-
 source(file.path("R", "functions.R"))
 
 function_paths <- c(
@@ -68,10 +66,8 @@ price_data_version <- cfg_st$price_data_version
 calculation_level <- cfg_st$calculation_level
 company_exclusion <- cfg_st$company_exclusion
 
-# set internal data location, should potentially be moved as this is directly in repo
-# data_location <- paste0(working_location,'data_updated_tool/')
-data_location <- file.path(working_location, data_path())
-# if this is moved out of repo, possibly use set_analysis_inputs_path()
+data_location <- file.path(get_st_data_path(), data_path())
+
 data_location <- ifelse(
   twodii_internal == TRUE,
   data_location,
@@ -223,7 +219,7 @@ portcheck_portresults_equity_full <- readRDS(file.path(results_path, investornam
 sector_exposures <- readRDS(file.path(proc_input_path, paste0(project_name, "_overview_portfolio.rda")))
 
 # Load transition scenarios that will be run by the model
-transition_scenarios <- readr::read_csv(data_path("transition_scenario_input.csv"), col_types = "cnlnllnnnnnnnnnnnn") %>%
+transition_scenarios <- readr::read_csv(file.path(data_location, "transition_scenario_input.csv"), col_types = "cnlnllnnnnnnnnnnnn") %>%
   mutate(
     overshoot_method = ifelse(is.na(overshoot_method), FALSE, overshoot_method),
     duration_of_shock = ifelse(overshoot_method, end_year - year_of_shock + 1, duration_of_shock)
