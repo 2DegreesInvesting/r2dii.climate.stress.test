@@ -39,3 +39,4 @@ Imports:
     tidyr,
     withr,
     zoo
+Config/testthat/edition: 3

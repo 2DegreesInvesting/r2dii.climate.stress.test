@@ -2,7 +2,8 @@
 % Please edit documentation in R/set_paths.R
 \name{data_path}
 \alias{data_path}
-\title{conveniently access stress test related files within the repo}
+\title{conveniently access stress test related files in the directory set via envvar
+or options}
 \usage{
 data_path(..., data_store = "data-raw")
 }
@@ -16,7 +17,8 @@ data_path(..., data_store = "data-raw")
 Character
 }
 \description{
-conveniently access stress test related files within the repo
+conveniently access stress test related files in the directory set via envvar
+or options
 }
 \examples{
 data_path()
@@ -24,6 +26,7 @@ data_path()
 \seealso{
 Other miscellaneous utility functions: 
 \code{\link{degrees}()},
-\code{\link{dropbox_exists}()}
+\code{\link{dropbox_exists}()},
+\code{\link{get_st_data_path}()}
 }
 \concept{miscellaneous utility functions}

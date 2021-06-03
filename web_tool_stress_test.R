@@ -35,6 +35,7 @@ function_paths <- c(
       "company_asset_value_at_risk.R",
       "convert_cap_to_generation.R",
       "extend_scenario_trajectory.R",
+      "get_st_data_path.R",
       "interpolate_automotive_scenario.R",
       "set_params_st.R",
       "set_paths.R",
@@ -56,7 +57,8 @@ setup_project()
 
 #### Project location----------------------------------------
 
-# set internal data location
+# TODO: ensure this is updated to point to r2dii.stress.test.data
+# TODO: stress_test_path probably won't work anymore for loading data. Replace!
 data_location <- file.path(working_location, data_path())
 
 # Parameters passed from PACTA_analysis web_tool_script_2.R
@@ -71,6 +73,7 @@ company_exclusion <- if (exists("company_exclusion")) company_exclusion else FAL
 
 #### Analysis Parameters----------------------------------------
 # Get analysis parameters from the projects AnalysisParameters.yml - similar to PACTA_analysis
+# TODO: should this remain "working location"? comes from PACTA, so probably okay?
 set_project_parameters(file.path(working_location, "parameter_files", paste0("ProjectParameters_", project_code, ".yml")))
 
 ##### Filters----------------------------------------

@@ -18,6 +18,7 @@ library(tidyselect)
 library(zoo)
 
 
+source(file.path(stress_test_path, "R", "get_st_data_path.R"))
 source(file.path(stress_test_path, "R", "utils.R"))
 source(file.path(stress_test_path, "R", "set_paths.R"))
 source("0_web_functions.R") # This script is sourced from PACTA_analysis, so path is correct
@@ -35,9 +36,6 @@ setup_project()
 
 #### Project location----------------------------------------
 
-# set internal data location
-data_location <- file.path(stress_test_path, data_path())
-
 # Parameters passed from PACTA_analysis web_tool_script_2.R
 pf_name <- portfolio_name_ref_all
 investor_name_filter <- investor_name
@@ -46,12 +44,6 @@ investor_name_filter <- investor_name
 #### Analysis Parameters----------------------------------------
 # Get analysis parameters from the projects AnalysisParameters.yml - similar to PACTA_analysis
 set_project_parameters(file.path(working_location, "parameter_files",paste0("ProjectParameters_", project_code, ".yml")))
-
-# This sets the file location, should work with data_location_ext from setup_project(). otherwise use analysis_inputs_path
-# analysis_inputs_path <- set_analysis_inputs_path(twodii_internal, data_location_ext, dataprep_timestamp)
-file_location <- file.path(data_location_ext, "cleaned_files")
-
-
 
 ####################
 #### DATA FILES ####

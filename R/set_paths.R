@@ -1,4 +1,5 @@
-#' conveniently access stress test related files within the repo
+#' conveniently access stress test related files in the directory set via envvar
+#' or options
 #'
 #' @param ... Character vectors, if any values are `NA`, the result will also be
 #'   `NA`.

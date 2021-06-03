@@ -11,6 +11,7 @@ library(purrr)
 library(zoo)
 
 
+source(file.path("R","get_st_data_path.R"))
 source(file.path("R","utils.R"))
 source(file.path("R","set_paths.R"))
 source("stress_test_model_functions.R")
@@ -42,17 +43,9 @@ check_valid_cfg(cfg = cfg_st, expected_no_args = 5)
 project_name <- cfg_st$project_name
 twodii_internal <- cfg_st$project_internal$twodii_internal
 project_location_ext <- cfg_st$project_internal$project_location_ext
-data_location_ext <- cfg_st$project_internal$data_location_ext
 
-# set internal data location, should potentially be moved as this is directly in repo
-# data_location <- paste0(working_location,'data_updated_tool/')
-data_location <- file.path(getwd(), data_path())
-# if this is moved out of repo, possibly use set_analysis_inputs_path()
-data_location <- dplyr::if_else(
-  twodii_internal == TRUE,
-  data_location,
-  data_location_ext
-)
+data_location <- file.path(get_st_data_path(), data_path())
+
 # set input path
 set_project_paths(
   project_name = project_name,
@@ -125,7 +118,10 @@ technologies <- cfg_litigation_params$lists$technology_list
 #-load required data--------------------------
 
 litigation_risk_scenarios <- read_csv(
-  data_path("litigation_risk_scenarios.csv"),
+  file.path(
+    get_st_data_path(),
+    data_path("litigation_risk_scenarios.csv")
+  ),
   col_types = "ccdddd"
 )
 
@@ -148,12 +144,18 @@ company_ebit_data_input <- read_csv(
 )
 
 carbon_delta_plus_damages <- read_csv(
-  data_path("delta_carbon_budget.csv"),
+  file.path(
+    get_st_data_path(),
+    data_path("delta_carbon_budget.csv")
+  ),
   col_types = "ccdddd"
 )
 
 company_historical_emissions <- read_csv(
-  data_path("historical_emissions_heede_2017.csv"),
+  file.path(
+    get_st_data_path(),
+    data_path("historical_emissions_heede_2017.csv")
+  ),
   col_types = "cdddd"
 ) %>%
   dplyr::mutate(

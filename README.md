@@ -30,6 +30,33 @@ with:
 devtools::install_github("2DegreesInvesting/r2dii.climate.stress.test")
 ```
 
+Tu run most of the analyses, you will need additional auxiliary data,
+such as scenario data. The specific requirements are outlined below.
+**TODO**
+
+Before running the code on a local machine, set the path to the data
+files either as an Environment Variable or an R option using:
+
+    # shell
+    export ST_DATA_PATH="<path to data>"
+
+or in R:
+
+``` r
+options("st_data_path") <- "path to data"
+```
+
+**NOTE:**
+
+The path passed via the environment variable or option is expected to be
+an absolute path that points to the top level of the directory that
+contains the required data. This data directory is, by default, assumed
+to be an R package or a directory which resembles that structure. If in
+your case the data is not stored in a directory that resembles an R
+package with a `data-raw` folder, you should consider structuring your
+data directory that way or otherwise you will need to adjust the input
+to the `data_location()` function throughout the scripts.
+
 ## Scope
 
 The repository covers climate risk calculations for the following types
