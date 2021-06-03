@@ -35,7 +35,8 @@ setup_project()
 
 #### Project location----------------------------------------
 
-# set internal data location
+# TODO: ensure this is updated to point to r2dii.stress.test.data
+# TODO: stress_test_path probably won't work anymore for loading data. Replace!
 data_location <- file.path(stress_test_path, data_path())
 
 # Parameters passed from PACTA_analysis web_tool_script_2.R
