@@ -13,10 +13,8 @@
 #' @return Character
 #'
 #' @export
-get_st_data_path <- function(
-  envvar = "ST_DATA_PATH",
-  option = "st_data_path"
-) {
+get_st_data_path <- function(envvar = "ST_DATA_PATH",
+                             option = "st_data_path") {
   if (Sys.getenv(envvar) != "") {
     return(fs::path(Sys.getenv(envvar)))
   } else if (!is.null(options(option)[[option]])) {
