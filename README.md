@@ -43,7 +43,7 @@ files either as an Environment Variable or an R option using:
 or in R:
 
 ``` r
-options("st_data_path") <- "path to data"
+options("ST_DATA_PATH") <- "path to data"
 ```
 
 **NOTE:**
