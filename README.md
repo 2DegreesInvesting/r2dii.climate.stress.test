@@ -247,6 +247,14 @@ loan book, the user needs to provide as input:
   - write company-tech level results to initialized project folder
   - write portfolio-tech level results to initialized project folder
 
+#### A note on PACTA COP projects on the 2DII platform
+
+Whenever a new PACTA COP project starts on the transition monitor that
+requires the calculation of a transition risk stress test, a parameter
+file has to be added to the `./model_parameters/` directory. Usually,
+the existing files only have to be adapted to reflect the tag of the new
+project. When in doubt, please contact Jacob.
+
 ### Litigation Risk
 
 #### Context
