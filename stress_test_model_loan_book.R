@@ -530,7 +530,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
       )
     )
 
-    loanbook_pd_changes <- loanbook_annual_profits %>%
+    loanbook_overall_pd_changes <- loanbook_annual_profits %>%
       calculate_pd_change_overall(
         shock_year = transition_scenario_i$year_of_shock,
         end_of_analysis = end_year,
@@ -540,7 +540,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
     loanbook_expected_loss <- bind_rows(
       loanbook_expected_loss,
       company_expected_loss(
-        data = loanbook_pd_changes,
+        data = loanbook_overall_pd_changes,
         loss_given_default = lgd_by_sector,
         exposure_at_default = plan_carsten_loanbook,
         # TODO: what to do with this? some sector level exposure for loanbook?
@@ -564,7 +564,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
       )
     )
 
-    loanbook_pd_changes <- loanbook_annual_profits %>%
+    loanbook_overall_pd_changes <- loanbook_annual_profits %>%
       calculate_pd_change_overall(
         shock_year = transition_scenario_i$year_of_shock,
         end_of_analysis = end_year,
@@ -574,7 +574,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
     loanbook_expected_loss <- bind_rows(
       loanbook_expected_loss,
       company_expected_loss(
-        data = loanbook_pd_changes,
+        data = loanbook_overall_pd_changes,
         loss_given_default = lgd_by_sector,
         exposure_at_default = plan_carsten_loanbook,
         # TODO: what to do with this? some sector level exposure for loanbook?
