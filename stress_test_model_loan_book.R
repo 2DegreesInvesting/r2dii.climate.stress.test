@@ -20,6 +20,7 @@ function_paths <- c(
     "R",
     c(
       "apply_filters.R",
+      "calculate_overall_pd_changes.R",
       "company_asset_value_at_risk.R",
       "company_expected_loss.R",
       "convert_cap_to_generation.R",
@@ -28,7 +29,6 @@ function_paths <- c(
       "format_loanbook_st.R",
       "get_st_data_path.R",
       "interpolate_automotive_scenario.R",
-      "merton.R",
       "qa_graphs_st.R",
       "set_paths.R",
       "set_tech_trajectories.R",
