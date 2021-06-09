@@ -35,8 +35,9 @@ Imports:
     purrr,
     readr,
     rlang,
-    testthat,
     tidyr,
     withr,
     zoo
+Suggests: 
+    testthat (>= 3.0.0)
 Config/testthat/edition: 3
