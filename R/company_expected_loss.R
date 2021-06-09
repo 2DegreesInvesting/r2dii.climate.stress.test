@@ -1,5 +1,10 @@
-#' Calculate percentage value change between scenarios for equity (and
-#' temporarily other asset types) on the company-technology level
+#' Calculate change of expected loss between scenarios for corporate loans on
+#' the company-technology level. The function uses a maximum term of 5 years and
+#' all loans with longer maturities are thrown into the 5 year bucket. The
+#' calculation of PD changes that underlies the input to this function is based
+#' on the comparison of overall NPVs of the correpsonding equity values for the
+#' companies at hand. That is, the PD changes take into account all dscounted
+#' future profits plus the terminal value.
 #'
 #' @param data A dataframe containing the (discounted) annual profits
 #' @param loss_given_default A dataframe containing sectoral percentages of how
@@ -62,7 +67,8 @@ company_expected_loss <- function(data,
   company_exposure <- company_exposure %>%
     dplyr::mutate(
       exposure_at_default = .data$asset_portfolio_value * .data$percent_exposure
-    )
+    ) %>%
+    dplyr::mutate(term = dplyr::if_else(.data$term > 5, 5, .data$term))
 
   data <- data %>%
     dplyr::inner_join(loss_given_default, by = c("ald_sector" = "sector"))

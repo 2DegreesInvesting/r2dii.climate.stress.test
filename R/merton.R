@@ -14,7 +14,7 @@
 #' @param exclusion Optional. A dataframe with two character columns, "company_name" and
 #'   "technology", that lists which technologies from which companies should be
 #'   set to 0 in the remainder of the analysis.
-calculate_pd_change <- function(data,
+calculate_pd_change_overall <- function(data,
                                 shock_year = NULL,
                                 end_of_analysis = NULL,
                                 exclusion = NULL) {
@@ -70,7 +70,8 @@ calculate_pd_change <- function(data,
   data <- data %>%
     tidyr::complete(
       tidyr::nesting(!!!rlang::syms(nesting_names)),
-      term = seq(from = 1, to = end_of_analysis - shock_year, by = 1)
+      term = 1:5
+      # term = seq(from = 1, to = end_of_analysis - shock_year, by = 1)
     ) %>%
     dplyr::filter(!is.na(.data$term))
 

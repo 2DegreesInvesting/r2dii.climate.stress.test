@@ -531,7 +531,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
     )
 
     loanbook_pd_changes <- loanbook_annual_profits %>%
-      calculate_pd_change(
+      calculate_pd_change_overall(
         shock_year = transition_scenario_i$year_of_shock,
         end_of_analysis = end_year,
         exclusion = NULL
@@ -565,7 +565,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
     )
 
     loanbook_pd_changes <- loanbook_annual_profits %>%
-      calculate_pd_change(
+      calculate_pd_change_overall(
         shock_year = transition_scenario_i$year_of_shock,
         end_of_analysis = end_year,
         exclusion = excluded_companies
