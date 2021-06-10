@@ -20,6 +20,7 @@ function_paths <- c(
     "R",
     c(
       "apply_filters.R",
+      "calculate_annual_pd_changes.R",
       "calculate_overall_pd_changes.R",
       "company_asset_value_at_risk.R",
       "company_expected_loss.R",
@@ -429,6 +430,7 @@ loan_book_port_aum <- sector_exposures %>%
 loanbook_results <- c()
 qa_annual_profits_lbk <- c()
 loanbook_expected_loss <- c()
+loanbook_annual_pd_changes <- c()
 qa_pd_changes <- c()
 
 
@@ -547,6 +549,17 @@ for (i in seq(1, nrow(transition_scenarios))) {
         port_aum = loan_book_port_aum
       )
     )
+
+    loanbook_annual_pd_changes <- bind_rows(
+      loanbook_annual_pd_changes,
+      calculate_pd_change_annual(
+        data = loanbook_annual_profits,
+        shock_year = transition_scenario_i$year_of_shock,
+        end_of_analysis = end_year,
+        exclusion = NULL
+      )
+    )
+
   } else {
     loanbook_results <- bind_rows(
       loanbook_results,
@@ -581,6 +594,17 @@ for (i in seq(1, nrow(transition_scenarios))) {
         port_aum = loan_book_port_aum
       )
     )
+
+    loanbook_annual_pd_changes <- bind_rows(
+      loanbook_annual_pd_changes,
+      calculate_pd_change_annual(
+        data = loanbook_annual_profits,
+        shock_year = transition_scenario_i$year_of_shock,
+        end_of_analysis = end_year,
+        exclusion = excluded_companies
+      )
+    )
+
   }
 }
 
@@ -638,6 +662,43 @@ loanbook_results_pf %>%
     ))
 
 
+loanbook_expected_loss <- loanbook_expected_loss %>%
+  dplyr::select(
+    scenario_name, scenario_geography, investor_name, portfolio_name,
+    company_name, id, ald_sector, technology, equity_0_baseline,
+    equity_0_late_sudden, debt, volatility, risk_free_rate, term,
+    Survival_baseline, Survival_late_sudden, PD_baseline, PD_late_sudden,
+    PD_change, PD_0, lgd, percent_exposure, exposure_at_default,
+    expected_loss_baseline, expected_loss_late_sudden
+  ) %>%
+  dplyr::arrange(
+    scenario_geography, scenario_name, investor_name, portfolio_name,
+    company_name, ald_sector, technology
+  )
+
+loanbook_expected_loss %>%
+  readr::write_csv(file.path(
+    results_path,
+    paste0("stress_test_results_lb_comp_el_", project_name, ".csv")
+  ))
+
+loanbook_annual_pd_changes_sector <- loanbook_annual_pd_changes %>%
+  dplyr::group_by(scenario_name, scenario_geography, investor_name, portfolio_name, ald_sector, technology, year) %>%
+  dplyr::summarise(
+    PD_change_late_sudden = mean((PD_late_sudden - PD_baseline)/PD_late_sudden, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  dplyr::ungroup() %>%
+  dplyr::arrange(
+    scenario_geography, scenario_name, investor_name, portfolio_name,
+    ald_sector, technology, year
+  )
+
+loanbook_annual_pd_changes_sector %>%
+  readr::write_csv(file.path(
+    results_path,
+    paste0("stress_test_results_lb_sector_pd_changes_", project_name, ".csv")
+  ))
 
 #-QA section-----------
 
