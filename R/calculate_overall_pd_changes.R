@@ -147,7 +147,7 @@ calculate_pd_change_overall <- function(data,
     dplyr::mutate(
       PD_baseline = 1 - .data$Survival_baseline,
       PD_late_sudden = 1 - .data$Survival_late_sudden,
-      PD_change = (.data$PD_late_sudden - .data$PD_baseline) / .data$PD_baseline
+      PD_change = .data$PD_late_sudden - .data$PD_baseline
     )
 
   if (!is.null(exclusion)) {
