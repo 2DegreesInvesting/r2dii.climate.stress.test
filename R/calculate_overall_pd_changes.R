@@ -11,13 +11,13 @@
 #'   the policy shock strikes in a given scenario
 #' @param end_of_analysis A numeric vector of length one that indicates until
 #'   which year the analysis runs
-#' @param exclusion Optional. A dataframe with two character columns, "company_name" and
-#'   "technology", that lists which technologies from which companies should be
-#'   set to 0 in the remainder of the analysis.
+#' @param exclusion Optional. A dataframe with two character columns,
+#'   "company_name" and "technology", that lists which technologies from which
+#'   companies should be set to 0 in the remainder of the analysis.
 calculate_pd_change_overall <- function(data,
-                                shock_year = NULL,
-                                end_of_analysis = NULL,
-                                exclusion = NULL) {
+                                        shock_year = NULL,
+                                        end_of_analysis = NULL,
+                                        exclusion = NULL) {
   force(data)
   shock_year %||% stop("Must provide input for 'shock_year'", call. = FALSE)
   end_of_analysis %||% stop("Must provide input for 'end_of_analysis'", call. = FALSE)
@@ -33,16 +33,24 @@ calculate_pd_change_overall <- function(data,
   stopifnot(data_has_expected_columns)
 
   data <- data %>%
+    dplyr::filter(.data$year >= .env$shock_year) %>%
     dplyr::group_by(
       .data$investor_name, .data$portfolio_name, .data$id, .data$company_name,
-      .data$ald_sector, .data$technology, .data$scenario_name, .data$scenario_geography
+      .data$ald_sector, .data$technology, .data$scenario_name,
+      .data$scenario_geography
     ) %>%
     dplyr::summarise(
       equity_0_baseline = sum(.data$discounted_net_profit_baseline, na.rm = TRUE),
       equity_0_late_sudden = sum(.data$discounted_net_profit_ls, na.rm = TRUE),
       .groups = "drop"
     ) %>%
-    dplyr::ungroup()
+    dplyr::ungroup() %>%
+    dplyr::select(
+      .data$investor_name, .data$portfolio_name, .data$scenario_name,
+      .data$scenario_geography, .data$id, .data$company_name, .data$ald_sector,
+      .data$technology, .data$equity_0_baseline, .data$equity_0_late_sudden
+    )
+
 
   # TODO: extract this into separate table
   debt_equity_sector <- dplyr::tibble(
@@ -71,31 +79,12 @@ calculate_pd_change_overall <- function(data,
     tidyr::complete(
       tidyr::nesting(!!!rlang::syms(nesting_names)),
       term = 1:5
-      # term = seq(from = 1, to = end_of_analysis - shock_year, by = 1)
     ) %>%
     dplyr::filter(!is.na(.data$term))
 
-  result <- dplyr::tibble(
-    investor_name = NA_character_,
-    portfolio_name = NA_character_,
-    id = NA_character_,
-    company_name = NA_character_,
-    ald_sector = NA_character_,
-    technology = NA_character_,
-    scenario_name = NA_character_,
-    scenario_geography = NA_character_,
-    equity_0_baseline = NA_real_,
-    equity_0_late_sudden = NA_real_,
-    debt = NA_real_,
-    volatility = NA_real_,
-    risk_free_rate = NA_real_,
-    term = NA_real_,
-    Maturity = NA_real_,
-    Vt = NA_real_,
-    St = NA_real_,
-    Dt = NA_real_,
-    Survival = NA_real_,
-    .rows = nrow(data)
+  result <- create_empty_result_df_pd_changes(
+    data = data,
+    horizon = "overall"
   )
 
   for (i in seq_along(1:nrow(data))) {
@@ -110,18 +99,7 @@ calculate_pd_change_overall <- function(data,
     result[i, ] <- dplyr::bind_cols(data[i, ], merton_baseline)
   }
 
-  result <- result %>%
-    dplyr::rename_with(
-      ~ glue::glue("{.x}_baseline"),
-      .cols = c(Maturity, Vt, St, Dt, Survival)
-    ) %>%
-    dplyr::mutate(
-      Maturity = NA_real_,
-      Vt = NA_real_,
-      St = NA_real_,
-      Dt = NA_real_,
-      Survival = NA_real_
-    )
+  result <- result %>% add_cols_result_df_pd_changes(horizon = "overall")
 
   for (i in seq_along(1:nrow(data))) {
     merton_late_sudden <- CreditRisk::Merton(
