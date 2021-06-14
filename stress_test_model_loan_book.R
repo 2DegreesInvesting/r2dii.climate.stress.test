@@ -19,9 +19,11 @@ function_paths <- c(
   file.path(
     "R",
     c(
+      "add_cols_result_df_pd_changes.R",
       "apply_filters.R",
       "calculate_annual_pd_changes.R",
       "calculate_overall_pd_changes.R",
+      "create_empty_result_df_pd_changes.R",
       "company_asset_value_at_risk.R",
       "company_expected_loss.R",
       "convert_cap_to_generation.R",
@@ -685,7 +687,8 @@ loanbook_expected_loss %>%
 loanbook_annual_pd_changes_sector <- loanbook_annual_pd_changes %>%
   dplyr::group_by(scenario_name, scenario_geography, investor_name, portfolio_name, ald_sector, technology, year) %>%
   dplyr::summarise(
-    PD_change_late_sudden = mean((PD_late_sudden - PD_baseline)/PD_late_sudden, na.rm = TRUE),
+    PD_abs_change_late_sudden = mean((PD_late_sudden - PD_baseline), na.rm = TRUE),
+    PD_rel_change_late_sudden = mean((PD_late_sudden - PD_baseline)/PD_baseline, na.rm = TRUE),
     .groups = "drop"
   ) %>%
   dplyr::ungroup() %>%
@@ -714,13 +717,23 @@ prices_over_time <- show_price_trajectories()
 # for scenarios in use
 
 production_over_time <- show_prod_trajectories(
-  data = scenario_data,
+  data = scenario_data %>% filter(scenario %in% scenarios_filter),
   source = c("ETP2017", "WEO2019"),
   ald_sector = sectors,
   technology = technologies,
   geography_filter = scenario_geography_filter
+) +
+theme(
+  axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+  legend.background = element_rect(fill = "white"),
+  legend.position = "bottom",
+  panel.background = element_rect(fill = "white", colour = "white"),
+  panel.grid.major.y = element_line(colour = "lightgrey"),
+  panel.grid.major.x = element_blank(),
+  panel.grid.minor = element_blank(),
+  plot.background = element_rect(fill = "white"),
+  strip.background = element_rect(fill = "lightgrey")
 )
-
 
 # distribution of shock impact over time by technology
 
@@ -767,6 +780,17 @@ prod_baseline_target_ls <- show_prod_baseline_target_ls_pf(
   data = qa_annual_profits_lbk_pf,
   geography_filter = scenario_geography_filter,
   shock_year = 2030
+) +
+theme(
+  axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+  legend.background = element_rect(fill = "white"),
+  legend.position = "bottom",
+  panel.background = element_rect(fill = "white", colour = "white"),
+  panel.grid.major.y = element_line(colour = "lightgrey"),
+  panel.grid.major.x = element_blank(),
+  panel.grid.minor = element_blank(),
+  plot.background = element_rect(fill = "white"),
+  strip.background = element_rect(fill = "lightgrey")
 )
 
 
