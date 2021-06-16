@@ -76,7 +76,11 @@ test_that("PD_changes point in expected direction", {
 
   expected_direction <- test_data %>%
     dplyr::distinct(
+      .data$scenario_name,
+      .data$scenario_geography,
       .data$company_name,
+      .data$ald_sector,
+      .data$technology,
       .data$discounted_net_profit_baseline,
       .data$discounted_net_profit_ls
     ) %>%
@@ -105,7 +109,10 @@ test_that("PD_changes point in expected direction", {
     ) %>%
     dplyr::inner_join(
       expected_direction,
-      by = "company_name"
+      by = c(
+        "scenario_name", "scenario_geography", "company_name", "ald_sector",
+        "technology"
+      )
     )
 
   testthat::expect_equal(
