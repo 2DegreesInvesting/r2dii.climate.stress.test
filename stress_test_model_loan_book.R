@@ -20,6 +20,8 @@ function_paths <- c(
     "R",
     c(
       "add_cols_result_df_pd_changes.R",
+      "annual_pd_change_company_technology.R",
+      "annual_pd_change_technology_shock_year.R",
       "apply_filters.R",
       "calculate_annual_pd_changes.R",
       "calculate_overall_pd_changes.R",
@@ -32,6 +34,8 @@ function_paths <- c(
       "format_loanbook_st.R",
       "get_st_data_path.R",
       "interpolate_automotive_scenario.R",
+      "overall_pd_change_company_technology.R",
+      "overall_pd_change_technology_shock_year.R",
       "qa_graphs_st.R",
       "set_paths.R",
       "set_tech_trajectories.R",
