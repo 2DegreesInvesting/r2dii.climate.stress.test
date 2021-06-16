@@ -684,11 +684,14 @@ loanbook_expected_loss %>%
     paste0("stress_test_results_lb_comp_el_", project_name, ".csv")
   ))
 
+# TODO: this is an unweighted average so far. keep in mind.
 loanbook_annual_pd_changes_sector <- loanbook_annual_pd_changes %>%
-  dplyr::group_by(scenario_name, scenario_geography, investor_name, portfolio_name, ald_sector, technology, year) %>%
+  dplyr::group_by(
+    scenario_name, scenario_geography, investor_name, portfolio_name,
+    ald_sector, technology, year
+  ) %>%
   dplyr::summarise(
-    PD_abs_change_late_sudden = mean((PD_late_sudden - PD_baseline), na.rm = TRUE),
-    PD_rel_change_late_sudden = mean((PD_late_sudden - PD_baseline)/PD_baseline, na.rm = TRUE),
+    PD_change_late_sudden = mean((PD_late_sudden - PD_baseline), na.rm = TRUE),
     .groups = "drop"
   ) %>%
   dplyr::ungroup() %>%
@@ -700,8 +703,31 @@ loanbook_annual_pd_changes_sector <- loanbook_annual_pd_changes %>%
 loanbook_annual_pd_changes_sector %>%
   readr::write_csv(file.path(
     results_path,
-    paste0("stress_test_results_lb_sector_pd_changes_", project_name, ".csv")
+    paste0("stress_test_results_lb_sector_pd_changes_annual.csv")
   ))
+
+# TODO: this is an unweighted average so far. keep in mind.
+loanbook_overall_pd_changes_sector <- loanbook_expected_loss %>%
+  dplyr::group_by(
+    scenario_name, scenario_geography, investor_name, portfolio_name,
+    ald_sector, technology, term
+  ) %>%
+  dplyr::summarise(
+    PD_change_late_sudden = mean((PD_late_sudden - PD_baseline), na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  dplyr::ungroup() %>%
+  dplyr::arrange(
+    scenario_geography, scenario_name, investor_name, portfolio_name,
+    ald_sector, technology, term
+  )
+
+loanbook_overall_pd_changes_sector %>%
+  readr::write_csv(file.path(
+    results_path,
+    paste0("stress_test_results_lb_sector_pd_changes_overall.csv")
+  ))
+
 
 #-QA section-----------
 
@@ -832,4 +858,36 @@ sum_carbon_budgets_lbk <- qa_annual_profits_lbk %>%
     cumulative = TRUE
   )
 
+
+
+# credit risk QA graphs
+
+# overall change of credit risk graphs
+plot_pd_change_company_tech <- loanbook_expected_loss %>%
+  overall_pd_change_company_technology(
+    shock_year = 2030,
+    sector_filter = c("Oil&Gas", "Automotive"),
+    company_filter = c("canadian natural resources ltd", "honda motor co ltd"),
+    geography_filter = "Global"
+  )
+
+plot_pd_change_shock_year_tech <- loanbook_overall_pd_changes_sector %>%
+  overall_pd_change_technology_shock_year(
+    scenario_filter = c("Carbon balance 2025", "Carbon balance 2030", "Carbon balance 2035"),
+    geography_filter = "Global"
+  )
+
+# annual change of credit risk graphs
+plot_annual_pd_change_company_tech <- loanbook_annual_pd_changes %>%
+  annual_pd_change_company_technology(
+    shock_year = 2030,
+    company_filter = c("canadian natural resources ltd", "mazda motor corp", "honda motor co ltd"),
+    geography_filter = "Global"
+  )
+
+plot_annual_pd_change_shock_year_tech <- loanbook_annual_pd_changes_sector %>%
+  annual_pd_change_technology_shock_year(
+    shock_year_filter = c(2025, 2030, 2035),
+    geography_filter = "Global"
+  )
 
