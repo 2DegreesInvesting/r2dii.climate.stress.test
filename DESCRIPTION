@@ -33,8 +33,10 @@ Imports:
     glue,
     magrittr,
     purrr,
+    r2dii.plot,
     readr,
     rlang,
+    stringr,
     tidyr,
     withr,
     zoo
