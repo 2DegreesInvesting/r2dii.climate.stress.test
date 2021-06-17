@@ -12,36 +12,30 @@
 
 add_cols_result_df_pd_changes <- function(data,
                                           horizon = NULL) {
-
   force(data)
   horizon %||% stop("Must provide input for 'horizon'", call. = FALSE)
 
-  horizon_allowed <- horizon %in% c(
-    "annual",
-    "overall"
-  )
+  horizon_allowed <- horizon %in% c("annual", "overall")
   stopifnot(horizon_allowed)
 
-  if (horizon == "overall") {
-    data_has_expected_columns <- all(
-      c(
-        "investor_name", "portfolio_name", "scenario_name", "scenario_geography",
-        "id", "company_name", "ald_sector", "technology", "equity_0_baseline",
-        "equity_0_late_sudden", "debt", "volatility", "risk_free_rate", "term",
-        "Maturity", "Vt", "St", "Dt", "Survival"
-      ) %in% colnames(data)
+  common_columns <- c(
+    "investor_name", "portfolio_name", "scenario_name", "scenario_geography",
+    "id", "company_name", "ald_sector", "technology", "debt", "volatility",
+    "risk_free_rate", "term", "Maturity", "Vt", "St", "Dt", "Survival"
+  )
+
+  expected_columns <- c(
+    common_columns, "year", "equity_t_baseline", "equity_t_late_sudden"
+  )
+
+  if (identical(horizon, "overall")) {
+    expected_columns <- c(
+      common_columns, "equity_0_baseline", "equity_0_late_sudden"
     )
-  } else {
-    data_has_expected_columns <- all(
-      c(
-        "investor_name", "portfolio_name", "scenario_name", "scenario_geography",
-        "id", "company_name", "ald_sector", "technology", "year",
-        "equity_t_baseline", "equity_t_late_sudden", "debt", "volatility",
-        "risk_free_rate", "term", "Maturity", "Vt", "St", "Dt", "Survival"
-      ) %in% colnames(data)
-    )
-    stopifnot(data_has_expected_columns)
   }
+
+  data_has_expected_columns <- all(expected_columns %in% colnames(data))
+  stopifnot(data_has_expected_columns)
 
   data <- data %>%
     dplyr::rename_with(
@@ -57,5 +51,4 @@ add_cols_result_df_pd_changes <- function(data,
     )
 
   data
-
 }
