@@ -19,7 +19,13 @@ function_paths <- c(
   file.path(
     "R",
     c(
+      "add_cols_result_df_pd_changes.R",
+      "annual_pd_change_company_technology.R",
+      "annual_pd_change_technology_shock_year.R",
       "apply_filters.R",
+      "calculate_annual_pd_changes.R",
+      "calculate_overall_pd_changes.R",
+      "create_empty_result_df_pd_changes.R",
       "company_asset_value_at_risk.R",
       "company_expected_loss.R",
       "convert_cap_to_generation.R",
@@ -28,7 +34,8 @@ function_paths <- c(
       "format_loanbook_st.R",
       "get_st_data_path.R",
       "interpolate_automotive_scenario.R",
-      "merton.R",
+      "overall_pd_change_company_technology.R",
+      "overall_pd_change_technology_shock_year.R",
       "qa_graphs_st.R",
       "set_paths.R",
       "set_tech_trajectories.R",
@@ -429,6 +436,7 @@ loan_book_port_aum <- sector_exposures %>%
 loanbook_results <- c()
 qa_annual_profits_lbk <- c()
 loanbook_expected_loss <- c()
+loanbook_annual_pd_changes <- c()
 qa_pd_changes <- c()
 
 
@@ -530,8 +538,8 @@ for (i in seq(1, nrow(transition_scenarios))) {
       )
     )
 
-    loanbook_pd_changes <- loanbook_annual_profits %>%
-      calculate_pd_change(
+    loanbook_overall_pd_changes <- loanbook_annual_profits %>%
+      calculate_pd_change_overall(
         shock_year = transition_scenario_i$year_of_shock,
         end_of_analysis = end_year,
         exclusion = NULL
@@ -540,13 +548,24 @@ for (i in seq(1, nrow(transition_scenarios))) {
     loanbook_expected_loss <- bind_rows(
       loanbook_expected_loss,
       company_expected_loss(
-        data = loanbook_pd_changes,
+        data = loanbook_overall_pd_changes,
         loss_given_default = lgd_by_sector,
         exposure_at_default = plan_carsten_loanbook,
         # TODO: what to do with this? some sector level exposure for loanbook?
         port_aum = loan_book_port_aum
       )
     )
+
+    loanbook_annual_pd_changes <- bind_rows(
+      loanbook_annual_pd_changes,
+      calculate_pd_change_annual(
+        data = loanbook_annual_profits,
+        shock_year = transition_scenario_i$year_of_shock,
+        end_of_analysis = end_year,
+        exclusion = NULL
+      )
+    )
+
   } else {
     loanbook_results <- bind_rows(
       loanbook_results,
@@ -564,8 +583,8 @@ for (i in seq(1, nrow(transition_scenarios))) {
       )
     )
 
-    loanbook_pd_changes <- loanbook_annual_profits %>%
-      calculate_pd_change(
+    loanbook_overall_pd_changes <- loanbook_annual_profits %>%
+      calculate_pd_change_overall(
         shock_year = transition_scenario_i$year_of_shock,
         end_of_analysis = end_year,
         exclusion = excluded_companies
@@ -574,13 +593,24 @@ for (i in seq(1, nrow(transition_scenarios))) {
     loanbook_expected_loss <- bind_rows(
       loanbook_expected_loss,
       company_expected_loss(
-        data = loanbook_pd_changes,
+        data = loanbook_overall_pd_changes,
         loss_given_default = lgd_by_sector,
         exposure_at_default = plan_carsten_loanbook,
         # TODO: what to do with this? some sector level exposure for loanbook?
         port_aum = loan_book_port_aum
       )
     )
+
+    loanbook_annual_pd_changes <- bind_rows(
+      loanbook_annual_pd_changes,
+      calculate_pd_change_annual(
+        data = loanbook_annual_profits,
+        shock_year = transition_scenario_i$year_of_shock,
+        end_of_analysis = end_year,
+        exclusion = excluded_companies
+      )
+    )
+
   }
 }
 
@@ -638,6 +668,70 @@ loanbook_results_pf %>%
     ))
 
 
+loanbook_expected_loss <- loanbook_expected_loss %>%
+  dplyr::select(
+    scenario_name, scenario_geography, investor_name, portfolio_name,
+    company_name, id, ald_sector, technology, equity_0_baseline,
+    equity_0_late_sudden, debt, volatility, risk_free_rate, term,
+    Survival_baseline, Survival_late_sudden, PD_baseline, PD_late_sudden,
+    PD_change, PD_0, lgd, percent_exposure, exposure_at_default,
+    expected_loss_baseline, expected_loss_late_sudden
+  ) %>%
+  dplyr::arrange(
+    scenario_geography, scenario_name, investor_name, portfolio_name,
+    company_name, ald_sector, technology
+  )
+
+loanbook_expected_loss %>%
+  readr::write_csv(file.path(
+    results_path,
+    paste0("stress_test_results_lb_comp_el_", project_name, ".csv")
+  ))
+
+# TODO: this is an unweighted average so far. keep in mind.
+loanbook_annual_pd_changes_sector <- loanbook_annual_pd_changes %>%
+  dplyr::group_by(
+    scenario_name, scenario_geography, investor_name, portfolio_name,
+    ald_sector, technology, year
+  ) %>%
+  dplyr::summarise(
+    PD_change_late_sudden = mean((PD_late_sudden - PD_baseline), na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  dplyr::ungroup() %>%
+  dplyr::arrange(
+    scenario_geography, scenario_name, investor_name, portfolio_name,
+    ald_sector, technology, year
+  )
+
+loanbook_annual_pd_changes_sector %>%
+  readr::write_csv(file.path(
+    results_path,
+    paste0("stress_test_results_lb_sector_pd_changes_annual.csv")
+  ))
+
+# TODO: this is an unweighted average so far. keep in mind.
+loanbook_overall_pd_changes_sector <- loanbook_expected_loss %>%
+  dplyr::group_by(
+    scenario_name, scenario_geography, investor_name, portfolio_name,
+    ald_sector, technology, term
+  ) %>%
+  dplyr::summarise(
+    PD_change_late_sudden = mean((PD_late_sudden - PD_baseline), na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  dplyr::ungroup() %>%
+  dplyr::arrange(
+    scenario_geography, scenario_name, investor_name, portfolio_name,
+    ald_sector, technology, term
+  )
+
+loanbook_overall_pd_changes_sector %>%
+  readr::write_csv(file.path(
+    results_path,
+    paste0("stress_test_results_lb_sector_pd_changes_overall.csv")
+  ))
+
 
 #-QA section-----------
 
@@ -653,13 +747,23 @@ prices_over_time <- show_price_trajectories()
 # for scenarios in use
 
 production_over_time <- show_prod_trajectories(
-  data = scenario_data,
+  data = scenario_data %>% filter(scenario %in% scenarios_filter),
   source = c("ETP2017", "WEO2019"),
   ald_sector = sectors,
   technology = technologies,
   geography_filter = scenario_geography_filter
+) +
+theme(
+  axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+  legend.background = element_rect(fill = "white"),
+  legend.position = "bottom",
+  panel.background = element_rect(fill = "white", colour = "white"),
+  panel.grid.major.y = element_line(colour = "lightgrey"),
+  panel.grid.major.x = element_blank(),
+  panel.grid.minor = element_blank(),
+  plot.background = element_rect(fill = "white"),
+  strip.background = element_rect(fill = "lightgrey")
 )
-
 
 # distribution of shock impact over time by technology
 
@@ -706,6 +810,17 @@ prod_baseline_target_ls <- show_prod_baseline_target_ls_pf(
   data = qa_annual_profits_lbk_pf,
   geography_filter = scenario_geography_filter,
   shock_year = 2030
+) +
+theme(
+  axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+  legend.background = element_rect(fill = "white"),
+  legend.position = "bottom",
+  panel.background = element_rect(fill = "white", colour = "white"),
+  panel.grid.major.y = element_line(colour = "lightgrey"),
+  panel.grid.major.x = element_blank(),
+  panel.grid.minor = element_blank(),
+  plot.background = element_rect(fill = "white"),
+  strip.background = element_rect(fill = "lightgrey")
 )
 
 
@@ -747,4 +862,36 @@ sum_carbon_budgets_lbk <- qa_annual_profits_lbk %>%
     cumulative = TRUE
   )
 
+
+
+# credit risk QA graphs
+
+# overall change of credit risk graphs
+plot_pd_change_company_tech <- loanbook_expected_loss %>%
+  overall_pd_change_company_technology(
+    shock_year = 2030,
+    sector_filter = c("Oil&Gas", "Automotive"),
+    company_filter = c("canadian natural resources ltd", "honda motor co ltd"),
+    geography_filter = "Global"
+  )
+
+plot_pd_change_shock_year_tech <- loanbook_overall_pd_changes_sector %>%
+  overall_pd_change_technology_shock_year(
+    scenario_filter = c("Carbon balance 2025", "Carbon balance 2030", "Carbon balance 2035"),
+    geography_filter = "Global"
+  )
+
+# annual change of credit risk graphs
+plot_annual_pd_change_company_tech <- loanbook_annual_pd_changes %>%
+  annual_pd_change_company_technology(
+    shock_year = 2030,
+    company_filter = c("canadian natural resources ltd", "mazda motor corp", "honda motor co ltd"),
+    geography_filter = "Global"
+  )
+
+plot_annual_pd_change_shock_year_tech <- loanbook_annual_pd_changes_sector %>%
+  annual_pd_change_technology_shock_year(
+    shock_year_filter = c(2025, 2030, 2035),
+    geography_filter = "Global"
+  )
 

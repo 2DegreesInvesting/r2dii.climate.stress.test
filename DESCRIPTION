@@ -33,10 +33,14 @@ Imports:
     glue,
     magrittr,
     purrr,
+    r2dii.plot,
     readr,
     rlang,
-    testthat,
+    stringr,
     tidyr,
     withr,
     zoo
+Remotes: 2DegreesInvesting/r2dii.plot
+Suggests: 
+    testthat (>= 3.0.0)
 Config/testthat/edition: 3

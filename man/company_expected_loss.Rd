@@ -2,8 +2,13 @@
 % Please edit documentation in R/company_expected_loss.R
 \name{company_expected_loss}
 \alias{company_expected_loss}
-\title{Calculate percentage value change between scenarios for equity (and
-temporarily other asset types) on the company-technology level}
+\title{Calculate change of expected loss between scenarios for corporate loans on
+the company-technology level. The function uses a maximum term of 5 years and
+all loans with longer maturities are thrown into the 5 year bucket. The
+calculation of PD changes that underlies the input to this function is based
+on the comparison of overall NPVs of the correpsonding equity values for the
+companies at hand. That is, the PD changes take into account all dscounted
+future profits plus the terminal value.}
 \usage{
 company_expected_loss(
   data,
@@ -27,6 +32,11 @@ in the portfolio}
 the asset type at hand}
 }
 \description{
-Calculate percentage value change between scenarios for equity (and
-temporarily other asset types) on the company-technology level
+Calculate change of expected loss between scenarios for corporate loans on
+the company-technology level. The function uses a maximum term of 5 years and
+all loans with longer maturities are thrown into the 5 year bucket. The
+calculation of PD changes that underlies the input to this function is based
+on the comparison of overall NPVs of the correpsonding equity values for the
+companies at hand. That is, the PD changes take into account all dscounted
+future profits plus the terminal value.
 }

@@ -28,6 +28,10 @@ late_and_sudden scenarios
 }
 \seealso{
 Other qa graphing functions: 
+\code{\link{annual_pd_change_company_technology}()},
+\code{\link{annual_pd_change_technology_shock_year}()},
+\code{\link{overall_pd_change_company_technology}()},
+\code{\link{overall_pd_change_technology_shock_year}()},
 \code{\link{show_carbon_budget}()},
 \code{\link{show_impact_by_shock_year}()},
 \code{\link{show_pf_technology_shares}()},

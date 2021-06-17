@@ -7,7 +7,7 @@ test_that("without specified arguments, company_expected_loss throws error", {
 
 test_that("with missing argument for loss_given_default, company_expected_loss
           throws error", {
-  test_data <- read_test_data("loanbook_pd_changes.csv")
+  test_data <- read_test_data("loanbook_overall_pd_changes.csv")
   test_ead <- read_test_data("loanbook_exposure_at_default.csv")
   test_port_aum <- read_test_data("loanbook_aum.csv")
 
@@ -23,7 +23,7 @@ test_that("with missing argument for loss_given_default, company_expected_loss
 
 test_that("with missing argument for shock_year, calculate_pd_change throws
           error", {
-  test_data <- read_test_data("loanbook_pd_changes.csv")
+  test_data <- read_test_data("loanbook_overall_pd_changes.csv")
   test_lgd <- read_test_data("loss_given_default_by_sector.csv")
   test_ead <- read_test_data("loanbook_exposure_at_default.csv")
   test_port_aum <- read_test_data("loanbook_aum.csv")
@@ -39,7 +39,7 @@ test_that("with missing argument for shock_year, calculate_pd_change throws
 })
 
 test_that("expected losses point in correct direction", {
-  test_data <- read_test_data("loanbook_pd_changes.csv")
+  test_data <- read_test_data("loanbook_overall_pd_changes.csv")
   test_lgd <- read_test_data("loss_given_default_by_sector.csv")
   test_ead <- read_test_data("loanbook_exposure_at_default.csv")
   test_port_aum <- read_test_data("loanbook_aum.csv")
