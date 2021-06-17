@@ -63,8 +63,8 @@ The repository covers climate risk calculations for the following types
 of risks
 
   - Transition Risk
-  - Litigation Risk It will be extended to also cover
-  - Physical Risk
+  - Litigation Risk
+  - Physical Risk (future extension)
 
 The methods for all of these are currently in the development phase,
 meaning there are likely going to be changes to the calculations in
@@ -120,18 +120,32 @@ as A\_0 = E\_0 (equity value in t = 0) \* D. We further need the
 volatility of the equity value, the risk free rate and the term
 structure as inputs.
 
-The outcome of the Merton model is a PD contignent to the inputs. For
-us, the value of interest is not an absolute PD as a direct outcome of
-the model, but rather how the PD changes between a baseline scenario and
-a late and sudden scenario. We therefore keep all inputs equal except
-the valuations under those two scenarios. We model a PD under the
-baseline scenario and another under a late and sudden scenario and
-calculate the relative change for the given set of parameters. This will
-result in a change in PDs that does not reflect the magnitude of the
-equity and debt values and can therefore be applied as a shock factor on
-PDs that banks may have calculated with a different model themselves:
+The outcome of the Merton model is a PD contingent to the inputs
+described above. For us, the value of interest is not an absolute PD as
+a direct outcome of the model, but rather how the PD changes between a
+baseline scenario and a late and sudden scenario that represents a
+disorderly transition after a policy shock. We therefore keep all inputs
+equal except the valuations under those two scenarios. We model a PD
+under the baseline scenario and another PD under a late and sudden
+scenario and calculate the change in PDs for the given set of
+parameters. This will result in a change in PDs that does not reflect
+the magnitude of the equity and debt values and can therefore be applied
+as a shock factor on PDs that banks may have calculated with a different
+model themselves:
 
-PD\_change = (PD\_late\_sudden - PD\_baseline) / PD\_baseline
+PD\_change = PD\_late\_sudden - PD\_baseline
+
+PD\_change is a value in percentage points and can be used to calculate
+the change in expected loss due to the late and sudden transition to a
+less carbon-intensive economy. For the expected loss calculation, this
+would mean we calculate:
+
+EL\_late\_sudden = (PD\_0 + PD\_change) \* LGD \* EAD
+
+where PD\_0 is the probability of default for a loan prior to the shock
+as provided by the user. If no such data is available on the loan level,
+it may be an option to use sector or technology level averages as
+starting points.
 
 ##### Assumptions
 
@@ -153,15 +167,22 @@ PD\_change = (PD\_late\_sudden - PD\_baseline) / PD\_baseline
     in the future. **OPEN**
   - The risk free rate is currently set at 0.05. The current value in
     use is a mock value for test purposes that needs to be replaced with
-    empirical values. This may become a user input option in the future.
-    **OPEN**
-  - The PD changes are calculated for all maturities (in full years)
-    between the year of the shock and the end year of the analysis. This
-    allows the user to understand the sensitivity of the impact to the
-    term structure, but is also required to adequately capture loans of
-    different maturities to the same company. It remains to be confirmed
-    that this is the appropriate way to cover the different maturities
-    or if other considerations need to be reflected.
+    empirical values. We will switch to a default value that uses the
+    yield of US Treasury 10 year bonds. This may become a user input
+    option in the future. **OPEN**
+  - In each transition scenario, the PD changes are calculated in two
+    ways. Once, we calculate for PD changes for loans of 1 year maturity
+    only, but on an annual basis until the end of the analysis period.
+    In this case, the input equity values will always just consider one
+    year of discounted future profits - the one related to the year that
+    the specific maturity refers to. Secondly, we calculate the PD
+    change for maturities between 1 and 5 years in yearly steps
+    considering the entire time frame from the start year of the
+    analysis. This means that the full NPV is considered in calculating
+    the starting equity values. This calculation can be used for the
+    expected loss calculation, so that the term structure of a portfolio
+    is adequately rfelected. Maturities larger than 5 years are grouped
+    in the 5 year maturity bucket.
   - On a technical level, we use implementation of the Merton model from
     the CreditRisk R package, which is described in more detail here:
     <https://cran.r-project.org/web/packages/CreditRisk/CreditRisk.pdf>
@@ -181,6 +202,12 @@ loan book, the user needs to provide as input:
     on how to use PACTA for banks, consult:
     <https://2degreesinvesting.github.io/r2dii.match/> and
     <https://2degreesinvesting.github.io/r2dii.analysis/index.html>
+  - Information on initial probabilities of default, ideally on the
+    individual loan level. If this is unfeasible, it needs to be
+    provided on the technology level based on relevant market data and
+    be merged with the input file accordingly.
+  - Information on LGDs, ideally on the loan level, but alternatively
+    market averages for each of the technologies. **OPEN**
   - Sector exposures to the relevant sectors of the analysis. This can
     be obtained by following the steps in the script calc\_loan\_book.R
     in this repository.
@@ -241,11 +268,19 @@ loan book, the user needs to provide as input:
       - calculating value changes and percentage losses per transition
         scenario, by combining company level DCF output with portfolio
         share of the corresponding holdings (6)
-      - Calculate PD changes per company-technology and maturity (7)
-      - aggreagate PD changes to the loan book level to derive expected
-        losses (7)
+      - Calculate annual PD changes per company-technology for 1 year
+        maturities (7)
+      - Calculate overall PD changes per company-technology and maturity
+        (7)
+      - Calculate changes in the expected loss based on overall PD
+        changes (7)
   - write company-tech level results to initialized project folder
   - write portfolio-tech level results to initialized project folder
+  - save graphs to initialized project folder **OPEN**
+
+#### Output files
+
+Describe structure and interpretation of output files **OPEN**
 
 #### A note on PACTA COP projects on the 2DII platform
 
