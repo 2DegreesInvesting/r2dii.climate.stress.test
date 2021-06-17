@@ -36,10 +36,10 @@ overall_pd_change_company_technology <- function(data,
 
   plot <- data %>%
     dplyr::filter(
-      ald_sector %in% .env$sector_filter &
-        company_name %in% .env$company_filter &
-        scenario_name == .env$shock_year &
-        .data$scenario_geography %in% geography_filter
+      ald_sector %in% .env$sector_filter,
+      company_name %in% .env$company_filter,
+      scenario_name == .env$shock_year,
+      .data$scenario_geography %in% geography_filter
     ) %>%
     ggplot(
       aes(

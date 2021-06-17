@@ -28,8 +28,8 @@ overall_pd_change_technology_shock_year <- function(data,
 
   plot <- data %>%
     dplyr::filter(
-      .data$scenario_name %in% .env$scenario_filter &
-        .data$scenario_geography %in% geography_filter
+      .data$scenario_name %in% .env$scenario_filter,
+      .data$scenario_geography %in% geography_filter
     ) %>%
     dplyr::mutate(
       scenario_name = stringr::str_replace(
