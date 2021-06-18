@@ -5,11 +5,15 @@
 \title{Read in power capacity factors from csv and check that all expected columns
 are given.}
 \usage{
-read_capacity_factors(path = NULL)
+read_capacity_factors(path = NULL, version = NULL)
 }
 \arguments{
 \item{path}{A string that points to the location of the file containing the
 capacity factors}
+
+\item{version}{A string indicating whether to prepare the capacity factors
+basedn on the old logic (2017 data set) or the new logic (long format,
+multiple years and scenarios). Must be either "old" or "new".}
 }
 \description{
 Read in power capacity factors from csv and check that all expected columns
