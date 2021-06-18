@@ -37,6 +37,7 @@ function_paths <- c(
       "overall_pd_change_company_technology.R",
       "overall_pd_change_technology_shock_year.R",
       "qa_graphs_st.R",
+      "read_capacity_factors.R",
       "set_paths.R",
       "set_tech_trajectories.R",
       "show_carbon_budget.R",
@@ -278,7 +279,7 @@ transition_scenarios <- readr::read_csv(file.path(data_location, "transition_sce
   check_scenario_consistency()
 
 # Load utilization factors power
-capacity_factors_power <- readr::read_csv(file.path(data_location, "capacity_factors_WEO_2017.csv"), col_types = cols()) %>%
+capacity_factors_power <- read_capacity_factors(file.path(data_location, "capacity_factors_WEO_2017.csv")) %>%
   select(Region, Technology, region_2dii, capacityfactor_WEO_2016) %>%
   rename(technology = Technology) %>%
   filter(!is.na(capacityfactor_WEO_2016), Region == "World" | (technology %in% c("HydroCap", "NuclearCap", "RenewablesCap") & Region == "OECD")) %>%
