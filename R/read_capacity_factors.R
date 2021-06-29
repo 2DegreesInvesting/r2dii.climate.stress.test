@@ -22,7 +22,7 @@ read_capacity_factors <- function(path = NULL,
   stopifnot(valid_input_file_path)
 
   # TODO: once the input is in long format the expected col types can be set
-  data <- readr::read_csv(path, col_types = cols())
+  data <- readr::read_csv(path, col_types = readr::cols())
 
   if (identical(version, "old")) {
     # FIXME: Since we only ever have one file as input so far, I am leaving the
@@ -48,7 +48,7 @@ read_capacity_factors <- function(path = NULL,
         !is.na(.data$capacityfactor_WEO_2016),
         .data$Region == "World" |
           (.data$technology %in% c("HydroCap", "NuclearCap", "RenewablesCap") &
-             .data$Region == "OECD")
+            .data$Region == "OECD")
       ) %>%
       dplyr::distinct(.data$technology, .data$capacityfactor_WEO_2016) %>%
       dplyr::rename(capacity_factor = .data$capacityfactor_WEO_2016) %>%
@@ -58,14 +58,16 @@ read_capacity_factors <- function(path = NULL,
       c("technology", "capacity_factor", "scenario_geography") %in% colnames(data)
     )
     stopifnot(output_has_expected_columns)
-
   } else {
     data <- data %>%
       dplyr::select(
         .data$scenario, .data$scenario_geography, .data$technology,
         .data$year, .data$capacity_factor
       ) %>%
-      dplyr::distinct_all()
+      dplyr::distinct_all() %>%
+      dplyr::mutate(
+        scenario = dplyr::if_else(.data$scenario == "SPS", "NPS", .data$scenario)
+      )
 
     output_has_expected_columns <- all(
       c(
