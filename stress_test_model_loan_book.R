@@ -280,9 +280,18 @@ transition_scenarios <- readr::read_csv(file.path(data_location, "transition_sce
 
 # Load utilization factors power
 capacity_factors_power <- read_capacity_factors(
-  path = file.path(data_location, "capacity_factors_WEO_2017.csv"),
-  version = "old"
+  path = file.path(data_location, "capacity_factors_WEO_2020.csv"),
+  version = "new"
 )
+
+capacity_factors_power <- capacity_factors_power %>%
+  filter(
+    scenario_geography == scenario_geography_filter,
+    year == start_year,
+    scenario == scenario_to_follow_ls
+  ) %>%
+  # TODO: currently filters on start year. think about extending to full time series
+  select(scenario_geography, technology, capacity_factor)
 
 
 # Load scenario data----------------------------------------

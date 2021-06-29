@@ -189,6 +189,7 @@ transition_scenarios <- readr::read_csv(file.path(stress_test_path, data_path("p
   check_scenario_consistency()
 
 # Load utilization factors power
+# TODO: replace with new capacity factors
 capacity_factors_power <- read_capacity_factors(
   path = file.path(data_location, "capacity_factors_WEO_2017.csv"),
   version = "old"
