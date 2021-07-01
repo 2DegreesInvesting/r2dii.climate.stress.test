@@ -85,7 +85,172 @@ for each of the risk types and some of the asset types.
 
 ### Transition Risk for listed equity and corporate bonds
 
-…
+#### Methodological notes
+
+The work flow for listed equity and corporate bonds mainly focuses on
+calculating market risk of portfolios under a late and sudden policy
+shock that initiates a transition of the real economy from a business as
+usual pathway toward a sustainable pathway that is aligned with a given
+climate target.
+
+The process to derive potential losses for the companies in the
+portfolio and, by extension, for the portfolio itself, is in essence
+threefold:
+
+1 - Define the impact of the policy shock on production pathways in the
+real economy over time. This gives production pathways for all affected
+companies under different scenarios.
+
+2 - Calculate the impact of real economy production scenarios on future
+profits for all companies in the portfolio. This involves using the
+production pathways from step 1 and plugging them into profit
+calculations that account for developments of prices and costs under
+each of the scenarios over time, then discount these future profits.
+
+3 - Calculate the net present values (NPVs) of companies in the analysis
+based on discounted future profits from step 2. Comparing the NPVs of
+companies between scenarios gives us potential changes in company value
+due the the policy shock.
+
+The exact calculations can be found in the working paper **LINK to
+working paper**
+
+##### Assumptions
+
+There are still a few data gaps, especially on the price and cost
+structure of certain markets and companies. Here we are using
+placeholder data. The users can set these inputs themselves, in case
+they have data that they feel is more accurate for their context of
+analysis.
+
+Beyond that, we assume that profits are paid out as dividends and that
+these correspond tp the market value according to some proportionality
+factor.
+
+#### Required inputs
+
+In order to calculate the impacts from transition risk on a corporate
+loan book, the user needs to provide as input:
+
+**Parameter settings** to locate the project in
+st\_project\_settings.yml
+
+**Model parameters** to use in the financial valuation and to select
+scenarios in model\_parameters.yml
+
+**PACTA for investors output** at the company or portfolio level.
+
+Information on **initial probabilities of default,** ideally on the
+individual loan level. If this is unfeasible, it needs to be provided on
+the technology level based on relevant market data and be merged with
+the input file accordingly. **OPEN**
+
+Information on **LGDs,** ideally on the loan level, but alternatively
+market averages for each of the technologies. **OPEN**
+
+**Sector exposures** to the relevant sectors of the analysis. This can
+be obtained by following the steps in the script calc\_loan\_book.R in
+this repository.
+
+Specifications of **transition scenarios** for which to calculate shocks
+and impacts on the given portfolio. These are provided via a file,
+transition\_scenario\_input.csv
+
+**Capacity factors** for the power sector, to transform power capacity
+into power production. The legacy live version uses the file
+capacity\_factors\_WEO\_2017.csv.
+
+Output Columns: - technology (usually the PACTA sectors with production
+pathways) - capacity\_factor (a number indicating the average power
+generation per unit of capacity) - scenario\_geography (geographic
+region for which the capacity factors apply)
+
+A new version allows using more up to date capacity factors derived from
+IEA WEO numbers. This is required in order to calculate profits on
+actual quantities produced, not theoretical capacities.
+
+Output Columns: - scenario (transition scenario for which the capacity
+factors apply) - scenario\_geography (geographic region for which the
+capacity factors apply) - technology (usually the PACTA sectors with
+production pathways) - year (temporal change of capacity factors) -
+capacity\_factor (a number indicating the average power generation per
+unit of capacity)
+
+**Scenario data** that covers production road maps for all technologies
+that are to be analysed up until 2040. The scenario data need to cover
+those road maps for the scenarios selected in the parameter files and
+should follow the structure found in Scenarios\_AnalysisInput\_YYYY.csv.
+This data is used to extrapolate the production trajectories for
+companies beyond the PACTA time frame.
+
+**Price data** trajectories found in the file prices\_data\_YYYYQQ.csv,
+which contains projections of market prices per technology from the
+start data of the analysis until the year 2040. This is another required
+input to obtain profits. This will likely change in the future.
+
+**Net profit margins** are loaded via the model\_parameters.yml file up
+until now. This may change in the future.
+
+**Excluded companies** in case a specific company-technology combination
+cannot be covered by the model either due to lack of data on the company
+side or because of other input data gaps, the combination of
+caompany\_name and technology can be specified to be excluded from risk
+calculations. Such situations can be relevant for example when a company
+conducts business predominantly in one country that follows transition
+policies are laws that are not covered in the regionality of the
+business as usual and target scenarios. For instance, Germany is phasing
+out nuclear power in the first half of the 2020s. European and/or global
+scenarios do not capture this, although it can be seen in the relevant
+companies’ capex plans. Such situations can lead to unintended behaviour
+of the model and as such it seems reasonable not to shock this part of
+the business, especially since we usually model shocks happening beyond
+this time frame.
+
+**Further notes on input data:**
+
+  - It is of particular importance that the start year of the analysis
+    is available in the PACTA results, in the scenario data and in the
+    price data. If either data set starts after the start year of the
+    analysis, the work flow will not work.
+  - Equally, the scenarios selected for the analysis must be given in
+    the PACTA results as well as in the scenario data and the price
+    data.
+
+#### Steps
+
+  - Initialize project
+  - Load project parameters
+  - Load all project input data
+  - Wrangle input data
+  - Initialise empty results object
+  - Loop over transition scenarios (as defined in
+    transition\_scenarios\_input.csv), calculating and row-binding
+    results to the results object. Calculation entails:
+      - plucking a specific scenario definition from the transition
+        scenarios to obtain model inputs (1)
+      - calculating the corresponding price trajectories (2)
+      - calculating the corresponding production trajectories on the
+        company level (3)
+      - joining the price trajectories to the production trajectories
+        (3)
+      - joining net profit margins to the production and price
+        trajectories (3)
+      - calculating future net profits for the entire analysis time
+        frame (3)
+      - calculate discounted net profits for the entire analysis time
+        frame, using the DCF model (3)
+      - plucking the portfolio share (plan\_carsten) of each company
+        from the pacta data input (4)
+      - calculating value changes and percentage losses per transition
+        scenario, by combining company level DCF output with portfolio
+        share of the corresponding holdings (6)
+  - write company-tech level results to initialized project folder
+  - write portfolio-tech level results to initialized project folder
+  - save graphs to initialized project folder **OPEN**
+
+#### Output files
+
+Describe structure and interpretation of output files **OPEN**
 
 ### Transition Risk for corporate loan books
 
@@ -187,51 +352,92 @@ starting points.
     the CreditRisk R package, which is described in more detail here:
     <https://cran.r-project.org/web/packages/CreditRisk/CreditRisk.pdf>
 
-#### Prerequisites
+#### Required inputs
 
 In order to calculate the impacts from transition risk on a corporate
 loan book, the user needs to provide as input:
 
-  - Parameter settings to locate the project in
-    st\_project\_settings.yml
-  - Model parameters to use in the financial valuation and to select
-    scenarios in model\_parameters.yml
-  - PACTA for banks output at the company level, enriched with company
-    level loan shares. This can be created by following the steps in the
-    script calc\_loan\_book.R in this repository. For more information
-    on how to use PACTA for banks, consult:
-    <https://2degreesinvesting.github.io/r2dii.match/> and
-    <https://2degreesinvesting.github.io/r2dii.analysis/index.html>
-  - Information on initial probabilities of default, ideally on the
-    individual loan level. If this is unfeasible, it needs to be
-    provided on the technology level based on relevant market data and
-    be merged with the input file accordingly.
-  - Information on LGDs, ideally on the loan level, but alternatively
-    market averages for each of the technologies. **OPEN**
-  - Sector exposures to the relevant sectors of the analysis. This can
-    be obtained by following the steps in the script calc\_loan\_book.R
-    in this repository.
-  - Specifications of transition scenarios for which to calculate shocks
-    and impacts on the given portfolio. These are provided via a file,
-    transition\_scenario\_input.csv
-  - Capacity factors for the power sector, to transform power capacity
-    into power production, using the file
-    capacity\_factors\_WEO\_2017.csv. This is required in order to
-    calculate profits on actual quantities produced, not theoretical
-    capacities.
-  - Scenario data that covers production road maps for all technologies
-    that are to be analysed up until 2040. The scenario data need to
-    cover those road maps for the scenarios selected in the parameter
-    files and should follow the structure found in
-    Scenarios\_AnalysisInput\_YYYY.csv. This data is used to extrapolate
-    the production trajectories for companies beyond the PACTA time
-    frame.
-  - Price data trajectories found in the file prices\_data\_YYYYQQ.csv,
-    which contains projections of market prices per technology from the
-    start data of the analysis until the year 2040. This is another
-    required input to obtain profits.
-  - Net profit margins are loaded via the model\_parameters.yml file up
-    until now. This may change in the future.
+**Parameter settings** to locate the project in
+st\_project\_settings.yml
+
+**Model parameters** to use in the financial valuation and to select
+scenarios in model\_parameters.yml
+
+**PACTA for banks output** at the company level, enriched with **company
+level loan shares.** This can be created by following the steps in the
+script calc\_loan\_book.R in this repository. For more information on
+how to use PACTA for banks, consult:
+<https://2degreesinvesting.github.io/r2dii.match/> and
+<https://2degreesinvesting.github.io/r2dii.analysis/index.html>
+
+Information on **initial probabilities of default,** ideally on the
+individual loan level. If this is unfeasible, it needs to be provided on
+the technology level based on relevant market data and be merged with
+the input file accordingly. **OPEN**
+
+Information on **LGDs,** ideally on the loan level, but alternatively
+market averages for each of the technologies. **OPEN**
+
+**Sector exposures** to the relevant sectors of the analysis. This can
+be obtained by following the steps in the script calc\_loan\_book.R in
+this repository.
+
+Specifications of **transition scenarios** for which to calculate shocks
+and impacts on the given portfolio. These are provided via a file,
+transition\_scenario\_input.csv
+
+**Capacity factors** for the power sector, to transform power capacity
+into power production. The legacy live version uses the file
+capacity\_factors\_WEO\_2017.csv.
+
+Output Columns: - technology (usually the PACTA sectors with production
+pathways) - capacity\_factor (a number indicating the average power
+generation per unit of capacity) - scenario\_geography (geographic
+region for which the capacity factors apply)
+
+A new version allows using more up to date capacity factors derived from
+IEA WEO numbers. This is required in order to calculate profits on
+actual quantities produced, not theoretical capacities.
+
+Output Columns: - scenario (transition scenario for which the capacity
+factors apply) - scenario\_geography (geographic region for which the
+capacity factors apply) - technology (usually the PACTA sectors with
+production pathways) - year (temporal change of capacity factors) -
+capacity\_factor (a number indicating the average power generation per
+unit of capacity)
+
+**Scenario data** that covers production road maps for all technologies
+that are to be analysed up until 2040. The scenario data need to cover
+those road maps for the scenarios selected in the parameter files and
+should follow the structure found in Scenarios\_AnalysisInput\_YYYY.csv.
+This data is used to extrapolate the production trajectories for
+companies beyond the PACTA time frame.
+
+**Price data** trajectories found in the file prices\_data\_YYYYQQ.csv,
+which contains projections of market prices per technology from the
+start data of the analysis until the year 2040. This is another required
+input to obtain profits. This will likely change in the future.
+
+**Net profit margins** are loaded via the model\_parameters.yml file up
+until now. This may change in the future.
+
+**Excluded companies** in case a specific company-technology combination
+cannot be covered by the model either due to lack of data on the company
+side or because of other input data gaps, the combination of
+caompany\_name and technology can be specified to be excluded from risk
+calculations. Such situations can be relevant for example when a company
+conducts business predominantly in one country that follows transition
+policies are laws that are not covered in the regionality of the
+business as usual and target scenarios. For instance, Germany is phasing
+out nuclear power in the first half of the 2020s. European and/or global
+scenarios do not capture this, although it can be seen in the relevant
+companies’ capex plans. Such situations can lead to unintended behaviour
+of the model and as such it seems reasonable not to shock this part of
+the business, especially since we usually model shocks happening beyond
+this time frame.
+
+**Further notes on input data:**
+
   - It is of particular importance that the start year of the analysis
     is available in the PACTA results, in the scenario data and in the
     price data. If either data set starts after the start year of the
@@ -282,7 +488,7 @@ loan book, the user needs to provide as input:
 
 Describe structure and interpretation of output files **OPEN**
 
-#### A note on PACTA COP projects on the 2DII platform
+### A note on PACTA COP projects on the 2DII platform
 
 Whenever a new PACTA COP project starts on the transition monitor that
 requires the calculation of a transition risk stress test, a parameter

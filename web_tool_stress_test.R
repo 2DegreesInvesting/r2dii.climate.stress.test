@@ -37,6 +37,7 @@ function_paths <- c(
       "extend_scenario_trajectory.R",
       "get_st_data_path.R",
       "interpolate_automotive_scenario.R",
+      "read_capacity_factors.R",
       "set_params_st.R",
       "set_paths.R",
       "set_tech_trajectories.R",
@@ -188,15 +189,11 @@ transition_scenarios <- readr::read_csv(file.path(stress_test_path, data_path("p
   check_scenario_consistency()
 
 # Load utilization factors power
-capacity_factors_power <- readr::read_csv(file.path(stress_test_path, data_path("capacity_factors_WEO_2017.csv")), col_types = cols()) %>%
-  select(Region, Technology, region_2dii, capacityfactor_WEO_2016) %>%
-  rename(technology = Technology) %>%
-  filter(!is.na(capacityfactor_WEO_2016), Region == "World" | (technology %in% c("HydroCap", "NuclearCap", "RenewablesCap") & Region == "OECD")) %>%
-  distinct(technology, capacityfactor_WEO_2016) %>%
-  rename(capacity_factor = capacityfactor_WEO_2016) %>%
-  mutate(scenario_geography = "Global")
-
-
+# TODO: replace with new capacity factors
+capacity_factors_power <- read_capacity_factors(
+  path = file.path(data_location, "capacity_factors_WEO_2017.csv"),
+  version = "old"
+)
 
 # Load scenario data----------------------------------------
 
