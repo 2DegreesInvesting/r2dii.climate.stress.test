@@ -512,14 +512,15 @@ check_portfolio_consistency <- function(df) {
   return(df)
 }
 
-check_scenario_consistency <- function(df) {
-  # the year of shock must be greater or equal to the start year of the analysis
-  if (!all(df %>% pull(year_of_shock) >= start_year)) {
-    write_log("Year of shock out of bounds. Shock cannot happen before the start year of the anaylsis.")
-    stop("Year of shock out of bounds. Shock cannot happen before the start year of the anaylsis.")
-  }
-  return(df)
-}
+# TODO: remove once read_transition_scenarios() can be tested within webtool
+# check_scenario_consistency <- function(df) {
+#   # the year of shock must be greater or equal to the start year of the analysis
+#   if (!all(df %>% pull(year_of_shock) >= start_year)) {
+#     write_log("Year of shock out of bounds. Shock cannot happen before the start year of the anaylsis.")
+#     stop("Year of shock out of bounds. Shock cannot happen before the start year of the anaylsis.")
+#   }
+#   return(df)
+# }
 
 check_price_consistency <- function(df) {
   # the year of shock must be greater or equal to the start year of the analysis
