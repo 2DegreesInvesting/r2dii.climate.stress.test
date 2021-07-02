@@ -38,6 +38,7 @@ function_paths <- c(
       "overall_pd_change_technology_shock_year.R",
       "qa_graphs_st.R",
       "read_capacity_factors.R",
+      "read_transition_scenarios.R",
       "set_paths.R",
       "set_tech_trajectories.R",
       "show_carbon_budget.R",
@@ -271,12 +272,11 @@ sector_exposures <- read_csv(
 # TODO: potentially convert currencies to USD or at least common currency
 
 # Load transition scenarios that will be run by the model
-transition_scenarios <- readr::read_csv(file.path(data_location, "transition_scenario_input.csv"), col_types = "cnlnllnnnnnnnnnnnn") %>%
-  mutate(
-    overshoot_method = ifelse(is.na(overshoot_method), FALSE, overshoot_method),
-    duration_of_shock = ifelse(overshoot_method, end_year - year_of_shock + 1, duration_of_shock)
-  ) %>%
-  check_scenario_consistency()
+transition_scenarios <- read_transition_scenarios(
+  path = file.path(data_location, "transition_scenario_input.csv"),
+  start_of_analysis = start_year,
+  end_of_analysis = end_year
+)
 
 # Load utilization factors power
 capacity_factors_power <- read_capacity_factors(
