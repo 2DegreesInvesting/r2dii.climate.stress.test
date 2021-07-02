@@ -53,8 +53,8 @@ overall_pd_change_technology_shock_year <- function(data,
       title = "Overall PD change by sector, maturity & shock year"
     ) +
     facet_grid(
-      rows = vars(.data$ald_sector, .data$technology),
-      cols = vars(.data$scenario_name),
+      rows = vars(.data$scenario_name),
+      cols = vars(.data$ald_sector, .data$technology),
       scales = "free"
     ) +
     r2dii.plot::theme_2dii()

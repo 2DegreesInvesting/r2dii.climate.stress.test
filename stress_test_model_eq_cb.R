@@ -19,14 +19,23 @@ function_paths <- c(
   file.path(
     "R",
     c(
+      "add_cols_result_df_pd_changes.R",
+      "annual_pd_change_company_technology.R",
+      "annual_pd_change_technology_shock_year.R",
       "apply_filters.R",
       "asset_value_at_risk.R",
+      "calculate_annual_pd_changes.R",
+      "calculate_overall_pd_changes.R",
+      "create_empty_result_df_pd_changes.R",
       "company_asset_value_at_risk.R",
+      "company_expected_loss.R",
       "convert_cap_to_generation.R",
       "exclude_companies.R",
       "extend_scenario_trajectory.R",
       "get_st_data_path.R",
       "interpolate_automotive_scenario.R",
+      "overall_pd_change_company_technology.R",
+      "overall_pd_change_technology_shock_year.R",
       "qa_graphs_st.R",
       "read_capacity_factors.R",
       "set_paths.R",
@@ -201,6 +210,15 @@ portcheck_portresults_bonds_full <- readRDS(file.path(results_path, investorname
   mutate(scenario = ifelse(str_detect(scenario, "_"), str_extract(scenario, "[^_]*$"), scenario)) %>%
   check_portfolio_consistency()
 
+# TODO: temporary addition, needs to come directly from input
+portcheck_portresults_bonds_full <- portcheck_portresults_bonds_full %>%
+  group_by(company_name) %>%
+  mutate(
+    term = round(runif(n = 1, min = 1, max = 10), 0),
+    PD_0 = runif(n = 1, min = 0.001, max = 0.1)
+  ) %>%
+  ungroup()
+
 
 # portcheck_portresults_equity_full <- readRDS(file.path(results_path, investorname_equity, "Equity_results_portfolio.rda")) %>%
 portcheck_portresults_equity_full <- readRDS(file.path(results_path, investorname_equity, paste0("Equity_results_", calculation_level, ".rda"))) %>%
@@ -282,12 +300,11 @@ scenario_data <- scenario_data %>%
       technology %in% technologies &
       scenario_geography == scenario_geography_filter)
 
-# %>% filter(year %in% c(start_year,2020, 2021, 2022, 2023, 2024, 2025, 2030, 2035, 2040))
-
 df_price <- readr::read_csv(file.path(data_location, paste0("prices_data_", price_data_version, ".csv")), col_types = "ncccccncncncnc") %>%
   filter(year >= start_year) %>%
   check_price_consistency()
 
+lgd_by_sector <- readr::read_csv(file.path(data_location, paste0("sector_lgd.csv")), col_types = "cn")
 
 #############
 # Create shock net profits margins dataframe
@@ -579,6 +596,9 @@ equity_results %>% write_results(
 
 bonds_results <- c()
 qa_annual_profits_cb <- c()
+bonds_expected_loss <- c()
+bonds_annual_pd_changes <- c()
+qa_pd_changes <- c()
 
 for (i in seq(1, nrow(transition_scenarios))) {
   transition_scenario_i <- transition_scenarios[i, ]
@@ -662,14 +682,14 @@ for (i in seq(1, nrow(transition_scenarios))) {
     plan_carsten_bonds <- plan_carsten_bonds %>%
       distinct(
         investor_name, portfolio_name, company_name, ald_sector, technology,
-        scenario_geography, year, plan_carsten, plan_sec_carsten
+        scenario_geography, year, plan_carsten, plan_sec_carsten, term, PD_0
       )
 
     if (!exists("excluded_companies")) {
       bonds_results <- bind_rows(
         bonds_results,
         company_asset_value_at_risk(
-          data = equity_annual_profits,
+          data = bonds_annual_profits,
           terminal_value = terminal_value,
           shock_scenario = shock_scenario,
           div_netprofit_prop_coef = div_netprofit_prop_coef,
@@ -679,17 +699,73 @@ for (i in seq(1, nrow(transition_scenarios))) {
           exclusion = NULL
         )
       )
+
+      bonds_overall_pd_changes <- bonds_annual_profits %>%
+        calculate_pd_change_overall(
+          shock_year = transition_scenario_i$year_of_shock,
+          end_of_analysis = end_year,
+          exclusion = NULL
+        )
+
+      bonds_expected_loss <- bind_rows(
+        bonds_expected_loss,
+        company_expected_loss(
+          data = bonds_overall_pd_changes,
+          loss_given_default = lgd_by_sector,
+          exposure_at_default = plan_carsten_bonds,
+          # TODO: what to do with this? some sector level exposure for loanbook?
+          port_aum = bonds_port_aum
+        )
+      )
+
+      bonds_annual_pd_changes <- bind_rows(
+        bonds_annual_pd_changes,
+        calculate_pd_change_annual(
+          data = bonds_annual_profits,
+          shock_year = transition_scenario_i$year_of_shock,
+          end_of_analysis = end_year,
+          exclusion = NULL
+        )
+      )
     } else {
       bonds_results <- bind_rows(
         bonds_results,
         company_asset_value_at_risk(
-          data = equity_annual_profits,
+          data = bonds_annual_profits,
           terminal_value = terminal_value,
           shock_scenario = shock_scenario,
           div_netprofit_prop_coef = div_netprofit_prop_coef,
           plan_carsten = plan_carsten_bonds,
           port_aum = bonds_port_aum,
           flat_multiplier = 0.15,
+          exclusion = excluded_companies
+        )
+      )
+
+      bonds_overall_pd_changes <- bonds_annual_profits %>%
+        calculate_pd_change_overall(
+          shock_year = transition_scenario_i$year_of_shock,
+          end_of_analysis = end_year,
+          exclusion = excluded_companies
+        )
+
+      bonds_expected_loss <- bind_rows(
+        bonds_expected_loss,
+        company_expected_loss(
+          data = bonds_overall_pd_changes,
+          loss_given_default = lgd_by_sector,
+          exposure_at_default = plan_carsten_bonds,
+          # TODO: what to do with this? some sector level exposure for loanbook?
+          port_aum = bonds_port_aum
+        )
+      )
+
+      bonds_annual_pd_changes <- bind_rows(
+        bonds_annual_pd_changes,
+        calculate_pd_change_annual(
+          data = bonds_annual_profits,
+          shock_year = transition_scenario_i$year_of_shock,
+          end_of_analysis = end_year,
           exclusion = excluded_companies
         )
       )
@@ -705,7 +781,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
     bonds_results <- bind_rows(
       bonds_results,
       asset_value_at_risk(
-        data = equity_annual_profits,
+        data = bonds_annual_profits,
         terminal_value = terminal_value,
         shock_scenario = shock_scenario,
         div_netprofit_prop_coef = div_netprofit_prop_coef,
@@ -727,7 +803,70 @@ bonds_results %>% write_results(
   file_type = "csv"
 )
 
+# Output bonds credit risk results
+bonds_expected_loss <- bonds_expected_loss %>%
+  dplyr::select(
+    scenario_name, scenario_geography, investor_name, portfolio_name,
+    company_name, id, ald_sector, technology, equity_0_baseline,
+    equity_0_late_sudden, debt, volatility, risk_free_rate, term,
+    Survival_baseline, Survival_late_sudden, PD_baseline, PD_late_sudden,
+    PD_change, PD_0, lgd, percent_exposure, exposure_at_default,
+    expected_loss_baseline, expected_loss_late_sudden
+  ) %>%
+  dplyr::arrange(
+    scenario_geography, scenario_name, investor_name, portfolio_name,
+    company_name, ald_sector, technology
+  )
 
+bonds_expected_loss %>%
+  readr::write_csv(file.path(
+    results_path,
+    paste0("stress_test_results_cb_comp_el_", project_name, ".csv")
+  ))
+
+# TODO: this is an unweighted average so far. keep in mind.
+bonds_annual_pd_changes_sector <- bonds_annual_pd_changes %>%
+  dplyr::group_by(
+    scenario_name, scenario_geography, investor_name, portfolio_name,
+    ald_sector, technology, year
+  ) %>%
+  dplyr::summarise(
+    PD_change_late_sudden = mean((PD_late_sudden - PD_baseline), na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  dplyr::ungroup() %>%
+  dplyr::arrange(
+    scenario_geography, scenario_name, investor_name, portfolio_name,
+    ald_sector, technology, year
+  )
+
+bonds_annual_pd_changes_sector %>%
+  readr::write_csv(file.path(
+    results_path,
+    paste0("stress_test_results_cb_sector_pd_changes_annual.csv")
+  ))
+
+# TODO: this is an unweighted average so far. keep in mind.
+bonds_overall_pd_changes_sector <- bonds_expected_loss %>%
+  dplyr::group_by(
+    scenario_name, scenario_geography, investor_name, portfolio_name,
+    ald_sector, technology, term
+  ) %>%
+  dplyr::summarise(
+    PD_change_late_sudden = mean((PD_late_sudden - PD_baseline), na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  dplyr::ungroup() %>%
+  dplyr::arrange(
+    scenario_geography, scenario_name, investor_name, portfolio_name,
+    ald_sector, technology, term
+  )
+
+bonds_overall_pd_changes_sector %>%
+  readr::write_csv(file.path(
+    results_path,
+    paste0("stress_test_results_cb_sector_pd_changes_overall.csv")
+  ))
 
 
 #-QA section-----------
@@ -863,3 +1002,36 @@ sum_carbon_budgets_cb <- qa_annual_profits_cb %>%
     scenario_name_qa = "Carbon balance 2030",
     cumulative = TRUE
   )
+
+
+# credit risk QA graphs
+
+# overall change of credit risk graphs
+plot_pd_change_company_tech <- bonds_expected_loss %>%
+  overall_pd_change_company_technology(
+    shock_year = 2030,
+    sector_filter = c("Power", "Automotive"),
+    company_filter = c("Daimler Ag", "Enel Spa"),
+    geography_filter = scenario_geography_filter
+  )
+
+plot_pd_change_shock_year_tech <- bonds_overall_pd_changes_sector %>%
+  overall_pd_change_technology_shock_year(
+    scenario_filter = c("Carbon balance 2025", "Carbon balance 2030", "Carbon balance 2035"),
+    geography_filter = scenario_geography_filter
+  )
+
+# annual change of credit risk graphs
+plot_annual_pd_change_company_tech <- bonds_annual_pd_changes %>%
+  annual_pd_change_company_technology(
+    shock_year = 2030,
+    company_filter = c("Daimler Ag", "Enel Spa", "Total Sa"),
+    geography_filter = scenario_geography_filter
+  )
+
+plot_annual_pd_change_shock_year_tech <- bonds_annual_pd_changes_sector %>%
+  annual_pd_change_technology_shock_year(
+    shock_year_filter = c(2025, 2030, 2035),
+    geography_filter = scenario_geography_filter
+  )
+
