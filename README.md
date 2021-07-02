@@ -154,27 +154,43 @@ this repository.
 
 Specifications of **transition scenarios** for which to calculate shocks
 and impacts on the given portfolio. These are provided via a file,
-transition\_scenario\_input.csv
+transition\_scenario\_input.csv.
+
+The expected columns are:
+
+  - scenario\_name
+  - year\_of\_shock
+  - overshoot\_method
+  - duration\_of\_shock
+  - use\_prod\_forecasts\_ls
+  - use\_prod\_forecasts\_baseline
+  - … (any technology in use in the analysis)
 
 **Capacity factors** for the power sector, to transform power capacity
 into power production. The legacy live version uses the file
 capacity\_factors\_WEO\_2017.csv.
 
-Output Columns: - technology (usually the PACTA sectors with production
-pathways) - capacity\_factor (a number indicating the average power
-generation per unit of capacity) - scenario\_geography (geographic
-region for which the capacity factors apply)
+Output Columns:
+
+  - technology (usually the PACTA sectors with production pathways)
+  - capacity\_factor (a number indicating the average power generation
+    per unit of capacity)
+  - scenario\_geography (geographic region for which the capacity
+    factors apply)
 
 A new version allows using more up to date capacity factors derived from
 IEA WEO numbers. This is required in order to calculate profits on
 actual quantities produced, not theoretical capacities.
 
-Output Columns: - scenario (transition scenario for which the capacity
-factors apply) - scenario\_geography (geographic region for which the
-capacity factors apply) - technology (usually the PACTA sectors with
-production pathways) - year (temporal change of capacity factors) -
-capacity\_factor (a number indicating the average power generation per
-unit of capacity)
+Output Columns:
+
+  - scenario (transition scenario for which the capacity factors apply)
+  - scenario\_geography (geographic region for which the capacity
+    factors apply)
+  - technology (usually the PACTA sectors with production pathways)
+  - year (temporal change of capacity factors)
+  - capacity\_factor (a number indicating the average power generation
+    per unit of capacity)
 
 **Scenario data** that covers production road maps for all technologies
 that are to be analysed up until 2040. The scenario data need to cover
@@ -386,25 +402,41 @@ Specifications of **transition scenarios** for which to calculate shocks
 and impacts on the given portfolio. These are provided via a file,
 transition\_scenario\_input.csv
 
+The expected columns are:
+
+  - scenario\_name
+  - year\_of\_shock
+  - overshoot\_method
+  - duration\_of\_shock
+  - use\_prod\_forecasts\_ls
+  - use\_prod\_forecasts\_baseline
+  - … (any technology in use in the analysis)
+
 **Capacity factors** for the power sector, to transform power capacity
 into power production. The legacy live version uses the file
 capacity\_factors\_WEO\_2017.csv.
 
-Output Columns: - technology (usually the PACTA sectors with production
-pathways) - capacity\_factor (a number indicating the average power
-generation per unit of capacity) - scenario\_geography (geographic
-region for which the capacity factors apply)
+Output Columns:
+
+  - technology (usually the PACTA sectors with production pathways)
+  - capacity\_factor (a number indicating the average power generation
+    per unit of capacity)
+  - scenario\_geography (geographic region for which the capacity
+    factors apply)
 
 A new version allows using more up to date capacity factors derived from
 IEA WEO numbers. This is required in order to calculate profits on
 actual quantities produced, not theoretical capacities.
 
-Output Columns: - scenario (transition scenario for which the capacity
-factors apply) - scenario\_geography (geographic region for which the
-capacity factors apply) - technology (usually the PACTA sectors with
-production pathways) - year (temporal change of capacity factors) -
-capacity\_factor (a number indicating the average power generation per
-unit of capacity)
+Output Columns:
+
+  - scenario (transition scenario for which the capacity factors apply)
+  - scenario\_geography (geographic region for which the capacity
+    factors apply)
+  - technology (usually the PACTA sectors with production pathways)
+  - year (temporal change of capacity factors)
+  - capacity\_factor (a number indicating the average power generation
+    per unit of capacity)
 
 **Scenario data** that covers production road maps for all technologies
 that are to be analysed up until 2040. The scenario data need to cover

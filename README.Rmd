@@ -148,13 +148,24 @@ by following the steps in the script calc_loan_book.R in this repository.
 
 Specifications of **transition scenarios** for which to calculate shocks and
 impacts on the given portfolio. These are provided via a file,
-transition_scenario_input.csv
+transition_scenario_input.csv.
+
+The expected columns are:
+
+- scenario_name
+- year_of_shock
+- overshoot_method
+- duration_of_shock
+- use_prod_forecasts_ls
+- use_prod_forecasts_baseline
+- ... (any technology in use in the analysis)
 
 **Capacity factors** for the power sector, to transform power capacity into
 power production. The legacy live version uses the file
 capacity_factors_WEO_2017.csv.
 
 Output Columns:
+
 - technology (usually the PACTA sectors with production pathways)
 - capacity_factor (a number indicating the average power generation per unit of capacity)
 - scenario_geography (geographic region for which the capacity factors apply)
@@ -164,6 +175,7 @@ capacity factors derived from IEA WEO numbers. This is required in order to
 calculate profits on actual quantities produced, not theoretical capacities.
 
 Output Columns:
+
 - scenario (transition scenario for which the capacity factors apply)
 - scenario_geography (geographic region for which the capacity factors apply)
 - technology (usually the PACTA sectors with production pathways)
@@ -357,11 +369,22 @@ Specifications of **transition scenarios** for which to calculate shocks and
 impacts on the given portfolio. These are provided via a file,
 transition_scenario_input.csv
 
+The expected columns are:
+
+- scenario_name
+- year_of_shock
+- overshoot_method
+- duration_of_shock
+- use_prod_forecasts_ls
+- use_prod_forecasts_baseline
+- ... (any technology in use in the analysis)
+
 **Capacity factors** for the power sector, to transform power capacity into
 power production. The legacy live version uses the file
 capacity_factors_WEO_2017.csv.
 
 Output Columns:
+
 - technology (usually the PACTA sectors with production pathways)
 - capacity_factor (a number indicating the average power generation per unit of capacity)
 - scenario_geography (geographic region for which the capacity factors apply)
@@ -371,6 +394,7 @@ capacity factors derived from IEA WEO numbers. This is required in order to
 calculate profits on actual quantities produced, not theoretical capacities.
 
 Output Columns:
+
 - scenario (transition scenario for which the capacity factors apply)
 - scenario_geography (geographic region for which the capacity factors apply)
 - technology (usually the PACTA sectors with production pathways)
