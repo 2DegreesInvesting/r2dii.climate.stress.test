@@ -52,15 +52,17 @@ read_transition_scenarios <- function(path = NULL,
   max_year_of_shock <- max(data$year_of_shock, na.rm = TRUE)
 
   if (min_year_of_shock < start_of_analysis) {
-    write_log("Year of shock out of bounds. Shock cannot happen before the start
-              year of the anaylsis.")
+    # TODO: reintroduce write_log, once it is exported
+    # write_log("Year of shock out of bounds. Shock cannot happen before the start
+    #           year of the anaylsis.")
     stop("Year of shock out of bounds. Shock cannot happen before the start year
          of the anaylsis.")
   }
 
   if (max_year_of_shock > end_of_analysis) {
-    write_log("Year of shock out of bounds. Shock cannot happen after the end
-              year of the anaylsis.")
+    # TODO: reintroduce write_log, once it is exported
+    # write_log("Year of shock out of bounds. Shock cannot happen after the end
+    #           year of the anaylsis.")
     stop("Year of shock out of bounds. Shock cannot happen after the end year of
          the anaylsis.")
   }
