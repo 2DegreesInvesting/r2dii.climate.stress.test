@@ -19,4 +19,8 @@ multiple years and scenarios). Must be either "old" or "new".}
 Read in power capacity factors from csv and check that all expected columns
 are given.
 }
+\seealso{
+Other import functions: 
+\code{\link{read_transition_scenarios}()}
+}
 \concept{import functions}

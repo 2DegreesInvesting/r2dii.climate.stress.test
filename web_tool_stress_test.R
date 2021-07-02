@@ -38,6 +38,7 @@ function_paths <- c(
       "get_st_data_path.R",
       "interpolate_automotive_scenario.R",
       "read_capacity_factors.R",
+      "read_transition_scenarios.R",
       "set_params_st.R",
       "set_paths.R",
       "set_tech_trajectories.R",
@@ -181,17 +182,23 @@ net_profit_margin_hydrocap <- cfg_mod$net_profit_margin$hydrocap
 sector_exposures <- readRDS(file.path(proc_input_path, pf_name, "overview_portfolio.rda"))
 
 # Load transition scenarios that will be run by the model
-transition_scenarios <- readr::read_csv(file.path(stress_test_path, data_path("project_transition_scenarios", paste0("transition_scenario_", project_code, ".csv"))), col_types = cols()) %>%
-  mutate(
-    overshoot_method = ifelse(is.na(overshoot_method), FALSE, overshoot_method),
-    duration_of_shock = ifelse(overshoot_method, end_year - year_of_shock + 1, duration_of_shock)
-  ) %>%
-  check_scenario_consistency()
+transition_scenarios <- read_transition_scenarios(
+  path = file.path(stress_test_path, data_path("project_transition_scenarios", glue::glue("transition_scenario_{project_code}.csv"))),
+  start_of_analysis = start_year,
+  end_of_analysis = end_year
+)
+# TODO: remove once this can be tested within webtool
+# transition_scenarios <- readr::read_csv(file.path(stress_test_path, data_path("project_transition_scenarios", paste0("transition_scenario_", project_code, ".csv"))), col_types = cols()) %>%
+#   mutate(
+#     overshoot_method = ifelse(is.na(overshoot_method), FALSE, overshoot_method),
+#     duration_of_shock = ifelse(overshoot_method, end_year - year_of_shock + 1, duration_of_shock)
+#   ) %>%
+#   check_scenario_consistency()
 
 # Load utilization factors power
 # TODO: replace with new capacity factors
 capacity_factors_power <- read_capacity_factors(
-  path = file.path(data_location, "capacity_factors_WEO_2017.csv"),
+  path = file.path(stress_test_path, data_path("capacity_factors_WEO_2017.csv")),
   version = "old"
 )
 
