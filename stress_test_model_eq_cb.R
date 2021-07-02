@@ -1010,7 +1010,7 @@ sum_carbon_budgets_cb <- qa_annual_profits_cb %>%
 plot_pd_change_company_tech <- bonds_expected_loss %>%
   overall_pd_change_company_technology(
     shock_year = 2030,
-    sector_filter = c("Oil&Gas", "Automotive"),
+    sector_filter = c("Power", "Automotive"),
     company_filter = c("Daimler Ag", "Enel Spa"),
     geography_filter = scenario_geography_filter
   )
