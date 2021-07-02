@@ -1,0 +1,4 @@
+scenario_name,year_of_shock,overshoot_method,duration_of_shock,use_prod_forecasts_ls,use_prod_forecasts_baseline,Coal,Oil,Gas,CoalCap,GasCap,NuclearCap,RenewablesCap,HydroCap,OilCap,Electric,Hybrid,ICE
+Carbon balance 2025,2025,TRUE,,TRUE,TRUE,,,,,,,,,,,,
+Carbon balance 2030,2030,TRUE,,TRUE,TRUE,,,,,,,,,,,,
+Carbon balance 2035,2035,TRUE,,TRUE,TRUE,,,,,,,,,,,,
