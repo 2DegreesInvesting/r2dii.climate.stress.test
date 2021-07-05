@@ -13,7 +13,8 @@ set_ls_trajectory(
   overshoot_method = TRUE,
   scenario_to_follow_ls_aligned = "SDS",
   start_year = 2020,
-  end_year = 2040
+  end_year = 2040,
+  analysis_time_frame = NULL
 )
 }
 \arguments{
@@ -48,6 +49,9 @@ start year of the analysis.}
 
 \item{end_year}{Numeric. A numeric vector of length 1 that contains the
 end year of the analysis.}
+
+\item{analysis_time_frame}{Numeric. A vector of length 1 indicating the number
+of years for which forward looking production data is considered.}
 }
 \value{
 data frame

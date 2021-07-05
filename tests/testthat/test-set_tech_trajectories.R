@@ -127,7 +127,8 @@ test_that("set_ls_trajectory returns a data frame", {
     overshoot_method = TRUE,
     scenario_to_follow_ls_aligned = "SDS",
     start_year = 2020,
-    end_year = 2040
+    end_year = 2040,
+    analysis_time_frame = 5
   )
 
   testthat::expect_s3_class(ls_trajectory, "data.frame")
@@ -148,7 +149,8 @@ test_that("set_ls_trajectory fully replicates baseline until year before shock,
       overshoot_method = TRUE,
       scenario_to_follow_ls_aligned = "SDS",
       start_year = 2020,
-      end_year = 2040
+      end_year = 2040,
+      analysis_time_frame = 5
     ) %>%
     dplyr::filter(.data$year < year_of_shock & .data$technology == "Coal")
 
@@ -173,7 +175,8 @@ test_that("when technology is aligned, set_ls_trajectory fully replicates
     overshoot_method = TRUE,
     scenario_to_follow_ls_aligned = "SDS",
     start_year = 2020,
-    end_year = 2040
+    end_year = 2040,
+    analysis_time_frame = 5
   ) %>%
   dplyr::filter(.data$technology == "Electric" & .data$year < year_of_shock) %>%
   dplyr::mutate(

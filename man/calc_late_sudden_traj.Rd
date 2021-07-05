@@ -18,7 +18,8 @@ calc_late_sudden_traj(
   scenario_change_baseline = .data$scenario_change_baseline,
   scenario_change_aligned = .data$scenario_change_aligned,
   overshoot_method = TRUE,
-  overshoot_direction = .data$overshoot_direction[1]
+  overshoot_direction = .data$overshoot_direction[1],
+  time_frame = NULL
 )
 }
 \arguments{
@@ -82,6 +83,9 @@ sizes need to be supplied by the user.}
 the technology at hand is increasing or decreasing over the time frame of
 the analysis.
 TODO: (move to data argument)}
+
+\item{time_frame}{Numeric. A vector of length 1 indicating the number of years
+for which forward looking production data is considered.}
 }
 \value{
 numeric vector

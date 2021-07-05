@@ -14,7 +14,8 @@ extend_scenario_trajectory(
   data,
   scenario_data = NULL,
   start_analysis = NULL,
-  end_analysis = NULL
+  end_analysis = NULL,
+  time_frame = NULL
 )
 }
 \arguments{
@@ -32,6 +33,9 @@ year of the analysis.}
 
 \item{end_analysis}{Numeric. A vector of length 1 indicating the end
 year of the analysis.}
+
+\item{time_frame}{Numeric. A vector of length 1 indicating the number of years
+for which forward looking production data is considered.}
 }
 \description{
 Extend the scenario pathways based on the fair share approach (now known as
