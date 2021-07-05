@@ -159,6 +159,8 @@ calc_future_prod_follows_scen <- function(planned_prod = .data$plan_tech_prod,
 #'   start year of the analysis.
 #' @param end_year Numeric. A numeric vector of length 1 that contains the
 #'   end year of the analysis.
+#' @param analysis_time_frame Numeric. A vector of length 1 indicating the number
+#'   of years for which forward looking production data is considered.
 #'
 #' @family scenario definition
 #'
@@ -172,7 +174,10 @@ set_ls_trajectory <- function(data,
                               overshoot_method = TRUE,
                               scenario_to_follow_ls_aligned = "SDS",
                               start_year = 2020,
-                              end_year = 2040) {
+                              end_year = 2040,
+                              analysis_time_frame = NULL) {
+  analysis_time_frame %||% stop("Must provide input for 'time_frame'", call. = FALSE)
+
   year_of_shock <- shock_scenario$year_of_shock
   duration_of_shock <- shock_scenario$duration_of_shock
 
@@ -271,7 +276,8 @@ set_ls_trajectory <- function(data,
           scenario_change_baseline = .data$scenario_change_baseline,
           scenario_change_aligned = .data$scenario_change_aligned,
           overshoot_method = overshoot_method,
-          overshoot_direction = .data$overshoot_direction[1]
+          overshoot_direction = .data$overshoot_direction[1],
+          time_frame = .env$analysis_time_frame
         )
       )
     ) %>%
@@ -348,6 +354,8 @@ set_ls_trajectory <- function(data,
 #'   the technology at hand is increasing or decreasing over the time frame of
 #'   the analysis.
 #'   TODO: (move to data argument)
+#' @param time_frame Numeric. A vector of length 1 indicating the number of years
+#'   for which forward looking production data is considered.
 #'
 #' @family scenario definition
 #'
@@ -366,7 +374,10 @@ calc_late_sudden_traj <- function(start_year = 2020,
                                   scenario_change_baseline = .data$scenario_change_baseline,
                                   scenario_change_aligned = .data$scenario_change_aligned,
                                   overshoot_method = TRUE,
-                                  overshoot_direction = .data$overshoot_direction[1]) {
+                                  overshoot_direction = .data$overshoot_direction[1],
+                                  time_frame = NULL) {
+  time_frame %||% stop("Must provide input for 'time_frame'", call. = FALSE)
+
   # calculate the position where the shock kicks in
   position_shock_year <- year_of_shock - start_year + 1
 
@@ -396,10 +407,10 @@ calc_late_sudden_traj <- function(start_year = 2020,
     # the LS trajectory equal to the SDS trajectory
     if ((
       overshoot_direction == "Decreasing" &
-        sum(scen_to_follow[1:5]) < sum(late_and_sudden[1:5])
+        sum(scen_to_follow[1:time_frame]) < sum(late_and_sudden[1:time_frame])
     ) | (
       overshoot_direction == "Increasing" &
-        sum(scen_to_follow[1:5]) > sum(late_and_sudden[1:5])
+        sum(scen_to_follow[1:time_frame]) > sum(late_and_sudden[1:time_frame])
     )
     ) {
       x <- (sum(scen_to_follow) -

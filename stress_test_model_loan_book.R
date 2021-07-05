@@ -102,7 +102,7 @@ cfg <- config::get(file = file.path(project_location, "10_Parameter_File","Analy
 # OPEN: check_valid_cfg() not applicable here
 start_year <- cfg$AnalysisPeriod$Years.Startyear
 dataprep_timestamp <- cfg$TimeStamps$DataPrep.Timestamp # is this being used for anything???
-
+time_horizon <- cfg$AnalysisPeriod$Years.Horizon
 
 ##### Filters----------------------------------------
 # The filter settings should comply with the filters from the parent PACTA project as per default
@@ -480,7 +480,8 @@ for (i in seq(1, nrow(transition_scenarios))) {
     extend_scenario_trajectory(
       scenario_data = scenario_data,
       start_analysis = start_year,
-      end_analysis = end_year
+      end_analysis = end_year,
+      time_frame = time_horizon
     ) %>%
     set_baseline_trajectory(
       scenario_to_follow_baseline = scenario_to_follow_baseline,
@@ -493,7 +494,8 @@ for (i in seq(1, nrow(transition_scenarios))) {
       overshoot_method = overshoot_method,
       scenario_to_follow_ls_aligned = scenario_to_follow_ls_aligned,
       start_year = start_year,
-      end_year = end_year
+      end_year = end_year,
+      analysis_time_frame = time_horizon
     )
 
   if (exists("excluded_companies")) {

@@ -294,7 +294,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
 
   portcheck_portresults_equity <- portcheck_portresults_equity_full %>%
     tidyr::complete(
-      year = seq(start_year, start_year + 5),
+      year = seq(start_year, start_year + time_horizon),
       nesting(!!!syms(nesting_vars))
     ) %>%
     mutate(plan_tech_prod = dplyr::if_else(is.na(plan_tech_prod), 0, plan_tech_prod)) %>%
@@ -374,7 +374,8 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
         extend_scenario_trajectory(
           scenario_data = scenario_data,
           start_analysis = start_year,
-          end_analysis = end_year
+          end_analysis = end_year,
+          time_frame = time_horizon
         ) %>%
         set_baseline_trajectory(
           scenario_to_follow_baseline = scenario_to_follow_baseline,
@@ -387,7 +388,8 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
           overshoot_method = overshoot_method,
           scenario_to_follow_ls_aligned = scenario_to_follow_ls_aligned,
           start_year = start_year,
-          end_year = end_year
+          end_year = end_year,
+          analysis_time_frame = time_horizon
         )
 
       if (exists("excluded_companies")) {
@@ -485,7 +487,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
 
   portcheck_portresults_bonds <- portcheck_portresults_bonds_full %>%
     tidyr::complete(
-      year = seq(start_year, start_year + 5),
+      year = seq(start_year, start_year + time_horizon),
       nesting(!!!syms(nesting_vars))
     ) %>%
     mutate(plan_tech_prod = dplyr::if_else(is.na(plan_tech_prod), 0, plan_tech_prod)) %>%
@@ -562,7 +564,8 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
         extend_scenario_trajectory(
           scenario_data = scenario_data,
           start_analysis = start_year,
-          end_analysis = end_year
+          end_analysis = end_year,
+          time_frame = time_horizon
         ) %>%
         set_baseline_trajectory(
           scenario_to_follow_baseline = scenario_to_follow_baseline,
@@ -575,7 +578,8 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
           overshoot_method = overshoot_method,
           scenario_to_follow_ls_aligned = scenario_to_follow_ls_aligned,
           start_year = start_year,
-          end_year = end_year
+          end_year = end_year,
+          analysis_time_frame = time_horizon
         )
 
       if (exists("excluded_companies")) {

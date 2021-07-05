@@ -11,12 +11,14 @@ test_that("with missing argument for scenario_data, extend_scenario_trajectory
 
   test_start <- 2020
   test_end <- 2040
+  test_horizon <- 5
 
   testthat::expect_error(
     extend_scenario_trajectory(
       data = test_data,
       start_analysis = test_start,
-      end_analysis = test_end
+      end_analysis = test_end,
+      time_frame = test_horizon
     ),
     "Must provide input for 'scenario_data'"
   )
@@ -29,12 +31,14 @@ test_that("scenario data after extension equal production in start year times
 
   test_start <- 2020
   test_end <- 2040
+  test_horizon <- 5
 
   test_results <- extend_scenario_trajectory(
     data = test_data,
     scenario_data = test_scenario,
     start_analysis = test_start,
-    end_analysis = test_end
+    end_analysis = test_end,
+    time_frame = test_horizon
   )
 
   verify_technology <- "Electric"

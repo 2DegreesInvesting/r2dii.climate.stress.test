@@ -99,7 +99,7 @@ cfg <- config::get(file = file.path(project_location, "10_Parameter_File","Analy
 # OPEN: check_valid_cfg() not applicable here
 start_year <- cfg$AnalysisPeriod$Years.Startyear
 dataprep_timestamp <- cfg$TimeStamps$DataPrep.Timestamp # is this being used for anything???
-
+time_horizon <- cfg$AnalysisPeriod$Years.Horizon
 
 ##### Filters----------------------------------------
 # The filter settings should comply with the filters from the parent PACTA project as per default
@@ -346,7 +346,7 @@ if (identical(calculation_level, "company")) {nesting_vars <- c(nesting_vars, "c
 portcheck_portresults_bonds <- portcheck_portresults_bonds_full %>%
   mutate(scenario = str_replace(scenario, "NPSRTS", "NPS")) %>%
   tidyr::complete(
-    year = seq(start_year, start_year + 5),
+    year = seq(start_year, start_year + time_horizon),
     nesting(!!!syms(nesting_vars))
   ) %>%
   mutate(plan_tech_prod = dplyr::if_else(is.na(plan_tech_prod), 0, plan_tech_prod)) %>%
@@ -375,7 +375,7 @@ check_scenario_availability(
 portcheck_portresults_equity <- portcheck_portresults_equity_full %>%
   mutate(scenario = str_replace(scenario, "NPSRTS", "NPS")) %>%
   tidyr::complete(
-    year = seq(start_year, start_year + 5),
+    year = seq(start_year, start_year + time_horizon),
     nesting(!!!syms(nesting_vars))
   ) %>%
   mutate(plan_tech_prod = dplyr::if_else(is.na(plan_tech_prod), 0, plan_tech_prod)) %>%
@@ -479,7 +479,8 @@ for (i in seq(1, nrow(transition_scenarios))) {
     extend_scenario_trajectory(
       scenario_data = scenario_data,
       start_analysis = start_year,
-      end_analysis = end_year
+      end_analysis = end_year,
+      time_frame = time_horizon
     ) %>%
     set_baseline_trajectory(
       scenario_to_follow_baseline = scenario_to_follow_baseline,
@@ -492,7 +493,8 @@ for (i in seq(1, nrow(transition_scenarios))) {
       overshoot_method = overshoot_method,
       scenario_to_follow_ls_aligned = scenario_to_follow_ls_aligned,
       start_year = start_year,
-      end_year = end_year
+      end_year = end_year,
+      analysis_time_frame = time_horizon
     )
 
   if (exists("excluded_companies")) {
@@ -634,7 +636,8 @@ for (i in seq(1, nrow(transition_scenarios))) {
     extend_scenario_trajectory(
       scenario_data = scenario_data,
       start_analysis = start_year,
-      end_analysis = end_year
+      end_analysis = end_year,
+      time_frame = time_horizon
     ) %>%
     set_baseline_trajectory(
       scenario_to_follow_baseline = scenario_to_follow_baseline,
@@ -647,7 +650,8 @@ for (i in seq(1, nrow(transition_scenarios))) {
       overshoot_method = overshoot_method,
       scenario_to_follow_ls_aligned = scenario_to_follow_ls_aligned,
       start_year = start_year,
-      end_year = end_year
+      end_year = end_year,
+      analysis_time_frame = time_horizon
     )
 
   if (exists("excluded_companies")) {

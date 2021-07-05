@@ -17,14 +17,18 @@
 #'   year of the analysis.
 #' @param end_analysis Numeric. A vector of length 1 indicating the end
 #'   year of the analysis.
+#' @param time_frame Numeric. A vector of length 1 indicating the number of years
+#'   for which forward looking production data is considered.
 extend_scenario_trajectory <- function(data,
                                        scenario_data = NULL,
                                        start_analysis = NULL,
-                                       end_analysis = NULL) {
+                                       end_analysis = NULL,
+                                       time_frame = NULL) {
   force(data)
   scenario_data %||% stop("Must provide input for 'scenario_data'", call. = FALSE)
   start_analysis %||% stop("Must provide input for 'start_analysis'", call. = FALSE)
   end_analysis %||% stop("Must provide input for 'end_analysis'", call. = FALSE)
+  time_frame %||% stop("Must provide input for 'time_frame'", call. = FALSE)
 
   data_has_expected_columns <- all(
     c(
@@ -52,7 +56,7 @@ extend_scenario_trajectory <- function(data,
       .data$scen_tech_prod
     ) %>%
     # TODO: explain magic number
-    dplyr::filter(.data$year <= .env$start_analysis + 5) %>%
+    dplyr::filter(.data$year <= .env$start_analysis + .env$time_frame) %>%
     tidyr::complete(
       year = seq(.env$start_analysis, .env$end_analysis),
       tidyr::nesting(
