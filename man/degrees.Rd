@@ -20,6 +20,7 @@ glue::glue("2{degrees()} Investing Initiative")
 Other miscellaneous utility functions: 
 \code{\link{data_path}()},
 \code{\link{dropbox_exists}()},
-\code{\link{get_st_data_path}()}
+\code{\link{get_st_data_path}()},
+\code{\link{write_log}()}
 }
 \concept{miscellaneous utility functions}

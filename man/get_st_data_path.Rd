@@ -26,6 +26,7 @@ provided either via environment variable or options.
 Other miscellaneous utility functions: 
 \code{\link{data_path}()},
 \code{\link{degrees}()},
-\code{\link{dropbox_exists}()}
+\code{\link{dropbox_exists}()},
+\code{\link{write_log}()}
 }
 \concept{miscellaneous utility functions}
