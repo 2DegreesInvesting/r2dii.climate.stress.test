@@ -38,6 +38,7 @@ function_paths <- c(
       "overall_pd_change_technology_shock_year.R",
       "qa_graphs_st.R",
       "read_capacity_factors.R",
+      "read_pacta_results.R",
       "read_transition_scenarios.R",
       "set_paths.R",
       "set_tech_trajectories.R",
@@ -200,19 +201,17 @@ net_profit_margin_hydrocap <- cfg_mod$net_profit_margin$hydrocap
 ###############
 # Load input datasets----------------------------------------
 
-# OPEN:: IMPORTANT: ADD input data consistency checks. E.G. the start year of the iput data must be the same as the start year set in the project parameters
+bonds_path <- file.path(results_path, investorname_bonds, paste0("Bonds_results_", calculation_level, ".rda"))
 
-# portcheck_portresults_bonds_full <- readRDS(file.path(results_path, investorname_bonds, "Bonds_results_portfolio.rda")) %>%
-portcheck_portresults_bonds_full <- readRDS(file.path(results_path, investorname_bonds, paste0("Bonds_results_", calculation_level, ".rda"))) %>%
-  select(-c(trajectory_deviation, trajectory_alignment, scen_tech_share, plan_tech_share, scen_sec_emissions_factor, scen_sec_carsten, scen_alloc_wt_sec_prod, scen_sec_prod, plan_sec_emissions_factor, scen_emission_factor, scen_carsten, plan_emission_factor)) %>%
-  filter(!is.na(scenario)) %>%
-  check_scenario_settings(scenario_selections = scenarios) %>%
-  filter(scenario %in% scenarios) %>%
-  mutate(scenario = ifelse(str_detect(scenario, "_"), str_extract(scenario, "[^_]*$"), scenario)) %>%
-  check_portfolio_consistency()
+pacta_bonds_results_full <- read_pacta_results(
+  path = bonds_path,
+  asset_type = "bonds",
+  level = calculation_level,
+  scenario_filter = scenarios
+)
 
 # TODO: temporary addition, needs to come directly from input
-portcheck_portresults_bonds_full <- portcheck_portresults_bonds_full %>%
+pacta_bonds_results_full <- pacta_bonds_results_full %>%
   group_by(company_name) %>%
   mutate(
     term = round(runif(n = 1, min = 1, max = 10), 0),
@@ -220,15 +219,14 @@ portcheck_portresults_bonds_full <- portcheck_portresults_bonds_full %>%
   ) %>%
   ungroup()
 
+equity_path <- file.path(results_path, investorname_equity, paste0("Equity_results_", calculation_level, ".rda"))
 
-# portcheck_portresults_equity_full <- readRDS(file.path(results_path, investorname_equity, "Equity_results_portfolio.rda")) %>%
-portcheck_portresults_equity_full <- readRDS(file.path(results_path, investorname_equity, paste0("Equity_results_", calculation_level, ".rda"))) %>%
-  select(-c(trajectory_deviation, trajectory_alignment, scen_tech_share, plan_tech_share, scen_sec_emissions_factor, scen_sec_carsten, scen_alloc_wt_sec_prod, scen_sec_prod, plan_sec_emissions_factor, scen_emission_factor, scen_carsten, plan_emission_factor)) %>%
-  filter(!is.na(scenario)) %>%
-  check_scenario_settings(scenario_selections = scenarios) %>%
-  filter(scenario %in% scenarios) %>%
-  mutate(scenario = ifelse(str_detect(scenario, "_"), str_extract(scenario, "[^_]*$"), scenario)) %>%
-  check_portfolio_consistency()
+pacta_equity_results_full <- read_pacta_results(
+  path = equity_path,
+  asset_type = "equity",
+  level = calculation_level,
+  scenario_filter = scenarios
+)
 
 
 sector_exposures <- readRDS(file.path(proc_input_path, paste0(project_name, "_overview_portfolio.rda")))
@@ -343,7 +341,7 @@ nesting_vars <- c(
 )
 if (identical(calculation_level, "company")) {nesting_vars <- c(nesting_vars, "company_name")}
 
-portcheck_portresults_bonds <- portcheck_portresults_bonds_full %>%
+pacta_bonds_results <- pacta_bonds_results_full %>%
   mutate(scenario = str_replace(scenario, "NPSRTS", "NPS")) %>%
   tidyr::complete(
     year = seq(start_year, start_year + time_horizon),
@@ -367,12 +365,12 @@ portcheck_portresults_bonds <- portcheck_portresults_bonds_full %>%
 
 # check scenario availability across data inputs for bonds
 check_scenario_availability(
-  portfolio = portcheck_portresults_bonds,
+  portfolio = pacta_bonds_results,
   scen_data = scenario_data,
   scenarios = scenarios_filter
 )
 
-portcheck_portresults_equity <- portcheck_portresults_equity_full %>%
+pacta_equity_results <- pacta_equity_results_full %>%
   mutate(scenario = str_replace(scenario, "NPSRTS", "NPS")) %>%
   tidyr::complete(
     year = seq(start_year, start_year + time_horizon),
@@ -396,7 +394,7 @@ portcheck_portresults_equity <- portcheck_portresults_equity_full %>%
 
 # check scenario availability across data inputs for equity
 check_scenario_availability(
-  portfolio = portcheck_portresults_equity,
+  portfolio = pacta_equity_results,
   scen_data = scenario_data,
   scenarios = scenarios_filter
 )
@@ -474,7 +472,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
     ungroup()
 
   # Convert capacity (MW)to generation (MWh) for power sector
-  equity_annual_profits <- portcheck_portresults_equity %>%
+  equity_annual_profits <- pacta_equity_results %>%
     convert_cap_to_generation(capacity_factors_power = capacity_factors_power) %>%
     extend_scenario_trajectory(
       scenario_data = scenario_data,
@@ -518,7 +516,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
         mutate(year_of_shock = transition_scenario_i$year_of_shock)
     )
 
-  plan_carsten_equity <- portcheck_portresults_equity %>%
+  plan_carsten_equity <- pacta_equity_results %>%
     filter(
       year == start_year,
       technology %in% technologies,
@@ -631,7 +629,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
     ) %>%
     ungroup()
 
-  bonds_annual_profits <- portcheck_portresults_bonds %>%
+  bonds_annual_profits <- pacta_bonds_results %>%
     convert_cap_to_generation(capacity_factors_power = capacity_factors_power) %>%
     extend_scenario_trajectory(
       scenario_data = scenario_data,
@@ -675,7 +673,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
         mutate(year_of_shock = transition_scenario_i$year_of_shock)
     )
 
-  plan_carsten_bonds <- portcheck_portresults_bonds %>%
+  plan_carsten_bonds <- pacta_bonds_results %>%
     filter(
       year == start_year,
       technology %in% technologies,

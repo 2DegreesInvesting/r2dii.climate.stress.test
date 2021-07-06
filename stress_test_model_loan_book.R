@@ -38,6 +38,7 @@ function_paths <- c(
       "overall_pd_change_technology_shock_year.R",
       "qa_graphs_st.R",
       "read_capacity_factors.R",
+      "read_pacta_results.R",
       "read_transition_scenarios.R",
       "set_paths.R",
       "set_tech_trajectories.R",
@@ -211,22 +212,16 @@ loan_share_credit_type <- paste0("loan_share_", credit_type)
 # TODO: select the right scenarios
 # TODO: select the right geography
 # TODO: must contain term and initial PD
-pacta_loanbook_results_full <- read_csv(
-  path_dropbox_2dii("PortCheck_v2", "10_Projects", project_name, "40_Results", paste0("company_results_lb_", project_name, ".csv")),
-  col_types = "ccdccccddddd"
+loanbook_path <- path_dropbox_2dii("PortCheck_v2", "10_Projects", project_name, "40_Results", paste0("company_results_lb_", project_name, ".csv"))
+
+pacta_loanbook_results_full <- read_pacta_results(
+  path = loanbook_path,
+  asset_type = "loans",
+  level = calculation_level,
+  scenario_filter = scenarios,
+  credit_type = loan_share_credit_type
 )
 
-pacta_loanbook_results_full <- pacta_loanbook_results_full %>%
-  format_loanbook_st(
-    investor_name = investorname_loan_book,
-    portfolio_name = investorname_loan_book,
-    credit = loan_share_credit_type
-  ) %>%
-  filter(!is.na(scenario)) %>%
-  check_scenario_settings(scenario_selections = scenarios) %>%
-  filter(scenario %in% scenarios) %>%
-  mutate(scenario = ifelse(str_detect(scenario, "_"), str_extract(scenario, "[^_]*$"), scenario)) %>%
-  check_portfolio_consistency()
 
 # TODO: temporary addition, needs to come directly from input
 pacta_loanbook_results_full <- pacta_loanbook_results_full %>%
@@ -384,6 +379,7 @@ if (identical(calculation_level, "company")) {nesting_vars <- c(nesting_vars, "c
 pacta_loanbook_results <- pacta_loanbook_results_full %>%
   mutate(scenario = str_replace(scenario, "NPSRTS", "NPS")) %>%
   tidyr::complete(
+    # FIXME: use time_horizon
     year = seq(start_year, start_year + 5),
     nesting(!!!syms(nesting_vars))
   ) %>%
