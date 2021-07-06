@@ -505,8 +505,11 @@ stress_test_model_wrapper <- function(
 check_portfolio_consistency <- function(df) {
   # first year in data set must be the same as start year defined in parameters
   if (df %>% pull(year) %>% min(na.rm = TRUE) != start_year) {
-    write_log("Start year of the analysis and first year in the input portfolio do not match.
-              This will lead to errors in the stress test calculations.")
+    write_log(
+      msg = "Start year of the analysis and first year in the input portfolio do
+      not match. This will lead to errors in the stress test calculations.",
+      location = project_location
+    )
     stop("Start year of the analysis and first year in the input portfolio do not match.")
   }
   return(df)
@@ -525,8 +528,15 @@ check_portfolio_consistency <- function(df) {
 check_price_consistency <- function(df) {
   # the year of shock must be greater or equal to the start year of the analysis
   if (!all(df %>% pull(year) >= start_year)) {
-    write_log("Timerange for price data out of bounds. Past prices cannot be included in the further analysis.")
-    stop("Timerange for price data out of bounds. Past prices cannot be included in the further analysis.")
+    write_log(
+      msg = "Timerange for price data out of bounds. Past prices cannot be
+      included in the further analysis.",
+      location = project_location
+    )
+    stop(
+      "Timerange for price data out of bounds. Past prices cannot be included
+      in the further analysis."
+    )
   }
   return(df)
 }
@@ -534,26 +544,60 @@ check_price_consistency <- function(df) {
 check_scenario_availability <- function(portfolio, scen_data, scenarios = scenarios) {
   # check that scenarios in portfolio are allowed
   if (!all(portfolio %>% pull(scenario) %>% unique() %in% scenarios)) {
-    write_log("Some scenarios in this data frame are not in the list of allowed scenarios. Please check!")
-    stop("Some scenarios in this data frame are not in the list allowed of scenarios. Please check!")
+    write_log(
+      msg = "Some scenarios in this data frame are not in the list of allowed
+      scenarios. Please check!",
+      location = project_location
+    )
+    stop(
+      "Some scenarios in this data frame are not in the list allowed of scenarios.
+      Please check!"
+    )
   }
   # check that at least two allowed scenarios remain in portfolio
   if (length(portfolio %>% pull(scenario) %>% unique()) < 2) {
-    write_log("There are less than two allowed scenarios in the portfolio. Stress test requires at least two!")
-    stop("There are less than two allowed scenarios in the portfolio. Stress test requires at least two!")
+    write_log(
+      msg = "There are less than two allowed scenarios in the portfolio. Stress
+      test requires at least two!",
+      location = project_location
+    )
+    stop(
+      "There are less than two allowed scenarios in the portfolio. Stress test
+      requires at least two!"
+    )
   }
   # check scenarios in portfolio correspond to scenarios in scen data
   if (!all(portfolio %>% pull(scenario) %>% unique() %in% (scen_data %>% pull(scenario) %>% unique()))) {
-    write_log("Scenarios differ between portfolio and scenario trajectory data. Check if correct inputs were used.")
-    stop("Scenarios differ between portfolio and scenario trajectory data. Check if correct inputs were used.")
+    write_log(
+      msg = "Scenarios differ between portfolio and scenario trajectory data.
+      Check if correct inputs were used.",
+      location = project_location
+    )
+    stop(
+      "Scenarios differ between portfolio and scenario trajectory data. Check if
+      correct inputs were used."
+    )
   }
 }
 
 # check if the imported scenario data covers every year within the timeframe of analysis
 check_scenario_timeframe <- function(scenario_data, start_year = start_year, end_year = end_year) {
   if (!all(seq(start_year, end_year) %in% (scenario_data %>% pull(year) %>% unique()))) {
-    write_log(paste0("Imported scenario data does not cover the full time frame of the analysis. Scenario data must cover at least the period from ", start_year, " to ", end_year))
-    stop(paste0("Imported scenario data does not cover the full time frame of the analysis. Scenario data must cover at least the period from ", start_year, " to ", end_year))
+    write_log(
+      msg = glue::glue(
+        "Imported scenario data does not cover the full time frame of the
+        analysis. Scenario data must cover at least the period from {start_year}
+        to {end_year}"
+      ),
+      location = project_location
+    )
+    stop(
+      glue::glue(
+        "Imported scenario data does not cover the full time frame of the
+        analysis. Scenario data must cover at least the period from {start_year}
+        to {end_year}"
+      )
+    )
   } else {
     return(scenario_data)
   }
