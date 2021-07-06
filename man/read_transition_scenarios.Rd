@@ -27,6 +27,7 @@ are given.
 }
 \seealso{
 Other import functions: 
-\code{\link{read_capacity_factors}()}
+\code{\link{read_capacity_factors}()},
+\code{\link{read_pacta_results}()}
 }
 \concept{import functions}
