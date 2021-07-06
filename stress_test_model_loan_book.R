@@ -379,8 +379,7 @@ if (identical(calculation_level, "company")) {nesting_vars <- c(nesting_vars, "c
 pacta_loanbook_results <- pacta_loanbook_results_full %>%
   mutate(scenario = str_replace(scenario, "NPSRTS", "NPS")) %>%
   tidyr::complete(
-    # FIXME: use time_horizon
-    year = seq(start_year, start_year + 5),
+    year = seq(start_year, start_year + time_horizon),
     nesting(!!!syms(nesting_vars))
   ) %>%
   mutate(plan_tech_prod = dplyr::if_else(is.na(plan_tech_prod), 0, plan_tech_prod)) %>%
