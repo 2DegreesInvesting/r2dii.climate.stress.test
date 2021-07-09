@@ -60,3 +60,31 @@ path_dropbox_2dii <- function(...) {
   default <- sprintf("Dropbox (2%s Investing)", degrees())
   fs::path_home(custom %||% default, ...)
 }
+
+#' Write error logs to the project log files. Appends the most recent message
+#' to that file.
+#'
+#' @param msg A string containing the error message
+#' @param location A string containing the path to the project directory
+#' @param ... unnamed arguments are pasted at the end of the log message.
+#'
+#' @family miscellaneous utility functions
+#'
+#' @return A string.
+#'
+#' @export
+write_log <- function(msg,
+                      location,
+                      ...) {
+  composed <- paste(
+    as.character(Sys.time()),
+    as.character(msg),
+    ...
+  )
+  write(
+    composed,
+    file = glue::glue("{location}/00_Log_Files/error_messages.txt"),
+    append = TRUE
+  )
+}
+

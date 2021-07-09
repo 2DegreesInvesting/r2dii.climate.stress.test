@@ -39,6 +39,7 @@ function_paths <- c(
       "interpolate_automotive_scenario.R",
       "read_capacity_factors.R",
       "read_transition_scenarios.R",
+      "read_pacta_results.R",
       "set_params_st.R",
       "set_paths.R",
       "set_tech_trajectories.R",
@@ -284,15 +285,22 @@ if (identical(calculation_level, "company")) {nesting_vars <- c(nesting_vars, "c
 # the webtool should run through regardless of whether there are data for only one of the asset types or both
 if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calculation_level, ".rda")))) {
   print("Calculate Stress Test for Equity Portfolio")
-  portcheck_portresults_equity_full <- readRDS(file.path(results_path, pf_name, paste0("Equity_results_", calculation_level, ".rda"))) %>%
+
+  equity_path <- file.path(results_path, pf_name, paste0("Equity_results_", calculation_level, ".rda"))
+
+  pacta_equity_results_full <- read_pacta_results(
+    path = equity_path,
+    asset_type = "equity",
+    level = calculation_level
+  )
+
+  pacta_equity_results_full <- pacta_equity_results_full %>%
     select(-c(trajectory_deviation, trajectory_alignment, scen_tech_share, plan_tech_share, scen_sec_emissions_factor, scen_sec_carsten, scen_alloc_wt_sec_prod, scen_sec_prod, plan_sec_emissions_factor, scen_emission_factor, scen_carsten, plan_emission_factor)) %>%
     filter(scenario %in% scenarios) %>%
-    mutate(scenario = ifelse(str_detect(scenario, "_"), str_extract(scenario, "[^_]*$"), scenario))
-
-  portcheck_portresults_equity_full <- portcheck_portresults_equity_full %>%
+    mutate(scenario = ifelse(str_detect(scenario, "_"), str_extract(scenario, "[^_]*$"), scenario)) %>%
     check_portfolio_consistency()
 
-  portcheck_portresults_equity <- portcheck_portresults_equity_full %>%
+  pacta_equity_results <- pacta_equity_results_full %>%
     tidyr::complete(
       year = seq(start_year, start_year + time_horizon),
       nesting(!!!syms(nesting_vars))
@@ -314,13 +322,13 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
     mutate(scenario = str_replace(scenario, "NPSRTS", "NPS")) %>%
     distinct_all()
 
-  if (nrow(portcheck_portresults_equity) <= 0) {
+  if (nrow(pacta_equity_results) <= 0) {
     print("Input pacta data has 0 valid rows after filtering. Skipping equity calculation!")
   } else {
 
     # check scenario availability across data inputs for equity
     check_scenario_availability(
-      portfolio = portcheck_portresults_equity,
+      portfolio = pacta_equity_results,
       scen_data = scenario_data,
       scenarios = scenarios_filter
     )
@@ -369,7 +377,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
         ungroup()
 
       # Convert capacity (MW)to generation (MWh) for power sector
-      equity_annual_profits <- portcheck_portresults_equity %>%
+      equity_annual_profits <- pacta_equity_results %>%
         convert_cap_to_generation(capacity_factors_power = capacity_factors_power) %>%
         extend_scenario_trajectory(
           scenario_data = scenario_data,
@@ -407,7 +415,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
         calculate_net_profits() %>%
         dcf_model_techlevel(discount_rate = discount_rate)
 
-      plan_carsten_equity <- portcheck_portresults_equity %>%
+      plan_carsten_equity <- pacta_equity_results %>%
         filter(
           year == start_year,
           technology %in% technologies,
@@ -477,15 +485,22 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
 
 if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calculation_level, ".rda")))) {
   print("Calculate Stress Test for Bonds Portfolio")
-  portcheck_portresults_bonds_full <- readRDS(file.path(results_path, pf_name, paste0("Bonds_results_", calculation_level, ".rda"))) %>%
+
+  bonds_path <- file.path(results_path, pf_name, paste0("Bonds_results_", calculation_level, ".rda"))
+
+  pacta_bonds_results_full <- read_pacta_results(
+    path = bonds_path,
+    asset_type = "bonds",
+    level = calculation_level
+  )
+
+  pacta_bonds_results_full <- pacta_bonds_results_full %>%
     select(-c(trajectory_deviation, trajectory_alignment, scen_tech_share, plan_tech_share, scen_sec_emissions_factor, scen_sec_carsten, scen_alloc_wt_sec_prod, scen_sec_prod, plan_sec_emissions_factor, scen_emission_factor, scen_carsten, plan_emission_factor)) %>%
     filter(scenario %in% scenarios) %>%
-    mutate(scenario = ifelse(str_detect(scenario, "_"), str_extract(scenario, "[^_]*$"), scenario))
-
-  portcheck_portresults_bonds_full <- portcheck_portresults_bonds_full %>%
+    mutate(scenario = ifelse(str_detect(scenario, "_"), str_extract(scenario, "[^_]*$"), scenario)) %>%
     check_portfolio_consistency()
 
-  portcheck_portresults_bonds <- portcheck_portresults_bonds_full %>%
+  pacta_bonds_results <- pacta_bonds_results_full %>%
     tidyr::complete(
       year = seq(start_year, start_year + time_horizon),
       nesting(!!!syms(nesting_vars))
@@ -507,13 +522,13 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
     mutate(scenario = str_replace(scenario, "NPSRTS", "NPS")) %>%
     distinct_all()
 
-  if (nrow(portcheck_portresults_bonds) <= 0) {
+  if (nrow(pacta_bonds_results) <= 0) {
     print("Input pacta data has 0 valid rows after filtering. Skipping bonds calculation!")
   } else {
 
     # check scenario availability across data inputs for bonds
     check_scenario_availability(
-      portfolio = portcheck_portresults_bonds,
+      portfolio = pacta_bonds_results,
       scen_data = scenario_data,
       scenarios = scenarios_filter
     )
@@ -559,7 +574,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
         ) %>%
         ungroup()
 
-      bonds_annual_profits <- portcheck_portresults_bonds %>%
+      bonds_annual_profits <- pacta_bonds_results %>%
         convert_cap_to_generation(capacity_factors_power = capacity_factors_power) %>%
         extend_scenario_trajectory(
           scenario_data = scenario_data,
@@ -597,7 +612,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
         calculate_net_profits() %>%
         dcf_model_techlevel(discount_rate = discount_rate)
 
-      plan_carsten_bonds <- portcheck_portresults_bonds %>%
+      plan_carsten_bonds <- pacta_bonds_results %>%
         filter(
           year == start_year,
           technology %in% technologies,
