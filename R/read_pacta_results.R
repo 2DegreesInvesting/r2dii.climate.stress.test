@@ -9,26 +9,16 @@
 #' @param level A character vector of length 1 that indicates whether results on
 #'   the company level or on the portfolio level are to be analyzed.
 #'   Allowed values are "company", "portfolio".
-#' @param scenario_filter A character vector that contains all the admissible
-#'   scenario names of the analysis.
-#' @param credit_type A character vector of length 1, indicating whether
-#'   calculations for loans should be made on the outstanding loan size or on
-#'   the credit limit.
-#'   Allowed values are "loan_share_outstanding" and "loan_share_credit_limit".
-#'   This is only required for asset_type loans
 #'
 #' @family import functions
 #'
 #' @export
 read_pacta_results <- function(path = NULL,
                                asset_type = NULL,
-                               level = NULL,
-                               scenario_filter = NULL,
-                               credit_type = NULL) {
+                               level = NULL) {
   path %||% stop("Must provide 'path'")
   asset_type %||% stop("Must provide 'asset_type'")
   level %||% stop("Must provide 'level'")
-  scenario_filter %||% stop("Must provide 'scenario_filter'")
 
   level_allowed <- level %in% c("company", "portfolio")
   stopifnot(level_allowed)
@@ -57,25 +47,12 @@ read_pacta_results <- function(path = NULL,
     stopifnot(data_has_expected_columns)
 
     data <- data %>%
-      dplyr::select(.env$expected_columns) %>%
-      dplyr::filter(!is.na(.data$scenario)) %>%
-      check_scenario_settings(scenario_selections = .env$scenario_filter) %>%
-      dplyr::filter(.data$scenario %in% .env$scenario_filter) %>%
-      dplyr::mutate(
-        scenario = dplyr::if_else(
-          stringr::str_detect(.data$scenario, "_"),
-          stringr::str_extract(.data$scenario, "[^_]*$"),
-          .data$scenario
-        )
-      ) %>%
-      check_portfolio_consistency()
+      dplyr::select(.env$expected_columns)
 
     output_has_expected_columns <- all(expected_columns %in% colnames(data))
     stopifnot(output_has_expected_columns)
 
   } else {
-    credit_type %||% stop("Must provide 'credit_type'")
-
     data <- readr::read_csv(
       path,
       col_types = readr::cols(
@@ -100,41 +77,8 @@ read_pacta_results <- function(path = NULL,
       "loan_share_outstanding", "loan_share_credit_limit"
     )
 
-    output_columns <- c(
-      "investor_name", "portfolio_name", "scenario", "allocation",
-      "equity_market", "scenario_geography", "year", "ald_sector", "technology",
-      "company_name", "plan_tech_prod", "plan_carsten", "scen_tech_prod",
-      "plan_sec_prod", "plan_sec_carsten"
-    )
-
     data_has_expected_columns <- all(expected_columns %in% colnames(data))
     stopifnot(data_has_expected_columns)
-
-    data <- data %>%
-      format_loanbook_st(
-        # FIXME: these inputs should not be assumed given, but rather than adding
-        # odd arguments to the function, refactoring should rather allow for bulk
-        # processing of all investor_names and portfolio_names
-        investor_name = investorname_loan_book,
-        portfolio_name = investorname_loan_book,
-        credit = .env$credit_type
-      )
-
-    data <- data %>%
-      dplyr::filter(!is.na(.data$scenario)) %>%
-      check_scenario_settings(scenario_selections = .env$scenario_filter) %>%
-      dplyr::filter(.data$scenario %in% .env$scenario_filter) %>%
-      dplyr::mutate(
-        scenario = dplyr::if_else(
-          stringr::str_detect(.data$scenario, "_"),
-          stringr::str_extract(.data$scenario, "[^_]*$"),
-          .data$scenario
-        )
-      ) %>%
-      check_portfolio_consistency()
-
-    output_has_expected_columns <- all(output_columns %in% colnames(data))
-    stopifnot(output_has_expected_columns)
   }
 
   return(data)

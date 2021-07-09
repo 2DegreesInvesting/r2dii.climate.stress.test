@@ -5,13 +5,7 @@
 \title{Read in power capacity factors from csv and check that all expected columns
 are given.}
 \usage{
-read_pacta_results(
-  path = NULL,
-  asset_type = NULL,
-  level = NULL,
-  scenario_filter = NULL,
-  credit_type = NULL
-)
+read_pacta_results(path = NULL, asset_type = NULL, level = NULL)
 }
 \arguments{
 \item{path}{A string that points to the location of the file containing the
@@ -24,15 +18,6 @@ Allowed values are "equity", "bonds", "loans".}
 \item{level}{A character vector of length 1 that indicates whether results on
 the company level or on the portfolio level are to be analyzed.
 Allowed values are "company", "portfolio".}
-
-\item{scenario_filter}{A character vector that contains all the admissible
-scenario names of the analysis.}
-
-\item{credit_type}{A character vector of length 1, indicating whether
-calculations for loans should be made on the outstanding loan size or on
-the credit limit.
-Allowed values are "loan_share_outstanding" and "loan_share_credit_limit".
-This is only required for asset_type loans}
 }
 \description{
 Read in power capacity factors from csv and check that all expected columns
