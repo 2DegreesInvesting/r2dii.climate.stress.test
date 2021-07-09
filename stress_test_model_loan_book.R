@@ -217,11 +217,31 @@ loanbook_path <- path_dropbox_2dii("PortCheck_v2", "10_Projects", project_name, 
 pacta_loanbook_results_full <- read_pacta_results(
   path = loanbook_path,
   asset_type = "loans",
-  level = calculation_level,
-  scenario_filter = scenarios,
-  credit_type = loan_share_credit_type
+  level = calculation_level
 )
 
+pacta_loanbook_results_full <- pacta_loanbook_results_full %>%
+  format_loanbook_st(
+    # FIXME: these inputs should not be assumed given, but rather than adding
+    # odd arguments to the function, refactoring should rather allow for bulk
+    # processing of all investor_names and portfolio_names
+    investor_name = investorname_loan_book,
+    portfolio_name = investorname_loan_book,
+    credit = loan_share_credit_type
+  )
+
+pacta_loanbook_results_full <- pacta_loanbook_results_full %>%
+  dplyr::filter(!is.na(.data$scenario)) %>%
+  check_scenario_settings(scenario_selections = scenarios) %>%
+  dplyr::filter(.data$scenario %in% .env$scenarios) %>%
+  dplyr::mutate(
+    scenario = dplyr::if_else(
+      stringr::str_detect(.data$scenario, "_"),
+      stringr::str_extract(.data$scenario, "[^_]*$"),
+      .data$scenario
+    )
+  ) %>%
+  check_portfolio_consistency()
 
 # TODO: temporary addition, needs to come directly from input
 pacta_loanbook_results_full <- pacta_loanbook_results_full %>%

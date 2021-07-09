@@ -285,13 +285,7 @@ if (identical(calculation_level, "company")) {nesting_vars <- c(nesting_vars, "c
 # the webtool should run through regardless of whether there are data for only one of the asset types or both
 if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calculation_level, ".rda")))) {
   print("Calculate Stress Test for Equity Portfolio")
-  # pacta_equity_results_full <- readRDS(file.path(results_path, pf_name, paste0("Equity_results_", calculation_level, ".rda"))) %>%
-  #   select(-c(trajectory_deviation, trajectory_alignment, scen_tech_share, plan_tech_share, scen_sec_emissions_factor, scen_sec_carsten, scen_alloc_wt_sec_prod, scen_sec_prod, plan_sec_emissions_factor, scen_emission_factor, scen_carsten, plan_emission_factor)) %>%
-  #   filter(scenario %in% scenarios) %>%
-  #   mutate(scenario = ifelse(str_detect(scenario, "_"), str_extract(scenario, "[^_]*$"), scenario))
-  #
-  # pacta_equity_results_full <- pacta_equity_results_full %>%
-  #   check_portfolio_consistency()
+
   equity_path <- file.path(results_path, pf_name, paste0("Equity_results_", calculation_level, ".rda"))
 
   pacta_equity_results_full <- read_pacta_results(
@@ -300,6 +294,12 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
     level = calculation_level,
     scenario_filter = scenarios
   )
+
+  pacta_equity_results_full <- pacta_equity_results_full %>%
+    select(-c(trajectory_deviation, trajectory_alignment, scen_tech_share, plan_tech_share, scen_sec_emissions_factor, scen_sec_carsten, scen_alloc_wt_sec_prod, scen_sec_prod, plan_sec_emissions_factor, scen_emission_factor, scen_carsten, plan_emission_factor)) %>%
+    filter(scenario %in% scenarios) %>%
+    mutate(scenario = ifelse(str_detect(scenario, "_"), str_extract(scenario, "[^_]*$"), scenario)) %>%
+    check_portfolio_consistency()
 
   pacta_equity_results <- pacta_equity_results_full %>%
     tidyr::complete(
@@ -486,22 +486,20 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
 
 if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calculation_level, ".rda")))) {
   print("Calculate Stress Test for Bonds Portfolio")
-  # pacta_bonds_results_full <- readRDS(file.path(results_path, pf_name, paste0("Bonds_results_", calculation_level, ".rda"))) %>%
-  #   select(-c(trajectory_deviation, trajectory_alignment, scen_tech_share, plan_tech_share, scen_sec_emissions_factor, scen_sec_carsten, scen_alloc_wt_sec_prod, scen_sec_prod, plan_sec_emissions_factor, scen_emission_factor, scen_carsten, plan_emission_factor)) %>%
-  #   filter(scenario %in% scenarios) %>%
-  #   mutate(scenario = ifelse(str_detect(scenario, "_"), str_extract(scenario, "[^_]*$"), scenario))
-  #
-  # pacta_bonds_results_full <- pacta_bonds_results_full %>%
-  #   check_portfolio_consistency()
 
   bonds_path <- file.path(results_path, pf_name, paste0("Bonds_results_", calculation_level, ".rda"))
 
   pacta_bonds_results_full <- read_pacta_results(
     path = bonds_path,
     asset_type = "bonds",
-    level = calculation_level,
-    scenario_filter = scenarios
+    level = calculation_level
   )
+
+  pacta_bonds_results_full <- pacta_bonds_results_full %>%
+    select(-c(trajectory_deviation, trajectory_alignment, scen_tech_share, plan_tech_share, scen_sec_emissions_factor, scen_sec_carsten, scen_alloc_wt_sec_prod, scen_sec_prod, plan_sec_emissions_factor, scen_emission_factor, scen_carsten, plan_emission_factor)) %>%
+    filter(scenario %in% scenarios) %>%
+    mutate(scenario = ifelse(str_detect(scenario, "_"), str_extract(scenario, "[^_]*$"), scenario)) %>%
+    check_portfolio_consistency()
 
   pacta_bonds_results <- pacta_bonds_results_full %>%
     tidyr::complete(

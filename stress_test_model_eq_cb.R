@@ -206,9 +206,22 @@ bonds_path <- file.path(results_path, investorname_bonds, paste0("Bonds_results_
 pacta_bonds_results_full <- read_pacta_results(
   path = bonds_path,
   asset_type = "bonds",
-  level = calculation_level,
-  scenario_filter = scenarios
+  level = calculation_level
 )
+
+pacta_bonds_results_full <- pacta_bonds_results_full %>%
+  dplyr::filter(!is.na(.data$scenario)) %>%
+  check_scenario_settings(scenario_selections = scenarios) %>%
+  dplyr::filter(.data$scenario %in% .env$scenarios) %>%
+  dplyr::mutate(
+    scenario = dplyr::if_else(
+      stringr::str_detect(.data$scenario, "_"),
+      stringr::str_extract(.data$scenario, "[^_]*$"),
+      .data$scenario
+    )
+  ) %>%
+  check_portfolio_consistency()
+
 
 # TODO: temporary addition, needs to come directly from input
 pacta_bonds_results_full <- pacta_bonds_results_full %>%
@@ -224,9 +237,21 @@ equity_path <- file.path(results_path, investorname_equity, paste0("Equity_resul
 pacta_equity_results_full <- read_pacta_results(
   path = equity_path,
   asset_type = "equity",
-  level = calculation_level,
-  scenario_filter = scenarios
+  level = calculation_level
 )
+
+pacta_equity_results_full <- pacta_equity_results_full %>%
+  dplyr::filter(!is.na(.data$scenario)) %>%
+  check_scenario_settings(scenario_selections = scenarios) %>%
+  dplyr::filter(.data$scenario %in% .env$scenarios) %>%
+  dplyr::mutate(
+    scenario = dplyr::if_else(
+      stringr::str_detect(.data$scenario, "_"),
+      stringr::str_extract(.data$scenario, "[^_]*$"),
+      .data$scenario
+    )
+  ) %>%
+  check_portfolio_consistency()
 
 
 sector_exposures <- readRDS(file.path(proc_input_path, paste0(project_name, "_overview_portfolio.rda")))
