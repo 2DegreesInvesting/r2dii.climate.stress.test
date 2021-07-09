@@ -291,8 +291,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
   pacta_equity_results_full <- read_pacta_results(
     path = equity_path,
     asset_type = "equity",
-    level = calculation_level,
-    scenario_filter = scenarios
+    level = calculation_level
   )
 
   pacta_equity_results_full <- pacta_equity_results_full %>%
