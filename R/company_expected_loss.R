@@ -44,7 +44,7 @@ company_expected_loss <- function(data,
     c(
       "investor_name", "portfolio_name", "company_name", "year",
       "scenario_geography", "ald_sector", "technology",
-      "plan_carsten", "plan_sec_carsten", "term", "PD_0"
+      "plan_carsten", "plan_sec_carsten", "term", "pd"
     ) %in% colnames(exposure_at_default)
   )
   stopifnot(exposure_at_default_has_expected_columns)
@@ -53,7 +53,7 @@ company_expected_loss <- function(data,
     dplyr::group_by(
       .data$investor_name, .data$portfolio_name, .data$company_name,
       .data$ald_sector, .data$technology, .data$scenario_geography,
-      .data$term, .data$PD_0
+      .data$term, .data$pd
     ) %>%
     dplyr::summarise(
       percent_exposure = sum(.data$plan_carsten, na.rm = TRUE),
@@ -84,10 +84,10 @@ company_expected_loss <- function(data,
 
   data <- data %>%
     dplyr::mutate(
-      expected_loss_baseline = .data$PD_0 *
+      expected_loss_baseline = .data$pd *
         .data$lgd *
         .data$exposure_at_default,
-      expected_loss_late_sudden = (.data$PD_0  + .data$PD_change) *
+      expected_loss_late_sudden = (.data$pd  + .data$PD_change) *
         .data$lgd *
         .data$exposure_at_default
     )

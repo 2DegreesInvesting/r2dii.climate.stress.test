@@ -31,7 +31,7 @@ calculate_pd_change_annual <- function(data,
       "investor_name", "portfolio_name", "id", "company_name", "year",
       "scenario_geography", "ald_sector", "technology",
       "scenario_name", "discounted_net_profit_ls",
-      "discounted_net_profit_baseline"
+      "discounted_net_profit_baseline", "debt_equity_ratio", "volatility"
     ) %in% colnames(data)
   )
   stopifnot(data_has_expected_columns)
@@ -41,12 +41,12 @@ calculate_pd_change_annual <- function(data,
     dplyr::arrange(
       .data$scenario_name, .data$scenario_geography, .data$investor_name,
       .data$portfolio_name, .data$id, .data$company_name, .data$ald_sector,
-      .data$technology, .data$year
+      .data$technology, .data$year, .data$debt_equity_ratio, .data$volatility
     ) %>%
     dplyr::group_by(
       .data$investor_name, .data$portfolio_name, .data$id, .data$company_name,
       .data$ald_sector, .data$technology, .data$scenario_name,
-      .data$scenario_geography
+      .data$scenario_geography, .data$debt_equity_ratio, .data$volatility
     ) %>%
     dplyr::mutate(
       equity_t_baseline = cumsum(.data$discounted_net_profit_baseline),
@@ -57,17 +57,8 @@ calculate_pd_change_annual <- function(data,
       .data$investor_name, .data$portfolio_name, .data$scenario_name,
       .data$scenario_geography, .data$id, .data$company_name, .data$ald_sector,
       .data$technology, .data$year, .data$equity_t_baseline,
-      .data$equity_t_late_sudden
+      .data$equity_t_late_sudden, .data$debt_equity_ratio, .data$volatility
     )
-
-  # TODO: extract this into separate table
-  debt_equity_sector <- dplyr::tibble(
-    sector = c("Coal", "Oil&Gas", "Power", "Automotive"),
-    debt_equity_ratio = c(0.55, 0.63, 0.75, 0.71)
-  )
-
-  data <- data %>%
-    dplyr::inner_join(debt_equity_sector, by = c("ald_sector" = "sector"))
 
   data <- data %>%
     dplyr::mutate(debt = .data$equity_t_baseline * .data$debt_equity_ratio) %>%
@@ -76,7 +67,6 @@ calculate_pd_change_annual <- function(data,
   # TODO: get real values
   data <- data %>%
     dplyr::mutate(
-      volatility = 0.2,
       risk_free_rate = 0.05,
       term = 1
     )
