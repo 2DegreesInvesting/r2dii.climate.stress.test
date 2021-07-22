@@ -114,20 +114,20 @@ scenario_geography_filter <- "Global"
 # NOTE scenarios from the same source, same secenario name and diff years will likely fail
 # E.g. WEO2019_SDS AND WEO2020_SDS will produce near-duplicates that break the analysis
 scenarios <- c(
-  "B2DS",
-  "CPS",
-  "NPS",
-  "NPSRTS",
-  "SDS"#,
+  # "B2DS",
+  # "CPS",
+  # "NPS",
+  # "NPSRTS",
+  # "SDS"#,
   # "ETP2017_B2DS",
-  # "ETP2017_NPS",
-  # "ETP2017_SDS",
+  "ETP2017_NPS",
+  "ETP2017_SDS",
   # "GECO2019_1.5c",
   # "GECO2019_2c_m",
   # "GECO2019_ref",
   # "WEO2019_CPS",
-  # "WEO2019_NPS",
-  # "WEO2019_SDS" # ,
+  "WEO2019_NPS",
+  "WEO2019_SDS" # ,
   # "WEO2020_NPS",
   # "WEO2020_SDS"
 )
@@ -220,7 +220,16 @@ financial_data_bonds <- financial_data_bonds %>%
     ald_production = sum(ald_production, na.rm = TRUE),
     .groups = "drop"
   ) %>%
-  ungroup()
+  ungroup() %>%
+  mutate(
+    across(
+      c(
+        ald_production, ald_emissions_factor, pd, profit_margin_preferred,
+        profit_margin_unpreferred, leverage_s_avg, asset_volatility_s_avg
+      ),
+      ~ round(.x, 8)
+    )
+  )
 
 # ... for equity---------------------------------------------------------------
 financial_data_equity_path <- file.path(Sys.getenv("HOME"), "Desktop", "masterdata_ownership.rda")
@@ -256,7 +265,16 @@ financial_data_equity <- financial_data_equity %>%
     ald_production = sum(ald_production, na.rm = TRUE),
     .groups = "drop"
   ) %>%
-  ungroup()
+  ungroup() %>%
+  mutate(
+    across(
+      c(
+        ald_production, ald_emissions_factor, pd, profit_margin_preferred,
+        profit_margin_unpreferred, leverage_s_avg, asset_volatility_s_avg
+      ),
+      ~ round(.x, 8)
+    )
+  )
 
 
 # Load PACTA results / bonds portfolio------------------------
@@ -272,6 +290,8 @@ pacta_bonds_results_full <- pacta_bonds_results_full %>%
   dplyr::filter(!is.na(.data$scenario)) %>%
   check_scenario_settings(scenario_selections = scenarios) %>%
   dplyr::filter(.data$scenario %in% .env$scenarios) %>%
+  # TODO: temporary fix, remove once all scenario data is used from scenario file
+  filter(!(str_detect(.data$scenario, "ETP") & .data$ald_sector == "Power")) %>%
   dplyr::mutate(
     scenario = dplyr::if_else(
       stringr::str_detect(.data$scenario, "_"),
@@ -303,6 +323,8 @@ pacta_equity_results_full <- pacta_equity_results_full %>%
   dplyr::filter(!is.na(.data$scenario)) %>%
   check_scenario_settings(scenario_selections = scenarios) %>%
   dplyr::filter(.data$scenario %in% .env$scenarios) %>%
+  # TODO: temporary fix, remove once all scenario data is used from scenario file
+  filter(!(str_detect(.data$scenario, "ETP") & .data$ald_sector == "Power")) %>%
   dplyr::mutate(
     scenario = dplyr::if_else(
       stringr::str_detect(.data$scenario, "_"),
@@ -660,10 +682,11 @@ for (i in seq(1, nrow(transition_scenarios))) {
 
   if (identical(calculation_level, "company")) {
     plan_carsten_equity <- plan_carsten_equity %>%
-      distinct(
+      select(
         investor_name, portfolio_name, company_name, ald_sector, technology,
         scenario_geography, year, plan_carsten, plan_sec_carsten
-      )
+      ) %>%
+      distinct(across(everything()))
 
     if (!exists("excluded_companies")) {
       equity_results <- bind_rows(
@@ -832,7 +855,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
 
   financial_data_bonds_pd <- financial_data_bonds %>%
     select(company_name, corporate_bond_ticker, ald_sector, technology, pd) %>%
-    distinct_all()
+    distinct(across(everything()))
 
   plan_carsten_bonds <- plan_carsten_bonds %>%
     left_join(financial_data_bonds_pd, by = c("company_name", "id" = "corporate_bond_ticker", "ald_sector", "technology"))
@@ -843,10 +866,11 @@ for (i in seq(1, nrow(transition_scenarios))) {
 
   if(identical(calculation_level, "company")) {
     plan_carsten_bonds <- plan_carsten_bonds %>%
-      distinct(
+      select(
         investor_name, portfolio_name, company_name, ald_sector, technology,
         scenario_geography, year, plan_carsten, plan_sec_carsten, term, pd
-      )
+      ) %>%
+      distinct_all()
 
 
 
