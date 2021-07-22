@@ -654,12 +654,17 @@ for (i in seq(1, nrow(transition_scenarios))) {
       scenario_name, investor_name, portfolio_name, scenario_geography, id,
       company_name, ald_sector, technology, year
     ) %>%
+    group_by(
+      scenario_name, investor_name, portfolio_name, scenario_geography, id,
+      company_name, ald_sector, technology
+    ) %>%
     # NOTE: this assumes emissions factors stay constant after forecast and prod not continued
     tidyr::fill(
       company_id, pd, net_profit_margin, debt_equity_ratio, volatility,
       ald_emissions_factor, ald_emissions_factor_unit, ald_production_unit,
       .direction = "down"
-    )
+    ) %>%
+    ungroup()
 
   equity_annual_profits <- equity_annual_profits %>%
     join_price_data(df_prices = df_prices) %>%
@@ -827,12 +832,17 @@ for (i in seq(1, nrow(transition_scenarios))) {
       scenario_name, investor_name, portfolio_name, scenario_geography, id,
       company_name, ald_sector, technology, year
     ) %>%
+    group_by(
+      scenario_name, investor_name, portfolio_name, scenario_geography, id,
+      company_name, ald_sector, technology
+    ) %>%
     # NOTE: this assumes emissions factors stay constant after forecast and prod not continued
     tidyr::fill(
       company_id, pd, net_profit_margin, debt_equity_ratio, volatility,
       ald_emissions_factor, ald_emissions_factor_unit, ald_production_unit,
       .direction = "down"
-    )
+    ) %>%
+    ungroup()
 
   bonds_annual_profits <- bonds_annual_profits %>%
     join_price_data(df_prices = df_prices) %>%
