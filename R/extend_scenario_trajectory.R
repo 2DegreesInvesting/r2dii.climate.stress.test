@@ -82,6 +82,9 @@ extend_scenario_trajectory <- function(data,
       .data$ald_sector, .data$technology, .data$scenario_geography,
       .data$allocation, .data$scenario
     ) %>%
+    # TODO: since the start value for plan_tech_prod and scen_tech_prod is the same per definition,
+    # it would be less error prone to fill the first value of scen_tech_prod with the prodcution value
+    # and extrapolate everything else from the dedicated scenario file
     dplyr::mutate(
       scen_tech_prod = dplyr::if_else(
         .data$year > .env$start_analysis,
