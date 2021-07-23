@@ -60,9 +60,7 @@ setup_project()
 
 #### Project location----------------------------------------
 
-# TODO: ensure this is updated to point to r2dii.stress.test.data
-# TODO: stress_test_path probably won't work anymore for loading data. Replace!
-data_location <- file.path(working_location, data_path())
+data_location <- file.path(get_st_data_path(), data_path())
 
 # Parameters passed from PACTA_analysis web_tool_script_2.R
 pf_name <- portfolio_name_ref_all
@@ -184,7 +182,7 @@ sector_exposures <- readRDS(file.path(proc_input_path, pf_name, "overview_portfo
 
 # Load transition scenarios that will be run by the model
 transition_scenarios <- read_transition_scenarios(
-  path = file.path(stress_test_path, data_path("project_transition_scenarios", glue::glue("transition_scenario_{project_code}.csv"))),
+  path = file.path(data_location, "project_transition_scenarios", glue::glue("transition_scenario_{project_code}.csv")),
   start_of_analysis = start_year,
   end_of_analysis = end_year
 )
@@ -199,7 +197,7 @@ transition_scenarios <- read_transition_scenarios(
 # Load utilization factors power
 # TODO: replace with new capacity factors
 capacity_factors_power <- read_capacity_factors(
-  path = file.path(stress_test_path, data_path("capacity_factors_WEO_2017.csv")),
+  path = file.path(data_location, "capacity_factors_WEO_2017.csv"),
   version = "old"
 )
 
@@ -207,7 +205,7 @@ capacity_factors_power <- read_capacity_factors(
 
 scen_data_file <- ifelse(twodii_internal == TRUE,
   path_dropbox_2dii("PortCheck", "00_Data", "01_ProcessedData", "03_ScenarioData", paste0("Scenarios_AnalysisInput_", start_year, ".csv")),
-  file.path(stress_test_path, data_path(paste0("Scenarios_AnalysisInput_", start_year, ".csv")))
+  file.path(data_location, glue::glue("Scenarios_AnalysisInput_{start_year}.csv"))
 )
 
 scenario_data <- readr::read_csv(scen_data_file, col_types = cols(.default = col_guess())) %>%
@@ -223,7 +221,7 @@ scenario_data <- scenario_data %>%
 
 # %>% filter(year %in% c(start_year,2020, 2021, 2022, 2023, 2024, 2025, 2030, 2035, 2040))
 
-df_price <- readr::read_csv(file.path(stress_test_path, data_path(paste0("prices_data_", price_data_version, ".csv"))), col_types = cols()) %>%
+df_price <- readr::read_csv(file.path(data_location, glue::glue("prices_data_{price_data_version}.csv")), col_types = cols()) %>%
   filter(year >= start_year) %>%
   check_price_consistency()
 
@@ -295,7 +293,6 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
   )
 
   pacta_equity_results_full <- pacta_equity_results_full %>%
-    select(-c(trajectory_deviation, trajectory_alignment, scen_tech_share, plan_tech_share, scen_sec_emissions_factor, scen_sec_carsten, scen_alloc_wt_sec_prod, scen_sec_prod, plan_sec_emissions_factor, scen_emission_factor, scen_carsten, plan_emission_factor)) %>%
     filter(scenario %in% scenarios) %>%
     mutate(scenario = ifelse(str_detect(scenario, "_"), str_extract(scenario, "[^_]*$"), scenario)) %>%
     check_portfolio_consistency()
@@ -495,7 +492,6 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
   )
 
   pacta_bonds_results_full <- pacta_bonds_results_full %>%
-    select(-c(trajectory_deviation, trajectory_alignment, scen_tech_share, plan_tech_share, scen_sec_emissions_factor, scen_sec_carsten, scen_alloc_wt_sec_prod, scen_sec_prod, plan_sec_emissions_factor, scen_emission_factor, scen_carsten, plan_emission_factor)) %>%
     filter(scenario %in% scenarios) %>%
     mutate(scenario = ifelse(str_detect(scenario, "_"), str_extract(scenario, "[^_]*$"), scenario)) %>%
     check_portfolio_consistency()

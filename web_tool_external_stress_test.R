@@ -36,6 +36,8 @@ setup_project()
 
 #### Project location----------------------------------------
 
+data_location <- file.path(get_st_data_path(), data_path())
+
 # Parameters passed from PACTA_analysis web_tool_script_2.R
 pf_name <- portfolio_name_ref_all
 investor_name_filter <- investor_name
@@ -100,7 +102,7 @@ if (file.exists(file.path(results_path, pf_name, "Equity_results_portfolio.rda")
 
 # load external shock data
 shocks <-
-  readr::read_csv(file.path(stress_test_path, data_path("external_stress_test_shocks.csv")),
+  readr::read_csv(file.path(data_location, "external_stress_test_shocks.csv"),
     na = c("", "NA", "#VALUE!"), col_types = cols()
   )
 
@@ -204,9 +206,10 @@ if (exists("portfolio")) {
 # if(exists("results_dnb")){
 #   results_dnb %>% readr::write_csv(file.path(results_path,pf_name,"Stress_test_results_DNB.csv"))
 # } else {"No Stress Test results available for DNB Scenarios"}
-if (exists("results_ipr") &
-    any(unique(results_ipr$sector) != "Other")) {
-  results_ipr %>% readr::write_rds(file.path(results_path, pf_name, "Stress_test_results_IPR.rds"))
+if (exists("results_ipr")) {
+  if (any(unique(results_ipr$sector) != "Other")) {
+    results_ipr %>% readr::write_rds(file.path(results_path, pf_name, "Stress_test_results_IPR.rds"))
+  }
 } else {
   "No Stress Test results available for IPR FPS Scenario"
 }
