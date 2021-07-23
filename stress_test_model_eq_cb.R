@@ -178,6 +178,7 @@ discount_rate <- cfg_mod$financials$discount_rate # Discount rate
 ##### OPEN: this needs to be estimated based on data
 terminal_value <- cfg_mod$financials$terminal_value
 div_netprofit_prop_coef <- cfg_mod$financials$div_netprofit_prop_coef # determine this value using bloomberg data
+risk_free_rate <- cfg_mod$financials$risk_free_rate
 
 
 ###########################################################################
@@ -903,7 +904,8 @@ for (i in seq(1, nrow(transition_scenarios))) {
         calculate_pd_change_overall(
           shock_year = transition_scenario_i$year_of_shock,
           end_of_analysis = end_year,
-          exclusion = NULL
+          exclusion = NULL,
+          risk_free_interest_rate = risk_free_rate
         )
 
       bonds_expected_loss <- bind_rows(
@@ -923,7 +925,8 @@ for (i in seq(1, nrow(transition_scenarios))) {
           data = bonds_annual_profits,
           shock_year = transition_scenario_i$year_of_shock,
           end_of_analysis = end_year,
-          exclusion = NULL
+          exclusion = NULL,
+          risk_free_interest_rate = risk_free_rate
         )
       )
     } else {
@@ -945,7 +948,8 @@ for (i in seq(1, nrow(transition_scenarios))) {
         calculate_pd_change_overall(
           shock_year = transition_scenario_i$year_of_shock,
           end_of_analysis = end_year,
-          exclusion = excluded_companies
+          exclusion = excluded_companies,
+          risk_free_interest_rate = risk_free_rate
         )
 
       bonds_expected_loss <- bind_rows(
@@ -965,7 +969,8 @@ for (i in seq(1, nrow(transition_scenarios))) {
           data = bonds_annual_profits,
           shock_year = transition_scenario_i$year_of_shock,
           end_of_analysis = end_year,
-          exclusion = excluded_companies
+          exclusion = excluded_companies,
+          risk_free_interest_rate = risk_free_rate
         )
       )
     }

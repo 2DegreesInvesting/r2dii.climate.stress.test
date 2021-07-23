@@ -12,12 +12,14 @@ test_that("with missing argument for shock_year, calculate_pd_change_overall
 
   test_end_of_analysis <- 2040
   test_exclusion <- NULL
+  test_risk_free_rate <- 0.05
 
   testthat::expect_error(
     calculate_pd_change_overall(
       data = test_data,
       end_of_analysis = test_end_of_analysis,
-      exclusion = test_exclusion
+      exclusion = test_exclusion,
+      risk_free_interest_rate = test_risk_free_rate
     ),
     "Must provide input for 'shock_year'"
   )
@@ -29,11 +31,13 @@ test_that("with missing argument for exclusion, calculate_pd_change_overall
 
   test_shock_year <- 2030
   test_end_of_analysis <- 2040
+  test_risk_free_rate <- 0.05
 
   test_results <- calculate_pd_change_overall(
     data = test_data,
     shock_year = test_shock_year,
-    end_of_analysis = test_end_of_analysis
+    end_of_analysis = test_end_of_analysis,
+    risk_free_interest_rate = test_risk_free_rate
   )
 
   testthat::expect_s3_class(test_results, "data.frame")
@@ -46,19 +50,22 @@ test_that("with excluded company, calculate_pd_change_overall returns data.frame
 
   test_shock_year <- 2030
   test_end_of_analysis <- 2040
+  test_risk_free_rate <- 0.05
 
   test_results_no_exclusion <- calculate_pd_change_overall(
     data = test_data,
     shock_year = test_shock_year,
     end_of_analysis = test_end_of_analysis,
-    exclusion = NULL
+    exclusion = NULL,
+    risk_free_interest_rate = test_risk_free_rate
   )
 
   test_results_with_exclusion <- calculate_pd_change_overall(
     data = test_data,
     shock_year = test_shock_year,
     end_of_analysis = test_end_of_analysis,
-    exclusion = test_exclusion
+    exclusion = test_exclusion,
+    risk_free_interest_rate = test_risk_free_rate
   )
 
   testthat::expect_equal(
@@ -73,6 +80,7 @@ test_that("PD_changes point in expected direction", {
 
   test_shock_year <- 2030
   test_end_of_analysis <- 2040
+  test_risk_free_rate <- 0.05
 
   expected_direction <- test_data %>%
     dplyr::distinct(
@@ -96,7 +104,8 @@ test_that("PD_changes point in expected direction", {
     data = test_data,
     shock_year = test_shock_year,
     end_of_analysis = test_end_of_analysis,
-    exclusion = NULL
+    exclusion = NULL,
+    risk_free_interest_rate = test_risk_free_rate
   )
 
   results_direction <- test_results %>%
