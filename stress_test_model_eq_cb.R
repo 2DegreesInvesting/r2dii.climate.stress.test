@@ -179,6 +179,8 @@ discount_rate <- cfg_mod$financials$discount_rate # Discount rate
 terminal_value <- cfg_mod$financials$terminal_value
 div_netprofit_prop_coef <- cfg_mod$financials$div_netprofit_prop_coef # determine this value using bloomberg data
 risk_free_rate <- cfg_mod$financials$risk_free_rate
+lgd_senior_claims <- cfg_mod$financials$lgd_senior_claims
+lgd_subordinated_claims <- cfg_mod$financials$lgd_subordinated_claims
 
 
 ###########################################################################
@@ -912,7 +914,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
         bonds_expected_loss,
         company_expected_loss(
           data = bonds_overall_pd_changes,
-          loss_given_default = lgd_by_sector,
+          loss_given_default = lgd_subordinated_claims,
           exposure_at_default = plan_carsten_bonds,
           # TODO: what to do with this? some sector level exposure for loanbook?
           port_aum = bonds_port_aum
@@ -956,7 +958,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
         bonds_expected_loss,
         company_expected_loss(
           data = bonds_overall_pd_changes,
-          loss_given_default = lgd_by_sector,
+          loss_given_default = lgd_subordinated_claims,
           exposure_at_default = plan_carsten_bonds,
           # TODO: what to do with this? some sector level exposure for loanbook?
           port_aum = bonds_port_aum
