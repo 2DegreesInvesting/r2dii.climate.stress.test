@@ -18,13 +18,17 @@
 #' @param exclusion Optional. A dataframe with two character columns,
 #'   "company_name" and "technology", that lists which technologies from which
 #'   companies should be set to 0 in the remainder of the analysis.
+#' @param risk_free_interest_rate A numeric vector of length one that indicates
+#'   the risk free rate of interest
 calculate_pd_change_annual <- function(data,
                                        shock_year = NULL,
                                        end_of_analysis = NULL,
-                                       exclusion = NULL) {
+                                       exclusion = NULL,
+                                       risk_free_interest_rate = NULL) {
   force(data)
   shock_year %||% stop("Must provide input for 'shock_year'", call. = FALSE)
   end_of_analysis %||% stop("Must provide input for 'end_of_analysis'", call. = FALSE)
+  risk_free_interest_rate %||% stop("Must provide input for 'risk_free_interest_rate'", call. = FALSE)
 
   data_has_expected_columns <- all(
     c(
@@ -64,11 +68,10 @@ calculate_pd_change_annual <- function(data,
     dplyr::mutate(debt = .data$equity_t_baseline * .data$debt_equity_ratio) %>%
     dplyr::select(-.data$debt_equity_ratio)
 
-  # TODO: get real values
   data <- data %>%
     dplyr::mutate(
-      risk_free_rate = 0.05,
-      term = 1
+      risk_free_rate = risk_free_interest_rate,
+      term = 1 # annual
     )
 
   result <- create_empty_result_df_pd_changes(

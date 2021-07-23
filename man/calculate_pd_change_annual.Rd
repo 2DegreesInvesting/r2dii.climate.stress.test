@@ -18,7 +18,8 @@ calculate_pd_change_annual(
   data,
   shock_year = NULL,
   end_of_analysis = NULL,
-  exclusion = NULL
+  exclusion = NULL,
+  risk_free_interest_rate = NULL
 )
 }
 \arguments{
@@ -33,6 +34,9 @@ which year the analysis runs}
 \item{exclusion}{Optional. A dataframe with two character columns,
 "company_name" and "technology", that lists which technologies from which
 companies should be set to 0 in the remainder of the analysis.}
+
+\item{risk_free_interest_rate}{A numeric vector of length one that indicates
+the risk free rate of interest}
 }
 \description{
 Calculate change in probabilities of default (PDs) of loans connected to

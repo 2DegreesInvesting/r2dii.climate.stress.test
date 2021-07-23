@@ -1,12 +1,13 @@
 default:
 
   end_year: 2040
-  
+
   financials:
     recovery_rate: 0.38
     discount_rate: 0.02
     div_netprofit_prop_coef: 1
     terminal_value: 0
+    risk_free_rate: 0.0129 # US 10Y treasury rate
 
   scenarios:
     scenario_to_follow_baseline: NPS
