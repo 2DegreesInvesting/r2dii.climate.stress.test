@@ -20,8 +20,9 @@ company_expected_loss(
 \arguments{
 \item{data}{A dataframe containing the (discounted) annual profits}
 
-\item{loss_given_default}{A dataframe containing sectoral percentages of how
-large the share of lost value in a loan is, in case of default.}
+\item{loss_given_default}{A numeric vector of length one that indicates
+the loss given default for the given asset type. Usually either a senior
+claim or a subordinated claim.}
 
 \item{exposure_at_default}{A dataframe that contains the share of the
 portfolio value of each company-technology combination. Used to quantify
