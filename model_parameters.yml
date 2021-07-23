@@ -8,6 +8,8 @@ default:
     div_netprofit_prop_coef: 1
     terminal_value: 0
     risk_free_rate: 0.0129 # US 10Y treasury rate
+    lgd_senior_claims: 0.45
+    lgd_subordinated_claims: 0.75
 
   scenarios:
     scenario_to_follow_baseline: NPS
