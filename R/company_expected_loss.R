@@ -7,8 +7,9 @@
 #' future profits plus the terminal value.
 #'
 #' @param data A dataframe containing the (discounted) annual profits
-#' @param loss_given_default A dataframe containing sectoral percentages of how
-#'   large the share of lost value in a loan is, in case of default.
+#' @param loss_given_default A numeric vector of length one that indicates
+#'   the loss given default for the given asset type. Usually either a senior
+#'   claim or a subordinated claim.
 #' @param exposure_at_default A dataframe that contains the share of the
 #'   portfolio value of each company-technology combination. Used to quantify
 #'   the impact of the company-tech level shock on higher levels of aggregation
@@ -32,13 +33,6 @@ company_expected_loss <- function(data,
     ) %in% colnames(data)
   )
   stopifnot(data_has_expected_columns)
-
-  loss_given_default_has_expected_columns <- all(
-    c(
-      "sector", "lgd"
-    ) %in% colnames(loss_given_default)
-  )
-  stopifnot(loss_given_default_has_expected_columns)
 
   exposure_at_default_has_expected_columns <- all(
     c(
@@ -71,7 +65,7 @@ company_expected_loss <- function(data,
     dplyr::mutate(term = dplyr::if_else(.data$term > 5, 5, .data$term))
 
   data <- data %>%
-    dplyr::inner_join(loss_given_default, by = c("ald_sector" = "sector"))
+    dplyr::mutate(lgd = loss_given_default)
 
   data <- data %>%
     dplyr::left_join(
