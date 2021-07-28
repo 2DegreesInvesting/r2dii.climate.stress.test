@@ -36,6 +36,8 @@ setup_project()
 
 #### Project location----------------------------------------
 
+data_location <- file.path(get_st_data_path(), data_path())
+
 # Parameters passed from PACTA_analysis web_tool_script_2.R
 pf_name <- portfolio_name_ref_all
 investor_name_filter <- investor_name
@@ -74,7 +76,6 @@ if (file.exists(file.path(proc_input_path, pf_name, "total_portfolio.rda")) &
 }
 
 
-
 # load portfolio results, get the plan_carsten values at start year, join in portfolio size and multiply with plan_carsten to get tech
 if (file.exists(file.path(results_path, pf_name, "Bonds_results_portfolio.rda"))) {
   cb_exposures <- read_rds(file.path(results_path, pf_name, "Bonds_results_portfolio.rda")) %>%
@@ -100,73 +101,11 @@ if (file.exists(file.path(results_path, pf_name, "Equity_results_portfolio.rda")
 
 # load external shock data
 shocks <-
-  readr::read_csv(file.path(stress_test_path, data_path("external_stress_test_shocks.csv")),
+  readr::read_csv(file.path(data_location, "external_stress_test_shocks.csv"),
     na = c("", "NA", "#VALUE!"), col_types = cols()
   )
 
-
-
-
 # Calculate Results -----------------------------------------------------------------
-
-# NOTE: Currently we only calculate and return IPR results in the webtool. BoE and DNB are comented out, but might be added again soon
-
-# # calculate BoE exposures
-# calc_boe_exposures <- function(pacta_exposures){
-#   pacta_exposures %>%
-#     filter(ald_sector!='Other') %>%
-#     mutate(
-#       subsector = case_when(
-#         technology %in% c('RenewablesCap','HydroCap','NuclearCap') ~ "Low carbon",
-#         technology %in% c('ICE','Hybrid','FuelCell') ~ "Non electric",
-#         technology %in% c('Electric') ~ "Electric",
-#         technology %in% c('CoalCap') ~ "Coal Power",
-#         technology %in% c('GasCap') ~ "Gas Power",
-#         technology %in% c('OilCap') ~ "Oil Power",
-#         technology %in% c('Electric') ~ "Electric",
-#
-#         ald_sector %in% c('Shipping','Aviation') ~ NA_character_,
-#         ald_sector %in% c('Cement','Steel') ~ "Fossil Fuel Based",
-#         TRUE ~ technology
-#       ),
-#       sector = case_when(
-#         ald_sector %in% c('Oil&Gas','Coal') ~ "Fuel extraction",
-#         ald_sector %in% c('Steel','Cement') ~ "Materials",
-#         TRUE ~ ald_sector
-#       )) %>%
-#     group_by(investor_name,portfolio_name,sector,subsector) %>%
-#     summarise(exposure = sum(tech_exposure,na.rm=T),
-#               .groups = "drop_last")
-# }
-#
-# #FIXME: Produce empty tibble if one of the asset types is missing
-# if(exists("cb_exposures")){boe_exposures_cb <- calc_boe_exposures(cb_exposures) %>% mutate(asset_type='Bonds')}
-# if(exists("eq_exposures")){boe_exposures_eq <- calc_boe_exposures(eq_exposures) %>% mutate(asset_type='Equity')}
-#
-# # calculate BoE results
-# results_boe <- portfolio %>%
-#   as.data.frame() %>%
-#   filter(asset_type %in% c('Equity','Bonds'),sector_boe %in% c('Agriculture','Food logistics','Real estate','Materials')) %>%
-#   group_by(investor_name,portfolio_name,sector_boe,subsector_boe,asset_type) %>%
-#   summarise(exposure = sum(value_usd,na.rm=TRUE),
-#             .groups = "drop_last") %>%
-#   rename(sector=sector_boe,subsector=subsector_boe) %>%
-#   bind_rows(boe_exposures_cb,boe_exposures_eq) %>%
-#   left_join(shocks %>% filter(methodology=='BoE') %>% select(-c(description,methodology)),by=c('sector','subsector')) %>%
-#   mutate(shock=ifelse(asset_type=='Bonds',0.15*shock,shock),
-#          loss = exposure * shock/100)
-#
-# #FIXME: If result is empty, what to return?
-# # calculate DNB results
-# results_dnb <- portfolio %>%
-#   as.data.frame() %>%
-#   filter(asset_type=='Equity') %>%
-#   group_by(investor_name,portfolio_name,sector_dnb) %>%
-#   summarise(exposure = sum(value_usd,na.rm=TRUE),
-#             .groups = "drop_last") %>%
-#   rename(sector = sector_dnb) %>%
-#   left_join(shocks %>% filter(methodology=='DNB') %>% select(-c(methodology)),by=c('sector')) %>%
-#   mutate(loss = exposure * shock/100)
 
 # FIXME: If result is empty, what to return?
 # calculate IPR results
@@ -196,17 +135,10 @@ if (exists("portfolio")) {
 
 # Write Results -----------------------------------------------------------------
 
-# NOTE: Currently we only calculate and return IPR results in the webtool. BoE and DNB are comented out, but might be added again soon
-
-# if(exists("results_boe")){
-#   results_boe %>% readr::write_csv(file.path(results_path,pf_name,"Stress_test_results_BOE.csv"))
-# } else {"No Stress Test results available for BoE Scenarios"}
-# if(exists("results_dnb")){
-#   results_dnb %>% readr::write_csv(file.path(results_path,pf_name,"Stress_test_results_DNB.csv"))
-# } else {"No Stress Test results available for DNB Scenarios"}
-if (exists("results_ipr") &
-    any(unique(results_ipr$sector) != "Other")) {
-  results_ipr %>% readr::write_rds(file.path(results_path, pf_name, "Stress_test_results_IPR.rds"))
+if (exists("results_ipr")) {
+  if (any(unique(results_ipr$sector) != "Other")) {
+    results_ipr %>% readr::write_rds(file.path(results_path, pf_name, "Stress_test_results_IPR.rds"))
+  }
 } else {
   "No Stress Test results available for IPR FPS Scenario"
 }
