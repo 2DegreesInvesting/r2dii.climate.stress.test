@@ -1,15 +1,3 @@
-set_location <- function() {
-  if (rstudioapi::isAvailable()) {
-    working_location <- dirname(rstudioapi::getActiveDocumentContext()$path)
-  } else {
-    working_location <- getwd()
-  }
-
-  working_location <- paste0(working_location, "/")
-
-  return(working_location)
-}
-
 set_col_types <- function(grouping_variables, fixed_col_types) {
 
   # defines the column types based on the number of grouping_variables
