@@ -988,18 +988,6 @@ portfolio_summary <- function(portfolio_total){
 
 }
 
-create_merged_portfolio <- function(eq_portfolio, cb_portfolio){
-
-  portfolio_ <- rbind(eq_portfolio, cb_portfolio)
-
-  portfolio_ <- portfolio_ %>% filter(!is.na(investor_name))
-
-  if(!data_check(portfolio_)){warning("No portfolio data")}
-
-  return(portfolio_)
-
-}
-
 create_portfolio_subset <- function(portfolio, portfolio_type, relevant_fin_data){
 
   portfolio <- portfolio %>% mutate(financial_sector = security_mapped_sector)
