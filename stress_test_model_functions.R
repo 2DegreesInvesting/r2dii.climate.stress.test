@@ -139,30 +139,6 @@ late_sudden_prices <- function(SDS_price, Baseline_price, overshoot_method) {
   return(ls_price)
 }
 
-
-loadConfig <- function() {
-  # Load configuration file
-  config::get(file = file.path(location_credit_methodology, "Scripts","workflow-generic.yml"))
-}
-
-
-create_stresstest_folders <- function(
-                                      date) {
-  folder_loc <- "./StressTesting/"
-
-  if (!dir.exists(folder_loc)) {
-    dir.create(folder_loc, recursive = TRUE)
-  }
-
-  if (!dir.exists(paste0(folder_loc, date))) {
-    dir.create(paste0(folder_loc, date), recursive = TRUE)
-
-    for (subfolder in c("Data", "Scripts", "Results")) {
-      dir.create(paste0(folder_loc, date, "/", subfolder), recursive = TRUE)
-    }
-  }
-}
-
 # COMPANY ANNUAL PROFITS BY TECH --------------------------------------------------
 
 net_profit_margin_setup <- function(net_profit_margin_coal,
@@ -219,24 +195,8 @@ calculate_net_profits <- function(df) {
     )
 }
 
-
-Merton_solve <- function(parm) {
-  # function that we will minimize in order to obtain
-  # V0, the value of company’s assets today, and sigmaV, assets’ volatility
-
-  V0 <- parm[1] # initial value for V0
-  sigmaV <- parm[2] # initial value for sigmaV
-
-
-  d1 <- (log(V0 / B) + (r + sigmaV^2 / 2) * maturity_T) / (sigmaV * sqrt(maturity_T))
-  d2 <- d1 - sigmaV * sqrt(maturity_T)
-  G <- V0 * pnorm(d1) - B * exp(-r * maturity_T) * pnorm(d2) - S0
-  H <- pnorm(d1) * sigmaV * V0 - sigmaS * S0
-
-  return(G^2 + H^2)
-}
-
 dcf_model_techlevel <- function(data, discount_rate) {
+
   # Calculates the annual discounted net profits on technology level
   data %>%
     group_by(investor_name, portfolio_name, id, company_name, ald_sector, technology, scenario_geography) %>%
