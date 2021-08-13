@@ -1040,20 +1040,3 @@ clean_unmatched_holdings <- function(portfolio){
   return(portfolio)
 
 }
-
-### Emissions work
-add_other_to_sector_classifications <- function(audit){
-  # fix sector classifications
-  audit <- audit %>%
-    mutate(ald_sector = ifelse(mapped_sector != "Other" & is.na(ald_sector), mapped_sector, ald_sector))
-
-  # create final sector grouping
-  audit <- audit %>%
-    mutate(sector = ifelse(!is.na(ald_sector), ald_sector, bics_sector))
-
-  # modify sector names
-  audit <- audit %>%
-    mutate(sector = ifelse(sector %in% c("Industrials", "Energy", "Utilities", "Materials"), paste0("Other ", sector), sector))
-
-  audit
-}
