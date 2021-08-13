@@ -849,23 +849,6 @@ add_bics_sector <- function(fin_data){
 
 }
 
-get_and_clean_revenue_data <- function(){
-
-  revenue_data <- data.frame()
-
-  if(has_revenue){
-    revenue_data <- read_rds(paste0(analysis_inputs_path, "/revenue_data_member_ticker.rda"))
-    # col_types = "dcdcclcd")
-
-    revenue_data <- revenue_data %>%
-      filter(tot_rev > 0) %>%
-      rename(revenue_sector = sector) %>%
-      ungroup()
-  }
-
-  return(revenue_data)
-}
-
 get_and_clean_company_fin_data <- function(){
 
   comp_fin_data_raw <- read_rds(paste0(analysis_inputs_path,"/consolidated_financial_data.rda")) %>%
