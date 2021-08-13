@@ -49,62 +49,6 @@ create_shock_scenario <- function(transition_scenario) {
 # INTERPOLATION MISSING scenario DATAPOINTS
 #################################
 
-interpolate_scenario_prod <- function(df) {
-  # ------ SPLINE INTERPOLATION OF scenario PRODUCTION VALUES -------------------
-  # scenario values are only given in 5 year intervals
-  # Following code changes the format of the portcheck company result file, adds missing years (NA values) and interpolates the missing values with spline interpolation
-  # IMPORTANT NOTE:
-  # Currently only works when the start year AND the end year have scenario values, otherwise the interpolation throws an error!
-  if (max(df$year) != 2040) {
-    print("You need to run function extend_scen_traj() first, scenario values up until 2040 are missing")
-    stop()
-  }
-
-  if (!"id" %in% names(df)) {
-    df$id <- "PortfolioLevel"
-  }
-
-  if (!"company_name" %in% names(df)) {
-    df$company_name <- "PortfolioLevel"
-  }
-  df %>%
-    ungroup() %>%
-    pivot_wider(
-      id_cols = c(
-        "investor_name", "portfolio_name", "id", "company_name",
-        "year", "scenario_geography", "ald_sector", "technology",
-        "plan_tech_prod"
-      ),
-      names_from = scenario, values_from = scen_tech_prod
-    ) %>%
-    complete(
-      investor_name = unique(df$investor_name),
-      portfolio_name = unique(df$portfolio_name),
-      id = unique(df$id),
-      company_name = unique(df$company_name),
-      ald_sector = sectors,
-      scenario_geography = scenario_geography,
-      technology = technologies,
-      year = start_year:end_year,
-      fill = list(Value = NA)
-    ) %>%
-    arrange(id, company_name, scenario_geography, ald_sector, technology, year) %>%
-    group_by(id, company_name, ald_sector, technology, scenario_geography) %>%
-    mutate(drop = sum(plan_tech_prod, na.rm = TRUE)) %>%
-    filter(!is.na(drop) & drop > 0) %>%
-    select(-drop) %>%
-    mutate(
-      SDS = na.approx(SDS),
-      NPSRTS = na.approx(NPSRTS),
-      CPS = ifelse(ald_sector == "Automotive", NA, na.approx(CPS)) # na.approx needs values at beginning (start_year) and end (end_year),
-      # otherwise it throws an error. cps doesnt exist for automotive,
-      # hence this line to prevent an error
-      # B2DS = na.approx(B2DS)
-    )
-}
-
-
-
 # STILL TO FIX: five year moving average
 
 f <- function(shock_strength_calc) {
