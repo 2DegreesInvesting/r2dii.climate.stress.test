@@ -1,31 +1,4 @@
 # Portfolio test functions
-get_ald_raw <- function(portfolio_type){
-
-  if (portfolio_type == "Equity"){
-
-    ald_raw <- read_rds(paste0(analysis_inputs_path, "/masterdata_ownership_datastore.rda"))
-  }
-
-  if (portfolio_type == "Bonds"){
-
-    ald_raw <- read_rds(paste0(analysis_inputs_path, "/masterdata_debt_datastore.rda"))
-  }
-
-
-  ald_raw <- ald_raw %>%
-    filter(year %in% seq(start_year, start_year+time_horizon)) %>%
-    mutate(ald_sector = if_else(technology == "Coal", "Coal", ald_sector),
-           ald_sector = if_else(technology %in% c("Oil", "Gas"), "Oil&Gas", ald_sector),
-           ald_production = if_else(technology == "Gas" & grepl("GJ", ald_production_unit), ald_production * (1/0.0372), ald_production),
-           ald_production = if_else(technology == "Oil" & grepl("GJ", ald_production_unit), ald_production * (1/6.12), ald_production),
-           ald_production_unit = if_else(technology == "Gas" & grepl("GJ", ald_production_unit), "m3 per day", ald_production_unit),
-           ald_production_unit = if_else(technology == "Oil" & grepl("GJ", ald_production_unit), "boe per day", ald_production_unit)
-    )
-
-  return(ald_raw)
-
-}
-
 aggregate_holdings <- function(portfolio){
 
   portfolio <- portfolio %>%
