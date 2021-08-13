@@ -177,17 +177,6 @@ data_check <- function(df) {
   return(check)
 }
 
-# Checks whether a value is null or blank
-is_blank_na <- function(x) {
-  if (is.na(x) | x == "") {
-    flag <- TRUE
-  } else {
-    flag <- FALSE
-  }
-  flag
-}
-
-
 # checks validity of project config
 # FIXME:
 # check_valid_cfg <- function(cfg) stopifnot(exists("cfg") == TRUE)
