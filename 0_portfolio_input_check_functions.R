@@ -1042,29 +1042,6 @@ clean_unmatched_holdings <- function(portfolio){
 }
 
 ### Emissions work
-
-get_average_emission_data <- function(inc_emission_factors){
-
-  average_sector_intensity <- data.frame()
-
-  if(inc_emission_factors){
-
-    average_sector_intensity <- readRDS(paste0(analysis_inputs_path,"average_sector_intensity.rda"))
-  }
-  return(average_sector_intensity)
-}
-
-get_company_emission_data <- function(inc_emission_factors){
-
-  company_emissions <- data.frame()
-
-  if(inc_emission_factors){
-
-    company_emissions <- readRDS(paste0(analysis_inputs_path,"company_emissions.rda"))
-  }
-  return(company_emissions)
-}
-
 prepare_portfolio_emissions <- function(
   audit_file,
   fin_data,
@@ -1234,60 +1211,6 @@ prepare_portfolio_emissions <- function(
     audit_sector_emissions,
     audit_company_emissions
   )
-}
-
-calculate_portfolio_emissions <- function(
-  inc_emission_factors,
-  audit_file,
-  fin_data,
-  comp_fin_data,
-  average_sector_intensity,
-  company_emissions
-) {
-
-  audit_sector_emissions <- data.frame()
-
-  if(inc_emission_factors){
-
-    audit_emissions <- prepare_portfolio_emissions(
-      audit_file,
-      fin_data,
-      comp_fin_data,
-      average_sector_intensity,
-      company_emissions
-    )
-
-    # calculate holding weight
-    audit_emissions <- audit_emissions %>%
-      group_by(
-        portfolio_name,
-        investor_name
-      ) %>%
-      mutate(weighting = value_usd / sum(value_usd, na.rm = TRUE))
-
-    # weight emissions by holding weight
-    audit_emissions <- audit_emissions %>%
-      mutate(weighted_emissions = weighting * emissions)
-
-
-    audit_emissions <- add_other_to_sector_classifications(audit_emissions)
-
-    # sum weighted emissions
-    audit_sector_emissions <- audit_emissions %>%
-      group_by(
-        portfolio_name,
-        investor_name,
-        asset_type,
-        sector
-      ) %>%
-      summarise(
-        value_usd = sum(value_usd, na.rm = TRUE),
-        weighted_sector_emissions = sum(weighted_emissions, na.rm = TRUE),
-        .groups = "drop_last"
-      )
-  }
-
-  audit_sector_emissions
 }
 
 add_other_to_sector_classifications <- function(audit){
