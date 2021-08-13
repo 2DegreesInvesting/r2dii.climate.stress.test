@@ -1,11 +1,3 @@
-set_col_types <- function(grouping_variables, fixed_col_types) {
-
-  # defines the column types based on the number of grouping_variables
-  port_col_types <- paste0(paste0(rep("c", length(grouping_variables)), collapse = ""), fixed_col_types)
-
-  return(port_col_types)
-}
-
 set_global_parameters <- function(file_path) {
   cfg <- config::get(file = file_path)
 
@@ -148,15 +140,6 @@ set_analysis_inputs_path <- function(twodii_internal, data_location_ext, datapre
   }
 
   return(analysis_inputs_path)
-}
-
-set_data_paths <- function(financial_timestamp = FINANCIAL.TIMESTAMP(), dataprep_timestamp = dataprep_timestamp, ald_timestamp = ALD.TIMESTAMP()) {
-  data_path <<- path_dropbox_2dii("PortCheck", "00_Data")
-  data_store_path <<- path_dropbox_2dii("PortCheck", "00_Data", "06_DataStore", datastore_timestamp, ald_timestamp)
-  scenario_data_path <<- path_dropbox_2dii("PortCheck", "00_Data", "01_ProcessedData", "03_ScenarioData")
-  master_data_path <<- path_dropbox_2dii("PortCheck", "00_Data", "01_ProcessedData", "01_SectorMasters", ald_timestamp)
-  general_fin_path <<- path_dropbox_2dii("PortCheck", "00_Data", "02_FinancialData")
-  sb_data_path <<- path_dropbox_2dii("PortCheck", "00_Data", "04_Other", "1_SovereignBonds")
 }
 
 copy_files <- function(project_name) {
