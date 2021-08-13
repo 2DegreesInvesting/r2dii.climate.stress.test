@@ -45,12 +45,8 @@ create_shock_scenario <- function(transition_scenario) {
   }
 }
 
-#################################
-# INTERPOLATION MISSING scenario DATAPOINTS
-#################################
-
 # STILL TO FIX: five year moving average
-
+# FIXME: can probably be removed
 f <- function(shock_strength_calc) {
   sum(scen_to_follow[1:(position_shock_year + duration_of_shock - 1)]) -
     sum(late_and_sudden[1:(position_shock_year - 1)]) -
