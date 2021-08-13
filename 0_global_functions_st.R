@@ -118,19 +118,6 @@ set_project_paths <- function(project_name, twodii_internal, project_location_ex
   outputs_path <<- paste0(project_location, "/50_Outputs")
 }
 
-set_git_path <- function() {
-  if (rstudioapi::isAvailable()) {
-    git_path <- dirname(rstudioapi::getActiveDocumentContext()$path)
-  } else {
-    git_path <- getwd()
-  }
-
-  git_path <- gsub("?", "", git_path)
-  git_path <- paste0(git_path, "/")
-
-  git_path
-}
-
 set_analysis_inputs_path <- function(twodii_internal, data_location_ext, dataprep_ref = DATAPREP.TIMESTAMP()) {
   if (twodii_internal) {
     analysis_inputs_path <- path_dropbox_2dii("PortCheck", "00_Data", "07_AnalysisInputs", dataprep_ref)
