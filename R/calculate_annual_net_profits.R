@@ -65,11 +65,9 @@ calculate_annual_net_profits <- function(data,
 
   data <- data %>%
     dplyr::mutate(
-      net_profits_baseline = .data$baseline * .data$Baseline_price -
-        ((1 - .data$net_profit_margin) * .data$Baseline_price) * .data$baseline -
+      net_profits_baseline = .data$baseline * .data$Baseline_price * .data$net_profit_margin -
         .data$ald_emissions_factor * .data$baseline * .data$baseline_tax,
-      net_profits_ls = .data$late_sudden * .data$late_sudden_price -
-        ((1 - .data$net_profit_margin) * .data$late_sudden_price) * .data$late_sudden -
+      net_profits_ls = .data$late_sudden * .data$late_sudden_price * .data$net_profit_margin -
         .data$ald_emissions_factor * .data$late_sudden * .data$late_sudden_tax
     )
 
