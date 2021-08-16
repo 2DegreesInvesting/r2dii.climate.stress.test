@@ -27,6 +27,7 @@ are given.
 Other import functions: 
 \code{\link{read_capacity_factors}()},
 \code{\link{read_company_data}()},
+\code{\link{read_ngfs_carbon_tax}()},
 \code{\link{read_transition_scenarios}()}
 }
 \concept{import functions}
