@@ -26,6 +26,7 @@ function_paths <- c(
       "annual_pd_change_technology_shock_year.R",
       "apply_filters.R",
       "asset_value_at_risk.R",
+      "calculate_annual_net_profits.R",
       "calculate_annual_pd_changes.R",
       "calculate_overall_pd_changes.R",
       "create_empty_result_df_pd_changes.R",
@@ -678,7 +679,12 @@ for (i in seq(1, nrow(transition_scenarios))) {
   equity_annual_profits <- equity_annual_profits %>%
     join_price_data(df_prices = df_prices) %>%
     # join_net_profit_margins(net_profit_margins = net_profit_margins) %>%
-    calculate_net_profits() %>%
+    calculate_annual_net_profits(
+      carbon_price_data = ngfs_carbon_tax,
+      baseline_tax = "Current policies (Hot house world, Rep)",
+      late_sudden_tax = "Delayed 2C with limited CDR (Disorderly, Rep)"
+    ) %>%
+    # calculate_net_profits() %>%
     dcf_model_techlevel(discount_rate = discount_rate)
 
   qa_annual_profits_eq <- qa_annual_profits_eq %>%
