@@ -1,23 +1,3 @@
-set_location <- function() {
-  if (rstudioapi::isAvailable()) {
-    working_location <- dirname(rstudioapi::getActiveDocumentContext()$path)
-  } else {
-    working_location <- getwd()
-  }
-
-  working_location <- paste0(working_location, "/")
-
-  return(working_location)
-}
-
-set_col_types <- function(grouping_variables, fixed_col_types) {
-
-  # defines the column types based on the number of grouping_variables
-  port_col_types <- paste0(paste0(rep("c", length(grouping_variables)), collapse = ""), fixed_col_types)
-
-  return(port_col_types)
-}
-
 set_global_parameters <- function(file_path) {
   cfg <- config::get(file = file_path)
 
@@ -138,19 +118,6 @@ set_project_paths <- function(project_name, twodii_internal, project_location_ex
   outputs_path <<- paste0(project_location, "/50_Outputs")
 }
 
-set_git_path <- function() {
-  if (rstudioapi::isAvailable()) {
-    git_path <- dirname(rstudioapi::getActiveDocumentContext()$path)
-  } else {
-    git_path <- getwd()
-  }
-
-  git_path <- gsub("?", "", git_path)
-  git_path <- paste0(git_path, "/")
-
-  git_path
-}
-
 set_analysis_inputs_path <- function(twodii_internal, data_location_ext, dataprep_ref = DATAPREP.TIMESTAMP()) {
   if (twodii_internal) {
     analysis_inputs_path <- path_dropbox_2dii("PortCheck", "00_Data", "07_AnalysisInputs", dataprep_ref)
@@ -160,91 +127,6 @@ set_analysis_inputs_path <- function(twodii_internal, data_location_ext, datapre
   }
 
   return(analysis_inputs_path)
-}
-
-set_data_paths <- function(financial_timestamp = FINANCIAL.TIMESTAMP(), dataprep_timestamp = dataprep_timestamp, ald_timestamp = ALD.TIMESTAMP()) {
-  data_path <<- path_dropbox_2dii("PortCheck", "00_Data")
-  data_store_path <<- path_dropbox_2dii("PortCheck", "00_Data", "06_DataStore", datastore_timestamp, ald_timestamp)
-  scenario_data_path <<- path_dropbox_2dii("PortCheck", "00_Data", "01_ProcessedData", "03_ScenarioData")
-  master_data_path <<- path_dropbox_2dii("PortCheck", "00_Data", "01_ProcessedData", "01_SectorMasters", ald_timestamp)
-  general_fin_path <<- path_dropbox_2dii("PortCheck", "00_Data", "02_FinancialData")
-  sb_data_path <<- path_dropbox_2dii("PortCheck", "00_Data", "04_Other", "1_SovereignBonds")
-}
-
-copy_files <- function(project_name) {
-  folder_location <- paste0(set_git_path(), "/sample_files/20_input_files")
-
-  input_file <- paste0(raw_input_path, "/", project_name, "_Input.csv")
-  parameter_file <- paste0(par_file_path, "/ReportParameters.yml")
-  yml_file <- paste0(par_file_path, "/AnalysisParameters.yml")
-
-  if (!file.exists(input_file)) {
-    file.copy(paste0(folder_location, "/ProjectName_Input.csv"), input_file, overwrite = F)
-  }
-
-  if (!file.exists(parameter_file)) {
-    file.copy(paste0(folder_location, "/ReportParameters.yml"), parameter_file, overwrite = F)
-  }
-
-  if (!file.exists(yml_file)) {
-    file.copy(paste0(folder_location, "/AnalysisParameters.yml"), yml_file, overwrite = F)
-  }
-}
-
-create_project_folder <- function(project_name, twodii_internal, project_location_ext) {
-  project_location <- ifelse(twodii_internal,
-    path_dropbox_2dii("PortCheck_v2", "10_Projects", project_name),
-    paste0(project_location_ext, "/", project_name)
-  )
-
-  # folder_location <- paste0(getwd(),"/", "sample_files/10_folder_structures/start_folders")
-
-  project_folders <- c(
-    "00_Log_Files",
-    "10_Parameter_File",
-    "20_Raw_Inputs",
-    "30_Processed_Inputs",
-    "40_Results",
-    "50_Outputs"
-  )
-
-  project_folders <- paste0(project_location, "/", project_folders)
-
-  # Create the new project folder
-  if (dir.exists(project_location)) {
-    print("Project Folder Already Exists")
-  } else {
-    dir.create(project_location)
-    lapply(project_folders, function(x) dir.create(x))
-  }
-}
-
-create_results_folder <- function(project_name, investor_name_select, portfolio_name_select, report_handle) {
-  investor_folder <- paste0(outputs_path, "/", investor_name_select, "/")
-  portfolio_folder <- paste0(investor_folder, "/", portfolio_name_select, "/")
-  report_folder <- paste0(portfolio_folder, report_handle, "/")
-
-  folder_structure <- paste0(getwd(), "/", "sample_files/10_folder_structures/results_folders")
-
-  folder_structure <- paste0(folder_structure, "/")
-  # Create the new project folder
-  if (!dir.exists(investor_folder)) {
-    dir.create(investor_folder)
-  }
-
-  if (!dir.exists(portfolio_folder)) {
-    dir.create(portfolio_folder)
-    # a <- list.dirs(folder_structure)
-    # b <- basename(a)[-1]
-    # c <- paste0(portfolio_folder,b)
-    # lapply(c, function(x) dir.create(x))
-  }
-
-  if (!dir.exists(report_folder)) {
-    dir.create(report_folder)
-  }
-
-  report_path <<- report_folder
 }
 
 first_char_up <- function(x) {
@@ -281,17 +163,6 @@ data_check <- function(df) {
 
   return(check)
 }
-
-# Checks whether a value is null or blank
-is_blank_na <- function(x) {
-  if (is.na(x) | x == "") {
-    flag <- TRUE
-  } else {
-    flag <- FALSE
-  }
-  flag
-}
-
 
 # checks validity of project config
 # FIXME:
