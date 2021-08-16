@@ -47,16 +47,16 @@ test_that("scenario data after extension equal production in start year times
   verify_input_manual_electric <- test_data %>%
     dplyr::filter(
       .data$year == test_start &
-      .data$technology == verify_technology &
-      .data$scenario == verify_scenario
+        .data$technology == verify_technology &
+        .data$scenario == verify_scenario
     ) %>%
     dplyr::pull(.data$scen_tech_prod)
 
   verify_scenario_manual_electric <- test_scenario %>%
     dplyr::filter(
       .data$year == test_end &
-      .data$technology == verify_technology &
-      .data$scenario == verify_scenario
+        .data$technology == verify_technology &
+        .data$scenario == verify_scenario
     ) %>%
     dplyr::pull(.data$fair_share_perc)
 
@@ -66,7 +66,7 @@ test_that("scenario data after extension equal production in start year times
   verify_result_electric <- test_results %>%
     dplyr::filter(
       .data$year == test_end &
-      .data$technology == verify_technology
+        .data$technology == verify_technology
     ) %>%
     dplyr::pull(verify_scenario)
 
