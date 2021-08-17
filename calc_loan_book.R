@@ -124,12 +124,12 @@ loan_share <- matched_non_negative %>%
     matched_portfolio_loan_size_outstanding = sum(loan_size_outstanding, na.rm = TRUE),
     matched_portfolio_loan_size_credit_limit = sum(loan_size_credit_limit, na.rm = TRUE)
   ) %>%
-  #TODO: either name or name_ald.. is id_2dii relevant?
+  # TODO: either name or name_ald.. is id_2dii relevant?
   group_by(name_ald, sector_ald, loan_size_outstanding_currency, loan_size_credit_limit_currency) %>%
   mutate(
-    comp_loan_share_outstanding = sum(loan_size_outstanding, na.rm = TRUE)/portfolio_loan_size_outstanding,
+    comp_loan_share_outstanding = sum(loan_size_outstanding, na.rm = TRUE) / portfolio_loan_size_outstanding,
     comp_loan_size_outstanding = sum(loan_size_outstanding, na.rm = TRUE),
-    comp_loan_share_credit_limit = sum(loan_size_credit_limit, na.rm = TRUE)/portfolio_loan_size_credit_limit,
+    comp_loan_share_credit_limit = sum(loan_size_credit_limit, na.rm = TRUE) / portfolio_loan_size_credit_limit,
     comp_loan_size_credit_limit = sum(loan_size_credit_limit, na.rm = TRUE)
   ) %>%
   ungroup() %>%
@@ -161,9 +161,9 @@ loan_share %>%
 sector_share <- matched_non_negative %>%
   group_by(sector_ald, loan_size_outstanding_currency, loan_size_credit_limit_currency) %>%
   summarise(
-    sector_loan_share_outstanding = sum(loan_size_outstanding, na.rm = TRUE)/portfolio_size$portfolio_loan_size_outstanding,
+    sector_loan_share_outstanding = sum(loan_size_outstanding, na.rm = TRUE) / portfolio_size$portfolio_loan_size_outstanding,
     sector_loan_size_outstanding = sum(loan_size_outstanding, na.rm = TRUE),
-    sector_loan_share_credit_limit = sum(loan_size_credit_limit, na.rm = TRUE)/portfolio_size$portfolio_loan_size_credit_limit,
+    sector_loan_share_credit_limit = sum(loan_size_credit_limit, na.rm = TRUE) / portfolio_size$portfolio_loan_size_credit_limit,
     sector_loan_size_credit_limit = sum(loan_size_credit_limit, na.rm = TRUE),
     .groups = "drop"
   ) %>%
@@ -202,7 +202,8 @@ matched_company_weighted <- matched_non_negative %>%
   rename(
     production_weighted = production
   ) %>%
-  mutate(technology_share = round(technology_share, 8)) %>% # rounding errors can lead to duplicates
+  # FIXME: rounding errors can lead to duplicates
+  mutate(technology_share = round(technology_share, 8)) %>%
   distinct_all()
 
 matched_company_unweighted <- matched_non_negative %>%
@@ -240,8 +241,8 @@ matched_company_loan_share <- matched_company %>%
     -c(
       comp_loan_size_outstanding, comp_loan_size_credit_limit,
       loan_size_outstanding_currency, loan_size_credit_limit_currency
-      )
-    ) %>%
+    )
+  ) %>%
   rename(
     loan_share_outstanding = comp_loan_share_outstanding,
     loan_share_credit_limit = comp_loan_share_credit_limit
@@ -250,4 +251,3 @@ matched_company_loan_share <- matched_company %>%
 # Write to results
 matched_company_loan_share %>%
   write_csv(path_dropbox_2dii("PortCheck_v2", "10_Projects", project_name, "40_Results", paste0("company_results_lb_", project_name, ".csv")))
-

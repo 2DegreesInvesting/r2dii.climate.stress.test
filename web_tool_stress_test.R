@@ -276,9 +276,12 @@ if (identical(calculation_level, "company") & company_exclusion) {
 
 nesting_vars <- c(
   "investor_name", "portfolio_name", "equity_market", "ald_sector", "technology",
-  "scenario", "allocation", "scenario_geography"#, "company_name"
+  "scenario", "allocation", "scenario_geography", "company_name"
 )
-if (identical(calculation_level, "company")) {nesting_vars <- c(nesting_vars, "company_name")}
+
+if (identical(calculation_level, "company")) {
+  nesting_vars <- c(nesting_vars, "company_name")
+}
 
 # the webtool should run through regardless of whether there are data for only one of the asset types or both
 if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calculation_level, ".rda")))) {
@@ -357,7 +360,8 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
 
       # Calculate late and sudden prices for scenario i
       df_prices <- df_price %>%
-        mutate(Baseline = NPS) %>% # FIXME this should be parameterized!!
+        # FIXME this should be parameterized!!
+        mutate(Baseline = NPS) %>%
         rename(
           year = year, ald_sector = sector, technology = technology, NPS_price = NPS,
           SDS_price = SDS, Baseline_price = Baseline, B2DS_price = B2DS
@@ -419,10 +423,12 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
           scenario_geography == scenario_geography_filter
         )
 
-      if(identical(calculation_level, "company")) {
+      if (identical(calculation_level, "company")) {
         plan_carsten_equity <- plan_carsten_equity %>%
-          distinct(investor_name, portfolio_name, company_name, ald_sector, technology,
-                   scenario_geography, year, plan_carsten, plan_sec_carsten)
+          distinct(
+            investor_name, portfolio_name, company_name, ald_sector, technology,
+            scenario_geography, year, plan_carsten, plan_sec_carsten
+          )
 
         if (!exists("excluded_companies")) {
           equity_results <- bind_rows(
@@ -453,11 +459,12 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
             )
           )
         }
-
       } else {
         plan_carsten_equity <- plan_carsten_equity %>%
-          distinct(investor_name, portfolio_name, ald_sector, technology,
-                   scenario_geography, year, plan_carsten, plan_sec_carsten)
+          distinct(
+            investor_name, portfolio_name, ald_sector, technology,
+            scenario_geography, year, plan_carsten, plan_sec_carsten
+          )
 
         equity_results <- bind_rows(
           equity_results,
@@ -472,7 +479,6 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
           )
         )
       }
-
     }
   }
 } else {
@@ -555,7 +561,8 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
 
       # Calculate late and sudden prices for scenario i
       df_prices <- df_price %>%
-        mutate(Baseline = NPS) %>% # FIXME this should be parameterized!!
+        # FIXME this should be parameterized!!
+        mutate(Baseline = NPS) %>%
         rename(
           year = year, ald_sector = sector, technology = technology, NPS_price = NPS,
           SDS_price = SDS, Baseline_price = Baseline, B2DS_price = B2DS
@@ -615,10 +622,12 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
           scenario_geography == scenario_geography_filter
         )
 
-      if(identical(calculation_level, "company")) {
+      if (identical(calculation_level, "company")) {
         plan_carsten_bonds <- plan_carsten_bonds %>%
-          distinct(investor_name, portfolio_name, company_name, ald_sector, technology,
-                   scenario_geography, year, plan_carsten, plan_sec_carsten)
+          distinct(
+            investor_name, portfolio_name, company_name, ald_sector, technology,
+            scenario_geography, year, plan_carsten, plan_sec_carsten
+          )
 
         if (!exists("excluded_companies")) {
           bonds_results <- bind_rows(
@@ -649,11 +658,12 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
             )
           )
         }
-
       } else {
         plan_carsten_bonds <- plan_carsten_bonds %>%
-          distinct(investor_name, portfolio_name, ald_sector, technology,
-                   scenario_geography, year, plan_carsten, plan_sec_carsten)
+          distinct(
+            investor_name, portfolio_name, ald_sector, technology,
+            scenario_geography, year, plan_carsten, plan_sec_carsten
+          )
 
         bonds_results <- bind_rows(
           bonds_results,
@@ -668,7 +678,6 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
           )
         )
       }
-
     }
   }
 } else {

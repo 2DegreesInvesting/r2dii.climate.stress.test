@@ -35,5 +35,4 @@ read_ngfs_carbon_tax <- function(path = NULL) {
   stopifnot(data_has_expected_columns)
 
   return(data)
-
 }

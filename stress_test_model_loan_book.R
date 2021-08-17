@@ -100,7 +100,7 @@ investorname_loan_book <- "Meta Investor" #' Fixed Income Index'  #'Meta Portfol
 # Get analysis parameters from the projects AnalysisParameters.yml - similar to PACTA_analysis
 
 # TODO: where to get this parameter
-cfg <- config::get(file = file.path(project_location, "10_Parameter_File","AnalysisParameters.yml"))
+cfg <- config::get(file = file.path(project_location, "10_Parameter_File", "AnalysisParameters.yml"))
 # OPEN: check_valid_cfg() not applicable here
 start_year <- cfg$AnalysisPeriod$Years.Startyear
 dataprep_timestamp <- cfg$TimeStamps$DataPrep.Timestamp # is this being used for anything???
@@ -123,7 +123,7 @@ scenarios <- c(
   "CPS",
   "NPS",
   "NPSRTS",
-  "SDS"#,
+  "SDS",
   # "ETP2017_B2DS",
   # "ETP2017_NPS",
   # "ETP2017_SDS",
@@ -132,7 +132,7 @@ scenarios <- c(
   # "GECO2019_ref",
   # "WEO2019_CPS",
   # "WEO2019_NPS",
-  # "WEO2019_SDS" # ,
+  # "WEO2019_SDS",
   # "WEO2020_NPS",
   # "WEO2020_SDS"
 )
@@ -205,8 +205,8 @@ net_profit_margin_hydrocap <- cfg_mod$net_profit_margin$hydrocap
 
 # TODO: move to config file
 credit_type <- c(
- # "outstanding"
- "credit_limit"
+  # "outstanding"
+  "credit_limit"
 )
 loan_share_credit_type <- paste0("loan_share_", credit_type)
 
@@ -261,9 +261,9 @@ sector_credit_type <- paste0("sector_loan_size_", credit_type)
 credit_currency <- paste0("loan_size_", credit_type, "_currency")
 
 sector_exposures <- read_csv(
-    path_dropbox_2dii("PortCheck_v2", "10_Projects", project_name, "30_Processed_Inputs", paste0("portfolio_overview_", project_name, ".csv")),
-    col_types = "cddcddc"
-  ) %>%
+  path_dropbox_2dii("PortCheck_v2", "10_Projects", project_name, "30_Processed_Inputs", paste0("portfolio_overview_", project_name, ".csv")),
+  col_types = "cddcddc"
+) %>%
   mutate(
     sector_ald = case_when(
       sector_ald == "power" ~ "Power",
@@ -316,12 +316,12 @@ capacity_factors_power <- capacity_factors_power %>%
 # Load scenario data----------------------------------------
 
 scen_data_file <- ifelse(twodii_internal == TRUE,
-                         path_dropbox_2dii("PortCheck", "00_Data", "01_ProcessedData", "03_ScenarioData", paste0("Scenarios_AnalysisInput_", start_year, ".csv")),
-                         file.path(data_location, paste0("Scenarios_AnalysisInput_", start_year, ".csv"))
+  path_dropbox_2dii("PortCheck", "00_Data", "01_ProcessedData", "03_ScenarioData", paste0("Scenarios_AnalysisInput_", start_year, ".csv")),
+  file.path(data_location, paste0("Scenarios_AnalysisInput_", start_year, ".csv"))
 )
 
 # TODO: EITHER wrap check into more evocative function OR remove this when common format is agreed upon
-if(twodii_internal == TRUE | start_year < 2020) {
+if (twodii_internal == TRUE | start_year < 2020) {
   scenario_data <- readr::read_csv(scen_data_file, col_types = "ccccccccnnnncnnn") %>%
     filter(Indicator %in% c("Capacity", "Production", "Sales")) %>%
     filter(!(Technology == "RenewablesCap" & !is.na(Sub_Technology))) %>%
@@ -344,7 +344,8 @@ if(twodii_internal == TRUE | start_year < 2020) {
 }
 
 scenario_data <- scenario_data %>%
-  filter(source %in% c("ETP2017", "WEO2019")) %>% #TODO: this should be set elsewhere
+  # TODO: this should be set elsewhere
+  filter(source %in% c("ETP2017", "WEO2019")) %>%
   filter(!(source == "ETP2017" & ald_sector == "Power")) %>%
   mutate(scenario = ifelse(str_detect(scenario, "_"), str_extract(scenario, "[^_]*$"), scenario)) %>%
   check_scenario_timeframe(start_year = start_year, end_year = end_year)
@@ -355,7 +356,8 @@ scenario_data <- scenario_data %>%
   filter(
     ald_sector %in% sectors &
       technology %in% technologies &
-      scenario_geography == scenario_geography_filter)
+      scenario_geography == scenario_geography_filter
+  )
 
 
 df_price <- readr::read_csv(file.path(data_location, paste0("prices_data_", price_data_version, ".csv")), col_types = "ncccccncncncnc") %>%
@@ -403,7 +405,9 @@ nesting_vars <- c(
   "investor_name", "portfolio_name", "equity_market", "ald_sector", "technology",
   "scenario", "allocation", "scenario_geography"
 )
-if (identical(calculation_level, "company")) {nesting_vars <- c(nesting_vars, "company_name")}
+if (identical(calculation_level, "company")) {
+  nesting_vars <- c(nesting_vars, "company_name")
+}
 
 pacta_loanbook_results <- pacta_loanbook_results_full %>%
   mutate(scenario = str_replace(scenario, "NPSRTS", "NPS")) %>%
@@ -484,7 +488,8 @@ for (i in seq(1, nrow(transition_scenarios))) {
   print(overshoot_method)
   # Calculate late and sudden prices for scenario i
   df_prices <- df_price %>%
-    mutate(Baseline = NPS) %>% # FIXME this should be parameterized!!
+    # FIXME this should be parameterized!!
+    mutate(Baseline = NPS) %>%
     rename(
       year = year, ald_sector = sector, technology = technology, NPS_price = NPS,
       SDS_price = SDS, Baseline_price = Baseline, B2DS_price = B2DS
@@ -549,9 +554,11 @@ for (i in seq(1, nrow(transition_scenarios))) {
       technology %in% technologies,
       scenario_geography == scenario_geography_filter
     ) %>%
-    distinct(investor_name, portfolio_name, company_name, ald_sector, technology,
-             scenario_geography, year, plan_carsten, plan_sec_carsten, term,
-             PD_0)
+    distinct(
+      investor_name, portfolio_name, company_name, ald_sector, technology,
+      scenario_geography, year, plan_carsten, plan_sec_carsten, term,
+      PD_0
+    )
 
   if (!exists("excluded_companies")) {
     loanbook_results <- bind_rows(
@@ -599,7 +606,6 @@ for (i in seq(1, nrow(transition_scenarios))) {
         risk_free_interest_rate = risk_free_rate
       )
     )
-
   } else {
     loanbook_results <- bind_rows(
       loanbook_results,
@@ -646,7 +652,6 @@ for (i in seq(1, nrow(transition_scenarios))) {
         risk_free_interest_rate = risk_free_rate
       )
     )
-
   }
 }
 
@@ -668,9 +673,9 @@ loanbook_results <- loanbook_results %>%
 
 loanbook_results %>%
   readr::write_csv(file.path(
-      results_path,
-      paste0("stress_test_results_lb_comp_", project_name, ".csv")
-    ))
+    results_path,
+    paste0("stress_test_results_lb_comp_", project_name, ".csv")
+  ))
 
 # Output corporate loan book results on portfolio level
 loanbook_results_pf <- loanbook_results %>%
@@ -699,9 +704,9 @@ loanbook_results_pf <- loanbook_results %>%
 
 loanbook_results_pf %>%
   readr::write_csv(file.path(
-      results_path,
-      paste0("stress_test_results_lb_port_", project_name, ".csv")
-    ))
+    results_path,
+    paste0("stress_test_results_lb_port_", project_name, ".csv")
+  ))
 
 
 loanbook_expected_loss <- loanbook_expected_loss %>%
@@ -789,17 +794,17 @@ production_over_time <- show_prod_trajectories(
   technology = technologies,
   geography_filter = scenario_geography_filter
 ) +
-theme(
-  axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
-  legend.background = element_rect(fill = "white"),
-  legend.position = "bottom",
-  panel.background = element_rect(fill = "white", colour = "white"),
-  panel.grid.major.y = element_line(colour = "lightgrey"),
-  panel.grid.major.x = element_blank(),
-  panel.grid.minor = element_blank(),
-  plot.background = element_rect(fill = "white"),
-  strip.background = element_rect(fill = "lightgrey")
-)
+  theme(
+    axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+    legend.background = element_rect(fill = "white"),
+    legend.position = "bottom",
+    panel.background = element_rect(fill = "white", colour = "white"),
+    panel.grid.major.y = element_line(colour = "lightgrey"),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor = element_blank(),
+    plot.background = element_rect(fill = "white"),
+    strip.background = element_rect(fill = "lightgrey")
+  )
 
 # distribution of shock impact over time by technology
 
@@ -833,8 +838,10 @@ technology_change_by_shock_year_lbk <- show_var_change_by_shock_year(
 #
 # pre processing
 qa_annual_profits_lbk_pf <- qa_annual_profits_lbk %>%
-  group_by(year, investor_name, portfolio_name, scenario_geography,
-           ald_sector, technology, year_of_shock) %>%
+  group_by(
+    year, investor_name, portfolio_name, scenario_geography,
+    ald_sector, technology, year_of_shock
+  ) %>%
   summarise(
     baseline = sum(baseline, na.rm = TRUE),
     scen_to_follow_aligned = sum(scen_to_follow_aligned, na.rm = TRUE),
@@ -847,17 +854,17 @@ prod_baseline_target_ls <- show_prod_baseline_target_ls_pf(
   geography_filter = scenario_geography_filter,
   shock_year = 2030
 ) +
-theme(
-  axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
-  legend.background = element_rect(fill = "white"),
-  legend.position = "bottom",
-  panel.background = element_rect(fill = "white", colour = "white"),
-  panel.grid.major.y = element_line(colour = "lightgrey"),
-  panel.grid.major.x = element_blank(),
-  panel.grid.minor = element_blank(),
-  plot.background = element_rect(fill = "white"),
-  strip.background = element_rect(fill = "lightgrey")
-)
+  theme(
+    axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+    legend.background = element_rect(fill = "white"),
+    legend.position = "bottom",
+    panel.background = element_rect(fill = "white", colour = "white"),
+    panel.grid.major.y = element_line(colour = "lightgrey"),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor = element_blank(),
+    plot.background = element_rect(fill = "white"),
+    strip.background = element_rect(fill = "lightgrey")
+  )
 
 
 # check the value technology share (plan carsten) of each asset type
@@ -865,8 +872,10 @@ theme(
 #
 # pre process: needs aggregation to pf level
 plan_carsten_loanbook_pf <- plan_carsten_loanbook %>%
-  group_by(year, investor_name, portfolio_name, scenario_geography,
-           ald_sector, technology) %>%
+  group_by(
+    year, investor_name, portfolio_name, scenario_geography,
+    ald_sector, technology
+  ) %>%
   summarise(plan_carsten = sum(plan_carsten, na.rm = TRUE)) %>%
   ungroup()
 
@@ -930,4 +939,3 @@ plot_annual_pd_change_shock_year_tech <- loanbook_annual_pd_changes_sector %>%
     shock_year_filter = c(2025, 2030, 2035),
     geography_filter = "Global"
   )
-

@@ -13,9 +13,9 @@ library(tidyr)
 library(tidyselect)
 library(zoo)
 
-source(file.path("R","utils.R"))
-source(file.path("R","set_paths.R"))
-source(file.path("R","get_st_data_path.R"))
+source(file.path("R", "utils.R"))
+source(file.path("R", "set_paths.R"))
+source(file.path("R", "get_st_data_path.R"))
 source("stress_test_model_functions.R")
 source("0_global_functions_st.R")
 source("0_portfolio_input_check_functions.R")
@@ -171,7 +171,6 @@ calc_boe_exposures <- function(pacta_exposures) {
         technology %in% c("GasCap") ~ "Gas Power",
         technology %in% c("OilCap") ~ "Oil Power",
         technology %in% c("Electric") ~ "Electric",
-
         ald_sector %in% c("Shipping", "Aviation") ~ NA_character_,
         ald_sector %in% c("Cement", "Steel") ~ "Fossil Fuel Based",
         TRUE ~ technology
