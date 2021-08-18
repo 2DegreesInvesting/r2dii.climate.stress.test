@@ -261,8 +261,7 @@ check_scenario_settings <- function(portfolio, scenario_selections = scenarios) 
         ") and scenarios provided in the analysed portfolio (",
         paste0(portfolio %>% pull(.data$scenario) %>% unique(), collapse = ", "),
         ") differ."
-      ),
-      call. = FALSE
+      ), call. = FALSE
     )
   } else {
     portfolio

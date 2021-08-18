@@ -19,11 +19,13 @@
 #'
 #' @export
 
-show_carbon_budget <- function(data,
+show_carbon_budget <- function(
+                               data,
                                scenarios = NULL,
                                target_scenario = NULL,
                                scenario_name_qa = "Carbon balance 2030",
                                cumulative = FALSE) {
+
   scenarios <- scenarios %||% .env$scenario_data
   target_scenario <- target_scenario %||% .env$scenario_to_follow_ls
 
@@ -154,4 +156,5 @@ show_carbon_budget <- function(data,
         )
       )
   }
+
 }

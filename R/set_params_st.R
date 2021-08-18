@@ -1,5 +1,5 @@
 # FIXME: use different way to access configs than assigning everything to globalEnv. Causes NOTE in R CMD check
-set_project_parameters <- function(file_path) {
+set_project_parameters <- function(file_path){
   cfg <- config::get(file = file_path)
 
   project_report_name <<- cfg$reporting$project_report_name
@@ -79,4 +79,5 @@ set_project_parameters <- function(file_path) {
     inc_stresstest <<- FALSE
     warning("Warning: inc_stresstest set to standard value (FALSE) as it is not defined in the parameter file")
   }
+
 }

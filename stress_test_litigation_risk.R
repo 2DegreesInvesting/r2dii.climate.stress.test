@@ -11,9 +11,9 @@ library(purrr)
 library(zoo)
 
 
-source(file.path("R", "get_st_data_path.R"))
-source(file.path("R", "utils.R"))
-source(file.path("R", "set_paths.R"))
+source(file.path("R","get_st_data_path.R"))
+source(file.path("R","utils.R"))
+source(file.path("R","set_paths.R"))
 source("stress_test_model_functions.R")
 source("0_global_functions_st.R")
 
@@ -65,7 +65,7 @@ cfg_litigation_params <- config::get(file = "params_litigation_risk.yml")
 # Get analysis parameters from the projects AnalysisParameters.yml - similar to PACTA_analysis
 
 cfg <- config::get(
-  file = file.path(project_location, "10_Parameter_File", "AnalysisParameters.yml")
+  file = file.path(project_location, "10_Parameter_File","AnalysisParameters.yml")
 )
 # OPEN: check_valid_cfg() not applicable here
 start_year <- cfg$AnalysisPeriod$Years.Startyear
@@ -91,7 +91,7 @@ scenarios <- c(
   "CPS",
   "NPS",
   "NPSRTS",
-  "SDS",
+  "SDS"#,
   # "ETP2017_B2DS",
   # "ETP2017_NPS",
   # "ETP2017_SDS",
@@ -100,7 +100,7 @@ scenarios <- c(
   # "GECO2019_ref",
   # "WEO2019_CPS",
   # "WEO2019_NPS",
-  # "WEO2019_SDS",
+  # "WEO2019_SDS" # ,
   # "WEO2020_NPS",
   # "WEO2020_SDS"
 )
@@ -269,6 +269,7 @@ delta_carbon_damage_sds_cps <- cdd_carbon_budget_plus_damages %>%
 cdd_results <- c()
 
 for (i in seq(1, nrow(scenario))) {
+
   cdd_scenario_i <- scenario[i, ]
 
   cdd_company_i <- cdd_company_carbon_budgets %>%
@@ -295,6 +296,7 @@ for (i in seq(1, nrow(scenario))) {
 
   cdd_results <- cdd_results %>%
     bind_rows(cdd_company_i)
+
 }
 
 cdd_results %>% write_csv(
@@ -311,6 +313,7 @@ scenario <- litigation_risk_scenarios %>% filter(model == "SCC")
 scc_results <- c()
 
 for (i in seq(1, nrow(scenario))) {
+
   scc_scenario_i <- scenario[i, ]
 
   scc_company_i <- company_carbon_budgets %>%
@@ -322,9 +325,9 @@ for (i in seq(1, nrow(scenario))) {
     mutate(
       scc_liability_total =
         overshoot_actual_b2ds * scc_scenario_i$scc *
-          scc_scenario_i$exp_share_damages_paid,
+        scc_scenario_i$exp_share_damages_paid,
       scc_liability = scc_liability_total /
-        scc_scenario_i$timeframe_emissions_overshoot,
+           scc_scenario_i$timeframe_emissions_overshoot,
       scc_liability_perc_ebit = scc_liability / ebit
     ) %>%
     select(
@@ -337,6 +340,7 @@ for (i in seq(1, nrow(scenario))) {
 
   scc_results <- scc_results %>%
     bind_rows(scc_company_i)
+
 }
 
 scc_results %>% write_csv(
@@ -354,9 +358,11 @@ backwards_years <- cfg_litigation_params$litigation$backwards_years
 her_results <- c()
 
 for (i in seq(1, nrow(scenario))) {
+
   her_scenario_i <- scenario[i, ]
 
-  if (her_scenario_i$scc > 0 & her_scenario_i$past_yearly_costs_usd == 0) {
+  if(her_scenario_i$scc > 0 & her_scenario_i$past_yearly_costs_usd == 0) {
+
     her_company_i <- company_historical_emissions %>%
       left_join(company_ebit_data_input, by = c("company_name")) %>%
       filter(ebit > 0)
@@ -371,14 +377,16 @@ for (i in seq(1, nrow(scenario))) {
         her_liability_perc_ebit = her_liability / ebit
       ) %>%
       select(
-        scenario_name, company_name, type, # unit_emissions,
+        scenario_name, company_name, type, #unit_emissions,
         actual_emissions = scope_1_plus_3, share_global_industrial_ghg,
         her_liability, her_liability_total, ebit, her_liability_perc_ebit
       )
 
     her_results <- her_results %>%
       bind_rows(her_company_i)
-  } else if (her_scenario_i$scc == 0 & her_scenario_i$past_yearly_costs_usd > 0) {
+
+  } else if(her_scenario_i$scc == 0 & her_scenario_i$past_yearly_costs_usd > 0) {
+
     her_company_i <- company_historical_emissions %>%
       left_join(company_ebit_data_input, by = c("company_name")) %>%
       filter(ebit > 0)
@@ -395,16 +403,18 @@ for (i in seq(1, nrow(scenario))) {
         her_liability_perc_ebit = her_liability / ebit
       ) %>%
       select(
-        scenario_name, company_name, type, # unit_emissions,
+        scenario_name, company_name, type, #unit_emissions,
         actual_emissions = scope_1_plus_3, share_global_industrial_ghg,
         her_liability, her_liability_total, ebit, her_liability_perc_ebit
       )
 
     her_results <- her_results %>%
       bind_rows(her_company_i)
+
   } else {
     next("Cannot process the scenario parameters for the HER scenario")
   }
+
 }
 
 her_results %>% write_csv(
@@ -437,8 +447,7 @@ company_results <- cdd_results %>%
         ebit,
         liability_perc_ebit = scc_liability_perc_ebit
       )
-  ) %>%
-  bind_rows(
+  ) %>% bind_rows(
     her_results %>%
       select(
         scenario_name, company_name,
@@ -492,9 +501,9 @@ company_results <- company_results %>%
   )
 
 df_timeframe <- tibble(
-  timeframe = seq(start_year, end_year),
-  value = NA_real_
-) %>%
+    timeframe = seq(start_year, end_year),
+    value = NA_real_
+  ) %>%
   pivot_wider(names_from = timeframe, values_from = value)
 
 
@@ -504,11 +513,9 @@ company_results_dcf <- company_results %>%
     df_timeframe
   ) %>%
   pivot_longer(
-    cols = -c(
-      scenario_name, company_name, sector, liability,
-      ebit, liability_perc_ebit, years_to_litigation,
-      settlement_factor, settlement
-    ),
+    cols = -c(scenario_name, company_name, sector, liability,
+              ebit, liability_perc_ebit, years_to_litigation,
+              settlement_factor, settlement),
     names_to = "year",
     values_to = "dividends"
   ) %>%
@@ -527,7 +534,7 @@ company_results_dcf <- company_results %>%
 
 reset_post_settlement <- cfg_litigation_params$litigation$reset_post_settlement
 
-if (reset_post_settlement == "start") {
+if(reset_post_settlement == "start") {
   company_results_dcf <- company_results_dcf %>%
     group_by(scenario_name, company_name, sector) %>%
     mutate(
@@ -543,8 +550,8 @@ if (reset_post_settlement == "start") {
         .data$year > start_year + years_to_litigation_event + 1 &
           .data$liability > 0,
         .data$ebit *
-          (1 + growth_rate)^
-            dplyr::lag(.data$t_calc, n = years_to_litigation_event + 1),
+          (1 + growth_rate) ^
+          dplyr::lag(.data$t_calc, n = years_to_litigation_event + 1),
         .data$dividends_litigation
       )
     ) %>%
