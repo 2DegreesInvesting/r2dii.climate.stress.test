@@ -51,6 +51,7 @@ read_pacta_results <- function(path = NULL,
 
     output_has_expected_columns <- all(expected_columns %in% colnames(data))
     stopifnot(output_has_expected_columns)
+
   } else {
     data <- readr::read_csv(
       path,
@@ -81,4 +82,5 @@ read_pacta_results <- function(path = NULL,
   }
 
   return(data)
+
 }

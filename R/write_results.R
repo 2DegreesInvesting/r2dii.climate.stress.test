@@ -17,7 +17,8 @@
 #' @family output functions
 #'
 #' @export
-write_results <- function(data,
+write_results <- function(
+                          data,
                           path_to_results = NULL,
                           investorname = NULL,
                           asset_type = NULL,

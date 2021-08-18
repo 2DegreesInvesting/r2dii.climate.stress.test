@@ -96,7 +96,7 @@ investorname_equity <- "Meta Investor"
 # Analysis Parameters----------------------------------------
 # Get analysis parameters from the projects AnalysisParameters.yml - similar to PACTA_analysis
 
-cfg <- config::get(file = file.path(project_location, "10_Parameter_File", "AnalysisParameters.yml"))
+cfg <- config::get(file = file.path(project_location, "10_Parameter_File","AnalysisParameters.yml"))
 # OPEN: check_valid_cfg() not applicable here
 start_year <- cfg$AnalysisPeriod$Years.Startyear
 dataprep_timestamp <- cfg$TimeStamps$DataPrep.Timestamp # is this being used for anything???
@@ -372,7 +372,7 @@ scen_data_file <- ifelse(twodii_internal == TRUE,
 )
 
 # TODO: EITHER wrap check into more evocative function OR remove this when common format is agreed upon
-if (twodii_internal == TRUE | start_year < 2020) {
+if(twodii_internal == TRUE | start_year < 2020) {
   scenario_data <- readr::read_csv(scen_data_file, col_types = "ccccccccnnnncnnn") %>%
     filter(Indicator %in% c("Capacity", "Production", "Sales")) %>%
     filter(!(Technology == "RenewablesCap" & !is.na(Sub_Technology))) %>%
@@ -395,8 +395,7 @@ if (twodii_internal == TRUE | start_year < 2020) {
 }
 
 scenario_data <- scenario_data %>%
-  # TODO: this should be set elsewhere
-  filter(source %in% c("ETP2017", "WEO2019")) %>%
+  filter(source %in% c("ETP2017", "WEO2019")) %>% #TODO: this should be set elsewhere
   filter(!(source == "ETP2017" & ald_sector == "Power")) %>%
   mutate(scenario = ifelse(str_detect(scenario, "_"), str_extract(scenario, "[^_]*$"), scenario)) %>%
   check_scenario_timeframe(start_year = start_year, end_year = end_year)
@@ -407,8 +406,7 @@ scenario_data <- scenario_data %>%
   filter(
     ald_sector %in% sectors &
       technology %in% technologies &
-      scenario_geography == scenario_geography_filter
-  )
+      scenario_geography == scenario_geography_filter)
 
 # Load price data----------------------------------------
 df_price <- readr::read_csv(file.path(data_location, paste0("prices_data_", price_data_version, ".csv")), col_types = "ncccccncncncnc") %>%
@@ -441,7 +439,7 @@ if (identical(calculation_level, "company") & company_exclusion) {
 
 financial_data_bonds <- financial_data_bonds %>%
   dplyr::mutate(net_profit_margin = profit_margin_preferred) %>%
-  # TODO: logic unclear thus far
+  #TODO: logic unclear thus far
   dplyr::mutate(
     net_profit_margin = dplyr::case_when(
       net_profit_margin < 0 & dplyr::between(profit_margin_unpreferred, 0, 1) ~ profit_margin_unpreferred,
@@ -458,13 +456,13 @@ financial_data_bonds <- financial_data_bonds %>%
     debt_equity_ratio = leverage_s_avg,
     volatility = asset_volatility_s_avg
   )
-# TODO: any logic/bounds needed for debt/equity ratio and volatility?
+#TODO: any logic/bounds needed for debt/equity ratio and volatility?
 
 # Prepare net profit margins equity----------------------
 
 financial_data_equity <- financial_data_equity %>%
   dplyr::mutate(net_profit_margin = profit_margin_preferred) %>%
-  # TODO: logic unclear thus far
+  #TODO: logic unclear thus far
   dplyr::mutate(
     net_profit_margin = dplyr::case_when(
       net_profit_margin < 0 & dplyr::between(profit_margin_unpreferred, 0, 1) ~ profit_margin_unpreferred,
@@ -481,7 +479,7 @@ financial_data_equity <- financial_data_equity %>%
     debt_equity_ratio = leverage_s_avg,
     volatility = asset_volatility_s_avg
   )
-# TODO: any logic/bounds needed for debt/equity ratio and volatility?
+#TODO: any logic/bounds needed for debt/equity ratio and volatility?
 
 
 
@@ -490,9 +488,7 @@ nesting_vars <- c(
   "investor_name", "portfolio_name", "equity_market", "ald_sector", "technology",
   "scenario", "allocation", "scenario_geography"
 )
-if (identical(calculation_level, "company")) {
-  nesting_vars <- c(nesting_vars, "company_name")
-}
+if (identical(calculation_level, "company")) {nesting_vars <- c(nesting_vars, "company_name")}
 
 # ...for bonds portfolio-------------------------------------------------------
 pacta_bonds_results <- pacta_bonds_results_full %>%
@@ -611,8 +607,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
 
   # Calculate late and sudden prices for scenario i
   df_prices <- df_price %>%
-    # FIXME this should be parameterized!!
-    mutate(Baseline = NPS) %>%
+    mutate(Baseline = NPS) %>% # FIXME this should be parameterized!!
     rename(
       year = year, ald_sector = sector, technology = technology, NPS_price = NPS,
       SDS_price = SDS, Baseline_price = Baseline, B2DS_price = B2DS
@@ -736,12 +731,13 @@ for (i in seq(1, nrow(transition_scenarios))) {
         )
       )
     }
+
   } else {
     plan_carsten_equity <- plan_carsten_equity %>%
-      distinct(
-        investor_name, portfolio_name, ald_sector, technology,
-        scenario_geography, year, plan_carsten, plan_sec_carsten
-      )
+    distinct(
+      investor_name, portfolio_name, ald_sector, technology,
+      scenario_geography, year, plan_carsten, plan_sec_carsten
+    )
 
     equity_results <- bind_rows(
       equity_results,
@@ -756,6 +752,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
       )
     )
   }
+
 }
 
 # Output equity results
@@ -789,8 +786,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
   print(overshoot_method)
   # Calculate late and sudden prices for scenario i
   df_prices <- df_price %>%
-    # FIXME this should be parameterized!!
-    mutate(Baseline = NPS) %>%
+    mutate(Baseline = NPS) %>% # FIXME this should be parameterized!!
     rename(
       year = year, ald_sector = sector, technology = technology, NPS_price = NPS,
       SDS_price = SDS, Baseline_price = Baseline, B2DS_price = B2DS
@@ -887,7 +883,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
   bonds_annual_profits <- bonds_annual_profits %>%
     filter(!is.na(company_id))
 
-  if (identical(calculation_level, "company")) {
+  if(identical(calculation_level, "company")) {
     plan_carsten_bonds <- plan_carsten_bonds %>%
       select(
         investor_name, portfolio_name, company_name, ald_sector, technology,
@@ -986,6 +982,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
         )
       )
     }
+
   } else {
     plan_carsten_bonds <- plan_carsten_bonds %>%
       distinct(
@@ -1006,6 +1003,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
       )
     )
   }
+
 }
 
 # Output bonds results
@@ -1155,10 +1153,8 @@ data_prod_baseline <- qa_annual_profits_eq
 
 if (identical(calculation_level, "company")) {
   data_prod_baseline <- data_prod_baseline %>%
-    group_by(
-      year, investor_name, portfolio_name, scenario_geography,
-      ald_sector, technology, year_of_shock
-    ) %>%
+    group_by(year, investor_name, portfolio_name, scenario_geography,
+             ald_sector, technology, year_of_shock) %>%
     summarise(
       baseline = sum(baseline, na.rm = TRUE),
       scen_to_follow_aligned = sum(scen_to_follow_aligned, na.rm = TRUE),
@@ -1252,3 +1248,4 @@ plot_annual_pd_change_shock_year_tech <- bonds_annual_pd_changes_sector %>%
     shock_year_filter = c(2025, 2030, 2035),
     geography_filter = scenario_geography_filter
   )
+
