@@ -180,3 +180,27 @@ check_valid_cfg <- function(cfg, expected_no_args = 3) {
   invisible(cfg)
 }
 
+create_stressdata_masterdata_file_paths <- function(project_name, timestamp, twodii_internal) {
+
+  if (!twodii_internal) {
+    stop("Currently cannot provide data files for external mode.")
+  }
+
+  path %||% stop("Must provide 'path'") # TBC: adjust to inputs
+
+  path_parent <- path_dropbox_2dii("PortCheck", "00_Data", "07_AnalysisInputs") #TBC add name here
+
+  paths <- list("stress_test_masterdata_debt.rda",
+                "stress_test_masterdata_ownerhip.rda") %>%
+    purrr::map(function(file) {
+      file_path <- file.path(path_parent, file)
+      valid_input_file_path <- file.exists(file.path(file_path))
+      if (!valid_input_file_path) {
+        stop("Stresstest master data file does not exist.")
+      }
+      return(file_path)
+    })
+
+  return(paths)
+}
+
