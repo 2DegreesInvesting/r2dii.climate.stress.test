@@ -189,9 +189,11 @@ lgd_subordinated_claims <- cfg_mod$financials$lgd_subordinated_claims
 ###########################################################################
 
 # Load company financial and production data-----------------------------------
+# ... get file paths for stresstest masterdata --------------------------------
+stresstest_masterdata_files <- create_stressdata_masterdata_file_paths(twodii_internal = twodii_internal)
+
 # ... for bonds----------------------------------------------------------------
-financial_data_bonds_path <- file.path(Sys.getenv("HOME"), "Desktop", "masterdata_debt.rda")
-financial_data_bonds <- read_company_data(path = financial_data_bonds_path)
+financial_data_bonds <- read_company_data(path = stresstest_masterdata_files$bonds)
 
 financial_data_bonds <- financial_data_bonds %>%
   dplyr::select(
@@ -236,8 +238,7 @@ financial_data_bonds <- financial_data_bonds %>%
   )
 
 # ... for equity---------------------------------------------------------------
-financial_data_equity_path <- file.path(Sys.getenv("HOME"), "Desktop", "masterdata_ownership.rda")
-financial_data_equity <- read_company_data(path = financial_data_equity_path)
+financial_data_equity <- read_company_data(path = stresstest_masterdata_files$listed_equity)
 
 financial_data_equity <- financial_data_equity %>%
   dplyr::select(
