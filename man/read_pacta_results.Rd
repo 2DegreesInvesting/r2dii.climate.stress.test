@@ -2,14 +2,14 @@
 % Please edit documentation in R/read_pacta_results.R
 \name{read_pacta_results}
 \alias{read_pacta_results}
-\title{Read in power capacity factors from csv and check that all expected columns
-are given.}
+\title{Read in the PACTA results from a given project and check that all expected
+columns are given.}
 \usage{
 read_pacta_results(path = NULL, asset_type = NULL, level = NULL)
 }
 \arguments{
 \item{path}{A string that points to the location of the file containing the
-capacity factors}
+pacta results}
 
 \item{asset_type}{A character vector of length 1 that indicates the type of
 asset to be read in. Wrangling steps vary by asset, so this is essential.
@@ -20,14 +20,15 @@ the company level or on the portfolio level are to be analyzed.
 Allowed values are "company", "portfolio".}
 }
 \description{
-Read in power capacity factors from csv and check that all expected columns
-are given.
+Read in the PACTA results from a given project and check that all expected
+columns are given.
 }
 \seealso{
 Other import functions: 
 \code{\link{read_capacity_factors}()},
 \code{\link{read_company_data}()},
 \code{\link{read_ngfs_carbon_tax}()},
+\code{\link{read_price_data}()},
 \code{\link{read_transition_scenarios}()}
 }
 \concept{import functions}

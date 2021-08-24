@@ -1,8 +1,8 @@
-#' Read in power capacity factors from csv and check that all expected columns
-#' are given.
+#' Read in the PACTA results from a given project and check that all expected
+#' columns are given.
 #'
 #' @param path A string that points to the location of the file containing the
-#'   capacity factors
+#'   pacta results
 #' @param asset_type A character vector of length 1 that indicates the type of
 #'   asset to be read in. Wrangling steps vary by asset, so this is essential.
 #'   Allowed values are "equity", "bonds", "loans".
