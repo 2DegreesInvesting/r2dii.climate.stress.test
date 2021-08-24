@@ -4,11 +4,15 @@
 \alias{read_price_data}
 \title{Read in price data from csv and check that all expected columns are given.}
 \usage{
-read_price_data(path = NULL)
+read_price_data(path = NULL, version = NULL)
 }
 \arguments{
 \item{path}{A string that points to the location of the file containing the
 price data}
+
+\item{version}{A string indicating whether to prepare the capacity factors
+based on the old price data structure or the new long format. Must be
+either "old" or "new".}
 }
 \description{
 Read in price data from csv and check that all expected columns are given.
