@@ -180,22 +180,25 @@ check_valid_cfg <- function(cfg, expected_no_args = 3) {
   invisible(cfg)
 }
 
-create_stressdata_masterdata_file_paths <- function(project_name, timestamp, twodii_internal) {
+# create paths to stress test masterdata files
+create_stressdata_masterdata_file_paths <- function(data_prep_timestamp, twodii_internal) {
 
   if (!twodii_internal) {
     stop("Currently cannot provide data files for external mode.")
   }
 
-  path %||% stop("Must provide 'path'") # TBC: adjust to inputs
+  if (!is.character(data_prep_timestamp)) {
+    stop("Timestamp is not provided in correct format")
+  }
 
-  path_parent <- path_dropbox_2dii("PortCheck", "00_Data", "07_AnalysisInputs") #TBC add name here
+  path_parent <- path_dropbox_2dii("PortCheck", "00_Data", "07_AnalysisInputs", data_prep_timestamp)
 
   paths <- list("stress_test_masterdata_debt.rda",
-                "stress_test_masterdata_ownerhip.rda") %>%
+                "stress_test_masterdata_ownership.rda") %>%
     purrr::map(function(file) {
+
       file_path <- file.path(path_parent, file)
-      valid_input_file_path <- file.exists(file.path(file_path))
-      if (!valid_input_file_path) {
+      if (!file.exists(file.path(file_path))) {
         stop("Stresstest master data file does not exist.")
       }
       return(file_path)
