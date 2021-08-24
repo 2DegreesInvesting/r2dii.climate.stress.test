@@ -123,4 +123,3 @@ create_stressdata_masterdata_file_paths <- function(data_prep_timestamp, twodii_
 
   return(paths)
 }
-
