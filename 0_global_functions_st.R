@@ -199,7 +199,8 @@ create_stressdata_masterdata_file_paths <- function(project_name, timestamp, two
         stop("Stresstest master data file does not exist.")
       }
       return(file_path)
-    })
+    }) %>%
+    purrr::set_names(c("bonds", "listed_equity"))
 
   return(paths)
 }
