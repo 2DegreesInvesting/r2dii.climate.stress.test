@@ -58,14 +58,16 @@ convert_cap_to_generation <- function(data,
 
 #' Translate power capacity to power generation
 #'
-#' Units of generated power are
-#' assumed to be sold and hence get priced in the net profit calculations.
-#' This also entails converting MWh into MW per year, since we calculate yearly
-#' profits. Note: For use in webscripts [convert_cap_to_generation()] is used currently, which only distinguishes capacity factor
-#' by technology and scenario_geography, whereas this function distinguishes further by year and scenario.
+#' Units of generated power are assumed to be sold and hence get priced in the
+#' net profit calculations. This also entails converting MWh into MW per year,
+#' since we calculate yearly profits. Note: For use in webscripts
+#' [convert_cap_to_generation()] is used currently, which only distinguishes
+#' capacity factor by technology and scenario_geography, whereas this function
+#' distinguishes further by year and scenario.
 #'
 #' @param data A data frame filtered and wrangled company level production
-#'   forecasts (of the companies in the portfolio). Usually based on PACTA output.
+#'   forecasts (of the companies in the portfolio). Usually based on PACTA
+#'   output.
 #' @param capacity_factors_power A data frame containing capacity factors to
 #'   translate company level power capacity to units sold. Contains information
 #'   on the technology (pwoer sector only) and scenario_geography levels.
