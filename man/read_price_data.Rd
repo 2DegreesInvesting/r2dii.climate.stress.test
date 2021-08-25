@@ -4,7 +4,7 @@
 \alias{read_price_data}
 \title{Read in price data from csv and check that all expected columns are given.}
 \usage{
-read_price_data(path = NULL, version = NULL)
+read_price_data(path, version)
 }
 \arguments{
 \item{path}{A string that points to the location of the file containing the
