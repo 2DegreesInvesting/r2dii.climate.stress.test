@@ -28,7 +28,7 @@ function_paths <- c(
       "create_empty_result_df_pd_changes.R",
       "company_asset_value_at_risk.R",
       "company_expected_loss.R",
-      "convert_power_cap_to_generation.R",
+      "convert_cap_to_generation.R",
       "exclude_companies.R",
       "extend_scenario_trajectory.R",
       "format_loanbook_st.R",
