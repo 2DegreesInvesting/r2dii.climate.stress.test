@@ -70,7 +70,7 @@ convert_cap_to_generation <- function(data,
 #'   translate company level power capacity to units sold. Contains information
 #'   on the technology (pwoer sector only) and scenario_geography levels.
 convert_power_cap_to_generation <- function(data,
-                                      capacity_factors_power = NULL) {
+                                            capacity_factors_power = NULL) {
   force(data)
   capacity_factors_power %||% stop("Must provide input for 'capacity_factors_power'", call. = FALSE)
 
