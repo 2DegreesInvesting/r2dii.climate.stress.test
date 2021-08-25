@@ -9,11 +9,8 @@
 #' @family import functions
 #'
 #' @export
-read_price_data <- function(path = NULL,
-                            version = NULL) {
-  path %||% stop("Must provide 'path'")
-  version %||% stop("Must provide 'version'")
-
+read_price_data <- function(path,
+                            version) {
   valid_input_file_path <- file.exists(file.path(path))
   stopifnot(valid_input_file_path)
 

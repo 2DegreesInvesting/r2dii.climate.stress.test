@@ -4,9 +4,7 @@
 #' @inheritParams read_price_data
 #'
 #' @export
-read_price_data_internal_old <- function(path = NULL) {
-  path %||% stop("Must provide 'path'")
-
+read_price_data_internal_old <- function(path) {
   valid_input_file_path <- file.exists(file.path(path))
   stopifnot(valid_input_file_path)
 
