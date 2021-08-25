@@ -81,9 +81,9 @@ test_that("with invalid argument for version, read_price_data() returns throws
   )
 
   test_data_prices_new %>%
-    readr::write_csv(file.path(tempdir(), "new_prices_data_input.csv"))
+    readr::write_csv(file.path(tempdir(), "new_prices_data_input_invalid.csv"))
 
-  test_input_path_new <- file.path(tempdir(), "new_prices_data_input.csv")
+  test_input_path_new <- file.path(tempdir(), "new_prices_data_input_invalid.csv")
 
   test_version <- "invalid"
 
@@ -95,6 +95,6 @@ test_that("with invalid argument for version, read_price_data() returns throws
     "version_allowed is not TRUE"
   )
 
-  unlink(file.path(tempdir(), "new_prices_data_input.csv"))
+  unlink(file.path(tempdir(), "new_prices_data_input_invalid.csv"))
 })
 
