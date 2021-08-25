@@ -359,16 +359,6 @@ capacity_factors_power <- read_capacity_factors(
   version = "new"
 )
 
-capacity_factors_power <- capacity_factors_power %>%
-  filter(
-    scenario_geography == scenario_geography_filter,
-    year == start_year,
-    scenario == scenario_to_follow_ls
-  ) %>%
-  # TODO: currently filters on start year. think about extending to full time series
-  select(scenario_geography, technology, capacity_factor)
-
-
 # Load scenario data----------------------------------------
 scen_data_file <- ifelse(twodii_internal == TRUE,
   path_dropbox_2dii("PortCheck", "00_Data", "01_ProcessedData", "03_ScenarioData", paste0("Scenarios_AnalysisInput_", start_year, ".csv")),
