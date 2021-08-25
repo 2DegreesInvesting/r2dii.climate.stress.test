@@ -21,6 +21,8 @@ test_that("with missing argument for version, read_price_data() throws error", {
     read_price_data(path = test_input_path),
     "Must provide 'version'"
   )
+
+  unlink(file.path(tempdir(), "prices_data_input.csv"))
 })
 
 test_that("with valid arguments set, read_price_data() returns data.frame with
@@ -45,6 +47,8 @@ test_that("with valid arguments set, read_price_data() returns data.frame with
 
   testthat::expect_s3_class(test_data_new, "data.frame")
 
+  unlink(file.path(tempdir(), "new_prices_data_input.csv"))
+
   test_data_prices_old <- tibble::tribble(
     ~year, ~sector, ~technology, ~sector_unit_ds, ~price_unit_iea, ~price_unit_etr, ~B2DS, ~b2ds_source, ~NPS, ~nps_source, ~SDS, ~sds_source, ~Baseline, ~baseline_source,
     2020, "Power", "HydroCap", "MW", "Dollars per MwH", "USD per MWh", NA_real_, "test_source", 10, "test_source", 10, "test_source", 10, "custom",
@@ -64,6 +68,8 @@ test_that("with valid arguments set, read_price_data() returns data.frame with
   )
 
   testthat::expect_s3_class(test_data_old, "data.frame")
+
+  unlink(file.path(tempdir(), "old_prices_data_input.csv"))
 })
 
 test_that("with invalid argument for version, read_price_data() returns throws
@@ -88,5 +94,7 @@ test_that("with invalid argument for version, read_price_data() returns throws
     ),
     "version_allowed is not TRUE"
   )
+
+  unlink(file.path(tempdir(), "new_prices_data_input.csv"))
 })
 

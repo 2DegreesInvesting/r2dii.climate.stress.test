@@ -22,4 +22,6 @@ test_that("with valid arguments set, read_price_data_internal() returns
   test_data <- read_price_data_internal(path = test_input_path)
 
   testthat::expect_s3_class(test_data, "data.frame")
+
+  unlink(file.path(tempdir(), "prices_data_input.csv"))
 })

@@ -15,11 +15,13 @@ test_that("with valid arguments set, read_price_data_internal_old() returns
   )
 
   test_data_prices %>%
-    readr::write_csv(file.path(tempdir(), "prices_data_input_old.csv"))
+    readr::write_csv(file.path(tempdir(), "prices_data_input.csv"))
 
-  test_input_path <- file.path(tempdir(), "prices_data_input_old.csv")
+  test_input_path <- file.path(tempdir(), "prices_data_input.csv")
 
   test_data <- read_price_data_internal_old(path = test_input_path)
 
   testthat::expect_s3_class(test_data, "data.frame")
+
+  unlink(file.path(tempdir(), "prices_data_input.csv"))
 })
