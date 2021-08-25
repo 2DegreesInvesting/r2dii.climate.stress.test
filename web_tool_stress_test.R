@@ -40,6 +40,9 @@ function_paths <- c(
       "read_capacity_factors.R",
       "read_transition_scenarios.R",
       "read_pacta_results.R",
+      "read_price_data.R",
+      "read_price_data_internal.R",
+      "read_price_data_internal_old.R",
       "set_params_st.R",
       "set_paths.R",
       "set_tech_trajectories.R",
@@ -221,7 +224,10 @@ scenario_data <- scenario_data %>%
 
 # %>% filter(year %in% c(start_year,2020, 2021, 2022, 2023, 2024, 2025, 2030, 2035, 2040))
 
-df_price <- readr::read_csv(file.path(data_location, glue::glue("prices_data_{price_data_version}.csv")), col_types = cols()) %>%
+df_price <- read_price_data(
+    path = file.path(data_location, paste0("prices_data_", price_data_version, ".csv")),
+    version = "old"
+  ) %>%
   filter(year >= start_year) %>%
   check_price_consistency()
 
