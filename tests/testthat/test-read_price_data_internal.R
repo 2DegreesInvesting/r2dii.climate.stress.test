@@ -2,7 +2,7 @@ test_that("without specified arguments, read_price_data_internal() throws
           error", {
   testthat::expect_error(
     read_price_data_internal(),
-    "Must provide 'path'"
+    "argument \"path\" is missing, with no default"
   )
 })
 

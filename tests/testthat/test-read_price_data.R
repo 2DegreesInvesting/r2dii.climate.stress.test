@@ -1,7 +1,7 @@
 test_that("without specified arguments, read_price_data() throws error", {
   testthat::expect_error(
     read_price_data(),
-    "Must provide 'path'"
+    "argument \"path\" is missing, with no default"
   )
 })
 
@@ -19,7 +19,7 @@ test_that("with missing argument for version, read_price_data() throws error", {
 
   testthat::expect_error(
     read_price_data(path = test_input_path),
-    "Must provide 'version'"
+    "argument \"version\" is missing, with no default"
   )
 
   unlink(file.path(tempdir(), "prices_data_input.csv"))
