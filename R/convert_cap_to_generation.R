@@ -63,7 +63,9 @@ convert_cap_to_generation <- function(data,
 #' since we calculate yearly profits. Note: For use in webscripts
 #' [convert_cap_to_generation()] is used currently, which only distinguishes
 #' capacity factor by technology and scenario_geography, whereas this function
-#' distinguishes further by year and scenario.
+#' distinguishes further by year and scenario. Also note that for generation of
+#' variable `plan_tech_prod` (planned capacity) capacity factors from baseline
+#' scenario are used.
 #'
 #' @param data A data frame filtered and wrangled company level production
 #'   forecasts (of the companies in the portfolio). Usually based on PACTA
@@ -71,8 +73,10 @@ convert_cap_to_generation <- function(data,
 #' @param capacity_factors_power A data frame containing capacity factors to
 #'   translate company level power capacity to units sold. Contains information
 #'   on the technology (pwoer sector only) and scenario_geography levels.
+#' @param baseline_scenario String holding name of baseline scenario.
 convert_power_cap_to_generation <- function(data,
-                                            capacity_factors_power = NULL) {
+                                            capacity_factors_power = NULL,
+                                            baseline_scenario) {
   force(data)
   capacity_factors_power %||% stop("Must provide input for 'capacity_factors_power'", call. = FALSE)
 

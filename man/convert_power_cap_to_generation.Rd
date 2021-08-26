@@ -4,7 +4,11 @@
 \alias{convert_power_cap_to_generation}
 \title{Translate power capacity to power generation}
 \usage{
-convert_power_cap_to_generation(data, capacity_factors_power = NULL)
+convert_power_cap_to_generation(
+  data,
+  capacity_factors_power = NULL,
+  baseline_scenario
+)
 }
 \arguments{
 \item{data}{A data frame filtered and wrangled company level production
@@ -14,6 +18,8 @@ output.}
 \item{capacity_factors_power}{A data frame containing capacity factors to
 translate company level power capacity to units sold. Contains information
 on the technology (pwoer sector only) and scenario_geography levels.}
+
+\item{baseline_scenario}{String holding name of baseline scenario.}
 }
 \description{
 Units of generated power are assumed to be sold and hence get priced in the
@@ -21,5 +27,7 @@ net profit calculations. This also entails converting MWh into MW per year,
 since we calculate yearly profits. Note: For use in webscripts
 \code{\link[=convert_cap_to_generation]{convert_cap_to_generation()}} is used currently, which only distinguishes
 capacity factor by technology and scenario_geography, whereas this function
-distinguishes further by year and scenario.
+distinguishes further by year and scenario. Also note that for generation of
+variable \code{plan_tech_prod} (planned capacity) capacity factors from baseline
+scenario are used.
 }

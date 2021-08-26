@@ -615,7 +615,8 @@ for (i in seq(1, nrow(transition_scenarios))) {
 
   # Convert capacity (MW) to generation (MWh) for power sector
   equity_annual_profits <- pacta_equity_results %>%
-    convert_power_cap_to_generation(capacity_factors_power = capacity_factors_power) %>%
+    convert_power_cap_to_generation(capacity_factors_power = capacity_factors_power,
+                                    baseline_scenario = scenario_to_follow_baseline) %>%
     extend_scenario_trajectory(
       scenario_data = scenario_data,
       start_analysis = start_year,
@@ -796,7 +797,8 @@ for (i in seq(1, nrow(transition_scenarios))) {
     ungroup()
 
   bonds_annual_profits <- pacta_bonds_results %>%
-    convert_power_cap_to_generation(capacity_factors_power = capacity_factors_power) %>%
+    convert_power_cap_to_generation(capacity_factors_power = capacity_factors_power,
+                                    baseline_scenario = scenario_to_follow_baseline) %>%
     extend_scenario_trajectory(
       scenario_data = scenario_data,
       start_analysis = start_year,
