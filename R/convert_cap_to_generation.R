@@ -100,7 +100,7 @@ convert_power_cap_to_generation <- function(data,
   # helper data set for calculation of planned capacity that assumes baseline scenario
   capacity_factors_power_baseline <- capacity_factors_power %>%
     dplyr::filter(.data$scenario == baseline_scenario) %>%
-    dplyr::mutate(capacity_factor_plan = .data$capacity_factor) %>%
+    dplyr::rename(capacity_factor_plan = .data$capacity_factor) %>%
     dplyr::select(-scenario)
 
   # Left join is applied since only rows in data from ald_sector power will
