@@ -97,12 +97,21 @@ convert_power_cap_to_generation <- function(data,
   )
   stopifnot(capacity_factors_has_expected_columns)
 
+  # helper data set for calculation of planned capacity that assumes baseline scenario
+  capacity_factors_power_baseline <- capacity_factors_power %>%
+    dplyr::filter(.data$scenario == baseline_scenario) %>%
+    dplyr::mutate(capacity_factor_plan = .data$capacity_factor) %>%
+    dplyr::select(-scenario)
+
   # Left join is applied since only rows in data from ald_sector power will
   # have matching rows in capacity_factors_power
   data <- data %>%
     dplyr::left_join(
       capacity_factors_power,
       by = c("technology", "scenario_geography", "year", "scenario")
+    ) %>% dplyr::left_join(
+      capacity_factors_power_baseline,
+      by = c("technology", "scenario_geography", "year")
     )
 
   hours_to_year <- 24 * 365
@@ -111,7 +120,7 @@ convert_power_cap_to_generation <- function(data,
     dplyr::mutate(
       plan_tech_prod = dplyr::if_else(
         .data$ald_sector == "Power",
-        .data$plan_tech_prod * .data$capacity_factor * .env$hours_to_year,
+        .data$plan_tech_prod * .data$capacity_factor_plan * .env$hours_to_year,
         .data$plan_tech_prod
       ),
       scen_tech_prod = dplyr::if_else(
@@ -121,5 +130,5 @@ convert_power_cap_to_generation <- function(data,
       ),
       scenario_geography = .data$scenario_geography
     ) %>%
-    dplyr::select(-.data$capacity_factor)
+    dplyr::select(-.data$capacity_factor_plan, -.data$capacity_factor)
 }
