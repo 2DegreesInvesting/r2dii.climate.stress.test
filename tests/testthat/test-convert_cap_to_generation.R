@@ -100,7 +100,7 @@ test_that("plan_tech_prod and scen_tech_prod differ (assuming equals values befo
 })
 
 test_that("multiplication results differ by further variables", {
-  # picked only year here to keep test manageable
+  # picked only one year here to keep test manageable
   test_results <- convert_power_cap_to_generation(
     data = new_test_data,
     capacity_factors_power = new_capacity_factors %>%
