@@ -490,8 +490,10 @@ for (i in seq(1, nrow(transition_scenarios))) {
     ungroup()
 
   loanbook_annual_profits <- pacta_loanbook_results %>%
-    convert_power_cap_to_generation(capacity_factors_power = capacity_factors_power,
-                                    baseline_scenario = scenario_to_follow_baseline) %>%
+    convert_power_cap_to_generation(
+      capacity_factors_power = capacity_factors_power,
+      baseline_scenario = scenario_to_follow_baseline
+    ) %>%
     extend_scenario_trajectory(
       scenario_data = scenario_data,
       start_analysis = start_year,
