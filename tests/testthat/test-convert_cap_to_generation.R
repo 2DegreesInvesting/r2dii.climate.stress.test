@@ -57,7 +57,7 @@ new_capacity_factors <- tibble::tibble(
 
 # reducing new_test_data to data with matching years in new_capacity_factors
 new_test_data <- read_test_data("convert_cap_to_generation.csv") %>%
-  dplyr::filter(year %in% c(2021, 2022))
+  dplyr::filter(.data$year %in% c(2021, 2022))
 
 test_that("error is thrown if baseline scenario is missing from capacity_factors_power", {
   testthat::expect_error(
