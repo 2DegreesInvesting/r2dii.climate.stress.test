@@ -1,3 +1,4 @@
+# convert_cap_to_generation -----------------------------------------------
 test_that("without specified arguments, function throws error", {
   testthat::expect_error(
     convert_cap_to_generation(),
@@ -44,3 +45,5 @@ test_that("multiplies the power capacity by hours per year and the capacity
     verify_results$plan_tech_prod, verify_input_data$plan_tech_prod * verify_multiplier
   )
 })
+
+# convert_power_cap_to_generation -----------------------------------------
