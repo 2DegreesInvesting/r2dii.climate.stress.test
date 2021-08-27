@@ -113,7 +113,8 @@ convert_power_cap_to_generation <- function(data,
     dplyr::left_join(
       capacity_factors_power,
       by = c("technology", "scenario_geography", "year", "scenario")
-    ) %>% dplyr::left_join(
+    ) %>%
+    dplyr::left_join(
       capacity_factors_power_baseline,
       by = c("technology", "scenario_geography", "year")
     )
