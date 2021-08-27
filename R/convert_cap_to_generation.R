@@ -99,7 +99,7 @@ convert_power_cap_to_generation <- function(data,
 
   # create helper data set for calculation of planned capacity that assumes baseline scenario
   if (!baseline_scenario %in% unique(capacity_factors_power$scenario)) {
-    stop(paste0("Baseline Scenario", baseline_scenario, "is missing in power capacitiy factor data."))
+    stop(paste0("Baseline Scenario ", baseline_scenario, " is missing in power capacitiy factor data."))
   }
 
   capacity_factors_power_baseline <- capacity_factors_power %>%
