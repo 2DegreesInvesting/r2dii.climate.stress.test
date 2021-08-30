@@ -192,9 +192,14 @@ lgd_subordinated_claims <- cfg_mod$financials$lgd_subordinated_claims
 ###########################################################################
 
 # Load company financial and production data-----------------------------------
+# ... get file paths for stresstest masterdata --------------------------------
+stresstest_masterdata_files <- create_stressdata_masterdata_file_paths(
+  data_prep_timestamp = cfg$TimeStamps$DataPrep.Timestamp,
+  twodii_internal = twodii_internal
+)
+
 # ... for bonds----------------------------------------------------------------
-financial_data_bonds_path <- file.path(Sys.getenv("HOME"), "Desktop", "masterdata_debt.rda")
-financial_data_bonds <- read_company_data(path = financial_data_bonds_path)
+financial_data_bonds <- read_company_data(path = stresstest_masterdata_files$bonds)
 
 financial_data_bonds <- financial_data_bonds %>%
   dplyr::select(
@@ -239,8 +244,7 @@ financial_data_bonds <- financial_data_bonds %>%
   )
 
 # ... for equity---------------------------------------------------------------
-financial_data_equity_path <- file.path(Sys.getenv("HOME"), "Desktop", "masterdata_ownership.rda")
-financial_data_equity <- read_company_data(path = financial_data_equity_path)
+financial_data_equity <- read_company_data(path = stresstest_masterdata_files$listed_equity)
 
 financial_data_equity <- financial_data_equity %>%
   dplyr::select(
@@ -357,16 +361,6 @@ capacity_factors_power <- read_capacity_factors(
   path = file.path(data_location, "capacity_factors_WEO_2020.csv"),
   version = "new"
 )
-
-capacity_factors_power <- capacity_factors_power %>%
-  filter(
-    scenario_geography == scenario_geography_filter,
-    year == start_year,
-    scenario == scenario_to_follow_ls
-  ) %>%
-  # TODO: currently filters on start year. think about extending to full time series
-  select(scenario_geography, technology, capacity_factor)
-
 
 # Load scenario data----------------------------------------
 scen_data_file <- ifelse(twodii_internal == TRUE,
@@ -625,9 +619,12 @@ for (i in seq(1, nrow(transition_scenarios))) {
     ) %>%
     ungroup()
 
-  # Convert capacity (MW)to generation (MWh) for power sector
+  # Convert capacity (MW) to generation (MWh) for power sector
   equity_annual_profits <- pacta_equity_results %>%
-    convert_cap_to_generation(capacity_factors_power = capacity_factors_power) %>%
+    convert_power_cap_to_generation(
+      capacity_factors_power = capacity_factors_power,
+      baseline_scenario = scenario_to_follow_baseline
+    ) %>%
     extend_scenario_trajectory(
       scenario_data = scenario_data,
       start_analysis = start_year,
@@ -808,7 +805,10 @@ for (i in seq(1, nrow(transition_scenarios))) {
     ungroup()
 
   bonds_annual_profits <- pacta_bonds_results %>%
-    convert_cap_to_generation(capacity_factors_power = capacity_factors_power) %>%
+    convert_power_cap_to_generation(
+      capacity_factors_power = capacity_factors_power,
+      baseline_scenario = scenario_to_follow_baseline
+    ) %>%
     extend_scenario_trajectory(
       scenario_data = scenario_data,
       start_analysis = start_year,

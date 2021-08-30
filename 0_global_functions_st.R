@@ -179,4 +179,3 @@ check_valid_cfg <- function(cfg, expected_no_args = 3) {
 
   invisible(cfg)
 }
-
