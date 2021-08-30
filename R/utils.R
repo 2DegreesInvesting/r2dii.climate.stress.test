@@ -123,3 +123,34 @@ create_stressdata_masterdata_file_paths <- function(data_prep_timestamp, twodii_
 
   return(paths)
 }
+
+#' Validate that a file exists in a given directory
+#'
+#' Before performing an operation on a file assumed to be found in a given
+#' directory, validate this file exists and give indicative error if not.
+#'
+#' @param path Character vector indicating the directory of a file
+#'
+#' @return A boolean.
+#'
+#' @export
+validate_file_exists <- function(path) {
+  valid_file_path <- file.exists(file.path(path))
+  stopifnot(valid_file_path)
+}
+
+#' Validate that a data frame contains expected columns
+#'
+#' Validate that all expected columns for an operation are given in a data frame.
+#'
+#' @param data data frame that is to be validated
+#' @param expected_columns Character vector listing the expected columns
+#'
+#' @return A boolean.
+#'
+#' @export
+validate_data_has_expected_cols <- function(data,
+                                            expected_columns) {
+  data_has_expected_columns <- all(expected_columns %in% colnames(data))
+  stopifnot(data_has_expected_columns)
+}

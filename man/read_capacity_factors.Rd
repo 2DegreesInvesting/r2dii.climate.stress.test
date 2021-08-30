@@ -24,6 +24,7 @@ Other import functions:
 \code{\link{read_company_data}()},
 \code{\link{read_ngfs_carbon_tax}()},
 \code{\link{read_pacta_results}()},
+\code{\link{read_price_data}()},
 \code{\link{read_transition_scenarios}()}
 }
 \concept{import functions}

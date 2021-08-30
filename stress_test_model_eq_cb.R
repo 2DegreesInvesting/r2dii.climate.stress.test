@@ -43,6 +43,7 @@ function_paths <- c(
       "read_company_data.R",
       "read_ngfs_carbon_tax.R",
       "read_pacta_results.R",
+      "read_price_data.R",
       "read_transition_scenarios.R",
       "set_paths.R",
       "set_tech_trajectories.R",
@@ -403,7 +404,11 @@ scenario_data <- scenario_data %>%
       scenario_geography == scenario_geography_filter)
 
 # Load price data----------------------------------------
-df_price <- readr::read_csv(file.path(data_location, paste0("prices_data_", price_data_version, ".csv")), col_types = "ncccccncncncnc") %>%
+df_price <- read_price_data(
+    path = file.path(data_location, paste0("prices_data_", price_data_version, ".csv")),
+    version = "old",
+    expected_technlogies = technologies
+  ) %>%
   filter(year >= start_year) %>%
   check_price_consistency()
 
