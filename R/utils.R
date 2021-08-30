@@ -131,6 +131,8 @@ create_stressdata_masterdata_file_paths <- function(data_prep_timestamp, twodii_
 #'
 #' @param path Character vector indicating the directory of a file
 #'
+#' @return A boolean.
+#'
 #' @export
 validate_file_exists <- function(path) {
   valid_file_path <- file.exists(file.path(path))
@@ -143,6 +145,8 @@ validate_file_exists <- function(path) {
 #'
 #' @param data data frame that is to be validated
 #' @param expected_columns Character vector listing the expected columns
+#'
+#' @return A boolean.
 #'
 #' @export
 validate_data_has_expected_cols <- function(data,
