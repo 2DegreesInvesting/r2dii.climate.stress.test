@@ -11,8 +11,7 @@
 #' @export
 read_price_data <- function(path,
                             version) {
-  valid_input_file_path <- file.exists(file.path(path))
-  stopifnot(valid_input_file_path)
+  validate_file_exists(path)
 
   version_allowed <- version %in% c("old", "new")
   stopifnot(version_allowed)
@@ -35,8 +34,7 @@ read_price_data <- function(path,
 #'
 #' @export
 read_price_data_internal <- function(path) {
-  valid_input_file_path <- file.exists(file.path(path))
-  stopifnot(valid_input_file_path)
+  validate_file_exists(path)
 
   data <- readr::read_csv(
     path,
@@ -52,13 +50,12 @@ read_price_data_internal <- function(path) {
     )
   )
 
-  expected_columns <- c(
-    "year", "source", "scenario", "scenario_geography", "technology",
-    "indicator", "unit", "price"
+  data %>% validate_data_has_expected_cols(
+    expected_columns = c(
+      "year", "source", "scenario", "scenario_geography", "technology",
+      "indicator", "unit", "price"
+    )
   )
-
-  data_has_expected_columns <- all(expected_columns %in% colnames(data))
-  stopifnot(data_has_expected_columns)
 
   return(data)
   # TODO: add check that looks if all technologies are given (requires new input arg)
@@ -73,8 +70,7 @@ read_price_data_internal <- function(path) {
 #'
 #' @export
 read_price_data_internal_old <- function(path) {
-  valid_input_file_path <- file.exists(file.path(path))
-  stopifnot(valid_input_file_path)
+  validate_file_exists(path)
 
   data <- readr::read_csv(
     path,
@@ -96,14 +92,13 @@ read_price_data_internal_old <- function(path) {
     )
   )
 
-  expected_columns <- c(
-    "year", "sector", "technology", "sector_unit_ds", "price_unit_iea",
-    "price_unit_etr", "B2DS", "b2ds_source", "NPS", "nps_source", "SDS",
-    "sds_source", "Baseline", "baseline_source"
+  data %>% validate_data_has_expected_cols(
+    expected_columns = c(
+      "year", "sector", "technology", "sector_unit_ds", "price_unit_iea",
+      "price_unit_etr", "B2DS", "b2ds_source", "NPS", "nps_source", "SDS",
+      "sds_source", "Baseline", "baseline_source"
+    )
   )
-
-  data_has_expected_columns <- all(expected_columns %in% colnames(data))
-  stopifnot(data_has_expected_columns)
 
   return(data)
 }
