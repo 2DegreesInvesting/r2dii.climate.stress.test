@@ -1,29 +1,4 @@
 # test read_price_data()
-test_that("with missing argument for version, read_price_data() throws error", {
-  test_data_prices <- tibble::tribble(
-    ~year, ~source, ~scenario, ~scenario_geography, ~technology, ~indicator, ~unit, ~price,
-    2020, "WEO2020", "SDS", "United States", "Gas", "price", "usd/Mbtu", 10,
-    2030, "WEO2020", "SDS", "United States", "RenewablesCap", "LCOE", "$/MWh", 10
-  )
-
-  test_data_prices %>%
-    readr::write_csv(file.path(tempdir(), "prices_data_input.csv"))
-
-  test_input_path <- file.path(tempdir(), "prices_data_input.csv")
-
-  test_technologies <- c("RenewablesCap", "Gas")
-
-  testthat::expect_error(
-    read_price_data(
-      path = test_input_path,
-      expected_technologies = test_technologies
-    ),
-    "argument \"version\" is missing, with no default"
-  )
-
-  unlink(file.path(tempdir(), "prices_data_input.csv"))
-})
-
 test_that("with valid arguments set, read_price_data() returns data.frame with
           both old and new versions", {
   test_data_prices_new <- tibble::tribble(

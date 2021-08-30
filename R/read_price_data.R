@@ -58,7 +58,8 @@ read_price_data_internal <- function(path) {
     )
   )
 
-  data %>% validate_data_has_expected_cols(
+  validate_data_has_expected_cols(
+    data = data,
     expected_columns = c(
       "year", "source", "scenario", "scenario_geography", "technology",
       "indicator", "unit", "price"
@@ -99,7 +100,8 @@ read_price_data_internal_old <- function(path) {
     )
   )
 
-  data %>% validate_data_has_expected_cols(
+  validate_data_has_expected_cols(
+    data = data,
     expected_columns = c(
       "year", "sector", "technology", "sector_unit_ds", "price_unit_iea",
       "price_unit_etr", "B2DS", "b2ds_source", "NPS", "nps_source", "SDS",
