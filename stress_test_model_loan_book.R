@@ -41,8 +41,6 @@ function_paths <- c(
       "read_ngfs_carbon_tax.R",
       "read_pacta_results.R",
       "read_price_data.R",
-      "read_price_data_internal.R",
-      "read_price_data_internal_old.R",
       "read_transition_scenarios.R",
       "set_paths.R",
       "set_tech_trajectories.R",
