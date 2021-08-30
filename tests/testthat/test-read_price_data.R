@@ -1,11 +1,4 @@
 # test read_price_data()
-test_that("without specified arguments, read_price_data() throws error", {
-  testthat::expect_error(
-    read_price_data(),
-    "argument \"path\" is missing, with no default"
-  )
-})
-
 test_that("with missing argument for version, read_price_data() throws error", {
   test_data_prices <- tibble::tribble(
     ~year, ~source, ~scenario, ~scenario_geography, ~technology, ~indicator, ~unit, ~price,
@@ -100,14 +93,6 @@ test_that("with invalid argument for version, read_price_data() returns throws
 })
 
 # test read_price_data_internal()
-test_that("without specified arguments, read_price_data_internal() throws
-          error", {
-            testthat::expect_error(
-              read_price_data_internal(),
-              "argument \"path\" is missing, with no default"
-            )
-          })
-
 test_that("with valid arguments set, read_price_data_internal() returns
           data.frame", {
             test_data_prices <- tibble::tribble(
@@ -129,14 +114,6 @@ test_that("with valid arguments set, read_price_data_internal() returns
           })
 
 # test read_price_data_internal_old()
-test_that("without specified arguments, read_price_data_internal_old() throws
-          error", {
-            testthat::expect_error(
-              read_price_data_internal_old(),
-              "argument \"path\" is missing, with no default"
-            )
-          })
-
 test_that("with valid arguments set, read_price_data_internal_old() returns
           data.frame", {
             test_data_prices <- tibble::tribble(
