@@ -406,7 +406,8 @@ scenario_data <- scenario_data %>%
 # Load price data----------------------------------------
 df_price <- read_price_data(
     path = file.path(data_location, paste0("prices_data_", price_data_version, ".csv")),
-    version = "old"
+    version = "old",
+    expected_technlogies = technologies
   ) %>%
   filter(year >= start_year) %>%
   check_price_consistency()

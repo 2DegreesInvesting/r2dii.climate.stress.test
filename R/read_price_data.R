@@ -5,12 +5,15 @@
 #' @param version A string indicating whether to prepare the capacity factors
 #'   based on the old price data structure or the new long format. Must be
 #'   either "old" or "new".
+#' @param expected_technologies A character vector listing all technologies for
+#'   which price data must be provided
 #'
 #' @family import functions
 #'
 #' @export
 read_price_data <- function(path,
-                            version) {
+                            version,
+                            expected_technologies) {
   validate_file_exists(path)
 
   version_allowed <- version %in% c("old", "new")
@@ -21,6 +24,11 @@ read_price_data <- function(path,
   } else {
     data <- read_price_data_internal_old(path = path)
   }
+
+  prices_for_all_technologies_available <- all(
+    expected_technologies %in% unique(data$technology)
+  )
+  stopifnot(prices_for_all_technologies_available)
 
   return(data)
 }
@@ -58,7 +66,6 @@ read_price_data_internal <- function(path) {
   )
 
   return(data)
-  # TODO: add check that looks if all technologies are given (requires new input arg)
 }
 
 
