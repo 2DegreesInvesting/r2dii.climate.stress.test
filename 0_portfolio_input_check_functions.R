@@ -1,22 +1,3 @@
-check_missing_cols <- function(portfolio, grouping_variables){
-
-  required_input_cols <- c("holding_id", "market_value","currency","isin",grouping_variables, "number_of_shares")
-
-  if(!"number_of_shares" %in% colnames(portfolio)){portfolio$number_of_shares <- NA}
-
-
-  missing_columns <-setdiff(required_input_cols,colnames(portfolio))
-
-  if(length(missing_columns) > 0){
-    stop(paste0("The input file is missing the following data columns: ", missing_columns))
-  }
-
-  portfolio <- as_tibble(portfolio)
-
-  portfolio
-
-}
-
 set_currency_timestamp <- function(currencies){
 
   currencies <- currencies %>% mutate(ExchangeRate_2019Q2 = 1)
