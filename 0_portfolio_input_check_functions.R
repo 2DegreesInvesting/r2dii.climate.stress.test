@@ -778,20 +778,6 @@ add_bics_sector <- function(fin_data){
 
 }
 
-add_portfolio_flags <- function(portfolio){
-  ### FLAGS/Exclusions
-
-  portfolio <- check_isin_format(portfolio)
-  portfolio <- check_missing_currency(portfolio)
-  portfolio <- check_valid_input_value(portfolio)
-  portfolio <- check_bloomberg_data(portfolio)
-
-  portfolio <- add_flags(portfolio)
-  portfolio <- overall_validity_flag(portfolio)
-
-  return(portfolio)
-}
-
 portfolio_summary <- function(portfolio_total){
 
   overview_data <- portfolio_total %>%
@@ -809,12 +795,7 @@ portfolio_summary <- function(portfolio_total){
            valid_value_usd, asset_value_usd, portfolio_value_usd) %>%
     distinct()
 
-
-
-
   return(overview_data)
-
-
 
 }
 
