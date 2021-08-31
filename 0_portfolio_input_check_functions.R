@@ -196,17 +196,6 @@ classify_all_funds <- function(fin_data){
 }
 
 ### Portfolio Check Functions
-
-convert_currencies <- function(portfolio, currencies){
-
-  portfolio <- left_join(portfolio, currencies, by = "currency")
-
-  portfolio$value_usd <- portfolio$market_value * portfolio$exchange_rate
-
-  portfolio
-
-}
-
 add_fin_data <- function(portfolio, fin_data){
 
   portfolio_no_isin <- portfolio %>% filter(is.na(isin))
