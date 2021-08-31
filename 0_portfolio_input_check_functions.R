@@ -701,36 +701,6 @@ create_id_columns <- function(portfolio, portfolio_type){
 }
 
 # FINAL SCRIPTS
-get_and_clean_fund_data <- function(){
-
-  fund_data <- NA
-  # Fund Data
-  if(file.exists(paste0(analysis_inputs_path,"/fund_data_",financial_timestamp,".rda"))){
-    fund_data <- readRDS(paste0(analysis_inputs_path,"/fund_data_",financial_timestamp,".rda"))
-  }else if(file.exists(paste0(analysis_inputs_path,"/fund_data_2018Q4.rda"))){
-    fund_data <- readRDS(paste0(analysis_inputs_path,"/fund_data_2018Q4.rda"))
-    print("Old Fund Data being used. Replace FundsData2018Q4 or check name of file.")
-  }else if(file.exists(paste0(analysis_inputs_path, "/SFC_26052020_funds.csv"))){
-    fund_data <- read_csv(paste0(analysis_inputs_path, "/SFC_26052020_funds.csv"))
-    print("2020Q2 SFC fund data being used")
-  }else{
-    if(!data_check(fund_data)){
-      warning("No fund data available")}
-  }
-
-
-  if (data_check(fund_data)){
-
-    fund_data <- fund_data %>% janitor::clean_names()
-
-    fund_data <- fund_data %>% filter(!is.na(holding_isin) & holding_isin != "")
-
-    fund_data <- normalise_fund_data(fund_data)
-
-  }
-  return(fund_data)
-}
-
 get_and_clean_fin_data <- function(fund_data){
 
   # Financial Data
