@@ -216,21 +216,6 @@ check_funds_wo_bbg <- function(fund_data, fin_data){
 }
 
 ###
-check_bloomberg_data <- function(portfolio_total){
-
-  portfolio_total <- portfolio_total %>%
-    mutate(has_bbg_data = case_when(
-      (asset_type == "Equity" | asset_type == "Unclassifiable") & (is.na(bloomberg_id) | bloomberg_id == "") ~ FALSE,
-      (asset_type == "Bonds" | asset_type == "Unclassifiable") & (is.na(corporate_bond_ticker) | corporate_bond_ticker == "") ~ FALSE,
-      (asset_type == ""  | asset_type == "Unclassifiable") ~ FALSE,
-      is.na(asset_type) ~ FALSE,
-      TRUE ~ TRUE)
-    )
-
-  portfolio_total
-
-}
-
 add_flags <- function(portfolio){
 
   portfolio <- portfolio %>%
