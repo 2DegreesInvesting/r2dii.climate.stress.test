@@ -1,17 +1,3 @@
-clear_portfolio_input_blanks <- function(portfolio){
-
-  if(any(portfolio[,grouping_variables] == ""| is.na(portfolio[,grouping_variables]))){
-    print("Warning: missing grouping variables, corresponding rows removed")
-
-    portfolio <- portfolio %>% filter_at(
-      grouping_variables, all_vars(!is.na(.))
-    )
-  }
-
-  portfolio
-
-}
-
 add_meta_portfolio <- function(portfolio, inc_meta_portfolio){
 
   portfolio_meta <- portfolio
