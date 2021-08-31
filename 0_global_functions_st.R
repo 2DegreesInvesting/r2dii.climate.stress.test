@@ -134,21 +134,6 @@ first_char_up <- function(x) {
   x
 }
 
-clean_punctuation <- function(x) {
-  x <- gsub("ó", "o", x)
-  x <- gsub("&", " and ", x)
-  x <- gsub("á", "a", x)
-  x <- gsub("/", " ", x)
-  x <- gsub("ä", "ae", x)
-  x <- gsub("ö", "oe", x)
-  x <- gsub("ü", "ue", x)
-  x <- gsub("Ä", "Ae", x)
-  x <- gsub("Ö", "Oe", x)
-  x <- gsub("Ü", "Ue", x)
-
-  x
-}
-
 # Checks whether a variable is a dataframe. Considers also logicals and null values.
 data_check <- function(df) {
   if (is.data.frame(df)) {
