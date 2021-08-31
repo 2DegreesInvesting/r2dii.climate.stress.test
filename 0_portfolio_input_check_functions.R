@@ -196,14 +196,6 @@ classify_all_funds <- function(fin_data){
 }
 
 ### Portfolio Check Functions
-identify_fund_portfolio <- function(portfolio){
-
-  fund_portfolio <- portfolio %>% filter(asset_type == "Funds", !is.na(isin))
-
-  fund_portfolio
-
-}
-
 calculate_fund_portfolio <- function(fund_portfolio, fund_data, cols_portfolio_no_bbg = cols_portfolio, cols_funds = cols_of_funds){
 
   if (data_check(fund_portfolio)){
