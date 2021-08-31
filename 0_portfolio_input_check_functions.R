@@ -1,12 +1,3 @@
-add_holding_id <- function(portfolio){
-  if (length(setdiff("holding_id", names(portfolio))) != 0) {
-    portfolio$holding_id <- row.names(portfolio)
-  }
-
-  portfolio
-
-}
-
 check_missing_cols <- function(portfolio, grouping_variables){
 
   required_input_cols <- c("holding_id", "market_value","currency","isin",grouping_variables, "number_of_shares")
