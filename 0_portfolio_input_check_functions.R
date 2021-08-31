@@ -778,37 +778,6 @@ add_bics_sector <- function(fin_data){
 
 }
 
-create_portfolio_subset <- function(portfolio, portfolio_type, relevant_fin_data){
-
-  portfolio <- portfolio %>% mutate(financial_sector = security_mapped_sector)
-
-  if(portfolio_type %in% unique(portfolio$asset_type)){
-
-    portfolio_subset <- portfolio %>% filter(asset_type == portfolio_type)
-
-    # portfolio_subset <- check_for_ald(portfolio_subset,
-    #                                   portfolio_type,
-    #                                   relevant_fin_data)
-
-    portfolio_subset <- create_id_columns(portfolio_subset, portfolio_type)
-
-    portfolio_subset <- portfolio_subset %>%
-      select(all_of(grouping_variables), holding_id, value_usd, number_of_shares,
-             company_id, company_name, id, id_name, country_of_domicile, unit_share_price, current_shares_outstanding_all_classes,
-             financial_sector)
-
-  }else{
-    print(paste0("No ",portfolio_type," in portfolio"))
-
-    portfolio_subset <- NA
-  }
-
-
-
-  return(portfolio_subset)
-
-}
-
 clean_unmatched_holdings <- function(portfolio){
 
   port_na <- portfolio %>% filter(is.na(security_mapped_sector))
