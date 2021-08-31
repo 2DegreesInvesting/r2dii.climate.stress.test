@@ -196,20 +196,6 @@ classify_all_funds <- function(fin_data){
 }
 
 ### Portfolio Check Functions
-add_fin_data <- function(portfolio, fin_data){
-
-  portfolio_no_isin <- portfolio %>% filter(is.na(isin))
-
-  portfolio_isin <- portfolio %>% filter(!is.na(isin))
-
-  portfolio_fin <- left_join(portfolio_isin, fin_data, by = "isin")
-
-  portfolio_fin <- bind_rows(portfolio_fin, portfolio_no_isin)
-
-  portfolio_fin
-
-}
-
 calculate_value_usd_with_fin_data <- function(portfolio){
 
   # check correct inputs
