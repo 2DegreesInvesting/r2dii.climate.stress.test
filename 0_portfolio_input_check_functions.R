@@ -778,26 +778,6 @@ add_bics_sector <- function(fin_data){
 
 }
 
-get_and_clean_company_fin_data <- function(){
-
-  comp_fin_data_raw <- read_rds(paste0(analysis_inputs_path,"/consolidated_financial_data.rda")) %>%
-    mutate(financial_sector=mapped_sector)
-
-  comp_fin_data_raw <- comp_fin_data_raw %>% select(
-    company_id, company_name, bloomberg_id, country_of_domicile, corporate_bond_ticker, bics_sector, bics_subgroup,
-    icb_subgroup, mapped_sector,financial_sector, has_asset_level_data, has_assets_in_matched_sector, sectors_with_assets,
-    current_shares_outstanding_all_classes, company_status, bond_debt_out,has_asset_level_data,
-    financial_timestamp
-  )
-
-  sector_bridge <- read_csv("data-raw/sector_bridge.csv", col_types = "cccccccc") %>% select(industry_classification,source,sector)
-
-  comp_fin_data <- map_comp_sectors(comp_fin_data_raw, sector_bridge)
-
-  return(comp_fin_data)
-
-}
-
 get_and_clean_debt_fin_data <- function(){
 
   debt_fin_data_raw <- read_rds(paste0(analysis_inputs_path, "/debt_financial_data.rda"))
