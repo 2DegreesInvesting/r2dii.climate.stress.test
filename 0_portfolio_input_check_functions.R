@@ -701,16 +701,6 @@ create_id_columns <- function(portfolio, portfolio_type){
 }
 
 # FINAL SCRIPTS
-get_and_clean_currency_data <- function(){
-
-  currencies <- readRDS("data-raw/currencies.rda")
-
-  currencies <- set_currency_timestamp(currencies)
-
-  currencies
-
-}
-
 get_and_clean_fund_data <- function(){
 
   fund_data <- NA
