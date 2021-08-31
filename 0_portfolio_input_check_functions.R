@@ -27,34 +27,6 @@ map_security_sectors <- function(fin_data, sector_bridge){
 
 }
 
-map_comp_sectors <- function(comp_fin_data, sector_bridge){
-
-  initial_no_rows = nrow(comp_fin_data)
-
-  comp_fin_data <- comp_fin_data %>% left_join(sector_bridge %>% filter(source == "BICS") %>% select(-source),
-                                               by = c("bics_subgroup" = "industry_classification"))
-
-  comp_fin_data_na <- comp_fin_data %>% filter(is.na(sector)) %>% select(-sector)
-
-  comp_fin_data <- comp_fin_data %>% filter(!is.na(sector))
-
-  comp_fin_data_na <- comp_fin_data_na %>% left_join(sector_bridge %>% filter(source == "ICB")%>% select(-source),
-                                                     by = c("icb_subgroup" = "industry_classification"))
-
-  comp_fin_data <- comp_fin_data %>% bind_rows(comp_fin_data_na)
-
-  comp_fin_data <- comp_fin_data %>% select(-mapped_sector) %>% rename(mapped_sector = sector)
-
-  comp_fin_data %>% group_by(mapped_sector) %>% filter(is.na(mapped_sector)) %>% summarise(count = n(), .groups = "drop_last")
-
-  comp_fin_data_na <- comp_fin_data %>% filter(is.na(mapped_sector))
-
-  if(nrow(comp_fin_data) != initial_no_rows){stop("Rows being dropped in mapping sectors")}
-
-  return(comp_fin_data)
-
-}
-
 override_sector_classification <- function(fin_data, overrides){
 
   start_rows <- nrow(fin_data)
