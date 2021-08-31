@@ -1,34 +1,3 @@
-
-### Portfolio cleaning functions
-read_raw_portfolio_file <- function(project_name){
-
-  portfolio <- NA
-
-  input_path <- paste0(project_location, "/20_Raw_Inputs/")
-
-  csv_to_read = list.files(path = input_path, pattern=paste0(project_name,"_Input.csv"))
-  txt_to_read = list.files(path = input_path, pattern=paste0(project_name,"_Input.txt"))
-
-
-  if (length(csv_to_read) == 1){portfolio <- read_csv(paste0(input_path,csv_to_read))}
-  if (length(txt_to_read) == 1){
-    enc <- guess_encoding(paste0(input_path,txt_to_read))$encoding[1]
-    portfolio <- read.table(paste0(input_path,txt_to_read),sep = ",", header = T, fileEncoding = enc)
-  }
-
-  # Reads in Files saved with a ; not a ,
-  if (ncol(portfolio) == 1 & length(csv_to_read) == 1){ portfolio <- read.csv(paste0(input_path,csv_to_read), strip.white = T, stringsAsFactors = F, sep = ";")}
-  if (ncol(portfolio) == 1 & length(txt_to_read) == 1){ portfolio <- read.table(paste0(input_path,txt_to_read),sep = "\t", header = T, fileEncoding = enc)}
-  if (ncol(portfolio) == 1 & length(txt_to_read) == 1){ portfolio <- read.table(paste0(input_path,txt_to_read),sep = ";", header = T, fileEncoding = enc)}
-
-
-  if(!data_check(portfolio)){
-    stop("No portfolio Input File")
-  }
-
-  portfolio
-}
-
 clean_colnames_portfolio_input_file <- function(portfolio){
 
   if (is.data.frame(portfolio)){
