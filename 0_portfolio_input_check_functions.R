@@ -1,18 +1,3 @@
-set_currency_timestamp <- function(currencies){
-
-  currencies <- currencies %>% mutate(ExchangeRate_2019Q2 = 1)
-
-  currencies <- currencies %>%
-    select(Currency_abbr, paste0("ExchangeRate_",financial_timestamp)) %>%
-    filter(!is.na(Currency_abbr), Currency_abbr != "") %>% distinct()
-
-  names(currencies)  <- c("currency", "exchange_rate")
-
-  currencies$exchange_rate <- as.numeric(currencies$exchange_rate)
-
-  currencies
-}
-
 ### Fin data cleaning functions
 map_security_sectors <- function(fin_data, sector_bridge){
 
