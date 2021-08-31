@@ -195,39 +195,6 @@ classify_all_funds <- function(fin_data){
   fin_data
 }
 
-normalise_fund_data <- function(fund_data){
-
-  if(data_check(fund_data)){
-    fund_data <- fund_data %>% group_by(fund_isin) %>%
-      mutate(total_weight = sum(isin_weight,na.rm = T))
-
-    fund_data_large <- fund_data %>% group_by(fund_isin) %>%
-      filter(total_weight > 1) %>%
-      mutate(isin_weight = isin_weight/total_weight) %>%
-      select(-total_weight)
-
-    fund_data_small <- fund_data %>% group_by(fund_isin) %>%
-      filter(total_weight <= 1) %>%
-      select(-total_weight)
-
-    fund_data_missing <- fund_data_small %>%
-      summarise(isin_weight = 1 - sum(isin_weight,na.rm = T),
-                .groups = "drop_last") %>%
-      mutate(holding_isin = "MissingValue")
-
-
-    fund_data <- bind_rows(fund_data_large,fund_data_small,fund_data_missing)
-
-    fund_data
-
-  }else{
-    stop("No fund data")
-  }
-
-  fund_data
-
-}
-
 ### Portfolio Check Functions
 
 convert_currencies <- function(portfolio, currencies){
