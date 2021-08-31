@@ -778,14 +778,6 @@ add_bics_sector <- function(fin_data){
 
 }
 
-get_and_clean_debt_fin_data <- function(){
-
-  debt_fin_data_raw <- read_rds(paste0(analysis_inputs_path, "/debt_financial_data.rda"))
-
-  return(debt_fin_data_raw)
-
-}
-
 process_raw_portfolio <- function(portfolio_raw,
                                   fin_data,
                                   fund_data,
