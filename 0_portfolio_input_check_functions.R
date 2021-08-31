@@ -1,20 +1,3 @@
-clean_portfolio_col_types <- function(portfolio, grouping_variables){
-
-  portfolio[,grouping_variables] <- lapply(portfolio[,grouping_variables], clean_punctuation)
-
-  # portfolio$investor_name <- clean_punctuation(portfolio$investor_name)
-  # portfolio$portfolio_name <- clean_punctuation(portfolio$portfolio_name)
-
-
-  # portfolio$number_of_shares <- as.numeric(portfolio$number_of_shares)
-  portfolio$market_value <- as.numeric(portfolio$market_value)
-  portfolio$currency <- as.character(portfolio$currency)
-
-  portfolio$currency <- if_else(portfolio$currency == "Euro","EUR",portfolio$currency)
-
-  portfolio
-}
-
 clear_portfolio_input_blanks <- function(portfolio){
 
   if(any(portfolio[,grouping_variables] == ""| is.na(portfolio[,grouping_variables]))){
