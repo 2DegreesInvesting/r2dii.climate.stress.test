@@ -292,25 +292,3 @@ add_bics_sector <- function(fin_data){
 
 
 }
-
-clean_unmatched_holdings <- function(portfolio){
-
-  port_na <- portfolio %>% filter(is.na(security_mapped_sector))
-
-  portfolio <- portfolio %>% filter(!is.na(security_mapped_sector))
-
-  if(data_check(port_na)){
-
-    port_na <- port_na %>%
-      mutate(asset_type = "Unclassifiable",
-             security_mapped_sector = "Unclassifiable",
-             sector_boe = "Unclassifiable",
-             sector_dnb = "Unclassifiable",
-             sector_ipr = "Unclassifiable")
-    portfolio <- rbind(portfolio, port_na)
-
-  }
-
-  return(portfolio)
-
-}
