@@ -109,8 +109,9 @@ create_stressdata_masterdata_file_paths <- function(data_prep_timestamp, twodii_
   path_parent <- path_dropbox_2dii("PortCheck", "00_Data", "07_AnalysisInputs", data_prep_timestamp)
 
   paths <- list(
-    "stress_test_masterdata_debt.rda",
-    "stress_test_masterdata_ownership.rda"
+    "stress_test_masterdata_debt.rds",
+    "stress_test_masterdata_ownership.rds",
+    "stress_test_masterdata_credit.rds"
   ) %>%
     purrr::map(function(file) {
       file_path <- file.path(path_parent, file)
@@ -119,7 +120,7 @@ create_stressdata_masterdata_file_paths <- function(data_prep_timestamp, twodii_
       }
       return(file_path)
     }) %>%
-    purrr::set_names(c("bonds", "listed_equity"))
+    purrr::set_names(c("bonds", "listed_equity", "loans"))
 
   return(paths)
 }
