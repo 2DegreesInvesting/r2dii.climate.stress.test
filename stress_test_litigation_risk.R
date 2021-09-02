@@ -69,9 +69,6 @@ cfg <- config::get(
 )
 # OPEN: check_valid_cfg() not applicable here
 start_year <- cfg$AnalysisPeriod$Years.Startyear
-# TODO: is this being used for anything???
-dataprep_timestamp <- cfg$TimeStamps$DataPrep.Timestamp
-
 
 ##### Filters----------------------------------------
 # The filter settings should mirror those from the parent PACTA project by default

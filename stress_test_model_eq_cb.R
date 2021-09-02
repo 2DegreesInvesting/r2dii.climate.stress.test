@@ -100,7 +100,6 @@ investorname_equity <- "Meta Investor"
 cfg <- config::get(file = file.path(project_location, "10_Parameter_File","AnalysisParameters.yml"))
 # OPEN: check_valid_cfg() not applicable here
 start_year <- cfg$AnalysisPeriod$Years.Startyear
-dataprep_timestamp <- cfg$TimeStamps$DataPrep.Timestamp # is this being used for anything???
 time_horizon <- cfg$AnalysisPeriod$Years.Horizon
 
 # Filters----------------------------------------
