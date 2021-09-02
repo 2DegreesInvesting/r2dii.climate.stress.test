@@ -361,8 +361,6 @@ ngfs_carbon_tax <- read_ngfs_carbon_tax(
   path = file.path(data_location, "ngfs_carbon_tax.csv")
 )
 
-lgd_by_sector <- readr::read_csv(file.path(data_location, paste0("sector_lgd.csv")), col_types = "cn")
-
 #############
 # Create shock net profits margins dataframe
 
