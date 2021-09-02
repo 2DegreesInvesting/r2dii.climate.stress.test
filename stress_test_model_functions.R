@@ -257,7 +257,7 @@ check_scenario_settings <- function(portfolio, scenario_selections = scenarios) 
   if (!all(scenario_selections %in% unique(portfolio$scenario))) {
     stop(
       paste0(
-        "Not all scenarios selected for anaylsis (",
+        "Not all scenarios selected for analysis (",
         paste0(scenario_selections, collapse = ", "),
         ") are provided in the analysed portfolio (",
         paste0(portfolio %>% pull(.data$scenario) %>% unique(), collapse = ", "),
