@@ -253,9 +253,8 @@ check_scenario_timeframe <- function(scenario_data, start_year = start_year, end
 # check if the scenarios selected in the stress test project at hand
 # are compatible with the scenarios passed from the PACTA results input
 check_scenario_settings <- function(portfolio, scenario_selections = scenarios) {
-  if (!all(scenarios %in% (portfolio %>%
-    pull(.data$scenario) %>%
-    unique()))) {
+
+  if (!all(scenario_selections %in% unique(portfolio$scenario))) {
     stop(
       paste0(
         "Not all scenarios selected for anaylsis (",
