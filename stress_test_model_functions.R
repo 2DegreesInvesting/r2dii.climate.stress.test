@@ -260,7 +260,7 @@ check_scenario_settings <- function(portfolio, scenario_selections = scenarios) 
         "Not all scenarios selected for analysis (",
         paste0(scenario_selections, collapse = ", "),
         ") are provided in the analysed portfolio (",
-        paste0(portfolio %>% pull(.data$scenario) %>% unique(), collapse = ", "),
+        paste0(unique(portfolio$scenario), collapse = ", "),
         ") ."
       ),
       call. = FALSE
