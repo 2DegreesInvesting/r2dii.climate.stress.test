@@ -104,7 +104,6 @@ investorname_loan_book <- "Meta Investor" #' Fixed Income Index'  #'Meta Portfol
 cfg <- config::get(file = file.path(project_location, "10_Parameter_File","AnalysisParameters.yml"))
 # OPEN: check_valid_cfg() not applicable here
 start_year <- cfg$AnalysisPeriod$Years.Startyear
-dataprep_timestamp <- cfg$TimeStamps$DataPrep.Timestamp # is this being used for anything???
 time_horizon <- cfg$AnalysisPeriod$Years.Horizon
 
 ##### Filters----------------------------------------
@@ -179,7 +178,6 @@ scenarios_filter <- unique(
 ##### OPEN: this is currently not used, defined in transition_scenario loop
 # duration_div <- duration_of_shock
 
-recovery_rate <- cfg_mod$financials$recovery_rate # Bonds recovery rate, set to 38%, historical recovery rate of senior bonds (Moody's 2017). See Storm ahead paper page 39
 discount_rate <- cfg_mod$financials$discount_rate # Discount rate
 ##### OPEN: this needs to be estimated based on data
 terminal_value <- cfg_mod$financials$terminal_value
@@ -360,8 +358,6 @@ df_price <- read_price_data(
 ngfs_carbon_tax <- read_ngfs_carbon_tax(
   path = file.path(data_location, "ngfs_carbon_tax.csv")
 )
-
-lgd_by_sector <- readr::read_csv(file.path(data_location, paste0("sector_lgd.csv")), col_types = "cn")
 
 #############
 # Create shock net profits margins dataframe
