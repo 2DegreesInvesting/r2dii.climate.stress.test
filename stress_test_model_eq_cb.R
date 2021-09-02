@@ -175,7 +175,6 @@ scenarios_filter <- unique(
 ##### OPEN: this is currently not used, defined in transition_scenario loop
 # duration_div <- duration_of_shock
 
-recovery_rate <- cfg_mod$financials$recovery_rate # Bonds recovery rate, set to 38%, historical recovery rate of senior bonds (Moody's 2017). See Storm ahead paper page 39
 discount_rate <- cfg_mod$financials$discount_rate # Discount rate
 ##### OPEN: this needs to be estimated based on data
 terminal_value <- cfg_mod$financials$terminal_value
