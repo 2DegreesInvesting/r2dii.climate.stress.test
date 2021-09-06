@@ -1096,17 +1096,16 @@ technology_change_by_shock_year_cb <- show_var_change_by_shock_year(
 
 data_prod_baseline <- qa_annual_profits_eq
 
-if (identical(calculation_level, "company")) {
-  data_prod_baseline <- data_prod_baseline %>%
-    group_by(year, investor_name, portfolio_name, scenario_geography,
-             ald_sector, technology, year_of_shock) %>%
-    summarise(
-      baseline = sum(baseline, na.rm = TRUE),
-      scen_to_follow_aligned = sum(scen_to_follow_aligned, na.rm = TRUE),
-      late_sudden = sum(late_sudden, na.rm = TRUE)
-    ) %>%
-    ungroup()
-}
+data_prod_baseline <- data_prod_baseline %>%
+  group_by(year, investor_name, portfolio_name, scenario_geography,
+           ald_sector, technology, year_of_shock) %>%
+  summarise(
+    baseline = sum(baseline, na.rm = TRUE),
+    scen_to_follow_aligned = sum(scen_to_follow_aligned, na.rm = TRUE),
+    late_sudden = sum(late_sudden, na.rm = TRUE)
+  ) %>%
+  ungroup()
+
 
 prod_baseline_target_ls <- show_prod_baseline_target_ls_pf(
   data = data_prod_baseline,
