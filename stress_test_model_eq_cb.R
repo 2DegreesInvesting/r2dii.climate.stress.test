@@ -76,7 +76,7 @@ project_name <- cfg_st$project_name
 twodii_internal <- cfg_st$project_internal$twodii_internal
 project_location_ext <- cfg_st$project_internal$project_location_ext
 price_data_version <- cfg_st$price_data_version
-calculation_level <- cfg_st$calculation_level
+calculation_level <- "company"
 company_exclusion <- cfg_st$company_exclusion
 
 data_location <- file.path(get_st_data_path(), data_path())
@@ -413,13 +413,12 @@ ngfs_carbon_tax <- read_ngfs_carbon_tax(
 )
 
 # Load excluded companies-------------------------------
-if (identical(calculation_level, "company") & company_exclusion) {
+if (company_exclusion) {
   excluded_companies <- readr::read_csv(
     file.path(data_location, "exclude-companies.csv"),
     col_types = "cc"
   )
 }
-
 
 ###########################################################################
 # Data wrangling / preparation---------------------------------------------
@@ -472,13 +471,11 @@ financial_data_equity <- financial_data_equity %>%
 #TODO: any logic/bounds needed for debt/equity ratio and volatility?
 
 
-
 # Prepare pacta results to match project specs---------------------------------
 nesting_vars <- c(
   "investor_name", "portfolio_name", "equity_market", "ald_sector", "technology",
-  "scenario", "allocation", "scenario_geography"
+  "scenario", "allocation", "scenario_geography", "company_name"
 )
-if (identical(calculation_level, "company")) {nesting_vars <- c(nesting_vars, "company_name")}
 
 # ...for bonds portfolio-------------------------------------------------------
 pacta_bonds_results <- pacta_bonds_results_full %>%
