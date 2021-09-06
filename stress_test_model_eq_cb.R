@@ -684,65 +684,42 @@ for (i in seq(1, nrow(transition_scenarios))) {
       scenario_geography == scenario_geography_filter
     )
 
-  if (identical(calculation_level, "company")) {
-    plan_carsten_equity <- plan_carsten_equity %>%
-      select(
-        investor_name, portfolio_name, company_name, ald_sector, technology,
-        scenario_geography, year, plan_carsten, plan_sec_carsten
-      ) %>%
-      distinct(across(everything()))
-
-    if (!exists("excluded_companies")) {
-      equity_results <- bind_rows(
-        equity_results,
-        company_asset_value_at_risk(
-          data = equity_annual_profits,
-          terminal_value = terminal_value,
-          shock_scenario = shock_scenario,
-          div_netprofit_prop_coef = div_netprofit_prop_coef,
-          plan_carsten = plan_carsten_equity,
-          port_aum = equity_port_aum,
-          flat_multiplier = 1,
-          exclusion = NULL
-        )
-      )
-    } else {
-      equity_results <- bind_rows(
-        equity_results,
-        company_asset_value_at_risk(
-          data = equity_annual_profits,
-          terminal_value = terminal_value,
-          shock_scenario = shock_scenario,
-          div_netprofit_prop_coef = div_netprofit_prop_coef,
-          plan_carsten = plan_carsten_equity,
-          port_aum = equity_port_aum,
-          flat_multiplier = 1,
-          exclusion = excluded_companies
-        )
-      )
-    }
-
-  } else {
-    plan_carsten_equity <- plan_carsten_equity %>%
-    distinct(
-      investor_name, portfolio_name, ald_sector, technology,
+  plan_carsten_equity <- plan_carsten_equity %>%
+    select(
+      investor_name, portfolio_name, company_name, ald_sector, technology,
       scenario_geography, year, plan_carsten, plan_sec_carsten
-    )
+    ) %>%
+    distinct(across(everything()))
 
+  if (!exists("excluded_companies")) {
     equity_results <- bind_rows(
       equity_results,
-      asset_value_at_risk(
+      company_asset_value_at_risk(
         data = equity_annual_profits,
         terminal_value = terminal_value,
         shock_scenario = shock_scenario,
         div_netprofit_prop_coef = div_netprofit_prop_coef,
         plan_carsten = plan_carsten_equity,
         port_aum = equity_port_aum,
-        flat_multiplier = 1
+        flat_multiplier = 1,
+        exclusion = NULL
+      )
+    )
+  } else {
+    equity_results <- bind_rows(
+      equity_results,
+      company_asset_value_at_risk(
+        data = equity_annual_profits,
+        terminal_value = terminal_value,
+        shock_scenario = shock_scenario,
+        div_netprofit_prop_coef = div_netprofit_prop_coef,
+        plan_carsten = plan_carsten_equity,
+        port_aum = equity_port_aum,
+        flat_multiplier = 1,
+        exclusion = excluded_companies
       )
     )
   }
-
 }
 
 # Output equity results
