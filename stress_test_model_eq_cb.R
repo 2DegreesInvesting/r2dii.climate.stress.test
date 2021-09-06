@@ -853,127 +853,102 @@ for (i in seq(1, nrow(transition_scenarios))) {
   bonds_annual_profits <- bonds_annual_profits %>%
     filter(!is.na(company_id))
 
-  if(identical(calculation_level, "company")) {
-    plan_carsten_bonds <- plan_carsten_bonds %>%
-      select(
-        investor_name, portfolio_name, company_name, ald_sector, technology,
-        scenario_geography, year, plan_carsten, plan_sec_carsten, term, pd
-      ) %>%
-      distinct_all()
+  plan_carsten_bonds <- plan_carsten_bonds %>%
+    select(
+      investor_name, portfolio_name, company_name, ald_sector, technology,
+      scenario_geography, year, plan_carsten, plan_sec_carsten, term, pd
+    ) %>%
+    distinct_all()
 
-
-
-    if (!exists("excluded_companies")) {
-      bonds_results <- bind_rows(
-        bonds_results,
-        company_asset_value_at_risk(
-          data = bonds_annual_profits,
-          terminal_value = terminal_value,
-          shock_scenario = shock_scenario,
-          div_netprofit_prop_coef = div_netprofit_prop_coef,
-          plan_carsten = plan_carsten_bonds,
-          port_aum = bonds_port_aum,
-          flat_multiplier = 0.15,
-          exclusion = NULL
-        )
-      )
-
-      bonds_overall_pd_changes <- bonds_annual_profits %>%
-        calculate_pd_change_overall(
-          shock_year = transition_scenario_i$year_of_shock,
-          end_of_analysis = end_year,
-          exclusion = NULL,
-          risk_free_interest_rate = risk_free_rate
-        )
-
-      bonds_expected_loss <- bind_rows(
-        bonds_expected_loss,
-        company_expected_loss(
-          data = bonds_overall_pd_changes,
-          loss_given_default = lgd_subordinated_claims,
-          exposure_at_default = plan_carsten_bonds,
-          # TODO: what to do with this? some sector level exposure for loanbook?
-          port_aum = bonds_port_aum
-        )
-      )
-
-      bonds_annual_pd_changes <- bind_rows(
-        bonds_annual_pd_changes,
-        calculate_pd_change_annual(
-          data = bonds_annual_profits,
-          shock_year = transition_scenario_i$year_of_shock,
-          end_of_analysis = end_year,
-          exclusion = NULL,
-          risk_free_interest_rate = risk_free_rate
-        )
-      )
-    } else {
-      bonds_results <- bind_rows(
-        bonds_results,
-        company_asset_value_at_risk(
-          data = bonds_annual_profits,
-          terminal_value = terminal_value,
-          shock_scenario = shock_scenario,
-          div_netprofit_prop_coef = div_netprofit_prop_coef,
-          plan_carsten = plan_carsten_bonds,
-          port_aum = bonds_port_aum,
-          flat_multiplier = 0.15,
-          exclusion = excluded_companies
-        )
-      )
-
-      bonds_overall_pd_changes <- bonds_annual_profits %>%
-        calculate_pd_change_overall(
-          shock_year = transition_scenario_i$year_of_shock,
-          end_of_analysis = end_year,
-          exclusion = excluded_companies,
-          risk_free_interest_rate = risk_free_rate
-        )
-
-      bonds_expected_loss <- bind_rows(
-        bonds_expected_loss,
-        company_expected_loss(
-          data = bonds_overall_pd_changes,
-          loss_given_default = lgd_subordinated_claims,
-          exposure_at_default = plan_carsten_bonds,
-          # TODO: what to do with this? some sector level exposure for loanbook?
-          port_aum = bonds_port_aum
-        )
-      )
-
-      bonds_annual_pd_changes <- bind_rows(
-        bonds_annual_pd_changes,
-        calculate_pd_change_annual(
-          data = bonds_annual_profits,
-          shock_year = transition_scenario_i$year_of_shock,
-          end_of_analysis = end_year,
-          exclusion = excluded_companies,
-          risk_free_interest_rate = risk_free_rate
-        )
-      )
-    }
-
-  } else {
-    plan_carsten_bonds <- plan_carsten_bonds %>%
-      distinct(
-        investor_name, portfolio_name, ald_sector, technology,
-        scenario_geography, year, plan_carsten, plan_sec_carsten
-      )
-
+  if (!exists("excluded_companies")) {
     bonds_results <- bind_rows(
       bonds_results,
-      asset_value_at_risk(
+      company_asset_value_at_risk(
         data = bonds_annual_profits,
         terminal_value = terminal_value,
         shock_scenario = shock_scenario,
         div_netprofit_prop_coef = div_netprofit_prop_coef,
         plan_carsten = plan_carsten_bonds,
         port_aum = bonds_port_aum,
-        flat_multiplier = 0.15
+        flat_multiplier = 0.15,
+        exclusion = NULL
+      )
+    )
+
+    bonds_overall_pd_changes <- bonds_annual_profits %>%
+      calculate_pd_change_overall(
+        shock_year = transition_scenario_i$year_of_shock,
+        end_of_analysis = end_year,
+        exclusion = NULL,
+        risk_free_interest_rate = risk_free_rate
+      )
+
+    bonds_expected_loss <- bind_rows(
+      bonds_expected_loss,
+      company_expected_loss(
+        data = bonds_overall_pd_changes,
+        loss_given_default = lgd_subordinated_claims,
+        exposure_at_default = plan_carsten_bonds,
+        # TODO: what to do with this? some sector level exposure for loanbook?
+        port_aum = bonds_port_aum
+      )
+    )
+
+    bonds_annual_pd_changes <- bind_rows(
+      bonds_annual_pd_changes,
+      calculate_pd_change_annual(
+        data = bonds_annual_profits,
+        shock_year = transition_scenario_i$year_of_shock,
+        end_of_analysis = end_year,
+        exclusion = NULL,
+        risk_free_interest_rate = risk_free_rate
+      )
+    )
+  } else {
+    bonds_results <- bind_rows(
+      bonds_results,
+      company_asset_value_at_risk(
+        data = bonds_annual_profits,
+        terminal_value = terminal_value,
+        shock_scenario = shock_scenario,
+        div_netprofit_prop_coef = div_netprofit_prop_coef,
+        plan_carsten = plan_carsten_bonds,
+        port_aum = bonds_port_aum,
+        flat_multiplier = 0.15,
+        exclusion = excluded_companies
+      )
+    )
+
+    bonds_overall_pd_changes <- bonds_annual_profits %>%
+      calculate_pd_change_overall(
+        shock_year = transition_scenario_i$year_of_shock,
+        end_of_analysis = end_year,
+        exclusion = excluded_companies,
+        risk_free_interest_rate = risk_free_rate
+      )
+
+    bonds_expected_loss <- bind_rows(
+      bonds_expected_loss,
+      company_expected_loss(
+        data = bonds_overall_pd_changes,
+        loss_given_default = lgd_subordinated_claims,
+        exposure_at_default = plan_carsten_bonds,
+        # TODO: what to do with this? some sector level exposure for loanbook?
+        port_aum = bonds_port_aum
+      )
+    )
+
+    bonds_annual_pd_changes <- bind_rows(
+      bonds_annual_pd_changes,
+      calculate_pd_change_annual(
+        data = bonds_annual_profits,
+        shock_year = transition_scenario_i$year_of_shock,
+        end_of_analysis = end_year,
+        exclusion = excluded_companies,
+        risk_free_interest_rate = risk_free_rate
       )
     )
   }
-
 }
 
 # Output bonds results
