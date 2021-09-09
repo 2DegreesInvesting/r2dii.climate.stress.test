@@ -109,8 +109,8 @@ create_stressdata_masterdata_file_paths <- function(data_prep_timestamp, twodii_
   path_parent <- path_dropbox_2dii("PortCheck", "00_Data", "07_AnalysisInputs", data_prep_timestamp)
 
   paths <- list(
-    "stress_test_masterdata_debt.rds",
-    "stress_test_masterdata_ownership.rds",
+    "prewrangled_financial_data_bonds.rds",
+    "prewrangled_financial_data_equity.rds",
     "stress_test_masterdata_credit.rds"
   ) %>%
     purrr::map(function(file) {
