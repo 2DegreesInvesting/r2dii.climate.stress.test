@@ -10,7 +10,7 @@ test_that("with all arguments set, read_company_data returns data.frame", {
 
   test_data <- read_company_data(
     path = test_path,
-    asset_type = "bond"
+    asset_type = "bonds"
   )
 
   testthat::expect_s3_class(test_data, "data.frame")

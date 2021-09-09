@@ -193,7 +193,7 @@ stresstest_masterdata_files <- create_stressdata_masterdata_file_paths(
 
 # ... for bonds----------------------------------------------------------------
 financial_data_bonds <- read_company_data(path = stresstest_masterdata_files$bonds,
-                                          asset_type = "bond")
+                                          asset_type = "bonds")
 
 financial_data_bonds <- financial_data_bonds %>%
   dplyr::select(

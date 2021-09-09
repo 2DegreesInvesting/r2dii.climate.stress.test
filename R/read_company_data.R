@@ -13,9 +13,10 @@
 #'
 #' @export
 read_company_data <- function(path = NULL, asset_type) {
+
   path %||% stop("Must provide 'path'")
 
-  if (!asset_type %in% c("bond", "equity")) {
+  if (!asset_type %in% c("bonds", "equity")) {
     stop("Invalid asset type.")
   }
 
@@ -32,7 +33,7 @@ read_company_data <- function(path = NULL, asset_type) {
     "asset_volatility_s_avg", "ald_production"
   )
 
-  if (asset_type == "bond") {
+  if (asset_type == "bonds") {
     expected_columns <- c(expected_columns, "corporate_bond_ticker")
   }
 
