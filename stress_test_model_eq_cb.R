@@ -192,7 +192,8 @@ stresstest_masterdata_files <- create_stressdata_masterdata_file_paths(
 )
 
 # ... for bonds----------------------------------------------------------------
-financial_data_bonds <- read_company_data(path = stresstest_masterdata_files$bonds)
+financial_data_bonds <- read_company_data(path = stresstest_masterdata_files$bonds,
+                                          asset_type = "bond")
 
 financial_data_bonds <- financial_data_bonds %>%
   dplyr::select(
@@ -237,7 +238,8 @@ financial_data_bonds <- financial_data_bonds %>%
   )
 
 # ... for equity---------------------------------------------------------------
-financial_data_equity <- read_company_data(path = stresstest_masterdata_files$listed_equity)
+financial_data_equity <- read_company_data(path = stresstest_masterdata_files$listed_equity,
+                                           asset_type = "equity")
 
 financial_data_equity <- financial_data_equity %>%
   dplyr::select(

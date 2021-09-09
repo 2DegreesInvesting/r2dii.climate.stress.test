@@ -4,18 +4,25 @@
 \alias{read_company_data}
 \title{Read in company finacial data processed from eikon exports and AR master data
 that contain information on multiple credit risk inputs and company
-production plans.}
+production plans, aggregated to the ticker/technology/year level for
+\code{asset_type} bonds and aggregated to the company/technology/year level for
+\code{asset_type} equity.}
 \usage{
-read_company_data(path = NULL)
+read_company_data(path = NULL, asset_type)
 }
 \arguments{
 \item{path}{A string that points to the location of the file containing the
 company financial data.}
+
+\item{asset_type}{A string indicating if company data are for analysis for
+bond or equity.}
 }
 \description{
 Read in company finacial data processed from eikon exports and AR master data
 that contain information on multiple credit risk inputs and company
-production plans.
+production plans, aggregated to the ticker/technology/year level for
+\code{asset_type} bonds and aggregated to the company/technology/year level for
+\code{asset_type} equity.
 }
 \seealso{
 Other import functions: 
