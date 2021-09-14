@@ -79,7 +79,7 @@ project_name <- cfg_st$project_name
 twodii_internal <- cfg_st$project_internal$twodii_internal
 project_location_ext <- cfg_st$project_internal$project_location_ext
 price_data_version <- cfg_st$price_data_version
-calculation_level <- cfg_st$calculation_level
+calculation_level <- "company"
 company_exclusion <- cfg_st$company_exclusion
 
 data_location <- file.path(get_st_data_path(), data_path())
@@ -374,7 +374,7 @@ net_profit_margins <- net_profit_margin_setup(
   net_profit_margin_oilcap = net_profit_margin_oilcap
 )
 
-if (identical(calculation_level, "company") & company_exclusion) {
+if (company_exclusion) {
   excluded_companies <- readr::read_csv(
     file.path(data_location, "exclude-companies.csv"),
     col_types = "cc"
@@ -388,9 +388,8 @@ if (identical(calculation_level, "company") & company_exclusion) {
 
 nesting_vars <- c(
   "investor_name", "portfolio_name", "equity_market", "ald_sector", "technology",
-  "scenario", "allocation", "scenario_geography"
+  "scenario", "allocation", "scenario_geography", "company_name"
 )
-if (identical(calculation_level, "company")) {nesting_vars <- c(nesting_vars, "company_name")}
 
 pacta_loanbook_results <- pacta_loanbook_results_full %>%
   mutate(scenario = str_replace(scenario, "NPSRTS", "NPS")) %>%
