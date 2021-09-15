@@ -192,94 +192,12 @@ stresstest_masterdata_files <- create_stressdata_masterdata_file_paths(
 )
 
 # ... for bonds----------------------------------------------------------------
-financial_data_bonds <- read_company_data(path = stresstest_masterdata_files$bonds)
-
-financial_data_bonds <- financial_data_bonds %>%
-  dplyr::select(
-    -c(
-      tidyr::starts_with("indicator_"),
-      tidyr::starts_with("overall_data_type_")
-    )
-  )
-
-# ... aggregate to the ticker/technology/year level
-financial_data_bonds <- financial_data_bonds %>%
-  dplyr::select(
-    company_name, company_id, ald_sector, technology, year,
-    corporate_bond_ticker, ald_production, ald_production_unit,
-    ald_emissions_factor, ald_emissions_factor_unit, pd,
-    profit_margin_preferred, profit_margin_unpreferred, leverage_s_avg,
-    asset_volatility_s_avg
-  ) %>%
-  group_by(
-    company_name, company_id, corporate_bond_ticker, ald_sector, technology,
-    year, ald_production_unit, ald_emissions_factor_unit
-  ) %>%
-  summarise(
-    ald_emissions_factor = weighted.mean(ald_emissions_factor, ald_production, na.rm = TRUE),
-    pd = weighted.mean(pd, ald_production, na.rm = TRUE),
-    profit_margin_preferred = weighted.mean(profit_margin_preferred, ald_production, na.rm = TRUE),
-    profit_margin_unpreferred = weighted.mean(profit_margin_unpreferred, ald_production, na.rm = TRUE),
-    leverage_s_avg = weighted.mean(leverage_s_avg, ald_production, na.rm = TRUE),
-    asset_volatility_s_avg = weighted.mean(asset_volatility_s_avg, ald_production, na.rm = TRUE),
-    ald_production = sum(ald_production, na.rm = TRUE),
-    .groups = "drop"
-  ) %>%
-  ungroup() %>%
-  mutate(
-    across(
-      c(
-        ald_production, ald_emissions_factor, pd, profit_margin_preferred,
-        profit_margin_unpreferred, leverage_s_avg, asset_volatility_s_avg
-      ),
-      ~ round(.x, 8)
-    )
-  )
+financial_data_bonds <- read_company_data(path = stresstest_masterdata_files$bonds,
+                                          asset_type = "bonds")
 
 # ... for equity---------------------------------------------------------------
-financial_data_equity <- read_company_data(path = stresstest_masterdata_files$listed_equity)
-
-financial_data_equity <- financial_data_equity %>%
-  dplyr::select(
-    -c(
-      tidyr::starts_with("indicator_"),
-      tidyr::starts_with("overall_data_type_")
-    )
-  )
-
-# ... aggregate to the company/technology/year level
-financial_data_equity <- financial_data_equity %>%
-  dplyr::select(
-    company_name, company_id, ald_sector, technology, year,
-    ald_production, ald_production_unit, ald_emissions_factor,
-    ald_emissions_factor_unit, pd, profit_margin_preferred,
-    profit_margin_unpreferred, leverage_s_avg, asset_volatility_s_avg
-  ) %>%
-  group_by(
-    company_name, company_id, ald_sector, technology, year, ald_production_unit,
-    ald_emissions_factor_unit
-  ) %>%
-  summarise(
-    ald_emissions_factor = weighted.mean(ald_emissions_factor, ald_production, na.rm = TRUE),
-    pd = weighted.mean(pd, ald_production, na.rm = TRUE),
-    profit_margin_preferred = weighted.mean(profit_margin_preferred, ald_production, na.rm = TRUE),
-    profit_margin_unpreferred = weighted.mean(profit_margin_unpreferred, ald_production, na.rm = TRUE),
-    leverage_s_avg = weighted.mean(leverage_s_avg, ald_production, na.rm = TRUE),
-    asset_volatility_s_avg = weighted.mean(asset_volatility_s_avg, ald_production, na.rm = TRUE),
-    ald_production = sum(ald_production, na.rm = TRUE),
-    .groups = "drop"
-  ) %>%
-  ungroup() %>%
-  mutate(
-    across(
-      c(
-        ald_production, ald_emissions_factor, pd, profit_margin_preferred,
-        profit_margin_unpreferred, leverage_s_avg, asset_volatility_s_avg
-      ),
-      ~ round(.x, 8)
-    )
-  )
-
+financial_data_equity <- read_company_data(path = stresstest_masterdata_files$listed_equity,
+                                           asset_type = "equity")
 
 # Load PACTA results / bonds portfolio------------------------
 bonds_path <- file.path(results_path, investorname_bonds, paste0("Bonds_results_", calculation_level, ".rda"))

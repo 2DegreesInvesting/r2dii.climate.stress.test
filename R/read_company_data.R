@@ -1,15 +1,24 @@
 #' Read in company finacial data processed from eikon exports and AR master data
 #' that contain information on multiple credit risk inputs and company
-#' production plans.
+#' production plans, aggregated to the ticker/technology/year level for
+#' `asset_type` bonds and aggregated to the company/technology/year level for
+#' `asset_type` equity.
 #'
 #' @param path A string that points to the location of the file containing the
 #'   company financial data.
+#' @param asset_type A string indicating if company data are for analysis for
+#'   bond or equity.
 #'
 #' @family import functions
 #'
 #' @export
-read_company_data <- function(path = NULL) {
+read_company_data <- function(path = NULL, asset_type) {
+
   path %||% stop("Must provide 'path'")
+
+  if (!asset_type %in% c("bonds", "equity")) {
+    stop("Invalid asset type.")
+  }
 
   valid_input_file_path <- file.exists(file.path(path))
   stopifnot(valid_input_file_path)
@@ -18,31 +27,15 @@ read_company_data <- function(path = NULL) {
   data <- readRDS(path)
 
   expected_columns <- c(
-    "company_name", "company_id", "bloomberg_id", "corporate_bond_ticker",
-    "ald_location", "country_of_domicile", "is_ultimate_listed_parent",
-    "is_ultimate_parent", "parent_company_id", "ownership_level", "ald_sector",
-    "technology", "year", "ald_production", "ald_production_unit",
-    "ald_emissions_factor", "ald_emissions_factor_unit", "pd", "structural",
-    "profit_margin_preferred", "profit_margin_unpreferred", "leverage_s_avg",
-    "asset_volatility_s_avg", "asset_drift_s_avg",
-    "weighted_average_cost_of_capital_percent_s_avg", "ebitda_ltm_1_usd_s_avg",
-    "ebitda_margin_percent_ltm_1_s_avg", "indicator_type_pd",
-    "indicator_type_structural", "indicator_type_profit_margin_preferred",
-    "indicator_type_profit_margin_unpreferred", "indicator_type_leverage_s_avg",
-    "indicator_type_asset_volatility_s_avg", "indicator_type_asset_drift_s_avg",
-    "indicator_type_weighted_average_cost_of_capital_percent_s_avg",
-    "indicator_type_ebitda_ltm_1_usd_s_avg",
-    "indicator_type_ebitda_margin_percent_ltm_1_s_avg",
-    "overall_data_type_pd", "overall_data_type_structural",
-    "overall_data_type_profit_margin_preferred",
-    "overall_data_type_profit_margin_unpreferred",
-    "overall_data_type_leverage_s_avg",
-    "overall_data_type_asset_volatility_s_avg",
-    "overall_data_type_asset_drift_s_avg",
-    "overall_data_type_weighted_average_cost_of_capital_percent_s_avg",
-    "overall_data_type_ebitda_ltm_1_usd_s_avg",
-    "overall_data_type_ebitda_margin_percent_ltm_1_s_avg"
+    "company_name", "company_id", "ald_sector", "technology", "year",
+    "ald_production_unit", "ald_emissions_factor_unit", "ald_emissions_factor",
+    "pd", "profit_margin_preferred", "profit_margin_unpreferred", "leverage_s_avg",
+    "asset_volatility_s_avg", "ald_production"
   )
+
+  if (asset_type == "bonds") {
+    expected_columns <- c(expected_columns, "corporate_bond_ticker")
+  }
 
   data_has_expected_columns <- all(expected_columns %in% colnames(data))
   stopifnot(data_has_expected_columns)
