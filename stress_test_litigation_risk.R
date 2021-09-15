@@ -149,14 +149,6 @@ company_emissions_data_input <- company_emissions_data_input %>%
 ############################################################################
 #### load and prepare company financial data--------------------------------
 ############################################################################
-# company_ebit_data_input <- read_csv(
-#   file.path(
-#     project_location,
-#     "30_Processed_Inputs",
-#     "litigation_risk_company_ebit.csv"
-#   ),
-#   col_types = "dcc"
-# )
 
 # ADO 1541 - read ebit data from financial data
 company_ebit_data_input <- readr::read_csv(
@@ -365,7 +357,6 @@ for (i in seq(1, nrow(scenario))) {
     ) %>%
     select(
       scenario_name, Bloomberg_ID, company_name,
-      #type,
       sector, unit_emissions, actual_emissions,
       allowed_emission_b2ds, allowed_emission_sds, allowed_emission_cps,
       overshoot_delta_b2ds_sds, overshoot_delta_sds_cps, overshoot_delta_b2ds_cps,
@@ -458,7 +449,6 @@ for (i in seq(1, nrow(scenario))) {
         her_liability_perc_ebit = her_liability / ebit
       ) %>%
       select(
-        # scenario_name, company_name, type, #unit_emissions,
         scenario_name, company_name, sector, #unit_emissions,
         actual_emissions = scope_1_plus_3, share_global_industrial_ghg,
         her_liability, her_liability_total, ebit, her_liability_perc_ebit
@@ -485,7 +475,6 @@ for (i in seq(1, nrow(scenario))) {
         her_liability_perc_ebit = her_liability / ebit
       ) %>%
       select(
-        # scenario_name, company_name, type, #unit_emissions,
         scenario_name, company_name, sector, #unit_emissions,
         actual_emissions = scope_1_plus_3, share_global_industrial_ghg,
         her_liability, her_liability_total, ebit, her_liability_perc_ebit
@@ -513,8 +502,6 @@ company_results <- cdd_results %>%
   select(
     scenario_name, company_name,
     sector,
-    # # TODO: get proper sectors from PACTA, this is temporary
-    # sector = type,
     liability = cdd_liability,
     liability_total = cdd_liability_total,
     ebit,
@@ -525,8 +512,6 @@ company_results <- cdd_results %>%
       select(
         scenario_name, company_name,
         sector,
-        # # TODO: get proper sectors from PACTA, this is temporary
-        # sector = type,
         liability = scc_liability,
         liability_total = scc_liability_total,
         ebit,
@@ -537,23 +522,12 @@ company_results <- cdd_results %>%
       select(
         scenario_name, company_name,
         sector,
-        # # TODO: get proper sectors from PACTA, this is temporary
-        # sector = type,
         liability = her_liability,
         liability_total = her_liability_total,
         ebit,
         liability_perc_ebit = her_liability_perc_ebit
       )
   )
-# %>%
-#   # TODO: get proper sectors from PACTA, this is temporary
-#   mutate(
-#     sector = case_when(
-#       sector == "O" ~ "Oil&Gas",
-#       sector == "P" ~ "Power",
-#       TRUE ~ "Other"
-#     )
-  # )
 
 # TODO: for company level impact, the sectors/types need to by summed by comp
 company_results %>% write_csv(
