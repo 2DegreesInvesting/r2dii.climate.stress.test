@@ -1,6 +1,6 @@
 default:
 
-  project_name: TRISK
+  project_name: ST_TESTING
 
   project_internal:
     twodii_internal: TRUE
