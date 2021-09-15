@@ -920,13 +920,27 @@ this.
 
 **company\_ebit\_data\_input:** A csv file with the following columns:
 
-  - “ebit”
-  - “type”
   - “company\_name”
+  - "isin
+  - “ebit”
+  - "currency
+  - “sector”
 
-… of type “dcc”. The data is sourced from Bloomberg. We use this data to
-classify the main sector a company is operating in and to obtain the
-EBIT in the start year of the analysis.
+… of type “ccdcc”. The data is based on three input data sets. The main
+data set is an extract from Bloomberg (can be any other financial data
+set) that contains the columns:
+
+  - Name = “c”
+  - ISIN = “c”
+  - Curncy = “c”
+  - Revenue = “d”
+  - EBIT = “d”
+
+This is merged with exchange rate infos from a currencies data set by
+joining on the 3 digit currency acronym. Additionally, we merge sector
+information based on the security\_financial\_data file by isin. We use
+this data to classify the main sector a company is operating in and to
+obtain the EBIT in the start year of the analysis.
 
 **carbon\_delta\_plus\_damages:** A csv file with the following columns
 (sources or comments):
