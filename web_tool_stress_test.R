@@ -294,6 +294,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
   )
 
   pacta_equity_results_full <- pacta_equity_results_full %>%
+    filter(!(scenario == "ETP2017_NPS" & ald_sector == "Power")) %>%
     filter(scenario %in% scenarios) %>%
     mutate(scenario = ifelse(str_detect(scenario, "_"), str_extract(scenario, "[^_]*$"), scenario)) %>%
     check_portfolio_consistency()
@@ -493,6 +494,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
   )
 
   pacta_bonds_results_full <- pacta_bonds_results_full %>%
+    filter(!(scenario == "ETP2017_NPS" & ald_sector == "Power")) %>%
     filter(scenario %in% scenarios) %>%
     mutate(scenario = ifelse(str_detect(scenario, "_"), str_extract(scenario, "[^_]*$"), scenario)) %>%
     check_portfolio_consistency()
