@@ -175,7 +175,7 @@ company_ebit_data_input <- company_ebit_data_input %>%
     ebit = .data$EBIT,
     isin = .data$ISIN
   ) %>%
-  dplyr::select(.data$ebit, .data$isin, .data$currency, .data$company_name)
+  dplyr::select(.data$company_name, .data$isin, .data$ebit, .data$currency)
 
 # ADO 1541 - transform ebit to ebit usd
 currencies <- readRDS(file.path(data_location, "currencies.rda")) %>%
