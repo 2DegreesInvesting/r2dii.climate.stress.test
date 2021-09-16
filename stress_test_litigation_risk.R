@@ -94,7 +94,7 @@ scenarios <- c(
   "B2DS",
   "CPS",
   "NPS",
-  "NPSRTS",
+  #"NPSRTS",
   "SDS"#,
   # "ETP2017_B2DS",
   # "ETP2017_NPS",
@@ -120,6 +120,11 @@ technologies <- cfg_litigation_params$lists$technology_list
 #-load required data--------------------------
 ############################################################################
 
+# ADO 1540 - set variables for reading company level PACTA results
+investor_name <- "Me"
+asset_type <- "Equity" # "Bonds"
+
+
 ############################################################################
 #### load and prepare litigation risk scenarios-----------------------------
 ############################################################################
@@ -134,17 +139,92 @@ litigation_risk_scenarios <- read_csv(
 ############################################################################
 #### load and prepare company emissions data--------------------------------
 ############################################################################
-company_emissions_data_input <- read_csv(
+
+# ADO 1540 - read company emissions from PACTA results
+# company_emissions_data_input <- read_csv(
+#   file.path(
+#     project_location,
+#     "30_Processed_Inputs",
+#     "litigation_risk_dummy_input.csv"
+#   ),
+#   col_types = "dcdcdddddccd"
+# )
+#
+# company_emissions_data_input <- company_emissions_data_input %>%
+#   dplyr::mutate(company_name = tolower(.data$company_name))
+
+company_emissions_data_input_raw <- readRDS(
   file.path(
-    project_location,
-    "30_Processed_Inputs",
-    "litigation_risk_dummy_input.csv"
-  ),
-  col_types = "dcdcdddddccd"
+    results_path, investor_name, paste0(asset_type, "_results_company.rda")
+  )
 )
 
-company_emissions_data_input <- company_emissions_data_input %>%
-  dplyr::mutate(company_name = tolower(.data$company_name))
+company_emissions_data_input_raw <- company_emissions_data_input_raw %>%
+  dplyr::select(
+    .data$investor_name, .data$portfolio_name, .data$company_name, .data$id,
+    .data$scenario, .data$allocation, .data$scenario_geography,
+    .data$equity_market, .data$year, .data$financial_sector, .data$ald_sector,
+    .data$technology, .data$plan_tech_prod, .data$plan_emission_factor,
+    .data$scen_tech_prod, .data$scen_emission_factor, .data$plan_carsten
+    # TODO: unit emissions???
+  ) %>%
+  dplyr::filter(
+    .data$scenario %in% .env$scenarios,
+    .data$allocation == "portfolio_weight",
+    .data$equity_market == "GlobalMarket",
+    .data$scenario_geography == "Global" # TODO what about Global Aggregate?
+  ) %>%
+  dplyr::mutate(company_name = tolower(.data$company_name)) %>%
+  dplyr::distinct_all()
+
+# ADO 1540 - temporary fix: indistinguishable SDS scenarios when source is missing. make average across the entries..
+company_emissions_data_input_raw <- company_emissions_data_input_raw %>%
+  dplyr::group_by(
+    .data$investor_name, .data$portfolio_name, .data$company_name, .data$id,
+    .data$scenario, .data$allocation, .data$scenario_geography,
+    .data$equity_market, .data$year, .data$financial_sector, .data$ald_sector,
+    .data$technology
+  ) %>%
+  dplyr::summarise(
+    plan_tech_prod = mean(.data$plan_tech_prod, na.rm = TRUE),
+    plan_emission_factor = mean(.data$plan_emission_factor, na.rm = TRUE),
+    scen_tech_prod = mean(.data$scen_tech_prod, na.rm = TRUE),
+    scen_emission_factor = mean(.data$scen_emission_factor, na.rm = TRUE),
+    plan_carsten = mean(.data$plan_carsten, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  dplyr::ungroup()
+
+company_emissions_data_input <- company_emissions_data_input_raw %>%
+  dplyr::mutate(
+    plan_emissions = .data$plan_tech_prod * .data$plan_emission_factor,
+    scen_emissions = .data$scen_tech_prod * .data$scen_emission_factor
+  ) %>%
+  dplyr::group_by(
+    .data$investor_name, .data$portfolio_name, .data$company_name, .data$id,
+    .data$scenario, .data$allocation, .data$scenario_geography,
+    .data$equity_market, .data$financial_sector, .data$ald_sector
+    # TODO: by technology?
+  ) %>%
+  dplyr::summarise(
+    plan_tech_prod = sum(.data$plan_tech_prod, na.rm = TRUE),
+    plan_emission_factor = mean(.data$plan_emission_factor, na.rm = TRUE),
+    plan_emissions = sum(.data$plan_emissions, na.rm = TRUE),
+    scen_tech_prod = sum(.data$scen_tech_prod, na.rm = TRUE),
+    scen_emission_factor = mean(.data$scen_emission_factor, na.rm = TRUE),
+    scen_emissions = sum(.data$scen_emissions, na.rm = TRUE),
+    plan_carsten = min(.data$plan_carsten, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  dplyr::ungroup() %>%
+  dplyr::rename(
+    current_production = .data$plan_tech_prod,
+    allowed_production = .data$scen_tech_prod,
+    actual_emissions = .data$plan_emissions,
+    allowed_emission = .data$scen_emissions,
+    avg_ef = .data$plan_emission_factor
+  ) %>%
+  dplyr::mutate(unit_emissions = "tCO2")
 
 ############################################################################
 #### load and prepare company financial data--------------------------------
@@ -235,14 +315,14 @@ company_historical_emissions <- read_csv(
 #### combine and wrangle company data---------------------------------------
 ############################################################################
 company_data <- company_emissions_data_input %>%
-  mutate(
-    scenario = case_when(
-      scenario == "2DS" ~ "SDS",
-      scenario == "RTS" ~ "NPS",
-      TRUE ~ scenario
-    )
-  ) %>%
-  select(-ebit) %>%
+  # mutate(
+  #   scenario = case_when(
+  #     scenario == "2DS" ~ "SDS",
+  #     scenario == "RTS" ~ "NPS",
+  #     TRUE ~ scenario
+  #   )
+  # ) %>%
+  #select(-ebit) %>%
   pivot_wider(
     names_from = scenario,
     values_from = c(allowed_emission, allowed_production)
@@ -356,7 +436,7 @@ for (i in seq(1, nrow(scenario))) {
       cdd_liability_perc_ebit = cdd_liability / ebit
     ) %>%
     select(
-      scenario_name, Bloomberg_ID, company_name,
+      scenario_name,company_name,
       sector, unit_emissions, actual_emissions,
       allowed_emission_b2ds, allowed_emission_sds, allowed_emission_cps,
       overshoot_delta_b2ds_sds, overshoot_delta_sds_cps, overshoot_delta_b2ds_cps,
@@ -402,8 +482,7 @@ for (i in seq(1, nrow(scenario))) {
       scc_liability_perc_ebit = scc_liability / ebit
     ) %>%
     select(
-      scenario_name, Bloomberg_ID, company_name,
-      #type,
+      scenario_name, company_name,
       sector, unit_emissions, actual_emissions,
       allowed_emission_b2ds, allowed_emission_sds, allowed_emission_cps,
       overshoot_actual_b2ds, overshoot_actual_sds, overshoot_actual_cps,
