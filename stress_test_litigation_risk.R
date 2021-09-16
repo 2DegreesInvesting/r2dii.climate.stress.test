@@ -219,7 +219,7 @@ company_emissions_data_input <- company_emissions_data_input_raw %>%
     scen_tech_prod = sum(.data$scen_tech_prod, na.rm = TRUE),
     scen_emission_factor = mean(.data$scen_emission_factor, na.rm = TRUE),
     scen_emissions = sum(.data$scen_emissions, na.rm = TRUE),
-    plan_carsten = min(.data$plan_carsten, na.rm = TRUE),
+    plan_carsten = sum(.data$plan_carsten, na.rm = TRUE), # TODO: change if we use tech level
     .groups = "drop"
   ) %>%
   dplyr::ungroup() %>%
@@ -743,40 +743,77 @@ company_results_npv %>% write_csv(
 
 #-Portfolio Level Calculation----------------------
 
-# technology shares entirely made up for illustration purposes
-# TODO: get these from corresponding pacta project
-technology_share_comp <- readRDS(
-  testthat::test_path("test_data", "test_pf_impact_litigation.rds")
-)
+# technology_share_comp <- readRDS(
+#   testthat::test_path("test_data", "test_pf_impact_litigation.rds")
+# )
 
+technology_share_comp <- company_emissions_data_input %>%
+  dplyr::filter(scenario == toupper(.env$target_scenario_SCC)) %>%
+  dplyr::select(
+    .data$investor_name, .data$portfolio_name, .data$company_name, .data$id,
+    .data$scenario_geography, .data$ald_sector, #.data$technology,
+    .data$plan_carsten
+  )
 
-# sector exposures entirely made up for illustration purposes
-# TODO: get these from corresponding pacta project
-sector_exposures <- readRDS(
-  testthat::test_path("test_data", "test_pf_sector_exposures.rds")
-)
+sector_exposures <- readRDS(file.path(proc_input_path, glue::glue("{project_name}_overview_portfolio.rda")))
+# sector_exposures <- readRDS(
+#   testthat::test_path("test_data", "test_pf_sector_exposures.rds")
+# )
 
 # portfolio aum for equity, value in USD
+# TODO: check if this might not be in EUR for EIOPA case
 port_aum_equity <- sector_exposures %>%
-  summarise(port_aum_equity = sum(valid_value_usd, na.rm = TRUE)) %>%
-  pull()
+  dplyr::filter(.data$asset_type == "Equity") %>%
+  pull(.data$asset_value_usd) %>%
+  unique()
 
-technology_exposure <- technology_share_comp %>%
+# portfolio aum for bonds, value in USD
+# TODO: check if this might not be in EUR for EIOPA case
+port_aum_bonds <- sector_exposures %>%
+  dplyr::filter(.data$asset_type == "Bonds") %>%
+  pull(.data$asset_value_usd) %>%
+  unique()
+
+# TODO: loop over both asset types
+technology_exposure_equity <- technology_share_comp %>%
   mutate(
-    portfolio_aum_eq = port_aum_equity,
-    company_tech_exposure = portfolio_aum_eq * plan_carsten
-  ) %>%
-  select(-c(year, plan_sec_carsten))
+    portfolio_aum = port_aum_equity,
+    company_tech_exposure = portfolio_aum * plan_carsten
+  )
+technology_exposure_bonds <- technology_share_comp %>%
+  mutate(
+    portfolio_aum = port_aum_bonds,
+    company_tech_exposure = portfolio_aum * plan_carsten
+  )
+
 
 # TODO: merge portfolio comp-tech exposures with company results (percentage loss)
-portfolio_liabilities <- company_results_npv %>%
+portfolio_liabilities_eq <- c()
+portfolio_liabilities_eq <- company_results_npv %>%
   left_join(
-    technology_exposure,
+    technology_exposure_equity,
     by = c("company_name", "sector" = "ald_sector")
   ) %>%
   mutate(
-    value_change = company_tech_exposure * percentage_value_change
+    value_change = company_tech_exposure * percentage_value_change,
+    asset_type = "Equity"
   )
+
+portfolio_liabilities_cb <- c()
+portfolio_liabilities_cb <- company_results_npv %>%
+  left_join(
+    technology_exposure_bonds,
+    by = c("company_name", "sector" = "ald_sector")
+  ) %>%
+  mutate(
+    value_change = company_tech_exposure * percentage_value_change * flat_multiplier,
+    asset_type = "Bonds"
+  )
+
+portfolio_liabilities <- portfolio_liabilities_eq %>%
+  dplyr::bind_rows(portfolio_liabilities_cb)
+
+
 
 portfolio_liabilities %>% write_csv(
   file.path(project_location, "40_Results", "litigation_risk_portfolio_impact.csv")
