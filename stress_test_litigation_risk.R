@@ -807,10 +807,6 @@ portfolio_liabilities <- company_results_npv %>%
     )
   )
 
-portfolio_liabilities <- portfolio_liabilities_eq %>%
-  dplyr::bind_rows(portfolio_liabilities_cb)
-
-
 
 portfolio_liabilities %>% write_csv(
   file.path(project_location, "40_Results", "litigation_risk_portfolio_impact.csv")
