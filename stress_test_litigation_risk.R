@@ -4,6 +4,7 @@ library(dplyr)
 library(forcats)
 library(ggplot2)
 library(readr)
+library(r2dii.utils)
 library(stringr)
 library(tibble)
 library(tidyr)
@@ -70,6 +71,12 @@ cfg <- config::get(
 # OPEN: check_valid_cfg() not applicable here
 start_year <- cfg$AnalysisPeriod$Years.Startyear
 
+path_db_analysis_inputs <- fs::path(
+  r2dii.utils::dbox_port_00("07_AnalysisInputs", cfg$TimeStamps$DataPrep.Timestamp)
+)
+
+data_location <- file.path(get_st_data_path(), data_path())
+
 ##### Filters----------------------------------------
 # The filter settings should mirror those from the parent PACTA project by default
 # There may still be cases of certain sectors or geographies that work in PACTA
@@ -109,8 +116,13 @@ sectors <- cfg_litigation_params$large_universe_filter$sector_filter
 technologies <- cfg_litigation_params$lists$technology_list
 # technologies <- cfg$Lists$Technology.List
 
+############################################################################
 #-load required data--------------------------
+############################################################################
 
+############################################################################
+#### load and prepare litigation risk scenarios-----------------------------
+############################################################################
 litigation_risk_scenarios <- read_csv(
   file.path(
     get_st_data_path(),
@@ -119,6 +131,9 @@ litigation_risk_scenarios <- read_csv(
   col_types = "ccdddd"
 )
 
+############################################################################
+#### load and prepare company emissions data--------------------------------
+############################################################################
 company_emissions_data_input <- read_csv(
   file.path(
     project_location,
@@ -128,15 +143,71 @@ company_emissions_data_input <- read_csv(
   col_types = "dcdcdddddccd"
 )
 
-company_ebit_data_input <- read_csv(
+company_emissions_data_input <- company_emissions_data_input %>%
+  dplyr::mutate(company_name = tolower(.data$company_name))
+
+############################################################################
+#### load and prepare company financial data--------------------------------
+############################################################################
+
+# ADO 1541 - read ebit data from financial data
+company_ebit_data_input <- readr::read_csv(
   file.path(
-    project_location,
-    "30_Processed_Inputs",
-    "litigation_risk_company_ebit.csv"
+    r2dii.utils::path_dropbox_2dii(
+      "PortCheck", "00_Data", "02_FinancialData", "2019Q1", "EQS.Full.2019Q1.csv"
+    )
   ),
-  col_types = "dcc"
+  col_types = readr::cols_only(
+    Name = "c",
+    ISIN = "c",
+    Curncy = "c",
+    Revenue = "d",
+    EBIT = "d"
+  )
 )
 
+company_ebit_data_input <- company_ebit_data_input %>%
+  dplyr::mutate(
+    company_name = tolower(.data$Name),
+    currency = toupper(.data$Curncy)
+  ) %>%
+  dplyr::rename(
+    ebit = .data$EBIT,
+    isin = .data$ISIN
+  ) %>%
+  dplyr::select(.data$company_name, .data$isin, .data$ebit, .data$currency)
+
+# ADO 1541 - transform ebit to ebit usd
+currencies <- readRDS(file.path(data_location, "currencies.rda")) %>%
+  dplyr::select(.data$Currency_abbr, .data$ExchangeRate_2019Q4)
+
+company_ebit_data_input <- company_ebit_data_input %>%
+  dplyr::inner_join(currencies, by = c("currency" = "Currency_abbr"))
+
+company_ebit_data_input <- company_ebit_data_input %>%
+  dplyr::mutate(
+    ebit = .data$ebit * .data$ExchangeRate_2019Q4,
+    currency = "USD"
+  ) %>%
+  dplyr::select(-.data$ExchangeRate_2019Q4)
+
+# ADO 1541 - merge in sector
+security_financial_data <- readRDS(
+  file.path(path_db_analysis_inputs, "security_financial_data.rda")
+)
+
+security_financial_data <- security_financial_data %>%
+  dplyr::select(.data$isin, .data$security_mapped_sector)
+
+company_ebit_data_input <- company_ebit_data_input %>%
+  inner_join(security_financial_data, by = c("isin"))
+
+company_ebit_data_input <- company_ebit_data_input %>%
+  dplyr::rename(sector = .data$security_mapped_sector)
+
+############################################################################
+#### load and prepare carbon delta plus damages data------------------------
+############################################################################
 carbon_delta_plus_damages <- read_csv(
   file.path(
     get_st_data_path(),
@@ -145,6 +216,9 @@ carbon_delta_plus_damages <- read_csv(
   col_types = "ccdddd"
 )
 
+############################################################################
+#### load and prepare historical emissions data-----------------------------
+############################################################################
 company_historical_emissions <- read_csv(
   file.path(
     get_st_data_path(),
@@ -157,6 +231,9 @@ company_historical_emissions <- read_csv(
   )
 
 
+############################################################################
+#### combine and wrangle company data---------------------------------------
+############################################################################
 company_data <- company_emissions_data_input %>%
   mutate(
     scenario = case_when(
@@ -280,7 +357,7 @@ for (i in seq(1, nrow(scenario))) {
     ) %>%
     select(
       scenario_name, Bloomberg_ID, company_name,
-      type, unit_emissions, actual_emissions,
+      sector, unit_emissions, actual_emissions,
       allowed_emission_b2ds, allowed_emission_sds, allowed_emission_cps,
       overshoot_delta_b2ds_sds, overshoot_delta_sds_cps, overshoot_delta_b2ds_cps,
       contribution_sds_b2ds, contribution_cps_sds, contribution_cps_b2ds,
@@ -326,7 +403,8 @@ for (i in seq(1, nrow(scenario))) {
     ) %>%
     select(
       scenario_name, Bloomberg_ID, company_name,
-      type, unit_emissions, actual_emissions,
+      #type,
+      sector, unit_emissions, actual_emissions,
       allowed_emission_b2ds, allowed_emission_sds, allowed_emission_cps,
       overshoot_actual_b2ds, overshoot_actual_sds, overshoot_actual_cps,
       scc_liability, scc_liability_total, ebit, scc_liability_perc_ebit
@@ -371,7 +449,7 @@ for (i in seq(1, nrow(scenario))) {
         her_liability_perc_ebit = her_liability / ebit
       ) %>%
       select(
-        scenario_name, company_name, type, #unit_emissions,
+        scenario_name, company_name, sector, #unit_emissions,
         actual_emissions = scope_1_plus_3, share_global_industrial_ghg,
         her_liability, her_liability_total, ebit, her_liability_perc_ebit
       )
@@ -397,7 +475,7 @@ for (i in seq(1, nrow(scenario))) {
         her_liability_perc_ebit = her_liability / ebit
       ) %>%
       select(
-        scenario_name, company_name, type, #unit_emissions,
+        scenario_name, company_name, sector, #unit_emissions,
         actual_emissions = scope_1_plus_3, share_global_industrial_ghg,
         her_liability, her_liability_total, ebit, her_liability_perc_ebit
       )
@@ -423,8 +501,7 @@ her_results %>% write_csv(
 company_results <- cdd_results %>%
   select(
     scenario_name, company_name,
-    # TODO: get proper sectors from PACTA, this is temporary
-    sector = type,
+    sector,
     liability = cdd_liability,
     liability_total = cdd_liability_total,
     ebit,
@@ -434,8 +511,7 @@ company_results <- cdd_results %>%
     scc_results %>%
       select(
         scenario_name, company_name,
-        # TODO: get proper sectors from PACTA, this is temporary
-        sector = type,
+        sector,
         liability = scc_liability,
         liability_total = scc_liability_total,
         ebit,
@@ -445,21 +521,12 @@ company_results <- cdd_results %>%
     her_results %>%
       select(
         scenario_name, company_name,
-        # TODO: get proper sectors from PACTA, this is temporary
-        sector = type,
+        sector,
         liability = her_liability,
         liability_total = her_liability_total,
         ebit,
         liability_perc_ebit = her_liability_perc_ebit
       )
-  ) %>%
-  # TODO: get proper sectors from PACTA, this is temporary
-  mutate(
-    sector = case_when(
-      sector == "O" ~ "Oil&Gas",
-      sector == "P" ~ "Power",
-      TRUE ~ "Other"
-    )
   )
 
 # TODO: for company level impact, the sectors/types need to by summed by comp
