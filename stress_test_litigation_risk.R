@@ -68,8 +68,10 @@ cfg_litigation_params <- config::get(file = "params_litigation_risk.yml")
 cfg <- config::get(
   file = file.path(project_location, "10_Parameter_File","AnalysisParameters.yml")
 )
-# OPEN: check_valid_cfg() not applicable here
-start_year <- cfg$AnalysisPeriod$Years.Startyear
+
+# ADO 1540 - use for filters
+start_year <- cfg$AnalysisPeriod$Years.Startyear # TODO: check this is in line with webtool results. seems wrong
+horizon <- cfg$AnalysisPeriod$Years.Horizon
 
 path_db_analysis_inputs <- fs::path(
   r2dii.utils::dbox_port_00("07_AnalysisInputs", cfg$TimeStamps$DataPrep.Timestamp)
@@ -122,8 +124,9 @@ technologies <- cfg_litigation_params$lists$technology_list
 
 # ADO 1540 - set variables for reading company level PACTA results
 investor_name <- "Me"
-asset_type <- "Equity" # "Bonds"
-
+# asset_type <- "Equity"
+asset_type <- "Bonds"
+target_scenario_SCC <- "sds"
 
 ############################################################################
 #### load and prepare litigation risk scenarios-----------------------------
@@ -170,6 +173,9 @@ company_emissions_data_input_raw <- company_emissions_data_input_raw %>%
   ) %>%
   dplyr::filter(
     .data$scenario %in% .env$scenarios,
+    .data$ald_sector %in% .env$sectors,
+    .data$technology %in% .env$technologies,
+    .data$year %in% seq(.env$start_year, .env$start_year + .env$horizon),
     .data$allocation == "portfolio_weight",
     .data$equity_market == "GlobalMarket",
     .data$scenario_geography == "Global" # TODO what about Global Aggregate?
@@ -344,13 +350,15 @@ company_data_overshoot <- company_data %>%
     actual_emissions = current_production * avg_ef,
     allowed_emission_b2ds = allowed_production_B2DS * avg_ef,
     allowed_emission_sds = allowed_production_SDS * avg_ef,
+    allowed_emission_nps = allowed_production_NPS * avg_ef,
     allowed_emission_cps = allowed_production_CPS * avg_ef,
     overshoot_actual_b2ds = actual_emissions - allowed_emission_b2ds,
     overshoot_actual_sds = actual_emissions - allowed_emission_sds,
+    overshoot_actual_nps = actual_emissions - allowed_emission_nps,
     overshoot_actual_cps = actual_emissions - allowed_emission_cps
   )
 
-
+# ADO 1540 - removed the cap for overshoot deltas
 company_carbon_budgets <- company_data_overshoot %>%
   mutate(
     delta_allowed_b2ds_sds = allowed_emission_sds - allowed_emission_b2ds,
@@ -358,17 +366,17 @@ company_carbon_budgets <- company_data_overshoot %>%
     delta_allowed_b2ds_cps = allowed_emission_cps - allowed_emission_b2ds,
     overshoot_delta_b2ds_sds = case_when(
       overshoot_actual_b2ds < 0 ~ 0,
-      overshoot_actual_b2ds > delta_allowed_b2ds_sds ~ delta_allowed_b2ds_sds,
+      # overshoot_actual_b2ds > delta_allowed_b2ds_sds ~ delta_allowed_b2ds_sds,
       TRUE ~ overshoot_actual_b2ds
     ),
     overshoot_delta_b2ds_cps = case_when(
       overshoot_actual_b2ds < 0 ~ 0,
-      overshoot_actual_b2ds > delta_allowed_b2ds_cps ~ delta_allowed_b2ds_cps,
+      # overshoot_actual_b2ds > delta_allowed_b2ds_cps ~ delta_allowed_b2ds_cps,
       TRUE ~ overshoot_actual_b2ds
     ),
     overshoot_delta_sds_cps = case_when(
       overshoot_actual_sds < 0 ~ 0,
-      overshoot_actual_sds > delta_allowed_sds_cps ~ delta_allowed_sds_cps,
+      # overshoot_actual_sds > delta_allowed_sds_cps ~ delta_allowed_sds_cps,
       TRUE ~ overshoot_actual_sds
     )
   )
@@ -451,7 +459,7 @@ for (i in seq(1, nrow(scenario))) {
 }
 
 cdd_results %>% write_csv(
-  file.path(project_location, "40_Results", "litigation_risk_company_cdd.csv")
+  file.path(project_location, "40_Results", paste0(asset_type, "_litigation_risk_company_cdd.csv"))
 )
 
 
@@ -467,15 +475,21 @@ for (i in seq(1, nrow(scenario))) {
 
   scc_scenario_i <- scenario[i, ]
 
+  # ADO 1540 - allow setting benchmark scenario via target variable
   scc_company_i <- company_carbon_budgets %>%
     mutate(
       scenario_name = scc_scenario_i$litigation_scenario,
-      # TODO: make scenario more easily selectable
-      overshoot_actual_b2ds = overshoot_delta_b2ds_cps
+      overshoot_actual_target = !!rlang::sym(glue::glue("overshoot_actual_{target_scenario_SCC}"))
+      # # TODO: make scenario more easily selectable
+      # overshoot_actual_b2ds = overshoot_delta_b2ds_cps
     ) %>%
     mutate(
+      overshoot_actual_target = dplyr::case_when(
+        overshoot_actual_target < 0 ~ 0,
+        TRUE ~ overshoot_actual_target
+      ),
       scc_liability_total =
-        overshoot_actual_b2ds * scc_scenario_i$scc *
+        overshoot_actual_target * scc_scenario_i$scc *
         scc_scenario_i$exp_share_damages_paid,
       scc_liability = scc_liability_total /
            scc_scenario_i$timeframe_emissions_overshoot,
@@ -484,9 +498,9 @@ for (i in seq(1, nrow(scenario))) {
     select(
       scenario_name, company_name,
       sector, unit_emissions, actual_emissions,
-      allowed_emission_b2ds, allowed_emission_sds, allowed_emission_cps,
-      overshoot_actual_b2ds, overshoot_actual_sds, overshoot_actual_cps,
-      scc_liability, scc_liability_total, ebit, scc_liability_perc_ebit
+      allowed_emission_b2ds, allowed_emission_sds, allowed_emission_nps, allowed_emission_cps,
+      overshoot_actual_b2ds, overshoot_actual_sds, overshoot_actual_nps, overshoot_actual_cps,
+      overshoot_actual_target, scc_liability, scc_liability_total, ebit, scc_liability_perc_ebit
     )
 
   scc_results <- scc_results %>%
@@ -495,7 +509,7 @@ for (i in seq(1, nrow(scenario))) {
 }
 
 scc_results %>% write_csv(
-  file.path(project_location, "40_Results", "litigation_risk_company_scc.csv")
+  file.path(project_location, "40_Results", paste0(asset_type, "_litigation_risk_company_scc.csv"))
 )
 
 
@@ -569,7 +583,7 @@ for (i in seq(1, nrow(scenario))) {
 }
 
 her_results %>% write_csv(
-  file.path(project_location, "40_Results", "litigation_risk_company_her.csv")
+  file.path(project_location, "40_Results", paste0(asset_type, "_litigation_risk_company_her.csv"))
 )
 
 
@@ -610,7 +624,7 @@ company_results <- cdd_results %>%
 
 # TODO: for company level impact, the sectors/types need to by summed by comp
 company_results %>% write_csv(
-  file.path(project_location, "40_Results", "litigation_risk_company.csv")
+  file.path(project_location, "40_Results", paste0(asset_type, "_litigation_risk_company.csv"))
 )
 
 
