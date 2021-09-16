@@ -61,7 +61,6 @@ cfg_litigation_params <- config::get(file = "params_litigation_risk.yml")
 # investorname_bonds <- cfg_litigation_params$investor_name$investor_name_bonds
 # investorname_loanbook <- cfg_litigation_params$investor_name$investor_name_loanbook
 
-
 #### Analysis Parameters----------------------------------------
 # Get analysis parameters from the projects AnalysisParameters.yml - similar to PACTA_analysis
 
@@ -125,6 +124,7 @@ technologies <- cfg_litigation_params$lists$technology_list
 # ADO 1540 - set variables for reading company level PACTA results
 investor_name_equity <- cfg_litigation_params$investor_name$investor_name_equity
 investor_name_bonds <- cfg_litigation_params$investor_name$investor_name_bonds
+flat_multiplier <- cfg_litigation_params$litigation$flat_multiplier
 # asset_type <- "Equity"
 # asset_type <- "Bonds"
 target_scenario_SCC <- "sds"
@@ -793,16 +793,24 @@ technology_exposure <- technology_share_comp %>%
 
 
 # TODO: merge portfolio comp-tech exposures with company results (percentage loss)
-
-# TODO: SCC changes equal for 20 and 40??
+# TODO: same for SCC 20 and 40??
 portfolio_liabilities <- company_results_npv %>%
   left_join(
     technology_exposure,
     by = c("company_name", "asset_type", "sector" = "ald_sector")
   ) %>%
   mutate(
-    value_change = company_tech_exposure * percentage_value_change
+    value_change = dplyr::if_else(
+      .data$asset_type == "Bonds",
+      .data$company_tech_exposure * .data$percentage_value_change * .env$flat_multiplier,
+      .data$company_tech_exposure * .data$percentage_value_change
+    )
   )
+
+portfolio_liabilities <- portfolio_liabilities_eq %>%
+  dplyr::bind_rows(portfolio_liabilities_cb)
+
+
 
 portfolio_liabilities %>% write_csv(
   file.path(project_location, "40_Results", "litigation_risk_portfolio_impact.csv")
