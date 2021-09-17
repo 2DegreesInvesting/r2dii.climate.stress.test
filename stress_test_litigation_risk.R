@@ -79,9 +79,6 @@ investor_name_equity <- cfg_litigation_params$investor_name$investor_name_equity
 investor_name_bonds <- cfg_litigation_params$investor_name$investor_name_bonds
 flat_multiplier <- cfg_litigation_params$litigation$flat_multiplier
 
-# ADO 1540 - set reference scenario for SCC
-target_scenario_SCC <- "sds"
-
 ############################################################################
 ##### Filters---------------------------------------------------------------
 ############################################################################
@@ -751,7 +748,6 @@ company_results_npv %>% write_csv(
 
 
 technology_share_comp <- company_emissions_data_input %>%
-  # dplyr::filter(scenario == toupper(.env$target_scenario_SCC)) %>%
   dplyr::select(
     .data$investor_name, .data$portfolio_name, .data$company_name, .data$id,
     .data$asset_type, .data$scenario,
