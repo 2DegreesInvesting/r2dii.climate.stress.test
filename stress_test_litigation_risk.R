@@ -873,7 +873,11 @@ viz_company_results <- company_results %>%
   dplyr::group_by(.data$company_name) %>%
   dplyr::mutate(max_liability_perc = max(.data$liability_perc_ebit, na.rm = TRUE)) %>%
   dplyr::ungroup() %>%
-  dplyr::mutate(company_name = forcats::fct_reorder(.data$company_name, desc(max_liability_perc))) %>%
+  dplyr::mutate(
+    company_name = forcats::fct_reorder(
+      .data$company_name, dplyr::desc(.data$max_liability_perc)
+    )
+  ) %>%
   dplyr::filter(.data$company_name %in% unique(.env$technology_exposure$company_name)) %>%
   dplyr::filter(.data$scenario == "SDS" | .data$scenario_name == "HER_CDD_TMS")
 
