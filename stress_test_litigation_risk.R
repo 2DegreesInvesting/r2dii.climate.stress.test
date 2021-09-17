@@ -437,7 +437,7 @@ for (i in seq(1, nrow(scenario))) {
   cdd_scenario_i <- scenario[i, ]
 
   cdd_company_i <- cdd_company_carbon_budgets %>%
-    mutate(
+    dplyr::mutate(
       scenario_name = cdd_scenario_i$litigation_scenario,
       damage_sds_b2ds = contribution_sds_b2ds * delta_carbon_damage_b2ds_sds,
       damage_cps_b2ds = contribution_cps_b2ds * delta_carbon_damage_b2ds_cps,
@@ -448,7 +448,7 @@ for (i in seq(1, nrow(scenario))) {
         cdd_scenario_i$timeframe_emissions_overshoot,
       cdd_liability_perc_ebit = cdd_liability / ebit
     ) %>%
-    select(
+    dplyr::select(
       scenario_name,company_name, asset_type, scenario,
       sector, unit_emissions, actual_emissions,
       allowed_emission_b2ds, allowed_emission_sds, allowed_emission_cps,
@@ -459,7 +459,7 @@ for (i in seq(1, nrow(scenario))) {
     )
 
   cdd_results <- cdd_results %>%
-    bind_rows(cdd_company_i)
+    dplyr::bind_rows(cdd_company_i)
 
 }
 
@@ -482,34 +482,28 @@ for (i in seq(1, nrow(scenario))) {
 
   # ADO 1540 - allow setting benchmark scenario via target variable
   scc_company_i <- company_carbon_budgets %>%
-    mutate(
-      scenario_name = scc_scenario_i$litigation_scenario,
-      overshoot_actual_target = !!rlang::sym(glue::glue("overshoot_actual_{target_scenario_SCC}"))
-      # # TODO: make scenario more easily selectable
-      # overshoot_actual_b2ds = overshoot_delta_b2ds_cps
-    ) %>%
-    mutate(
-      overshoot_actual_target = dplyr::case_when(
-        overshoot_actual_target < 0 ~ 0,
-        TRUE ~ overshoot_actual_target
+    dplyr::mutate(
+      scenario_name = .env$scc_scenario_i$litigation_scenario,
+      overshoot_actual = dplyr::case_when(
+        .data$overshoot_actual < 0 ~ 0,
+        TRUE ~ .data$overshoot_actual
       ),
       scc_liability_total =
-        overshoot_actual_target * scc_scenario_i$scc *
-        scc_scenario_i$exp_share_damages_paid,
-      scc_liability = scc_liability_total /
-           scc_scenario_i$timeframe_emissions_overshoot,
-      scc_liability_perc_ebit = scc_liability / ebit
+        .data$overshoot_actual * scc_scenario_i$scc *
+        .env$scc_scenario_i$exp_share_damages_paid,
+      scc_liability = .data$scc_liability_total /
+        .env$scc_scenario_i$timeframe_emissions_overshoot,
+      scc_liability_perc_ebit = .data$scc_liability / .data$ebit
     ) %>%
-    select(
-      scenario_name, company_name, asset_type, scenario,
-      sector, unit_emissions, actual_emissions,
-      allowed_emission_b2ds, allowed_emission_sds, allowed_emission_nps, allowed_emission_cps,
-      overshoot_actual_b2ds, overshoot_actual_sds, overshoot_actual_nps, overshoot_actual_cps,
-      overshoot_actual_target, scc_liability, scc_liability_total, ebit, scc_liability_perc_ebit
+    dplyr::select(
+      .data$scenario_name, .data$company_name, .data$asset_type, .data$scenario,
+      .data$sector, .data$unit_emissions, .data$actual_emissions,
+      .data$allowed_emission, .data$overshoot_actual, .data$scc_liability,
+      .data$scc_liability_total, .data$ebit, .data$scc_liability_perc_ebit
     )
 
   scc_results <- scc_results %>%
-    bind_rows(scc_company_i)
+    dplyr::bind_rows(scc_company_i)
 
 }
 
@@ -538,7 +532,7 @@ for (i in seq(1, nrow(scenario))) {
       filter(ebit > 0)
 
     her_company_i <- her_company_i %>%
-      mutate(
+      dplyr::mutate(
         scenario_name = her_scenario_i$litigation_scenario,
         her_liability = .data$scope_1_plus_3 *
           her_scenario_i$scc *
@@ -546,23 +540,23 @@ for (i in seq(1, nrow(scenario))) {
         her_liability_total = her_liability,
         her_liability_perc_ebit = her_liability / ebit
       ) %>%
-      select(
+      dplyr::select(
         scenario_name, company_name, sector, #unit_emissions,
         actual_emissions = scope_1_plus_3, share_global_industrial_ghg,
         her_liability, her_liability_total, ebit, her_liability_perc_ebit
       )
 
     her_results <- her_results %>%
-      bind_rows(her_company_i)
+      dplyr::bind_rows(her_company_i)
 
   } else if(her_scenario_i$scc == 0 & her_scenario_i$past_yearly_costs_usd > 0) {
 
     her_company_i <- company_historical_emissions %>%
-      left_join(company_ebit_data_input, by = c("company_name")) %>%
-      filter(ebit > 0)
+      dplyr::left_join(company_ebit_data_input, by = c("company_name")) %>%
+      dplyr::filter(ebit > 0)
 
     her_company_i <- her_company_i %>%
-      mutate(
+      dplyr::mutate(
         scenario_name = her_scenario_i$litigation_scenario,
         her_liability = .data$share_global_industrial_ghg *
           her_scenario_i$past_yearly_costs_usd *
@@ -572,14 +566,14 @@ for (i in seq(1, nrow(scenario))) {
         # TODO: percentage loss in HER model with total liability, others annual. Why?
         her_liability_perc_ebit = her_liability / ebit
       ) %>%
-      select(
+      dplyr::select(
         scenario_name, company_name, sector, #unit_emissions,
         actual_emissions = scope_1_plus_3, share_global_industrial_ghg,
         her_liability, her_liability_total, ebit, her_liability_perc_ebit
       )
 
     her_results <- her_results %>%
-      bind_rows(her_company_i)
+      dplyr::bind_rows(her_company_i)
 
   } else {
     next("Cannot process the scenario parameters for the HER scenario")
