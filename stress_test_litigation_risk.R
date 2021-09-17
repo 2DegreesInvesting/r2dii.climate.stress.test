@@ -353,12 +353,14 @@ company_data_overshoot <- company_data %>%
     allowed_emission_b2ds = dplyr::if_else(.data$scenario == "B2DS", allowed_production * avg_ef, 0),
     allowed_emission_sds = dplyr::if_else(.data$scenario == "SDS", allowed_production * avg_ef, 0),
     allowed_emission_nps = dplyr::if_else(.data$scenario == "NPS", allowed_production * avg_ef, 0),
-    allowed_emission_cps = dplyr::if_else(.data$scenario == "CPS", allowed_production * avg_ef, 0),
+    allowed_emission_cps = dplyr::if_else(.data$scenario == "CPS", allowed_production * avg_ef, 0)
+  ) %>%
+  mutate(
     overshoot_actual = actual_emissions - allowed_emission,
-    overshoot_actual_b2ds = dplyr::if_else(.data$scenario == "B2DS", actual_emissions - allowed_emission_sds, 0),
+    overshoot_actual_b2ds = dplyr::if_else(.data$scenario == "B2DS", actual_emissions - allowed_emission_b2ds, 0),
     overshoot_actual_sds = dplyr::if_else(.data$scenario == "SDS", actual_emissions - allowed_emission_sds, 0),
-    overshoot_actual_nps = dplyr::if_else(.data$scenario == "NPS", actual_emissions - allowed_emission_sds, 0),
-    overshoot_actual_cps = dplyr::if_else(.data$scenario == "CPS", actual_emissions - allowed_emission_sds, 0)
+    overshoot_actual_nps = dplyr::if_else(.data$scenario == "NPS", actual_emissions - allowed_emission_nps, 0),
+    overshoot_actual_cps = dplyr::if_else(.data$scenario == "CPS", actual_emissions - allowed_emission_cps, 0)
   )
 
 # ADO 1540 - removed the cap for overshoot deltas
@@ -512,7 +514,7 @@ for (i in seq(1, nrow(scenario))) {
 }
 
 scc_results %>% write_csv(
-  file.path(project_location, "40_Results", "_litigation_risk_company_scc.csv")
+  file.path(project_location, "40_Results", "litigation_risk_company_scc.csv")
 )
 
 
