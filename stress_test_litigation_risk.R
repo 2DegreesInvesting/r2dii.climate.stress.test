@@ -873,7 +873,9 @@ viz_company_results <- company_results %>%
   dplyr::group_by(.data$company_name) %>%
   dplyr::mutate(max_liability_perc = max(.data$liability_perc_ebit, na.rm = TRUE)) %>%
   dplyr::ungroup() %>%
-  dplyr::mutate(company_name = forcats::fct_reorder(.data$company_name, desc(max_liability_perc)))
+  dplyr::mutate(company_name = forcats::fct_reorder(.data$company_name, desc(max_liability_perc))) %>%
+  dplyr::filter(.data$company_name %in% unique(.env$technology_exposure$company_name)) %>%
+  dplyr::filter(.data$scenario == "SDS" | .data$scenario_name == "HER_CDD_TMS")
 
 comp_graph <- viz_company_results %>%
   ggplot(
@@ -913,6 +915,7 @@ subset_companies <- c(
   "Glencore Plc",
   "Canadian Natural Resources Ltd"
 )
+subset_companies <- unique(technology_exposure$company_name)
 
 subset_models <- c(
   "CDD_TMS",
@@ -922,13 +925,17 @@ subset_models <- c(
 
 viz_company_results_subset <- viz_company_results %>%
   dplyr::filter(
-    company_name %in% subset_companies &
-      scenario_name %in% subset_models
+    .data$company_name %in% .env$subset_companies &
+      .data$scenario_name %in% .env$subset_models
   ) %>%
   dplyr::group_by(.data$company_name) %>%
   dplyr::mutate(max_liability_perc = max(.data$liability_perc_ebit, na.rm = TRUE)) %>%
   dplyr::ungroup() %>%
-  dplyr::mutate(company_name = forcats::fct_reorder(.data$company_name, desc(max_liability_perc)))
+  dplyr::mutate(
+    company_name = forcats::fct_reorder(
+      .data$company_name, dplyr::desc(.data$max_liability_perc)
+    )
+  )
 
 comp_graph_subset <- viz_company_results_subset %>%
   ggplot(
@@ -951,7 +958,11 @@ viz_company_results_payout_subset <- viz_company_results_subset %>%
   dplyr::group_by(.data$company_name) %>%
   dplyr::mutate(max_liability = max(.data$liability_total, na.rm = TRUE)) %>%
   dplyr::ungroup() %>%
-  dplyr::mutate(company_name = forcats::fct_reorder(.data$company_name, desc(max_liability)))
+  dplyr::mutate(
+    company_name = forcats::fct_reorder(
+      .data$company_name, dplyr::desc(.data$max_liability)
+    )
+  )
 
 
 comp_graph_payout_subset <- viz_company_results_payout_subset %>%
