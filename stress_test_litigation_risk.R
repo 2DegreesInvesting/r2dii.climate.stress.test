@@ -133,7 +133,7 @@ technologies <- cfg_litigation_params$lists$technology_list
 ############################################################################
 #### load and prepare litigation risk scenarios-----------------------------
 ############################################################################
-litigation_risk_scenarios <- read_csv(
+litigation_risk_scenarios <- readr::read_csv(
   file.path(
     get_st_data_path(),
     data_path("litigation_risk_scenarios.csv")
@@ -291,7 +291,7 @@ security_financial_data <- security_financial_data %>%
   dplyr::select(.data$isin, .data$security_mapped_sector)
 
 company_ebit_data_input <- company_ebit_data_input %>%
-  inner_join(security_financial_data, by = c("isin"))
+  dplyr::inner_join(security_financial_data, by = c("isin"))
 
 company_ebit_data_input <- company_ebit_data_input %>%
   dplyr::rename(sector = .data$security_mapped_sector)
@@ -299,7 +299,7 @@ company_ebit_data_input <- company_ebit_data_input %>%
 ############################################################################
 #### load and prepare carbon delta plus damages data------------------------
 ############################################################################
-carbon_delta_plus_damages <- read_csv(
+carbon_delta_plus_damages <- readr::read_csv(
   file.path(
     get_st_data_path(),
     data_path("delta_carbon_budget.csv")
@@ -310,7 +310,7 @@ carbon_delta_plus_damages <- read_csv(
 ############################################################################
 #### load and prepare historical emissions data-----------------------------
 ############################################################################
-company_historical_emissions <- read_csv(
+company_historical_emissions <- readr::read_csv(
   file.path(
     get_st_data_path(),
     data_path("historical_emissions_heede_2017.csv")
@@ -327,104 +327,122 @@ company_historical_emissions <- read_csv(
 #### combine and wrangle company data---------------------------------------
 ############################################################################
 company_data <- company_emissions_data_input %>%
-  # pivot_wider(
-  #   names_from = scenario,
-  #   values_from = c(allowed_emission, allowed_production)
-  # ) %>%
-  left_join(
+  dplyr::left_join(
     company_ebit_data_input,
     by = "company_name"
   ) %>%
-  filter(
-    ebit > 0
-  )
+  dplyr::filter(.data$ebit > 0)
 # TODO: There are still duplicates because some companies are in multiple sectors
 
 
 #-Company Level Calculation-----------------------------
 
 company_data_overshoot <- company_data %>%
-  mutate(
-    actual_emissions = current_production * avg_ef,
-    allowed_emission = allowed_production * avg_ef,
-    allowed_emission_b2ds = dplyr::if_else(.data$scenario == "B2DS", allowed_production * avg_ef, 0),
-    allowed_emission_sds = dplyr::if_else(.data$scenario == "SDS", allowed_production * avg_ef, 0),
-    allowed_emission_nps = dplyr::if_else(.data$scenario == "NPS", allowed_production * avg_ef, 0),
-    allowed_emission_cps = dplyr::if_else(.data$scenario == "CPS", allowed_production * avg_ef, 0)
+  dplyr::mutate(
+    actual_emissions = .data$current_production * .data$avg_ef,
+    allowed_emission = .data$allowed_production * .data$avg_ef,
+    allowed_emission_b2ds = dplyr::if_else(
+      .data$scenario == "B2DS", .data$allowed_production * .data$avg_ef, 0
+    ),
+    allowed_emission_sds = dplyr::if_else(
+      .data$scenario == "SDS", .data$allowed_production * .data$avg_ef, 0
+    ),
+    allowed_emission_nps = dplyr::if_else(
+      .data$scenario == "NPS", .data$allowed_production * .data$avg_ef, 0
+    ),
+    allowed_emission_cps = dplyr::if_else(
+      .data$scenario == "CPS", .data$allowed_production * .data$avg_ef, 0
+    )
   ) %>%
-  mutate(
-    overshoot_actual = actual_emissions - allowed_emission,
-    overshoot_actual_b2ds = dplyr::if_else(.data$scenario == "B2DS", actual_emissions - allowed_emission_b2ds, 0),
-    overshoot_actual_sds = dplyr::if_else(.data$scenario == "SDS", actual_emissions - allowed_emission_sds, 0),
-    overshoot_actual_nps = dplyr::if_else(.data$scenario == "NPS", actual_emissions - allowed_emission_nps, 0),
-    overshoot_actual_cps = dplyr::if_else(.data$scenario == "CPS", actual_emissions - allowed_emission_cps, 0)
+  dplyr::mutate(
+    overshoot_actual = .data$actual_emissions - .data$allowed_emission,
+    overshoot_actual_b2ds = dplyr::if_else(
+      .data$scenario == "B2DS", .data$actual_emissions - .data$allowed_emission_b2ds, 0
+    ),
+    overshoot_actual_sds = dplyr::if_else(
+      .data$scenario == "SDS", .data$actual_emissions - .data$allowed_emission_sds, 0
+    ),
+    overshoot_actual_nps = dplyr::if_else(
+      .data$scenario == "NPS", .data$actual_emissions - .data$allowed_emission_nps, 0
+    ),
+    overshoot_actual_cps = dplyr::if_else(
+      .data$scenario == "CPS", .data$actual_emissions - .data$allowed_emission_cps, 0
+    )
   )
 
 # ADO 1540 - removed the cap for overshoot deltas
 company_carbon_budgets <- company_data_overshoot %>%
-  mutate(
-    delta_allowed_b2ds_sds = allowed_emission_sds - allowed_emission_b2ds,
-    delta_allowed_sds_cps = allowed_emission_cps - allowed_emission_sds,
-    delta_allowed_b2ds_cps = allowed_emission_cps - allowed_emission_b2ds,
-    overshoot_delta_b2ds_sds = case_when(
-      overshoot_actual_b2ds < 0 ~ 0,
+  dplyr::mutate(
+    delta_allowed_b2ds_sds = .data$allowed_emission_sds - .data$allowed_emission_b2ds,
+    delta_allowed_sds_cps = .data$allowed_emission_cps - .data$allowed_emission_sds,
+    delta_allowed_b2ds_cps = .data$allowed_emission_cps - .data$allowed_emission_b2ds,
+    overshoot_delta_b2ds_sds = dplyr::case_when(
+      .data$overshoot_actual_b2ds < 0 ~ 0,
       # overshoot_actual_b2ds > delta_allowed_b2ds_sds ~ delta_allowed_b2ds_sds,
-      TRUE ~ overshoot_actual_b2ds
+      TRUE ~ .data$overshoot_actual_b2ds
     ),
-    overshoot_delta_b2ds_cps = case_when(
-      overshoot_actual_b2ds < 0 ~ 0,
+    overshoot_delta_b2ds_cps = dplyr::case_when(
+      .data$overshoot_actual_b2ds < 0 ~ 0,
       # overshoot_actual_b2ds > delta_allowed_b2ds_cps ~ delta_allowed_b2ds_cps,
-      TRUE ~ overshoot_actual_b2ds
+      TRUE ~ .data$overshoot_actual_b2ds
     ),
-    overshoot_delta_sds_cps = case_when(
-      overshoot_actual_sds < 0 ~ 0,
+    overshoot_delta_sds_cps = dplyr::case_when(
+      .data$overshoot_actual_sds < 0 ~ 0,
       # overshoot_actual_sds > delta_allowed_sds_cps ~ delta_allowed_sds_cps,
-      TRUE ~ overshoot_actual_sds
+      TRUE ~ .data$overshoot_actual_sds
     )
   )
 
 
 # Carbon Delta Damages (CDD) liability model
 
-scenario <- litigation_risk_scenarios %>% filter(model == "CDD")
+scenario <- litigation_risk_scenarios %>%
+  dplyr::filter(.data$model == "CDD")
 
 chance_within_target <- cfg_litigation_params$litigation$chance_within_target
 
 cdd_carbon_budget_plus_damages <- carbon_delta_plus_damages %>%
-  filter(likelihood_stay_within_target == chance_within_target)
+  dplyr::filter(.data$likelihood_stay_within_target == .env$chance_within_target)
 
 delta_carbon_budget_b2ds_sds <- cdd_carbon_budget_plus_damages %>%
-  filter(target_scenario == "SDS") %>%
-  pull(delta_carbon_budget)
+  dplyr::filter(.data$target_scenario == "SDS") %>%
+  dplyr::pull(.data$delta_carbon_budget)
 
 delta_carbon_budget_b2ds_cps <- cdd_carbon_budget_plus_damages %>%
-  filter(target_scenario %in% c("SDS", "CPS")) %>%
-  summarise(delta_carbon_budget = sum(delta_carbon_budget, na.rm = TRUE)) %>%
-  pull()
+  dplyr::filter(.data$target_scenario %in% c("SDS", "CPS")) %>%
+  dplyr::summarise(
+    delta_carbon_budget = sum(.data$delta_carbon_budget, na.rm = TRUE)
+  ) %>%
+  dplyr::pull()
 
 delta_carbon_budget_sds_cps <- cdd_carbon_budget_plus_damages %>%
-  filter(target_scenario == "CPS") %>%
-  pull(delta_carbon_budget)
+  dplyr::filter(.data$target_scenario == "CPS") %>%
+  dplyr::pull(.data$delta_carbon_budget)
 
 cdd_company_carbon_budgets <- company_carbon_budgets %>%
-  mutate(
-    contribution_sds_b2ds = .data$overshoot_delta_b2ds_sds / delta_carbon_budget_b2ds_sds,
-    contribution_cps_b2ds = overshoot_delta_b2ds_cps / delta_carbon_budget_b2ds_cps,
-    contribution_cps_sds = overshoot_delta_sds_cps / delta_carbon_budget_sds_cps
+  dplyr::mutate(
+    contribution_sds_b2ds = .data$overshoot_delta_b2ds_sds /
+      .env$delta_carbon_budget_b2ds_sds,
+    contribution_cps_b2ds = .data$overshoot_delta_b2ds_cps /
+      .env$delta_carbon_budget_b2ds_cps,
+    contribution_cps_sds = .data$overshoot_delta_sds_cps /
+      .env$delta_carbon_budget_sds_cps
   )
 
 delta_carbon_damage_b2ds_sds <- cdd_carbon_budget_plus_damages %>%
-  filter(target_scenario == "SDS") %>%
-  pull(delta_econ_damages_usd)
+  dplyr::filter(.data$target_scenario == "SDS") %>%
+  dplyr::pull(.data$delta_econ_damages_usd)
 
 delta_carbon_damage_b2ds_cps <- cdd_carbon_budget_plus_damages %>%
-  filter(target_scenario %in% c("SDS", "CPS")) %>%
-  summarise(delta_econ_damages_usd = sum(delta_econ_damages_usd, na.rm = TRUE)) %>%
-  pull()
+  dplyr::filter(.data$target_scenario %in% c("SDS", "CPS")) %>%
+  dplyr::summarise(
+    delta_econ_damages_usd = sum(.data$delta_econ_damages_usd, na.rm = TRUE)
+  ) %>%
+  dplyr::pull()
 
 delta_carbon_damage_sds_cps <- cdd_carbon_budget_plus_damages %>%
-  filter(target_scenario == "CPS") %>%
-  pull(delta_econ_damages_usd)
+  dplyr::filter(.data$target_scenario == "CPS") %>%
+  dplyr::pull(.data$delta_econ_damages_usd)
 
 # TODO: initialise using a list or df with correct number of entries
 cdd_results <- c()
@@ -435,24 +453,28 @@ for (i in seq(1, nrow(scenario))) {
 
   cdd_company_i <- cdd_company_carbon_budgets %>%
     dplyr::mutate(
-      scenario_name = cdd_scenario_i$litigation_scenario,
-      damage_sds_b2ds = contribution_sds_b2ds * delta_carbon_damage_b2ds_sds,
-      damage_cps_b2ds = contribution_cps_b2ds * delta_carbon_damage_b2ds_cps,
-      damage_cps_sds = contribution_cps_sds * delta_carbon_damage_sds_cps,
+      scenario_name = .env$cdd_scenario_i$litigation_scenario,
+      damage_sds_b2ds = .data$contribution_sds_b2ds * .env$delta_carbon_damage_b2ds_sds,
+      damage_cps_b2ds = .data$contribution_cps_b2ds * .env$delta_carbon_damage_b2ds_cps,
+      damage_cps_sds = .data$contribution_cps_sds * .env$delta_carbon_damage_sds_cps,
       # TODO: make scenarios more easily selectable
-      cdd_liability_total = damage_cps_b2ds * .env$scenario$exp_share_damages_paid,
-      cdd_liability = cdd_liability_total /
-        cdd_scenario_i$timeframe_emissions_overshoot,
-      cdd_liability_perc_ebit = cdd_liability / ebit
+      cdd_liability_total = .data$damage_cps_b2ds * .env$scenario$exp_share_damages_paid,
+      cdd_liability = .data$cdd_liability_total /
+        .env$cdd_scenario_i$timeframe_emissions_overshoot,
+      cdd_liability_perc_ebit = .data$cdd_liability / .data$ebit
     ) %>%
     dplyr::select(
-      scenario_name,company_name, asset_type, scenario,
-      sector, unit_emissions, actual_emissions,
-      allowed_emission_b2ds, allowed_emission_sds, allowed_emission_cps,
-      overshoot_delta_b2ds_sds, overshoot_delta_sds_cps, overshoot_delta_b2ds_cps,
-      contribution_sds_b2ds, contribution_cps_sds, contribution_cps_b2ds,
-      damage_sds_b2ds, damage_cps_sds, damage_cps_b2ds,
-      cdd_liability, cdd_liability_total, ebit, cdd_liability_perc_ebit
+      .data$scenario_name, .data$company_name, .data$asset_type, .data$scenario,
+      .data$sector, .data$unit_emissions, .data$actual_emissions,
+      .data$allowed_emission_b2ds, .data$allowed_emission_sds,
+      .data$allowed_emission_cps,
+      .data$overshoot_delta_b2ds_sds, .data$overshoot_delta_sds_cps,
+      .data$overshoot_delta_b2ds_cps,
+      .data$contribution_sds_b2ds, .data$contribution_cps_sds,
+      .data$contribution_cps_b2ds,
+      .data$damage_sds_b2ds, .data$damage_cps_sds, .data$damage_cps_b2ds,
+      .data$cdd_liability, .data$cdd_liability_total, .data$ebit,
+      .data$cdd_liability_perc_ebit
     )
 
   cdd_results <- cdd_results %>%
@@ -460,7 +482,7 @@ for (i in seq(1, nrow(scenario))) {
 
 }
 
-cdd_results %>% write_csv(
+cdd_results %>% readr::write_csv(
   file.path(project_location, "40_Results", "litigation_risk_company_cdd.csv")
 )
 
@@ -468,7 +490,8 @@ cdd_results %>% write_csv(
 
 # Social Cost of Carbon (SCC) liability model
 
-scenario <- litigation_risk_scenarios %>% filter(model == "SCC")
+scenario <- litigation_risk_scenarios %>%
+  dplyr::filter(.data$model == "SCC")
 
 # TODO: initialise using a list or df with correct number of entries
 scc_results <- c()
@@ -504,14 +527,15 @@ for (i in seq(1, nrow(scenario))) {
 
 }
 
-scc_results %>% write_csv(
+scc_results %>% readr::write_csv(
   file.path(project_location, "40_Results", "litigation_risk_company_scc.csv")
 )
 
 
 # Historical Emissions Responsibility (HER) model
 
-scenario <- litigation_risk_scenarios %>% filter(model == "HER")
+scenario <- litigation_risk_scenarios %>%
+  dplyr::filter(.data$model == "HER")
 
 backwards_years <- cfg_litigation_params$litigation$backwards_years
 
@@ -525,22 +549,23 @@ for (i in seq(1, nrow(scenario))) {
   if(her_scenario_i$scc > 0 & her_scenario_i$past_yearly_costs_usd == 0) {
 
     her_company_i <- company_historical_emissions %>%
-      left_join(company_ebit_data_input, by = c("company_name")) %>%
-      filter(ebit > 0)
+      dplyr::left_join(company_ebit_data_input, by = c("company_name")) %>%
+      dplyr::filter(.data$ebit > 0)
 
     her_company_i <- her_company_i %>%
       dplyr::mutate(
-        scenario_name = her_scenario_i$litigation_scenario,
+        scenario_name = .env$her_scenario_i$litigation_scenario,
         her_liability = .data$scope_1_plus_3 *
-          her_scenario_i$scc *
-          her_scenario_i$exp_share_damages_paid,
-        her_liability_total = her_liability,
-        her_liability_perc_ebit = her_liability / ebit
+          .env$her_scenario_i$scc *
+          .env$her_scenario_i$exp_share_damages_paid,
+        her_liability_total = .data$her_liability,
+        her_liability_perc_ebit = .data$her_liability / .data$ebit
       ) %>%
       dplyr::select(
-        scenario_name, company_name, sector, #unit_emissions,
-        actual_emissions = scope_1_plus_3, share_global_industrial_ghg,
-        her_liability, her_liability_total, ebit, her_liability_perc_ebit
+        .data$scenario_name, .data$company_name, .data$sector, #unit_emissions,
+        actual_emissions = .data$scope_1_plus_3, .data$share_global_industrial_ghg,
+        .data$her_liability, .data$her_liability_total, .data$ebit,
+        .data$her_liability_perc_ebit
       )
 
     her_results <- her_results %>%
@@ -550,23 +575,24 @@ for (i in seq(1, nrow(scenario))) {
 
     her_company_i <- company_historical_emissions %>%
       dplyr::left_join(company_ebit_data_input, by = c("company_name")) %>%
-      dplyr::filter(ebit > 0)
+      dplyr::filter(.data$ebit > 0)
 
     her_company_i <- her_company_i %>%
       dplyr::mutate(
-        scenario_name = her_scenario_i$litigation_scenario,
+        scenario_name = .env$her_scenario_i$litigation_scenario,
         her_liability = .data$share_global_industrial_ghg *
-          her_scenario_i$past_yearly_costs_usd *
-          backwards_years *
-          her_scenario_i$exp_share_damages_paid,
-        her_liability_total = her_liability,
+          .env$her_scenario_i$past_yearly_costs_usd *
+          .env$backwards_years *
+          .env$her_scenario_i$exp_share_damages_paid,
+        her_liability_total = .data$her_liability,
         # TODO: percentage loss in HER model with total liability, others annual. Why?
-        her_liability_perc_ebit = her_liability / ebit
+        her_liability_perc_ebit = .data$her_liability / .data$ebit
       ) %>%
       dplyr::select(
-        scenario_name, company_name, sector, #unit_emissions,
-        actual_emissions = scope_1_plus_3, share_global_industrial_ghg,
-        her_liability, her_liability_total, ebit, her_liability_perc_ebit
+        .data$scenario_name, .data$company_name, .data$sector, #unit_emissions,
+        actual_emissions = .data$scope_1_plus_3, .data$share_global_industrial_ghg,
+        .data$her_liability, .data$her_liability_total, .data$ebit,
+        .data$her_liability_perc_ebit
       )
 
     her_results <- her_results %>%
@@ -584,7 +610,7 @@ her_results <- her_results %>%
     scenario = NA_character_
   )
 
-her_results %>% write_csv(
+her_results %>% readr::write_csv(
   file.path(project_location, "40_Results", "litigation_risk_company_her.csv")
 )
 
@@ -594,38 +620,39 @@ her_results %>% write_csv(
 
 
 company_results <- cdd_results %>%
-  select(
-    scenario_name, company_name, asset_type, scenario,
-    sector,
-    liability = cdd_liability,
-    liability_total = cdd_liability_total,
-    ebit,
-    liability_perc_ebit = cdd_liability_perc_ebit
+  dplyr::select(
+    .data$scenario_name, .data$company_name, .data$asset_type, .data$scenario,
+    .data$sector,
+    liability = .data$cdd_liability,
+    liability_total = .data$cdd_liability_total,
+    .data$ebit,
+    liability_perc_ebit = .data$cdd_liability_perc_ebit
   ) %>%
-  bind_rows(
+  dplyr::bind_rows(
     scc_results %>%
-      select(
-        scenario_name, company_name, asset_type, scenario,
-        sector,
-        liability = scc_liability,
-        liability_total = scc_liability_total,
-        ebit,
-        liability_perc_ebit = scc_liability_perc_ebit
+      dplyr::select(
+        .data$scenario_name, .data$company_name, .data$asset_type, .data$scenario,
+        .data$sector,
+        liability = .data$scc_liability,
+        liability_total = .data$scc_liability_total,
+        .data$ebit,
+        liability_perc_ebit = .data$scc_liability_perc_ebit
       )
-  ) %>% bind_rows(
+  ) %>%
+  dplyr::bind_rows(
     her_results %>%
-      select(
-        scenario_name, company_name, asset_type, scenario,
-        sector,
-        liability = her_liability,
-        liability_total = her_liability_total,
-        ebit,
-        liability_perc_ebit = her_liability_perc_ebit # TODO: This is off!
+      dplyr::select(
+        .data$scenario_name, .data$company_name, .data$asset_type, .data$scenario,
+        .data$sector,
+        liability = .data$her_liability,
+        liability_total = .data$her_liability_total,
+        .data$ebit,
+        liability_perc_ebit = .data$her_liability_perc_ebit # TODO: This is off!
       )
   )
 
 # TODO: for company level impact, the sectors/types need to by summed by comp
-company_results %>% write_csv(
+company_results %>% readr::write_csv(
   file.path(project_location, "40_Results", "litigation_risk_company.csv")
 )
 
@@ -649,97 +676,130 @@ terminal_value <- cfg_litigation_params$litigation$percentage_in_terminal_value
 # net_profit_margin
 # Scenario assumption (either 6,4, or 2)
 company_results <- company_results %>%
-  mutate(
-    years_to_litigation = years_to_litigation_event,
-    settlement_factor = settlement_factor,
+  dplyr::mutate(
+    years_to_litigation = .env$years_to_litigation_event,
+    settlement_factor = .env$settlement_factor,
     # TODO: how o calculate this for HER model? liability should not increase with years to litigation?
-    settlement = liability * years_to_litigation_event * settlement_factor
+    settlement = .data$liability * .data$years_to_litigation *
+      .data$settlement_factor
   )
 
-df_timeframe <- tibble(
+df_timeframe <- tibble::tibble(
     timeframe = seq(start_year, end_year),
     value = NA_real_
   ) %>%
-  pivot_wider(names_from = timeframe, values_from = value)
+  tidyr::pivot_wider(
+    names_from = timeframe,
+    values_from = value
+  )
 
 
 # TODO: use calculated target profits from transition risk module after settlement
 company_results_dcf <- company_results %>%
-  bind_cols(
+  dplyr::bind_cols(
     df_timeframe
   ) %>%
-  pivot_longer(
-    cols = -c(scenario_name, company_name, asset_type, scenario, sector, liability,
-              liability_total, ebit, liability_perc_ebit, years_to_litigation,
-              settlement_factor, settlement),
+  tidyr::pivot_longer(
+    cols = -c(
+      scenario_name, company_name, asset_type, scenario, sector, liability,
+      liability_total, ebit, liability_perc_ebit, years_to_litigation,
+      settlement_factor, settlement
+    ),
     names_to = "year",
     values_to = "dividends"
+  )
+
+company_results_dcf <- company_results_dcf %>%
+  dplyr::arrange(
+    .data$scenario_name, .data$company_name, .data$asset_type, .data$scenario,
+    .data$sector, .data$year
   ) %>%
-  arrange(scenario_name, company_name, asset_type, scenario, sector, year) %>%
-  group_by(scenario_name, company_name, asset_type, scenario, sector) %>%
-  mutate(
+  dplyr::group_by(
+    .data$scenario_name, .data$company_name, .data$asset_type, .data$scenario,
+    .data$sector
+  ) %>%
+  dplyr::mutate(
     t_calc = seq(0, (n() - 1)),
-    dividends = ebit * (1 + growth_rate)^t_calc,
+    dividends = .data$ebit * (1 + .env$growth_rate) ^ .data$t_calc,
     dividends_litigation = dplyr::if_else(
-      year == start_year + years_to_litigation_event,
-      dividends - settlement,
-      dividends
+      # year == start_year + years_to_litigation_event,
+      year == .env$start_year + .data$years_to_litigation,
+      .data$dividends - .data$settlement,
+      .data$dividends
     )
   ) %>%
-  ungroup()
+  dplyr::ungroup()
 
 reset_post_settlement <- cfg_litigation_params$litigation$reset_post_settlement
 
 if(reset_post_settlement == "start") {
   company_results_dcf <- company_results_dcf %>%
-    group_by(scenario_name, company_name, asset_type, scenario, sector) %>%
-    mutate(
+    dplyr::group_by(
+      .data$scenario_name, .data$company_name, .data$asset_type, .data$scenario,
+      .data$sector
+    ) %>%
+    dplyr::mutate(
       dividends_litigation = dplyr::if_else(
-        .data$year == start_year + years_to_litigation_event + 1 &
+        # .data$year == start_year + years_to_litigation_event + 1 &
+        #   .data$liability > 0,
+        .data$year == .env$start_year + .env$years_to_litigation_event + 1 &
           .data$liability > 0,
         .data$ebit,
         .data$dividends_litigation
       )
     ) %>%
-    mutate(
+    dplyr::mutate(
       dividends_litigation = dplyr::if_else(
-        .data$year > start_year + years_to_litigation_event + 1 &
+        # .data$year > start_year + years_to_litigation_event + 1 &
+        #   .data$liability > 0,
+        .data$year > .env$start_year + .env$years_to_litigation_event + 1 &
           .data$liability > 0,
-        .data$ebit *
-          (1 + growth_rate) ^
-          dplyr::lag(.data$t_calc, n = years_to_litigation_event + 1),
+        .data$ebit * (1 + .env$growth_rate) ^
+          dplyr::lag(.data$t_calc, n = .env$years_to_litigation_event + 1),
         .data$dividends_litigation
       )
     ) %>%
-    ungroup()
+    dplyr::ungroup()
 }
 
 company_results_dcf <- company_results_dcf %>%
-  group_by(scenario_name, company_name, asset_type, scenario, sector) %>%
-  mutate(
-    discounted_dividends = dividends / ((1 + discount_rate)^t_calc),
-    discounted_dividends_litigation = dividends_litigation / ((1 + discount_rate)^t_calc)
+  dplyr::group_by(
+    .data$scenario_name, .data$company_name, .data$asset_type, .data$scenario,
+    .data$sector
   ) %>%
-  ungroup()
+  dplyr::mutate(
+    discounted_dividends = .data$dividends /
+      ((1 + .env$discount_rate) ^ .data$t_calc),
+    discounted_dividends_litigation = .data$dividends_litigation /
+      ((1 + .env$discount_rate) ^ .data$t_calc)
+  ) %>%
+  dplyr::ungroup()
 
 
 
 # calculate NPV
 
 company_results_npv <- company_results_dcf %>%
-  group_by(scenario_name, company_name, asset_type, scenario, sector) %>%
-  summarise(
-    npv_baseline = sum(discounted_dividends, na.rm = TRUE) * (1 + terminal_value),
-    npv_litigation = sum(discounted_dividends_litigation, na.rm = TRUE) * (1 + terminal_value),
+  dplyr::group_by(
+    .data$scenario_name, .data$company_name, .data$asset_type, .data$scenario,
+    .data$sector
+  ) %>%
+  dplyr::summarise(
+    npv_baseline = sum(.data$discounted_dividends, na.rm = TRUE) *
+      (1 + .env$terminal_value),
+    npv_litigation = sum(.data$discounted_dividends_litigation, na.rm = TRUE) *
+      (1 + .env$terminal_value),
     .groups = "drop"
   ) %>%
-  ungroup() %>%
-  mutate(
+  dplyr::ungroup() %>%
+  dplyr::mutate(
     npv_litigation = dplyr::if_else(.data$npv_litigation < 0, 0, .data$npv_litigation),
-    percentage_value_change = round((npv_litigation - npv_baseline) / npv_baseline, 4)
+    percentage_value_change = round(
+      (.data$npv_litigation - .data$npv_baseline) / .data$npv_baseline, 4
+    )
   )
 
-company_results_npv %>% write_csv(
+company_results_npv %>% readr::write_csv(
   file.path(project_location, "40_Results", "litigation_risk_company_value_change.csv")
 )
 
@@ -761,24 +821,24 @@ sector_exposures <- readRDS(file.path(proc_input_path, glue::glue("{project_name
 # TODO: check if this might not be in EUR for EIOPA case
 port_aum_equity <- sector_exposures %>%
   dplyr::filter(.data$asset_type == "Equity") %>%
-  pull(.data$asset_value_usd) %>%
+  dplyr::pull(.data$asset_value_usd) %>%
   unique()
 
 # portfolio aum for bonds, value in USD
 # TODO: check if this might not be in EUR for EIOPA case
 port_aum_bonds <- sector_exposures %>%
   dplyr::filter(.data$asset_type == "Bonds") %>%
-  pull(.data$asset_value_usd) %>%
+  dplyr::pull(.data$asset_value_usd) %>%
   unique()
 
 technology_exposure <- technology_share_comp %>%
-  mutate(
+  dplyr::mutate(
     portfolio_aum = dplyr::case_when(
-      .data$asset_type == "Equity" ~ port_aum_equity,
-      .data$asset_type == "Bonds" ~ port_aum_bonds,
+      .data$asset_type == "Equity" ~ .env$port_aum_equity,
+      .data$asset_type == "Bonds" ~ .env$port_aum_bonds,
       TRUE ~ 0
     ),
-    company_tech_exposure = portfolio_aum * plan_carsten
+    company_tech_exposure = .data$portfolio_aum * .data$plan_carsten
   )
 
 
@@ -800,7 +860,7 @@ portfolio_liabilities <- portfolio_liabilities %>%
   )
 
 
-portfolio_liabilities %>% write_csv(
+portfolio_liabilities %>% readr::write_csv(
   file.path(project_location, "40_Results", "litigation_risk_portfolio_impact.csv")
 )
 
@@ -809,11 +869,11 @@ portfolio_liabilities %>% write_csv(
 ### visualization
 
 viz_company_results <- company_results %>%
-  filter(.data$liability_perc_ebit >= 0) %>%
-  group_by(.data$company_name) %>%
-  mutate(max_liability_perc = max(.data$liability_perc_ebit, na.rm = TRUE)) %>%
-  ungroup() %>%
-  mutate(company_name = forcats::fct_reorder(.data$company_name, desc(max_liability_perc)))
+  dplyr::filter(.data$liability_perc_ebit >= 0) %>%
+  dplyr::group_by(.data$company_name) %>%
+  dplyr::mutate(max_liability_perc = max(.data$liability_perc_ebit, na.rm = TRUE)) %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(company_name = forcats::fct_reorder(.data$company_name, desc(max_liability_perc)))
 
 comp_graph <- viz_company_results %>%
   ggplot(
@@ -861,14 +921,14 @@ subset_models <- c(
 )
 
 viz_company_results_subset <- viz_company_results %>%
-  filter(
+  dplyr::filter(
     company_name %in% subset_companies &
       scenario_name %in% subset_models
   ) %>%
-  group_by(.data$company_name) %>%
-  mutate(max_liability_perc = max(.data$liability_perc_ebit, na.rm = TRUE)) %>%
-  ungroup() %>%
-  mutate(company_name = forcats::fct_reorder(.data$company_name, desc(max_liability_perc)))
+  dplyr::group_by(.data$company_name) %>%
+  dplyr::mutate(max_liability_perc = max(.data$liability_perc_ebit, na.rm = TRUE)) %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(company_name = forcats::fct_reorder(.data$company_name, desc(max_liability_perc)))
 
 comp_graph_subset <- viz_company_results_subset %>%
   ggplot(
@@ -888,10 +948,10 @@ comp_graph_subset <- viz_company_results_subset %>%
   )
 
 viz_company_results_payout_subset <- viz_company_results_subset %>%
-  group_by(.data$company_name) %>%
-  mutate(max_liability = max(.data$liability_total, na.rm = TRUE)) %>%
-  ungroup() %>%
-  mutate(company_name = forcats::fct_reorder(.data$company_name, desc(max_liability)))
+  dplyr::group_by(.data$company_name) %>%
+  dplyr::mutate(max_liability = max(.data$liability_total, na.rm = TRUE)) %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(company_name = forcats::fct_reorder(.data$company_name, desc(max_liability)))
 
 
 comp_graph_payout_subset <- viz_company_results_payout_subset %>%
