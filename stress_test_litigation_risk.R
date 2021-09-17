@@ -22,7 +22,9 @@ source("0_global_functions_st.R")
 # INPUT VARIABLES
 ################
 
-#### Project location----------------------------------------
+############################################################################
+#### Project location-------------------------------------------------------
+############################################################################
 
 # Set Project Settings
 
@@ -54,35 +56,44 @@ set_project_paths(
   project_location_ext = project_location_ext
 )
 
+############################################################################
+#### Analysis Parameters----------------------------------------------------
+############################################################################
 
-# THIS NEEDS TO BE INVESTIGATED! PROBABLY LOOP OVER INV OR ALLOW SPECIFICATION IN CONFIG
-cfg_litigation_params <- config::get(file = "params_litigation_risk.yml")
-# investorname_equity <- cfg_litigation_params$investor_name$investor_name_equity
-# investorname_bonds <- cfg_litigation_params$investor_name$investor_name_bonds
-# investorname_loanbook <- cfg_litigation_params$investor_name$investor_name_loanbook
-
-#### Analysis Parameters----------------------------------------
 # Get analysis parameters from the projects AnalysisParameters.yml - similar to PACTA_analysis
 
 cfg <- config::get(
   file = file.path(project_location, "10_Parameter_File","AnalysisParameters.yml")
 )
 
-# ADO 1540 - use for filters
-start_year <- cfg$AnalysisPeriod$Years.Startyear # TODO: check this is in line with webtool results. seems wrong
-horizon <- cfg$AnalysisPeriod$Years.Horizon
-
 path_db_analysis_inputs <- fs::path(
   r2dii.utils::dbox_port_00("07_AnalysisInputs", cfg$TimeStamps$DataPrep.Timestamp)
 )
 
-data_location <- file.path(get_st_data_path(), data_path())
+# Get litigation params
 
-##### Filters----------------------------------------
+# THIS NEEDS TO BE INVESTIGATED! PROBABLY LOOP OVER INV OR ALLOW SPECIFICATION IN CONFIG
+cfg_litigation_params <- config::get(file = "params_litigation_risk.yml")
+# ADO 1540 - set variables for reading company level PACTA results
+investor_name_equity <- cfg_litigation_params$investor_name$investor_name_equity
+investor_name_bonds <- cfg_litigation_params$investor_name$investor_name_bonds
+flat_multiplier <- cfg_litigation_params$litigation$flat_multiplier
+
+# ADO 1540 - set reference scenario for SCC
+target_scenario_SCC <- "sds"
+
+############################################################################
+##### Filters---------------------------------------------------------------
+############################################################################
+
 # The filter settings should mirror those from the parent PACTA project by default
 # There may still be cases of certain sectors or geographies that work in PACTA
 # but not yet in stress testing
 # move to config once mechanism to include/exclude filters from original pacta project exists
+
+# ADO 1540 - use for filters
+start_year <- cfg$AnalysisPeriod$Years.Startyear # TODO: check this is in line with webtool results. seems wrong
+horizon <- cfg$AnalysisPeriod$Years.Horizon
 
 #### OPEN: This could largely be taken from cfg file. No apparent reason why not.
 scenario_geography_filter <- cfg_litigation_params$lists$scenario_geography_list
@@ -118,16 +129,9 @@ technologies <- cfg_litigation_params$lists$technology_list
 # technologies <- cfg$Lists$Technology.List
 
 ############################################################################
-#-load required data--------------------------
+# load required data--------------------------
 ############################################################################
 
-# ADO 1540 - set variables for reading company level PACTA results
-investor_name_equity <- cfg_litigation_params$investor_name$investor_name_equity
-investor_name_bonds <- cfg_litigation_params$investor_name$investor_name_bonds
-flat_multiplier <- cfg_litigation_params$litigation$flat_multiplier
-# asset_type <- "Equity"
-# asset_type <- "Bonds"
-target_scenario_SCC <- "sds"
 
 ############################################################################
 #### load and prepare litigation risk scenarios-----------------------------
@@ -749,9 +753,6 @@ company_results_npv %>% write_csv(
 
 #-Portfolio Level Calculation----------------------
 
-# technology_share_comp <- readRDS(
-#   testthat::test_path("test_data", "test_pf_impact_litigation.rds")
-# )
 
 technology_share_comp <- company_emissions_data_input %>%
   dplyr::filter(scenario == toupper(.env$target_scenario_SCC)) %>%
@@ -763,9 +764,6 @@ technology_share_comp <- company_emissions_data_input %>%
   )
 
 sector_exposures <- readRDS(file.path(proc_input_path, glue::glue("{project_name}_overview_portfolio.rda")))
-# sector_exposures <- readRDS(
-#   testthat::test_path("test_data", "test_pf_sector_exposures.rds")
-# )
 
 # portfolio aum for equity, value in USD
 # TODO: check if this might not be in EUR for EIOPA case
