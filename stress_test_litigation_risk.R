@@ -751,10 +751,10 @@ company_results_npv %>% write_csv(
 
 
 technology_share_comp <- company_emissions_data_input %>%
-  dplyr::filter(scenario == toupper(.env$target_scenario_SCC)) %>%
+  # dplyr::filter(scenario == toupper(.env$target_scenario_SCC)) %>%
   dplyr::select(
     .data$investor_name, .data$portfolio_name, .data$company_name, .data$id,
-    .data$asset_type,
+    .data$asset_type, .data$scenario,
     .data$scenario_geography, .data$ald_sector, #.data$technology,
     .data$plan_carsten
   )
@@ -791,7 +791,7 @@ technology_exposure <- technology_share_comp %>%
 portfolio_liabilities <- company_results_npv %>%
   left_join(
     technology_exposure,
-    by = c("company_name", "asset_type", "sector" = "ald_sector")
+    by = c("company_name", "asset_type", "scenario", "sector" = "ald_sector")
   ) %>%
   mutate(
     value_change = dplyr::if_else(
