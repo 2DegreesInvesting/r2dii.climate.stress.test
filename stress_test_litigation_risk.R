@@ -789,11 +789,13 @@ technology_exposure <- technology_share_comp %>%
 # TODO: merge portfolio comp-tech exposures with company results (percentage loss)
 # TODO: same for SCC 20 and 40??
 portfolio_liabilities <- company_results_npv %>%
-  left_join(
+  dplyr::inner_join(
     technology_exposure,
     by = c("company_name", "asset_type", "scenario", "sector" = "ald_sector")
-  ) %>%
-  mutate(
+  )
+
+portfolio_liabilities <- portfolio_liabilities %>%
+  dplyr::mutate(
     value_change = dplyr::if_else(
       .data$asset_type == "Bonds",
       .data$company_tech_exposure * .data$percentage_value_change * .env$flat_multiplier,
