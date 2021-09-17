@@ -896,27 +896,52 @@ recommended though to set the parameters in line with at least
 imaginably realistic values based on the literature and/or worst case
 settings in case this is used for stress testing.
 
-**company\_emissions\_data\_input:** A csv file with the following
-columns (sources or comments):
+**company\_emissions\_data\_input:** For each asset type, an rda file
+with the following columns:
 
-  - “company\_id” (not required)
-  - “company\_name”
-  - “actual\_emissions” (not required)
-  - “scenario”
-  - “allowed\_emission” (not required)
-  - “avg\_ef”
-  - “allowed\_production”
-  - “current\_production”
-  - “revenue” (not required)
-  - “unit\_revenue” (not required)
-  - “unit\_emissions”
-  - “ebit” (not required)
+  - investor\_name = “c”
+  - portfolio\_name = “c”
+  - company\_name = “c”
+  - id = “c”/“d” (depending on asset type)
+  - scenario = “c”
+  - allocation = “c”
+  - asset\_type = “c”
+  - scenario\_geography = “c”
+  - equity\_market = “c”
+  - year = “d”
+  - financial\_sector = “c”
+  - ald\_sector = “c”
+  - technology = “c”
+  - plan\_tech\_prod = “d”
+  - plan\_emission\_factor = “d”
+  - scen\_tech\_prod = “d”
+  - scen\_emission\_factor = “d”
+  - plan\_carsten = “d”
 
-… of type “dcdcdddddccd”. This table is sourced from PACTA and gives us
-the production forecasts per company, as well as the allowed production
-trajectories for each scenario per company. Together with the average
-emissions intensity factors, we deduce the emissions overshoot based on
-this.
+These files are sourced from PACTA projects and correspond to company
+level PACTA result files (for P4I). They gives us the production
+forecasts per company, as well as the allowed production trajectories
+for each scenario per company. Together with the planned average
+emission factors and the allowed emission factors by scenario, we deduce
+the emissions overshoot based on this. We also get the exposure of the
+portfolio by company and technology from this file.
+
+**sector\_eposures:** The sectorial exposures of the portfolio by asset
+type:
+
+  - investor\_name = “c”
+  - portfolio\_name = “c”
+  - company\_name = “c”
+  - asset\_type = “c”
+  - financial\_sector = “c”
+  - valid\_input = “l”
+  - valid\_value\_usd = “d”
+  - asset\_value\_usd = “d”
+  - portfolio\_value\_usd = “d”
+
+This file is sourced from PACTA projects and corresponds to sector level
+portfolio overview files, based on the processed inputs of a P4I
+project.
 
 **company\_ebit\_data\_input:** A csv file with the following columns:
 
