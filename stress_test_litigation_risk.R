@@ -179,22 +179,36 @@ company_emissions_data_input_raw <- company_emissions_data_input_raw %>%
   dplyr::filter(
     .data$scenario %in% .env$scenarios,
     .data$ald_sector %in% .env$sectors,
-    .data$technology %in% .env$technologies,
+    # .data$technology %in% .env$technologies,
     .data$year %in% seq(.env$start_year, .env$start_year + .env$horizon),
     .data$allocation == "portfolio_weight",
     .data$equity_market == "GlobalMarket",
     .data$scenario_geography == "Global" # TODO what about Global Aggregate?
   ) %>%
   dplyr::mutate(company_name = tolower(.data$company_name)) %>%
+  dplyr::mutate(
+    ald_sector = dplyr::if_else(
+      .data$ald_sector %in% c("Cement", "Steel"),
+      "Cement&Steel",
+      .data$ald_sector
+    )
+  ) %>%
   dplyr::distinct_all()
+
+# ADO 1540 - remove zero and NA entries
+company_emissions_data_input_raw <- company_emissions_data_input_raw %>%
+  dplyr::filter(
+    .data$plan_tech_prod > 0,
+    !is.na(.data$plan_emission_factor)
+  )
 
 # ADO 1540 - temporary fix: indistinguishable SDS scenarios when source is missing. make average across the entries..
 company_emissions_data_input_raw <- company_emissions_data_input_raw %>%
   dplyr::group_by(
     .data$investor_name, .data$portfolio_name, .data$company_name, .data$id,
     .data$scenario, .data$allocation, .data$asset_type, .data$scenario_geography,
-    .data$equity_market, .data$year, .data$financial_sector, .data$ald_sector,
-    .data$technology
+    .data$equity_market, .data$year, .data$financial_sector, .data$ald_sector#,
+    #.data$technology
   ) %>%
   dplyr::summarise(
     plan_tech_prod = mean(.data$plan_tech_prod, na.rm = TRUE),
@@ -340,18 +354,18 @@ company_data <- company_emissions_data_input %>%
 company_data_overshoot <- company_data %>%
   dplyr::mutate(
     actual_emissions = .data$current_production * .data$avg_ef,
-    allowed_emission = .data$allowed_production * .data$avg_ef,
+    allowed_emission = .data$allowed_production * .data$scen_emission_factor,
     allowed_emission_b2ds = dplyr::if_else(
-      .data$scenario == "B2DS", .data$allowed_production * .data$avg_ef, 0
+      .data$scenario == "B2DS", .data$allowed_production * .data$scen_emission_factor, 0
     ),
     allowed_emission_sds = dplyr::if_else(
-      .data$scenario == "SDS", .data$allowed_production * .data$avg_ef, 0
+      .data$scenario == "SDS", .data$allowed_production * .data$scen_emission_factor, 0
     ),
     allowed_emission_nps = dplyr::if_else(
-      .data$scenario == "NPS", .data$allowed_production * .data$avg_ef, 0
+      .data$scenario == "NPS", .data$allowed_production * .data$scen_emission_factor, 0
     ),
     allowed_emission_cps = dplyr::if_else(
-      .data$scenario == "CPS", .data$allowed_production * .data$avg_ef, 0
+      .data$scenario == "CPS", .data$allowed_production * .data$scen_emission_factor, 0
     )
   ) %>%
   dplyr::mutate(
@@ -465,7 +479,7 @@ for (i in seq(1, nrow(scenario))) {
     ) %>%
     dplyr::select(
       .data$scenario_name, .data$company_name, .data$asset_type, .data$scenario,
-      .data$sector, .data$unit_emissions, .data$actual_emissions,
+      sector = .data$sector, .data$unit_emissions, .data$actual_emissions,
       .data$allowed_emission_b2ds, .data$allowed_emission_sds,
       .data$allowed_emission_cps,
       .data$overshoot_delta_b2ds_sds, .data$overshoot_delta_sds_cps,
@@ -517,7 +531,7 @@ for (i in seq(1, nrow(scenario))) {
     ) %>%
     dplyr::select(
       .data$scenario_name, .data$company_name, .data$asset_type, .data$scenario,
-      .data$sector, .data$unit_emissions, .data$actual_emissions,
+      sector = .data$ald_sector, .data$unit_emissions, .data$actual_emissions,
       .data$allowed_emission, .data$overshoot_actual, .data$scc_liability,
       .data$scc_liability_total, .data$ebit, .data$scc_liability_perc_ebit
     )
