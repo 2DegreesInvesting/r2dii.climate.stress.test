@@ -13,6 +13,8 @@ default:
       - Oil&Gas
       - Coal
       - Automotive
+      - Steel
+      - Cement
 
   lists:
     scenario_geography_list:
@@ -49,3 +51,4 @@ default:
     net_profit_margin: 0.1
     backwards_years: 10
     reset_post_settlement: start
+    flat_multiplier: 0.15
