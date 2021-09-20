@@ -186,9 +186,9 @@ check_row_consistency <- function(data, composite_unique_cols) {
     cols = composite_unique_cols
   )
 
-  data %>%
-    report_and_remove_duplicates(cols = names(data)) %>%
-    report_and_remove_duplicates(cols = composite_unique_cols)
+  report_duplicates(data = data, cols = names(data))
+
+  report_duplicates(data = dplyr::distinct(data), cols = composite_unique_cols) # removed duplicates on all columns
 
   return(invisible())
 }
@@ -215,15 +215,15 @@ report_missing_col_combinations <- function(data, composite_unique_cols) {
   return(invisible())
 }
 
-#' Report and remove duplicate rows
+#' Report duplicate rows
 #'
-#' Reports and removes duplicates in `data` on columns `cols`.
+#' Reports duplicates in `data` on columns `cols`.
 #'
 #' @inheritParams check_row_consistency
-#' @param cols Cols to check for duplicate combinations on
+#' @param cols Cols to check for duplicate combinations on.
 #'
-#' @return Tibble `data` with removed duplicates.
-report_and_remove_duplicates <- function(data, cols) {
+#' @return NULL
+report_duplicates <- function(data, cols) {
   duplicates <- data %>%
     dplyr::group_by(!!!dplyr::sym(cols)) %>%
     dplyr::filter(dplyr::n() > 1) %>%
@@ -234,6 +234,5 @@ report_and_remove_duplicates <- function(data, cols) {
     warning(paste0("Identified ", n_duplicates, " duplicates on columns ", paste(cols, sep = ","), "."))
   }
 
-  data_without_duplicates <- dplyr::setdiff(data, duplicates)
-  return(data_without_duplicates)
+  return(invisible())
 }

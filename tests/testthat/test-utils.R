@@ -62,23 +62,21 @@ test_that("Warning is thrown if combinations are missing", {
   )
 })
 
-# report_and_remove_duplicates --------------------------------------------
-test_that("input is returned if no duplicates are in data on composite unique cols.", {
+# report_duplicates -------------------------------------------------------
+test_that("No warning is thrown if no duplicates are in data on composite unique cols.", {
   data <- tibble::tibble(
     a = c("A1", "A1", "A2", "A2"),
     b = c("B1", "B2", "B1", "B2"),
     c = 1:4
   )
 
-  checked_data <- report_and_remove_duplicates(
+  expect_silent(report_and_remove_duplicates(
     data = data,
     composite_uniqe_cols = c("a", "b")
-  )
-
-  expect_equal(data, checked_data)
+  ))
 })
 
-test_that("duplicates are removed and warning is thrown if there are duplciates on composite unique cols", {
+test_that("Warning is thrown if there are duplciates on composite unique cols", {
   data <- tibble::tibble(
     a = c("A1", "A1", "A2", "A2", "A2"),
     b = c("B1", "B2", "B1", "B2", "B1"),
@@ -92,23 +90,19 @@ test_that("duplicates are removed and warning is thrown if there are duplciates 
     ),
     "Identified 1 duplicates"
   )
-
-  expect_equal(nrow(checked_data), 4)
 })
 
-test_that("duplicates are removed and warning is thrown if there are duplciates on all  cols", {
+test_that("Warning is thrown if there are duplciates on all  cols", {
   data <- tibble::tibble(
     a = c("A1", "A1", "A2", "A2", "A2"),
     b = c("B1", "B2", "B1", "B2", "B1")
   )
 
   expect_warning(
-    checked_data <- report_and_remove_duplicates(
+    report_and_remove_duplicates(
       data = data,
       composite_uniqe_cols = names(data)
     ),
     "Identified 1 duplicates"
   )
-
-  expect_equal(nrow(checked_data), 4)
 })
