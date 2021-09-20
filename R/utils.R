@@ -156,27 +156,75 @@ validate_data_has_expected_cols <- function(data,
   stopifnot(data_has_expected_columns)
 }
 
-check_row_consistency <- function(input_data, composite_unique_cols) {
-  input_data %>%
-    report_missings_col_combinations(cols = composite_unique_cols) %>%
-    report_and_remove_duplicates(cols = names(input_data)) %>%
+#' Checks data for missings and duplicates
+#'
+#' Applies consistency checks to data concerning the combinations of columns
+#' that should exist and be unique in combination. In concrete:
+#'
+#' 1. it is checked if there are missing combinations of `composite_unique_cols`.
+#' 1. it is checked if there are duplicate rows
+#' 1. it is checked if there are duplicate rows on `composite_unique_cols`.
+#'
+#' Missings/duplicates are reported via a warning. Function is currently not
+#' used in code but helps for data wrangling/data research tasks. It will be
+#' added to critical data sets in the future.
+#'
+#' @param data A tibble.
+#' @param composite_unique_cols A vector of names of columns that shall be
+#'   unique in their combination.
+#'
+#' @return NULL
+#' @export
+check_row_consistency <- function(data, composite_unique_cols) {
+  validate_data_has_expected_cols(
+    data = data,
+    expected_columns = composite_unique_cols
+  )
+
+  report_missings_col_combinations(
+    data = data,
+    cols = composite_unique_cols
+  )
+
+  data %>%
+    report_and_remove_duplicates(cols = names(data)) %>%
     report_and_remove_duplicates(cols = composite_unique_cols)
+
+  return(invisible())
 }
 
-report_missings_col_combinations <- function(input_data, composite_unique_cols) {
-  all_combinations <- input_data %>%
+#' Identify and report missing value combinations
+#'
+#' Identifies and reports missing value combinations in `data` on
+#' `composite_unique_cols`.
+#'
+#' @inheritParams check_row_consistency
+#'
+#' @return NULL
+report_missings_col_combinations <- function(data, composite_unique_cols) {
+  all_combinations <- data %>%
     tidyr::expand(!!!dplyr::sym(composite_unique_cols))
 
   missing_rows <- all_combinations %>%
-    dplyr::anti_join(input_data, by = !!!dplyr::sym(composite_unique_cols))
+    dplyr::anti_join(data, by = !!!dplyr::sym(composite_unique_cols))
 
   if (nrow(missing_rows) > 0) {
     warning(paste0("Identified ", nrow(missing_rows), " missing combinations on columns ", paste(missing_rows, sep = ","), "."))
   }
+
+  return(invisible())
 }
 
-report_and_remove_duplicates <- function(input_data, cols) {
-  duplicates <- input_data %>%
+#' Report and remove duplicate rows
+#'
+#' Reports and removes duplicates in `data` on columns `cols`.
+#'
+#' @inheritParams check_row_consistency
+#' @param cols Cols to check for duplicate combinations on
+#'
+#' @return Tibble `data` with removed duplicates.
+report_and_remove_duplicates <- function(data, cols) {
+  duplicates <- data %>%
     dplyr::group_by(!!!dplyr::sym(cols)) %>%
     dplyr::filter(dplyr::n() > 1) %>%
     dplyr::select(!!!dplyr::sym(cols)) %>%
@@ -186,10 +234,10 @@ report_and_remove_duplicates <- function(input_data, cols) {
     warning(paste0("Identified ", n_duplicates, " duplicates on columns ", paste(cols, sep = ","), "."))
   }
 
-  input_data_without_duplicates <- dplyr::setdiff(input_data, duplicates)
+  data_without_duplicates <- dplyr::setdiff(data, duplicates)
 
-  if (nrow(input_data_without_duplicates) == 0) {
+  if (nrow(data_without_duplicates) == 0) {
     stop(paste0("No rows remaining after removing duplicates on columns ", paste(cols, sep = ","), "."))
   }
-  return(input_data_without_duplicates)
+  return(data_without_duplicates)
 }
