@@ -181,7 +181,7 @@ check_row_consistency <- function(data, composite_unique_cols) {
     expected_columns = composite_unique_cols
   )
 
-  report_missings_col_combinations(
+  report_missing_col_combinations(
     data = data,
     cols = composite_unique_cols
   )
@@ -201,7 +201,7 @@ check_row_consistency <- function(data, composite_unique_cols) {
 #' @inheritParams check_row_consistency
 #'
 #' @return NULL
-report_missings_col_combinations <- function(data, composite_unique_cols) {
+report_missing_col_combinations <- function(data, composite_unique_cols) {
   all_combinations <- data %>%
     tidyr::expand(!!!dplyr::sym(composite_unique_cols))
 
@@ -235,9 +235,5 @@ report_and_remove_duplicates <- function(data, cols) {
   }
 
   data_without_duplicates <- dplyr::setdiff(data, duplicates)
-
-  if (nrow(data_without_duplicates) == 0) {
-    stop(paste0("No rows remaining after removing duplicates on columns ", paste(cols, sep = ","), "."))
-  }
   return(data_without_duplicates)
 }
