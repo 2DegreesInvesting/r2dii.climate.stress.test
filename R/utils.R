@@ -231,8 +231,8 @@ report_duplicates <- function(data, cols) {
     dplyr::select(!!!dplyr::syms(cols)) %>%
     dplyr::distinct_all()
 
-  if (nrow(n_duplicates) > 0) {
-    warning(paste0("Identified ", n_duplicates, " duplicates on columns ", paste(cols, sep = ","), "."))
+  if (nrow(duplicates) > 0) {
+    warning(paste0("Identified ", nrow(duplicates), " duplicates on columns ", paste(cols, sep = ","), "."))
   }
 
   return(invisible())
