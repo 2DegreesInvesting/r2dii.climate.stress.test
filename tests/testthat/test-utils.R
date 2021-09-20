@@ -72,11 +72,11 @@ test_that("No warning is thrown if no duplicates are in data on composite unique
 
   expect_silent(report_duplicates(
     data = data,
-    composite_unique_cols = c("a", "b")
+    cols = c("a", "b")
   ))
 })
 
-test_that("Warning is thrown if there are duplciates on composite unique cols", {
+test_that("Warning is thrown if there are duplicates on composite unique cols", {
   data <- tibble::tibble(
     a = c("A1", "A1", "A2", "A2", "A2"),
     b = c("B1", "B2", "B1", "B2", "B1"),
@@ -86,7 +86,7 @@ test_that("Warning is thrown if there are duplciates on composite unique cols", 
   expect_warning(
     checked_data <- report_duplicates(
       data = data,
-      composite_unique_cols = c("a", "b")
+      cols = c("a", "b")
     ),
     "Identified 1 duplicates"
   )
@@ -101,7 +101,7 @@ test_that("Warning is thrown if there are duplciates on all  cols", {
   expect_warning(
     report_duplicates(
       data = data,
-      composite_unique_cols = names(data)
+      cols = names(data)
     ),
     "Identified 1 duplicates"
   )
