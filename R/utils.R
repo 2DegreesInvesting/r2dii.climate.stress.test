@@ -164,22 +164,18 @@ check_row_consistency <- function(input_data, composite_unique_cols) {
 }
 
 report_missings_col_combinations <- function(input_data, composite_unique_cols) {
-
   all_combinations <- input_data %>%
     tidyr::expand(!!!dplyr::sym(composite_unique_cols))
 
   missing_rows <- all_combinations %>%
     dplyr::anti_join(input_data, by = !!!dplyr::sym(composite_unique_cols))
 
-
   if (nrow(missing_rows) > 0) {
     warning(paste0("Identified ", nrow(missing_rows), " missing combinations on columns ", paste(missing_rows, sep = ","), "."))
   }
-
 }
 
 report_and_remove_duplicates <- function(input_data, cols) {
-
   duplicates <- input_data %>%
     dplyr::group_by(!!!dplyr::sym(cols)) %>%
     dplyr::filter(dplyr::n() > 1) %>%
@@ -196,5 +192,4 @@ report_and_remove_duplicates <- function(input_data, cols) {
     stop(paste0("No rows remaining after removing duplicates on columns ", paste(cols, sep = ","), "."))
   }
   return(input_data_without_duplicates)
-
 }
