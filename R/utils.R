@@ -155,3 +155,33 @@ validate_data_has_expected_cols <- function(data,
   data_has_expected_columns <- all(expected_columns %in% colnames(data))
   stopifnot(data_has_expected_columns)
 }
+
+
+check_duplicate_rows <- function(input_data, composite_unique_cols) {
+  input_data %>%
+    report_and_remove_duplicates(cols = names(input_data)) %>%
+    report_and_remove_duplicates(cols = composite_unique_cols)
+}
+
+report_and_remove_duplicates <- function(input_data, cols) {
+  duplicates <- input_data %>%
+    dplyr::group_by(!!!dplyr::sym(cols)) %>%
+    dplyr::filter(dplyr::n() > 1) %>%
+    dplyr::select(!!!dplyr::sym(cols)) %>%
+    dplyr::distinct_all()
+
+  if (nrow(n_duplicates) > 0) {
+    warning(paste0("Identified ", n_duplicates, " duplicates on columns ", paste(cols, sep = ","), "."))
+  }
+
+  input_data_without_duplicates <- dplyr::setdiff(input_data, duplicates)
+
+  if (nrow(input_data_without_duplicates) == 0) {
+    stop(paste0("No rows remaining after removing duplicates on columns ", paste(cols, sep = ","), "."))
+  }
+  return(input_data_without_duplicates)
+}
+
+check_missing_rows <- function(input_data, composite_unique_cols) {
+
+}
