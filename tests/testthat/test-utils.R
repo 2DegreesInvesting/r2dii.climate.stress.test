@@ -106,3 +106,18 @@ test_that("Warning is thrown if there are duplciates on all cols", {
     "Identified 1 duplicates"
   )
 })
+
+# check_row_consistency ---------------------------------------------------
+test_that("Warnings are thrown for dataset with missing, full and partial duplicates", {
+  data <- tibble::tibble(
+    a = c("A1", "A1", "A1", "A2", "A2"),
+    b = c("B1", "B1", "B1", "B1", "B2"),
+    c = c(1, 1, 2, 3, 4)
+  )
+
+  expect_warning(check_row_consistency(
+    data = data,
+    composite_unique_cols = c("a", "b")
+  ))
+
+})

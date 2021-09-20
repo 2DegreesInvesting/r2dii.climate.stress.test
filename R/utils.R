@@ -176,6 +176,7 @@ validate_data_has_expected_cols <- function(data,
 #' @return NULL
 #' @export
 check_row_consistency <- function(data, composite_unique_cols) {
+
   validate_data_has_expected_cols(
     data = data,
     expected_columns = composite_unique_cols
@@ -183,7 +184,7 @@ check_row_consistency <- function(data, composite_unique_cols) {
 
   report_missing_col_combinations(
     data = data,
-    cols = composite_unique_cols
+    composite_unique_cols = composite_unique_cols
   )
 
   report_duplicates(data = data, cols = names(data))
@@ -210,7 +211,7 @@ report_missing_col_combinations <- function(data, composite_unique_cols) {
     dplyr::anti_join(data, by = composite_unique_cols)
 
   if (nrow(missing_rows) > 0) {
-    warning(paste0("Identified ", nrow(missing_rows), " missing combinations on columns ", paste(composite_unique_cols, sep = ","), "."))
+    warning(paste0("Identified ", nrow(missing_rows), " missing combinations on columns ", paste(composite_unique_cols, collapse = ", "), "."))
   }
 
   return(invisible())
@@ -232,7 +233,7 @@ report_duplicates <- function(data, cols) {
     dplyr::distinct_all()
 
   if (nrow(duplicates) > 0) {
-    warning(paste0("Identified ", nrow(duplicates), " duplicates on columns ", paste(cols, sep = ","), "."))
+    warning(paste0("Identified ", nrow(duplicates), " duplicates on columns ", paste(cols, collapse = ", "), "."))
   }
 
   return(invisible())
