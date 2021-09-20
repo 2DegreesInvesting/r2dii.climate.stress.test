@@ -19,7 +19,7 @@ that should exist and be unique in combination. In concrete:
 \details{
 \enumerate{
 \item it is checked if there are missing combinations of \code{composite_unique_cols}.
-\item it is checked if there are duplicate rows
+\item it is checked if there are duplicate rows.
 \item it is checked if there are duplicate rows on \code{composite_unique_cols}.
 }
 

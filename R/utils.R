@@ -162,7 +162,7 @@ validate_data_has_expected_cols <- function(data,
 #' that should exist and be unique in combination. In concrete:
 #'
 #' 1. it is checked if there are missing combinations of `composite_unique_cols`.
-#' 1. it is checked if there are duplicate rows
+#' 1. it is checked if there are duplicate rows.
 #' 1. it is checked if there are duplicate rows on `composite_unique_cols`.
 #'
 #' Missings/duplicates are reported via a warning. Function is currently not

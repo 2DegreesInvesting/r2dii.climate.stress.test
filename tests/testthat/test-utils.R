@@ -92,7 +92,7 @@ test_that("Warning is thrown if there are duplicates on composite unique cols", 
   )
 })
 
-test_that("Warning is thrown if there are duplciates on all  cols", {
+test_that("Warning is thrown if there are duplciates on all cols", {
   data <- tibble::tibble(
     a = c("A1", "A1", "A2", "A2", "A2"),
     b = c("B1", "B2", "B1", "B2", "B1")
