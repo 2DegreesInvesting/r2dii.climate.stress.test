@@ -202,14 +202,15 @@ check_row_consistency <- function(data, composite_unique_cols) {
 #'
 #' @return NULL
 report_missing_col_combinations <- function(data, composite_unique_cols) {
+
   all_combinations <- data %>%
-    tidyr::expand(!!!dplyr::sym(composite_unique_cols))
+    tidyr::expand(!!!dplyr::syms(composite_unique_cols))
 
   missing_rows <- all_combinations %>%
-    dplyr::anti_join(data, by = !!!dplyr::sym(composite_unique_cols))
+    dplyr::anti_join(data, by = composite_unique_cols)
 
   if (nrow(missing_rows) > 0) {
-    warning(paste0("Identified ", nrow(missing_rows), " missing combinations on columns ", paste(missing_rows, sep = ","), "."))
+    warning(paste0("Identified ", nrow(missing_rows), " missing combinations on columns ", paste(composite_unique_cols, sep = ","), "."))
   }
 
   return(invisible())
@@ -225,9 +226,9 @@ report_missing_col_combinations <- function(data, composite_unique_cols) {
 #' @return NULL
 report_duplicates <- function(data, cols) {
   duplicates <- data %>%
-    dplyr::group_by(!!!dplyr::sym(cols)) %>%
+    dplyr::group_by(!!!dplyr::syms(cols)) %>%
     dplyr::filter(dplyr::n() > 1) %>%
-    dplyr::select(!!!dplyr::sym(cols)) %>%
+    dplyr::select(!!!dplyr::syms(cols)) %>%
     dplyr::distinct_all()
 
   if (nrow(n_duplicates) > 0) {

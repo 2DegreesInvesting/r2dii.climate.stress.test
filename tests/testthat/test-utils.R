@@ -42,7 +42,7 @@ test_that("No warning is thrown if combinations are exhaustive", {
 
   expect_silent(report_missing_col_combinations(
     data = data,
-    composite_uniqe_cols = c("a", "b")
+    composite_unique_cols = c("a", "b")
   ))
 })
 
@@ -50,15 +50,15 @@ test_that("Warning is thrown if combinations are missing", {
   data <- tibble::tibble(
     a = c("A1", "A1", "A2"),
     b = c("B1", "B2", "B1"),
-    c = 1:4
+    c = 1:3
   )
 
   expect_warning(
     report_missing_col_combinations(
       data = data,
-      composite_uniqe_cols = c("a", "b")
+      composite_unique_cols = c("a", "b")
     ),
-    "Identified 1 missing combinations."
+    "Identified 1 missing combinations"
   )
 })
 
@@ -70,9 +70,9 @@ test_that("No warning is thrown if no duplicates are in data on composite unique
     c = 1:4
   )
 
-  expect_silent(report_and_remove_duplicates(
+  expect_silent(report_duplicates(
     data = data,
-    composite_uniqe_cols = c("a", "b")
+    composite_unique_cols = c("a", "b")
   ))
 })
 
@@ -84,9 +84,9 @@ test_that("Warning is thrown if there are duplciates on composite unique cols", 
   )
 
   expect_warning(
-    checked_data <- report_and_remove_duplicates(
+    checked_data <- report_duplicates(
       data = data,
-      composite_uniqe_cols = c("a", "b")
+      composite_unique_cols = c("a", "b")
     ),
     "Identified 1 duplicates"
   )
@@ -99,9 +99,9 @@ test_that("Warning is thrown if there are duplciates on all  cols", {
   )
 
   expect_warning(
-    report_and_remove_duplicates(
+    report_duplicates(
       data = data,
-      composite_uniqe_cols = names(data)
+      composite_unique_cols = names(data)
     ),
     "Identified 1 duplicates"
   )
