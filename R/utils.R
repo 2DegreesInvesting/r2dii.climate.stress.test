@@ -155,3 +155,86 @@ validate_data_has_expected_cols <- function(data,
   data_has_expected_columns <- all(expected_columns %in% colnames(data))
   stopifnot(data_has_expected_columns)
 }
+
+#' Checks data for missings and duplicates
+#'
+#' Applies consistency checks to data concerning the combinations of columns
+#' that should be unique in combination. In concrete:
+#'
+#' 1. it is checked if there are duplicate rows.
+#' 1. it is checked if there are duplicate rows on `composite_unique_cols`.
+#'
+#' Function is currently not used in code but helps for data wrangling/data
+#' research tasks. It will be added to critical data sets in the future.
+#'
+#' @param data A tibble.
+#' @param composite_unique_cols A vector of names of columns that shall be
+#'   unique in their combination.
+#'
+#' @return NULL
+#' @export
+report_all_duplicate_kinds <- function(data, composite_unique_cols) {
+
+  validate_data_has_expected_cols(
+    data = data,
+    expected_columns = composite_unique_cols
+  )
+
+  report_duplicates(data = data, cols = names(data))
+
+  report_duplicates(data = dplyr::distinct(data), cols = composite_unique_cols) # removed duplicates on all columns
+
+  return(invisible())
+}
+
+#' Identify and report missing value combinations
+#'
+#' Checks if all level combinations of `composite_unique_cols` are in`data` and
+#' throws a warning on missing combinations.
+#' NOTE:
+#' 1. a combination of all levels is not neccesarily required/useful, make sure
+#' to use function only in adequate context.
+#' 1. combiantions of too many columns/values may exceed memory size.
+#' .
+#'
+#' @inheritParams report_all_duplicate_kinds
+#'
+#' @return NULL
+#' @export
+report_missing_col_combinations <- function(data, composite_unique_cols) {
+
+  all_combinations <- data %>%
+    tidyr::expand(!!!dplyr::syms(composite_unique_cols))
+
+  missing_rows <- all_combinations %>%
+    dplyr::anti_join(data, by = composite_unique_cols)
+
+  if (nrow(missing_rows) > 0) {
+    warning(paste0("Identified ", nrow(missing_rows), " missing combinations on columns ", paste(composite_unique_cols, collapse = ", "), "."))
+  }
+
+  return(invisible())
+}
+
+#' Report duplicate rows
+#'
+#' Reports duplicates in `data` on columns `cols`. Duplicates are reported via a
+#' warning.
+#'
+#' @inheritParams report_all_duplicate_kinds
+#' @param cols Cols to check for duplicate combinations on.
+#'
+#' @return NULL
+report_duplicates <- function(data, cols) {
+  duplicates <- data %>%
+    dplyr::group_by(!!!dplyr::syms(cols)) %>%
+    dplyr::filter(dplyr::n() > 1) %>%
+    dplyr::select(!!!dplyr::syms(cols)) %>%
+    dplyr::distinct_all()
+
+  if (nrow(duplicates) > 0) {
+    warning(paste0("Identified ", nrow(duplicates), " duplicates on columns ", paste(cols, collapse = ", "), "."))
+  }
+
+  return(invisible())
+}
