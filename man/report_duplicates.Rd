@@ -12,5 +12,6 @@ report_duplicates(data, cols)
 \item{cols}{Cols to check for duplicate combinations on.}
 }
 \description{
-Reports duplicates in \code{data} on columns \code{cols}.
+Reports duplicates in \code{data} on columns \code{cols}. Duplicates are reported via a
+warning.
 }

@@ -159,15 +159,13 @@ validate_data_has_expected_cols <- function(data,
 #' Checks data for missings and duplicates
 #'
 #' Applies consistency checks to data concerning the combinations of columns
-#' that should exist and be unique in combination. In concrete:
+#' that should be unique in combination. In concrete:
 #'
-#' 1. it is checked if there are missing combinations of `composite_unique_cols`.
 #' 1. it is checked if there are duplicate rows.
 #' 1. it is checked if there are duplicate rows on `composite_unique_cols`.
 #'
-#' Missings/duplicates are reported via a warning. Function is currently not
-#' used in code but helps for data wrangling/data research tasks. It will be
-#' added to critical data sets in the future.
+#' Function is currently not used in code but helps for data wrangling/data
+#' research tasks. It will be added to critical data sets in the future.
 #'
 #' @param data A tibble.
 #' @param composite_unique_cols A vector of names of columns that shall be
@@ -175,16 +173,11 @@ validate_data_has_expected_cols <- function(data,
 #'
 #' @return NULL
 #' @export
-check_row_consistency <- function(data, composite_unique_cols) {
+report_all_duplicate_kinds <- function(data, composite_unique_cols) {
 
   validate_data_has_expected_cols(
     data = data,
     expected_columns = composite_unique_cols
-  )
-
-  report_missing_col_combinations(
-    data = data,
-    composite_unique_cols = composite_unique_cols
   )
 
   report_duplicates(data = data, cols = names(data))
@@ -196,12 +189,18 @@ check_row_consistency <- function(data, composite_unique_cols) {
 
 #' Identify and report missing value combinations
 #'
-#' Identifies and reports missing value combinations in `data` on
-#' `composite_unique_cols`.
+#' Checks if all level combinations of `composite_unique_cols` are in`data` and
+#' throws a warning on missing combinations.
+#' NOTE:
+#' 1. a combination of all levels is not neccesarily required/useful, make sure
+#' to use function only in adequate context.
+#' 1. combiantions of too many columns/values may exceed memory size.
+#' .
 #'
-#' @inheritParams check_row_consistency
+#' @inheritParams report_all_duplicate_kinds
 #'
 #' @return NULL
+#' @export
 report_missing_col_combinations <- function(data, composite_unique_cols) {
 
   all_combinations <- data %>%
@@ -219,9 +218,10 @@ report_missing_col_combinations <- function(data, composite_unique_cols) {
 
 #' Report duplicate rows
 #'
-#' Reports duplicates in `data` on columns `cols`.
+#' Reports duplicates in `data` on columns `cols`. Duplicates are reported via a
+#' warning.
 #'
-#' @inheritParams check_row_consistency
+#' @inheritParams report_all_duplicate_kinds
 #' @param cols Cols to check for duplicate combinations on.
 #'
 #' @return NULL

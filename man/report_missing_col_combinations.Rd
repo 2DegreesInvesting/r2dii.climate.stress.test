@@ -13,6 +13,13 @@ report_missing_col_combinations(data, composite_unique_cols)
 unique in their combination.}
 }
 \description{
-Identifies and reports missing value combinations in \code{data} on
-\code{composite_unique_cols}.
+Checks if all level combinations of \code{composite_unique_cols} are in\code{data} and
+throws a warning on missing combinations.
+NOTE:
+\enumerate{
+\item a combination of all levels is not neccesarily required/useful, make sure
+to use function only in adequate context.
+\item combiantions of too many columns/values may exceed memory size.
+.
+}
 }
