@@ -742,29 +742,6 @@ technology_change_by_shock_year_cb <- show_var_change_by_shock_year(
   level = "technology"
 )
 
-
-# comparison of baseline, target and l&s production paths by technology--------
-
-data_prod_baseline <- qa_annual_profits_eq
-
-data_prod_baseline <- data_prod_baseline %>%
-  group_by(year, investor_name, portfolio_name, scenario_geography,
-           ald_sector, technology, year_of_shock) %>%
-  summarise(
-    baseline = sum(baseline, na.rm = TRUE),
-    scen_to_follow_aligned = sum(scen_to_follow_aligned, na.rm = TRUE),
-    late_sudden = sum(late_sudden, na.rm = TRUE)
-  ) %>%
-  ungroup()
-
-
-prod_baseline_target_ls <- show_prod_baseline_target_ls_pf(
-  data = data_prod_baseline,
-  geography_filter = scenario_geography_filter,
-  shock_year = 2030
-)
-
-
 # check the value technology share (plan carsten) of each asset type
 # in the portfolio
 # expectation: In sum, these should be well below 1, but must be greater than 0
