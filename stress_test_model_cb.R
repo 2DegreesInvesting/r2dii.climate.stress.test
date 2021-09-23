@@ -226,3 +226,83 @@ pacta_bonds_results_full <- pacta_bonds_results_full %>%
   ) %>%
   ungroup()
 
+# Load sector exposures of portfolio------------------------
+sector_exposures <- readRDS(file.path(proc_input_path, paste0(project_name, "_overview_portfolio.rda")))
+
+# Load policy shock transition scenarios--------------------
+transition_scenarios <- read_transition_scenarios(
+  path = file.path(data_location, "transition_scenario_input.csv"),
+  start_of_analysis = start_year,
+  end_of_analysis = end_year
+)
+
+# Load utilization factors power----------------------------
+capacity_factors_power <- read_capacity_factors(
+  path = file.path(data_location, "capacity_factors_WEO_2020.csv"),
+  version = "new"
+)
+
+# Load scenario data----------------------------------------
+scen_data_file <- ifelse(twodii_internal == TRUE,
+                         path_dropbox_2dii("PortCheck", "00_Data", "01_ProcessedData", "03_ScenarioData", paste0("Scenarios_AnalysisInput_", start_year, ".csv")),
+                         file.path(data_location, paste0("Scenarios_AnalysisInput_", start_year, ".csv"))
+)
+
+# TODO: EITHER wrap check into more evocative function OR remove this when common format is agreed upon
+if(twodii_internal == TRUE | start_year < 2020) {
+  scenario_data <- readr::read_csv(scen_data_file, col_types = "ccccccccnnnncnnn") %>%
+    filter(Indicator %in% c("Capacity", "Production", "Sales")) %>%
+    filter(!(Technology == "RenewablesCap" & !is.na(Sub_Technology))) %>%
+    select(-c(Sub_Technology, Indicator, AnnualvalIEAtech, refvalIEAtech, refvalIEAsec, mktFSRatio, techFSRatio)) %>%
+    rename(
+      source = Source,
+      scenario_geography = ScenarioGeography,
+      scenario = Scenario,
+      ald_sector = Sector,
+      units = Units,
+      technology = Technology,
+      year = Year,
+      direction = Direction,
+      fair_share_perc = FairSharePerc
+    ) %>%
+    mutate(scenario = str_replace(scenario, "NPSRTS", "NPS"))
+} else {
+  scenario_data <- readr::read_csv(scen_data_file, col_types = "ccccccncn") %>%
+    rename(source = scenario_source)
+}
+
+scenario_data <- scenario_data %>%
+  filter(source %in% c("ETP2017", "WEO2019")) %>% #TODO: this should be set elsewhere
+  filter(!(source == "ETP2017" & ald_sector == "Power")) %>%
+  mutate(scenario = ifelse(str_detect(scenario, "_"), str_extract(scenario, "[^_]*$"), scenario)) %>%
+  check_scenario_timeframe(start_year = start_year, end_year = end_year)
+
+# Correct for automotive scenario data error. CHECK IF ALREADY RESOLVED IN THE SCENARIO DATA, IF SO, DONT USE FUNCTION BELOW!
+scenario_data <- scenario_data %>%
+  correct_automotive_scendata(interpolation_years = c(2031:2034, 2036:2039)) %>%
+  filter(
+    ald_sector %in% sectors &
+      technology %in% technologies &
+      scenario_geography == scenario_geography_filter)
+
+# Load price data----------------------------------------
+df_price <- read_price_data(
+  path = file.path(data_location, paste0("prices_data_", price_data_version, ".csv")),
+  version = "old",
+  expected_technologies = technologies
+) %>%
+  filter(year >= start_year) %>%
+  check_price_consistency()
+
+# Load NGFS carbon tax data-----------------------------
+ngfs_carbon_tax <- read_ngfs_carbon_tax(
+  path = file.path(data_location, "ngfs_carbon_tax.csv")
+)
+
+# Load excluded companies-------------------------------
+if (company_exclusion) {
+  excluded_companies <- readr::read_csv(
+    file.path(data_location, "exclude-companies.csv"),
+    col_types = "cc"
+  )
+}
