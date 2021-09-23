@@ -628,9 +628,6 @@ prod_baseline_target_ls <- show_prod_baseline_target_ls_pf(
 
 tech_share_eq <- show_pf_technology_shares(data = plan_carsten_equity)
 
-tech_share_cb <- show_pf_technology_shares(data = plan_carsten_bonds)
-
-
 # Check if carbon budgets are met for all technologies-------------------------
 
 # ... yearly-------------------------------------------------------------------

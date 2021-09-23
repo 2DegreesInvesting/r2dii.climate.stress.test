@@ -746,8 +746,6 @@ technology_change_by_shock_year_cb <- show_var_change_by_shock_year(
 # in the portfolio
 # expectation: In sum, these should be well below 1, but must be greater than 0
 
-tech_share_eq <- show_pf_technology_shares(data = plan_carsten_equity)
-
 tech_share_cb <- show_pf_technology_shares(data = plan_carsten_bonds)
 
 
