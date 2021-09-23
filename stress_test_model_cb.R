@@ -177,3 +177,18 @@ div_netprofit_prop_coef <- cfg_mod$financials$div_netprofit_prop_coef # determin
 risk_free_rate <- cfg_mod$financials$risk_free_rate
 lgd_senior_claims <- cfg_mod$financials$lgd_senior_claims
 lgd_subordinated_claims <- cfg_mod$financials$lgd_subordinated_claims
+
+###########################################################################
+# Load input datasets------------------------------------------------------
+###########################################################################
+
+# Load company financial and production data-----------------------------------
+# ... get file paths for stresstest masterdata --------------------------------
+stresstest_masterdata_files <- create_stressdata_masterdata_file_paths(
+  data_prep_timestamp = cfg$TimeStamps$DataPrep.Timestamp,
+  twodii_internal = twodii_internal
+)
+
+# ... for bonds----------------------------------------------------------------
+financial_data_bonds <- read_company_data(path = stresstest_masterdata_files$bonds,
+                                          asset_type = "bonds")

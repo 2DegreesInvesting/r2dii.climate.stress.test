@@ -191,10 +191,6 @@ stresstest_masterdata_files <- create_stressdata_masterdata_file_paths(
   twodii_internal = twodii_internal
 )
 
-# ... for bonds----------------------------------------------------------------
-financial_data_bonds <- read_company_data(path = stresstest_masterdata_files$bonds,
-                                          asset_type = "bonds")
-
 # ... for equity---------------------------------------------------------------
 financial_data_equity <- read_company_data(path = stresstest_masterdata_files$listed_equity,
                                            asset_type = "equity")
