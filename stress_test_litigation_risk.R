@@ -78,7 +78,7 @@ cfg_litigation_params <- config::get(file = "params_litigation_risk.yml")
 investor_name_equity <- cfg_litigation_params$investor_name$investor_name_equity
 investor_name_bonds <- cfg_litigation_params$investor_name$investor_name_bonds
 flat_multiplier <- cfg_litigation_params$litigation$flat_multiplier
-target_currency <- "EUR"
+target_currency <- cfg_litigation_params$litigation$target_currency
 
 ############################################################################
 ##### Filters---------------------------------------------------------------
