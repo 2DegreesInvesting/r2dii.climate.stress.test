@@ -379,3 +379,20 @@ bonds_port_aum <- sector_exposures %>%
     asset_portfolio_value = sum(valid_value_usd),
     .groups = "drop_last"
   )
+
+
+#### OPEN: both objects in condition not available as of now,
+# since they are read in into a loop afterwards
+# deactivated, for the time being
+
+# if(use_prod_forecasts_ls & overshoot_method){
+## i.e. we use the integral/overshoot late&sudden method, and we use company production plans the first 5 years
+## the integral method works on company level, however,
+## when we aggregate the company LS trajectories to port-technology level, the integrals of SDS and LS are not the same, due to 2 reasons:
+## 1) for companies that outperform SDS, capacity shhould not be compensated for, hence we take a LS trajecorty that equal SDS
+## 2) there are cases for which the linear compensation is so strong, that the LS production falls below zero, which is then set to zero (as negative production is not possible), hence we have an underestimation in overshoot
+## For these two reasons, if we use company production plans, we perform the integral method on technology level (and not on company level), until we had a proper session on how to deal with these issues
+
+###########################################################################
+# Calculation of results---------------------------------------------------
+###########################################################################
