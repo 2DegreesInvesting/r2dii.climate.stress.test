@@ -582,10 +582,6 @@ technology_impact_by_shock_year_eq <- show_impact_by_shock_year(
   data = equity_results,
   level = "technology"
 )
-technology_impact_by_shock_year_cb <- show_impact_by_shock_year(
-  data = bonds_results,
-  level = "technology"
-)
 
 # distribution of shock impact over time by sector-----------------------------
 
@@ -596,10 +592,6 @@ sector_impact_by_shock_year_eq <- show_impact_by_shock_year(
   data = equity_results,
   level = "ald_sector"
 )
-sector_impact_by_shock_year_cb <- show_impact_by_shock_year(
-  data = bonds_results,
-  level = "ald_sector"
-)
 
 # expectation for QA: changes should be monotonous over the shock years
 
@@ -607,13 +599,6 @@ technology_change_by_shock_year_eq <- show_var_change_by_shock_year(
   data = equity_results,
   level = "technology"
 )
-technology_change_by_shock_year_cb <- show_var_change_by_shock_year(
-  data = bonds_results,
-  level = "technology"
-)
-
-
-
 
 # comparison of baseline, target and l&s production paths by technology--------
 

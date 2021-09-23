@@ -720,10 +720,6 @@ production_over_time <- show_prod_trajectories(
 # expectation for QA: earlier shock years should be closer to a zero impact
 # than later shock years
 
-technology_impact_by_shock_year_eq <- show_impact_by_shock_year(
-  data = equity_results,
-  level = "technology"
-)
 technology_impact_by_shock_year_cb <- show_impact_by_shock_year(
   data = bonds_results,
   level = "technology"
@@ -734,10 +730,6 @@ technology_impact_by_shock_year_cb <- show_impact_by_shock_year(
 # expectation for QA: earlier shock years should be closer to a zero impact
 # than later shock years
 
-sector_impact_by_shock_year_eq <- show_impact_by_shock_year(
-  data = equity_results,
-  level = "ald_sector"
-)
 sector_impact_by_shock_year_cb <- show_impact_by_shock_year(
   data = bonds_results,
   level = "ald_sector"
@@ -745,16 +737,10 @@ sector_impact_by_shock_year_cb <- show_impact_by_shock_year(
 
 # expectation for QA: changes should be monotonous over the shock years
 
-technology_change_by_shock_year_eq <- show_var_change_by_shock_year(
-  data = equity_results,
-  level = "technology"
-)
 technology_change_by_shock_year_cb <- show_var_change_by_shock_year(
   data = bonds_results,
   level = "technology"
 )
-
-
 
 
 # comparison of baseline, target and l&s production paths by technology--------
