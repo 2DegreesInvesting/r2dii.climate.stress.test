@@ -174,10 +174,6 @@ discount_rate <- cfg_mod$financials$discount_rate # Discount rate
 ##### OPEN: this needs to be estimated based on data
 terminal_value <- cfg_mod$financials$terminal_value
 div_netprofit_prop_coef <- cfg_mod$financials$div_netprofit_prop_coef # determine this value using bloomberg data
-risk_free_rate <- cfg_mod$financials$risk_free_rate
-lgd_senior_claims <- cfg_mod$financials$lgd_senior_claims
-lgd_subordinated_claims <- cfg_mod$financials$lgd_subordinated_claims
-
 
 ###########################################################################
 # Load input datasets------------------------------------------------------
