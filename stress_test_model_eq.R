@@ -376,16 +376,6 @@ equity_port_aum <- sector_exposures %>%
     .groups = "drop_last"
   )
 
-# ...for bonds portfolio-------------------------------------------------------
-bonds_port_aum <- sector_exposures %>%
-  group_by(investor_name, portfolio_name) %>%
-  filter(asset_type == "Bonds") %>%
-  summarise(
-    asset_portfolio_value = sum(valid_value_usd),
-    .groups = "drop_last"
-  )
-
-
 #### OPEN: both objects in condition not available as of now,
 # since they are read in into a loop afterwards
 # deactivated, for the time being
