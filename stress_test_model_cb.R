@@ -306,3 +306,30 @@ if (company_exclusion) {
     col_types = "cc"
   )
 }
+
+###########################################################################
+# Data wrangling / preparation---------------------------------------------
+###########################################################################
+
+# Prepare net profit margins bonds----------------------
+
+financial_data_bonds <- financial_data_bonds %>%
+  dplyr::mutate(net_profit_margin = profit_margin_preferred) %>%
+  #TODO: logic unclear thus far
+  dplyr::mutate(
+    net_profit_margin = dplyr::case_when(
+      net_profit_margin < 0 & dplyr::between(profit_margin_unpreferred, 0, 1) ~ profit_margin_unpreferred,
+      net_profit_margin < 0 & profit_margin_unpreferred < 0 ~ 0,
+      net_profit_margin < 0 & profit_margin_unpreferred > 1 ~ 0,
+      net_profit_margin > 1 & dplyr::between(profit_margin_unpreferred, 0, 1) ~ profit_margin_unpreferred,
+      net_profit_margin > 1 & profit_margin_unpreferred > 1 ~ 1,
+      net_profit_margin > 1 & profit_margin_unpreferred < 0 ~ 1,
+      TRUE ~ net_profit_margin
+    )
+  ) %>%
+  dplyr::select(-c(profit_margin_preferred, profit_margin_unpreferred)) %>%
+  dplyr::rename(
+    debt_equity_ratio = leverage_s_avg,
+    volatility = asset_volatility_s_avg
+  )
+#TODO: any logic/bounds needed for debt/equity ratio and volatility?
