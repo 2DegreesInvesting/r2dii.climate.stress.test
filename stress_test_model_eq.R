@@ -640,14 +640,6 @@ carbon_budgets_eq <- qa_annual_profits_eq %>%
     cumulative = FALSE
   )
 
-carbon_budgets_cb <- qa_annual_profits_cb %>%
-  show_carbon_budget(
-    scenarios = scenario_data,
-    target_scenario = scenario_to_follow_ls,
-    scenario_name_qa = "Carbon balance 2030",
-    cumulative = FALSE
-  )
-
 # ... overall------------------------------------------------------------------
 
 sum_carbon_budgets_eq <- qa_annual_profits_eq %>%
@@ -657,15 +649,6 @@ sum_carbon_budgets_eq <- qa_annual_profits_eq %>%
     scenario_name_qa = "Carbon balance 2030",
     cumulative = TRUE
   )
-
-sum_carbon_budgets_cb <- qa_annual_profits_cb %>%
-  show_carbon_budget(
-    scenarios = scenario_data,
-    target_scenario = scenario_to_follow_ls,
-    scenario_name_qa = "Carbon balance 2030",
-    cumulative = TRUE
-  )
-
 
 # credit risk QA graphs--------------------------------------------------------
 

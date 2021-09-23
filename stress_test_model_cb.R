@@ -753,14 +753,6 @@ tech_share_cb <- show_pf_technology_shares(data = plan_carsten_bonds)
 
 # ... yearly-------------------------------------------------------------------
 
-carbon_budgets_eq <- qa_annual_profits_eq %>%
-  show_carbon_budget(
-    scenarios = scenario_data,
-    target_scenario = scenario_to_follow_ls,
-    scenario_name_qa = "Carbon balance 2030",
-    cumulative = FALSE
-  )
-
 carbon_budgets_cb <- qa_annual_profits_cb %>%
   show_carbon_budget(
     scenarios = scenario_data,
@@ -770,14 +762,6 @@ carbon_budgets_cb <- qa_annual_profits_cb %>%
   )
 
 # ... overall------------------------------------------------------------------
-
-sum_carbon_budgets_eq <- qa_annual_profits_eq %>%
-  show_carbon_budget(
-    scenarios = scenario_data,
-    target_scenario = scenario_to_follow_ls,
-    scenario_name_qa = "Carbon balance 2030",
-    cumulative = TRUE
-  )
 
 sum_carbon_budgets_cb <- qa_annual_profits_cb %>%
   show_carbon_budget(
