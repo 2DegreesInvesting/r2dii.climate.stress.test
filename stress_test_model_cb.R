@@ -92,3 +92,88 @@ set_project_paths(
 # THIS NEEDS TO BE INVESTIGATED! PROBABLY LOOP OVER INV OR ALLOW SPECIFICATION IN CONFIG
 investorname_bonds <- "Meta Investor"
 investorname_equity <- "Meta Investor"
+
+# Analysis Parameters----------------------------------------
+# Get analysis parameters from the projects AnalysisParameters.yml - similar to PACTA_analysis
+
+cfg <- config::get(file = file.path(project_location, "10_Parameter_File","AnalysisParameters.yml"))
+# OPEN: check_valid_cfg() not applicable here
+start_year <- cfg$AnalysisPeriod$Years.Startyear
+time_horizon <- cfg$AnalysisPeriod$Years.Horizon
+
+# Filters----------------------------------------
+# The filter settings should comply with the filters from the parent PACTA project as per default
+# There may still be cases of certain sectors or geographies that work in PACTA but not yet in stress testing
+# move to config once mechanism to include/exclude filters from original pacta project exists
+
+# OPEN: This could largely be taken from cfg file. No apparent reason why not.
+scenario_geography_filter <- "Global"
+# scenario_geography_filter <- cfg$Lists$Scenario.Geography.List
+
+# ALLOW ONLY precisely the scenarios that are supposed to be kept from the portfolio and scen_data
+# NOTE scenarios from the same source, same secenario name and diff years will likely fail
+# E.g. WEO2019_SDS AND WEO2020_SDS will produce near-duplicates that break the analysis
+scenarios <- c(
+  # "B2DS",
+  # "CPS",
+  # "NPS",
+  # "NPSRTS",
+  # "SDS"#,
+  # "ETP2017_B2DS",
+  "ETP2017_NPS",
+  "ETP2017_SDS",
+  # "WEO2019_CPS",
+  "WEO2019_NPS",
+  "WEO2019_SDS" # ,
+  # "WEO2020_NPS",
+  # "WEO2020_SDS"
+)
+# scenarios <- cfg$Large.Universe.Filter$SCENARIO.FILTER
+
+allocation_method_equity <- "portfolio_weight"
+equity_market_filter <- cfg$Lists$Equity.Market.List
+
+sectors <- c("Power", "Oil&Gas", "Coal", "Automotive")
+# setors <- cfg$Large.Universe.Filter$SECTOR.FILTER
+technologies <- c(
+  "Electric", "Hybrid", "ICE",
+  "CoalCap", "GasCap", "RenewablesCap", "NuclearCap", "HydroCap", "OilCap",
+  "Oil", "Gas",
+  "Coal"
+)
+# technologies <- cfg$Lists$Technology.List
+
+# Model variables----------------------------------------
+#### OPEN: This should be moved into a StressTestModelParameters.yml
+cfg_mod <- config::get(file = "model_parameters.yml")
+
+# OPEN: wrap reading in of params in function and move to global_functions
+end_year <- cfg_mod$end_year # Set to 2040 cause current scenario data goes until 2040. can be extended when WEO2020 turns out extended horizon
+
+# Scenarios in the model_parameters.yml file must have the short names (SDS, NPS, etc)
+scenario_to_follow_baseline <- cfg_mod$scenarios$scenario_to_follow_baseline # sets which scenario trajectory the baseline scenario follows
+scenario_to_follow_ls <- cfg_mod$scenarios$scenario_to_follow_ls # sets which scenario trajectory LS scenario follows after shock period
+scenario_to_follow_ls_aligned <- cfg_mod$scenarios$scenario_to_follow_ls_aligned
+
+scenarios_filter <- unique(
+  c(
+    scenario_to_follow_baseline,
+    scenario_to_follow_ls,
+    scenario_to_follow_ls_aligned
+  )
+)
+
+# Moved to transition scenario input file:
+# use_prod_forecasts_baseline <- FALSE   # TRUE: Use company production forecasts until no longer available for baseline. FALSE: Let baseline immediately follow scenario (and not follow production forecasts first)
+# use_prod_forecasts_ls <- FALSE  # TRUE: Use company production forecasts until no longer available for late&sudden. FALSE: Let late&sudden scenario immediately follow IEA scenario (and not follow production forecasts first)
+# overshoot_method <- TRUE          # TRUE: use integral/overshoot method for late&sudden trajectory, FALSE: use user defined shocks
+##### OPEN: this is currently not used, defined in transition_scenario loop
+# duration_div <- duration_of_shock
+
+discount_rate <- cfg_mod$financials$discount_rate # Discount rate
+##### OPEN: this needs to be estimated based on data
+terminal_value <- cfg_mod$financials$terminal_value
+div_netprofit_prop_coef <- cfg_mod$financials$div_netprofit_prop_coef # determine this value using bloomberg data
+risk_free_rate <- cfg_mod$financials$risk_free_rate
+lgd_senior_claims <- cfg_mod$financials$lgd_senior_claims
+lgd_subordinated_claims <- cfg_mod$financials$lgd_subordinated_claims
