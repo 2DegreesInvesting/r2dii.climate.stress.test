@@ -78,6 +78,7 @@ cfg_litigation_params <- config::get(file = "params_litigation_risk.yml")
 investor_name_equity <- cfg_litigation_params$investor_name$investor_name_equity
 investor_name_bonds <- cfg_litigation_params$investor_name$investor_name_bonds
 flat_multiplier <- cfg_litigation_params$litigation$flat_multiplier
+target_currency <- "EUR"
 
 ############################################################################
 ##### Filters---------------------------------------------------------------
@@ -128,6 +129,17 @@ technologies <- cfg_litigation_params$lists$technology_list
 ############################################################################
 # load required data--------------------------
 ############################################################################
+
+############################################################################
+#### load and prepare currency data-----------------------------------------
+############################################################################
+currency_data <- fst::read_fst(
+  file.path(
+    Sys.getenv("PACTA_DATA_PATH"), "2019Q4", "cleaned_files", "currencies.fst"
+  )
+)
+currency_data <- currency_data %>%
+  dplyr::filter(.data$currency == .env$target_currency)
 
 
 ############################################################################
@@ -496,6 +508,15 @@ for (i in seq(1, nrow(scenario))) {
 
 }
 
+# ADO 1544 - transform currency back to target currency
+cdd_results <- cdd_results %>%
+  dplyr::mutate(
+    across(
+      c(.data$cdd_liability, .data$cdd_liability_total, .data$ebit),
+      ~ .x / .env$currency_data$exchange_rate
+    )
+  )
+
 cdd_results %>% readr::write_csv(
   file.path(project_location, "40_Results", "litigation_risk_company_cdd.csv")
 )
@@ -540,6 +561,15 @@ for (i in seq(1, nrow(scenario))) {
     dplyr::bind_rows(scc_company_i)
 
 }
+
+# ADO 1544 - transform currency back to target currency
+scc_results <- scc_results %>%
+  dplyr::mutate(
+    across(
+      c(.data$scc_liability, .data$scc_liability_total, .data$ebit),
+      ~ .x / .env$currency_data$exchange_rate
+    )
+  )
 
 scc_results %>% readr::write_csv(
   file.path(project_location, "40_Results", "litigation_risk_company_scc.csv")
@@ -622,6 +652,15 @@ her_results <- her_results %>%
   dplyr::mutate(
     asset_type = NA_character_,
     scenario = NA_character_
+  )
+
+# ADO 1544 - transform currency back to target currency
+her_results <- her_results %>%
+  dplyr::mutate(
+    across(
+      c(.data$her_liability, .data$her_liability_total, .data$ebit),
+      ~ .x / .env$currency_data$exchange_rate
+    )
   )
 
 her_results %>% readr::write_csv(
@@ -831,15 +870,22 @@ technology_share_comp <- company_emissions_data_input %>%
 
 sector_exposures <- readRDS(file.path(proc_input_path, glue::glue("{project_name}_overview_portfolio.rda")))
 
-# portfolio aum for equity, value in USD
-# TODO: check if this might not be in EUR for EIOPA case
+# ADO 1544 - transform currency back to target currency
+sector_exposures <- sector_exposures %>%
+  dplyr::mutate(
+    dplyr::across(
+      c(.data$valid_value_usd, .data$asset_value_usd, .data$portfolio_value_usd),
+      ~ .x / .env$currency_data$exchange_rate
+    )
+  )
+
+# portfolio aum for equity, value in target currency (ADO 1544)
 port_aum_equity <- sector_exposures %>%
   dplyr::filter(.data$asset_type == "Equity") %>%
   dplyr::pull(.data$asset_value_usd) %>%
   unique()
 
-# portfolio aum for bonds, value in USD
-# TODO: check if this might not be in EUR for EIOPA case
+# portfolio aum for bonds, value in target currency (ADO 1544)
 port_aum_bonds <- sector_exposures %>%
   dplyr::filter(.data$asset_type == "Bonds") %>%
   dplyr::pull(.data$asset_value_usd) %>%
@@ -1045,7 +1091,7 @@ portfolio_liabilities_plot <- portfolio_liabilities %>%
   scale_y_continuous(
     name = "Percentage value change, as ratio (points)",
     limits = c(-0.1, 0),
-    sec.axis = sec_axis(~ . * min_value_change, name = "Company value change, in USD (bars)")
+    sec.axis = sec_axis(~ . * min_value_change, name = glue::glue("Company value change, in {target_currency} (bars)"))
   ) +
   facet_grid(cols = vars(scenario_name)) +
   theme(
@@ -1077,7 +1123,7 @@ portfolio_liabilities_sector_plot <- portfolio_liabilities %>%
   scale_y_continuous(
     name = "Percentage value change, as ratio (points)",
     limits = c(-0.1, 0),
-    sec.axis = sec_axis(~ . * min_value_change_sector, name = "Company value change, in USD (bars)")
+    sec.axis = sec_axis(~ . * min_value_change_sector, name = glue::glue("Company value change, in {target_currency} (bars)"))
   ) +
   facet_grid(cols = vars(scenario_name)) +
   theme(
