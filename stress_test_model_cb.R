@@ -91,7 +91,6 @@ set_project_paths(
 
 # THIS NEEDS TO BE INVESTIGATED! PROBABLY LOOP OVER INV OR ALLOW SPECIFICATION IN CONFIG
 investorname_bonds <- "Meta Investor"
-investorname_equity <- "Meta Investor"
 
 # Analysis Parameters----------------------------------------
 # Get analysis parameters from the projects AnalysisParameters.yml - similar to PACTA_analysis
