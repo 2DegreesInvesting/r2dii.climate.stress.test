@@ -195,39 +195,6 @@ stresstest_masterdata_files <- create_stressdata_masterdata_file_paths(
 financial_data_equity <- read_company_data(path = stresstest_masterdata_files$listed_equity,
                                            asset_type = "equity")
 
-# Load PACTA results / bonds portfolio------------------------
-bonds_path <- file.path(results_path, investorname_bonds, paste0("Bonds_results_", calculation_level, ".rda"))
-
-pacta_bonds_results_full <- read_pacta_results(
-  path = bonds_path,
-  asset_type = "bonds",
-  level = calculation_level
-)
-
-pacta_bonds_results_full <- pacta_bonds_results_full %>%
-  dplyr::filter(!is.na(.data$scenario)) %>%
-  check_scenario_settings(scenario_selections = scenarios) %>%
-  dplyr::filter(.data$scenario %in% .env$scenarios) %>%
-  # TODO: temporary fix, remove once all scenario data is used from scenario file
-  filter(!(str_detect(.data$scenario, "ETP") & .data$ald_sector == "Power")) %>%
-  dplyr::mutate(
-    scenario = dplyr::if_else(
-      stringr::str_detect(.data$scenario, "_"),
-      stringr::str_extract(.data$scenario, "[^_]*$"),
-      .data$scenario
-    )
-  ) %>%
-  check_portfolio_consistency()
-
-# TODO: temporary addition, needs to come directly from input
-pacta_bonds_results_full <- pacta_bonds_results_full %>%
-  group_by(company_name) %>%
-  mutate(
-    term = round(runif(n = 1, min = 1, max = 10), 0)
-  ) %>%
-  ungroup()
-
-
 # Load PACTA results / equity portfolio------------------------
 equity_path <- file.path(results_path, investorname_equity, paste0("Equity_results_", calculation_level, ".rda"))
 
