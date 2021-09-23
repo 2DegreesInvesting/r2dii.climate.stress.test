@@ -14,8 +14,10 @@
 ^model_parameters\.yml$
 ^plot_production_trajectories\.R$
 ^params_litigation_risk\.yml$
+^QA_scripts$
 ^st_project_settings\.yml$
-^stress_test_model_eq_cb\.R$
+^stress_test_model_eq\.R$
+^stress_test_model_cb\.R$
 ^stress_test_litigation_risk\.R$
 ^stress_test_model_functions\.R$
 ^stress_test_model_loan_book\.R$
