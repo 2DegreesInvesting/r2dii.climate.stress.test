@@ -38,7 +38,6 @@ function_paths <- c(
       "overall_pd_change_technology_shock_year.R",
       "qa_graphs_st.R",
       "read_capacity_factors.R",
-      "read_ngfs_carbon_tax.R",
       "read_pacta_results.R",
       "read_price_data.R",
       "read_transition_scenarios.R",
@@ -350,11 +349,6 @@ df_price <- read_price_data(
   ) %>%
   filter(year >= start_year) %>%
   check_price_consistency()
-
-# Load NGFS carbon tax data-----------------------------
-ngfs_carbon_tax <- read_ngfs_carbon_tax(
-  path = file.path(data_location, "ngfs_carbon_tax.csv")
-)
 
 #############
 # Create shock net profits margins dataframe
