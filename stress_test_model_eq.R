@@ -649,35 +649,3 @@ sum_carbon_budgets_eq <- qa_annual_profits_eq %>%
     scenario_name_qa = "Carbon balance 2030",
     cumulative = TRUE
   )
-
-# credit risk QA graphs--------------------------------------------------------
-
-# ... overall change of credit risk graphs-------------------------------------
-plot_pd_change_company_tech <- bonds_expected_loss %>%
-  overall_pd_change_company_technology(
-    shock_year = 2030,
-    sector_filter = c("Power", "Automotive"),
-    company_filter = c("Daimler Ag", "Enel Spa"),
-    geography_filter = scenario_geography_filter
-  )
-
-plot_pd_change_shock_year_tech <- bonds_overall_pd_changes_sector %>%
-  overall_pd_change_technology_shock_year(
-    scenario_filter = c("Carbon balance 2025", "Carbon balance 2030", "Carbon balance 2035"),
-    geography_filter = scenario_geography_filter
-  )
-
-# ... annual change of credit risk graphs--------------------------------------
-plot_annual_pd_change_company_tech <- bonds_annual_pd_changes %>%
-  annual_pd_change_company_technology(
-    shock_year = 2030,
-    company_filter = c("Daimler Ag", "Enel Spa", "Total Sa"),
-    geography_filter = scenario_geography_filter
-  )
-
-plot_annual_pd_change_shock_year_tech <- bonds_annual_pd_changes_sector %>%
-  annual_pd_change_technology_shock_year(
-    shock_year_filter = c(2025, 2030, 2035),
-    geography_filter = scenario_geography_filter
-  )
-
