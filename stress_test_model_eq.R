@@ -335,36 +335,6 @@ nesting_vars <- c(
   "scenario", "allocation", "scenario_geography", "company_name"
 )
 
-# ...for bonds portfolio-------------------------------------------------------
-pacta_bonds_results <- pacta_bonds_results_full %>%
-  mutate(scenario = str_replace(scenario, "NPSRTS", "NPS")) %>%
-  tidyr::complete(
-    year = seq(start_year, start_year + time_horizon),
-    nesting(!!!syms(nesting_vars))
-  ) %>%
-  mutate(plan_tech_prod = dplyr::if_else(is.na(plan_tech_prod), 0, plan_tech_prod)) %>%
-  apply_filters(
-    investor = investorname_bonds,
-    sectors = sectors,
-    technologies = technologies,
-    scenario_geography_filter = scenario_geography_filter,
-    scenarios = scenarios_filter,
-    allocation_method = allocation_method_equity,
-    start_analysis = start_year
-  ) %>%
-  filter(
-    allocation == allocation_method_equity,
-    equity_market == equity_market_filter
-  ) %>%
-  distinct_all()
-
-# check scenario availability across data inputs for bonds
-check_scenario_availability(
-  portfolio = pacta_bonds_results,
-  scen_data = scenario_data,
-  scenarios = scenarios_filter
-)
-
 # ...for equity portfolio------------------------------------------------------
 pacta_equity_results <- pacta_equity_results_full %>%
   mutate(scenario = str_replace(scenario, "NPSRTS", "NPS")) %>%
