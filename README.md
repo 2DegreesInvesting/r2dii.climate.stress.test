@@ -46,6 +46,14 @@ or in R:
 options("ST_DATA_PATH") <- "path to data"
 ```
 
+Additionally, for running the litigation risk section, you will need
+access to the pacta-data repository or a similar directory and need to
+point the analysis to that directory by setting the path to the
+pacta-data files as an Environment Variable, using:
+
+    # shell
+    export PACTA_DATA_PATH="<path to data>"
+
 **NOTE:**
 
 The path passed via the environment variable or option is expected to be

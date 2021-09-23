@@ -52,3 +52,4 @@ default:
     backwards_years: 10
     reset_post_settlement: start
     flat_multiplier: 0.15
+    target_currency: EUR

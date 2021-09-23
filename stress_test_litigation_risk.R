@@ -78,6 +78,7 @@ cfg_litigation_params <- config::get(file = "params_litigation_risk.yml")
 investor_name_equity <- cfg_litigation_params$investor_name$investor_name_equity
 investor_name_bonds <- cfg_litigation_params$investor_name$investor_name_bonds
 flat_multiplier <- cfg_litigation_params$litigation$flat_multiplier
+target_currency <- cfg_litigation_params$litigation$target_currency
 
 ############################################################################
 ##### Filters---------------------------------------------------------------
@@ -129,6 +130,17 @@ technologies <- cfg_litigation_params$lists$technology_list
 # load required data--------------------------
 ############################################################################
 
+############################################################################
+#### load and prepare currency data-----------------------------------------
+############################################################################
+currency_data <- fst::read_fst(
+  file.path(
+    Sys.getenv("PACTA_DATA_PATH"), "2019Q4", "cleaned_files", "currencies.fst"
+  )
+)
+currency_data <- currency_data %>%
+  dplyr::filter(.data$currency == .env$target_currency)
+
 
 ############################################################################
 #### load and prepare litigation risk scenarios-----------------------------
@@ -179,7 +191,7 @@ company_emissions_data_input_raw <- company_emissions_data_input_raw %>%
   dplyr::filter(
     .data$scenario %in% .env$scenarios,
     .data$ald_sector %in% .env$sectors,
-    # .data$technology %in% .env$technologies,
+    .data$technology %in% .env$technologies,
     .data$year %in% seq(.env$start_year, .env$start_year + .env$horizon),
     .data$allocation == "portfolio_weight",
     .data$equity_market == "GlobalMarket",
@@ -207,8 +219,8 @@ company_emissions_data_input_raw <- company_emissions_data_input_raw %>%
   dplyr::group_by(
     .data$investor_name, .data$portfolio_name, .data$company_name, .data$id,
     .data$scenario, .data$allocation, .data$asset_type, .data$scenario_geography,
-    .data$equity_market, .data$year, .data$financial_sector, .data$ald_sector#,
-    #.data$technology
+    .data$equity_market, .data$year, .data$financial_sector, .data$ald_sector,
+    .data$technology
   ) %>%
   dplyr::summarise(
     plan_tech_prod = mean(.data$plan_tech_prod, na.rm = TRUE),
@@ -232,11 +244,11 @@ company_emissions_data_input <- company_emissions_data_input_raw %>%
     # TODO: by technology?
   ) %>%
   dplyr::summarise(
+    plan_emission_factor = weighted.mean(.data$plan_emission_factor, w = .data$plan_tech_prod, na.rm = TRUE),
+    scen_emission_factor = weighted.mean(.data$scen_emission_factor, w = .data$scen_tech_prod, na.rm = TRUE),
     plan_tech_prod = sum(.data$plan_tech_prod, na.rm = TRUE),
-    plan_emission_factor = mean(.data$plan_emission_factor, na.rm = TRUE),
     plan_emissions = sum(.data$plan_emissions, na.rm = TRUE),
     scen_tech_prod = sum(.data$scen_tech_prod, na.rm = TRUE),
-    scen_emission_factor = mean(.data$scen_emission_factor, na.rm = TRUE),
     scen_emissions = sum(.data$scen_emissions, na.rm = TRUE),
     plan_carsten = sum(.data$plan_carsten, na.rm = TRUE), # TODO: change if we use tech level
     .groups = "drop"
@@ -496,6 +508,15 @@ for (i in seq(1, nrow(scenario))) {
 
 }
 
+# ADO 1544 - transform currency back to target currency
+cdd_results <- cdd_results %>%
+  dplyr::mutate(
+    across(
+      c(.data$cdd_liability, .data$cdd_liability_total, .data$ebit),
+      ~ .x / .env$currency_data$exchange_rate
+    )
+  )
+
 cdd_results %>% readr::write_csv(
   file.path(project_location, "40_Results", "litigation_risk_company_cdd.csv")
 )
@@ -540,6 +561,15 @@ for (i in seq(1, nrow(scenario))) {
     dplyr::bind_rows(scc_company_i)
 
 }
+
+# ADO 1544 - transform currency back to target currency
+scc_results <- scc_results %>%
+  dplyr::mutate(
+    across(
+      c(.data$scc_liability, .data$scc_liability_total, .data$ebit),
+      ~ .x / .env$currency_data$exchange_rate
+    )
+  )
 
 scc_results %>% readr::write_csv(
   file.path(project_location, "40_Results", "litigation_risk_company_scc.csv")
@@ -622,6 +652,15 @@ her_results <- her_results %>%
   dplyr::mutate(
     asset_type = NA_character_,
     scenario = NA_character_
+  )
+
+# ADO 1544 - transform currency back to target currency
+her_results <- her_results %>%
+  dplyr::mutate(
+    across(
+      c(.data$her_liability, .data$her_liability_total, .data$ebit),
+      ~ .x / .env$currency_data$exchange_rate
+    )
   )
 
 her_results %>% readr::write_csv(
@@ -809,7 +848,7 @@ company_results_npv <- company_results_dcf %>%
   dplyr::mutate(
     npv_litigation = dplyr::if_else(.data$npv_litigation < 0, 0, .data$npv_litigation),
     percentage_value_change = round(
-      (.data$npv_litigation - .data$npv_baseline) / .data$npv_baseline, 4
+      (.data$npv_litigation - .data$npv_baseline) / .data$npv_baseline, 6
     )
   )
 
@@ -831,15 +870,22 @@ technology_share_comp <- company_emissions_data_input %>%
 
 sector_exposures <- readRDS(file.path(proc_input_path, glue::glue("{project_name}_overview_portfolio.rda")))
 
-# portfolio aum for equity, value in USD
-# TODO: check if this might not be in EUR for EIOPA case
+# ADO 1544 - transform currency back to target currency
+sector_exposures <- sector_exposures %>%
+  dplyr::mutate(
+    dplyr::across(
+      c(.data$valid_value_usd, .data$asset_value_usd, .data$portfolio_value_usd),
+      ~ .x / .env$currency_data$exchange_rate
+    )
+  )
+
+# portfolio aum for equity, value in target currency (ADO 1544)
 port_aum_equity <- sector_exposures %>%
   dplyr::filter(.data$asset_type == "Equity") %>%
   dplyr::pull(.data$asset_value_usd) %>%
   unique()
 
-# portfolio aum for bonds, value in USD
-# TODO: check if this might not be in EUR for EIOPA case
+# portfolio aum for bonds, value in target currency (ADO 1544)
 port_aum_bonds <- sector_exposures %>%
   dplyr::filter(.data$asset_type == "Bonds") %>%
   dplyr::pull(.data$asset_value_usd) %>%
@@ -852,7 +898,8 @@ technology_exposure <- technology_share_comp %>%
       .data$asset_type == "Bonds" ~ .env$port_aum_bonds,
       TRUE ~ 0
     ),
-    company_tech_exposure = .data$portfolio_aum * .data$plan_carsten
+    company_exposure = .data$portfolio_aum * .data$plan_carsten
+    # company_tech_exposure = .data$portfolio_aum * .data$plan_carsten
   )
 
 
@@ -866,11 +913,39 @@ portfolio_liabilities <- company_results_npv %>%
 
 portfolio_liabilities <- portfolio_liabilities %>%
   dplyr::mutate(
-    value_change = dplyr::if_else(
+    company_value_change = dplyr::if_else(
       .data$asset_type == "Bonds",
-      .data$company_tech_exposure * .data$percentage_value_change * .env$flat_multiplier,
-      .data$company_tech_exposure * .data$percentage_value_change
+      .data$company_exposure * .data$percentage_value_change * .env$flat_multiplier,
+      .data$company_exposure * .data$percentage_value_change
+      # .data$company_tech_exposure * .data$percentage_value_change * .env$flat_multiplier,
+      # .data$company_tech_exposure * .data$percentage_value_change
     )
+  ) %>%
+  dplyr::group_by(
+    .data$investor_name, .data$portfolio_name, .data$scenario_name,
+    .data$scenario_geography, .data$asset_type, .data$scenario, .data$sector
+  ) %>%
+  dplyr::mutate(
+    sector_exposure = sum(.data$company_exposure, na.rm = TRUE),
+    sector_value_change = sum(.data$company_value_change, na.rm = TRUE),
+    sector_percentage_value_change = .data$sector_value_change / .data$sector_exposure
+  ) %>%
+  dplyr::ungroup() %>%
+  dplyr::group_by(
+    .data$investor_name, .data$portfolio_name, .data$scenario_name,
+    .data$scenario_geography, .data$asset_type, .data$scenario
+  ) %>%
+  dplyr::mutate(
+    portfolio_value_change = sum(company_value_change, na.rm = TRUE),
+    portfolio_percentage_value_change = .data$portfolio_value_change / .data$portfolio_aum
+  ) %>%
+  dplyr::ungroup() %>%
+  dplyr::select(
+    .data$investor_name, .data$portfolio_name, .data$scenario_name, .data$asset_type,
+    .data$company_name, .data$scenario_geography, .data$scenario, .data$sector,
+    .data$company_exposure, .data$percentage_value_change, .data$company_value_change,
+    .data$sector_exposure, .data$sector_percentage_value_change, .data$sector_value_change,
+    .data$portfolio_aum, .data$portfolio_percentage_value_change, .data$portfolio_value_change
   )
 
 
@@ -936,14 +1011,16 @@ subset_companies <- c(
 subset_companies <- unique(technology_exposure$company_name)
 
 subset_models <- c(
-  "CDD_TMS",
-  "HER_CDD_TMS",
-  "SCC_40_TMS"
+  # "CDD_TMS",
+  # "HER_CDD_TMS",
+  "SCC_20_TMS",
+  "SCC_40_TMS",
+  "SCC_100_TMS"
 )
 
 viz_company_results_subset <- viz_company_results %>%
   dplyr::filter(
-    .data$company_name %in% .env$subset_companies &
+    # .data$company_name %in% .env$subset_companies &
       .data$scenario_name %in% .env$subset_models
   ) %>%
   dplyr::group_by(.data$company_name) %>%
@@ -998,3 +1075,62 @@ comp_graph_payout_subset <- viz_company_results_payout_subset %>%
       hjust = 1
     )
   )
+
+#
+min_value_change <- abs(min(portfolio_liabilities$company_value_change, na.rm = TRUE)) * 10
+
+portfolio_liabilities_plot <- portfolio_liabilities %>%
+  dplyr::filter(
+    .data$asset_type == "Bonds",
+    .data$scenario_name %in% .env$subset_models,
+    .data$scenario == "SDS"
+  ) %>%
+  ggplot2::ggplot(aes(x = company_name)) +
+  geom_point(aes(y = .data$percentage_value_change), alpha = 0.5) +
+  geom_col(aes(y = .data$company_value_change / .env$min_value_change, fill = .data$sector), alpha = 0.5) +
+  scale_y_continuous(
+    name = "Percentage value change, as ratio (points)",
+    limits = c(-0.1, 0),
+    sec.axis = sec_axis(~ . * min_value_change, name = glue::glue("Company value change, in {target_currency} (bars)"))
+  ) +
+  facet_grid(cols = vars(scenario_name)) +
+  theme(
+    axis.text.x = ggplot2::element_text(
+      angle = 90,
+      vjust = 0.5,
+      hjust = 1
+    )
+  ) +
+  ggtitle("Impact of liability risk on portfolio")
+
+min_value_change_sector <- abs(min(portfolio_liabilities$sector_value_change, na.rm = TRUE)) * 10
+
+portfolio_liabilities_sector_plot <- portfolio_liabilities %>%
+  dplyr::group_by(investor_name, portfolio_name, scenario_name, asset_type, scenario_geography, scenario, sector) %>%
+  dplyr::summarise(
+    sector_percentage_value_change = max(sector_percentage_value_change, na.rm = TRUE),
+    sector_value_change = max(sector_value_change, na.rm = TRUE)
+  ) %>%
+  dplyr::ungroup() %>%
+  dplyr::filter(
+    .data$asset_type == "Bonds",
+    .data$scenario_name %in% .env$subset_models,
+    .data$scenario == "SDS"
+  ) %>%
+  ggplot2::ggplot(aes(x = sector)) +
+  geom_point(aes(y = .data$sector_percentage_value_change), alpha = 0.5) +
+  geom_col(aes(y = .data$sector_value_change / .env$min_value_change_sector, fill = .data$sector), alpha = 0.5) +
+  scale_y_continuous(
+    name = "Percentage value change, as ratio (points)",
+    limits = c(-0.1, 0),
+    sec.axis = sec_axis(~ . * min_value_change_sector, name = glue::glue("Company value change, in {target_currency} (bars)"))
+  ) +
+  facet_grid(cols = vars(scenario_name)) +
+  theme(
+    axis.text.x = ggplot2::element_text(
+      angle = 90,
+      vjust = 0.5,
+      hjust = 1
+    )
+  ) +
+  ggtitle("Impact of liability risk on portfolio")
