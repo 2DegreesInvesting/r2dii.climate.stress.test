@@ -190,7 +190,7 @@ financial_data_equity <- read_company_data(path = stresstest_masterdata_files$li
                                            asset_type = "equity")
 
 # Load PACTA results / equity portfolio------------------------
-equity_path <- file.path(results_path, investorname_equity, paste0("Equity_results_", calculation_level, ".rda"))
+equity_path <- file.path(results_path, paste0("Equity_results_", calculation_level, ".rda"))
 
 pacta_equity_results_full <- read_pacta_results(
   path = equity_path,
@@ -215,7 +215,7 @@ pacta_equity_results_full <- pacta_equity_results_full %>%
 
 
 # Load sector exposures of portfolio------------------------
-sector_exposures <- readRDS(file.path(proc_input_path, paste0(project_name, "_overview_portfolio.rda")))
+sector_exposures <- readRDS(file.path(proc_input_path, "overview_portfolio.rda"))
 
 # Load policy shock transition scenarios--------------------
 transition_scenarios <- read_transition_scenarios(

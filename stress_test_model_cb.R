@@ -193,7 +193,7 @@ financial_data_bonds <- read_company_data(path = stresstest_masterdata_files$bon
 
 
 # Load PACTA results / bonds portfolio------------------------
-bonds_path <- file.path(results_path, investorname_bonds, paste0("Bonds_results_", calculation_level, ".rda"))
+bonds_path <- file.path(results_path, paste0("Bonds_results_", calculation_level, ".rda"))
 
 pacta_bonds_results_full <- read_pacta_results(
   path = bonds_path,
@@ -225,7 +225,7 @@ pacta_bonds_results_full <- pacta_bonds_results_full %>%
   ungroup()
 
 # Load sector exposures of portfolio------------------------
-sector_exposures <- readRDS(file.path(proc_input_path, paste0(project_name, "_overview_portfolio.rda")))
+sector_exposures <- readRDS(file.path(proc_input_path, "overview_portfolio.rda"))
 
 # Load policy shock transition scenarios--------------------
 transition_scenarios <- read_transition_scenarios(
