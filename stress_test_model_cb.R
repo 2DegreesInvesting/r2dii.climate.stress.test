@@ -225,7 +225,7 @@ pacta_bonds_results_full <- pacta_bonds_results_full %>%
   ungroup()
 
 # Load sector exposures of portfolio------------------------
-sector_exposures <- readRDS(file.path(proc_input_path, paste0(project_name, "_overview_portfolio.rda")))
+sector_exposures <- readRDS(file.path(proc_input_path, "overview_portfolio.rda"))
 
 # Load policy shock transition scenarios--------------------
 transition_scenarios <- read_transition_scenarios(
