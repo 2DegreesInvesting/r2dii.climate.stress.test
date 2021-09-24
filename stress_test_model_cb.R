@@ -193,7 +193,7 @@ financial_data_bonds <- read_company_data(path = stresstest_masterdata_files$bon
 
 
 # Load PACTA results / bonds portfolio------------------------
-bonds_path <- file.path(results_path, investorname_bonds, paste0("Bonds_results_", calculation_level, ".rda"))
+bonds_path <- file.path(results_path, paste0("Bonds_results_", calculation_level, ".rda"))
 
 pacta_bonds_results_full <- read_pacta_results(
   path = bonds_path,
