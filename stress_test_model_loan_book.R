@@ -184,22 +184,6 @@ risk_free_rate <- cfg_mod$financials$risk_free_rate
 lgd_senior_claims <- cfg_mod$financials$lgd_senior_claims
 lgd_subordinated_claims <- cfg_mod$financials$lgd_subordinated_claims
 
-# technology net profit margins
-## the parameters should be outsorced into a config file at some point
-## they should also be looped over, if multiple scenarios are to be analysed
-net_profit_margin_coal <- cfg_mod$net_profit_margin$coal
-net_profit_margin_coalcap <- cfg_mod$net_profit_margin$coalcap
-net_profit_margin_electric <- cfg_mod$net_profit_margin$electric
-net_profit_margin_gas <- cfg_mod$net_profit_margin$gas
-net_profit_margin_gascap <- cfg_mod$net_profit_margin$gascap
-net_profit_margin_hybrid <- cfg_mod$net_profit_margin$hybrid
-net_profit_margin_ice <- cfg_mod$net_profit_margin$ice
-net_profit_margin_nuclearcap <- cfg_mod$net_profit_margin$nuclearcap
-net_profit_margin_oil <- cfg_mod$net_profit_margin$oil
-net_profit_margin_oilcap <- cfg_mod$net_profit_margin$oilcap
-net_profit_margin_renewablescap <- cfg_mod$net_profit_margin$renewablescap
-net_profit_margin_hydrocap <- cfg_mod$net_profit_margin$hydrocap
-
 # TODO: move to config file
 credit_type <- c(
  # "outstanding"
