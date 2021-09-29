@@ -47,7 +47,8 @@ function_paths <- c(
       "set_paths.R",
       "set_tech_trajectories.R",
       "show_carbon_budget.R",
-      "utils.R"
+      "utils.R",
+      "write_results.R"
     )
   )
 )
@@ -675,67 +676,23 @@ for (i in seq(1, nrow(transition_scenarios))) {
   }
 }
 
-# Output corporate loan book results on company level
-loanbook_results <- loanbook_results %>%
-  relocate(
-    investor_name, portfolio_name, company_name, scenario_geography,
-    scenario_name, year_of_shock, duration_of_shock,
-    ald_sector, technology, production_shock_perc, asset_portfolio_value,
-    tech_company_exposure, VaR_tech_company, tech_company_value_change,
-    company_exposure, VaR_company, company_value_change,
-    technology_exposure, VaR_technology, technology_value_change,
-    technology_exposure, VaR_technology, technology_value_change,
-    sector_exposure, VaR_sector, sector_value_change,
-    analysed_sectors_exposure, VaR_analysed_sectors,
-    analysed_sectors_value_change, portfolio_aum, portfolio_value_change_perc,
-    portfolio_value_change
-  )
+# Output corporate loan book results
+loanbook_results %>% write_results(
+  path_to_results = results_path,
+  investorname = investorname_loan_book,
+  asset_type = "loans",
+  level = calculation_level,
+  file_type = "csv"
+)
 
-loanbook_results %>%
-  readr::write_csv(file.path(
-      results_path,
-      paste0("stress_test_results_lb_comp_", project_name, ".csv")
-    ))
-
-# Output corporate loan book results on portfolio level
-loanbook_results_pf <- loanbook_results %>%
-  select(
-    -c(
-      company_name,
-      VaR_tech_company,
-      tech_company_exposure,
-      tech_company_value_change,
-      VaR_company,
-      company_exposure,
-      company_value_change
-    )
-  ) %>%
-  distinct_all() %>%
-  relocate(
-    investor_name, portfolio_name, scenario_geography, scenario_name,
-    year_of_shock, duration_of_shock, ald_sector, technology,
-    production_shock_perc, asset_portfolio_value, technology_exposure,
-    VaR_technology, technology_value_change, sector_exposure, VaR_sector,
-    sector_value_change, analysed_sectors_exposure, VaR_analysed_sectors,
-    analysed_sectors_value_change, portfolio_aum, portfolio_value_change_perc,
-    portfolio_value_change
-  ) %>%
-  arrange(year_of_shock, ald_sector, technology)
-
-loanbook_results_pf %>%
-  readr::write_csv(file.path(
-      results_path,
-      paste0("stress_test_results_lb_port_", project_name, ".csv")
-    ))
-
-
+# Output loan book credit risk results
 loanbook_expected_loss <- loanbook_expected_loss %>%
   dplyr::select(
     scenario_name, scenario_geography, investor_name, portfolio_name,
     company_name, id, ald_sector, technology, equity_0_baseline,
     equity_0_late_sudden, debt, volatility, risk_free_rate, term,
     Survival_baseline, Survival_late_sudden, PD_baseline, PD_late_sudden,
-    PD_change, PD_0, lgd, percent_exposure, exposure_at_default,
+    PD_change, pd, lgd, percent_exposure, exposure_at_default,
     expected_loss_baseline, expected_loss_late_sudden
   ) %>%
   dplyr::arrange(
