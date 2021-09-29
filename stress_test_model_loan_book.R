@@ -124,7 +124,6 @@ scenarios <- c(
   "B2DS",
   "CPS",
   "NPS",
-  # "NPSRTS",
   "SDS"#,
   # "ETP2017_B2DS",
   # "ETP2017_NPS",
