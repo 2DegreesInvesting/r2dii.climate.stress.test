@@ -6,7 +6,8 @@
 that contain information on multiple credit risk inputs and company
 production plans, aggregated to the ticker/technology/year level for
 \code{asset_type} bonds and aggregated to the company/technology/year level for
-\code{asset_type} equity.}
+\code{asset_type} equity and aggregated to the loan_taker/technology/year level
+for \code{àsset_type} loans}
 \usage{
 read_company_data(path = NULL, asset_type)
 }
@@ -22,7 +23,8 @@ Read in company finacial data processed from eikon exports and AR master data
 that contain information on multiple credit risk inputs and company
 production plans, aggregated to the ticker/technology/year level for
 \code{asset_type} bonds and aggregated to the company/technology/year level for
-\code{asset_type} equity.
+\code{asset_type} equity and aggregated to the loan_taker/technology/year level
+for \code{àsset_type} loans
 }
 \seealso{
 Other import functions: 
