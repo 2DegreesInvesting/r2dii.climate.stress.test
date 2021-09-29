@@ -4,12 +4,15 @@
 \alias{report_duplicates}
 \title{Report duplicate rows}
 \usage{
-report_duplicates(data, cols)
+report_duplicates(data, cols, throw_error)
 }
 \arguments{
 \item{data}{A tibble.}
 
 \item{cols}{Cols to check for duplicate combinations on.}
+
+\item{throw_error}{Boolean, if TRUE error is thrown on failures, otherwise a
+warning.}
 }
 \description{
 Reports duplicates in \code{data} on columns \code{cols}. Duplicates are reported via a
