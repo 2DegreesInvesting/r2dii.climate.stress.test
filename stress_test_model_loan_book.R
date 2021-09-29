@@ -255,7 +255,7 @@ pacta_loanbook_results_full <- pacta_loanbook_results_full %>%
       .data$scenario
     )
   ) %>%
-  check_portfolio_consistency()
+  check_portfolio_consistency(start_year = start_year)
 
 # TODO: temporary addition, needs to come directly from input
 pacta_loanbook_results_full <- pacta_loanbook_results_full %>%
