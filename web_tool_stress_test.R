@@ -297,7 +297,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
     filter(!(scenario == "ETP2017_NPS" & ald_sector == "Power")) %>%
     filter(scenario %in% scenarios) %>%
     mutate(scenario = ifelse(str_detect(scenario, "_"), str_extract(scenario, "[^_]*$"), scenario)) %>%
-    check_portfolio_consistency()
+    check_portfolio_consistency(start_year = start_year)
 
   pacta_equity_results <- pacta_equity_results_full %>%
     tidyr::complete(
@@ -497,7 +497,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
     filter(!(scenario == "ETP2017_NPS" & ald_sector == "Power")) %>%
     filter(scenario %in% scenarios) %>%
     mutate(scenario = ifelse(str_detect(scenario, "_"), str_extract(scenario, "[^_]*$"), scenario)) %>%
-    check_portfolio_consistency()
+    check_portfolio_consistency(start_year = start_year)
 
   pacta_bonds_results <- pacta_bonds_results_full %>%
     tidyr::complete(
