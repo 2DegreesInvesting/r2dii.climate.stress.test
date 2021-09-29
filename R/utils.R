@@ -170,19 +170,28 @@ validate_data_has_expected_cols <- function(data,
 #' @param data A tibble.
 #' @param composite_unique_cols A vector of names of columns that shall be
 #'   unique in their combination.
+#' @param throw_error Boolean, if TRUE error is thrown on failures, otherwise a
+#'   warning.
 #'
 #' @return NULL
 #' @export
-report_all_duplicate_kinds <- function(data, composite_unique_cols) {
-
+report_all_duplicate_kinds <- function(data, composite_unique_cols, throw_error = FALSE) {
   validate_data_has_expected_cols(
     data = data,
     expected_columns = composite_unique_cols
   )
 
-  report_duplicates(data = data, cols = names(data))
+  report_duplicates(
+    data = data,
+    cols = names(data),
+    throw_error = throw_error
+  )
 
-  report_duplicates(data = dplyr::distinct(data), cols = composite_unique_cols) # removed duplicates on all columns
+  report_duplicates(
+    data = dplyr::distinct(data),
+    cols = composite_unique_cols,
+    throw_error = throw_error
+  )
 
   return(invisible())
 }
@@ -201,7 +210,7 @@ report_all_duplicate_kinds <- function(data, composite_unique_cols) {
 #'
 #' @return NULL
 #' @export
-report_missing_col_combinations <- function(data, composite_unique_cols) {
+report_missing_col_combinations <- function(data, composite_unique_cols, throw_error) {
 
   all_combinations <- data %>%
     tidyr::expand(!!!dplyr::syms(composite_unique_cols))
@@ -210,7 +219,11 @@ report_missing_col_combinations <- function(data, composite_unique_cols) {
     dplyr::anti_join(data, by = composite_unique_cols)
 
   if (nrow(missing_rows) > 0) {
-    warning(paste0("Identified ", nrow(missing_rows), " missing combinations on columns ", paste(composite_unique_cols, collapse = ", "), "."))
+    if (throw_error) {
+      stop(paste0("Identified ", nrow(missing_rows), " missing combinations on columns ", paste(composite_unique_cols, collapse = ", "), "."))
+    } else {
+      warning(paste0("Identified ", nrow(missing_rows), " missing combinations on columns ", paste(composite_unique_cols, collapse = ", "), "."))
+    }
   }
 
   return(invisible())
