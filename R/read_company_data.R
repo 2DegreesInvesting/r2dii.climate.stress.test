@@ -2,7 +2,8 @@
 #' that contain information on multiple credit risk inputs and company
 #' production plans, aggregated to the ticker/technology/year level for
 #' `asset_type` bonds and aggregated to the company/technology/year level for
-#' `asset_type` equity.
+#' `asset_type` equity and aggregated to the loan_taker/technology/year level
+#' for `àsset_type` loans
 #'
 #' @param path A string that points to the location of the file containing the
 #'   company financial data.
@@ -16,7 +17,7 @@ read_company_data <- function(path = NULL, asset_type) {
 
   path %||% stop("Must provide 'path'")
 
-  if (!asset_type %in% c("bonds", "equity")) {
+  if (!asset_type %in% c("bonds", "equity", "loans")) {
     stop("Invalid asset type.")
   }
 

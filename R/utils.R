@@ -111,7 +111,7 @@ create_stressdata_masterdata_file_paths <- function(data_prep_timestamp, twodii_
   paths <- list(
     "prewrangled_financial_data_bonds.rds",
     "prewrangled_financial_data_equity.rds",
-    "stress_test_masterdata_credit.rds"
+    "prewrangled_financial_data_loans.rds"
   ) %>%
     purrr::map(function(file) {
       file_path <- file.path(path_parent, file)
