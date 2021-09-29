@@ -211,7 +211,7 @@ pacta_equity_results_full <- pacta_equity_results_full %>%
       .data$scenario
     )
   ) %>%
-  check_portfolio_consistency()
+  check_portfolio_consistency(start_year = start_year)
 
 
 # Load sector exposures of portfolio------------------------

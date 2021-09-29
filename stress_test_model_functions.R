@@ -149,9 +149,9 @@ dcf_model_techlevel <- function(data, discount_rate) {
 }
 
 # run basic portfolio data consistency checks that are required for further data processing
-check_portfolio_consistency <- function(df) {
+check_portfolio_consistency <- function(df, start_year) {
   # first year in data set must be the same as start year defined in parameters
-  if (df %>% pull(year) %>% min(na.rm = TRUE) != start_year) {
+  if (min(df$year, na.rm = TRUE) != start_year) {
     write_log(
       msg = "Start year of the analysis and first year in the input portfolio do
       not match. This will lead to errors in the stress test calculations.",
