@@ -1,4 +1,6 @@
-## Project Initialisation
+###########################################################################
+# Project Initialisation---------------------------------------------------
+###########################################################################
 
 library(CreditRisk)
 library(dplyr)
@@ -38,6 +40,7 @@ function_paths <- c(
       "overall_pd_change_technology_shock_year.R",
       "qa_graphs_st.R",
       "read_capacity_factors.R",
+      "read_company_data.R",
       "read_pacta_results.R",
       "read_price_data.R",
       "read_transition_scenarios.R",
@@ -121,7 +124,7 @@ scenarios <- c(
   "B2DS",
   "CPS",
   "NPS",
-  "NPSRTS",
+  # "NPSRTS",
   "SDS"#,
   # "ETP2017_B2DS",
   # "ETP2017_NPS",
@@ -205,8 +208,21 @@ credit_type <- c(
 )
 loan_share_credit_type <- paste0("loan_share_", credit_type)
 
-###############
-# Load input datasets----------------------------------------
+###########################################################################
+# Load input datasets------------------------------------------------------
+###########################################################################
+
+# Load company financial and production data-----------------------------------
+# ... get file paths for stresstest masterdata --------------------------------
+stresstest_masterdata_files <- create_stressdata_masterdata_file_paths(
+  data_prep_timestamp = cfg$TimeStamps$DataPrep.Timestamp,
+  twodii_internal = twodii_internal
+)
+
+# ... for loans----------------------------------------------------------------
+financial_data_loans <- read_company_data(path = stresstest_masterdata_files$loans,
+                                          asset_type = "loans")
+
 
 # TODO: select the right scenarios
 # TODO: select the right geography
@@ -350,8 +366,9 @@ df_price <- read_price_data(
   filter(year >= start_year) %>%
   check_price_consistency()
 
-#############
-# Create shock net profits margins dataframe
+###########################################################################
+# Data wrangling / preparation---------------------------------------------
+###########################################################################
 
 net_profit_margins <- net_profit_margin_setup(
   net_profit_margin_coal = net_profit_margin_coal,
@@ -423,9 +440,9 @@ loan_book_port_aum <- sector_exposures %>%
   )
 
 
-###############
-# Create input data for stress test model----------------------------------------
-###############
+###########################################################################
+# Calculation of results---------------------------------------------------
+###########################################################################
 
 #### OPEN: both objects in condition not available as of now,
 # since they are read in into a loop afterwards
