@@ -131,9 +131,9 @@ test_that("Warnings are thrown for dataset with full and partial duplicates", {
     c = c(1, 1, 2, 3)
   )
 
-  expect_warning(report_all_duplicate_kinds(
+  expect_warning(expect_warning(report_all_duplicate_kinds(
     data = data,
     composite_unique_cols = c("a", "b")
-  ))
+  )))
 
 })

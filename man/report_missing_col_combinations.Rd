@@ -4,7 +4,11 @@
 \alias{report_missing_col_combinations}
 \title{Identify and report missing value combinations}
 \usage{
-report_missing_col_combinations(data, composite_unique_cols, throw_error)
+report_missing_col_combinations(
+  data,
+  composite_unique_cols,
+  throw_error = FALSE
+)
 }
 \arguments{
 \item{data}{A tibble.}

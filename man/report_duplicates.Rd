@@ -4,7 +4,7 @@
 \alias{report_duplicates}
 \title{Report duplicate rows}
 \usage{
-report_duplicates(data, cols, throw_error)
+report_duplicates(data, cols, throw_error = FALSE)
 }
 \arguments{
 \item{data}{A tibble.}
