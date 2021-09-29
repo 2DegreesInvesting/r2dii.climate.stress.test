@@ -28,7 +28,7 @@ write_results <- function(
   level %||% stop("Must provide 'level'")
   investorname %||% stop("Must provide 'investorname'")
 
-  valid_asset_type <- asset_type %in% c("equity", "bonds")
+  valid_asset_type <- asset_type %in% c("equity", "bonds", "loans")
   stopifnot(valid_asset_type)
 
   valid_file_type <- file_type %in% c("csv", "rda")
