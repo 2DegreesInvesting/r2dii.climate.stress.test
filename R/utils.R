@@ -238,7 +238,7 @@ report_missing_col_combinations <- function(data, composite_unique_cols, throw_e
 #' @param cols Cols to check for duplicate combinations on.
 #'
 #' @return NULL
-report_duplicates <- function(data, cols) {
+report_duplicates <- function(data, cols, throw_error) {
   duplicates <- data %>%
     dplyr::group_by(!!!dplyr::syms(cols)) %>%
     dplyr::filter(dplyr::n() > 1) %>%
@@ -246,7 +246,11 @@ report_duplicates <- function(data, cols) {
     dplyr::distinct_all()
 
   if (nrow(duplicates) > 0) {
-    warning(paste0("Identified ", nrow(duplicates), " duplicates on columns ", paste(cols, collapse = ", "), "."))
+    if (throw_error) {
+      stop(paste0("Identified ", nrow(duplicates), " duplicates on columns ", paste(cols, collapse = ", "), "."))
+    } else {
+      warning(paste0("Identified ", nrow(duplicates), " duplicates on columns ", paste(cols, collapse = ", "), "."))
+    }
   }
 
   return(invisible())
