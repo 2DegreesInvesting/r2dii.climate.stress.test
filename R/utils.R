@@ -210,7 +210,7 @@ report_all_duplicate_kinds <- function(data, composite_unique_cols, throw_error 
 #'
 #' @return NULL
 #' @export
-report_missing_col_combinations <- function(data, composite_unique_cols, throw_error) {
+report_missing_col_combinations <- function(data, composite_unique_cols, throw_error = FALSE) {
 
   all_combinations <- data %>%
     tidyr::expand(!!!dplyr::syms(composite_unique_cols))
@@ -238,7 +238,7 @@ report_missing_col_combinations <- function(data, composite_unique_cols, throw_e
 #' @param cols Cols to check for duplicate combinations on.
 #'
 #' @return NULL
-report_duplicates <- function(data, cols, throw_error) {
+report_duplicates <- function(data, cols, throw_error = FALSE) {
   duplicates <- data %>%
     dplyr::group_by(!!!dplyr::syms(cols)) %>%
     dplyr::filter(dplyr::n() > 1) %>%

@@ -92,6 +92,22 @@ test_that("Warning is thrown if there are duplicates on composite unique cols", 
   )
 })
 
+test_that("Error is thrown if there are duplicates on composite unique cols and throw_error is TRUE", {
+  data <- tibble::tibble(
+    a = c("A1", "A1", "A2", "A2", "A2"),
+    b = c("B1", "B2", "B1", "B2", "B1"),
+    c = 1:5
+  )
+
+  expect_error(
+    checked_data <- report_duplicates(
+      data = data,
+      cols = c("a", "b"),
+      throw_error = TRUE
+    ),
+    "Identified 1 duplicates"
+  )
+})
 test_that("Warning is thrown if there are duplciates on all cols", {
   data <- tibble::tibble(
     a = c("A1", "A1", "A2", "A2", "A2"),
@@ -107,7 +123,7 @@ test_that("Warning is thrown if there are duplciates on all cols", {
   )
 })
 
-# check_row_consistency ---------------------------------------------------
+# report_all_duplicate_kinds ----------------------------------------------
 test_that("Warnings are thrown for dataset with full and partial duplicates", {
   data <- tibble::tibble(
     a = c("A1", "A1", "A1", "A2"),
