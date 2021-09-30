@@ -48,6 +48,7 @@ function_paths <- c(
       "set_tech_trajectories.R",
       "show_carbon_budget.R",
       "utils.R",
+      "wrangle_and_check.R",
       "write_results.R"
     )
   )
