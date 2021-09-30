@@ -224,7 +224,7 @@ pacta_bonds_results_full <- pacta_bonds_results_full %>%
 
 # Load sector exposures of portfolio------------------------
 sector_exposures <- readRDS(file.path(proc_input_path, "overview_portfolio.rda")) %>%
-  wrangle_and_check_sector_exposures_eq_cb()
+  wrangle_and_check_sector_exposures_eq_cb(asset_type = "Bonds")
 
 # Load policy shock transition scenarios--------------------
 transition_scenarios <- read_transition_scenarios(
@@ -366,7 +366,6 @@ check_scenario_availability(
 # ...for bonds portfolio-------------------------------------------------------
 bonds_port_aum <- sector_exposures %>%
   group_by(investor_name, portfolio_name) %>%
-  filter(asset_type == "Bonds") %>%
   summarise(
     asset_portfolio_value = sum(valid_value_usd),
     .groups = "drop_last"

@@ -213,7 +213,7 @@ pacta_equity_results_full <- pacta_equity_results_full %>%
 
 # Load sector exposures of portfolio------------------------
 sector_exposures <- readRDS(file.path(proc_input_path, "overview_portfolio.rda")) %>%
-  wrangle_and_check_sector_exposures_eq_cb()
+  wrangle_and_check_sector_exposures_eq_cb(asset_type = "Equity")
 
 # Load policy shock transition scenarios--------------------
 transition_scenarios <- read_transition_scenarios(
@@ -356,7 +356,6 @@ check_scenario_availability(
 # Prepare sector exposure data-------------------------------------------------
 # ...for equity portfolio------------------------------------------------------
 equity_port_aum <- sector_exposures %>%
-  filter(asset_type == "Equity") %>%
   group_by(investor_name, portfolio_name) %>%
   summarise(
     asset_portfolio_value = sum(valid_value_usd),
