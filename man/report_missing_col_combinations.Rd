@@ -4,13 +4,20 @@
 \alias{report_missing_col_combinations}
 \title{Identify and report missing value combinations}
 \usage{
-report_missing_col_combinations(data, composite_unique_cols)
+report_missing_col_combinations(
+  data,
+  composite_unique_cols,
+  throw_error = FALSE
+)
 }
 \arguments{
 \item{data}{A tibble.}
 
 \item{composite_unique_cols}{A vector of names of columns that shall be
 unique in their combination.}
+
+\item{throw_error}{Boolean, if TRUE error is thrown on failures, otherwise a
+warning.}
 }
 \description{
 Checks if all level combinations of \code{composite_unique_cols} are in\code{data} and

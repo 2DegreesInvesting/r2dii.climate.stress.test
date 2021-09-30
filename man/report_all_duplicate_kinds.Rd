@@ -4,13 +4,16 @@
 \alias{report_all_duplicate_kinds}
 \title{Checks data for missings and duplicates}
 \usage{
-report_all_duplicate_kinds(data, composite_unique_cols)
+report_all_duplicate_kinds(data, composite_unique_cols, throw_error = FALSE)
 }
 \arguments{
 \item{data}{A tibble.}
 
 \item{composite_unique_cols}{A vector of names of columns that shall be
 unique in their combination.}
+
+\item{throw_error}{Boolean, if TRUE error is thrown on failures, otherwise a
+warning.}
 }
 \description{
 Applies consistency checks to data concerning the combinations of columns
