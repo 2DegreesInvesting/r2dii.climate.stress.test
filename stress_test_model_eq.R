@@ -445,11 +445,14 @@ for (i in seq(1, nrow(transition_scenarios))) {
       )
   }
 
+  rows_equity <- nrow(equity_annual_profits)
   equity_annual_profits <- equity_annual_profits %>%
-    left_join(
+    dplyr::inner_join(
       financial_data_equity,
       by = c("company_name", "ald_sector", "technology", "year")
     )
+  cat("number of rows dropped from equity portfolio by joining financial data = ",
+      rows_equity - nrow(equity_annual_profits), "\n")
 
   equity_annual_profits <- equity_annual_profits %>%
     arrange(
