@@ -490,8 +490,12 @@ for (i in seq(1, nrow(transition_scenarios))) {
     select(
       investor_name, portfolio_name, company_name, ald_sector, technology,
       scenario_geography, year, plan_carsten, plan_sec_carsten
-    ) %>%
-    distinct(across(everything()))
+    )
+
+  report_duplicates(
+    data = plan_carsten_equity,
+    cols = names(plan_carsten_equity)
+  )
 
   if (!exists("excluded_companies")) {
     equity_results <- bind_rows(
