@@ -36,6 +36,7 @@ function_paths <- c(
       "format_loanbook_st.R",
       "get_st_data_path.R",
       "interpolate_automotive_scenario.R",
+      "lookup.R",
       "overall_pd_change_company_technology.R",
       "overall_pd_change_technology_shock_year.R",
       "qa_graphs_st.R",
@@ -93,11 +94,6 @@ set_project_paths(
   twodii_internal = twodii_internal,
   project_location_ext = project_location_ext
 )
-
-
-# THIS NEEDS TO BE INVESTIGATED! PROBABLY LOOP OVER INV OR ALLOW SPECIFICATION IN CONFIG
-investorname_loan_book <- "Meta Investor" #' Fixed Income Index'  #'Meta Portfolio'
-
 
 #### Analysis Parameters----------------------------------------
 # Get analysis parameters from the projects AnalysisParameters.yml - similar to PACTA_analysis
@@ -236,11 +232,8 @@ pacta_loanbook_results_full <- read_pacta_results(
 
 pacta_loanbook_results_full <- pacta_loanbook_results_full %>%
   format_loanbook_st(
-    # FIXME: these inputs should not be assumed given, but rather than adding
-    # odd arguments to the function, refactoring should rather allow for bulk
-    # processing of all investor_names and portfolio_names
-    investor_name = investorname_loan_book,
-    portfolio_name = investorname_loan_book,
+    investor_name = investor_name_placeholder,
+    portfolio_name = investor_name_placeholder,
     credit = loan_share_credit_type
   )
 
@@ -295,8 +288,8 @@ sector_exposures <- read_csv(
     valid_value_usd = !!rlang::sym(sector_credit_type)
   ) %>%
   mutate(
-    investor_name = investorname_loan_book,
-    portfolio_name = investorname_loan_book
+    investor_name = investor_name_placeholder,
+    portfolio_name = investor_name_placeholder
   )
 # TODO: potentially convert currencies to USD or at least common currency
 
@@ -409,7 +402,7 @@ pacta_loanbook_results <- pacta_loanbook_results_full %>%
   ) %>%
   mutate(plan_tech_prod = dplyr::if_else(is.na(plan_tech_prod), 0, plan_tech_prod)) %>%
   apply_filters(
-    investor = investorname_loan_book,
+    investor = investor_name_placeholder,
     sectors = sectors,
     technologies = technologies,
     scenario_geography_filter = scenario_geography_filter,
