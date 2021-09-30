@@ -470,7 +470,6 @@ for (i in seq(1, nrow(transition_scenarios))) {
 
   equity_annual_profits <- equity_annual_profits %>%
     join_price_data(df_prices = df_prices) %>%
-    # join_net_profit_margins(net_profit_margins = net_profit_margins) %>%
     calculate_net_profits() %>%
     dcf_model_techlevel(discount_rate = discount_rate)
 
