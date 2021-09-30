@@ -689,7 +689,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
 # Output corporate loan book results
 loanbook_results %>% write_results(
   path_to_results = results_path,
-  investorname = investorname_loan_book,
+  investorname = investor_name_placeholder,
   asset_type = "loans",
   level = calculation_level,
   file_type = "csv"
