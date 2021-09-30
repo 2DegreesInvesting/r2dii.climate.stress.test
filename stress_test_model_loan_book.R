@@ -560,10 +560,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
       year == start_year,
       technology %in% technologies,
       scenario_geography == scenario_geography_filter
-    ) #%>%
-    # distinct(investor_name, portfolio_name, company_name, ald_sector, technology,
-    #          scenario_geography, year, plan_carsten, plan_sec_carsten, term,
-    #          PD_0)
+    )
 
   financial_data_loans_pd <- financial_data_loans %>%
     select(company_name, company_id, ald_sector, technology, pd) %>%
