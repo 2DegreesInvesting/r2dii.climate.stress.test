@@ -26,6 +26,7 @@ function_paths <- c(
       "annual_pd_change_technology_shock_year.R",
       "apply_filters.R",
       "calculate_annual_pd_changes.R",
+      "calculate_aum.R",
       "calculate_overall_pd_changes.R",
       "create_empty_result_df_pd_changes.R",
       "company_asset_value_at_risk.R",
@@ -424,13 +425,7 @@ check_scenario_availability(
 )
 
 # TODO: validate
-loan_book_port_aum <- sector_exposures %>%
-  group_by(investor_name, portfolio_name) %>%
-  summarise(
-    asset_portfolio_value = sum(valid_value_usd),
-    .groups = "drop_last"
-  )
-
+loan_book_port_aum <- calculate_aum(sector_exposures)
 
 ###########################################################################
 # Calculation of results---------------------------------------------------
