@@ -36,6 +36,7 @@ function_paths <- c(
       "extend_scenario_trajectory.R",
       "get_st_data_path.R",
       "interpolate_automotive_scenario.R",
+      "lookup.R",
       "overall_pd_change_company_technology.R",
       "overall_pd_change_technology_shock_year.R",
       "qa_graphs_st.R",
@@ -87,10 +88,6 @@ set_project_paths(
   twodii_internal = twodii_internal,
   project_location_ext = project_location_ext
 )
-
-
-# THIS NEEDS TO BE INVESTIGATED! PROBABLY LOOP OVER INV OR ALLOW SPECIFICATION IN CONFIG
-investorname_bonds <- "Meta Investor"
 
 # Analysis Parameters----------------------------------------
 # Get analysis parameters from the projects AnalysisParameters.yml - similar to PACTA_analysis
@@ -344,7 +341,7 @@ pacta_bonds_results <- pacta_bonds_results_full %>%
   ) %>%
   mutate(plan_tech_prod = dplyr::if_else(is.na(plan_tech_prod), 0, plan_tech_prod)) %>%
   apply_filters(
-    investor = investorname_bonds,
+    investor = investor_name_placeholder,
     sectors = sectors,
     technologies = technologies,
     scenario_geography_filter = scenario_geography_filter,
@@ -615,7 +612,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
 # Output bonds results
 bonds_results %>% write_results(
   path_to_results = results_path,
-  investorname = investorname_bonds,
+  investorname = investor_name_placeholder,
   asset_type = "bonds",
   level = calculation_level,
   file_type = "csv"
