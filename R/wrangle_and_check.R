@@ -19,7 +19,7 @@ wrangle_and_check_sector_exposures_eq_cb <- function(sector_exposures, asset_typ
   valid_sector_exposures <- sector_exposures %>%
     dplyr::filter(valid_input) %>%
     dplyr::filter(asset_type == !!asset_type) %>%
-    dplyr::select(-valid_input, asset_type)
+    dplyr::select(-valid_input, -asset_type)
 
   if (nrow(valid_sector_exposures) == 0) {
     ("Stop, no valid sector exposures available.")
