@@ -504,8 +504,12 @@ for (i in seq(1, nrow(transition_scenarios))) {
     )
 
   financial_data_bonds_pd <- financial_data_bonds %>%
-    select(company_name, corporate_bond_ticker, ald_sector, technology, pd) %>%
-    distinct(across(everything()))
+    select(company_name, corporate_bond_ticker, ald_sector, technology, pd)
+
+  report_duplicates(
+    data = financial_data_bonds_pd,
+    cols = names(financial_data_bonds_pd)
+  )
 
   rows_plan_carsten <- nrow(plan_carsten_bonds)
   plan_carsten_bonds <- plan_carsten_bonds %>%
@@ -524,8 +528,12 @@ for (i in seq(1, nrow(transition_scenarios))) {
     select(
       investor_name, portfolio_name, company_name, ald_sector, technology,
       scenario_geography, year, plan_carsten, plan_sec_carsten, term, pd
-    ) %>%
-    distinct_all()
+    )
+
+  report_duplicates(
+    data = plan_carsten_bonds,
+    cols = names(plan_carsten_bonds)
+  )
 
   if (!exists("excluded_companies")) {
     bonds_results <- bind_rows(
