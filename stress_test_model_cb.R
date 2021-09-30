@@ -462,8 +462,14 @@ for (i in seq(1, nrow(transition_scenarios))) {
       )
   }
 
+  rows_bonds <- nrow(bonds_annual_profits)
   bonds_annual_profits <- bonds_annual_profits %>%
-    left_join(financial_data_bonds, by = c("company_name", "id" = "corporate_bond_ticker", "ald_sector", "technology", "year"))
+    dplyr::inner_join(
+      financial_data_bonds,
+      by = c("company_name", "id" = "corporate_bond_ticker", "ald_sector", "technology", "year")
+    )
+  cat("number of rows dropped from bonds portfolio by joining financial data = ",
+      rows_bonds - nrow(bonds_annual_profits), "\n")
 
   bonds_annual_profits <- bonds_annual_profits %>%
     arrange(
@@ -504,8 +510,14 @@ for (i in seq(1, nrow(transition_scenarios))) {
     select(company_name, corporate_bond_ticker, ald_sector, technology, pd) %>%
     distinct(across(everything()))
 
+  rows_plan_carsten <- nrow(plan_carsten_bonds)
   plan_carsten_bonds <- plan_carsten_bonds %>%
-    left_join(financial_data_bonds_pd, by = c("company_name", "id" = "corporate_bond_ticker", "ald_sector", "technology"))
+    dplyr::inner_join(
+      financial_data_bonds_pd,
+      by = c("company_name", "id" = "corporate_bond_ticker", "ald_sector", "technology")
+    )
+  cat("number of rows dropped from technology_exposure by joining financial data = ",
+      rows_plan_carsten - nrow(plan_carsten_bonds), "\n")
   # TODO: what to do with entries that have NAs for pd?
   # TODO: kick out NAs and record the diff
   bonds_annual_profits <- bonds_annual_profits %>%

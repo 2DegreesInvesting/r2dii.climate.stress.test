@@ -523,9 +523,15 @@ for (i in seq(1, nrow(transition_scenarios))) {
       )
   }
 
+  rows_loanbook <- nrow(loanbook_annual_profits)
   loanbook_annual_profits <- loanbook_annual_profits %>%
     # ADO 879: removed company id from join, but should be re-introduced later on
-    left_join(financial_data_loans, by = c("company_name", "ald_sector", "technology", "year"))
+    dplyr::inner_join(
+      financial_data_loans,
+      by = c("company_name", "ald_sector", "technology", "year")
+    )
+  cat("number of rows dropped from loan book by joining financial data = ",
+      rows_loanbook - nrow(loanbook_annual_profits), "\n")
 
   loanbook_annual_profits <- loanbook_annual_profits %>%
     arrange(
@@ -566,9 +572,15 @@ for (i in seq(1, nrow(transition_scenarios))) {
     select(company_name, company_id, ald_sector, technology, pd) %>%
     distinct(across(everything()))
 
+  rows_plan_carsten <- nrow(plan_carsten_loanbook)
   plan_carsten_loanbook <- plan_carsten_loanbook %>%
     # ADO 879: removed company id from join, but should be re-introduced later on
-    left_join(financial_data_loans_pd, by = c("company_name", "ald_sector", "technology"))
+    dplyr::inner_join(
+      financial_data_loans_pd,
+      by = c("company_name", "ald_sector", "technology")
+    )
+  cat("number of rows dropped from technology_exposure by joining financial data = ",
+      rows_plan_carsten - nrow(plan_carsten_loanbook), "\n")
   # TODO: what to do with entries that have NAs for pd?
   # TODO: kick out NAs and record the diff
   loanbook_annual_profits <- loanbook_annual_profits %>%
