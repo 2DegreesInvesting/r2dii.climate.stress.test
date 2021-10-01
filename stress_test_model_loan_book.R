@@ -376,7 +376,15 @@ financial_data_loans <- financial_data_loans %>%
     debt_equity_ratio = leverage_s_avg,
     volatility = asset_volatility_s_avg
   ) %>%
-  dplyr::mutate(company_name = stringr::str_to_lower(.data$company_name))
+  dplyr::mutate(company_name = stringr::str_to_lower(.data$company_name)) %>%
+  # ADO 879 - remove year and production/EFs to simplify joins that do not need yearly variation yet
+  dplyr::filter(.data$year == .env$start_year) %>%
+  dplyr::select(
+    -c(
+      .data$year, .data$ald_production_unit, .data$ald_production,
+      .data$ald_emissions_factor_unit, .data$ald_emissions_factor
+    )
+  )
 
 
 #TODO: any logic/bounds needed for debt/equity ratio and volatility?
@@ -521,7 +529,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
     # ADO 879: removed company id from join, but should be re-introduced later on
     dplyr::inner_join(
       financial_data_loans,
-      by = c("company_name", "ald_sector", "technology", "year")
+      by = c("company_name", "ald_sector", "technology")
     )
   cat("number of rows dropped from loan book by joining financial data = ",
       rows_loanbook - nrow(loanbook_annual_profits), "\n")
@@ -538,7 +546,6 @@ for (i in seq(1, nrow(transition_scenarios))) {
     # NOTE: this assumes emissions factors stay constant after forecast and prod not continued
     tidyr::fill(
       company_id, pd, net_profit_margin, debt_equity_ratio, volatility,
-      ald_emissions_factor, ald_emissions_factor_unit, ald_production_unit,
       .direction = "down"
     ) %>%
     ungroup()
@@ -556,9 +563,10 @@ for (i in seq(1, nrow(transition_scenarios))) {
 
   plan_carsten_loanbook <- pacta_loanbook_results %>%
     filter(
-      year == start_year,
-      technology %in% technologies,
-      scenario_geography == scenario_geography_filter
+      .data$year == .env$start_year,
+      .data$technology %in% .env$technologies,
+      .data$scenario_geography == .env$scenario_geography_filter,
+      .data$scenario %in% .env$scenario_to_follow_ls
     )
 
   financial_data_loans_pd <- financial_data_loans %>%
@@ -579,9 +587,6 @@ for (i in seq(1, nrow(transition_scenarios))) {
   cat("number of rows dropped from technology_exposure by joining financial data = ",
       rows_plan_carsten - nrow(plan_carsten_loanbook), "\n")
   # TODO: what to do with entries that have NAs for pd?
-  # TODO: kick out NAs and record the diff
-  loanbook_annual_profits <- loanbook_annual_profits %>%
-    filter(!is.na(company_id))
 
   plan_carsten_loanbook <- plan_carsten_loanbook %>%
     select(
