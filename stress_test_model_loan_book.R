@@ -529,6 +529,8 @@ for (i in seq(1, nrow(transition_scenarios))) {
   cat("number of rows dropped from loan book by joining financial data on
       company_name, ald_sector and technology = ",
       rows_loanbook - nrow(loanbook_annual_profits), "\n")
+  # TODO: ADO 879 - note which companies are removed here, due to mismatch of
+  # sector/tech in the financial data and the portfolio
 
   loanbook_annual_profits <- loanbook_annual_profits %>%
     arrange(
@@ -550,6 +552,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
     join_price_data(df_prices = df_prices) %>%
     calculate_net_profits() %>%
     dcf_model_techlevel(discount_rate = discount_rate)
+  # TODO: ADO 879 - note rows with zero profits/NPVs will produce NaN in the Merton model
 
   qa_annual_profits_lbk <- qa_annual_profits_lbk %>%
     bind_rows(
@@ -583,6 +586,8 @@ for (i in seq(1, nrow(transition_scenarios))) {
   cat("number of rows dropped from technology_exposure by joining financial data
       on company_name, ald_sector and technology = ",
       rows_plan_carsten - nrow(plan_carsten_loanbook), "\n")
+  # TODO: ADO 879 - note which companies are removed here, due to mismatch of
+  # sector/tech in the financial data and the portfolio
   # TODO: what to do with entries that have NAs for pd?
 
   plan_carsten_loanbook <- plan_carsten_loanbook %>%
@@ -618,6 +623,8 @@ for (i in seq(1, nrow(transition_scenarios))) {
         exclusion = NULL,
         risk_free_interest_rate = risk_free_rate
       )
+    # TODO: ADO 879 - note which companies produce missing results due to
+    # insufficient input information (e.g. NAs for financials or 0 equity value)
 
     loanbook_expected_loss <- bind_rows(
       loanbook_expected_loss,
@@ -629,6 +636,8 @@ for (i in seq(1, nrow(transition_scenarios))) {
         port_aum = loan_book_port_aum
       )
     )
+    # TODO: ADO 879 - note which companies produce missing results due to
+    # insufficient output from overall pd changes or related financial data inputs
 
     loanbook_annual_pd_changes <- bind_rows(
       loanbook_annual_pd_changes,
@@ -640,6 +649,8 @@ for (i in seq(1, nrow(transition_scenarios))) {
         risk_free_interest_rate = risk_free_rate
       )
     )
+    # TODO: ADO 879 - note which companies produce missing results due to
+    # insufficient input information (e.g. NAs for financials or 0 equity value)
   } else {
     loanbook_results <- bind_rows(
       loanbook_results,

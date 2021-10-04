@@ -472,6 +472,8 @@ for (i in seq(1, nrow(transition_scenarios))) {
   cat("number of rows dropped from loan book by joining financial data on
       company_name, corporate_bond_ticker, ald_sector and technology = ",
       rows_bonds - nrow(bonds_annual_profits), "\n")
+  # TODO: ADO 879 - note which companies are removed here, due to mismatch of
+  # sector/tech in the financial data and the portfolio
 
   bonds_annual_profits <- bonds_annual_profits %>%
     arrange(
@@ -494,6 +496,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
     join_price_data(df_prices = df_prices) %>%
     calculate_net_profits() %>%
     dcf_model_techlevel(discount_rate = discount_rate)
+  # TODO: ADO 879 - note rows with zero profits/NPVs will produce NaN in the Merton model
 
   qa_annual_profits_cb <- qa_annual_profits_cb %>%
     bind_rows(
@@ -526,6 +529,8 @@ for (i in seq(1, nrow(transition_scenarios))) {
   cat("number of rows dropped from technology_exposure by joining financial data
       on company_name, corporate_bond_ticker, ald_sector and technology = ",
       rows_plan_carsten - nrow(plan_carsten_bonds), "\n")
+  # TODO: ADO 879 - note which companies are removed here, due to mismatch of
+  # sector/tech in the financial data and the portfolio
   # TODO: what to do with entries that have NAs for pd?
 
   plan_carsten_bonds <- plan_carsten_bonds %>%
@@ -561,6 +566,8 @@ for (i in seq(1, nrow(transition_scenarios))) {
         exclusion = NULL,
         risk_free_interest_rate = risk_free_rate
       )
+    # TODO: ADO 879 - note which companies produce missing results due to
+    # insufficient input information (e.g. NAs for financials or 0 equity value)
 
     bonds_expected_loss <- bind_rows(
       bonds_expected_loss,
@@ -572,6 +579,8 @@ for (i in seq(1, nrow(transition_scenarios))) {
         port_aum = bonds_port_aum
       )
     )
+    # TODO: ADO 879 - note which companies produce missing results due to
+    # insufficient output from overall pd changes or related financial data inputs
 
     bonds_annual_pd_changes <- bind_rows(
       bonds_annual_pd_changes,
@@ -583,6 +592,8 @@ for (i in seq(1, nrow(transition_scenarios))) {
         risk_free_interest_rate = risk_free_rate
       )
     )
+    # TODO: ADO 879 - note which companies produce missing results due to
+    # insufficient input information (e.g. NAs for financials or 0 equity value)
   } else {
     bonds_results <- bind_rows(
       bonds_results,
