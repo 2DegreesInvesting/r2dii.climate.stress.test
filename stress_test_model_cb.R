@@ -473,7 +473,8 @@ for (i in seq(1, nrow(transition_scenarios))) {
       financial_data_bonds,
       by = c("company_name", "id" = "corporate_bond_ticker", "ald_sector", "technology")
     )
-  cat("number of rows dropped from bonds portfolio by joining financial data = ",
+  cat("number of rows dropped from loan book by joining financial data on
+      company_name, corporate_bond_ticker, ald_sector and technology = ",
       rows_bonds - nrow(bonds_annual_profits), "\n")
 
   bonds_annual_profits <- bonds_annual_profits %>%
@@ -526,7 +527,8 @@ for (i in seq(1, nrow(transition_scenarios))) {
       financial_data_bonds_pd,
       by = c("company_name", "id" = "corporate_bond_ticker", "ald_sector", "technology")
     )
-  cat("number of rows dropped from technology_exposure by joining financial data = ",
+  cat("number of rows dropped from technology_exposure by joining financial data
+      on company_name, corporate_bond_ticker, ald_sector and technology = ",
       rows_plan_carsten - nrow(plan_carsten_bonds), "\n")
   # TODO: what to do with entries that have NAs for pd?
 
