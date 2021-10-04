@@ -49,7 +49,8 @@ function_paths <- c(
       "set_paths.R",
       "set_tech_trajectories.R",
       "show_carbon_budget.R",
-      "utils.R"
+      "utils.R",
+      "write_results.R"
     )
   )
 )
@@ -181,22 +182,6 @@ risk_free_rate <- cfg_mod$financials$risk_free_rate
 lgd_senior_claims <- cfg_mod$financials$lgd_senior_claims
 lgd_subordinated_claims <- cfg_mod$financials$lgd_subordinated_claims
 
-# technology net profit margins
-## the parameters should be outsorced into a config file at some point
-## they should also be looped over, if multiple scenarios are to be analysed
-net_profit_margin_coal <- cfg_mod$net_profit_margin$coal
-net_profit_margin_coalcap <- cfg_mod$net_profit_margin$coalcap
-net_profit_margin_electric <- cfg_mod$net_profit_margin$electric
-net_profit_margin_gas <- cfg_mod$net_profit_margin$gas
-net_profit_margin_gascap <- cfg_mod$net_profit_margin$gascap
-net_profit_margin_hybrid <- cfg_mod$net_profit_margin$hybrid
-net_profit_margin_ice <- cfg_mod$net_profit_margin$ice
-net_profit_margin_nuclearcap <- cfg_mod$net_profit_margin$nuclearcap
-net_profit_margin_oil <- cfg_mod$net_profit_margin$oil
-net_profit_margin_oilcap <- cfg_mod$net_profit_margin$oilcap
-net_profit_margin_renewablescap <- cfg_mod$net_profit_margin$renewablescap
-net_profit_margin_hydrocap <- cfg_mod$net_profit_margin$hydrocap
-
 # TODO: move to config file
 credit_type <- c(
  # "outstanding"
@@ -220,6 +205,7 @@ financial_data_loans <- read_company_data(path = stresstest_masterdata_files$loa
                                           asset_type = "loans")
 
 
+# Load PACTA results / loans portfolio------------------------
 # TODO: select the right scenarios
 # TODO: select the right geography
 # TODO: must contain term and initial PD
@@ -255,8 +241,7 @@ pacta_loanbook_results_full <- pacta_loanbook_results_full %>%
 pacta_loanbook_results_full <- pacta_loanbook_results_full %>%
   group_by(company_name) %>%
   mutate(
-    term = round(runif(n = 1, min = 1, max = 10), 0),
-    PD_0 = runif(n = 1, min = 0.001, max = 0.1)
+    term = round(runif(n = 1, min = 1, max = 10), 0)
   ) %>%
   ungroup()
 
@@ -308,7 +293,6 @@ capacity_factors_power <- read_capacity_factors(
 )
 
 # Load scenario data----------------------------------------
-
 scen_data_file <- ifelse(twodii_internal == TRUE,
                          path_dropbox_2dii("PortCheck", "00_Data", "01_ProcessedData", "03_ScenarioData", paste0("Scenarios_AnalysisInput_", start_year, ".csv")),
                          file.path(data_location, paste0("Scenarios_AnalysisInput_", start_year, ".csv"))
@@ -351,6 +335,7 @@ scenario_data <- scenario_data %>%
       technology %in% technologies &
       scenario_geography == scenario_geography_filter)
 
+# Load price data----------------------------------------
 df_price <- read_price_data(
     path = file.path(data_location, paste0("prices_data_", price_data_version, ".csv")),
     version = "old",
@@ -359,25 +344,7 @@ df_price <- read_price_data(
   filter(year >= start_year) %>%
   check_price_consistency()
 
-###########################################################################
-# Data wrangling / preparation---------------------------------------------
-###########################################################################
-
-net_profit_margins <- net_profit_margin_setup(
-  net_profit_margin_coal = net_profit_margin_coal,
-  net_profit_margin_coalcap = net_profit_margin_coalcap,
-  net_profit_margin_electric = net_profit_margin_electric,
-  net_profit_margin_gas = net_profit_margin_gas,
-  net_profit_margin_gascap = net_profit_margin_gascap,
-  net_profit_margin_hybrid = net_profit_margin_hybrid,
-  net_profit_margin_ice = net_profit_margin_ice,
-  net_profit_margin_nuclearcap = net_profit_margin_nuclearcap,
-  net_profit_margin_oil = net_profit_margin_oil,
-  net_profit_margin_renewablescap = net_profit_margin_renewablescap,
-  net_profit_margin_hydrocap = net_profit_margin_hydrocap,
-  net_profit_margin_oilcap = net_profit_margin_oilcap
-)
-
+# Load excluded companies-------------------------------
 if (company_exclusion) {
   excluded_companies <- readr::read_csv(
     file.path(data_location, "exclude-companies.csv"),
@@ -385,16 +352,51 @@ if (company_exclusion) {
   )
 }
 
+###########################################################################
+# Data wrangling / preparation---------------------------------------------
+###########################################################################
 
-###############
-# Prepare data for stress test model----------------------------------------
-###############
+# Prepare net profit margins loans----------------------
 
+financial_data_loans <- financial_data_loans %>%
+  dplyr::mutate(net_profit_margin = profit_margin_preferred) %>%
+  #TODO: logic unclear thus far
+  dplyr::mutate(
+    net_profit_margin = dplyr::case_when(
+      net_profit_margin < 0 & dplyr::between(profit_margin_unpreferred, 0, 1) ~ profit_margin_unpreferred,
+      net_profit_margin < 0 & profit_margin_unpreferred < 0 ~ 0,
+      net_profit_margin < 0 & profit_margin_unpreferred > 1 ~ 0,
+      net_profit_margin > 1 & dplyr::between(profit_margin_unpreferred, 0, 1) ~ profit_margin_unpreferred,
+      net_profit_margin > 1 & profit_margin_unpreferred > 1 ~ 1,
+      net_profit_margin > 1 & profit_margin_unpreferred < 0 ~ 1,
+      TRUE ~ net_profit_margin
+    )
+  ) %>%
+  dplyr::select(-c(profit_margin_preferred, profit_margin_unpreferred)) %>%
+  dplyr::rename(
+    debt_equity_ratio = leverage_s_avg,
+    volatility = asset_volatility_s_avg
+  ) %>%
+  dplyr::mutate(company_name = stringr::str_to_lower(.data$company_name)) %>%
+  # ADO 879 - remove year and production/EFs to simplify joins that do not need yearly variation yet
+  dplyr::filter(.data$year == .env$start_year) %>%
+  dplyr::select(
+    -c(
+      .data$year, .data$ald_production_unit, .data$ald_production,
+      .data$ald_emissions_factor_unit, .data$ald_emissions_factor
+    )
+  )
+
+
+#TODO: any logic/bounds needed for debt/equity ratio and volatility?
+
+# Prepare pacta results to match project specs---------------------------------
 nesting_vars <- c(
   "investor_name", "portfolio_name", "equity_market", "ald_sector", "technology",
   "scenario", "allocation", "scenario_geography", "company_name"
 )
 
+# ...for loans portfolio-------------------------------------------------------
 pacta_loanbook_results <- pacta_loanbook_results_full %>%
   mutate(scenario = str_replace(scenario, "NPSRTS", "NPS")) %>%
   tidyr::complete(
@@ -424,12 +426,10 @@ check_scenario_availability(
   scenarios = scenarios_filter
 )
 
+# Prepare sector exposure data-------------------------------------------------
+# ...for loans portfolio-------------------------------------------------------
 # TODO: validate
 loan_book_port_aum <- calculate_aum(sector_exposures)
-
-###########################################################################
-# Calculation of results---------------------------------------------------
-###########################################################################
 
 #### OPEN: both objects in condition not available as of now,
 # since they are read in into a loop afterwards
@@ -443,7 +443,9 @@ loan_book_port_aum <- calculate_aum(sector_exposures)
 ## 2) there are cases for which the linear compensation is so strong, that the LS production falls below zero, which is then set to zero (as negative production is not possible), hence we have an underestimation in overshoot
 ## For these two reasons, if we use company production plans, we perform the integral method on technology level (and not on company level), until we had a proper session on how to deal with these issues
 
-
+###########################################################################
+# Calculation of results---------------------------------------------------
+###########################################################################
 
 # Bank loan book results (flat multiplier PRA 0.15) ---------------------------------------------------------
 
@@ -452,7 +454,6 @@ qa_annual_profits_lbk <- c()
 loanbook_expected_loss <- c()
 loanbook_annual_pd_changes <- c()
 qa_pd_changes <- c()
-
 
 for (i in seq(1, nrow(transition_scenarios))) {
   transition_scenario_i <- transition_scenarios[i, ]
@@ -518,11 +519,40 @@ for (i in seq(1, nrow(transition_scenarios))) {
       )
   }
 
+  rows_loanbook <- nrow(loanbook_annual_profits)
+  loanbook_annual_profits <- loanbook_annual_profits %>%
+    # ADO 879: removed company id from join, but should be re-introduced later on
+    dplyr::inner_join(
+      financial_data_loans,
+      by = c("company_name", "ald_sector", "technology")
+    )
+  cat("number of rows dropped from loan book by joining financial data on
+      company_name, ald_sector and technology = ",
+      rows_loanbook - nrow(loanbook_annual_profits), "\n")
+  # TODO: ADO 879 - note which companies are removed here, due to mismatch of
+  # sector/tech in the financial data and the portfolio
+
+  loanbook_annual_profits <- loanbook_annual_profits %>%
+    arrange(
+      scenario_name, investor_name, portfolio_name, scenario_geography, id,
+      company_name, ald_sector, technology, year
+    ) %>%
+    group_by(
+      scenario_name, investor_name, portfolio_name, scenario_geography, id,
+      company_name, ald_sector, technology
+    ) %>%
+    # NOTE: this assumes emissions factors stay constant after forecast and prod not continued
+    tidyr::fill(
+      company_id, pd, net_profit_margin, debt_equity_ratio, volatility,
+      .direction = "down"
+    ) %>%
+    ungroup()
+
   loanbook_annual_profits <- loanbook_annual_profits %>%
     join_price_data(df_prices = df_prices) %>%
-    join_net_profit_margins(net_profit_margins = net_profit_margins) %>%
     calculate_net_profits() %>%
     dcf_model_techlevel(discount_rate = discount_rate)
+  # TODO: ADO 879 - note rows with zero profits/NPVs will produce NaN in the Merton model
 
   qa_annual_profits_lbk <- qa_annual_profits_lbk %>%
     bind_rows(
@@ -532,13 +562,44 @@ for (i in seq(1, nrow(transition_scenarios))) {
 
   plan_carsten_loanbook <- pacta_loanbook_results %>%
     filter(
-      year == start_year,
-      technology %in% technologies,
-      scenario_geography == scenario_geography_filter
-    ) %>%
-    distinct(investor_name, portfolio_name, company_name, ald_sector, technology,
-             scenario_geography, year, plan_carsten, plan_sec_carsten, term,
-             PD_0)
+      .data$year == .env$start_year,
+      .data$technology %in% .env$technologies,
+      .data$scenario_geography == .env$scenario_geography_filter,
+      .data$scenario %in% .env$scenario_to_follow_ls
+    )
+
+  financial_data_loans_pd <- financial_data_loans %>%
+    select(company_name, company_id, ald_sector, technology, pd)
+
+  report_duplicates(
+    data = financial_data_loans_pd,
+    cols = names(financial_data_loans_pd)
+  )
+
+  rows_plan_carsten <- nrow(plan_carsten_loanbook)
+  plan_carsten_loanbook <- plan_carsten_loanbook %>%
+    # ADO 879: removed company id from join, but should be re-introduced later on
+    dplyr::inner_join(
+      financial_data_loans_pd,
+      by = c("company_name", "ald_sector", "technology")
+    )
+  cat("number of rows dropped from technology_exposure by joining financial data
+      on company_name, ald_sector and technology = ",
+      rows_plan_carsten - nrow(plan_carsten_loanbook), "\n")
+  # TODO: ADO 879 - note which companies are removed here, due to mismatch of
+  # sector/tech in the financial data and the portfolio
+  # TODO: what to do with entries that have NAs for pd?
+
+  plan_carsten_loanbook <- plan_carsten_loanbook %>%
+    select(
+      investor_name, portfolio_name, company_name, ald_sector, technology,
+      scenario_geography, year, plan_carsten, plan_sec_carsten, term, pd
+    )
+
+  report_duplicates(
+    data = plan_carsten_loanbook,
+    cols = names(plan_carsten_loanbook)
+  )
 
   if (!exists("excluded_companies")) {
     loanbook_results <- bind_rows(
@@ -549,9 +610,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
         shock_scenario = shock_scenario,
         div_netprofit_prop_coef = div_netprofit_prop_coef,
         plan_carsten = plan_carsten_loanbook,
-        # TODO: what to do with this? some sector level exposure for loanbook?
         port_aum = loan_book_port_aum,
-        # TODO: what to do with this? Other multiplier?
         flat_multiplier = 0.15,
         exclusion = NULL
       )
@@ -564,6 +623,8 @@ for (i in seq(1, nrow(transition_scenarios))) {
         exclusion = NULL,
         risk_free_interest_rate = risk_free_rate
       )
+    # TODO: ADO 879 - note which companies produce missing results due to
+    # insufficient input information (e.g. NAs for financials or 0 equity value)
 
     loanbook_expected_loss <- bind_rows(
       loanbook_expected_loss,
@@ -575,6 +636,8 @@ for (i in seq(1, nrow(transition_scenarios))) {
         port_aum = loan_book_port_aum
       )
     )
+    # TODO: ADO 879 - note which companies produce missing results due to
+    # insufficient output from overall pd changes or related financial data inputs
 
     loanbook_annual_pd_changes <- bind_rows(
       loanbook_annual_pd_changes,
@@ -586,7 +649,8 @@ for (i in seq(1, nrow(transition_scenarios))) {
         risk_free_interest_rate = risk_free_rate
       )
     )
-
+    # TODO: ADO 879 - note which companies produce missing results due to
+    # insufficient input information (e.g. NAs for financials or 0 equity value)
   } else {
     loanbook_results <- bind_rows(
       loanbook_results,
@@ -596,9 +660,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
         shock_scenario = shock_scenario,
         div_netprofit_prop_coef = div_netprofit_prop_coef,
         plan_carsten = plan_carsten_loanbook,
-        # TODO: what to do with this? some sector level exposure for loanbook?
         port_aum = loan_book_port_aum,
-        # TODO: what to do with this? Other multiplier?
         flat_multiplier = 0.15,
         exclusion = excluded_companies
       )
@@ -637,67 +699,23 @@ for (i in seq(1, nrow(transition_scenarios))) {
   }
 }
 
-# Output corporate loan book results on company level
-loanbook_results <- loanbook_results %>%
-  relocate(
-    investor_name, portfolio_name, company_name, scenario_geography,
-    scenario_name, year_of_shock, duration_of_shock,
-    ald_sector, technology, production_shock_perc, asset_portfolio_value,
-    tech_company_exposure, VaR_tech_company, tech_company_value_change,
-    company_exposure, VaR_company, company_value_change,
-    technology_exposure, VaR_technology, technology_value_change,
-    technology_exposure, VaR_technology, technology_value_change,
-    sector_exposure, VaR_sector, sector_value_change,
-    analysed_sectors_exposure, VaR_analysed_sectors,
-    analysed_sectors_value_change, portfolio_aum, portfolio_value_change_perc,
-    portfolio_value_change
-  )
+# Output corporate loan book results
+loanbook_results %>% write_results(
+  path_to_results = results_path,
+  investorname = investor_name_placeholder,
+  asset_type = "loans",
+  level = calculation_level,
+  file_type = "csv"
+)
 
-loanbook_results %>%
-  readr::write_csv(file.path(
-      results_path,
-      paste0("stress_test_results_lb_comp_", project_name, ".csv")
-    ))
-
-# Output corporate loan book results on portfolio level
-loanbook_results_pf <- loanbook_results %>%
-  select(
-    -c(
-      company_name,
-      VaR_tech_company,
-      tech_company_exposure,
-      tech_company_value_change,
-      VaR_company,
-      company_exposure,
-      company_value_change
-    )
-  ) %>%
-  distinct_all() %>%
-  relocate(
-    investor_name, portfolio_name, scenario_geography, scenario_name,
-    year_of_shock, duration_of_shock, ald_sector, technology,
-    production_shock_perc, asset_portfolio_value, technology_exposure,
-    VaR_technology, technology_value_change, sector_exposure, VaR_sector,
-    sector_value_change, analysed_sectors_exposure, VaR_analysed_sectors,
-    analysed_sectors_value_change, portfolio_aum, portfolio_value_change_perc,
-    portfolio_value_change
-  ) %>%
-  arrange(year_of_shock, ald_sector, technology)
-
-loanbook_results_pf %>%
-  readr::write_csv(file.path(
-      results_path,
-      paste0("stress_test_results_lb_port_", project_name, ".csv")
-    ))
-
-
+# Output loan book credit risk results
 loanbook_expected_loss <- loanbook_expected_loss %>%
   dplyr::select(
     scenario_name, scenario_geography, investor_name, portfolio_name,
     company_name, id, ald_sector, technology, equity_0_baseline,
     equity_0_late_sudden, debt, volatility, risk_free_rate, term,
     Survival_baseline, Survival_late_sudden, PD_baseline, PD_late_sudden,
-    PD_change, PD_0, lgd, percent_exposure, exposure_at_default,
+    PD_change, pd, lgd, percent_exposure, exposure_at_default,
     expected_loss_baseline, expected_loss_late_sudden
   ) %>%
   dplyr::arrange(
