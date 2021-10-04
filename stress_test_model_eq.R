@@ -198,8 +198,6 @@ pacta_equity_results_full <- read_pacta_results(
 
 pacta_equity_results_full <- pacta_equity_results_full %>%
   dplyr::filter(!is.na(.data$scenario)) %>%
-  check_scenario_settings(scenario_selections = scenarios) %>%
-  dplyr::filter(.data$scenario %in% .env$scenarios) %>%
   # TODO: temporary fix, remove once all scenario data is used from scenario file
   filter(!(str_detect(.data$scenario, "ETP") & .data$ald_sector == "Power")) %>%
   dplyr::mutate(
@@ -326,6 +324,7 @@ nesting_vars <- c(
 # ...for equity portfolio------------------------------------------------------
 pacta_equity_results <- pacta_equity_results_full %>%
   mutate(scenario = str_replace(scenario, "NPSRTS", "NPS")) %>%
+  check_scenario_settings(scenario_selections = scenarios_filter) %>%
   tidyr::complete(
     year = seq(start_year, start_year + time_horizon),
     nesting(!!!syms(nesting_vars))
