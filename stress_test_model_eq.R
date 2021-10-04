@@ -442,14 +442,11 @@ for (i in seq(1, nrow(transition_scenarios))) {
       )
   }
 
-  rows_equity <- nrow(equity_annual_profits)
   equity_annual_profits <- equity_annual_profits %>%
-    dplyr::inner_join(
+    left_join(
       financial_data_equity,
       by = c("company_name", "ald_sector", "technology", "year")
     )
-  cat("number of rows dropped from equity portfolio by joining financial data = ",
-      rows_equity - nrow(equity_annual_profits), "\n")
 
   equity_annual_profits <- equity_annual_profits %>%
     arrange(
@@ -470,6 +467,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
 
   equity_annual_profits <- equity_annual_profits %>%
     join_price_data(df_prices = df_prices) %>%
+    # join_net_profit_margins(net_profit_margins = net_profit_margins) %>%
     calculate_net_profits() %>%
     dcf_model_techlevel(discount_rate = discount_rate)
 
@@ -490,12 +488,8 @@ for (i in seq(1, nrow(transition_scenarios))) {
     select(
       investor_name, portfolio_name, company_name, ald_sector, technology,
       scenario_geography, year, plan_carsten, plan_sec_carsten
-    )
-
-  report_duplicates(
-    data = plan_carsten_equity,
-    cols = names(plan_carsten_equity)
-  )
+    ) %>%
+    distinct(across(everything()))
 
   if (!exists("excluded_companies")) {
     equity_results <- bind_rows(
