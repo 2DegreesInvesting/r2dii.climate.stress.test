@@ -60,6 +60,7 @@ format_loanbook_st <- function(
   group_vars <- c(
     "investor_name",
     "portfolio_name",
+    "scenario_source",
     "scenario",
     "allocation",
     "equity_market",
@@ -150,6 +151,9 @@ format_loanbook_st <- function(
         .data$scenario == "target_b2ds" ~ "B2DS",
         TRUE ~ .data$scenario
       ),
+      scenario_source = stringr::str_to_upper(
+        stringr::str_remove(.data$scenario_source, "_")
+      ),
       ald_sector = dplyr::case_when(
         .data$ald_sector == "power" ~ "Power",
         .data$ald_sector == "oil and gas" ~ "Oil&Gas",
@@ -178,6 +182,7 @@ format_loanbook_st <- function(
   output_has_required_cols <- all(c(
     "investor_name",
     "portfolio_name",
+    "scenario_source",
     "scenario",
     "allocation",
     # "id",
