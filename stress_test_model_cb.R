@@ -27,6 +27,7 @@ function_paths <- c(
       "apply_filters.R",
       "asset_value_at_risk.R",
       "calculate_annual_pd_changes.R",
+      "calculate_aum.R",
       "calculate_overall_pd_changes.R",
       "create_empty_result_df_pd_changes.R",
       "company_asset_value_at_risk.R",
@@ -49,6 +50,7 @@ function_paths <- c(
       "set_tech_trajectories.R",
       "show_carbon_budget.R",
       "utils.R",
+      "wrangle_and_check.R",
       "write_results.R"
     )
   )
@@ -222,7 +224,8 @@ pacta_bonds_results_full <- pacta_bonds_results_full %>%
   ungroup()
 
 # Load sector exposures of portfolio------------------------
-sector_exposures <- readRDS(file.path(proc_input_path, "overview_portfolio.rda"))
+sector_exposures <- readRDS(file.path(proc_input_path, "overview_portfolio.rda")) %>%
+  wrangle_and_check_sector_exposures_eq_cb(asset_type = "Bonds")
 
 # Load policy shock transition scenarios--------------------
 transition_scenarios <- read_transition_scenarios(
@@ -370,14 +373,7 @@ check_scenario_availability(
 
 # Prepare sector exposure data-------------------------------------------------
 # ...for bonds portfolio-------------------------------------------------------
-bonds_port_aum <- sector_exposures %>%
-  group_by(investor_name, portfolio_name) %>%
-  filter(asset_type == "Bonds") %>%
-  summarise(
-    asset_portfolio_value = sum(valid_value_usd),
-    .groups = "drop_last"
-  )
-
+bonds_port_aum <- calculate_aum(sector_exposures)
 
 #### OPEN: both objects in condition not available as of now,
 # since they are read in into a loop afterwards
