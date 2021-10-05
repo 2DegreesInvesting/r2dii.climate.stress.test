@@ -228,13 +228,7 @@ pacta_loanbook_results_full <- pacta_loanbook_results_full %>%
   dplyr::filter(!is.na(.data$scenario)) %>%
   check_scenario_settings(scenario_selections = scenarios) %>%
   dplyr::filter(.data$scenario %in% .env$scenarios) %>%
-  dplyr::mutate(
-    scenario = dplyr::if_else(
-      stringr::str_detect(.data$scenario, "_"),
-      stringr::str_extract(.data$scenario, "[^_]*$"),
-      .data$scenario
-    )
-  ) %>%
+  dplyr::mutate(scenario = sub(".*?_", "", scenario)) %>%
   check_portfolio_consistency(start_year = start_year)
 
 # TODO: temporary addition, needs to come directly from input
