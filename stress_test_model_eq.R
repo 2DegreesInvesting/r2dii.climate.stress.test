@@ -201,7 +201,7 @@ pacta_equity_results_full <- pacta_equity_results_full %>%
   check_scenario_settings(scenario_selections = scenarios) %>%
   dplyr::filter(.data$scenario %in% .env$scenarios) %>%
   # TODO: temporary fix, remove once all scenario data is used from scenario file
-  filter(!(str_detect(.data$scenario, "ETP") & .data$ald_sector == "Power")) %>%
+  filter(!(scenario == "ETP2017_NPS" & ald_sector == "Power")) %>%
   dplyr::mutate(scenario = sub(".*?_", "", scenario)) %>%
   check_portfolio_consistency(start_year = start_year)
 
