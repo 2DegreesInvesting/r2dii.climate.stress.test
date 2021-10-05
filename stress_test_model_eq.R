@@ -107,31 +107,11 @@ time_horizon <- cfg$AnalysisPeriod$Years.Horizon
 scenario_geography_filter <- "Global"
 # scenario_geography_filter <- cfg$Lists$Scenario.Geography.List
 
-# ALLOW ONLY precisely the scenarios that are supposed to be kept from the portfolio and scen_data
-# NOTE scenarios from the same source, same secenario name and diff years will likely fail
-# E.g. WEO2019_SDS AND WEO2020_SDS will produce near-duplicates that break the analysis
-scenarios <- c(
-  # "B2DS",
-  # "CPS",
-  # "NPS",
-  # "NPSRTS",
-  # "SDS"#,
-  # "ETP2017_B2DS",
-  "ETP2017_NPS",
-  "ETP2017_SDS",
-  # "WEO2019_CPS",
-  "WEO2019_NPS",
-  "WEO2019_SDS" # ,
-  # "WEO2020_NPS",
-  # "WEO2020_SDS"
-)
-# scenarios <- cfg$Large.Universe.Filter$SCENARIO.FILTER
-
 allocation_method_equity <- "portfolio_weight"
 equity_market_filter <- cfg$Lists$Equity.Market.List
 
 sectors <- c("Power", "Oil&Gas", "Coal", "Automotive")
-# setors <- cfg$Large.Universe.Filter$SECTOR.FILTER
+
 technologies <- c(
   "Electric", "Hybrid", "ICE",
   "CoalCap", "GasCap", "RenewablesCap", "NuclearCap", "HydroCap", "OilCap",
@@ -198,8 +178,8 @@ pacta_equity_results_full <- read_pacta_results(
 
 pacta_equity_results_full <- pacta_equity_results_full %>%
   dplyr::filter(!is.na(.data$scenario)) %>%
-  check_scenario_settings(scenario_selections = scenarios) %>%
-  dplyr::filter(.data$scenario %in% .env$scenarios) %>%
+  check_scenario_settings(scenario_selections = allowed_scenarios_eq_cb) %>%
+  dplyr::filter(.data$scenario %in% .env$allowed_scenarios_eq_cb) %>%
   # TODO: temporary fix, remove once all scenario data is used from scenario file
   filter(!(scenario == "ETP2017_NPS" & ald_sector == "Power")) %>%
   dplyr::mutate(scenario = sub(".*?_", "", scenario)) %>%
@@ -312,17 +292,12 @@ financial_data_equity <- financial_data_equity %>%
 
 
 # Prepare pacta results to match project specs---------------------------------
-nesting_vars <- c(
-  "investor_name", "portfolio_name", "equity_market", "ald_sector", "technology",
-  "scenario", "allocation", "scenario_geography", "company_name"
-)
-
 # ...for equity portfolio------------------------------------------------------
 pacta_equity_results <- pacta_equity_results_full %>%
   mutate(scenario = str_replace(scenario, "NPSRTS", "NPS")) %>%
   tidyr::complete(
     year = seq(start_year, start_year + time_horizon),
-    nesting(!!!syms(nesting_vars))
+    nesting(!!!syms(nesting_vars_lookup))
   ) %>%
   mutate(plan_tech_prod = dplyr::if_else(is.na(plan_tech_prod), 0, plan_tech_prod)) %>%
   apply_filters(

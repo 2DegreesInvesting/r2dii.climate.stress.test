@@ -385,17 +385,12 @@ financial_data_loans <- financial_data_loans %>%
 #TODO: any logic/bounds needed for debt/equity ratio and volatility?
 
 # Prepare pacta results to match project specs---------------------------------
-nesting_vars <- c(
-  "investor_name", "portfolio_name", "equity_market", "ald_sector", "technology",
-  "scenario", "allocation", "scenario_geography", "company_name"
-)
-
 # ...for loans portfolio-------------------------------------------------------
 pacta_loanbook_results <- pacta_loanbook_results_full %>%
   mutate(scenario = str_replace(scenario, "NPSRTS", "NPS")) %>%
   tidyr::complete(
     year = seq(start_year, start_year + time_horizon),
-    nesting(!!!syms(nesting_vars))
+    nesting(!!!syms(nesting_vars_lookup))
   ) %>%
   mutate(plan_tech_prod = dplyr::if_else(is.na(plan_tech_prod), 0, plan_tech_prod)) %>%
   apply_filters(
