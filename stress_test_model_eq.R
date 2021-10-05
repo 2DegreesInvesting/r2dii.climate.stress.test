@@ -202,13 +202,7 @@ pacta_equity_results_full <- pacta_equity_results_full %>%
   dplyr::filter(.data$scenario %in% .env$scenarios) %>%
   # TODO: temporary fix, remove once all scenario data is used from scenario file
   filter(!(str_detect(.data$scenario, "ETP") & .data$ald_sector == "Power")) %>%
-  dplyr::mutate(
-    scenario = dplyr::if_else(
-      stringr::str_detect(.data$scenario, "_"),
-      stringr::str_extract(.data$scenario, "[^_]*$"),
-      .data$scenario
-    )
-  ) %>%
+  dplyr::mutate(scenario = sub(".*?_", "", scenario)) %>%
   check_portfolio_consistency(start_year = start_year)
 
 
