@@ -442,10 +442,16 @@ for (i in seq(1, nrow(transition_scenarios))) {
     cols = names(financial_data_bonds_pd)
   )
 
+  rows_plan_carsten <- nrow(plan_carsten_bonds)
+
   plan_carsten_bonds <- plan_carsten_bonds %>%
-    left_join(financial_data_bonds_pd, by = c("company_name", "id" = "corporate_bond_ticker", "ald_sector", "technology"))
-  # TODO: what to do with entries that have NAs for pd?
-  # TODO: kick out NAs and record the diff
+    dplyr::inner_join(financial_data_bonds_pd, by = c("company_name", "id" = "corporate_bond_ticker", "ald_sector", "technology"))
+
+  cat("number of rows dropped from technology_exposure by joining financial data
+      on company_name, corporate_bond_ticker, ald_sector and technology = ",
+      rows_plan_carsten - nrow(plan_carsten_bonds), "\n")
+  # TODO: ADO 879 - note which companies are removed here, due to mismatch
+
   bonds_annual_profits <- bonds_annual_profits %>%
     filter(!is.na(company_id))
 
@@ -453,8 +459,12 @@ for (i in seq(1, nrow(transition_scenarios))) {
     select(
       investor_name, portfolio_name, company_name, ald_sector, technology,
       scenario_geography, year, plan_carsten, plan_sec_carsten, term, pd
-    ) %>%
-    distinct_all()
+    )
+
+  report_duplicates(
+    data = plan_carsten_bonds,
+    cols = names(plan_carsten_bonds)
+  )
 
   if (!exists("excluded_companies")) {
     bonds_results <- bind_rows(
