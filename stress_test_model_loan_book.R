@@ -136,14 +136,6 @@ scenarios <- c(
 allocation_method_equity <- "portfolio_weight"
 equity_market_filter <- cfg$Lists$Equity.Market.List
 
-technologies <- c(
-  "Electric", "Hybrid", "ICE",
-  "CoalCap", "GasCap", "RenewablesCap", "NuclearCap", "HydroCap", "OilCap",
-  "Oil", "Gas",
-  "Coal"
-)
-# technologies <- cfg$Lists$Technology.List
-
 #### Model variables----------------------------------------
 #### OPEN: This should be moved into a StressTestModelParameters.yml
 cfg_mod <- config::get(file = "model_parameters.yml")
@@ -323,14 +315,14 @@ scenario_data <- scenario_data %>%
   correct_automotive_scendata(interpolation_years = c(2031:2034, 2036:2039)) %>%
   filter(
     ald_sector %in% sectors_loanbook &
-      technology %in% technologies &
+      technology %in% technologies_lookup &
       scenario_geography == scenario_geography_filter)
 
 # Load price data----------------------------------------
 df_price <- read_price_data(
     path = file.path(data_location, paste0("prices_data_", price_data_version, ".csv")),
     version = "old",
-    expected_technologies = technologies
+    expected_technologies = technologies_lookup
   ) %>%
   filter(year >= start_year) %>%
   check_price_consistency()
@@ -393,7 +385,7 @@ pacta_loanbook_results <- pacta_loanbook_results_full %>%
   apply_filters(
     investor = investor_name_placeholder,
     sectors = sectors_loanbook,
-    technologies = technologies,
+    technologies = technologies_lookup,
     scenario_geography_filter = scenario_geography_filter,
     scenarios = scenarios_filter,
     allocation_method = allocation_method_equity,
@@ -549,7 +541,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
   plan_carsten_loanbook <- pacta_loanbook_results %>%
     filter(
       .data$year == .env$start_year,
-      .data$technology %in% .env$technologies,
+      .data$technology %in% technologies_lookup,
       .data$scenario_geography == .env$scenario_geography_filter,
       .data$scenario %in% .env$scenario_to_follow_ls
     )

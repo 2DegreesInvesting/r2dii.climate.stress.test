@@ -50,7 +50,7 @@ wrangle_and_check_pacta_results_eq_cb <- function(pacta_results, start_year, tim
     apply_filters(
       investor = investor_name_placeholder,
       sectors = sectors_lookup,
-      technologies = technologies,
+      technologies = technologies_lookup,
       scenario_geography_filter = scenario_geography_filter,
       scenarios = scenarios_filter,
       allocation_method = allocation_method_equity,

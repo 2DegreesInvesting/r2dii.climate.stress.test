@@ -22,3 +22,11 @@ allowed_scenarios_eq_cb <- c(
 
 # vector holding considered sectors in stress testing
 sectors_lookup <- c("Power", "Oil&Gas", "Coal", "Automotive")
+
+# vector holding considered technologies in stress testing
+technologies_lookup <- c(
+  "Electric", "Hybrid", "ICE",
+  "CoalCap", "GasCap", "RenewablesCap", "NuclearCap", "HydroCap", "OilCap",
+  "Oil", "Gas",
+  "Coal"
+)
