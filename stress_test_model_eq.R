@@ -175,7 +175,8 @@ pacta_equity_results_full <- read_pacta_results(
   asset_type = "equity",
   level = calculation_level
 ) %>%
-  wrangle_and_check_pacta_results_eq_cb(start_year = start_year)
+  wrangle_and_check_pacta_results_eq_cb(start_year = start_year,
+                                        time_horizon = time_horizon)
 
 # Load sector exposures of portfolio------------------------
 sector_exposures <- readRDS(file.path(proc_input_path, "overview_portfolio.rda")) %>%
