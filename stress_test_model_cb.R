@@ -387,8 +387,17 @@ for (i in seq(1, nrow(transition_scenarios))) {
       )
   }
 
+  rows_loanbook <- nrow(bond_annual_profits)
+
   bonds_annual_profits <- bonds_annual_profits %>%
-    left_join(financial_data_bonds, by = c("company_name", "id" = "corporate_bond_ticker", "ald_sector", "technology", "year"))
+    dplyr::inner_join(financial_data_bonds,
+      by = c("company_name", "id" = "corporate_bond_ticker", "ald_sector", "technology", "year")
+    )
+
+  cat("number of rows dropped from loan book by joining financial data on
+      company_name, corporate_bond_ticker, ald_sector, technology and year ",
+      rows_loanbook - nrow(bonds_annual_profits), "\n")
+  # TODO: ADO 879 - note which companies are removed here, due to mismatch
 
   bonds_annual_profits <- bonds_annual_profits %>%
     arrange(
