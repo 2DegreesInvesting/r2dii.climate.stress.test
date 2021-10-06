@@ -29,3 +29,39 @@ wrangle_and_check_sector_exposures_eq_cb <- function(sector_exposures, asset_typ
 
   return(valid_sector_exposures)
 }
+
+
+wrangle_and_check_pacta_results_eq_cb <- function(pacta_results, start_year) {
+
+  wrangled_pacta_results <- pacta_results %>%
+    dplyr::filter(!is.na(.data$scenario)) %>%
+    check_scenario_settings(scenario_selections = allowed_scenarios_eq_cb) %>%
+    dplyr::filter(.data$scenario %in% allowed_scenarios_eq_cb) %>%
+    # TODO: temporary fix, remove once all scenario data is used from scenario file
+    filter(!(scenario == "ETP2017_NPS" & ald_sector == "Power")) %>%
+    dplyr::mutate(scenario = sub(".*?_", "", scenario)) %>%
+    check_portfolio_consistency(start_year = start_year)
+
+  # pacta_equity_results <- pacta_equity_results_full %>%
+  #   mutate(scenario = str_replace(scenario, "NPSRTS", "NPS")) %>%
+  #   tidyr::complete(
+  #     year = seq(start_year, start_year + time_horizon),
+  #     nesting(!!!syms(nesting_vars_lookup))
+  #   ) %>%
+  #   mutate(plan_tech_prod = dplyr::if_else(is.na(plan_tech_prod), 0, plan_tech_prod)) %>%
+  #   apply_filters(
+  #     investor = investor_name_placeholder,
+  #     sectors = sectors,
+  #     technologies = technologies,
+  #     scenario_geography_filter = scenario_geography_filter,
+  #     scenarios = scenarios_filter,
+  #     allocation_method = allocation_method_equity,
+  #     start_analysis = start_year
+  #   ) %>%
+  #   filter(
+  #     allocation == allocation_method_equity,
+  #     equity_market == equity_market_filter
+  #   ) %>%
+  #   distinct_all()
+
+}
