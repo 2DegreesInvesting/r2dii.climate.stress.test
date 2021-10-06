@@ -58,7 +58,7 @@ wrangle_and_check_pacta_results_eq_cb <- function(pacta_results, start_year, tim
     check_scenario_settings(scenario_selections = allowed_scenarios_eq_cb) %>%
     dplyr::filter(.data$scenario %in% allowed_scenarios_eq_cb) %>%
     # TODO: temporary fix, remove once all scenario data is used from scenario file
-    dplyr::filter(!(.data$scenario == "ETP2017_NPS" & ald_sector == "Power")) %>%
+    dplyr::filter(!(.data$scenario == "ETP2017_NPS" & .data$ald_sector == "Power")) %>%
     dplyr::mutate(scenario = sub(".*?_", "", scenario)) %>%
     check_portfolio_consistency(start_year = start_year) %>%
     dplyr::mutate(scenario = str_replace(.data$scenario, "NPSRTS", "NPS")) %>%
