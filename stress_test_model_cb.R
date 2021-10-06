@@ -489,6 +489,9 @@ for (i in seq(1, nrow(transition_scenarios))) {
         risk_free_interest_rate = risk_free_rate
       )
 
+    # TODO: ADO 879 - note which companies produce missing results due to
+    # insufficient input information (e.g. NAs for financials or 0 equity value)
+
     bonds_expected_loss <- bind_rows(
       bonds_expected_loss,
       company_expected_loss(
@@ -500,6 +503,9 @@ for (i in seq(1, nrow(transition_scenarios))) {
       )
     )
 
+    # TODO: ADO 879 - note which companies produce missing results due to
+    # insufficient output from overall pd changes or related financial data inputs
+
     bonds_annual_pd_changes <- bind_rows(
       bonds_annual_pd_changes,
       calculate_pd_change_annual(
@@ -510,6 +516,9 @@ for (i in seq(1, nrow(transition_scenarios))) {
         risk_free_interest_rate = risk_free_rate
       )
     )
+    # TODO: ADO 879 - note which companies produce missing results due to
+    # insufficient input information (e.g. NAs for financials or 0 equity value)
+
   } else {
     bonds_results <- bind_rows(
       bonds_results,
@@ -539,7 +548,6 @@ for (i in seq(1, nrow(transition_scenarios))) {
         data = bonds_overall_pd_changes,
         loss_given_default = lgd_subordinated_claims,
         exposure_at_default = plan_carsten_bonds,
-        # TODO: what to do with this? some sector level exposure for loanbook?
         port_aum = bonds_port_aum
       )
     )
