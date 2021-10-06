@@ -278,6 +278,13 @@ financial_data_bonds <- financial_data_bonds %>%
   dplyr::rename(
     debt_equity_ratio = leverage_s_avg,
     volatility = asset_volatility_s_avg
+  ) %>%
+  dplyr::filter(.data$year == .env$start_year) %>%
+  dplyr::select(
+    -c(
+      .data$year, .data$ald_production_unit, .data$ald_production,
+      .data$ald_emissions_factor_unit, .data$ald_emissions_factor
+    )
   )
 #TODO: any logic/bounds needed for debt/equity ratio and volatility?
 
