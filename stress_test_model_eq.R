@@ -416,9 +416,10 @@ for (i in seq(1, nrow(transition_scenarios))) {
 
   plan_carsten_equity <- pacta_equity_results %>%
     filter(
-      year == start_year,
-      technology %in% technologies_lookup,
-      scenario_geography == scenario_geography_filter
+      .data$year == start_year,
+      .data$technology %in% technologies_lookup,
+      .data$scenario_geography == scenario_geography_filter,
+      .data$scenario %in% .env$scenario_to_follow_ls
     )
 
   plan_carsten_equity <- plan_carsten_equity %>%
