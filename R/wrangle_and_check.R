@@ -57,7 +57,7 @@ wrangle_and_check_pacta_results_eq_cb <- function(pacta_results, start_year, tim
       start_analysis = start_year
     ) %>%
     filter(
-      allocation == allocation_method_equity,
+      allocation == allocation_method_lookup,
       equity_market == equity_market_filter
     ) %>%
     distinct_all()
