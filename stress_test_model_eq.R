@@ -252,7 +252,7 @@ if (company_exclusion) {
 
 financial_data_equity <- financial_data_equity %>%
   dplyr::mutate(net_profit_margin = profit_margin_preferred) %>%
-  #TODO: logic unclear thus far
+  # TODO: logic unclear thus far
   dplyr::mutate(
     net_profit_margin = dplyr::case_when(
       net_profit_margin < 0 & dplyr::between(profit_margin_unpreferred, 0, 1) ~ profit_margin_unpreferred,
@@ -268,6 +268,14 @@ financial_data_equity <- financial_data_equity %>%
   dplyr::rename(
     debt_equity_ratio = leverage_s_avg,
     volatility = asset_volatility_s_avg
+  ) %>%
+  # ADO 879 - remove year and production/EFs to simplify joins that do not need yearly variation yet
+  dplyr::filter(.data$year == .env$start_year) %>%
+  dplyr::select(
+    -c(
+      .data$year, .data$ald_production_unit, .data$ald_production,
+      .data$ald_emissions_factor_unit, .data$ald_emissions_factor
+    )
   )
 #TODO: any logic/bounds needed for debt/equity ratio and volatility?
 
