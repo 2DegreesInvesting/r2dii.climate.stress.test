@@ -31,7 +31,7 @@ wrangle_and_check_sector_exposures_eq_cb <- function(sector_exposures, asset_typ
 }
 
 
-wrangle_and_check_pacta_results_eq_cb <- function(pacta_results, start_year, time_horizon, scenario_geography_filter)) {
+wrangle_and_check_pacta_results_eq_cb <- function(pacta_results, start_year, time_horizon, scenario_geography_filter, scenarios_filter)) {
 
   wrangled_pacta_results <- pacta_results %>%
     dplyr::filter(!is.na(.data$scenario)) %>%
