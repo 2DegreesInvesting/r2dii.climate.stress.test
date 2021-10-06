@@ -113,24 +113,6 @@ time_horizon <- cfg$AnalysisPeriod$Years.Horizon
 
 scenario_geography_filter <- "Global"
 
-# ALLOW ONLY precisely the scenarios that are supposed to be kept from the portfolio and scen_data
-# NOTE scenarios from the same source, same secenario name and diff years will likely fail
-# E.g. WEO2019_SDS AND WEO2020_SDS will produce near-duplicates that break the analysis
-scenarios <- c(
-  "B2DS",
-  "CPS",
-  "NPS",
-  "SDS"#,
-  # "ETP2017_B2DS",
-  # "ETP2017_NPS",
-  # "ETP2017_SDS",
-  # "WEO2019_CPS",
-  # "WEO2019_NPS",
-  # "WEO2019_SDS" # ,
-  # "WEO2020_NPS",
-  # "WEO2020_SDS"
-)
-
 #### Model variables----------------------------------------
 #### OPEN: This should be moved into a StressTestModelParameters.yml
 cfg_mod <- config::get(file = "model_parameters.yml")
@@ -210,8 +192,8 @@ pacta_loanbook_results_full <- pacta_loanbook_results_full %>%
 
 pacta_loanbook_results_full <- pacta_loanbook_results_full %>%
   dplyr::filter(!is.na(.data$scenario)) %>%
-  check_scenario_settings(scenario_selections = scenarios) %>%
-  dplyr::filter(.data$scenario %in% .env$scenarios) %>%
+  check_scenario_settings(scenario_selections = scenarios_lookup) %>%
+  dplyr::filter(.data$scenario %in% .env$scenarios_lookup) %>%
   dplyr::mutate(scenario = sub(".*?_", "", scenario)) %>%
   check_portfolio_consistency(start_year = start_year)
 

@@ -12,8 +12,8 @@ nesting_vars_lookup <- c(
   "scenario", "allocation", "scenario_geography", "company_name"
 )
 
-# vector holding scenarios to filter PACTA results by for eq and cb
-allowed_scenarios_eq_cb <- c(
+# vector holding scenarios to filter PACTA results by for stresstesting
+scenarios_lookup <- c(
   "ETP2017_NPS",
   "ETP2017_SDS",
   "WEO2019_NPS",
