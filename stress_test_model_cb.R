@@ -394,7 +394,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
       by = c("company_name", "id" = "corporate_bond_ticker", "ald_sector", "technology")
     )
 
-  cat("number of rows dropped from loan book by joining financial data on
+  cat("number of rows dropped by joining financial data on
       company_name, corporate_bond_ticker, ald_sector, and technology: ",
       rows_bonds - nrow(bonds_annual_profits), "\n")
   # TODO: ADO 879 - note which companies are removed here, due to mismatch
@@ -498,7 +498,6 @@ for (i in seq(1, nrow(transition_scenarios))) {
         data = bonds_overall_pd_changes,
         loss_given_default = lgd_subordinated_claims,
         exposure_at_default = plan_carsten_bonds,
-        # TODO: what to do with this? some sector level exposure for loanbook?
         port_aum = bonds_port_aum
       )
     )
