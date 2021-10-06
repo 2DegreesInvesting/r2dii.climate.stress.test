@@ -104,8 +104,6 @@ time_horizon <- cfg$AnalysisPeriod$Years.Horizon
 # move to config once mechanism to include/exclude filters from original pacta project exists
 
 scenario_geography_filter <- "Global"
-
-allocation_method_equity <- "portfolio_weight"
 equity_market_filter <- cfg$Lists$Equity.Market.List
 
 # Model variables----------------------------------------

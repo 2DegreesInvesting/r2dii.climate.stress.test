@@ -30,3 +30,6 @@ technologies_lookup <- c(
   "Oil", "Gas",
   "Coal"
 )
+
+# holding allocation method used for stress testing
+allocation_method_lookup <- "portfolio_weight"

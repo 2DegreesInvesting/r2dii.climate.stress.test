@@ -53,7 +53,7 @@ wrangle_and_check_pacta_results_eq_cb <- function(pacta_results, start_year, tim
       technologies = technologies_lookup,
       scenario_geography_filter = scenario_geography_filter,
       scenarios = scenarios_filter,
-      allocation_method = allocation_method_equity,
+      allocation_method = allocation_method_lookup,
       start_analysis = start_year
     ) %>%
     filter(

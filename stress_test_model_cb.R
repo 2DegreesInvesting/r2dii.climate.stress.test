@@ -105,7 +105,6 @@ time_horizon <- cfg$AnalysisPeriod$Years.Horizon
 
 scenario_geography_filter <- "Global"
 
-allocation_method_equity <- "portfolio_weight"
 equity_market_filter <- cfg$Lists$Equity.Market.List
 
 # Model variables----------------------------------------

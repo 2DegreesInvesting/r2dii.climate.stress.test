@@ -131,7 +131,6 @@ scenarios <- c(
   # "WEO2020_SDS"
 )
 
-allocation_method_equity <- "portfolio_weight"
 equity_market_filter <- cfg$Lists$Equity.Market.List
 
 #### Model variables----------------------------------------
@@ -386,11 +385,11 @@ pacta_loanbook_results <- pacta_loanbook_results_full %>%
     technologies = technologies_lookup,
     scenario_geography_filter = scenario_geography_filter,
     scenarios = scenarios_filter,
-    allocation_method = allocation_method_equity,
+    allocation_method = allocation_method_lookup,
     start_analysis = start_year
   ) %>%
   filter(
-    allocation == allocation_method_equity,
+    allocation == allocation_method_lookup,
     equity_market == equity_market_filter
   ) %>%
   distinct_all()
