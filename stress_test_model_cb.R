@@ -428,14 +428,19 @@ for (i in seq(1, nrow(transition_scenarios))) {
 
   plan_carsten_bonds <- pacta_bonds_results %>%
     filter(
-      year == start_year,
-      technology %in% technologies_lookup,
-      scenario_geography == scenario_geography_filter
+      .data$year == start_year,
+      .data$technology %in% technologies_lookup,
+      .data$scenario_geography == scenario_geography_filter,
+      .data$scenario %in% .env$scenario_to_follow_ls
     )
 
   financial_data_bonds_pd <- financial_data_bonds %>%
-    select(company_name, corporate_bond_ticker, ald_sector, technology, pd) %>%
-    distinct(across(everything()))
+    select(company_name, corporate_bond_ticker, ald_sector, technology, pd)
+
+  report_duplicates(
+    data = financial_data_bonds_pd,
+    cols = names(financial_data_bonds_pd)
+  )
 
   plan_carsten_bonds <- plan_carsten_bonds %>%
     left_join(financial_data_bonds_pd, by = c("company_name", "id" = "corporate_bond_ticker", "ald_sector", "technology"))
