@@ -50,6 +50,7 @@ function_paths <- c(
       "set_tech_trajectories.R",
       "show_carbon_budget.R",
       "utils.R",
+      "wrangle_and_check.R",
       "write_results.R"
     )
   )
@@ -187,7 +188,7 @@ pacta_loanbook_results <- read_pacta_results(
     portfolio_name = investor_name_placeholder,
     credit = loan_share_credit_type
   ) %>%
-  wrangle_and_check_pacta_results_eq_cb(
+  wrangle_and_check_pacta_results(
     start_year = start_year,
     time_horizon = time_horizon,
     scenario_geography_filter = scenario_geography_filter,
