@@ -103,9 +103,7 @@ time_horizon <- cfg$AnalysisPeriod$Years.Horizon
 # There may still be cases of certain sectors or geographies that work in PACTA but not yet in stress testing
 # move to config once mechanism to include/exclude filters from original pacta project exists
 
-# OPEN: This could largely be taken from cfg file. No apparent reason why not.
 scenario_geography_filter <- "Global"
-# scenario_geography_filter <- cfg$Lists$Scenario.Geography.List
 
 allocation_method_equity <- "portfolio_weight"
 equity_market_filter <- cfg$Lists$Equity.Market.List

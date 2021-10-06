@@ -103,9 +103,7 @@ time_horizon <- cfg$AnalysisPeriod$Years.Horizon
 # There may still be cases of certain sectors or geographies that work in PACTA but not yet in stress testing
 # move to config once mechanism to include/exclude filters from original pacta project exists
 
-# OPEN: This could largely be taken from cfg file. No apparent reason why not.
 scenario_geography_filter <- "Global"
-# scenario_geography_filter <- cfg$Lists$Scenario.Geography.List
 
 allocation_method_equity <- "portfolio_weight"
 equity_market_filter <- cfg$Lists$Equity.Market.List
@@ -166,7 +164,8 @@ pacta_equity_results_full <- read_pacta_results(
   level = calculation_level
 ) %>%
   wrangle_and_check_pacta_results_eq_cb(start_year = start_year,
-                                        time_horizon = time_horizon)
+                                        time_horizon = time_horizon,
+                                        scenario_geography_filter = scenario_geography_filter)
 
 # Load sector exposures of portfolio------------------------
 sector_exposures <- readRDS(file.path(proc_input_path, "overview_portfolio.rda")) %>%

@@ -111,9 +111,7 @@ time_horizon <- cfg$AnalysisPeriod$Years.Horizon
 # There may still be cases of certain sectors or geographies that work in PACTA but not yet in stress testing
 # move to config once mechanism to include/exclude filters from original pacta project exists
 
-#### OPEN: This could largely be taken from cfg file. No apparent reason why not.
 scenario_geography_filter <- "Global"
-# scenario_geography_filter <- cfg$Lists$Scenario.Geography.List
 
 # ALLOW ONLY precisely the scenarios that are supposed to be kept from the portfolio and scen_data
 # NOTE scenarios from the same source, same secenario name and diff years will likely fail
