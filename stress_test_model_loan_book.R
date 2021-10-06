@@ -309,7 +309,7 @@ scenario_data <- scenario_data %>%
 scenario_data <- scenario_data %>%
   correct_automotive_scendata(interpolation_years = c(2031:2034, 2036:2039)) %>%
   filter(
-    ald_sector %in% sectors_loanbook &
+    ald_sector %in% sectors_lookup &
       technology %in% technologies_lookup &
       scenario_geography == scenario_geography_filter)
 
@@ -379,7 +379,7 @@ pacta_loanbook_results <- pacta_loanbook_results_full %>%
   mutate(plan_tech_prod = dplyr::if_else(is.na(plan_tech_prod), 0, plan_tech_prod)) %>%
   apply_filters(
     investor = investor_name_placeholder,
-    sectors = sectors_loanbook,
+    sectors = sectors_lookup,
     technologies = technologies_lookup,
     scenario_geography_filter = scenario_geography_filter,
     scenarios = scenarios_filter,
