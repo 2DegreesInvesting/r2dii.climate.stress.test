@@ -105,8 +105,6 @@ time_horizon <- cfg$AnalysisPeriod$Years.Horizon
 
 scenario_geography_filter <- "Global"
 
-equity_market_filter <- cfg$Lists$Equity.Market.List
-
 # Model variables----------------------------------------
 #### OPEN: This should be moved into a StressTestModelParameters.yml
 cfg_mod <- config::get(file = "model_parameters.yml")
@@ -308,7 +306,7 @@ pacta_bonds_results <- pacta_bonds_results_full %>%
   ) %>%
   filter(
     allocation == allocation_method_equity,
-    equity_market == equity_market_filter
+    equity_market == cfg$Lists$Equity.Market.List
   ) %>%
   distinct_all()
 

@@ -131,8 +131,6 @@ scenarios <- c(
   # "WEO2020_SDS"
 )
 
-equity_market_filter <- cfg$Lists$Equity.Market.List
-
 #### Model variables----------------------------------------
 #### OPEN: This should be moved into a StressTestModelParameters.yml
 cfg_mod <- config::get(file = "model_parameters.yml")
@@ -390,7 +388,7 @@ pacta_loanbook_results <- pacta_loanbook_results_full %>%
   ) %>%
   filter(
     allocation == allocation_method_lookup,
-    equity_market == equity_market_filter
+    equity_market == cfg$Lists$Equity.Market.List
   ) %>%
   distinct_all()
 
