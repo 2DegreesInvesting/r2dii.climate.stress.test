@@ -132,13 +132,10 @@ scenarios <- c(
   # "WEO2020_NPS",
   # "WEO2020_SDS"
 )
-# scenarios <- cfg$Large.Universe.Filter$SCENARIO.FILTER
 
 allocation_method_equity <- "portfolio_weight"
 equity_market_filter <- cfg$Lists$Equity.Market.List
 
-sectors <- c("Power", "Oil&Gas", "Coal", "Automotive")
-# setors <- cfg$Large.Universe.Filter$SECTOR.FILTER
 technologies <- c(
   "Electric", "Hybrid", "ICE",
   "CoalCap", "GasCap", "RenewablesCap", "NuclearCap", "HydroCap", "OilCap",
@@ -325,7 +322,7 @@ scenario_data <- scenario_data %>%
 scenario_data <- scenario_data %>%
   correct_automotive_scendata(interpolation_years = c(2031:2034, 2036:2039)) %>%
   filter(
-    ald_sector %in% sectors &
+    ald_sector %in% sectors_loanbook &
       technology %in% technologies &
       scenario_geography == scenario_geography_filter)
 
@@ -395,7 +392,7 @@ pacta_loanbook_results <- pacta_loanbook_results_full %>%
   mutate(plan_tech_prod = dplyr::if_else(is.na(plan_tech_prod), 0, plan_tech_prod)) %>%
   apply_filters(
     investor = investor_name_placeholder,
-    sectors = sectors,
+    sectors = sectors_loanbook,
     technologies = technologies,
     scenario_geography_filter = scenario_geography_filter,
     scenarios = scenarios_filter,

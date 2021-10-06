@@ -110,8 +110,6 @@ scenario_geography_filter <- "Global"
 allocation_method_equity <- "portfolio_weight"
 equity_market_filter <- cfg$Lists$Equity.Market.List
 
-sectors <- c("Power", "Oil&Gas", "Coal", "Automotive")
-
 technologies <- c(
   "Electric", "Hybrid", "ICE",
   "CoalCap", "GasCap", "RenewablesCap", "NuclearCap", "HydroCap", "OilCap",
@@ -253,7 +251,7 @@ scenario_data <- scenario_data %>%
 scenario_data <- scenario_data %>%
   correct_automotive_scendata(interpolation_years = c(2031:2034, 2036:2039)) %>%
   filter(
-    ald_sector %in% sectors &
+    ald_sector %in% sectors_lookup &
       technology %in% technologies &
       scenario_geography == scenario_geography_filter)
 

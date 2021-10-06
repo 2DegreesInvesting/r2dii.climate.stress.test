@@ -19,3 +19,6 @@ allowed_scenarios_eq_cb <- c(
   "WEO2019_NPS",
   "WEO2019_SDS"
 )
+
+# vector holding considered sectors in stress testing
+sectors_lookup <- c("Power", "Oil&Gas", "Coal", "Automotive")
