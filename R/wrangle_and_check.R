@@ -41,7 +41,7 @@ wrangle_and_check_sector_exposures_eq_cb <- function(sector_exposures, asset_typ
 #'
 #' @param pacta_results Results from PACTA analysis of type equity or bond.
 #' @param start_year First considered year in analysis.
-#' @param time_horizon
+#' @param time_horizon Considered timefram for PACTA analysis.
 #' @param scenario_geography_filter Character. A vector of length 1 that
 #'   indicates which geographic scenario to apply in the analysis.
 #' @param scenarios_filter Vector holding baseline and shock scenario name.
