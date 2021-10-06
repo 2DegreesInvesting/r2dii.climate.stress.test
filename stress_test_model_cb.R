@@ -411,14 +411,12 @@ for (i in seq(1, nrow(transition_scenarios))) {
     # NOTE: this assumes emissions factors stay constant after forecast and prod not continued
     tidyr::fill(
       company_id, pd, net_profit_margin, debt_equity_ratio, volatility,
-      ald_emissions_factor, ald_emissions_factor_unit, ald_production_unit,
       .direction = "down"
     ) %>%
     ungroup()
 
   bonds_annual_profits <- bonds_annual_profits %>%
     join_price_data(df_prices = df_prices) %>%
-    # join_net_profit_margins(net_profit_margins = net_profit_margins) %>%
     calculate_net_profits() %>%
     dcf_model_techlevel(discount_rate = discount_rate)
 
