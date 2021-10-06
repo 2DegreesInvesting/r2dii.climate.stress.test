@@ -154,7 +154,7 @@ financial_data_equity <- read_company_data(path = stresstest_masterdata_files$li
 # Load PACTA results / equity portfolio------------------------
 equity_path <- file.path(results_path, paste0("Equity_results_", calculation_level, ".rda"))
 
-pacta_equity_results_full <- read_pacta_results(
+pacta_equity_results <- read_pacta_results(
   path = equity_path,
   asset_type = "equity",
   level = calculation_level
