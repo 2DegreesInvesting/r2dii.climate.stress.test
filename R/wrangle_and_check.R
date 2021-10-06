@@ -31,7 +31,7 @@ wrangle_and_check_sector_exposures_eq_cb <- function(sector_exposures, asset_typ
 }
 
 
-#' Wrangle and check PACTA results for asset types equity and bonds
+#' Wrangle and check PACTA results
 #'
 #' Function applies several filter steps to
 #' 1. restrict PACTA results to scenarios useable for stresstesting
@@ -39,7 +39,7 @@ wrangle_and_check_sector_exposures_eq_cb <- function(sector_exposures, asset_typ
 #'
 #' Also consistency checks are run.
 #'
-#' @param pacta_results Results from PACTA analysis of type equity or bond.
+#' @param pacta_results Results from PACTA analysis.
 #' @param start_year First considered year in analysis.
 #' @param time_horizon Considered timefram for PACTA analysis.
 #' @param scenario_geography_filter Character. A vector of length 1 that
@@ -50,9 +50,9 @@ wrangle_and_check_sector_exposures_eq_cb <- function(sector_exposures, asset_typ
 #'
 #' @return Wrangled `pacta_results.`
 #' @export
-wrangle_and_check_pacta_results_eq_cb <- function(pacta_results, start_year, time_horizon,
-                                                  scenario_geography_filter, scenarios_filter,
-                                                  equity_market_filter) {
+wrangle_and_check_pacta_results <- function(pacta_results, start_year, time_horizon,
+                                            scenario_geography_filter, scenarios_filter,
+                                            equity_market_filter) {
   wrangled_pacta_results <- pacta_results %>%
     dplyr::filter(!is.na(.data$scenario)) %>%
     check_scenario_settings(scenario_selections = scenarios_lookup) %>%

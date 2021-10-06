@@ -50,6 +50,7 @@ function_paths <- c(
       "set_tech_trajectories.R",
       "show_carbon_budget.R",
       "utils.R",
+      "wrangle_and_check.R",
       "write_results.R"
     )
   )
@@ -177,34 +178,28 @@ financial_data_loans <- read_company_data(path = stresstest_masterdata_files$loa
 # TODO: must contain term and initial PD
 loanbook_path <- path_dropbox_2dii("PortCheck_v2", "10_Projects", project_name, "40_Results", paste0("company_results_lb_", project_name, ".csv"))
 
-pacta_loanbook_results_full <- read_pacta_results(
+pacta_loanbook_results <- read_pacta_results(
   path = loanbook_path,
   asset_type = "loans",
   level = calculation_level
-)
-
-pacta_loanbook_results_full <- pacta_loanbook_results_full %>%
+  ) %>%
   format_loanbook_st(
     investor_name = investor_name_placeholder,
     portfolio_name = investor_name_placeholder,
     credit = loan_share_credit_type
-  )
-
-pacta_loanbook_results_full <- pacta_loanbook_results_full %>%
-  dplyr::filter(!is.na(.data$scenario)) %>%
-  check_scenario_settings(scenario_selections = scenarios_lookup) %>%
-  dplyr::filter(.data$scenario %in% .env$scenarios_lookup) %>%
-  dplyr::mutate(scenario = sub(".*?_", "", scenario)) %>%
-  check_portfolio_consistency(start_year = start_year)
-
-# TODO: temporary addition, needs to come directly from input
-pacta_loanbook_results_full <- pacta_loanbook_results_full %>%
+  ) %>%
+  wrangle_and_check_pacta_results(
+    start_year = start_year,
+    time_horizon = time_horizon,
+    scenario_geography_filter = scenario_geography_filter,
+    scenarios_filter = scenarios_filter,
+    equity_market_filter = cfg$Lists$Equity.Market.List
+  ) %>%
   group_by(company_name) %>%
   mutate(
-    term = round(runif(n = 1, min = 1, max = 10), 0)
+    term = round(runif(n = 1, min = 1, max = 10), 0) # TODO: temporary addition, needs to come directly from input
   ) %>%
   ungroup()
-
 
 sector_credit_type <- paste0("sector_loan_size_", credit_type)
 credit_currency <- paste0("loan_size_", credit_type, "_currency")
@@ -346,33 +341,7 @@ financial_data_loans <- financial_data_loans %>%
       .data$ald_emissions_factor_unit, .data$ald_emissions_factor
     )
   )
-
-
 #TODO: any logic/bounds needed for debt/equity ratio and volatility?
-
-# Prepare pacta results to match project specs---------------------------------
-# ...for loans portfolio-------------------------------------------------------
-pacta_loanbook_results <- pacta_loanbook_results_full %>%
-  mutate(scenario = str_replace(scenario, "NPSRTS", "NPS")) %>%
-  tidyr::complete(
-    year = seq(start_year, start_year + time_horizon),
-    nesting(!!!syms(nesting_vars_lookup))
-  ) %>%
-  mutate(plan_tech_prod = dplyr::if_else(is.na(plan_tech_prod), 0, plan_tech_prod)) %>%
-  apply_filters(
-    investor = investor_name_placeholder,
-    sectors = sectors_lookup,
-    technologies = technologies_lookup,
-    scenario_geography_filter = scenario_geography_filter,
-    scenarios = scenarios_filter,
-    allocation_method = allocation_method_lookup,
-    start_analysis = start_year
-  ) %>%
-  filter(
-    allocation == allocation_method_lookup,
-    equity_market == cfg$Lists$Equity.Market.List
-  ) %>%
-  distinct_all()
 
 # check scenario availability across data inputs for bonds
 check_scenario_availability(
