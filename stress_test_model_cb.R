@@ -103,42 +103,7 @@ time_horizon <- cfg$AnalysisPeriod$Years.Horizon
 # There may still be cases of certain sectors or geographies that work in PACTA but not yet in stress testing
 # move to config once mechanism to include/exclude filters from original pacta project exists
 
-# OPEN: This could largely be taken from cfg file. No apparent reason why not.
 scenario_geography_filter <- "Global"
-# scenario_geography_filter <- cfg$Lists$Scenario.Geography.List
-
-# ALLOW ONLY precisely the scenarios that are supposed to be kept from the portfolio and scen_data
-# NOTE scenarios from the same source, same secenario name and diff years will likely fail
-# E.g. WEO2019_SDS AND WEO2020_SDS will produce near-duplicates that break the analysis
-scenarios <- c(
-  # "B2DS",
-  # "CPS",
-  # "NPS",
-  # "NPSRTS",
-  # "SDS"#,
-  # "ETP2017_B2DS",
-  "ETP2017_NPS",
-  "ETP2017_SDS",
-  # "WEO2019_CPS",
-  "WEO2019_NPS",
-  "WEO2019_SDS" # ,
-  # "WEO2020_NPS",
-  # "WEO2020_SDS"
-)
-# scenarios <- cfg$Large.Universe.Filter$SCENARIO.FILTER
-
-allocation_method_equity <- "portfolio_weight"
-equity_market_filter <- cfg$Lists$Equity.Market.List
-
-sectors <- c("Power", "Oil&Gas", "Coal", "Automotive")
-# setors <- cfg$Large.Universe.Filter$SECTOR.FILTER
-technologies <- c(
-  "Electric", "Hybrid", "ICE",
-  "CoalCap", "GasCap", "RenewablesCap", "NuclearCap", "HydroCap", "OilCap",
-  "Oil", "Gas",
-  "Coal"
-)
-# technologies <- cfg$Lists$Technology.List
 
 # Model variables----------------------------------------
 #### OPEN: This should be moved into a StressTestModelParameters.yml
@@ -194,26 +159,19 @@ financial_data_bonds <- read_company_data(path = stresstest_masterdata_files$bon
 # Load PACTA results / bonds portfolio------------------------
 bonds_path <- file.path(results_path, paste0("Bonds_results_", calculation_level, ".rda"))
 
-pacta_bonds_results_full <- read_pacta_results(
+pacta_bonds_results <- read_pacta_results(
   path = bonds_path,
   asset_type = "bonds",
   level = calculation_level
-)
-
-pacta_bonds_results_full <- pacta_bonds_results_full %>%
-  dplyr::filter(!is.na(.data$scenario)) %>%
-  check_scenario_settings(scenario_selections = scenarios) %>%
-  dplyr::filter(.data$scenario %in% .env$scenarios) %>%
-  # TODO: temporary fix, remove once all scenario data is used from scenario file
-  filter(!(scenario == "ETP2017_NPS" & ald_sector == "Power")) %>%
-  dplyr::mutate(scenario = sub(".*?_", "", scenario)) %>%
-  check_portfolio_consistency(start_year = start_year)
-
-# TODO: temporary addition, needs to come directly from input
-pacta_bonds_results_full <- pacta_bonds_results_full %>%
+) %>%
+  wrangle_and_check_pacta_results_eq_cb(start_year = start_year,
+                                        time_horizon = time_horizon,
+                                        scenario_geography_filter = scenario_geography_filter,
+                                        scenarios_filter = scenarios_filter,
+                                        equity_market_filter = cfg$Lists$Equity.Market.List) %>%
   group_by(company_name) %>%
   mutate(
-    term = round(runif(n = 1, min = 1, max = 10), 0)
+    term = round(runif(n = 1, min = 1, max = 10), 0) # TODO: temporary addition, needs to come directly from input
   ) %>%
   ungroup()
 
@@ -273,15 +231,15 @@ scenario_data <- scenario_data %>%
 scenario_data <- scenario_data %>%
   correct_automotive_scendata(interpolation_years = c(2031:2034, 2036:2039)) %>%
   filter(
-    ald_sector %in% sectors &
-      technology %in% technologies &
+    ald_sector %in% sectors_lookup &
+      technology %in% technologies_lookup &
       scenario_geography == scenario_geography_filter)
 
 # Load price data----------------------------------------
 df_price <- read_price_data(
   path = file.path(data_location, paste0("prices_data_", price_data_version, ".csv")),
   version = "old",
-  expected_technologies = technologies
+  expected_technologies = technologies_lookup
 ) %>%
   filter(year >= start_year) %>%
   check_price_consistency()
@@ -320,35 +278,6 @@ financial_data_bonds <- financial_data_bonds %>%
     volatility = asset_volatility_s_avg
   )
 #TODO: any logic/bounds needed for debt/equity ratio and volatility?
-
-# Prepare pacta results to match project specs---------------------------------
-nesting_vars <- c(
-  "investor_name", "portfolio_name", "equity_market", "ald_sector", "technology",
-  "scenario", "allocation", "scenario_geography", "company_name"
-)
-
-# ...for bonds portfolio-------------------------------------------------------
-pacta_bonds_results <- pacta_bonds_results_full %>%
-  mutate(scenario = str_replace(scenario, "NPSRTS", "NPS")) %>%
-  tidyr::complete(
-    year = seq(start_year, start_year + time_horizon),
-    nesting(!!!syms(nesting_vars))
-  ) %>%
-  mutate(plan_tech_prod = dplyr::if_else(is.na(plan_tech_prod), 0, plan_tech_prod)) %>%
-  apply_filters(
-    investor = investor_name_placeholder,
-    sectors = sectors,
-    technologies = technologies,
-    scenario_geography_filter = scenario_geography_filter,
-    scenarios = scenarios_filter,
-    allocation_method = allocation_method_equity,
-    start_analysis = start_year
-  ) %>%
-  filter(
-    allocation == allocation_method_equity,
-    equity_market == equity_market_filter
-  ) %>%
-  distinct_all()
 
 # check scenario availability across data inputs for bonds
 check_scenario_availability(
@@ -484,7 +413,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
   plan_carsten_bonds <- pacta_bonds_results %>%
     filter(
       year == start_year,
-      technology %in% technologies,
+      technology %in% technologies_lookup,
       scenario_geography == scenario_geography_filter
     )
 

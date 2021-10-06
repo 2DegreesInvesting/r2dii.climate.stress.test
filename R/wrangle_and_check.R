@@ -29,3 +29,57 @@ wrangle_and_check_sector_exposures_eq_cb <- function(sector_exposures, asset_typ
 
   return(valid_sector_exposures)
 }
+
+
+#' Wrangle and check PACTA results for asset types equity and bonds
+#'
+#' Function applies several filter steps to
+#' 1. restrict PACTA results to scenarios useable for stresstesting
+#' 1. to apply run/project related selections.
+#'
+#' Also consistency checks are run.
+#'
+#' @param pacta_results Results from PACTA analysis of type equity or bond.
+#' @param start_year First considered year in analysis.
+#' @param time_horizon Considered timefram for PACTA analysis.
+#' @param scenario_geography_filter Character. A vector of length 1 that
+#'   indicates which geographic scenario to apply in the analysis.
+#' @param scenarios_filter Vector holding baseline and shock scenario name.
+#' @param equity_market_filter Character. A vector of length 1 that
+#'   indicates which equity market to apply in the analysis.
+#'
+#' @return Wrangled `pacta_results.`
+#' @export
+wrangle_and_check_pacta_results_eq_cb <- function(pacta_results, start_year, time_horizon,
+                                                  scenario_geography_filter, scenarios_filter,
+                                                  equity_market_filter) {
+  wrangled_pacta_results <- pacta_results %>%
+    dplyr::filter(!is.na(.data$scenario)) %>%
+    check_scenario_settings(scenario_selections = allowed_scenarios_eq_cb) %>%
+    dplyr::filter(.data$scenario %in% allowed_scenarios_eq_cb) %>%
+    # TODO: temporary fix, remove once all scenario data is used from scenario file
+    dplyr::filter(!(.data$scenario == "ETP2017_NPS" & .data$ald_sector == "Power")) %>%
+    dplyr::mutate(scenario = sub(".*?_", "", scenario)) %>%
+    check_portfolio_consistency(start_year = start_year) %>%
+    dplyr::mutate(scenario = str_replace(.data$scenario, "NPSRTS", "NPS")) %>%
+    tidyr::complete(
+      year = seq(start_year, start_year + time_horizon),
+      nesting(!!!syms(nesting_vars_lookup))
+    ) %>%
+    mutate(plan_tech_prod = dplyr::if_else(is.na(.data$plan_tech_prod), 0, .data$plan_tech_prod)) %>%
+    apply_filters(
+      investor = investor_name_placeholder,
+      sectors = sectors_lookup,
+      technologies = technologies_lookup,
+      scenario_geography_filter = scenario_geography_filter,
+      scenarios = scenarios_filter,
+      allocation_method = allocation_method_lookup,
+      start_analysis = start_year
+    ) %>%
+    dplyr::filter(
+      .data$allocation == allocation_method_lookup,
+      .data$equity_market == equity_market_filter
+    ) %>%
+    dplyr::distinct_all()
+
+}
