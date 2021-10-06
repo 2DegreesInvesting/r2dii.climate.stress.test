@@ -46,7 +46,7 @@ wrangle_and_check_sector_exposures_eq_cb <- function(sector_exposures, asset_typ
 #'   indicates which geographic scenario to apply in the analysis.
 #' @param scenarios_filter Vector holding baseline and shock scenario name.
 #' @param equity_market_filter Character. A vector of length 1 that
-#'   indicates which equity marjet to apply in the analysis.
+#'   indicates which equity market to apply in the analysis.
 #'
 #' @return Wrangled `pacta_results.`
 #' @export

@@ -26,7 +26,7 @@ indicates which geographic scenario to apply in the analysis.}
 \item{scenarios_filter}{Vector holding baseline and shock scenario name.}
 
 \item{equity_market_filter}{Character. A vector of length 1 that
-indicates which equity marjet to apply in the analysis.}
+indicates which equity market to apply in the analysis.}
 }
 \value{
 Wrangled \code{pacta_results.}
