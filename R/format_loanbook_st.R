@@ -60,6 +60,7 @@ format_loanbook_st <- function(
   group_vars <- c(
     "investor_name",
     "portfolio_name",
+    "scenario_source",
     "scenario",
     "allocation",
     "equity_market",
@@ -150,6 +151,9 @@ format_loanbook_st <- function(
         .data$scenario == "target_b2ds" ~ "B2DS",
         TRUE ~ .data$scenario
       ),
+      scenario_source = stringr::str_to_upper(
+        stringr::str_remove(.data$scenario_source, "_")
+      ),
       ald_sector = dplyr::case_when(
         .data$ald_sector == "power" ~ "Power",
         .data$ald_sector == "oil and gas" ~ "Oil&Gas",
@@ -173,7 +177,11 @@ format_loanbook_st <- function(
         .data$technology == "ice" ~ "ICE",
         TRUE ~ .data$technology
       )
-    )
+    ) %>%
+    # adjusting scenario column to hold source_scenario, to be compatible with PACTA
+    # results for EQ and CB
+    dplyr::mutate(scenario = paste(.data$scenario_source, .data$scenario, sep = "_")) %>%
+    dplyr::select(-.data$scenario_source)
 
   output_has_required_cols <- all(c(
     "investor_name",
