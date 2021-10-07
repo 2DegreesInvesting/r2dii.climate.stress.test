@@ -207,7 +207,7 @@ matched  <- readr::read_csv(
       name_project = "c",
       lei_direct_loantaker = "c",
       isin_direct_loantaker = "c",
-      # chung = "d", NOT REQUIRED!
+      # chunk = "d", NOT REQUIRED!
       id_2dii = "c",
       level = "c",
       sector = "c",
@@ -224,24 +224,34 @@ matched  <- readr::read_csv(
 # TODO: what to do with negative credit limits?
 matched_non_negative <- matched %>%
   dplyr::mutate(
-    loan_size_outstanding = ifelse(loan_size_outstanding < 0, 0, loan_size_outstanding),
-    loan_size_credit_limit = ifelse(loan_size_credit_limit < 0, 0, loan_size_credit_limit)
+    loan_size_outstanding = dplyr::if_else(
+      .data$loan_size_outstanding < 0, 0, .data$loan_size_outstanding
+    ),
+    loan_size_credit_limit = dplyr::if_else(
+      .data$loan_size_credit_limit < 0, 0, .data$loan_size_credit_limit
+    )
   )
 
 # portfolio_size <- matched %>%
 portfolio_size <- loanbook %>%
-  dplyr::distinct(id_loan, loan_size_outstanding, loan_size_credit_limit) %>%
+  # TODO: why distinct?
+  dplyr::distinct(
+    .data$id_loan, .data$loan_size_outstanding, .data$loan_size_credit_limit
+  ) %>%
   dplyr::summarise(
-    portfolio_loan_size_outstanding = sum(loan_size_outstanding, na.rm = TRUE),
-    portfolio_loan_size_credit_limit = sum(loan_size_credit_limit, na.rm = TRUE),
+    portfolio_loan_size_outstanding = sum(.data$loan_size_outstanding, na.rm = TRUE),
+    portfolio_loan_size_credit_limit = sum(.data$loan_size_credit_limit, na.rm = TRUE),
     .groups = "drop"
   )
 
 matched_portfolio_size <- matched_non_negative %>%
-  dplyr::distinct(id_loan, loan_size_outstanding, loan_size_credit_limit) %>%
+  # TODO: why distinct?
+  dplyr::distinct(
+    .data$id_loan, .data$loan_size_outstanding, .data$loan_size_credit_limit
+  ) %>%
   dplyr::summarise(
-    matched_portfolio_loan_size_outstanding = sum(loan_size_outstanding, na.rm = TRUE),
-    matched_portfolio_loan_size_credit_limit = sum(loan_size_credit_limit, na.rm = TRUE),
+    matched_portfolio_loan_size_outstanding = sum(.data$loan_size_outstanding, na.rm = TRUE),
+    matched_portfolio_loan_size_credit_limit = sum(.data$loan_size_credit_limit, na.rm = TRUE),
     .groups = "drop"
   )
 
@@ -252,30 +262,34 @@ loan_share <- matched_non_negative %>%
   dplyr::mutate(
     portfolio_loan_size_outstanding = portfolio_size$portfolio_loan_size_outstanding,
     portfolio_loan_size_credit_limit = portfolio_size$portfolio_loan_size_credit_limit,
-    matched_portfolio_loan_size_outstanding = sum(loan_size_outstanding, na.rm = TRUE),
-    matched_portfolio_loan_size_credit_limit = sum(loan_size_credit_limit, na.rm = TRUE)
+    matched_portfolio_loan_size_outstanding = sum(.data$loan_size_outstanding, na.rm = TRUE),
+    matched_portfolio_loan_size_credit_limit = sum(.data$loan_size_credit_limit, na.rm = TRUE)
   ) %>%
   #TODO: either name or name_ald.. is id_2dii relevant?
-  dplyr::group_by(name_ald, sector_ald, loan_size_outstanding_currency, loan_size_credit_limit_currency) %>%
+  dplyr::group_by(
+    .data$name_ald, .data$sector_ald, .data$loan_size_outstanding_currency,
+    .data$loan_size_credit_limit_currency
+  ) %>%
   dplyr::mutate(
-    comp_loan_share_outstanding = sum(loan_size_outstanding, na.rm = TRUE)/portfolio_loan_size_outstanding,
-    comp_loan_size_outstanding = sum(loan_size_outstanding, na.rm = TRUE),
-    comp_loan_share_credit_limit = sum(loan_size_credit_limit, na.rm = TRUE)/portfolio_loan_size_credit_limit,
-    comp_loan_size_credit_limit = sum(loan_size_credit_limit, na.rm = TRUE)
+    comp_loan_share_outstanding = sum(.data$loan_size_outstanding, na.rm = TRUE) / .data$portfolio_loan_size_outstanding,
+    comp_loan_size_outstanding = sum(.data$loan_size_outstanding, na.rm = TRUE),
+    comp_loan_share_credit_limit = sum(.data$loan_size_credit_limit, na.rm = TRUE) / .data$portfolio_loan_size_credit_limit,
+    comp_loan_size_credit_limit = sum(.data$loan_size_credit_limit, na.rm = TRUE)
   ) %>%
   dplyr::ungroup() %>%
   dplyr::select(
-    # id_2dii,
-    # name,
-    name_ald,
-    sector_ald,
-    comp_loan_share_outstanding,
-    comp_loan_size_outstanding,
-    loan_size_outstanding_currency,
-    comp_loan_share_credit_limit,
-    comp_loan_size_credit_limit,
-    loan_size_credit_limit_currency
+    # .data$id_2dii,
+    # .data$name,
+    .data$name_ald,
+    .data$sector_ald,
+    .data$comp_loan_share_outstanding,
+    .data$comp_loan_size_outstanding,
+    .data$loan_size_outstanding_currency,
+    .data$comp_loan_share_credit_limit,
+    .data$comp_loan_size_credit_limit,
+    .data$loan_size_credit_limit_currency
   ) %>%
+  # TODO why distinct_all?
   dplyr::distinct_all()
 
 loan_share %>%
@@ -295,23 +309,26 @@ loan_share %>%
 #-Calculate sector level loan book size and value share------------
 
 sector_share <- matched_non_negative %>%
-  dplyr::group_by(sector_ald, loan_size_outstanding_currency, loan_size_credit_limit_currency) %>%
+  dplyr::group_by(
+    .data$sector_ald, .data$loan_size_outstanding_currency,
+    .data$loan_size_credit_limit_currency
+  ) %>%
   dplyr::summarise(
-    sector_loan_share_outstanding = sum(loan_size_outstanding, na.rm = TRUE)/portfolio_size$portfolio_loan_size_outstanding,
-    sector_loan_size_outstanding = sum(loan_size_outstanding, na.rm = TRUE),
-    sector_loan_share_credit_limit = sum(loan_size_credit_limit, na.rm = TRUE)/portfolio_size$portfolio_loan_size_credit_limit,
-    sector_loan_size_credit_limit = sum(loan_size_credit_limit, na.rm = TRUE),
+    sector_loan_share_outstanding = sum(.data$loan_size_outstanding, na.rm = TRUE) / portfolio_size$portfolio_loan_size_outstanding,
+    sector_loan_size_outstanding = sum(.data$loan_size_outstanding, na.rm = TRUE),
+    sector_loan_share_credit_limit = sum(.data$loan_size_credit_limit, na.rm = TRUE) / portfolio_size$portfolio_loan_size_credit_limit,
+    sector_loan_size_credit_limit = sum(.data$loan_size_credit_limit, na.rm = TRUE),
     .groups = "drop"
   ) %>%
   dplyr::ungroup() %>%
   dplyr::relocate(
-    sector_ald,
-    sector_loan_share_outstanding,
-    sector_loan_size_outstanding,
-    loan_size_outstanding_currency,
-    sector_loan_share_credit_limit,
-    sector_loan_size_credit_limit,
-    loan_size_credit_limit_currency
+    .data$sector_ald,
+    .data$sector_loan_share_outstanding,
+    .data$sector_loan_size_outstanding,
+    .data$loan_size_outstanding_currency,
+    .data$sector_loan_share_credit_limit,
+    .data$sector_loan_size_credit_limit,
+    .data$loan_size_credit_limit_currency
   )
 
 sector_share %>%
@@ -334,16 +351,18 @@ matched_company_weighted <- matched_non_negative %>%
     by_company = TRUE,
     weight_production = TRUE
   ) %>%
+  # TODO filter must be generalised for diff scenario inputs
   dplyr::filter(
-    (sector == "automotive" & scenario_source == "etp_2017") |
-      (sector == "coal" & scenario_source == "weo_2019") |
-      (sector == "oil and gas" & scenario_source == "weo_2019") |
-      (sector == "power" & scenario_source == "weo_2019")
+    (.data$sector == "automotive" & .data$scenario_source == "etp_2017") |
+      (.data$sector == "coal" & .data$scenario_source == "weo_2019") |
+      (.data$sector == "oil and gas" & .data$scenario_source == "weo_2019") |
+      (.data$sector == "power" & .data$scenario_source == "weo_2019")
   ) %>%
   dplyr::rename(
-    production_weighted = production
+    production_weighted = .data$production
   ) %>%
-  dplyr::mutate(technology_share = round(technology_share, 8)) %>% # rounding errors can lead to duplicates
+  dplyr::mutate(technology_share = round(.data$technology_share, 8)) %>% # rounding errors can lead to duplicates
+  # TODO: why distinct_all?
   dplyr::distinct_all()
 
 matched_company_unweighted <- matched_non_negative %>%
@@ -355,16 +374,18 @@ matched_company_unweighted <- matched_non_negative %>%
     by_company = TRUE,
     weight_production = FALSE
   ) %>%
+  # TODO filter must be generalised for diff scenario inputs
   dplyr::filter(
-    (sector == "automotive" & scenario_source == "etp_2017") |
-      (sector == "coal" & scenario_source == "weo_2019") |
-      (sector == "oil and gas" & scenario_source == "weo_2019") |
-      (sector == "power" & scenario_source == "weo_2019")
+    (.data$sector == "automotive" & .data$scenario_source == "etp_2017") |
+      (.data$sector == "coal" & .data$scenario_source == "weo_2019") |
+      (.data$sector == "oil and gas" & .data$scenario_source == "weo_2019") |
+      (.data$sector == "power" & .data$scenario_source == "weo_2019")
   ) %>%
   dplyr::rename(
-    production_unweighted = production
+    production_unweighted = .data$production
   ) %>%
-  dplyr::select(-technology_share) %>%
+  dplyr::select(-.data$technology_share) %>%
+  # TODO: why distinct_all?
   dplyr::distinct_all()
 
 matched_company <- matched_company_weighted %>%
@@ -375,17 +396,18 @@ matched_company <- matched_company_weighted %>%
   dplyr::distinct_all()
 
 matched_company_loan_share <- matched_company %>%
+  # TODO why left_join?
   dplyr::left_join(loan_share, by = c("sector" = "sector_ald", "name_ald")) %>%
-  dplyr::filter(region == "global") %>%
+  dplyr::filter(.data$region == "global") %>%
   dplyr::select(
     -c(
-      comp_loan_size_outstanding, comp_loan_size_credit_limit,
-      loan_size_outstanding_currency, loan_size_credit_limit_currency
+      .data$comp_loan_size_outstanding, .data$comp_loan_size_credit_limit,
+      .data$loan_size_outstanding_currency, .data$loan_size_credit_limit_currency
       )
     ) %>%
   dplyr::rename(
-    loan_share_outstanding = comp_loan_share_outstanding,
-    loan_share_credit_limit = comp_loan_share_credit_limit
+    loan_share_outstanding = .data$comp_loan_share_outstanding,
+    loan_share_credit_limit = .data$comp_loan_share_credit_limit
   )
 
 # Write to results
