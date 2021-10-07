@@ -107,6 +107,10 @@ cfg <- config::get(file = file.path(project_location, "10_Parameter_File","Analy
 start_year <- cfg$AnalysisPeriod$Years.Startyear
 time_horizon <- cfg$AnalysisPeriod$Years.Horizon
 
+# ADO 1933 - set year for input data prior to start year of analysis
+year_production_data_forecast <- start_year - 1
+year_scenario_data <- start_year - 1
+
 ##### Filters----------------------------------------
 # The filter settings should comply with the filters from the parent PACTA project as per default
 # There may still be cases of certain sectors or geographies that work in PACTA but not yet in stress testing
@@ -177,6 +181,69 @@ financial_data_loans <- read_company_data(path = stresstest_masterdata_files$loa
 # TODO: select the right geography
 # TODO: must contain term and initial PD
 loanbook_path <- path_dropbox_2dii("PortCheck_v2", "10_Projects", project_name, "40_Results", paste0("company_results_lb_", project_name, ".csv"))
+
+# read in raw loan book
+loanbook <- read_csv(
+  path_dropbox_2dii("PortCheck_v2", "10_Projects", project_name, "20_Raw_Inputs", paste0("raw_loanbook_", project_name, ".csv")),
+  col_types = cols(
+    id_loan = "c",
+    id_direct_loantaker = "c",
+    name_direct_loantaker = "c",
+    id_intermediate_parent_1 = "c",
+    name_intermediate_parent_1 = "c",
+    id_ultimate_parent = "c",
+    name_ultimate_parent = "c",
+    loan_size_outstanding = "d",
+    loan_size_outstanding_currency = "c",
+    loan_size_credit_limit = "d",
+    loan_size_credit_limit_currency = "c",
+    sector_classification_system = "c",
+    sector_classification_input_type = "c",
+    sector_classification_direct_loantaker = "c",
+    fi_type = "c",
+    flag_project_finance_loan = "c",
+    name_project = "c",
+    lei_direct_loantaker = "c",
+    isin_direct_loantaker = "c"
+  )
+)
+
+# read in matched loan book
+matched  <- readr::read_csv(
+  r2dii.utils::path_dropbox_2dii(path_processed_loanbook, "matched_loan_book.csv"),
+  col_types = cols_only(
+    id_loan = "c",
+    id_direct_loantaker = "c",
+    name_direct_loantaker = "c",
+    id_intermediate_parent_1 = "c",
+    name_intermediate_parent_1 = "c",
+    id_ultimate_parent = "c",
+    name_ultimate_parent = "c",
+    loan_size_outstanding = "d",
+    loan_size_outstanding_currency = "c",
+    loan_size_credit_limit = "d",
+    loan_size_credit_limit_currency = "c",
+    sector_classification_system = "c",
+    sector_classification_input_type = "c",
+    sector_classification_direct_loantaker = "c",
+    fi_type = "c",
+    flag_project_finance_loan = "c",
+    name_project = "c",
+    lei_direct_loantaker = "c",
+    isin_direct_loantaker = "c",
+    # chunk = "d", NOT REQUIRED!
+    id_2dii = "c",
+    level = "c",
+    sector = "c",
+    sector_ald = "c",
+    name = "c",
+    name_ald = "c",
+    score = "d",
+    source = "c",
+    borderline = "l"
+  )
+)
+
 
 pacta_loanbook_results <- read_pacta_results(
   path = loanbook_path,

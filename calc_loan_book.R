@@ -234,7 +234,7 @@ matched_non_negative <- matched %>%
 
 # portfolio_size <- matched %>%
 portfolio_size <- loanbook %>%
-  # TODO: why distinct?
+  # TODO: why distinct? Is there any way that id_loan is not unique?
   dplyr::distinct(
     .data$id_loan, .data$loan_size_outstanding, .data$loan_size_credit_limit
   ) %>%
@@ -245,7 +245,7 @@ portfolio_size <- loanbook %>%
   )
 
 matched_portfolio_size <- matched_non_negative %>%
-  # TODO: why distinct?
+  # TODO: why distinct? Is there any way that id_loan is not unique?
   dplyr::distinct(
     .data$id_loan, .data$loan_size_outstanding, .data$loan_size_credit_limit
   ) %>%
