@@ -279,6 +279,7 @@ financial_data_bonds <- financial_data_bonds %>%
     debt_equity_ratio = leverage_s_avg,
     volatility = asset_volatility_s_avg
   ) %>%
+  # ADO 879 - remove year and production/EFs to simplify joins that do not need yearly variation yet
   dplyr::filter(.data$year == .env$start_year) %>%
   dplyr::select(
     -c(
