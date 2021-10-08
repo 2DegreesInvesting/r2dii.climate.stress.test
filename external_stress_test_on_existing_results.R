@@ -126,7 +126,7 @@ portfolio <- readRDS(file.path(project_location, "30_Processed_Inputs", paste0(p
 
 portfolio_overview <- readRDS(file.path(project_location, "30_Processed_Inputs", paste0(project_name, "_overview_portfolio.rda"))) %>%
   filter(valid_input == TRUE, asset_type %in% c("Equity", "Bonds"), investor_name == investor_name_filter) %>%
-  group_by(investor_name, portfolio_name, asset_type) %>%
+  dplyr::group_by(investor_name, portfolio_name, asset_type) %>%
   summarise(
     portfolio_size = sum(valid_value_usd),
     .groups = "drop_last"
@@ -182,7 +182,7 @@ calc_boe_exposures <- function(pacta_exposures) {
         TRUE ~ ald_sector
       )
     ) %>%
-    group_by(investor_name, portfolio_name, sector, subsector) %>%
+    dplyr::group_by(investor_name, portfolio_name, sector, subsector) %>%
     summarise(
       exposure = sum(tech_exposure, na.rm = T),
       .groups = "drop_last"
@@ -202,7 +202,7 @@ shocks <- readr::read_csv(file.path(data_location, "external_stress_test_shocks.
 results_dnb <- portfolio %>%
   as.data.frame() %>%
   filter(asset_type == "Equity") %>%
-  group_by(investor_name, portfolio_name, sector_dnb) %>%
+  dplyr::group_by(investor_name, portfolio_name, sector_dnb) %>%
   summarise(
     exposure = sum(value_usd, na.rm = TRUE),
     .groups = "drop_last"
@@ -221,7 +221,7 @@ results_ipr <- portfolio %>%
     sector_ipr = ifelse(is.na(sector_ipr), "Other", sector_ipr),
     subsector_ipr = ifelse(is.na(subsector_ipr), "Other", subsector_ipr)
   ) %>%
-  group_by(investor_name, portfolio_name, sector_ipr, subsector_ipr) %>%
+  dplyr::group_by(investor_name, portfolio_name, sector_ipr, subsector_ipr) %>%
   summarise(
     exposure = sum(value_usd, na.rm = TRUE),
     .groups = "drop_last"
@@ -239,7 +239,7 @@ results_boe <- portfolio %>%
     asset_type %in% c("Equity", "Bonds"),
     sector_boe %in% c("Agriculture", "Food logistics", "Real estate", "Materials")
   ) %>%
-  group_by(investor_name, portfolio_name, sector_boe, subsector_boe, asset_type) %>%
+  dplyr::group_by(investor_name, portfolio_name, sector_boe, subsector_boe, asset_type) %>%
   summarise(
     exposure = sum(value_usd, na.rm = TRUE),
     .groups = "drop_last"

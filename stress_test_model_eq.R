@@ -252,7 +252,7 @@ if (company_exclusion) {
 
 financial_data_equity <- financial_data_equity %>%
   dplyr::mutate(net_profit_margin = profit_margin_preferred) %>%
-  #TODO: logic unclear thus far
+  # TODO: logic unclear thus far
   dplyr::mutate(
     net_profit_margin = dplyr::case_when(
       net_profit_margin < 0 & dplyr::between(profit_margin_unpreferred, 0, 1) ~ profit_margin_unpreferred,
@@ -268,6 +268,14 @@ financial_data_equity <- financial_data_equity %>%
   dplyr::rename(
     debt_equity_ratio = leverage_s_avg,
     volatility = asset_volatility_s_avg
+  ) %>%
+  # ADO 879 - remove year and production/EFs to simplify joins that do not need yearly variation yet
+  dplyr::filter(.data$year == .env$start_year) %>%
+  dplyr::select(
+    -c(
+      .data$year, .data$ald_production_unit, .data$ald_production,
+      .data$ald_emissions_factor_unit, .data$ald_emissions_factor
+    )
   )
 #TODO: any logic/bounds needed for debt/equity ratio and volatility?
 
@@ -323,7 +331,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
       year = year, ald_sector = sector, technology = technology, NPS_price = NPS,
       SDS_price = SDS, Baseline_price = Baseline, B2DS_price = B2DS
     ) %>%
-    group_by(ald_sector, technology) %>%
+    dplyr::group_by(ald_sector, technology) %>%
     #### OPEN: Potentially a problem with the LS price calculation. Concerning warning
     mutate(
       late_sudden_price = late_sudden_prices(SDS_price = SDS_price, Baseline_price = Baseline_price, overshoot_method = overshoot_method)
@@ -366,32 +374,37 @@ for (i in seq(1, nrow(transition_scenarios))) {
       )
   }
 
+  rows_equity <- nrow(equity_annual_profits)
+
   equity_annual_profits <- equity_annual_profits %>%
-    left_join(
+    dplyr::inner_join(
       financial_data_equity,
-      by = c("company_name", "ald_sector", "technology", "year")
+      by = c("company_name", "ald_sector", "technology")
     )
+
+  cat("number of rows dropped by joining financial data on
+      company_name, ald_sector and technology = ",
+      rows_equity - nrow(equity_annual_profits), "\n")
+  # TODO: ADO 879 - note which companies are removed here, due to mismatch
 
   equity_annual_profits <- equity_annual_profits %>%
     arrange(
       scenario_name, investor_name, portfolio_name, scenario_geography, id,
       company_name, ald_sector, technology, year
     ) %>%
-    group_by(
+    dplyr::group_by(
       scenario_name, investor_name, portfolio_name, scenario_geography, id,
       company_name, ald_sector, technology
     ) %>%
     # NOTE: this assumes emissions factors stay constant after forecast and prod not continued
     tidyr::fill(
       company_id, pd, net_profit_margin, debt_equity_ratio, volatility,
-      ald_emissions_factor, ald_emissions_factor_unit, ald_production_unit,
       .direction = "down"
     ) %>%
     ungroup()
 
   equity_annual_profits <- equity_annual_profits %>%
     join_price_data(df_prices = df_prices) %>%
-    # join_net_profit_margins(net_profit_margins = net_profit_margins) %>%
     calculate_net_profits() %>%
     dcf_model_techlevel(discount_rate = discount_rate)
 
@@ -403,9 +416,10 @@ for (i in seq(1, nrow(transition_scenarios))) {
 
   plan_carsten_equity <- pacta_equity_results %>%
     filter(
-      year == start_year,
-      technology %in% technologies_lookup,
-      scenario_geography == scenario_geography_filter
+      .data$year == start_year,
+      .data$technology %in% technologies_lookup,
+      .data$scenario_geography == scenario_geography_filter,
+      .data$scenario %in% .env$scenario_to_follow_ls
     )
 
   plan_carsten_equity <- plan_carsten_equity %>%

@@ -60,7 +60,7 @@ technology_change_by_shock_year_lbk <- show_var_change_by_shock_year(
 #
 # pre processing
 qa_annual_profits_lbk_pf <- qa_annual_profits_lbk %>%
-  group_by(year, investor_name, portfolio_name, scenario_geography,
+  dplyr::group_by(year, investor_name, portfolio_name, scenario_geography,
            ald_sector, technology, year_of_shock) %>%
   summarise(
     baseline = sum(baseline, na.rm = TRUE),
@@ -92,7 +92,7 @@ prod_baseline_target_ls <- show_prod_baseline_target_ls_pf(
 #
 # pre process: needs aggregation to pf level
 plan_carsten_loanbook_pf <- plan_carsten_loanbook %>%
-  group_by(year, investor_name, portfolio_name, scenario_geography,
+  dplyr::group_by(year, investor_name, portfolio_name, scenario_geography,
            ald_sector, technology) %>%
   summarise(plan_carsten = sum(plan_carsten, na.rm = TRUE)) %>%
   ungroup()

@@ -1,3 +1,4 @@
+# apply_filters -----------------------------------------------------------
 test_that("without specified arguments, apply_filters() throws error", {
   testthat::expect_error(
     apply_filters(),

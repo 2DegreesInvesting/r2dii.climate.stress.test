@@ -171,7 +171,7 @@ pacta_bonds_results <- read_pacta_results(
     scenarios_filter = scenarios_filter,
     equity_market_filter = cfg$Lists$Equity.Market.List
   ) %>%
-  group_by(company_name) %>%
+  dplyr::group_by(company_name) %>%
   mutate(
     term = round(runif(n = 1, min = 1, max = 10), 0) # TODO: temporary addition, needs to come directly from input
   ) %>%
@@ -278,6 +278,14 @@ financial_data_bonds <- financial_data_bonds %>%
   dplyr::rename(
     debt_equity_ratio = leverage_s_avg,
     volatility = asset_volatility_s_avg
+  ) %>%
+  # ADO 879 - remove year and production/EFs to simplify joins that do not need yearly variation yet
+  dplyr::filter(.data$year == .env$start_year) %>%
+  dplyr::select(
+    -c(
+      .data$year, .data$ald_production_unit, .data$ald_production,
+      .data$ald_emissions_factor_unit, .data$ald_emissions_factor
+    )
   )
 #TODO: any logic/bounds needed for debt/equity ratio and volatility?
 
@@ -335,7 +343,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
       year = year, ald_sector = sector, technology = technology, NPS_price = NPS,
       SDS_price = SDS, Baseline_price = Baseline, B2DS_price = B2DS
     ) %>%
-    group_by(ald_sector, technology) %>%
+    dplyr::group_by(ald_sector, technology) %>%
     mutate(
       late_sudden_price = late_sudden_prices(
         SDS_price = SDS_price,
@@ -380,29 +388,36 @@ for (i in seq(1, nrow(transition_scenarios))) {
       )
   }
 
+  rows_bonds <- nrow(bonds_annual_profits)
+
   bonds_annual_profits <- bonds_annual_profits %>%
-    left_join(financial_data_bonds, by = c("company_name", "id" = "corporate_bond_ticker", "ald_sector", "technology", "year"))
+    dplyr::inner_join(financial_data_bonds,
+      by = c("company_name", "id" = "corporate_bond_ticker", "ald_sector", "technology")
+    )
+
+  cat("number of rows dropped by joining financial data on
+      company_name, corporate_bond_ticker, ald_sector, and technology: ",
+      rows_bonds - nrow(bonds_annual_profits), "\n")
+  # TODO: ADO 879 - note which companies are removed here, due to mismatch
 
   bonds_annual_profits <- bonds_annual_profits %>%
     arrange(
       scenario_name, investor_name, portfolio_name, scenario_geography, id,
       company_name, ald_sector, technology, year
     ) %>%
-    group_by(
+    dplyr::group_by(
       scenario_name, investor_name, portfolio_name, scenario_geography, id,
       company_name, ald_sector, technology
     ) %>%
     # NOTE: this assumes emissions factors stay constant after forecast and prod not continued
     tidyr::fill(
       company_id, pd, net_profit_margin, debt_equity_ratio, volatility,
-      ald_emissions_factor, ald_emissions_factor_unit, ald_production_unit,
       .direction = "down"
     ) %>%
     ungroup()
 
   bonds_annual_profits <- bonds_annual_profits %>%
     join_price_data(df_prices = df_prices) %>%
-    # join_net_profit_margins(net_profit_margins = net_profit_margins) %>%
     calculate_net_profits() %>%
     dcf_model_techlevel(discount_rate = discount_rate)
 
@@ -414,19 +429,30 @@ for (i in seq(1, nrow(transition_scenarios))) {
 
   plan_carsten_bonds <- pacta_bonds_results %>%
     filter(
-      year == start_year,
-      technology %in% technologies_lookup,
-      scenario_geography == scenario_geography_filter
+      .data$year == start_year,
+      .data$technology %in% technologies_lookup,
+      .data$scenario_geography == scenario_geography_filter,
+      .data$scenario %in% .env$scenario_to_follow_ls
     )
 
   financial_data_bonds_pd <- financial_data_bonds %>%
-    select(company_name, corporate_bond_ticker, ald_sector, technology, pd) %>%
-    distinct(across(everything()))
+    select(company_name, corporate_bond_ticker, ald_sector, technology, pd)
+
+  report_duplicates(
+    data = financial_data_bonds_pd,
+    cols = names(financial_data_bonds_pd)
+  )
+
+  rows_plan_carsten <- nrow(plan_carsten_bonds)
 
   plan_carsten_bonds <- plan_carsten_bonds %>%
-    left_join(financial_data_bonds_pd, by = c("company_name", "id" = "corporate_bond_ticker", "ald_sector", "technology"))
-  # TODO: what to do with entries that have NAs for pd?
-  # TODO: kick out NAs and record the diff
+    dplyr::inner_join(financial_data_bonds_pd, by = c("company_name", "id" = "corporate_bond_ticker", "ald_sector", "technology"))
+
+  cat("number of rows dropped from technology_exposure by joining financial data
+      on company_name, corporate_bond_ticker, ald_sector and technology = ",
+      rows_plan_carsten - nrow(plan_carsten_bonds), "\n")
+  # TODO: ADO 879 - note which companies are removed here, due to mismatch
+
   bonds_annual_profits <- bonds_annual_profits %>%
     filter(!is.na(company_id))
 
@@ -434,8 +460,12 @@ for (i in seq(1, nrow(transition_scenarios))) {
     select(
       investor_name, portfolio_name, company_name, ald_sector, technology,
       scenario_geography, year, plan_carsten, plan_sec_carsten, term, pd
-    ) %>%
-    distinct_all()
+    )
+
+  report_duplicates(
+    data = plan_carsten_bonds,
+    cols = names(plan_carsten_bonds)
+  )
 
   if (!exists("excluded_companies")) {
     bonds_results <- bind_rows(
@@ -460,16 +490,21 @@ for (i in seq(1, nrow(transition_scenarios))) {
         risk_free_interest_rate = risk_free_rate
       )
 
+    # TODO: ADO 879 - note which companies produce missing results due to
+    # insufficient input information (e.g. NAs for financials or 0 equity value)
+
     bonds_expected_loss <- bind_rows(
       bonds_expected_loss,
       company_expected_loss(
         data = bonds_overall_pd_changes,
         loss_given_default = lgd_subordinated_claims,
         exposure_at_default = plan_carsten_bonds,
-        # TODO: what to do with this? some sector level exposure for loanbook?
         port_aum = bonds_port_aum
       )
     )
+
+    # TODO: ADO 879 - note which companies produce missing results due to
+    # insufficient output from overall pd changes or related financial data inputs
 
     bonds_annual_pd_changes <- bind_rows(
       bonds_annual_pd_changes,
@@ -481,6 +516,9 @@ for (i in seq(1, nrow(transition_scenarios))) {
         risk_free_interest_rate = risk_free_rate
       )
     )
+    # TODO: ADO 879 - note which companies produce missing results due to
+    # insufficient input information (e.g. NAs for financials or 0 equity value)
+
   } else {
     bonds_results <- bind_rows(
       bonds_results,
@@ -510,7 +548,6 @@ for (i in seq(1, nrow(transition_scenarios))) {
         data = bonds_overall_pd_changes,
         loss_given_default = lgd_subordinated_claims,
         exposure_at_default = plan_carsten_bonds,
-        # TODO: what to do with this? some sector level exposure for loanbook?
         port_aum = bonds_port_aum
       )
     )
