@@ -50,7 +50,7 @@ technology_change_by_shock_year_eq <- show_var_change_by_shock_year(
 data_prod_baseline <- qa_annual_profits_eq
 
 data_prod_baseline <- data_prod_baseline %>%
-  group_by(year, investor_name, portfolio_name, scenario_geography,
+  dplyr::group_by(year, investor_name, portfolio_name, scenario_geography,
            ald_sector, technology, year_of_shock) %>%
   summarise(
     baseline = sum(baseline, na.rm = TRUE),

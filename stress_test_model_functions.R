@@ -139,7 +139,7 @@ dcf_model_techlevel <- function(data, discount_rate) {
 
   # Calculates the annual discounted net profits on technology level
   data %>%
-    group_by(investor_name, portfolio_name, id, company_name, ald_sector, technology, scenario_geography) %>%
+    dplyr::group_by(investor_name, portfolio_name, id, company_name, ald_sector, technology, scenario_geography) %>%
     mutate(
       t_calc = seq(0, (n() - 1)),
       discounted_net_profit_baseline = net_profits_baseline / (1 + discount_rate)^t_calc,

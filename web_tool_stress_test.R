@@ -334,7 +334,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
 
     equity_port_aum <- sector_exposures %>%
       filter(asset_type == "Equity") %>%
-      group_by(investor_name, portfolio_name) %>%
+      dplyr::group_by(investor_name, portfolio_name) %>%
       summarise(
         asset_portfolio_value = sum(valid_value_usd),
         .groups = "drop_last"
@@ -364,7 +364,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
           year = year, ald_sector = sector, technology = technology, NPS_price = NPS,
           SDS_price = SDS, Baseline_price = Baseline, B2DS_price = B2DS
         ) %>%
-        group_by(ald_sector, technology) %>%
+        dplyr::group_by(ald_sector, technology) %>%
         #### OPEN: Potentially a problem with the LS price calculation. Concerning warning
         mutate(
           late_sudden_price = late_sudden_prices(
@@ -533,7 +533,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
     )
 
     bonds_port_aum <- sector_exposures %>%
-      group_by(investor_name, portfolio_name) %>%
+      dplyr::group_by(investor_name, portfolio_name) %>%
       filter(asset_type == "Bonds") %>%
       summarise(
         asset_portfolio_value = sum(valid_value_usd),
@@ -563,7 +563,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
           year = year, ald_sector = sector, technology = technology, NPS_price = NPS,
           SDS_price = SDS, Baseline_price = Baseline, B2DS_price = B2DS
         ) %>%
-        group_by(ald_sector, technology) %>%
+        dplyr::group_by(ald_sector, technology) %>%
         mutate(
           late_sudden_price = late_sudden_prices(
             SDS_price = SDS_price,
