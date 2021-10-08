@@ -85,3 +85,21 @@ apply_filters <- function(data,
     dplyr::filter(!.data$key %in% unique(remove$key)) %>%
     dplyr::select(-.data$key)
 }
+
+#' Remove negative late and sudden rows
+#'
+#' Function checks for negative values on variable late_and_sudden. All
+#' technology x company_name combinations holding >= 1 negative value are
+#' removed.
+#'
+#' @param data_with_late_and_sudden A tibble containing scenario data with
+#'   projected late and sudden trajectory.
+#'
+#' @return Input tibble with potentially removed rows.
+filter_negative_late_and_sudden <- function(data_with_late_and_sudden) {
+
+  if (nrow(ddata_with_late_and_sudden) == 0) {
+    stop("No rows remain after removing negative late and sudden trajectories.")
+  }
+
+}

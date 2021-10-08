@@ -291,6 +291,10 @@ set_ls_trajectory <- function(data,
         .data$overshoot_direction
       )
     )
+
+  data <- filter_negative_late_and_sudden(data)
+
+  return(data)
 }
 
 
