@@ -97,7 +97,6 @@ apply_filters <- function(data,
 #'
 #' @return Input tibble with potentially removed rows.
 filter_negative_late_and_sudden <- function(data_with_late_and_sudden) {
-
   negative_late_and_sudden <- data_with_late_and_sudden %>%
     dplyr::filter(.data$late_and_sudden < 0) %>%
     dplyr::select(.data$company_name, .data$technology) %>%
@@ -110,8 +109,8 @@ filter_negative_late_and_sudden <- function(data_with_late_and_sudden) {
       data_with_late_and_sudden %>%
       dplyr::anti_join(negative_late_and_sudden, by = c("company_name", "technology"))
 
-    cat(paste0("Removed ", n_rows_before_removal - nrow(data_with_late_and_sudden),
-               " rows due to negative late and sudden targets."))
+    warning(paste0("Removed ", n_rows_before_removal - nrow(data_with_late_and_sudden),
+                   " rows due to negative late and sudden targets."))
 
     if (nrow(data_with_late_and_sudden) == 0) {
       stop("No rows remain after removing negative late and sudden trajectories.")
