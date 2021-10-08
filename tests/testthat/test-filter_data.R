@@ -1,3 +1,4 @@
+# apply_filters -----------------------------------------------------------
 test_that("without specified arguments, apply_filters() throws error", {
   testthat::expect_error(
     apply_filters(),
@@ -60,3 +61,7 @@ test_that("apply_filters returns expected number of rows based on input filter
 
   testthat::expect_equal(nrow(test_results), expected_nrows)
 })
+
+# filter_negative_late_and_sudden -----------------------------------------
+
+
