@@ -22,8 +22,8 @@ test_that("set_baseline_trajectories fully replicates indicated scenario,
   )
 
   testthat::expect_true(
-      all(baseline_trajectory$NPS == baseline_trajectory$baseline)
-    )
+    all(baseline_trajectory$NPS == baseline_trajectory$baseline)
+  )
 })
 
 test_that("set_baseline_trajectories does not fully replicate indicated scenario,
@@ -37,8 +37,8 @@ test_that("set_baseline_trajectories does not fully replicate indicated scenario
   )
 
   testthat::expect_false(
-      all(baseline_trajectory$NPS == baseline_trajectory$baseline)
-    )
+    all(baseline_trajectory$NPS == baseline_trajectory$baseline)
+  )
 })
 
 test_that("set_baseline_trajectories replicates provided production trajectory
@@ -48,10 +48,12 @@ test_that("set_baseline_trajectories replicates provided production trajectory
   # find number of years with provided production forecast per tech
   forecast_length <- sum(
     !is.na(
-      test_data_set_baseline[test_data_set_baseline$technology == "Electric",
-                           "plan_tech_prod"]
-      )
+      test_data_set_baseline[
+        test_data_set_baseline$technology == "Electric",
+        "plan_tech_prod"
+      ]
     )
+  )
 
   baseline_trajectory <- set_baseline_trajectory(
     data = test_data_set_baseline,
@@ -62,8 +64,8 @@ test_that("set_baseline_trajectories replicates provided production trajectory
   baseline_trajectory_forecast <- baseline_trajectory %>% head(forecast_length)
 
   testthat::expect_true(
-      all(baseline_trajectory_forecast$plan_tech_prod == baseline_trajectory_forecast$baseline)
-    )
+    all(baseline_trajectory_forecast$plan_tech_prod == baseline_trajectory_forecast$baseline)
+  )
 })
 
 
@@ -143,16 +145,16 @@ test_that("set_ls_trajectory fully replicates baseline until year before shock,
   year_of_shock <- test_shock_scenario$year_of_shock
 
   ls_trajectory_pre_shock <- set_ls_trajectory(
-      data = test_data_set_late_sudden,
-      scenario_to_follow_ls = "SDS",
-      shock_scenario = test_shock_scenario,
-      use_production_forecasts_ls = TRUE,
-      overshoot_method = TRUE,
-      scenario_to_follow_ls_aligned = "SDS",
-      start_year = 2020,
-      end_year = 2040,
-      analysis_time_frame = 5
-    ) %>%
+    data = test_data_set_late_sudden,
+    scenario_to_follow_ls = "SDS",
+    shock_scenario = test_shock_scenario,
+    use_production_forecasts_ls = TRUE,
+    overshoot_method = TRUE,
+    scenario_to_follow_ls_aligned = "SDS",
+    start_year = 2020,
+    end_year = 2040,
+    analysis_time_frame = 5
+  ) %>%
     dplyr::filter(.data$year < year_of_shock & .data$technology == "Coal")
 
   testthat::expect_true(
@@ -179,11 +181,11 @@ test_that("when technology is aligned, set_ls_trajectory fully replicates
     end_year = 2040,
     analysis_time_frame = 5
   ) %>%
-  dplyr::filter(.data$technology == "Electric" & .data$year < year_of_shock) %>%
-  dplyr::mutate(
-    change_ls = round(.data$late_sudden - dplyr::lag(.data$late_sudden), 7),
-    scenario_change_aligned = round(.data$scenario_change_aligned, 7)
-  )
+    dplyr::filter(.data$technology == "Electric" & .data$year < year_of_shock) %>%
+    dplyr::mutate(
+      change_ls = round(.data$late_sudden - dplyr::lag(.data$late_sudden), 7),
+      scenario_change_aligned = round(.data$scenario_change_aligned, 7)
+    )
 
   forecast_length <- sum(!is.na(ls_trajectory_pre_shock$plan_tech_prod))
 
@@ -194,7 +196,7 @@ test_that("when technology is aligned, set_ls_trajectory fully replicates
 
   testthat::expect_true(
     all(ls_start_until_prod$late_sudden == ls_start_until_prod$baseline) &
-    all(ls_prod_until_shock$change_ls == ls_prod_until_shock$scenario_change_aligned)
+      all(ls_prod_until_shock$change_ls == ls_prod_until_shock$scenario_change_aligned)
   )
 })
 
@@ -202,37 +204,37 @@ test_that("when technology is aligned, set_ls_trajectory fully replicates
 # filter_negative_late_and_sudden -----------------------------------------
 test_that("input remains unchanged if no negative late_and_sudden levels are
           present", {
-            input_data <- tibble::tibble(
-              company_name = c("firm", "firm", "biz", "biz"),
-              technology = c("some", "other", "some", "other"),
-              late_and_sudden = 1:4,
-              some_col = rep("sth", 4)
-            )
+  input_data <- tibble::tibble(
+    company_name = c("firm", "firm", "biz", "biz"),
+    technology = c("some", "other", "some", "other"),
+    late_sudden = 1:4,
+    some_col = rep("sth", 4)
+  )
 
-            filtered_data <- filter_negative_late_and_sudden(input_data)
+  filtered_data <- filter_negative_late_and_sudden(input_data)
 
-            expect_equal(input_data, filtered_data)
-          })
+  expect_equal(input_data, filtered_data)
+})
 
 test_that("technology x company_name combinations that hold at least 1 negative
           value on late_and_sudden are removed", {
-            input_data <- tibble::tibble(
-              company_name = c("firm", "firm", "firm", "biz", "biz"),
-              technology = c("some", "some", "other", "some", "other"),
-              late_and_sudden = c(-1, 1, 1, 0, 1),
-              some_col = rep("sth", 5)
-            )
+  input_data <- tibble::tibble(
+    company_name = c("firm", "firm", "firm", "biz", "biz"),
+    technology = c("some", "some", "other", "some", "other"),
+    late_sudden = c(-1, 1, 1, 0, 1),
+    some_col = rep("sth", 5)
+  )
 
-            testthat::expect_warning(filtered_data <- filter_negative_late_and_sudden(input_data), "Removed")
+  testthat::expect_warning(filtered_data <- filter_negative_late_and_sudden(input_data), "Removed")
 
-            expect_equal(input_data %>% dplyr::filter(!(company_name == "firm" & technology == "some")), filtered_data)
-          })
+  expect_equal(input_data %>% dplyr::filter(!(company_name == "firm" & technology == "some")), filtered_data)
+})
 
 test_that("removal works if several company_name x technology combinations are affected", {
   input_data <- tibble::tibble(
     company_name = c("firm", "firm", "firm", "biz", "biz"),
     technology = c("some", "some", "other", "some", "other"),
-    late_and_sudden = c(-1, 1, -1, -1, 1),
+    late_sudden = c(-1, 1, -1, -1, 1),
     some_col = rep("sth", 5)
   )
 
@@ -245,7 +247,7 @@ test_that("error is thrown if no rows remain", {
   input_data <- tibble::tibble(
     company_name = c("firm", "firm", "firm", "biz", "biz"),
     technology = c("some", "some", "other", "some", "other"),
-    late_and_sudden = rep(-1, 5),
+    late_sudden = rep(-1, 5),
     some_col = rep("sth", 5)
   )
 
