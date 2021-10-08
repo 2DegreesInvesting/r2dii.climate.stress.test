@@ -97,9 +97,10 @@ apply_filters <- function(data,
 #'
 #' @return Input tibble with potentially removed rows.
 filter_negative_late_and_sudden <- function(data_with_late_and_sudden) {
+
   negative_late_and_sudden <- data_with_late_and_sudden %>%
-    dplyr::filter(late_and_sudden < 0) %>%
-    dplyr::select(company_name, technology) %>%
+    dplyr::filter(.data$late_and_sudden < 0) %>%
+    dplyr::select(.data$company_name, .data$technology) %>%
     dplyr::distinct()
 
   if (nrow(negative_late_and_sudden) > 0) {
