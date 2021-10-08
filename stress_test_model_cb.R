@@ -171,7 +171,7 @@ pacta_bonds_results <- read_pacta_results(
     scenarios_filter = scenarios_filter,
     equity_market_filter = cfg$Lists$Equity.Market.List
   ) %>%
-  group_by(company_name) %>%
+  dplyr::group_by(company_name) %>%
   mutate(
     term = round(runif(n = 1, min = 1, max = 10), 0) # TODO: temporary addition, needs to come directly from input
   ) %>%
@@ -343,7 +343,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
       year = year, ald_sector = sector, technology = technology, NPS_price = NPS,
       SDS_price = SDS, Baseline_price = Baseline, B2DS_price = B2DS
     ) %>%
-    group_by(ald_sector, technology) %>%
+    dplyr::group_by(ald_sector, technology) %>%
     mutate(
       late_sudden_price = late_sudden_prices(
         SDS_price = SDS_price,
@@ -405,7 +405,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
       scenario_name, investor_name, portfolio_name, scenario_geography, id,
       company_name, ald_sector, technology, year
     ) %>%
-    group_by(
+    dplyr::group_by(
       scenario_name, investor_name, portfolio_name, scenario_geography, id,
       company_name, ald_sector, technology
     ) %>%

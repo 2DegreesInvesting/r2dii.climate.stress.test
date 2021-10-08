@@ -125,7 +125,7 @@ loan_share <- matched_non_negative %>%
     matched_portfolio_loan_size_credit_limit = sum(loan_size_credit_limit, na.rm = TRUE)
   ) %>%
   #TODO: either name or name_ald.. is id_2dii relevant?
-  group_by(name_ald, sector_ald, loan_size_outstanding_currency, loan_size_credit_limit_currency) %>%
+  dplyr::group_by(name_ald, sector_ald, loan_size_outstanding_currency, loan_size_credit_limit_currency) %>%
   mutate(
     comp_loan_share_outstanding = sum(loan_size_outstanding, na.rm = TRUE)/portfolio_loan_size_outstanding,
     comp_loan_size_outstanding = sum(loan_size_outstanding, na.rm = TRUE),
@@ -159,7 +159,7 @@ loan_share %>%
 #-Calculate sector level loan book size and value share------------
 
 sector_share <- matched_non_negative %>%
-  group_by(sector_ald, loan_size_outstanding_currency, loan_size_credit_limit_currency) %>%
+  dplyr::group_by(sector_ald, loan_size_outstanding_currency, loan_size_credit_limit_currency) %>%
   summarise(
     sector_loan_share_outstanding = sum(loan_size_outstanding, na.rm = TRUE)/portfolio_size$portfolio_loan_size_outstanding,
     sector_loan_size_outstanding = sum(loan_size_outstanding, na.rm = TRUE),

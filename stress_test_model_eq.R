@@ -331,7 +331,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
       year = year, ald_sector = sector, technology = technology, NPS_price = NPS,
       SDS_price = SDS, Baseline_price = Baseline, B2DS_price = B2DS
     ) %>%
-    group_by(ald_sector, technology) %>%
+    dplyr::group_by(ald_sector, technology) %>%
     #### OPEN: Potentially a problem with the LS price calculation. Concerning warning
     mutate(
       late_sudden_price = late_sudden_prices(SDS_price = SDS_price, Baseline_price = Baseline_price, overshoot_method = overshoot_method)
@@ -392,7 +392,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
       scenario_name, investor_name, portfolio_name, scenario_geography, id,
       company_name, ald_sector, technology, year
     ) %>%
-    group_by(
+    dplyr::group_by(
       scenario_name, investor_name, portfolio_name, scenario_geography, id,
       company_name, ald_sector, technology
     ) %>%
