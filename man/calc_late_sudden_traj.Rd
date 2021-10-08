@@ -6,20 +6,20 @@
 after the policy shock hits.}
 \usage{
 calc_late_sudden_traj(
-  start_year = 2020,
-  end_year = 2040,
-  year_of_shock = year_of_shock,
-  duration_of_shock = duration_of_shock,
-  shock_strength = .data$shock_strength,
-  scen_to_follow = .data$scen_to_follow,
-  planned_prod = .data$plan_tech_prod,
-  late_and_sudden = .data$late_sudden,
-  scenario_change = .data$scenario_change,
-  scenario_change_baseline = .data$scenario_change_baseline,
-  scenario_change_aligned = .data$scenario_change_aligned,
-  overshoot_method = TRUE,
-  overshoot_direction = .data$overshoot_direction[1],
-  time_frame = NULL
+  start_year,
+  end_year,
+  year_of_shock,
+  duration_of_shock,
+  shock_strength,
+  scen_to_follow,
+  planned_prod,
+  late_and_sudden,
+  scenario_change,
+  scenario_change_baseline,
+  scenario_change_aligned,
+  overshoot_method,
+  overshoot_direction,
+  time_frame
 )
 }
 \arguments{

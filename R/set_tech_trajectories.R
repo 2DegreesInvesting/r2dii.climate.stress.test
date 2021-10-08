@@ -291,6 +291,10 @@ set_ls_trajectory <- function(data,
         .data$overshoot_direction
       )
     )
+
+  data <- filter_negative_late_and_sudden(data)
+
+  return(data)
 }
 
 
@@ -362,20 +366,10 @@ set_ls_trajectory <- function(data,
 #' @return numeric vector
 #'
 #' @export
-calc_late_sudden_traj <- function(start_year = 2020,
-                                  end_year = 2040,
-                                  year_of_shock = year_of_shock,
-                                  duration_of_shock = duration_of_shock,
-                                  shock_strength = .data$shock_strength,
-                                  scen_to_follow = .data$scen_to_follow,
-                                  planned_prod = .data$plan_tech_prod,
-                                  late_and_sudden = .data$late_sudden,
-                                  scenario_change = .data$scenario_change,
-                                  scenario_change_baseline = .data$scenario_change_baseline,
-                                  scenario_change_aligned = .data$scenario_change_aligned,
-                                  overshoot_method = TRUE,
-                                  overshoot_direction = .data$overshoot_direction[1],
-                                  time_frame = NULL) {
+calc_late_sudden_traj <- function(start_year, end_year, year_of_shock, duration_of_shock,
+                                  shock_strength, scen_to_follow, planned_prod, late_and_sudden,
+                                  scenario_change, scenario_change_baseline, scenario_change_aligned,
+                                  overshoot_method, overshoot_direction, time_frame) {
   time_frame %||% stop("Must provide input for 'time_frame'", call. = FALSE)
 
   # calculate the position where the shock kicks in
@@ -464,3 +458,39 @@ calc_late_sudden_traj <- function(start_year = 2020,
 
   return(late_and_sudden)
 }
+
+#' Remove negative late and sudden rows
+#'
+#' Function checks for negative values on variable late_and_sudden. All
+#' technology x company_name combinations holding >= 1 negative value are
+#' removed.
+#'
+#' @param data_with_late_and_sudden A tibble containing scenario data with
+#'   projected late and sudden trajectory.
+#'
+#' @return Input tibble with potentially removed rows.
+filter_negative_late_and_sudden <- function(data_with_late_and_sudden) {
+  negative_late_and_sudden <- data_with_late_and_sudden %>%
+    dplyr::filter(.data$late_sudden < 0) %>%
+    dplyr::select(.data$company_name, .data$technology) %>%
+    dplyr::distinct()
+
+  if (nrow(negative_late_and_sudden) > 0) {
+    n_rows_before_removal <- nrow(data_with_late_and_sudden)
+
+    data_with_late_and_sudden <-
+      data_with_late_and_sudden %>%
+      dplyr::anti_join(negative_late_and_sudden, by = c("company_name", "technology"))
+
+    warning(paste0("Removed ", n_rows_before_removal - nrow(data_with_late_and_sudden),
+                   " rows because negative production compensation targets were set in late and sudden.
+                   Negative absolute production is impossible"))
+
+    if (nrow(data_with_late_and_sudden) == 0) {
+      stop("No rows remain after removing negative late and sudden trajectories.")
+    }
+  }
+
+  return(data_with_late_and_sudden)
+}
+
