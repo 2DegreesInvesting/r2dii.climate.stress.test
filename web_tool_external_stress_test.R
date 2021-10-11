@@ -83,7 +83,7 @@ if (file.exists(file.path(results_path, pf_name, "Bonds_results_portfolio.rda"))
     dplyr::distinct(investor_name, portfolio_name, ald_sector, technology, plan_carsten, plan_sec_carsten) %>%
     dplyr::left_join(portfolio_overview %>%
                        dplyr::filter(asset_type == "Equity"), by = c("investor_name", "portfolio_name")) %>%
-    mutate(tech_exposure = plan_carsten * portfolio_size)
+    dplyr::mutate(tech_exposure = plan_carsten * portfolio_size)
 } else {
   print("No Bonds Portfolio Data available. Skipping!")
 }
@@ -94,7 +94,7 @@ if (file.exists(file.path(results_path, pf_name, "Equity_results_portfolio.rda")
     dplyr::distinct(investor_name, portfolio_name, ald_sector, technology, plan_carsten, plan_sec_carsten) %>%
     dplyr::left_join(portfolio_overview %>%
                        dplyr::filter(asset_type == "Equity"), by = c("investor_name", "portfolio_name")) %>%
-    mutate(tech_exposure = plan_carsten * portfolio_size)
+    dplyr::mutate(tech_exposure = plan_carsten * portfolio_size)
 } else {
   print("No Equity Portfolio Data available. Skipping!")
 }
@@ -123,7 +123,7 @@ if (exists("portfolio")) {
       shocks %>% dplyr::filter(methodology == "IPR") %>% dplyr::select(-c(methodology)),
       by = c("sector", "subsector")
     ) %>%
-    mutate(
+    dplyr::mutate(
       loss = exposure * shock / 100,
       sector = ifelse(is.na(sector), "Other", sector)
     ) %>%

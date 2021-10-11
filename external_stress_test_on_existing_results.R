@@ -144,7 +144,7 @@ cb_exposures <- readRDS(file.path(project_location, "40_Results", investor_name_
     portfolio_overview %>% dplyr::filter(asset_type == "Bonds"),
     by = c("investor_name", "portfolio_name")
   ) %>%
-  mutate(tech_exposure = plan_carsten * portfolio_size)
+  dplyr::mutate(tech_exposure = plan_carsten * portfolio_size)
 
 eq_exposures <- readRDS(file.path(project_location, "40_Results", investor_name_filter, "Equity_results_portfolio.rda")) %>%
   dplyr::filter(
@@ -157,12 +157,12 @@ eq_exposures <- readRDS(file.path(project_location, "40_Results", investor_name_
     portfolio_overview %>% dplyr::filter(asset_type == "Equity"),
     by = c("investor_name", "portfolio_name")
   ) %>%
-  mutate(tech_exposure = plan_carsten * portfolio_size)
+  dplyr::mutate(tech_exposure = plan_carsten * portfolio_size)
 
 calc_boe_exposures <- function(pacta_exposures) {
   pacta_exposures %>%
     dplyr::filter(ald_sector != "Other") %>%
-    mutate(
+    dplyr::mutate(
       subsector = case_when(
         technology %in% c("RenewablesCap", "HydroCap", "NuclearCap") ~ "Low carbon",
         technology %in% c("ICE", "Hybrid", "FuelCell") ~ "Non electric",
@@ -190,9 +190,9 @@ calc_boe_exposures <- function(pacta_exposures) {
 }
 
 boe_exposures_cb <- calc_boe_exposures(pacta_exposures = cb_exposures) %>%
-  mutate(asset_type = "Bonds")
+  dplyr::mutate(asset_type = "Bonds")
 boe_exposures_eq <- calc_boe_exposures(pacta_exposures = eq_exposures) %>%
-  mutate(asset_type = "Equity")
+  dplyr::mutate(asset_type = "Equity")
 
 
 # Results -----------------------------------------------------------------
@@ -212,12 +212,12 @@ results_dnb <- portfolio %>%
     shocks %>% dplyr::filter(methodology == "DNB") %>% dplyr::select(-c(methodology)),
     by = c("sector")
   ) %>%
-  mutate(loss = exposure * shock / 100)
+  dplyr::mutate(loss = exposure * shock / 100)
 
 results_ipr <- portfolio %>%
   as.data.frame() %>%
   dplyr::filter(asset_type == "Equity") %>%
-  mutate(
+  dplyr::mutate(
     sector_ipr = ifelse(is.na(sector_ipr), "Other", sector_ipr),
     subsector_ipr = ifelse(is.na(subsector_ipr), "Other", subsector_ipr)
   ) %>%
@@ -231,7 +231,7 @@ results_ipr <- portfolio %>%
     shocks %>% dplyr::filter(methodology == "IPR") %>% dplyr::select(-c(methodology)),
     by = c("sector", "subsector")
   ) %>%
-  mutate(loss = exposure * shock / 100)
+  dplyr::mutate(loss = exposure * shock / 100)
 
 results_boe <- portfolio %>%
   as.data.frame() %>%
@@ -250,7 +250,7 @@ results_boe <- portfolio %>%
     shocks %>% dplyr::filter(methodology == "BoE") %>% dplyr::select(-c(description, methodology)),
     by = c("sector", "subsector")
   ) %>%
-  mutate(
+  dplyr::mutate(
     shock = ifelse(asset_type == "Bonds", 0.15 * shock, shock),
     loss = exposure * shock / 100
   )

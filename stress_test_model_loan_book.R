@@ -196,7 +196,7 @@ pacta_loanbook_results <- read_pacta_results(
     equity_market_filter = cfg$Lists$Equity.Market.List
   ) %>%
   dplyr::group_by(company_name) %>%
-  mutate(
+  dplyr::mutate(
     term = round(runif(n = 1, min = 1, max = 10), 0) # TODO: temporary addition, needs to come directly from input
   ) %>%
   dplyr::ungroup()
@@ -208,7 +208,7 @@ sector_exposures <- read_csv(
     path_dropbox_2dii("PortCheck_v2", "10_Projects", project_name, "30_Processed_Inputs", paste0("portfolio_overview_", project_name, ".csv")),
     col_types = "cddcddc"
   ) %>%
-  mutate(
+  dplyr::mutate(
     sector_ald = case_when(
       sector_ald == "power" ~ "Power",
       sector_ald == "oil and gas" ~ "Oil&Gas",
@@ -228,7 +228,7 @@ sector_exposures <- read_csv(
     financial_sector = sector_ald,
     valid_value_usd = !!rlang::sym(sector_credit_type)
   ) %>%
-  mutate(
+  dplyr::mutate(
     investor_name = investor_name_placeholder,
     portfolio_name = investor_name_placeholder
   )
@@ -270,7 +270,7 @@ if(twodii_internal == TRUE | start_year < 2020) {
       direction = Direction,
       fair_share_perc = FairSharePerc
     ) %>%
-    mutate(scenario = str_replace(scenario, "NPSRTS", "NPS"))
+    dplyr::mutate(scenario = str_replace(scenario, "NPSRTS", "NPS"))
 } else {
   scenario_data <- readr::read_csv(scen_data_file, col_types = "ccccccncn") %>%
     dplyr::rename(source = scenario_source)
@@ -279,7 +279,7 @@ if(twodii_internal == TRUE | start_year < 2020) {
 scenario_data <- scenario_data %>%
   dplyr::filter(source %in% c("ETP2017", "WEO2019")) %>% #TODO: this should be set elsewhere
   dplyr::filter(!(source == "ETP2017" & ald_sector == "Power")) %>%
-  mutate(scenario = ifelse(str_detect(scenario, "_"), str_extract(scenario, "[^_]*$"), scenario)) %>%
+  dplyr::mutate(scenario = ifelse(str_detect(scenario, "_"), str_extract(scenario, "[^_]*$"), scenario)) %>%
   check_scenario_timeframe(start_year = start_year, end_year = end_year)
 
 # Correct for automotive scenario data error. CHECK IF ALREADY RESOLVED IN THE SCENARIO DATA, IF SO, DONT USE FUNCTION BELOW!
@@ -393,13 +393,13 @@ for (i in seq(1, nrow(transition_scenarios))) {
   print(overshoot_method)
   # Calculate late and sudden prices for scenario i
   df_prices <- df_price %>%
-    mutate(Baseline = NPS) %>% # FIXME this should be parameterized!!
+    dplyr::mutate(Baseline = NPS) %>% # FIXME this should be parameterized!!
     dplyr::rename(
       year = year, ald_sector = sector, technology = technology, NPS_price = NPS,
       SDS_price = SDS, Baseline_price = Baseline, B2DS_price = B2DS
     ) %>%
     dplyr::group_by(ald_sector, technology) %>%
-    mutate(
+    dplyr::mutate(
       late_sudden_price = late_sudden_prices(
         SDS_price = SDS_price,
         Baseline_price = Baseline_price,
@@ -481,7 +481,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
   qa_annual_profits_lbk <- qa_annual_profits_lbk %>%
     dplyr::bind_rows(
       loanbook_annual_profits %>%
-        mutate(year_of_shock = transition_scenario_i$year_of_shock)
+        dplyr::mutate(year_of_shock = transition_scenario_i$year_of_shock)
     )
 
   plan_carsten_loanbook <- pacta_loanbook_results %>%

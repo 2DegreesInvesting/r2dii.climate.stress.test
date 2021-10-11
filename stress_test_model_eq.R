@@ -216,7 +216,7 @@ if(twodii_internal == TRUE | start_year < 2020) {
 scenario_data <- scenario_data %>%
   dplyr::filter(source %in% c("ETP2017", "WEO2019")) %>% #TODO: this should be set elsewhere
   dplyr::filter(!(source == "ETP2017" & ald_sector == "Power")) %>%
-  mutate(scenario = ifelse(str_detect(scenario, "_"), str_extract(scenario, "[^_]*$"), scenario)) %>%
+  dplyr::mutate(scenario = ifelse(str_detect(scenario, "_"), str_extract(scenario, "[^_]*$"), scenario)) %>%
   check_scenario_timeframe(start_year = start_year, end_year = end_year)
 
 # Correct for automotive scenario data error. CHECK IF ALREADY RESOLVED IN THE SCENARIO DATA, IF SO, DONT USE FUNCTION BELOW!
@@ -326,14 +326,14 @@ for (i in seq(1, nrow(transition_scenarios))) {
 
   # Calculate late and sudden prices for scenario i
   df_prices <- df_price %>%
-    mutate(Baseline = NPS) %>% # FIXME this should be parameterized!!
+    dplyr::mutate(Baseline = NPS) %>% # FIXME this should be parameterized!!
     dplyr::rename(
       year = year, ald_sector = sector, technology = technology, NPS_price = NPS,
       SDS_price = SDS, Baseline_price = Baseline, B2DS_price = B2DS
     ) %>%
     dplyr::group_by(ald_sector, technology) %>%
     #### OPEN: Potentially a problem with the LS price calculation. Concerning warning
-    mutate(
+    dplyr::mutate(
       late_sudden_price = late_sudden_prices(SDS_price = SDS_price, Baseline_price = Baseline_price, overshoot_method = overshoot_method)
     ) %>%
     dplyr::ungroup()
@@ -411,7 +411,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
   qa_annual_profits_eq <- qa_annual_profits_eq %>%
     dplyr::bind_rows(
       equity_annual_profits %>%
-        mutate(year_of_shock = transition_scenario_i$year_of_shock)
+        dplyr::mutate(year_of_shock = transition_scenario_i$year_of_shock)
     )
 
   plan_carsten_equity <- pacta_equity_results %>%

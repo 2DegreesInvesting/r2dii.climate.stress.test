@@ -208,7 +208,7 @@ scen_data_file <- ifelse(twodii_internal == TRUE,
 scenario_data <- readr::read_csv(scen_data_file, col_types = cols(.default = col_guess())) %>%
   dplyr::rename(source = scenario_source) %>%
   dplyr::filter(source %in% c("ETP2017", "WEO2019")) %>%
-  mutate(scenario = ifelse(str_detect(scenario, "_"), str_extract(scenario, "[^_]*$"), scenario)) %>%
+  dplyr::mutate(scenario = ifelse(str_detect(scenario, "_"), str_extract(scenario, "[^_]*$"), scenario)) %>%
   check_scenario_timeframe(start_year = start_year, end_year = end_year)
 
 
@@ -296,7 +296,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
   pacta_equity_results_full <- pacta_equity_results_full %>%
     dplyr::filter(!(scenario == "ETP2017_NPS" & ald_sector == "Power")) %>%
     dplyr::filter(scenario %in% scenarios) %>%
-    mutate(scenario = ifelse(str_detect(scenario, "_"), str_extract(scenario, "[^_]*$"), scenario)) %>%
+    dplyr::mutate(scenario = ifelse(str_detect(scenario, "_"), str_extract(scenario, "[^_]*$"), scenario)) %>%
     check_portfolio_consistency(start_year = start_year)
 
   pacta_equity_results <- pacta_equity_results_full %>%
@@ -304,7 +304,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
       year = seq(start_year, start_year + time_horizon),
       nesting(!!!syms(nesting_vars))
     ) %>%
-    mutate(plan_tech_prod = dplyr::if_else(is.na(plan_tech_prod), 0, plan_tech_prod)) %>%
+    dplyr::mutate(plan_tech_prod = dplyr::if_else(is.na(plan_tech_prod), 0, plan_tech_prod)) %>%
     apply_filters(
       investor = investor_name,
       sectors = sectors,
@@ -318,7 +318,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
       allocation == allocation_method_equity,
       equity_market %in% equity_market_filter
     ) %>%
-    mutate(scenario = str_replace(scenario, "NPSRTS", "NPS")) %>%
+    dplyr::mutate(scenario = str_replace(scenario, "NPSRTS", "NPS")) %>%
     dplyr::distinct_all()
 
   if (nrow(pacta_equity_results) <= 0) {
@@ -359,14 +359,14 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
 
       # Calculate late and sudden prices for scenario i
       df_prices <- df_price %>%
-        mutate(Baseline = NPS) %>% # FIXME this should be parameterized!!
+        dplyr::mutate(Baseline = NPS) %>% # FIXME this should be parameterized!!
         dplyr::rename(
           year = year, ald_sector = sector, technology = technology, NPS_price = NPS,
           SDS_price = SDS, Baseline_price = Baseline, B2DS_price = B2DS
         ) %>%
         dplyr::group_by(ald_sector, technology) %>%
         #### OPEN: Potentially a problem with the LS price calculation. Concerning warning
-        mutate(
+        dplyr::mutate(
           late_sudden_price = late_sudden_prices(
             SDS_price = SDS_price,
             Baseline_price = Baseline_price,
@@ -496,7 +496,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
   pacta_bonds_results_full <- pacta_bonds_results_full %>%
     dplyr::filter(!(scenario == "ETP2017_NPS" & ald_sector == "Power")) %>%
     dplyr::filter(scenario %in% scenarios) %>%
-    mutate(scenario = ifelse(str_detect(scenario, "_"), str_extract(scenario, "[^_]*$"), scenario)) %>%
+    dplyr::mutate(scenario = ifelse(str_detect(scenario, "_"), str_extract(scenario, "[^_]*$"), scenario)) %>%
     check_portfolio_consistency(start_year = start_year)
 
   pacta_bonds_results <- pacta_bonds_results_full %>%
@@ -504,7 +504,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
       year = seq(start_year, start_year + time_horizon),
       nesting(!!!syms(nesting_vars))
     ) %>%
-    mutate(plan_tech_prod = dplyr::if_else(is.na(plan_tech_prod), 0, plan_tech_prod)) %>%
+    dplyr::mutate(plan_tech_prod = dplyr::if_else(is.na(plan_tech_prod), 0, plan_tech_prod)) %>%
     apply_filters(
       investor = investor_name,
       sectors = sectors,
@@ -518,7 +518,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
       allocation == allocation_method_equity,
       equity_market %in% equity_market_filter
     ) %>%
-    mutate(scenario = str_replace(scenario, "NPSRTS", "NPS")) %>%
+    dplyr::mutate(scenario = str_replace(scenario, "NPSRTS", "NPS")) %>%
     dplyr::distinct_all()
 
   if (nrow(pacta_bonds_results) <= 0) {
@@ -558,13 +558,13 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
 
       # Calculate late and sudden prices for scenario i
       df_prices <- df_price %>%
-        mutate(Baseline = NPS) %>% # FIXME this should be parameterized!!
+        dplyr::mutate(Baseline = NPS) %>% # FIXME this should be parameterized!!
         dplyr::rename(
           year = year, ald_sector = sector, technology = technology, NPS_price = NPS,
           SDS_price = SDS, Baseline_price = Baseline, B2DS_price = B2DS
         ) %>%
         dplyr::group_by(ald_sector, technology) %>%
-        mutate(
+        dplyr::mutate(
           late_sudden_price = late_sudden_prices(
             SDS_price = SDS_price,
             Baseline_price = Baseline_price,

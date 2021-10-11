@@ -66,7 +66,7 @@ wrangle_and_check_pacta_results <- function(pacta_results, start_year, time_hori
       year = seq(start_year, start_year + time_horizon),
       nesting(!!!syms(nesting_vars_lookup))
     ) %>%
-    mutate(plan_tech_prod = dplyr::if_else(is.na(.data$plan_tech_prod), 0, .data$plan_tech_prod)) %>%
+    dplyr::mutate(plan_tech_prod = dplyr::if_else(is.na(.data$plan_tech_prod), 0, .data$plan_tech_prod)) %>%
     apply_filters(
       investor = investor_name_placeholder,
       sectors = sectors_lookup,

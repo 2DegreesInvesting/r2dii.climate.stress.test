@@ -5,7 +5,7 @@ map_security_sectors <- function(fin_data, sector_bridge){
 
   fin_data <- fin_data %>% dplyr::left_join(sector_bridge %>% dplyr::filter(source == "BICS") %>% dplyr::select(-source),
                                      by = c("security_bics_subgroup" = "industry_classification")) %>%
-    mutate(security_icb_subsector = as.character(security_icb_subsector))
+    dplyr::mutate(security_icb_subsector = as.character(security_icb_subsector))
 
   fin_data_na <- fin_data %>% dplyr::filter(is.na(sector)) %>% dplyr::select(-c(sector,sector_boe,sector_ipr,subsector_ipr,sector_dnb,subsector_boe))
 
@@ -32,7 +32,7 @@ override_sector_classification <- function(fin_data, overrides){
   start_rows <- nrow(fin_data)
 
   overrides <- overrides %>%
-    mutate(across(c(company_name, corporate_bond_ticker, fin_sector_override), as.character))
+    dplyr::mutate(across(c(company_name, corporate_bond_ticker, fin_sector_override), as.character))
 
   overrides$sector_override <- TRUE
 
@@ -75,7 +75,7 @@ override_sector_classification <- function(fin_data, overrides){
 check_asset_types <- function(fin_data){
 
   fin_data <- fin_data %>%
-    mutate(asset_type = if_else(asset_type == "Other", "Others", asset_type),
+    dplyr::mutate(asset_type = if_else(asset_type == "Other", "Others", asset_type),
            asset_type = if_else(is.na(asset_type), "Others", asset_type),
     )
 
@@ -118,7 +118,7 @@ check_mapped_assets_flag <- function(fin_data){
   # Ensure that flag is a logical
 
   fin_data <- fin_data %>%
-    mutate(mapped_to_assets = case_when(mapped_to_assets %in% c("t",1) ~ TRUE,
+    dplyr::mutate(mapped_to_assets = case_when(mapped_to_assets %in% c("t",1) ~ TRUE,
                                         mapped_to_assets %in% c("f",0) ~ FALSE
     ))
 
@@ -135,7 +135,7 @@ check_mapped_assets_flag <- function(fin_data){
 check_fin_mapped_sectors <- function(fin_data){
 
   fin_data <- fin_data %>%
-    mutate(security_mapped_sector = case_when(security_mapped_sector == "Others" ~ "Other",
+    dplyr::mutate(security_mapped_sector = case_when(security_mapped_sector == "Others" ~ "Other",
                                               security_mapped_sector == "OIl&Gas" ~ "Oil&Gas",
                                               is.na(security_mapped_sector) ~ "Other",
                                               TRUE ~ security_mapped_sector))
@@ -155,7 +155,7 @@ convert_corporate_bonds <- function(fin_data){
   cb_groups <- c("Convertible Bonds", "Corporate Bonds", "Corporate inflation linked Bonds","Convertible Preferreds" )
 
   fin_data <- fin_data %>%
-    mutate(asset_type = if_else(security_type %in% cb_groups,"Bonds",asset_type),
+    dplyr::mutate(asset_type = if_else(security_type %in% cb_groups,"Bonds",asset_type),
            asset_type = if_else(!security_type %in% cb_groups & asset_type == "Bonds","Others",asset_type),
     )
 
@@ -167,7 +167,7 @@ identify_sb <- function(fin_data){
   sb_groups <- c("Sovereign Debt","Sovereign Agency Debt", "Government inflation linked Bonds", "Sovereign","Sovereign Agency", "Sovereigns")
 
   fin_data <- fin_data %>%
-    mutate(is_sb = case_when(security_type %in% sb_groups ~ TRUE,
+    dplyr::mutate(is_sb = case_when(security_type %in% sb_groups ~ TRUE,
                              security_bics_subgroup %in% sb_groups ~ TRUE,
                              TRUE ~ FALSE))
 
@@ -180,7 +180,7 @@ classify_all_funds <- function(fin_data){
   nrow(fin_data[fin_data$asset_type == "Funds",])
 
   fin_data <- fin_data %>%
-    mutate(asset_type = case_when(grepl("Fund", security_type) ~ "Funds" ,
+    dplyr::mutate(asset_type = case_when(grepl("Fund", security_type) ~ "Funds" ,
                                   grepl("ETF", security_type) ~ "Funds",
                                   grepl("Fund", security_bclass4) ~ "Funds" ,
                                   grepl("ETF", security_bclass4) ~ "Funds",

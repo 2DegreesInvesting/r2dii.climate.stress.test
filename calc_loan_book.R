@@ -61,7 +61,7 @@ if (!dir_exists(out)) dir_create(out)
 # size too large to be processed in one go, split loan book in chunks and loop
 # TODO: develop logic to split in chunks, maybe one chunk per 5-10k rows...
 chunks <- 20
-chunked_loanbook <- loanbook %>% mutate(chunk = as.integer(cut(row_number(), chunks)))
+chunked_loanbook <- loanbook %>% dplyr::mutate(chunk = as.integer(cut(row_number(), chunks)))
 
 
 # CAUTION: expensive calculation
@@ -92,7 +92,7 @@ matched <- matched_unpriorizized %>%
 
 # TODO: what to do with negative credit limits?
 matched_non_negative <- matched %>%
-  mutate(
+  dplyr::mutate(
     loan_size_outstanding = ifelse(loan_size_outstanding < 0, 0, loan_size_outstanding),
     loan_size_credit_limit = ifelse(loan_size_credit_limit < 0, 0, loan_size_credit_limit)
   )
@@ -118,7 +118,7 @@ matched_portfolio_size <- matched_non_negative %>%
 #-Calculate loan-tech level loan book size and value share------------
 
 loan_share <- matched_non_negative %>%
-  mutate(
+  dplyr::mutate(
     portfolio_loan_size_outstanding = portfolio_size$portfolio_loan_size_outstanding,
     portfolio_loan_size_credit_limit = portfolio_size$portfolio_loan_size_credit_limit,
     matched_portfolio_loan_size_outstanding = sum(loan_size_outstanding, na.rm = TRUE),
@@ -202,7 +202,7 @@ matched_company_weighted <- matched_non_negative %>%
   dplyr::rename(
     production_weighted = production
   ) %>%
-  mutate(technology_share = round(technology_share, 8)) %>% # rounding errors can lead to duplicates
+  dplyr::mutate(technology_share = round(technology_share, 8)) %>% # rounding errors can lead to duplicates
   dplyr::distinct_all()
 
 matched_company_unweighted <- matched_non_negative %>%
