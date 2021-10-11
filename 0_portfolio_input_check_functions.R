@@ -206,7 +206,7 @@ check_funds_wo_bbg <- function(fund_data, fin_data){
 
   known_missing_isins <- read_csv("data-raw/fund_isins_without_bbg_data.csv", col_types =  "c")
 
-  known_missing_isins <- known_missing_isins %>% bind_rows(fund_isins_missing_bbg) %>% distinct()
+  known_missing_isins <- known_missing_isins %>% dplyr::bind_rows(fund_isins_missing_bbg) %>% dplyr::distinct()
 
   write.csv(fund_isins_missing_bbg, "data-raw/fund_isins_without_bbg_data.csv", row.names = F)
 

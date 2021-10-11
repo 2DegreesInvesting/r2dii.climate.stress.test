@@ -145,7 +145,7 @@ loan_share <- matched_non_negative %>%
     comp_loan_size_credit_limit,
     loan_size_credit_limit_currency
   ) %>%
-  distinct_all()
+  dplyr::distinct_all()
 
 loan_share %>%
   write_csv(path_dropbox_2dii("PortCheck_v2", "10_Projects", project_name, "30_Processed_Inputs", paste0("comp_overview_", project_name, ".csv")))
@@ -203,7 +203,7 @@ matched_company_weighted <- matched_non_negative %>%
     production_weighted = production
   ) %>%
   mutate(technology_share = round(technology_share, 8)) %>% # rounding errors can lead to duplicates
-  distinct_all()
+  dplyr::distinct_all()
 
 matched_company_unweighted <- matched_non_negative %>%
   target_market_share(
@@ -231,7 +231,7 @@ matched_company <- matched_company_weighted %>%
     matched_company_unweighted,
     by = c("sector", "technology", "year", "region", "scenario_source", "name_ald", "metric")
   ) %>%
-  distinct_all()
+  dplyr::distinct_all()
 
 matched_company_loan_share <- matched_company %>%
   dplyr::left_join(loan_share, by = c("sector" = "sector_ald", "name_ald")) %>%

@@ -319,7 +319,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
       equity_market %in% equity_market_filter
     ) %>%
     mutate(scenario = str_replace(scenario, "NPSRTS", "NPS")) %>%
-    distinct_all()
+    dplyr::distinct_all()
 
   if (nrow(pacta_equity_results) <= 0) {
     print("Input pacta data has 0 valid rows after filtering. Skipping equity calculation!")
@@ -423,7 +423,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
 
       if(identical(calculation_level, "company")) {
         plan_carsten_equity <- plan_carsten_equity %>%
-          distinct(investor_name, portfolio_name, company_name, ald_sector, technology,
+          dplyr::distinct(investor_name, portfolio_name, company_name, ald_sector, technology,
                    scenario_geography, year, plan_carsten, plan_sec_carsten)
 
         if (!exists("excluded_companies")) {
@@ -458,7 +458,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
 
       } else {
         plan_carsten_equity <- plan_carsten_equity %>%
-          distinct(investor_name, portfolio_name, ald_sector, technology,
+          dplyr::distinct(investor_name, portfolio_name, ald_sector, technology,
                    scenario_geography, year, plan_carsten, plan_sec_carsten)
 
         equity_results <- bind_rows(
@@ -519,7 +519,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
       equity_market %in% equity_market_filter
     ) %>%
     mutate(scenario = str_replace(scenario, "NPSRTS", "NPS")) %>%
-    distinct_all()
+    dplyr::distinct_all()
 
   if (nrow(pacta_bonds_results) <= 0) {
     print("Input pacta data has 0 valid rows after filtering. Skipping bonds calculation!")
@@ -620,7 +620,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
 
       if(identical(calculation_level, "company")) {
         plan_carsten_bonds <- plan_carsten_bonds %>%
-          distinct(investor_name, portfolio_name, company_name, ald_sector, technology,
+          dplyr::distinct(investor_name, portfolio_name, company_name, ald_sector, technology,
                    scenario_geography, year, plan_carsten, plan_sec_carsten)
 
         if (!exists("excluded_companies")) {
@@ -655,7 +655,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
 
       } else {
         plan_carsten_bonds <- plan_carsten_bonds %>%
-          distinct(investor_name, portfolio_name, ald_sector, technology,
+          dplyr::distinct(investor_name, portfolio_name, ald_sector, technology,
                    scenario_geography, year, plan_carsten, plan_sec_carsten)
 
         bonds_results <- bind_rows(
