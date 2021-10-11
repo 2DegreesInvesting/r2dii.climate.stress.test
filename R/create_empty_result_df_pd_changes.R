@@ -19,7 +19,8 @@ create_empty_result_df_pd_changes <- function(data,
 
   common_columns <- c(
     "investor_name", "portfolio_name", "scenario_name", "scenario_geography",
-    "id", "company_name", "ald_sector", "technology", "debt", "volatility",
+    # "id", "company_name", "ald_sector", "technology", "debt", "volatility",
+    "id", "company_name", "ald_sector", "debt", "volatility",
     "risk_free_rate", "term"
   )
 
@@ -45,7 +46,7 @@ create_empty_result_df_pd_changes <- function(data,
       id = NA_character_,
       company_name = NA_character_,
       ald_sector = NA_character_,
-      technology = NA_character_,
+      # technology = NA_character_,
       equity_0_baseline = NA_real_,
       equity_0_late_sudden = NA_real_,
       debt = NA_real_,
@@ -68,7 +69,7 @@ create_empty_result_df_pd_changes <- function(data,
       id = NA_character_,
       company_name = NA_character_,
       ald_sector = NA_character_,
-      technology = NA_character_,
+      # technology = NA_character_,
       year = NA_integer_,
       equity_t_baseline = NA_real_,
       equity_t_late_sudden = NA_real_,

@@ -20,7 +20,8 @@ add_cols_result_df_pd_changes <- function(data,
 
   common_columns <- c(
     "investor_name", "portfolio_name", "scenario_name", "scenario_geography",
-    "id", "company_name", "ald_sector", "technology", "debt", "volatility",
+    # "id", "company_name", "ald_sector", "technology", "debt", "volatility",
+    "id", "company_name", "ald_sector", "debt", "volatility",
     "risk_free_rate", "term", "Maturity", "Vt", "St", "Dt", "Survival"
   )
 

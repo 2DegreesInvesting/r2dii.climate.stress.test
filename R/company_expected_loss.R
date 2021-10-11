@@ -46,7 +46,8 @@ company_expected_loss <- function(data,
   company_exposure <- exposure_at_default %>%
     dplyr::group_by(
       .data$investor_name, .data$portfolio_name, .data$company_name,
-      .data$ald_sector, .data$technology, .data$scenario_geography,
+      # .data$ald_sector, .data$technology, .data$scenario_geography,
+      .data$ald_sector, .data$scenario_geography,
       .data$term, .data$pd
     ) %>%
     dplyr::summarise(
@@ -72,7 +73,8 @@ company_expected_loss <- function(data,
       company_exposure,
       by = c(
         "investor_name", "portfolio_name", "company_name", "ald_sector",
-        "technology", "scenario_geography", "term"
+        # "technology", "scenario_geography", "term"
+        "scenario_geography", "term"
       )
     )
 

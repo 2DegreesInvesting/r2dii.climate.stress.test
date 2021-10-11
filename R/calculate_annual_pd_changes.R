@@ -49,7 +49,8 @@ calculate_pd_change_annual <- function(data,
     ) %>%
     dplyr::group_by(
       .data$investor_name, .data$portfolio_name, .data$id, .data$company_name,
-      .data$ald_sector, .data$technology, .data$scenario_name,
+      # .data$ald_sector, .data$technology, .data$scenario_name,
+      .data$ald_sector, .data$scenario_name,
       .data$scenario_geography, .data$debt_equity_ratio, .data$volatility
     ) %>%
     dplyr::mutate(
@@ -60,7 +61,8 @@ calculate_pd_change_annual <- function(data,
     dplyr::select(
       .data$investor_name, .data$portfolio_name, .data$scenario_name,
       .data$scenario_geography, .data$id, .data$company_name, .data$ald_sector,
-      .data$technology, .data$year, .data$equity_t_baseline,
+      # .data$technology, .data$year, .data$equity_t_baseline,
+      .data$year, .data$equity_t_baseline,
       .data$equity_t_late_sudden, .data$debt_equity_ratio, .data$volatility
     )
 
@@ -122,7 +124,8 @@ calculate_pd_change_annual <- function(data,
 
   if (!is.null(exclusion)) {
     exclusion_has_expected_columns <- all(
-      c("company_name", "technology") %in% colnames(exclusion)
+      # c("company_name", "technology") %in% colnames(exclusion)
+      c("company_name") %in% colnames(exclusion)
     )
     stopifnot(exclusion_has_expected_columns)
 
@@ -132,7 +135,8 @@ calculate_pd_change_annual <- function(data,
     results <- results %>%
       dplyr::left_join(
         exclusion,
-        by = c("company_name", "technology")
+        # by = c("company_name", "technology")
+        by = c("company_name")
       ) %>%
       dplyr::mutate(
         exclude = dplyr::if_else(
