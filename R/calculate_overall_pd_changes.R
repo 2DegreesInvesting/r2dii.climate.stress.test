@@ -89,7 +89,7 @@ calculate_pd_change_overall <- function(data,
       t = data$term[i]
     )
 
-    result[i, ] <- dplyr::bind_cols(data[i, ], merton_baseline)
+    result[i, ] <- dplyr::bind_cols(data[i, ], merton_baseline$Survival)
   }
 
   result <- result %>% add_cols_result_df_pd_changes(horizon = "overall")
@@ -103,10 +103,6 @@ calculate_pd_change_overall <- function(data,
       t = data$term[i]
     )
 
-    result[i, "Maturity"] <- merton_late_sudden$Maturity
-    result[i, "Vt"] <- merton_late_sudden$Vt
-    result[i, "St"] <- merton_late_sudden$St
-    result[i, "Dt"] <- merton_late_sudden$Dt
     result[i, "Survival"] <- merton_late_sudden$Survival
   }
 
