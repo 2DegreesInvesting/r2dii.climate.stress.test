@@ -401,7 +401,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
   # TODO: ADO 879 - note which companies are removed here, due to mismatch
 
   bonds_annual_profits <- bonds_annual_profits %>%
-    arrange(
+    dplyr::arrange(
       scenario_name, investor_name, portfolio_name, scenario_geography, id,
       company_name, ald_sector, technology, year
     ) %>%
