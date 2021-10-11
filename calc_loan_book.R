@@ -227,7 +227,7 @@ matched_company_unweighted <- matched_non_negative %>%
   distinct_all()
 
 matched_company <- matched_company_weighted %>%
-  inner_join(
+  dplyr::inner_join(
     matched_company_unweighted,
     by = c("sector", "technology", "year", "region", "scenario_source", "name_ald", "metric")
   ) %>%
