@@ -121,7 +121,7 @@ fin_data <- get_and_clean_fin_data(fund_data = fund_data) %>%
   select(isin, sector_boe, subsector_boe, sector_dnb, sector_ipr, subsector_ipr)
 
 portfolio <- readRDS(file.path(project_location, "30_Processed_Inputs", paste0(project_name, "_total_portfolio.rda"))) %>%
-  left_join(fin_data, by = "isin") %>%
+  dplyr::left_join(fin_data, by = "isin") %>%
   filter(investor_name == investor_name_filter)
 
 portfolio_overview <- readRDS(file.path(project_location, "30_Processed_Inputs", paste0(project_name, "_overview_portfolio.rda"))) %>%
@@ -140,7 +140,7 @@ cb_exposures <- readRDS(file.path(project_location, "40_Results", investor_name_
     equity_market %in% c("Global", "GlobalMarket")
   ) %>%
   distinct(investor_name, portfolio_name, ald_sector, technology, plan_carsten, plan_sec_carsten) %>%
-  left_join(
+  dplyr::left_join(
     portfolio_overview %>% filter(asset_type == "Bonds"),
     by = c("investor_name", "portfolio_name")
   ) %>%
@@ -153,7 +153,7 @@ eq_exposures <- readRDS(file.path(project_location, "40_Results", investor_name_
     equity_market %in% c("Global", "GlobalMarket")
   ) %>%
   distinct(investor_name, portfolio_name, ald_sector, technology, plan_carsten, plan_sec_carsten) %>%
-  left_join(
+  dplyr::left_join(
     portfolio_overview %>% filter(asset_type == "Equity"),
     by = c("investor_name", "portfolio_name")
   ) %>%
@@ -208,7 +208,7 @@ results_dnb <- portfolio %>%
     .groups = "drop_last"
   ) %>%
   rename(sector = sector_dnb) %>%
-  left_join(
+  dplyr::left_join(
     shocks %>% filter(methodology == "DNB") %>% select(-c(methodology)),
     by = c("sector")
   ) %>%
@@ -227,7 +227,7 @@ results_ipr <- portfolio %>%
     .groups = "drop_last"
   ) %>%
   rename(sector = sector_ipr, subsector = subsector_ipr) %>%
-  left_join(
+  dplyr::left_join(
     shocks %>% filter(methodology == "IPR") %>% select(-c(methodology)),
     by = c("sector", "subsector")
   ) %>%
@@ -246,7 +246,7 @@ results_boe <- portfolio %>%
   ) %>%
   rename(sector = sector_boe, subsector = subsector_boe) %>%
   bind_rows(boe_exposures_cb, boe_exposures_eq) %>%
-  left_join(
+  dplyr::left_join(
     shocks %>% filter(methodology == "BoE") %>% select(-c(description, methodology)),
     by = c("sector", "subsector")
   ) %>%

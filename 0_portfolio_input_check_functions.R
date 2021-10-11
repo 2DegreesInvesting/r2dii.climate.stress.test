@@ -3,7 +3,7 @@ map_security_sectors <- function(fin_data, sector_bridge){
 
   initial_no_rows = nrow(fin_data)
 
-  fin_data <- fin_data %>% left_join(sector_bridge %>% filter(source == "BICS") %>% select(-source),
+  fin_data <- fin_data %>% dplyr::left_join(sector_bridge %>% filter(source == "BICS") %>% select(-source),
                                      by = c("security_bics_subgroup" = "industry_classification")) %>%
     mutate(security_icb_subsector = as.character(security_icb_subsector))
 
@@ -11,7 +11,7 @@ map_security_sectors <- function(fin_data, sector_bridge){
 
   fin_data <- fin_data %>% filter(!is.na(sector))
 
-  fin_data_na <- fin_data_na %>% left_join(sector_bridge %>% filter(source == "ICB")%>% select(-source),
+  fin_data_na <- fin_data_na %>% dplyr::left_join(sector_bridge %>% filter(source == "ICB")%>% select(-source),
                                            by = c("security_icb_subsector" = "industry_classification"))
 
   fin_data <- fin_data %>% bind_rows(fin_data_na)
@@ -43,7 +43,7 @@ override_sector_classification <- function(fin_data, overrides){
     select(corporate_bond_ticker, fin_sector_override, sector_override) %>%
     distinct()
 
-  fin_data <- left_join(fin_data, overrides_cbt, by = "corporate_bond_ticker")
+  fin_data <- dplyr::left_join(fin_data, overrides_cbt, by = "corporate_bond_ticker")
 
   # Merge in by bloomberg_id
   overrides_bbg <- overrides %>%
@@ -51,8 +51,7 @@ override_sector_classification <- function(fin_data, overrides){
     select(bloomberg_id, fin_sector_override, sector_override) %>%
     distinct()
 
-  fin_data <- left_join(fin_data, overrides_bbg, by = "bloomberg_id")
-
+  fin_data <- dplyr::left_join(fin_data, overrides_bbg, by = "bloomberg_id")
 
   # Clean resulting financial data
   fin_data <- fin_data %>%
@@ -288,7 +287,7 @@ add_bics_sector <- function(fin_data){
 
   bics_bridge <- read_csv("data-raw/bics_bridge.csv")
 
-  fin_data_ <- left_join(fin_data, bics_bridge, by = c("security_bics_subgroup" = "bics_subsector"))
+  fin_data_ <- dplyr::left_join(fin_data, bics_bridge, by = c("security_bics_subgroup" = "bics_subsector"))
 
 
 }

@@ -234,7 +234,7 @@ matched_company <- matched_company_weighted %>%
   distinct_all()
 
 matched_company_loan_share <- matched_company %>%
-  left_join(loan_share, by = c("sector" = "sector_ald", "name_ald")) %>%
+  dplyr::left_join(loan_share, by = c("sector" = "sector_ald", "name_ald")) %>%
   filter(region == "global") %>%
   select(
     -c(
