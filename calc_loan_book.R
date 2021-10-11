@@ -148,7 +148,7 @@ loan_share <- matched_non_negative %>%
   dplyr::distinct_all()
 
 loan_share %>%
-  dplyr::write_csv(path_dropbox_2dii("PortCheck_v2", "10_Projects", project_name, "30_Processed_Inputs", paste0("comp_overview_", project_name, ".csv")))
+  readr::write_csv(path_dropbox_2dii("PortCheck_v2", "10_Projects", project_name, "30_Processed_Inputs", paste0("comp_overview_", project_name, ".csv")))
 
 
 #-Calculate tech level loan book size and value share------------
@@ -179,7 +179,7 @@ sector_share <- matched_non_negative %>%
   )
 
 sector_share %>%
-  dplyr::write_csv(path_dropbox_2dii("PortCheck_v2", "10_Projects", project_name, "30_Processed_Inputs", paste0("portfolio_overview_", project_name, ".csv")))
+  readr::write_csv(path_dropbox_2dii("PortCheck_v2", "10_Projects", project_name, "30_Processed_Inputs", paste0("portfolio_overview_", project_name, ".csv")))
 
 
 #----Calculate comp level scenario targets--------------------
@@ -249,5 +249,5 @@ matched_company_loan_share <- matched_company %>%
 
 # Write to results
 matched_company_loan_share %>%
-  dplyr::write_csv(path_dropbox_2dii("PortCheck_v2", "10_Projects", project_name, "40_Results", paste0("company_results_lb_", project_name, ".csv")))
+  readr::write_csv(path_dropbox_2dii("PortCheck_v2", "10_Projects", project_name, "40_Results", paste0("company_results_lb_", project_name, ".csv")))
 
