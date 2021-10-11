@@ -118,7 +118,7 @@ if (exists("portfolio")) {
       exposure = sum(value_usd, na.rm = TRUE),
       .groups = "drop_last"
     ) %>%
-    rename(sector = sector_ipr, subsector = subsector_ipr) %>%
+    dplyr::rename(sector = sector_ipr, subsector = subsector_ipr) %>%
     dplyr::left_join(
       shocks %>% dplyr::filter(methodology == "IPR") %>% dplyr::select(-c(methodology)),
       by = c("sector", "subsector")

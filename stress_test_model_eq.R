@@ -210,7 +210,7 @@ if(twodii_internal == TRUE | start_year < 2020) {
     mutate(scenario = str_replace(scenario, "NPSRTS", "NPS"))
 } else {
   scenario_data <- readr::read_csv(scen_data_file, col_types = "ccccccncn") %>%
-    rename(source = scenario_source)
+    dplyr::rename(source = scenario_source)
 }
 
 scenario_data <- scenario_data %>%
@@ -327,7 +327,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
   # Calculate late and sudden prices for scenario i
   df_prices <- df_price %>%
     mutate(Baseline = NPS) %>% # FIXME this should be parameterized!!
-    rename(
+    dplyr::rename(
       year = year, ald_sector = sector, technology = technology, NPS_price = NPS,
       SDS_price = SDS, Baseline_price = Baseline, B2DS_price = B2DS
     ) %>%

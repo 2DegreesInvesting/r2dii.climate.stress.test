@@ -199,7 +199,7 @@ matched_company_weighted <- matched_non_negative %>%
       (sector == "oil and gas" & scenario_source == "weo_2019") |
       (sector == "power" & scenario_source == "weo_2019")
   ) %>%
-  rename(
+  dplyr::rename(
     production_weighted = production
   ) %>%
   mutate(technology_share = round(technology_share, 8)) %>% # rounding errors can lead to duplicates

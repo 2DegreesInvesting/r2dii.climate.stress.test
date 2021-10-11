@@ -207,7 +207,7 @@ results_dnb <- portfolio %>%
     exposure = sum(value_usd, na.rm = TRUE),
     .groups = "drop_last"
   ) %>%
-  rename(sector = sector_dnb) %>%
+  dplyr::rename(sector = sector_dnb) %>%
   dplyr::left_join(
     shocks %>% dplyr::filter(methodology == "DNB") %>% dplyr::select(-c(methodology)),
     by = c("sector")
@@ -226,7 +226,7 @@ results_ipr <- portfolio %>%
     exposure = sum(value_usd, na.rm = TRUE),
     .groups = "drop_last"
   ) %>%
-  rename(sector = sector_ipr, subsector = subsector_ipr) %>%
+  dplyr::rename(sector = sector_ipr, subsector = subsector_ipr) %>%
   dplyr::left_join(
     shocks %>% dplyr::filter(methodology == "IPR") %>% dplyr::select(-c(methodology)),
     by = c("sector", "subsector")
@@ -244,7 +244,7 @@ results_boe <- portfolio %>%
     exposure = sum(value_usd, na.rm = TRUE),
     .groups = "drop_last"
   ) %>%
-  rename(sector = sector_boe, subsector = subsector_boe) %>%
+  dplyr::rename(sector = sector_boe, subsector = subsector_boe) %>%
   bind_rows(boe_exposures_cb, boe_exposures_eq) %>%
   dplyr::left_join(
     shocks %>% dplyr::filter(methodology == "BoE") %>% dplyr::select(-c(description, methodology)),

@@ -206,7 +206,7 @@ scen_data_file <- ifelse(twodii_internal == TRUE,
 )
 
 scenario_data <- readr::read_csv(scen_data_file, col_types = cols(.default = col_guess())) %>%
-  rename(source = scenario_source) %>%
+  dplyr::rename(source = scenario_source) %>%
   dplyr::filter(source %in% c("ETP2017", "WEO2019")) %>%
   mutate(scenario = ifelse(str_detect(scenario, "_"), str_extract(scenario, "[^_]*$"), scenario)) %>%
   check_scenario_timeframe(start_year = start_year, end_year = end_year)
@@ -360,7 +360,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
       # Calculate late and sudden prices for scenario i
       df_prices <- df_price %>%
         mutate(Baseline = NPS) %>% # FIXME this should be parameterized!!
-        rename(
+        dplyr::rename(
           year = year, ald_sector = sector, technology = technology, NPS_price = NPS,
           SDS_price = SDS, Baseline_price = Baseline, B2DS_price = B2DS
         ) %>%
@@ -559,7 +559,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
       # Calculate late and sudden prices for scenario i
       df_prices <- df_price %>%
         mutate(Baseline = NPS) %>% # FIXME this should be parameterized!!
-        rename(
+        dplyr::rename(
           year = year, ald_sector = sector, technology = technology, NPS_price = NPS,
           SDS_price = SDS, Baseline_price = Baseline, B2DS_price = B2DS
         ) %>%
