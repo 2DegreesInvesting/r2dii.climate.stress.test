@@ -57,7 +57,7 @@ data_prod_baseline <- data_prod_baseline %>%
     scen_to_follow_aligned = sum(scen_to_follow_aligned, na.rm = TRUE),
     late_sudden = sum(late_sudden, na.rm = TRUE)
   ) %>%
-  ungroup()
+  dplyr::ungroup()
 
 
 prod_baseline_target_ls <- show_prod_baseline_target_ls_pf(

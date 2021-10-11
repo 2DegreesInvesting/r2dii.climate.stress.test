@@ -167,7 +167,7 @@ sector_share <- matched_non_negative %>%
     sector_loan_size_credit_limit = sum(loan_size_credit_limit, na.rm = TRUE),
     .groups = "drop"
   ) %>%
-  ungroup() %>%
+  dplyr::ungroup() %>%
   relocate(
     sector_ald,
     sector_loan_share_outstanding,

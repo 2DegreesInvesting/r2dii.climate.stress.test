@@ -336,7 +336,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
     mutate(
       late_sudden_price = late_sudden_prices(SDS_price = SDS_price, Baseline_price = Baseline_price, overshoot_method = overshoot_method)
     ) %>%
-    ungroup()
+    dplyr::ungroup()
 
   # Convert capacity (MW) to generation (MWh) for power sector
   equity_annual_profits <- pacta_equity_results %>%
@@ -401,7 +401,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
       company_id, pd, net_profit_margin, debt_equity_ratio, volatility,
       .direction = "down"
     ) %>%
-    ungroup()
+    dplyr::ungroup()
 
   equity_annual_profits <- equity_annual_profits %>%
     join_price_data(df_prices = df_prices) %>%

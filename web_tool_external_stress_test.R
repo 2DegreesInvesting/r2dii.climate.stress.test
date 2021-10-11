@@ -127,7 +127,7 @@ if (exists("portfolio")) {
       loss = exposure * shock / 100,
       sector = ifelse(is.na(sector), "Other", sector)
     ) %>%
-    ungroup()
+    dplyr::ungroup()
 } else {
   print("No portfolio data -- skipping IPR stress test")
 }

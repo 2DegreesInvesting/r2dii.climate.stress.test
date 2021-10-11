@@ -175,7 +175,7 @@ pacta_bonds_results <- read_pacta_results(
   mutate(
     term = round(runif(n = 1, min = 1, max = 10), 0) # TODO: temporary addition, needs to come directly from input
   ) %>%
-  ungroup()
+  dplyr::ungroup()
 
 # Load sector exposures of portfolio------------------------
 sector_exposures <- readRDS(file.path(proc_input_path, "overview_portfolio.rda")) %>%
@@ -351,7 +351,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
         overshoot_method = overshoot_method
       )
     ) %>%
-    ungroup()
+    dplyr::ungroup()
 
   bonds_annual_profits <- pacta_bonds_results %>%
     convert_power_cap_to_generation(
@@ -414,7 +414,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
       company_id, pd, net_profit_margin, debt_equity_ratio, volatility,
       .direction = "down"
     ) %>%
-    ungroup()
+    dplyr::ungroup()
 
   bonds_annual_profits <- bonds_annual_profits %>%
     join_price_data(df_prices = df_prices) %>%

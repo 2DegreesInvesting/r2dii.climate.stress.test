@@ -373,7 +373,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
             overshoot_method = overshoot_method
           )
         ) %>%
-        ungroup()
+        dplyr::ungroup()
 
       # Convert capacity (MW)to generation (MWh) for power sector
       equity_annual_profits <- pacta_equity_results %>%
@@ -571,7 +571,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
             overshoot_method = overshoot_method
           )
         ) %>%
-        ungroup()
+        dplyr::ungroup()
 
       bonds_annual_profits <- pacta_bonds_results %>%
         convert_cap_to_generation(capacity_factors_power = capacity_factors_power) %>%

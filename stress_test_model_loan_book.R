@@ -199,7 +199,7 @@ pacta_loanbook_results <- read_pacta_results(
   mutate(
     term = round(runif(n = 1, min = 1, max = 10), 0) # TODO: temporary addition, needs to come directly from input
   ) %>%
-  ungroup()
+  dplyr::ungroup()
 
 sector_credit_type <- paste0("sector_loan_size_", credit_type)
 credit_currency <- paste0("loan_size_", credit_type, "_currency")
@@ -406,7 +406,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
         overshoot_method = overshoot_method
       )
     ) %>%
-    ungroup()
+    dplyr::ungroup()
 
   loanbook_annual_profits <- pacta_loanbook_results %>%
     convert_power_cap_to_generation(
@@ -470,7 +470,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
       company_id, pd, net_profit_margin, debt_equity_ratio, volatility,
       .direction = "down"
     ) %>%
-    ungroup()
+    dplyr::ungroup()
 
   loanbook_annual_profits <- loanbook_annual_profits %>%
     join_price_data(df_prices = df_prices) %>%
