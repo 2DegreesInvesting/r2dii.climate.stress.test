@@ -172,10 +172,10 @@ pacta_bonds_results <- read_pacta_results(
     equity_market_filter = cfg$Lists$Equity.Market.List
   ) %>%
   dplyr::group_by(company_name) %>%
-  mutate(
+  dplyr::mutate(
     term = round(runif(n = 1, min = 1, max = 10), 0) # TODO: temporary addition, needs to come directly from input
   ) %>%
-  ungroup()
+  dplyr::ungroup()
 
 # Load sector exposures of portfolio------------------------
 sector_exposures <- readRDS(file.path(proc_input_path, "overview_portfolio.rda")) %>%
@@ -203,10 +203,10 @@ scen_data_file <- ifelse(twodii_internal == TRUE,
 # TODO: EITHER wrap check into more evocative function OR remove this when common format is agreed upon
 if(twodii_internal == TRUE | start_year < 2020) {
   scenario_data <- readr::read_csv(scen_data_file, col_types = "ccccccccnnnncnnn") %>%
-    filter(Indicator %in% c("Capacity", "Production", "Sales")) %>%
-    filter(!(Technology == "RenewablesCap" & !is.na(Sub_Technology))) %>%
-    select(-c(Sub_Technology, Indicator, AnnualvalIEAtech, refvalIEAtech, refvalIEAsec, mktFSRatio, techFSRatio)) %>%
-    rename(
+    dplyr::filter(Indicator %in% c("Capacity", "Production", "Sales")) %>%
+    dplyr::filter(!(Technology == "RenewablesCap" & !is.na(Sub_Technology))) %>%
+    dplyr::select(-c(Sub_Technology, Indicator, AnnualvalIEAtech, refvalIEAtech, refvalIEAsec, mktFSRatio, techFSRatio)) %>%
+    dplyr::rename(
       source = Source,
       scenario_geography = ScenarioGeography,
       scenario = Scenario,
@@ -217,22 +217,22 @@ if(twodii_internal == TRUE | start_year < 2020) {
       direction = Direction,
       fair_share_perc = FairSharePerc
     ) %>%
-    mutate(scenario = str_replace(scenario, "NPSRTS", "NPS"))
+    dplyr::mutate(scenario = stringr::str_replace(scenario, "NPSRTS", "NPS"))
 } else {
   scenario_data <- readr::read_csv(scen_data_file, col_types = "ccccccncn") %>%
-    rename(source = scenario_source)
+    dplyr::rename(source = scenario_source)
 }
 
 scenario_data <- scenario_data %>%
-  filter(source %in% c("ETP2017", "WEO2019")) %>% #TODO: this should be set elsewhere
-  filter(!(source == "ETP2017" & ald_sector == "Power")) %>%
-  mutate(scenario = ifelse(str_detect(scenario, "_"), str_extract(scenario, "[^_]*$"), scenario)) %>%
+  dplyr::filter(source %in% c("ETP2017", "WEO2019")) %>% #TODO: this should be set elsewhere
+  dplyr::filter(!(source == "ETP2017" & ald_sector == "Power")) %>%
+  dplyr::mutate(scenario = ifelse(stringr::str_detect(scenario, "_"), stringr::str_extract(scenario, "[^_]*$"), scenario)) %>%
   check_scenario_timeframe(start_year = start_year, end_year = end_year)
 
 # Correct for automotive scenario data error. CHECK IF ALREADY RESOLVED IN THE SCENARIO DATA, IF SO, DONT USE FUNCTION BELOW!
 scenario_data <- scenario_data %>%
   correct_automotive_scendata(interpolation_years = c(2031:2034, 2036:2039)) %>%
-  filter(
+  dplyr::filter(
     ald_sector %in% sectors_lookup &
       technology %in% technologies_lookup &
       scenario_geography == scenario_geography_filter)
@@ -243,7 +243,7 @@ df_price <- read_price_data(
   version = "old",
   expected_technologies = technologies_lookup
 ) %>%
-  filter(year >= start_year) %>%
+  dplyr::filter(year >= start_year) %>%
   check_price_consistency()
 
 # Load excluded companies-------------------------------
@@ -338,20 +338,20 @@ for (i in seq(1, nrow(transition_scenarios))) {
   print(overshoot_method)
   # Calculate late and sudden prices for scenario i
   df_prices <- df_price %>%
-    mutate(Baseline = NPS) %>% # FIXME this should be parameterized!!
-    rename(
+    dplyr::mutate(Baseline = NPS) %>% # FIXME this should be parameterized!!
+    dplyr::rename(
       year = year, ald_sector = sector, technology = technology, NPS_price = NPS,
       SDS_price = SDS, Baseline_price = Baseline, B2DS_price = B2DS
     ) %>%
     dplyr::group_by(ald_sector, technology) %>%
-    mutate(
+    dplyr::mutate(
       late_sudden_price = late_sudden_prices(
         SDS_price = SDS_price,
         Baseline_price = Baseline_price,
         overshoot_method = overshoot_method
       )
     ) %>%
-    ungroup()
+    dplyr::ungroup()
 
   bonds_annual_profits <- pacta_bonds_results %>%
     convert_power_cap_to_generation(
@@ -414,7 +414,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
       company_id, pd, net_profit_margin, debt_equity_ratio, volatility,
       .direction = "down"
     ) %>%
-    ungroup()
+    dplyr::ungroup()
 
   bonds_annual_profits <- bonds_annual_profits %>%
     join_price_data(df_prices = df_prices) %>%
@@ -422,13 +422,13 @@ for (i in seq(1, nrow(transition_scenarios))) {
     dcf_model_techlevel(discount_rate = discount_rate)
 
   qa_annual_profits_cb <- qa_annual_profits_cb %>%
-    bind_rows(
+    dplyr::bind_rows(
       bonds_annual_profits %>%
-        mutate(year_of_shock = transition_scenario_i$year_of_shock)
+        dplyr::mutate(year_of_shock = transition_scenario_i$year_of_shock)
     )
 
   plan_carsten_bonds <- pacta_bonds_results %>%
-    filter(
+    dplyr::filter(
       .data$year == start_year,
       .data$technology %in% technologies_lookup,
       .data$scenario_geography == scenario_geography_filter,
@@ -436,7 +436,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
     )
 
   financial_data_bonds_pd <- financial_data_bonds %>%
-    select(company_name, corporate_bond_ticker, ald_sector, technology, pd)
+    dplyr::select(company_name, corporate_bond_ticker, ald_sector, technology, pd)
 
   report_duplicates(
     data = financial_data_bonds_pd,
@@ -454,10 +454,10 @@ for (i in seq(1, nrow(transition_scenarios))) {
   # TODO: ADO 879 - note which companies are removed here, due to mismatch
 
   bonds_annual_profits <- bonds_annual_profits %>%
-    filter(!is.na(company_id))
+    dplyr::filter(!is.na(company_id))
 
   plan_carsten_bonds <- plan_carsten_bonds %>%
-    select(
+    dplyr::select(
       investor_name, portfolio_name, company_name, ald_sector, technology,
       scenario_geography, year, plan_carsten, plan_sec_carsten, term, pd
     )
@@ -468,7 +468,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
   )
 
   if (!exists("excluded_companies")) {
-    bonds_results <- bind_rows(
+    bonds_results <- dplyr::bind_rows(
       bonds_results,
       company_asset_value_at_risk(
         data = bonds_annual_profits,
@@ -493,7 +493,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
     # TODO: ADO 879 - note which companies produce missing results due to
     # insufficient input information (e.g. NAs for financials or 0 equity value)
 
-    bonds_expected_loss <- bind_rows(
+    bonds_expected_loss <- dplyr::bind_rows(
       bonds_expected_loss,
       company_expected_loss(
         data = bonds_overall_pd_changes,
@@ -506,7 +506,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
     # TODO: ADO 879 - note which companies produce missing results due to
     # insufficient output from overall pd changes or related financial data inputs
 
-    bonds_annual_pd_changes <- bind_rows(
+    bonds_annual_pd_changes <- dplyr::bind_rows(
       bonds_annual_pd_changes,
       calculate_pd_change_annual(
         data = bonds_annual_profits,
@@ -520,7 +520,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
     # insufficient input information (e.g. NAs for financials or 0 equity value)
 
   } else {
-    bonds_results <- bind_rows(
+    bonds_results <- dplyr::bind_rows(
       bonds_results,
       company_asset_value_at_risk(
         data = bonds_annual_profits,
@@ -542,7 +542,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
         risk_free_interest_rate = risk_free_rate
       )
 
-    bonds_expected_loss <- bind_rows(
+    bonds_expected_loss <- dplyr::bind_rows(
       bonds_expected_loss,
       company_expected_loss(
         data = bonds_overall_pd_changes,
@@ -552,7 +552,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
       )
     )
 
-    bonds_annual_pd_changes <- bind_rows(
+    bonds_annual_pd_changes <- dplyr::bind_rows(
       bonds_annual_pd_changes,
       calculate_pd_change_annual(
         data = bonds_annual_profits,

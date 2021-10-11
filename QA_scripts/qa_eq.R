@@ -52,12 +52,12 @@ data_prod_baseline <- qa_annual_profits_eq
 data_prod_baseline <- data_prod_baseline %>%
   dplyr::group_by(year, investor_name, portfolio_name, scenario_geography,
            ald_sector, technology, year_of_shock) %>%
-  summarise(
+  dplyr::summarise(
     baseline = sum(baseline, na.rm = TRUE),
     scen_to_follow_aligned = sum(scen_to_follow_aligned, na.rm = TRUE),
     late_sudden = sum(late_sudden, na.rm = TRUE)
   ) %>%
-  ungroup()
+  dplyr::ungroup()
 
 
 prod_baseline_target_ls <- show_prod_baseline_target_ls_pf(

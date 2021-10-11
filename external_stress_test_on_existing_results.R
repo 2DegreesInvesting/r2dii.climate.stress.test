@@ -118,52 +118,52 @@ technologies <- c(
 
 fund_data <- c() # we dont need fund data, as we already have the EQ and CB input portfolios, we just want to merge the IPR/DNB/BOE sector classifications to the inputportfolios, through the financial data
 fin_data <- get_and_clean_fin_data(fund_data = fund_data) %>%
-  select(isin, sector_boe, subsector_boe, sector_dnb, sector_ipr, subsector_ipr)
+  dplyr::select(isin, sector_boe, subsector_boe, sector_dnb, sector_ipr, subsector_ipr)
 
 portfolio <- readRDS(file.path(project_location, "30_Processed_Inputs", paste0(project_name, "_total_portfolio.rda"))) %>%
-  left_join(fin_data, by = "isin") %>%
-  filter(investor_name == investor_name_filter)
+  dplyr::left_join(fin_data, by = "isin") %>%
+  dplyr::filter(investor_name == investor_name_filter)
 
 portfolio_overview <- readRDS(file.path(project_location, "30_Processed_Inputs", paste0(project_name, "_overview_portfolio.rda"))) %>%
-  filter(valid_input == TRUE, asset_type %in% c("Equity", "Bonds"), investor_name == investor_name_filter) %>%
+  dplyr::filter(valid_input == TRUE, asset_type %in% c("Equity", "Bonds"), investor_name == investor_name_filter) %>%
   dplyr::group_by(investor_name, portfolio_name, asset_type) %>%
-  summarise(
+  dplyr::summarise(
     portfolio_size = sum(valid_value_usd),
     .groups = "drop_last"
   )
 
 # load portfolio results, get the plan_carsten values at start year, join in portfolio size and multiply with plan_carsten to get tech
 cb_exposures <- readRDS(file.path(project_location, "40_Results", investor_name_filter, "Bonds_results_portfolio.rda")) %>%
-  filter(
+  dplyr::filter(
     year == start_year,
     scenario_geography == "Global",
     equity_market %in% c("Global", "GlobalMarket")
   ) %>%
-  distinct(investor_name, portfolio_name, ald_sector, technology, plan_carsten, plan_sec_carsten) %>%
-  left_join(
-    portfolio_overview %>% filter(asset_type == "Bonds"),
+  dplyr::distinct(investor_name, portfolio_name, ald_sector, technology, plan_carsten, plan_sec_carsten) %>%
+  dplyr::left_join(
+    portfolio_overview %>% dplyr::filter(asset_type == "Bonds"),
     by = c("investor_name", "portfolio_name")
   ) %>%
-  mutate(tech_exposure = plan_carsten * portfolio_size)
+  dplyr::mutate(tech_exposure = plan_carsten * portfolio_size)
 
 eq_exposures <- readRDS(file.path(project_location, "40_Results", investor_name_filter, "Equity_results_portfolio.rda")) %>%
-  filter(
+  dplyr::filter(
     year == start_year,
     scenario_geography == "Global",
     equity_market %in% c("Global", "GlobalMarket")
   ) %>%
-  distinct(investor_name, portfolio_name, ald_sector, technology, plan_carsten, plan_sec_carsten) %>%
-  left_join(
-    portfolio_overview %>% filter(asset_type == "Equity"),
+  dplyr::distinct(investor_name, portfolio_name, ald_sector, technology, plan_carsten, plan_sec_carsten) %>%
+  dplyr::left_join(
+    portfolio_overview %>% dplyr::filter(asset_type == "Equity"),
     by = c("investor_name", "portfolio_name")
   ) %>%
-  mutate(tech_exposure = plan_carsten * portfolio_size)
+  dplyr::mutate(tech_exposure = plan_carsten * portfolio_size)
 
 calc_boe_exposures <- function(pacta_exposures) {
   pacta_exposures %>%
-    filter(ald_sector != "Other") %>%
-    mutate(
-      subsector = case_when(
+    dplyr::filter(ald_sector != "Other") %>%
+    dplyr::mutate(
+      subsector = dplyr::case_when(
         technology %in% c("RenewablesCap", "HydroCap", "NuclearCap") ~ "Low carbon",
         technology %in% c("ICE", "Hybrid", "FuelCell") ~ "Non electric",
         technology %in% c("Electric") ~ "Electric",
@@ -176,23 +176,23 @@ calc_boe_exposures <- function(pacta_exposures) {
         ald_sector %in% c("Cement", "Steel") ~ "Fossil Fuel Based",
         TRUE ~ technology
       ),
-      sector = case_when(
+      sector = dplyr::case_when(
         ald_sector %in% c("Oil&Gas", "Coal") ~ "Fuel extraction",
         ald_sector %in% c("Steel", "Cement") ~ "Materials",
         TRUE ~ ald_sector
       )
     ) %>%
     dplyr::group_by(investor_name, portfolio_name, sector, subsector) %>%
-    summarise(
+    dplyr::summarise(
       exposure = sum(tech_exposure, na.rm = T),
       .groups = "drop_last"
     )
 }
 
 boe_exposures_cb <- calc_boe_exposures(pacta_exposures = cb_exposures) %>%
-  mutate(asset_type = "Bonds")
+  dplyr::mutate(asset_type = "Bonds")
 boe_exposures_eq <- calc_boe_exposures(pacta_exposures = eq_exposures) %>%
-  mutate(asset_type = "Equity")
+  dplyr::mutate(asset_type = "Equity")
 
 
 # Results -----------------------------------------------------------------
@@ -201,56 +201,56 @@ shocks <- readr::read_csv(file.path(data_location, "external_stress_test_shocks.
 
 results_dnb <- portfolio %>%
   as.data.frame() %>%
-  filter(asset_type == "Equity") %>%
+  dplyr::filter(asset_type == "Equity") %>%
   dplyr::group_by(investor_name, portfolio_name, sector_dnb) %>%
-  summarise(
+  dplyr::summarise(
     exposure = sum(value_usd, na.rm = TRUE),
     .groups = "drop_last"
   ) %>%
-  rename(sector = sector_dnb) %>%
-  left_join(
-    shocks %>% filter(methodology == "DNB") %>% select(-c(methodology)),
+  dplyr::rename(sector = sector_dnb) %>%
+  dplyr::left_join(
+    shocks %>% dplyr::filter(methodology == "DNB") %>% dplyr::select(-c(methodology)),
     by = c("sector")
   ) %>%
-  mutate(loss = exposure * shock / 100)
+  dplyr::mutate(loss = exposure * shock / 100)
 
 results_ipr <- portfolio %>%
   as.data.frame() %>%
-  filter(asset_type == "Equity") %>%
-  mutate(
+  dplyr::filter(asset_type == "Equity") %>%
+  dplyr::mutate(
     sector_ipr = ifelse(is.na(sector_ipr), "Other", sector_ipr),
     subsector_ipr = ifelse(is.na(subsector_ipr), "Other", subsector_ipr)
   ) %>%
   dplyr::group_by(investor_name, portfolio_name, sector_ipr, subsector_ipr) %>%
-  summarise(
+  dplyr::summarise(
     exposure = sum(value_usd, na.rm = TRUE),
     .groups = "drop_last"
   ) %>%
-  rename(sector = sector_ipr, subsector = subsector_ipr) %>%
-  left_join(
-    shocks %>% filter(methodology == "IPR") %>% select(-c(methodology)),
+  dplyr::rename(sector = sector_ipr, subsector = subsector_ipr) %>%
+  dplyr::left_join(
+    shocks %>% dplyr::filter(methodology == "IPR") %>% dplyr::select(-c(methodology)),
     by = c("sector", "subsector")
   ) %>%
-  mutate(loss = exposure * shock / 100)
+  dplyr::mutate(loss = exposure * shock / 100)
 
 results_boe <- portfolio %>%
   as.data.frame() %>%
-  filter(
+  dplyr::filter(
     asset_type %in% c("Equity", "Bonds"),
     sector_boe %in% c("Agriculture", "Food logistics", "Real estate", "Materials")
   ) %>%
   dplyr::group_by(investor_name, portfolio_name, sector_boe, subsector_boe, asset_type) %>%
-  summarise(
+  dplyr::summarise(
     exposure = sum(value_usd, na.rm = TRUE),
     .groups = "drop_last"
   ) %>%
-  rename(sector = sector_boe, subsector = subsector_boe) %>%
-  bind_rows(boe_exposures_cb, boe_exposures_eq) %>%
-  left_join(
-    shocks %>% filter(methodology == "BoE") %>% select(-c(description, methodology)),
+  dplyr::rename(sector = sector_boe, subsector = subsector_boe) %>%
+  dplyr::bind_rows(boe_exposures_cb, boe_exposures_eq) %>%
+  dplyr::left_join(
+    shocks %>% dplyr::filter(methodology == "BoE") %>% dplyr::select(-c(description, methodology)),
     by = c("sector", "subsector")
   ) %>%
-  mutate(
+  dplyr::mutate(
     shock = ifelse(asset_type == "Bonds", 0.15 * shock, shock),
     loss = exposure * shock / 100
   )

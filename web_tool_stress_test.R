@@ -206,9 +206,9 @@ scen_data_file <- ifelse(twodii_internal == TRUE,
 )
 
 scenario_data <- readr::read_csv(scen_data_file, col_types = cols(.default = col_guess())) %>%
-  rename(source = scenario_source) %>%
-  filter(source %in% c("ETP2017", "WEO2019")) %>%
-  mutate(scenario = ifelse(str_detect(scenario, "_"), str_extract(scenario, "[^_]*$"), scenario)) %>%
+  dplyr::rename(source = scenario_source) %>%
+  dplyr::filter(source %in% c("ETP2017", "WEO2019")) %>%
+  dplyr::mutate(scenario = ifelse(stringr::str_detect(scenario, "_"), stringr::str_extract(scenario, "[^_]*$"), scenario)) %>%
   check_scenario_timeframe(start_year = start_year, end_year = end_year)
 
 
@@ -223,7 +223,7 @@ df_price <- read_price_data(
     version = "old",
     expected_technologies = technologies
   ) %>%
-  filter(year >= start_year) %>%
+  dplyr::filter(year >= start_year) %>%
   check_price_consistency()
 
 
@@ -294,9 +294,9 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
   )
 
   pacta_equity_results_full <- pacta_equity_results_full %>%
-    filter(!(scenario == "ETP2017_NPS" & ald_sector == "Power")) %>%
-    filter(scenario %in% scenarios) %>%
-    mutate(scenario = ifelse(str_detect(scenario, "_"), str_extract(scenario, "[^_]*$"), scenario)) %>%
+    dplyr::filter(!(scenario == "ETP2017_NPS" & ald_sector == "Power")) %>%
+    dplyr::filter(scenario %in% scenarios) %>%
+    dplyr::mutate(scenario = ifelse(stringr::str_detect(scenario, "_"), stringr::str_extract(scenario, "[^_]*$"), scenario)) %>%
     check_portfolio_consistency(start_year = start_year)
 
   pacta_equity_results <- pacta_equity_results_full %>%
@@ -304,7 +304,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
       year = seq(start_year, start_year + time_horizon),
       nesting(!!!syms(nesting_vars))
     ) %>%
-    mutate(plan_tech_prod = dplyr::if_else(is.na(plan_tech_prod), 0, plan_tech_prod)) %>%
+    dplyr::mutate(plan_tech_prod = dplyr::if_else(is.na(plan_tech_prod), 0, plan_tech_prod)) %>%
     apply_filters(
       investor = investor_name,
       sectors = sectors,
@@ -314,12 +314,12 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
       allocation_method = allocation_method_equity,
       start_analysis = start_year
     ) %>%
-    filter(
+    dplyr::filter(
       allocation == allocation_method_equity,
       equity_market %in% equity_market_filter
     ) %>%
-    mutate(scenario = str_replace(scenario, "NPSRTS", "NPS")) %>%
-    distinct_all()
+    dplyr::mutate(scenario = stringr::str_replace(scenario, "NPSRTS", "NPS")) %>%
+    dplyr::distinct_all()
 
   if (nrow(pacta_equity_results) <= 0) {
     print("Input pacta data has 0 valid rows after filtering. Skipping equity calculation!")
@@ -333,9 +333,9 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
     )
 
     equity_port_aum <- sector_exposures %>%
-      filter(asset_type == "Equity") %>%
+      dplyr::filter(asset_type == "Equity") %>%
       dplyr::group_by(investor_name, portfolio_name) %>%
-      summarise(
+      dplyr::summarise(
         asset_portfolio_value = sum(valid_value_usd),
         .groups = "drop_last"
       )
@@ -359,21 +359,21 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
 
       # Calculate late and sudden prices for scenario i
       df_prices <- df_price %>%
-        mutate(Baseline = NPS) %>% # FIXME this should be parameterized!!
-        rename(
+        dplyr::mutate(Baseline = NPS) %>% # FIXME this should be parameterized!!
+        dplyr::rename(
           year = year, ald_sector = sector, technology = technology, NPS_price = NPS,
           SDS_price = SDS, Baseline_price = Baseline, B2DS_price = B2DS
         ) %>%
         dplyr::group_by(ald_sector, technology) %>%
         #### OPEN: Potentially a problem with the LS price calculation. Concerning warning
-        mutate(
+        dplyr::mutate(
           late_sudden_price = late_sudden_prices(
             SDS_price = SDS_price,
             Baseline_price = Baseline_price,
             overshoot_method = overshoot_method
           )
         ) %>%
-        ungroup()
+        dplyr::ungroup()
 
       # Convert capacity (MW)to generation (MWh) for power sector
       equity_annual_profits <- pacta_equity_results %>%
@@ -415,7 +415,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
         dcf_model_techlevel(discount_rate = discount_rate)
 
       plan_carsten_equity <- pacta_equity_results %>%
-        filter(
+        dplyr::filter(
           year == start_year,
           technology %in% technologies,
           scenario_geography == scenario_geography_filter
@@ -423,11 +423,11 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
 
       if(identical(calculation_level, "company")) {
         plan_carsten_equity <- plan_carsten_equity %>%
-          distinct(investor_name, portfolio_name, company_name, ald_sector, technology,
+          dplyr::distinct(investor_name, portfolio_name, company_name, ald_sector, technology,
                    scenario_geography, year, plan_carsten, plan_sec_carsten)
 
         if (!exists("excluded_companies")) {
-          equity_results <- bind_rows(
+          equity_results <- dplyr::bind_rows(
             equity_results,
             company_asset_value_at_risk(
               data = equity_annual_profits,
@@ -441,7 +441,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
             )
           )
         } else {
-          equity_results <- bind_rows(
+          equity_results <- dplyr::bind_rows(
             equity_results,
             company_asset_value_at_risk(
               data = equity_annual_profits,
@@ -458,10 +458,10 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
 
       } else {
         plan_carsten_equity <- plan_carsten_equity %>%
-          distinct(investor_name, portfolio_name, ald_sector, technology,
+          dplyr::distinct(investor_name, portfolio_name, ald_sector, technology,
                    scenario_geography, year, plan_carsten, plan_sec_carsten)
 
-        equity_results <- bind_rows(
+        equity_results <- dplyr::bind_rows(
           equity_results,
           asset_value_at_risk(
             data = equity_annual_profits,
@@ -494,9 +494,9 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
   )
 
   pacta_bonds_results_full <- pacta_bonds_results_full %>%
-    filter(!(scenario == "ETP2017_NPS" & ald_sector == "Power")) %>%
-    filter(scenario %in% scenarios) %>%
-    mutate(scenario = ifelse(str_detect(scenario, "_"), str_extract(scenario, "[^_]*$"), scenario)) %>%
+    dplyr::filter(!(scenario == "ETP2017_NPS" & ald_sector == "Power")) %>%
+    dplyr::filter(scenario %in% scenarios) %>%
+    dplyr::mutate(scenario = ifelse(stringr::str_detect(scenario, "_"), stringr::str_extract(scenario, "[^_]*$"), scenario)) %>%
     check_portfolio_consistency(start_year = start_year)
 
   pacta_bonds_results <- pacta_bonds_results_full %>%
@@ -504,7 +504,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
       year = seq(start_year, start_year + time_horizon),
       nesting(!!!syms(nesting_vars))
     ) %>%
-    mutate(plan_tech_prod = dplyr::if_else(is.na(plan_tech_prod), 0, plan_tech_prod)) %>%
+    dplyr::mutate(plan_tech_prod = dplyr::if_else(is.na(plan_tech_prod), 0, plan_tech_prod)) %>%
     apply_filters(
       investor = investor_name,
       sectors = sectors,
@@ -514,12 +514,12 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
       allocation_method = allocation_method_equity,
       start_analysis = start_year
     ) %>%
-    filter(
+    dplyr::filter(
       allocation == allocation_method_equity,
       equity_market %in% equity_market_filter
     ) %>%
-    mutate(scenario = str_replace(scenario, "NPSRTS", "NPS")) %>%
-    distinct_all()
+    dplyr::mutate(scenario = stringr::str_replace(scenario, "NPSRTS", "NPS")) %>%
+    dplyr::distinct_all()
 
   if (nrow(pacta_bonds_results) <= 0) {
     print("Input pacta data has 0 valid rows after filtering. Skipping bonds calculation!")
@@ -534,7 +534,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
 
     bonds_port_aum <- sector_exposures %>%
       dplyr::group_by(investor_name, portfolio_name) %>%
-      filter(asset_type == "Bonds") %>%
+      dplyr::filter(asset_type == "Bonds") %>%
       summarise(
         asset_portfolio_value = sum(valid_value_usd),
         .groups = "drop_last"
@@ -558,20 +558,20 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
 
       # Calculate late and sudden prices for scenario i
       df_prices <- df_price %>%
-        mutate(Baseline = NPS) %>% # FIXME this should be parameterized!!
-        rename(
+        dplyr::mutate(Baseline = NPS) %>% # FIXME this should be parameterized!!
+        dplyr::rename(
           year = year, ald_sector = sector, technology = technology, NPS_price = NPS,
           SDS_price = SDS, Baseline_price = Baseline, B2DS_price = B2DS
         ) %>%
         dplyr::group_by(ald_sector, technology) %>%
-        mutate(
+        dplyr::mutate(
           late_sudden_price = late_sudden_prices(
             SDS_price = SDS_price,
             Baseline_price = Baseline_price,
             overshoot_method = overshoot_method
           )
         ) %>%
-        ungroup()
+        dplyr::ungroup()
 
       bonds_annual_profits <- pacta_bonds_results %>%
         convert_cap_to_generation(capacity_factors_power = capacity_factors_power) %>%
@@ -612,7 +612,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
         dcf_model_techlevel(discount_rate = discount_rate)
 
       plan_carsten_bonds <- pacta_bonds_results %>%
-        filter(
+        dplyr::filter(
           year == start_year,
           technology %in% technologies,
           scenario_geography == scenario_geography_filter
@@ -620,11 +620,11 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
 
       if(identical(calculation_level, "company")) {
         plan_carsten_bonds <- plan_carsten_bonds %>%
-          distinct(investor_name, portfolio_name, company_name, ald_sector, technology,
+          dplyr::distinct(investor_name, portfolio_name, company_name, ald_sector, technology,
                    scenario_geography, year, plan_carsten, plan_sec_carsten)
 
         if (!exists("excluded_companies")) {
-          bonds_results <- bind_rows(
+          bonds_results <- dplyr::bind_rows(
             bonds_results,
             company_asset_value_at_risk(
               data = bonds_annual_profits,
@@ -638,7 +638,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
             )
           )
         } else {
-          bonds_results <- bind_rows(
+          bonds_results <- dplyr::bind_rows(
             bonds_results,
             company_asset_value_at_risk(
               data = bonds_annual_profits,
@@ -655,10 +655,10 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
 
       } else {
         plan_carsten_bonds <- plan_carsten_bonds %>%
-          distinct(investor_name, portfolio_name, ald_sector, technology,
+          dplyr::distinct(investor_name, portfolio_name, ald_sector, technology,
                    scenario_geography, year, plan_carsten, plan_sec_carsten)
 
-        bonds_results <- bind_rows(
+        bonds_results <- dplyr::bind_rows(
           bonds_results,
           asset_value_at_risk(
             data = bonds_annual_profits,
