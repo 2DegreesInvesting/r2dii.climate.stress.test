@@ -305,6 +305,8 @@ if (company_exclusion) {
     file.path(data_location, "exclude-companies.csv"),
     col_types = "cc"
   )
+} else {
+  excluded_companies <- NULL
 }
 
 ###########################################################################
@@ -434,7 +436,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
       analysis_time_frame = time_horizon
     )
 
-  if (exists("excluded_companies")) {
+  if (company_exclusion) {
     loanbook_annual_profits <- loanbook_annual_profits %>%
       exclude_companies(
         exclusion = excluded_companies,
