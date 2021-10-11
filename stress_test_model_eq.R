@@ -566,7 +566,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
 }
 
 # Output equity results
-equity_results %>% readr::write_results(
+equity_results %>% write_results(
   path_to_results = results_path,
   investorname = investor_name_placeholder,
   asset_type = "equity",
