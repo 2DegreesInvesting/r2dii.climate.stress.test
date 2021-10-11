@@ -62,12 +62,12 @@ technology_change_by_shock_year_lbk <- show_var_change_by_shock_year(
 qa_annual_profits_lbk_pf <- qa_annual_profits_lbk %>%
   dplyr::group_by(year, investor_name, portfolio_name, scenario_geography,
            ald_sector, technology, year_of_shock) %>%
-  summarise(
+  dplyr::summarise(
     baseline = sum(baseline, na.rm = TRUE),
     scen_to_follow_aligned = sum(scen_to_follow_aligned, na.rm = TRUE),
     late_sudden = sum(late_sudden, na.rm = TRUE)
   ) %>%
-  ungroup()
+  dplyr::ungroup()
 
 prod_baseline_target_ls <- show_prod_baseline_target_ls_pf(
   data = qa_annual_profits_lbk_pf,
@@ -94,8 +94,8 @@ prod_baseline_target_ls <- show_prod_baseline_target_ls_pf(
 plan_carsten_loanbook_pf <- plan_carsten_loanbook %>%
   dplyr::group_by(year, investor_name, portfolio_name, scenario_geography,
            ald_sector, technology) %>%
-  summarise(plan_carsten = sum(plan_carsten, na.rm = TRUE)) %>%
-  ungroup()
+  dplyr::summarise(plan_carsten = sum(plan_carsten, na.rm = TRUE)) %>%
+  dplyr::ungroup()
 
 # expectation: In sum, these should be well below 1, but must be greater than 0
 tech_share_lbk <- show_pf_technology_shares(data = plan_carsten_loanbook_pf)

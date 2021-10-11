@@ -201,10 +201,10 @@ scen_data_file <- ifelse(twodii_internal == TRUE,
 # TODO: EITHER wrap check into more evocative function OR remove this when common format is agreed upon
 if(twodii_internal == TRUE | start_year < 2020) {
   scenario_data <- readr::read_csv(scen_data_file, col_types = "ccccccccnnnncnnn") %>%
-    filter(Indicator %in% c("Capacity", "Production", "Sales")) %>%
-    filter(!(Technology == "RenewablesCap" & !is.na(Sub_Technology))) %>%
-    select(-c(Sub_Technology, Indicator, AnnualvalIEAtech, refvalIEAtech, refvalIEAsec, mktFSRatio, techFSRatio)) %>%
-    rename(
+    dplyr::filter(Indicator %in% c("Capacity", "Production", "Sales")) %>%
+    dplyr::filter(!(Technology == "RenewablesCap" & !is.na(Sub_Technology))) %>%
+    dplyr::select(-c(Sub_Technology, Indicator, AnnualvalIEAtech, refvalIEAtech, refvalIEAsec, mktFSRatio, techFSRatio)) %>%
+    dplyr::rename(
       source = Source,
       scenario_geography = ScenarioGeography,
       scenario = Scenario,
@@ -215,33 +215,33 @@ if(twodii_internal == TRUE | start_year < 2020) {
       direction = Direction,
       fair_share_perc = FairSharePerc
     ) %>%
-    mutate(scenario = str_replace(scenario, "NPSRTS", "NPS"))
+    mutate(scenario = stringr::str_replace(scenario, "NPSRTS", "NPS"))
 } else {
   scenario_data <- readr::read_csv(scen_data_file, col_types = "ccccccncn") %>%
-    rename(source = scenario_source)
+    dplyr::rename(source = scenario_source)
 }
 
 scenario_data <- scenario_data %>%
-  filter(source %in% c("ETP2017", "WEO2019")) %>% #TODO: this should be set elsewhere
-  filter(!(source == "ETP2017" & ald_sector == "Power")) %>%
-  mutate(scenario = ifelse(str_detect(scenario, "_"), str_extract(scenario, "[^_]*$"), scenario)) %>%
+  dplyr::filter(source %in% c("ETP2017", "WEO2019")) %>% #TODO: this should be set elsewhere
+  dplyr::filter(!(source == "ETP2017" & ald_sector == "Power")) %>%
+  dplyr::mutate(scenario = ifelse(stringr::str_detect(scenario, "_"), stringr::str_extract(scenario, "[^_]*$"), scenario)) %>%
   check_scenario_timeframe(start_year = start_year, end_year = end_year)
 
 # Correct for automotive scenario data error. CHECK IF ALREADY RESOLVED IN THE SCENARIO DATA, IF SO, DONT USE FUNCTION BELOW!
 scenario_data <- scenario_data %>%
   correct_automotive_scendata(interpolation_years = c(2031:2034, 2036:2039)) %>%
-  filter(
+  dplyr::filter(
     ald_sector %in% sectors_lookup &
       technology %in% technologies_lookup &
       scenario_geography == scenario_geography_filter)
 
 # Load price data----------------------------------------
 df_price <- read_price_data(
-  path = file.path(data_location, paste0("prices_data_", price_data_version, ".csv")),
-  version = "old",
-  expected_technologies = technologies_lookup
-) %>%
-  filter(year >= start_year) %>%
+    path = file.path(data_location, paste0("prices_data_", price_data_version, ".csv")),
+    version = "old",
+    expected_technologies = technologies_lookup
+  ) %>%
+  dplyr::filter(year >= start_year) %>%
   check_price_consistency()
 
 # Load excluded companies-------------------------------
@@ -336,21 +336,21 @@ for (i in seq(1, nrow(transition_scenarios))) {
 
   # Calculate late and sudden prices for scenario i
   df_prices <- df_price %>%
-    mutate(Baseline = NPS) %>% # FIXME this should be parameterized!!
-    rename(
+    dplyr::mutate(Baseline = NPS) %>% # FIXME this should be parameterized!!
+    dplyr::rename(
       year = year, ald_sector = sector, technology = technology, NPS_price = NPS,
       SDS_price = SDS, Baseline_price = Baseline, B2DS_price = B2DS
     ) %>%
     dplyr::group_by(ald_sector, technology) %>%
     #### OPEN: Potentially a problem with the LS price calculation. Concerning warning
-    mutate(
+  dplyr::mutate(
       late_sudden_price = late_sudden_prices(
         SDS_price = SDS_price,
         Baseline_price = Baseline_price,
         overshoot_method = overshoot_method
       )
     ) %>%
-    ungroup()
+    dplyr::ungroup()
 
   # Convert capacity (MW) to generation (MWh) for power sector
   equity_annual_profits <- pacta_equity_results %>%
@@ -415,7 +415,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
       company_id, pd, net_profit_margin, debt_equity_ratio, volatility,
       .direction = "down"
     ) %>%
-    ungroup()
+    dplyr::ungroup()
 
   equity_annual_profits <- equity_annual_profits %>%
     join_price_data(df_prices = df_prices) %>%
@@ -423,13 +423,13 @@ for (i in seq(1, nrow(transition_scenarios))) {
     dcf_model_techlevel(discount_rate = discount_rate)
 
   qa_annual_profits_eq <- qa_annual_profits_eq %>%
-    bind_rows(
+    dplyr::bind_rows(
       equity_annual_profits %>%
-        mutate(year_of_shock = transition_scenario_i$year_of_shock)
+        dplyr::mutate(year_of_shock = transition_scenario_i$year_of_shock)
     )
 
   plan_carsten_equity <- pacta_equity_results %>%
-    filter(
+    dplyr::filter(
       .data$year == start_year,
       .data$technology %in% technologies_lookup,
       .data$scenario_geography == scenario_geography_filter,
@@ -458,7 +458,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
     filter(!is.na(company_id))
 
   plan_carsten_equity <- plan_carsten_equity %>%
-    select(
+    dplyr::select(
       investor_name, portfolio_name, company_name, ald_sector, technology,
       scenario_geography, year, plan_carsten, plan_sec_carsten, term, pd
     )
@@ -469,7 +469,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
   )
 
   if (!exists("excluded_companies")) {
-    equity_results <- bind_rows(
+    equity_results <- dplyr::bind_rows(
       equity_results,
       company_asset_value_at_risk(
         data = equity_annual_profits,
@@ -520,7 +520,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
     # insufficient input information (e.g. NAs for financials or 0 equity value)
 
   } else {
-    equity_results <- bind_rows(
+    equity_results <- dplyr::bind_rows(
       equity_results,
       company_asset_value_at_risk(
         data = equity_annual_profits,
