@@ -168,7 +168,7 @@ sector_share <- matched_non_negative %>%
     .groups = "drop"
   ) %>%
   dplyr::ungroup() %>%
-  relocate(
+  dplyr::relocate(
     sector_ald,
     sector_loan_share_outstanding,
     sector_loan_size_outstanding,
