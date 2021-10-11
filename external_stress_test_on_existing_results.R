@@ -163,7 +163,7 @@ calc_boe_exposures <- function(pacta_exposures) {
   pacta_exposures %>%
     dplyr::filter(ald_sector != "Other") %>%
     dplyr::mutate(
-      subsector = case_when(
+      subsector = dplyr::case_when(
         technology %in% c("RenewablesCap", "HydroCap", "NuclearCap") ~ "Low carbon",
         technology %in% c("ICE", "Hybrid", "FuelCell") ~ "Non electric",
         technology %in% c("Electric") ~ "Electric",
@@ -176,7 +176,7 @@ calc_boe_exposures <- function(pacta_exposures) {
         ald_sector %in% c("Cement", "Steel") ~ "Fossil Fuel Based",
         TRUE ~ technology
       ),
-      sector = case_when(
+      sector = dplyr::case_when(
         ald_sector %in% c("Oil&Gas", "Coal") ~ "Fuel extraction",
         ald_sector %in% c("Steel", "Cement") ~ "Materials",
         TRUE ~ ald_sector
