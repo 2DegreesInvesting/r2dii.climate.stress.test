@@ -2,7 +2,6 @@
 # Project Initialisation---------------------------------------------------
 ###########################################################################
 
-library(CreditRisk)
 library(dplyr)
 library(forcats)
 library(ggplot2)
@@ -38,6 +37,7 @@ function_paths <- c(
       "get_st_data_path.R",
       "interpolate_automotive_scenario.R",
       "lookup.R",
+      "merton.R",
       "overall_pd_change_company_technology.R",
       "overall_pd_change_technology_shock_year.R",
       "qa_graphs_st.R",
