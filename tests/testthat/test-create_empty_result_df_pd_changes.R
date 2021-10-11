@@ -42,7 +42,7 @@ test_that("with expected data input, create_empty_result_df_pd_changes() returns
     horizon = test_horizon
   )
 
-  model_output_cols <- c("Maturity", "Vt", "St", "Dt", "Survival")
+  model_output_cols <- c("Survival")
 
   testthat::expect_equal(
     nrow(create_empty_result),
