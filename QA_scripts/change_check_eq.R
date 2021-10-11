@@ -6,10 +6,17 @@ import_asset_results <- function(project_name, investor_name) {
 
   equity_results_company <- readr::read_csv(file.path(results_path, investor_name, "stress_test_results_equity_comp.csv"))
   equity_results_port <- readr::read_csv(file.path(results_path, investor_name, "stress_test_results_equity_port.csv"))
+  equity_expected_loss <- readr::read_csv(file.path(results_path, paste0("stress_test_results_eq_comp_el_", project_name, ".csv")))
+  equity_annual_pd_changes_sector <- readr::read_csv(file.path(results_path, paste0("stress_test_results_eq_sector_pd_changes_annual.csv")))
+  equity_overall_pd_changes_sector <- readr::read_csv(file.path(results_path, paste0("stress_test_results_eq_sector_pd_changes_overall.csv")))
+
 
   asset_results <- list(
     equity_results_company = equity_results_company,
-    equity_results_port = equity_results_port
+    equity_results_port = equity_results_port,
+    equity_expected_loss = equity_expected_loss,
+    equity_annual_pd_changes_sector = equity_annual_pd_changes_sector,
+    equity_overall_pd_changes_sector = equity_overall_pd_changes_sector
   )
 
   return(asset_results)
@@ -46,6 +53,8 @@ check_all_equal <- function(old_results, new_results) {
 ## It makes sense to use whenever you expect all or some results to be unchanged
 ## by a release as it checks for equality of old and new data.
 ## If not you will have to change the expectations to use it.
+
+### 0. set a seed at the top of stress_test_model_eq.R
 
 ### 1. check out master branch of repo (or whichever branch you want to use as reference)
 source("stress_test_model_eq.R") # calculates results with checked out branch

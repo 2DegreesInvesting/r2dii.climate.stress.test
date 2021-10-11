@@ -135,6 +135,9 @@ discount_rate <- cfg_mod$financials$discount_rate # Discount rate
 ##### OPEN: this needs to be estimated based on data
 terminal_value <- cfg_mod$financials$terminal_value
 div_netprofit_prop_coef <- cfg_mod$financials$div_netprofit_prop_coef # determine this value using bloomberg data
+risk_free_rate <- cfg_mod$financials$risk_free_rate
+lgd_senior_claims <- cfg_mod$financials$lgd_senior_claims
+lgd_subordinated_claims <- cfg_mod$financials$lgd_subordinated_claims
 
 ###########################################################################
 # Load input datasets------------------------------------------------------
@@ -165,7 +168,12 @@ pacta_equity_results <- read_pacta_results(
     scenario_geography_filter = scenario_geography_filter,
     scenarios_filter = scenarios_filter,
     equity_market_filter = cfg$Lists$Equity.Market.List
-  )
+  ) %>%
+  dplyr::group_by(company_name) %>%
+  dplyr::mutate(
+    term = round(runif(n = 1, min = 1, max = 10), 0) # TODO: temporary addition, needs to come directly from input
+  ) %>%
+  dplyr::ungroup()
 
 # Load sector exposures of portfolio------------------------
 sector_exposures <- readRDS(file.path(proc_input_path, "overview_portfolio.rda")) %>%
@@ -207,7 +215,7 @@ if(twodii_internal == TRUE | start_year < 2020) {
       direction = Direction,
       fair_share_perc = FairSharePerc
     ) %>%
-    mutate(scenario = stringr::str_replace(scenario, "NPSRTS", "NPS"))
+    dplyr::mutate(scenario = stringr::str_replace(scenario, "NPSRTS", "NPS"))
 } else {
   scenario_data <- readr::read_csv(scen_data_file, col_types = "ccccccncn") %>%
     dplyr::rename(source = scenario_source)
@@ -306,17 +314,19 @@ equity_port_aum <- calculate_aum(sector_exposures)
 # Calculation of results---------------------------------------------------
 ###########################################################################
 
-
 # Equity results  -------------------------------------------------------------
 
 equity_results <- c()
 qa_annual_profits_eq <- c()
+equity_expected_loss <- c()
+equity_annual_pd_changes <- c()
+qa_pd_changes <- c()
 
 for (i in seq(1, nrow(transition_scenarios))) {
   transition_scenario_i <- transition_scenarios[i, ]
+  overshoot_method <- transition_scenario_i$overshoot_method
   year_of_shock <- transition_scenario_i$year_of_shock
   duration_of_shock <- transition_scenario_i$duration_of_shock
-  overshoot_method <- transition_scenario_i$overshoot_method
   use_prod_forecasts_baseline <- transition_scenario_i$use_prod_forecasts_baseline
   use_prod_forecasts_ls <- transition_scenario_i$use_prod_forecasts_ls
 
@@ -333,8 +343,12 @@ for (i in seq(1, nrow(transition_scenarios))) {
     ) %>%
     dplyr::group_by(ald_sector, technology) %>%
     #### OPEN: Potentially a problem with the LS price calculation. Concerning warning
-    dplyr::mutate(
-      late_sudden_price = late_sudden_prices(SDS_price = SDS_price, Baseline_price = Baseline_price, overshoot_method = overshoot_method)
+  dplyr::mutate(
+      late_sudden_price = late_sudden_prices(
+        SDS_price = SDS_price,
+        Baseline_price = Baseline_price,
+        overshoot_method = overshoot_method
+      )
     ) %>%
     dplyr::ungroup()
 
@@ -388,7 +402,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
   # TODO: ADO 879 - note which companies are removed here, due to mismatch
 
   equity_annual_profits <- equity_annual_profits %>%
-    arrange(
+    dplyr::arrange(
       scenario_name, investor_name, portfolio_name, scenario_geography, id,
       company_name, ald_sector, technology, year
     ) %>%
@@ -422,12 +436,37 @@ for (i in seq(1, nrow(transition_scenarios))) {
       .data$scenario %in% .env$scenario_to_follow_ls
     )
 
+  financial_data_equity_pd <- financial_data_equity %>%
+    dplyr::select(company_name, ald_sector, technology, pd)
+
+  report_duplicates(
+    data = financial_data_equity_pd,
+    cols = names(financial_data_equity_pd)
+  )
+
+  rows_plan_carsten <- nrow(plan_carsten_equity)
+
+  plan_carsten_equity <- plan_carsten_equity %>%
+    dplyr::inner_join(financial_data_equity_pd, by = c("company_name", "ald_sector", "technology"))
+
+  cat("number of rows dropped from technology_exposure by joining financial data
+      on company_name, ald_sector and technology = ",
+      rows_plan_carsten - nrow(plan_carsten_equity), "\n")
+  # TODO: ADO 879 - note which companies are removed here, due to mismatch
+
+  equity_annual_profits <- equity_annual_profits %>%
+    dplyr::filter(!is.na(company_id))
+
   plan_carsten_equity <- plan_carsten_equity %>%
     dplyr::select(
       investor_name, portfolio_name, company_name, ald_sector, technology,
-      scenario_geography, year, plan_carsten, plan_sec_carsten
-    ) %>%
-    dplyr::distinct(across(everything()))
+      scenario_geography, year, plan_carsten, plan_sec_carsten, term, pd
+    )
+
+  report_duplicates(
+    data = plan_carsten_equity,
+    cols = names(plan_carsten_equity)
+  )
 
   if (!exists("excluded_companies")) {
     equity_results <- dplyr::bind_rows(
@@ -443,6 +482,43 @@ for (i in seq(1, nrow(transition_scenarios))) {
         exclusion = NULL
       )
     )
+    equity_overall_pd_changes <- equity_annual_profits %>%
+      calculate_pd_change_overall(
+        shock_year = transition_scenario_i$year_of_shock,
+        end_of_analysis = end_year,
+        exclusion = NULL,
+        risk_free_interest_rate = risk_free_rate
+      )
+
+    # TODO: ADO 879 - note which companies produce missing results due to
+    # insufficient input information (e.g. NAs for financials or 0 equity value)
+
+    equity_expected_loss <- dplyr::bind_rows(
+      equity_expected_loss,
+      company_expected_loss(
+        data = equity_overall_pd_changes,
+        loss_given_default = lgd_subordinated_claims, # TODO: which one?
+        exposure_at_default = plan_carsten_equity,
+        port_aum = equity_port_aum
+      )
+    )
+
+    # TODO: ADO 879 - note which companies produce missing results due to
+    # insufficient output from overall pd changes or related financial data inputs
+
+    equity_annual_pd_changes <- dplyr::bind_rows(
+      equity_annual_pd_changes,
+      calculate_pd_change_annual(
+        data = equity_annual_profits,
+        shock_year = transition_scenario_i$year_of_shock,
+        end_of_analysis = end_year,
+        exclusion = NULL,
+        risk_free_interest_rate = risk_free_rate
+      )
+    )
+    # TODO: ADO 879 - note which companies produce missing results due to
+    # insufficient input information (e.g. NAs for financials or 0 equity value)
+
   } else {
     equity_results <- dplyr::bind_rows(
       equity_results,
@@ -457,6 +533,35 @@ for (i in seq(1, nrow(transition_scenarios))) {
         exclusion = excluded_companies
       )
     )
+
+    equity_overall_pd_changes <- equity_annual_profits %>%
+      calculate_pd_change_overall(
+        shock_year = transition_scenario_i$year_of_shock,
+        end_of_analysis = end_year,
+        exclusion = excluded_companies,
+        risk_free_interest_rate = risk_free_rate
+      )
+
+    equity_expected_loss <- dplyr::bind_rows(
+      equity_expected_loss,
+      company_expected_loss(
+        data = equity_overall_pd_changes,
+        loss_given_default = lgd_subordinated_claims, # TODO: which one?
+        exposure_at_default = plan_carsten_equity,
+        port_aum = equity_port_aum
+      )
+    )
+
+    equity_annual_pd_changes <- dplyr::bind_rows(
+      equity_annual_pd_changes,
+      calculate_pd_change_annual(
+        data = equity_annual_profits,
+        shock_year = transition_scenario_i$year_of_shock,
+        end_of_analysis = end_year,
+        exclusion = excluded_companies,
+        risk_free_interest_rate = risk_free_rate
+      )
+    )
   }
 }
 
@@ -468,3 +573,69 @@ equity_results %>% write_results(
   level = calculation_level,
   file_type = "csv"
 )
+
+# Output equity credit risk results
+equity_expected_loss <- equity_expected_loss %>%
+  dplyr::select(
+    scenario_name, scenario_geography, investor_name, portfolio_name,
+    company_name, id, ald_sector, technology, equity_0_baseline,
+    equity_0_late_sudden, debt, volatility, risk_free_rate, term,
+    Survival_baseline, Survival_late_sudden, PD_baseline, PD_late_sudden,
+    PD_change, pd, lgd, percent_exposure, exposure_at_default,
+    expected_loss_baseline, expected_loss_late_sudden
+  ) %>%
+  dplyr::arrange(
+    scenario_geography, scenario_name, investor_name, portfolio_name,
+    company_name, ald_sector, technology
+  )
+
+equity_expected_loss %>%
+  readr::write_csv(file.path(
+    results_path,
+    paste0("stress_test_results_eq_comp_el_", project_name, ".csv")
+  ))
+
+# TODO: this is an unweighted average so far. keep in mind.
+equity_annual_pd_changes_sector <- equity_annual_pd_changes %>%
+  dplyr::group_by(
+    scenario_name, scenario_geography, investor_name, portfolio_name,
+    ald_sector, technology, year
+  ) %>%
+  dplyr::summarise(
+    PD_change_late_sudden = mean((PD_late_sudden - PD_baseline), na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  dplyr::ungroup() %>%
+  dplyr::arrange(
+    scenario_geography, scenario_name, investor_name, portfolio_name,
+    ald_sector, technology, year
+  )
+
+equity_annual_pd_changes_sector %>%
+  readr::write_csv(file.path(
+    results_path,
+    paste0("stress_test_results_eq_sector_pd_changes_annual.csv")
+  ))
+
+# TODO: this is an unweighted average so far. keep in mind.
+equity_overall_pd_changes_sector <- equity_expected_loss %>%
+  dplyr::group_by(
+    scenario_name, scenario_geography, investor_name, portfolio_name,
+    ald_sector, technology, term
+  ) %>%
+  dplyr::summarise(
+    PD_change_late_sudden = mean((PD_late_sudden - PD_baseline), na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  dplyr::ungroup() %>%
+  dplyr::arrange(
+    scenario_geography, scenario_name, investor_name, portfolio_name,
+    ald_sector, technology, term
+  )
+
+equity_overall_pd_changes_sector %>%
+  readr::write_csv(file.path(
+    results_path,
+    paste0("stress_test_results_eq_sector_pd_changes_overall.csv")
+  ))
+
