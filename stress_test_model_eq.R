@@ -170,10 +170,10 @@ pacta_equity_results <- read_pacta_results(
     equity_market_filter = cfg$Lists$Equity.Market.List
   ) %>%
   dplyr::group_by(company_name) %>%
-  mutate(
+  dplyr::mutate(
     term = round(runif(n = 1, min = 1, max = 10), 0) # TODO: temporary addition, needs to come directly from input
   ) %>%
-  ungroup()
+  dplyr::ungroup()
 
 # Load sector exposures of portfolio------------------------
 sector_exposures <- readRDS(file.path(proc_input_path, "overview_portfolio.rda")) %>%
@@ -215,7 +215,7 @@ if(twodii_internal == TRUE | start_year < 2020) {
       direction = Direction,
       fair_share_perc = FairSharePerc
     ) %>%
-    mutate(scenario = stringr::str_replace(scenario, "NPSRTS", "NPS"))
+    dplyr::mutate(scenario = stringr::str_replace(scenario, "NPSRTS", "NPS"))
 } else {
   scenario_data <- readr::read_csv(scen_data_file, col_types = "ccccccncn") %>%
     dplyr::rename(source = scenario_source)
@@ -402,7 +402,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
   # TODO: ADO 879 - note which companies are removed here, due to mismatch
 
   equity_annual_profits <- equity_annual_profits %>%
-    arrange(
+    dplyr::arrange(
       scenario_name, investor_name, portfolio_name, scenario_geography, id,
       company_name, ald_sector, technology, year
     ) %>%
@@ -437,7 +437,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
     )
 
   financial_data_equity_pd <- financial_data_equity %>%
-    select(company_name, ald_sector, technology, pd)
+    dplyr::select(company_name, ald_sector, technology, pd)
 
   report_duplicates(
     data = financial_data_equity_pd,
@@ -455,7 +455,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
   # TODO: ADO 879 - note which companies are removed here, due to mismatch
 
   equity_annual_profits <- equity_annual_profits %>%
-    filter(!is.na(company_id))
+    dplyr::filter(!is.na(company_id))
 
   plan_carsten_equity <- plan_carsten_equity %>%
     dplyr::select(
@@ -493,7 +493,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
     # TODO: ADO 879 - note which companies produce missing results due to
     # insufficient input information (e.g. NAs for financials or 0 equity value)
 
-    equity_expected_loss <- bind_rows(
+    equity_expected_loss <- dplyr::bind_rows(
       equity_expected_loss,
       company_expected_loss(
         data = equity_overall_pd_changes,
@@ -506,7 +506,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
     # TODO: ADO 879 - note which companies produce missing results due to
     # insufficient output from overall pd changes or related financial data inputs
 
-    equity_annual_pd_changes <- bind_rows(
+    equity_annual_pd_changes <- dplyr::bind_rows(
       equity_annual_pd_changes,
       calculate_pd_change_annual(
         data = equity_annual_profits,
@@ -542,7 +542,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
         risk_free_interest_rate = risk_free_rate
       )
 
-    equity_expected_loss <- bind_rows(
+    equity_expected_loss <- dplyr::bind_rows(
       equity_expected_loss,
       company_expected_loss(
         data = equity_overall_pd_changes,
@@ -552,7 +552,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
       )
     )
 
-    equity_annual_pd_changes <- bind_rows(
+    equity_annual_pd_changes <- dplyr::bind_rows(
       equity_annual_pd_changes,
       calculate_pd_change_annual(
         data = equity_annual_profits,
@@ -566,7 +566,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
 }
 
 # Output equity results
-equity_results %>% write_results(
+equity_results %>% readr::write_results(
   path_to_results = results_path,
   investorname = investor_name_placeholder,
   asset_type = "equity",
