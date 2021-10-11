@@ -14,7 +14,7 @@ map_security_sectors <- function(fin_data, sector_bridge){
   fin_data_na <- fin_data_na %>% dplyr::left_join(sector_bridge %>% dplyr::filter(source == "ICB") %>% dplyr::select(-source),
                                            by = c("security_icb_subsector" = "industry_classification"))
 
-  fin_data <- fin_data %>% bind_rows(fin_data_na)
+  fin_data <- fin_data %>% dplyr::bind_rows(fin_data_na)
 
   fin_data <- fin_data %>% dplyr::select(-security_mapped_sector,sector_boe,sector_ipr,subsector_ipr,sector_dnb,subsector_boe) %>% dplyr::rename(security_mapped_sector = sector)
 

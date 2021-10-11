@@ -422,7 +422,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
     dcf_model_techlevel(discount_rate = discount_rate)
 
   qa_annual_profits_cb <- qa_annual_profits_cb %>%
-    bind_rows(
+    dplyr::bind_rows(
       bonds_annual_profits %>%
         mutate(year_of_shock = transition_scenario_i$year_of_shock)
     )
@@ -468,7 +468,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
   )
 
   if (!exists("excluded_companies")) {
-    bonds_results <- bind_rows(
+    bonds_results <- dplyr::bind_rows(
       bonds_results,
       company_asset_value_at_risk(
         data = bonds_annual_profits,
@@ -493,7 +493,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
     # TODO: ADO 879 - note which companies produce missing results due to
     # insufficient input information (e.g. NAs for financials or 0 equity value)
 
-    bonds_expected_loss <- bind_rows(
+    bonds_expected_loss <- dplyr::bind_rows(
       bonds_expected_loss,
       company_expected_loss(
         data = bonds_overall_pd_changes,
@@ -506,7 +506,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
     # TODO: ADO 879 - note which companies produce missing results due to
     # insufficient output from overall pd changes or related financial data inputs
 
-    bonds_annual_pd_changes <- bind_rows(
+    bonds_annual_pd_changes <- dplyr::bind_rows(
       bonds_annual_pd_changes,
       calculate_pd_change_annual(
         data = bonds_annual_profits,
@@ -520,7 +520,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
     # insufficient input information (e.g. NAs for financials or 0 equity value)
 
   } else {
-    bonds_results <- bind_rows(
+    bonds_results <- dplyr::bind_rows(
       bonds_results,
       company_asset_value_at_risk(
         data = bonds_annual_profits,
@@ -542,7 +542,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
         risk_free_interest_rate = risk_free_rate
       )
 
-    bonds_expected_loss <- bind_rows(
+    bonds_expected_loss <- dplyr::bind_rows(
       bonds_expected_loss,
       company_expected_loss(
         data = bonds_overall_pd_changes,
@@ -552,7 +552,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
       )
     )
 
-    bonds_annual_pd_changes <- bind_rows(
+    bonds_annual_pd_changes <- dplyr::bind_rows(
       bonds_annual_pd_changes,
       calculate_pd_change_annual(
         data = bonds_annual_profits,

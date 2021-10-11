@@ -409,7 +409,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
     dcf_model_techlevel(discount_rate = discount_rate)
 
   qa_annual_profits_eq <- qa_annual_profits_eq %>%
-    bind_rows(
+    dplyr::bind_rows(
       equity_annual_profits %>%
         mutate(year_of_shock = transition_scenario_i$year_of_shock)
     )
@@ -430,7 +430,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
     dplyr::distinct(across(everything()))
 
   if (!exists("excluded_companies")) {
-    equity_results <- bind_rows(
+    equity_results <- dplyr::bind_rows(
       equity_results,
       company_asset_value_at_risk(
         data = equity_annual_profits,
@@ -444,7 +444,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
       )
     )
   } else {
-    equity_results <- bind_rows(
+    equity_results <- dplyr::bind_rows(
       equity_results,
       company_asset_value_at_risk(
         data = equity_annual_profits,

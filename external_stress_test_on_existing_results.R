@@ -245,7 +245,7 @@ results_boe <- portfolio %>%
     .groups = "drop_last"
   ) %>%
   dplyr::rename(sector = sector_boe, subsector = subsector_boe) %>%
-  bind_rows(boe_exposures_cb, boe_exposures_eq) %>%
+  dplyr::bind_rows(boe_exposures_cb, boe_exposures_eq) %>%
   dplyr::left_join(
     shocks %>% dplyr::filter(methodology == "BoE") %>% dplyr::select(-c(description, methodology)),
     by = c("sector", "subsector")

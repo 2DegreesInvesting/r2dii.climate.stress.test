@@ -427,7 +427,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
                    scenario_geography, year, plan_carsten, plan_sec_carsten)
 
         if (!exists("excluded_companies")) {
-          equity_results <- bind_rows(
+          equity_results <- dplyr::bind_rows(
             equity_results,
             company_asset_value_at_risk(
               data = equity_annual_profits,
@@ -441,7 +441,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
             )
           )
         } else {
-          equity_results <- bind_rows(
+          equity_results <- dplyr::bind_rows(
             equity_results,
             company_asset_value_at_risk(
               data = equity_annual_profits,
@@ -461,7 +461,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
           dplyr::distinct(investor_name, portfolio_name, ald_sector, technology,
                    scenario_geography, year, plan_carsten, plan_sec_carsten)
 
-        equity_results <- bind_rows(
+        equity_results <- dplyr::bind_rows(
           equity_results,
           asset_value_at_risk(
             data = equity_annual_profits,
@@ -624,7 +624,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
                    scenario_geography, year, plan_carsten, plan_sec_carsten)
 
         if (!exists("excluded_companies")) {
-          bonds_results <- bind_rows(
+          bonds_results <- dplyr::bind_rows(
             bonds_results,
             company_asset_value_at_risk(
               data = bonds_annual_profits,
@@ -638,7 +638,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
             )
           )
         } else {
-          bonds_results <- bind_rows(
+          bonds_results <- dplyr::bind_rows(
             bonds_results,
             company_asset_value_at_risk(
               data = bonds_annual_profits,
@@ -658,7 +658,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
           dplyr::distinct(investor_name, portfolio_name, ald_sector, technology,
                    scenario_geography, year, plan_carsten, plan_sec_carsten)
 
-        bonds_results <- bind_rows(
+        bonds_results <- dplyr::bind_rows(
           bonds_results,
           asset_value_at_risk(
             data = bonds_annual_profits,

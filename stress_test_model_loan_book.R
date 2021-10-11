@@ -479,7 +479,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
   # TODO: ADO 879 - note rows with zero profits/NPVs will produce NaN in the Merton model
 
   qa_annual_profits_lbk <- qa_annual_profits_lbk %>%
-    bind_rows(
+    dplyr::bind_rows(
       loanbook_annual_profits %>%
         mutate(year_of_shock = transition_scenario_i$year_of_shock)
     )
@@ -526,7 +526,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
   )
 
   if (!exists("excluded_companies")) {
-    loanbook_results <- bind_rows(
+    loanbook_results <- dplyr::bind_rows(
       loanbook_results,
       company_asset_value_at_risk(
         data = loanbook_annual_profits,
@@ -550,7 +550,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
     # TODO: ADO 879 - note which companies produce missing results due to
     # insufficient input information (e.g. NAs for financials or 0 equity value)
 
-    loanbook_expected_loss <- bind_rows(
+    loanbook_expected_loss <- dplyr::bind_rows(
       loanbook_expected_loss,
       company_expected_loss(
         data = loanbook_overall_pd_changes,
@@ -563,7 +563,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
     # TODO: ADO 879 - note which companies produce missing results due to
     # insufficient output from overall pd changes or related financial data inputs
 
-    loanbook_annual_pd_changes <- bind_rows(
+    loanbook_annual_pd_changes <- dplyr::bind_rows(
       loanbook_annual_pd_changes,
       calculate_pd_change_annual(
         data = loanbook_annual_profits,
@@ -576,7 +576,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
     # TODO: ADO 879 - note which companies produce missing results due to
     # insufficient input information (e.g. NAs for financials or 0 equity value)
   } else {
-    loanbook_results <- bind_rows(
+    loanbook_results <- dplyr::bind_rows(
       loanbook_results,
       company_asset_value_at_risk(
         data = loanbook_annual_profits,
@@ -598,7 +598,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
         risk_free_interest_rate = risk_free_rate
       )
 
-    loanbook_expected_loss <- bind_rows(
+    loanbook_expected_loss <- dplyr::bind_rows(
       loanbook_expected_loss,
       company_expected_loss(
         data = loanbook_overall_pd_changes,
@@ -609,7 +609,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
       )
     )
 
-    loanbook_annual_pd_changes <- bind_rows(
+    loanbook_annual_pd_changes <- dplyr::bind_rows(
       loanbook_annual_pd_changes,
       calculate_pd_change_annual(
         data = loanbook_annual_profits,
