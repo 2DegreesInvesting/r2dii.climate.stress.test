@@ -492,9 +492,6 @@ for (i in seq(1, nrow(transition_scenarios))) {
         risk_free_interest_rate = risk_free_rate
       )
 
-    # TODO: ADO 879 - note which companies produce missing results due to
-    # insufficient input information (e.g. NAs for financials or 0 equity value)
-
     bonds_expected_loss <- dplyr::bind_rows(
       bonds_expected_loss,
       company_expected_loss(
@@ -504,9 +501,6 @@ for (i in seq(1, nrow(transition_scenarios))) {
         port_aum = bonds_port_aum
       )
     )
-
-    # TODO: ADO 879 - note which companies produce missing results due to
-    # insufficient output from overall pd changes or related financial data inputs
 
     bonds_annual_pd_changes <- dplyr::bind_rows(
       bonds_annual_pd_changes,
@@ -518,8 +512,6 @@ for (i in seq(1, nrow(transition_scenarios))) {
         risk_free_interest_rate = risk_free_rate
       )
     )
-    # TODO: ADO 879 - note which companies produce missing results due to
-    # insufficient input information (e.g. NAs for financials or 0 equity value)
 
   } else {
     bonds_results <- dplyr::bind_rows(
@@ -544,6 +536,9 @@ for (i in seq(1, nrow(transition_scenarios))) {
         risk_free_interest_rate = risk_free_rate
       )
 
+    # TODO: ADO 879 - note which companies produce missing results due to
+    # insufficient input information (e.g. NAs for financials or 0 equity value)
+
     bonds_expected_loss <- dplyr::bind_rows(
       bonds_expected_loss,
       company_expected_loss(
@@ -553,6 +548,9 @@ for (i in seq(1, nrow(transition_scenarios))) {
         port_aum = bonds_port_aum
       )
     )
+
+    # TODO: ADO 879 - note which companies produce missing results due to
+    # insufficient output from overall pd changes or related financial data inputs
 
     bonds_annual_pd_changes <- dplyr::bind_rows(
       bonds_annual_pd_changes,
@@ -564,6 +562,9 @@ for (i in seq(1, nrow(transition_scenarios))) {
         risk_free_interest_rate = risk_free_rate
       )
     )
+
+    # TODO: ADO 879 - note which companies produce missing results due to
+    # insufficient input information (e.g. NAs for financials or 0 equity value)
   }
 }
 
