@@ -120,7 +120,7 @@ if (exists("portfolio")) {
     ) %>%
     rename(sector = sector_ipr, subsector = subsector_ipr) %>%
     dplyr::left_join(
-      shocks %>% filter(methodology == "IPR") %>% select(-c(methodology)),
+      shocks %>% dplyr::filter(methodology == "IPR") %>% dplyr::select(-c(methodology)),
       by = c("sector", "subsector")
     ) %>%
     mutate(

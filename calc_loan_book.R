@@ -126,14 +126,14 @@ loan_share <- matched_non_negative %>%
   ) %>%
   #TODO: either name or name_ald.. is id_2dii relevant?
   dplyr::group_by(name_ald, sector_ald, loan_size_outstanding_currency, loan_size_credit_limit_currency) %>%
-  mutate(
+  dplyr::mutate(
     comp_loan_share_outstanding = sum(loan_size_outstanding, na.rm = TRUE)/portfolio_loan_size_outstanding,
     comp_loan_size_outstanding = sum(loan_size_outstanding, na.rm = TRUE),
     comp_loan_share_credit_limit = sum(loan_size_credit_limit, na.rm = TRUE)/portfolio_loan_size_credit_limit,
     comp_loan_size_credit_limit = sum(loan_size_credit_limit, na.rm = TRUE)
   ) %>%
-  ungroup() %>%
-  select(
+  dplyr::ungroup() %>%
+  dplyr::select(
     # id_2dii,
     # name,
     name_ald,
@@ -220,11 +220,11 @@ matched_company_unweighted <- matched_non_negative %>%
       (sector == "oil and gas" & scenario_source == "weo_2019") |
       (sector == "power" & scenario_source == "weo_2019")
   ) %>%
-  rename(
+  dplyr::rename(
     production_unweighted = production
   ) %>%
-  select(-technology_share) %>%
-  distinct_all()
+  dplyr::select(-technology_share) %>%
+  dplyr::distinct_all()
 
 matched_company <- matched_company_weighted %>%
   dplyr::inner_join(
@@ -235,14 +235,14 @@ matched_company <- matched_company_weighted %>%
 
 matched_company_loan_share <- matched_company %>%
   dplyr::left_join(loan_share, by = c("sector" = "sector_ald", "name_ald")) %>%
-  filter(region == "global") %>%
-  select(
+  dplyr::filter(region == "global") %>%
+  dplyr::select(
     -c(
       comp_loan_size_outstanding, comp_loan_size_credit_limit,
       loan_size_outstanding_currency, loan_size_credit_limit_currency
       )
     ) %>%
-  rename(
+  dplyr::rename(
     loan_share_outstanding = comp_loan_share_outstanding,
     loan_share_credit_limit = comp_loan_share_credit_limit
   )

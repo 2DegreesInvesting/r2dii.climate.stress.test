@@ -118,7 +118,7 @@ technologies <- c(
 
 fund_data <- c() # we dont need fund data, as we already have the EQ and CB input portfolios, we just want to merge the IPR/DNB/BOE sector classifications to the inputportfolios, through the financial data
 fin_data <- get_and_clean_fin_data(fund_data = fund_data) %>%
-  select(isin, sector_boe, subsector_boe, sector_dnb, sector_ipr, subsector_ipr)
+  dplyr::select(isin, sector_boe, subsector_boe, sector_dnb, sector_ipr, subsector_ipr)
 
 portfolio <- readRDS(file.path(project_location, "30_Processed_Inputs", paste0(project_name, "_total_portfolio.rda"))) %>%
   dplyr::left_join(fin_data, by = "isin") %>%
@@ -209,7 +209,7 @@ results_dnb <- portfolio %>%
   ) %>%
   rename(sector = sector_dnb) %>%
   dplyr::left_join(
-    shocks %>% filter(methodology == "DNB") %>% select(-c(methodology)),
+    shocks %>% dplyr::filter(methodology == "DNB") %>% dplyr::select(-c(methodology)),
     by = c("sector")
   ) %>%
   mutate(loss = exposure * shock / 100)
@@ -228,7 +228,7 @@ results_ipr <- portfolio %>%
   ) %>%
   rename(sector = sector_ipr, subsector = subsector_ipr) %>%
   dplyr::left_join(
-    shocks %>% filter(methodology == "IPR") %>% select(-c(methodology)),
+    shocks %>% dplyr::filter(methodology == "IPR") %>% dplyr::select(-c(methodology)),
     by = c("sector", "subsector")
   ) %>%
   mutate(loss = exposure * shock / 100)
@@ -247,7 +247,7 @@ results_boe <- portfolio %>%
   rename(sector = sector_boe, subsector = subsector_boe) %>%
   bind_rows(boe_exposures_cb, boe_exposures_eq) %>%
   dplyr::left_join(
-    shocks %>% filter(methodology == "BoE") %>% select(-c(description, methodology)),
+    shocks %>% dplyr::filter(methodology == "BoE") %>% dplyr::select(-c(description, methodology)),
     by = c("sector", "subsector")
   ) %>%
   mutate(

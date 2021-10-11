@@ -193,10 +193,10 @@ scen_data_file <- ifelse(twodii_internal == TRUE,
 # TODO: EITHER wrap check into more evocative function OR remove this when common format is agreed upon
 if(twodii_internal == TRUE | start_year < 2020) {
   scenario_data <- readr::read_csv(scen_data_file, col_types = "ccccccccnnnncnnn") %>%
-    filter(Indicator %in% c("Capacity", "Production", "Sales")) %>%
-    filter(!(Technology == "RenewablesCap" & !is.na(Sub_Technology))) %>%
-    select(-c(Sub_Technology, Indicator, AnnualvalIEAtech, refvalIEAtech, refvalIEAsec, mktFSRatio, techFSRatio)) %>%
-    rename(
+    dplyr::filter(Indicator %in% c("Capacity", "Production", "Sales")) %>%
+    dplyr::filter(!(Technology == "RenewablesCap" & !is.na(Sub_Technology))) %>%
+    dplyr::select(-c(Sub_Technology, Indicator, AnnualvalIEAtech, refvalIEAtech, refvalIEAsec, mktFSRatio, techFSRatio)) %>%
+    dplyr::rename(
       source = Source,
       scenario_geography = ScenarioGeography,
       scenario = Scenario,
@@ -423,11 +423,11 @@ for (i in seq(1, nrow(transition_scenarios))) {
     )
 
   plan_carsten_equity <- plan_carsten_equity %>%
-    select(
+    dplyr::select(
       investor_name, portfolio_name, company_name, ald_sector, technology,
       scenario_geography, year, plan_carsten, plan_sec_carsten
     ) %>%
-    distinct(across(everything()))
+    dplyr::distinct(across(everything()))
 
   if (!exists("excluded_companies")) {
     equity_results <- bind_rows(
