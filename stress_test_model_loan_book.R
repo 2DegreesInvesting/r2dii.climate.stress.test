@@ -549,8 +549,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
         exclusion = NULL,
         risk_free_interest_rate = risk_free_rate
       )
-    # TODO: ADO 879 - note which companies produce missing results due to
-    # insufficient input information (e.g. NAs for financials or 0 equity value)
+
 
     loanbook_expected_loss <- dplyr::bind_rows(
       loanbook_expected_loss,
@@ -562,8 +561,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
         port_aum = loan_book_port_aum
       )
     )
-    # TODO: ADO 879 - note which companies produce missing results due to
-    # insufficient output from overall pd changes or related financial data inputs
+
 
     loanbook_annual_pd_changes <- dplyr::bind_rows(
       loanbook_annual_pd_changes,
@@ -575,8 +573,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
         risk_free_interest_rate = risk_free_rate
       )
     )
-    # TODO: ADO 879 - note which companies produce missing results due to
-    # insufficient input information (e.g. NAs for financials or 0 equity value)
+
   } else {
     loanbook_results <- dplyr::bind_rows(
       loanbook_results,
@@ -600,6 +597,9 @@ for (i in seq(1, nrow(transition_scenarios))) {
         risk_free_interest_rate = risk_free_rate
       )
 
+    # TODO: ADO 879 - note which companies produce missing results due to
+    # insufficient input information (e.g. NAs for financials or 0 equity value)
+
     loanbook_expected_loss <- dplyr::bind_rows(
       loanbook_expected_loss,
       company_expected_loss(
@@ -611,6 +611,9 @@ for (i in seq(1, nrow(transition_scenarios))) {
       )
     )
 
+    # TODO: ADO 879 - note which companies produce missing results due to
+    # insufficient output from overall pd changes or related financial data inputs
+
     loanbook_annual_pd_changes <- dplyr::bind_rows(
       loanbook_annual_pd_changes,
       calculate_pd_change_annual(
@@ -621,6 +624,9 @@ for (i in seq(1, nrow(transition_scenarios))) {
         risk_free_interest_rate = risk_free_rate
       )
     )
+
+    # TODO: ADO 879 - note which companies produce missing results due to
+    # insufficient input information (e.g. NAs for financials or 0 equity value)
 
   }
 }
