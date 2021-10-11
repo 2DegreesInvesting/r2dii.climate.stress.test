@@ -527,58 +527,58 @@ for (i in seq(1, nrow(transition_scenarios))) {
     cols = names(plan_carsten_loanbook)
   )
 
-    loanbook_results <- dplyr::bind_rows(
-      loanbook_results,
-      company_asset_value_at_risk(
-        data = loanbook_annual_profits,
-        terminal_value = terminal_value,
-        shock_scenario = shock_scenario,
-        div_netprofit_prop_coef = div_netprofit_prop_coef,
-        plan_carsten = plan_carsten_loanbook,
-        port_aum = loan_book_port_aum,
-        flat_multiplier = 0.15,
-        exclusion = excluded_companies
-      )
+  loanbook_results <- dplyr::bind_rows(
+    loanbook_results,
+    company_asset_value_at_risk(
+      data = loanbook_annual_profits,
+      terminal_value = terminal_value,
+      shock_scenario = shock_scenario,
+      div_netprofit_prop_coef = div_netprofit_prop_coef,
+      plan_carsten = plan_carsten_loanbook,
+      port_aum = loan_book_port_aum,
+      flat_multiplier = 0.15,
+      exclusion = excluded_companies
+    )
+  )
+
+  loanbook_overall_pd_changes <- loanbook_annual_profits %>%
+    calculate_pd_change_overall(
+      shock_year = transition_scenario_i$year_of_shock,
+      end_of_analysis = end_year,
+      exclusion = excluded_companies,
+      risk_free_interest_rate = risk_free_rate
     )
 
-    loanbook_overall_pd_changes <- loanbook_annual_profits %>%
-      calculate_pd_change_overall(
-        shock_year = transition_scenario_i$year_of_shock,
-        end_of_analysis = end_year,
-        exclusion = excluded_companies,
-        risk_free_interest_rate = risk_free_rate
-      )
+  # TODO: ADO 879 - note which companies produce missing results due to
+  # insufficient input information (e.g. NAs for financials or 0 equity value)
 
-    # TODO: ADO 879 - note which companies produce missing results due to
-    # insufficient input information (e.g. NAs for financials or 0 equity value)
-
-    loanbook_expected_loss <- dplyr::bind_rows(
-      loanbook_expected_loss,
-      company_expected_loss(
-        data = loanbook_overall_pd_changes,
-        loss_given_default = lgd_senior_claims,
-        exposure_at_default = plan_carsten_loanbook,
-        # TODO: what to do with this? some sector level exposure for loanbook?
-        port_aum = loan_book_port_aum
-      )
+  loanbook_expected_loss <- dplyr::bind_rows(
+    loanbook_expected_loss,
+    company_expected_loss(
+      data = loanbook_overall_pd_changes,
+      loss_given_default = lgd_senior_claims,
+      exposure_at_default = plan_carsten_loanbook,
+      # TODO: what to do with this? some sector level exposure for loanbook?
+      port_aum = loan_book_port_aum
     )
+  )
 
-    # TODO: ADO 879 - note which companies produce missing results due to
-    # insufficient output from overall pd changes or related financial data inputs
+  # TODO: ADO 879 - note which companies produce missing results due to
+  # insufficient output from overall pd changes or related financial data inputs
 
-    loanbook_annual_pd_changes <- dplyr::bind_rows(
-      loanbook_annual_pd_changes,
-      calculate_pd_change_annual(
-        data = loanbook_annual_profits,
-        shock_year = transition_scenario_i$year_of_shock,
-        end_of_analysis = end_year,
-        exclusion = excluded_companies,
-        risk_free_interest_rate = risk_free_rate
-      )
+  loanbook_annual_pd_changes <- dplyr::bind_rows(
+    loanbook_annual_pd_changes,
+    calculate_pd_change_annual(
+      data = loanbook_annual_profits,
+      shock_year = transition_scenario_i$year_of_shock,
+      end_of_analysis = end_year,
+      exclusion = excluded_companies,
+      risk_free_interest_rate = risk_free_rate
     )
+  )
 
-    # TODO: ADO 879 - note which companies produce missing results due to
-    # insufficient input information (e.g. NAs for financials or 0 equity value)
+  # TODO: ADO 879 - note which companies produce missing results due to
+  # insufficient input information (e.g. NAs for financials or 0 equity value)
 
 }
 
