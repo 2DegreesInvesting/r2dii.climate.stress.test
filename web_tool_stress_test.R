@@ -207,7 +207,7 @@ scen_data_file <- ifelse(twodii_internal == TRUE,
 
 scenario_data <- readr::read_csv(scen_data_file, col_types = cols(.default = col_guess())) %>%
   rename(source = scenario_source) %>%
-  filter(source %in% c("ETP2017", "WEO2019")) %>%
+  dplyr::filter(source %in% c("ETP2017", "WEO2019")) %>%
   mutate(scenario = ifelse(str_detect(scenario, "_"), str_extract(scenario, "[^_]*$"), scenario)) %>%
   check_scenario_timeframe(start_year = start_year, end_year = end_year)
 
@@ -223,7 +223,7 @@ df_price <- read_price_data(
     version = "old",
     expected_technologies = technologies
   ) %>%
-  filter(year >= start_year) %>%
+  dplyr::filter(year >= start_year) %>%
   check_price_consistency()
 
 
@@ -294,8 +294,8 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
   )
 
   pacta_equity_results_full <- pacta_equity_results_full %>%
-    filter(!(scenario == "ETP2017_NPS" & ald_sector == "Power")) %>%
-    filter(scenario %in% scenarios) %>%
+    dplyr::filter(!(scenario == "ETP2017_NPS" & ald_sector == "Power")) %>%
+    dplyr::filter(scenario %in% scenarios) %>%
     mutate(scenario = ifelse(str_detect(scenario, "_"), str_extract(scenario, "[^_]*$"), scenario)) %>%
     check_portfolio_consistency(start_year = start_year)
 
@@ -314,7 +314,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
       allocation_method = allocation_method_equity,
       start_analysis = start_year
     ) %>%
-    filter(
+    dplyr::filter(
       allocation == allocation_method_equity,
       equity_market %in% equity_market_filter
     ) %>%
@@ -333,7 +333,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
     )
 
     equity_port_aum <- sector_exposures %>%
-      filter(asset_type == "Equity") %>%
+      dplyr::filter(asset_type == "Equity") %>%
       dplyr::group_by(investor_name, portfolio_name) %>%
       dplyr::dplyr::summarise(
         asset_portfolio_value = sum(valid_value_usd),
@@ -415,7 +415,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
         dcf_model_techlevel(discount_rate = discount_rate)
 
       plan_carsten_equity <- pacta_equity_results %>%
-        filter(
+        dplyr::filter(
           year == start_year,
           technology %in% technologies,
           scenario_geography == scenario_geography_filter
@@ -494,8 +494,8 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
   )
 
   pacta_bonds_results_full <- pacta_bonds_results_full %>%
-    filter(!(scenario == "ETP2017_NPS" & ald_sector == "Power")) %>%
-    filter(scenario %in% scenarios) %>%
+    dplyr::filter(!(scenario == "ETP2017_NPS" & ald_sector == "Power")) %>%
+    dplyr::filter(scenario %in% scenarios) %>%
     mutate(scenario = ifelse(str_detect(scenario, "_"), str_extract(scenario, "[^_]*$"), scenario)) %>%
     check_portfolio_consistency(start_year = start_year)
 
@@ -514,7 +514,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
       allocation_method = allocation_method_equity,
       start_analysis = start_year
     ) %>%
-    filter(
+    dplyr::filter(
       allocation == allocation_method_equity,
       equity_market %in% equity_market_filter
     ) %>%
@@ -534,7 +534,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
 
     bonds_port_aum <- sector_exposures %>%
       dplyr::group_by(investor_name, portfolio_name) %>%
-      filter(asset_type == "Bonds") %>%
+      dplyr::filter(asset_type == "Bonds") %>%
       summarise(
         asset_portfolio_value = sum(valid_value_usd),
         .groups = "drop_last"
@@ -612,7 +612,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
         dcf_model_techlevel(discount_rate = discount_rate)
 
       plan_carsten_bonds <- pacta_bonds_results %>%
-        filter(
+        dplyr::filter(
           year == start_year,
           technology %in% technologies,
           scenario_geography == scenario_geography_filter

@@ -214,15 +214,15 @@ if(twodii_internal == TRUE | start_year < 2020) {
 }
 
 scenario_data <- scenario_data %>%
-  filter(source %in% c("ETP2017", "WEO2019")) %>% #TODO: this should be set elsewhere
-  filter(!(source == "ETP2017" & ald_sector == "Power")) %>%
+  dplyr::filter(source %in% c("ETP2017", "WEO2019")) %>% #TODO: this should be set elsewhere
+  dplyr::filter(!(source == "ETP2017" & ald_sector == "Power")) %>%
   mutate(scenario = ifelse(str_detect(scenario, "_"), str_extract(scenario, "[^_]*$"), scenario)) %>%
   check_scenario_timeframe(start_year = start_year, end_year = end_year)
 
 # Correct for automotive scenario data error. CHECK IF ALREADY RESOLVED IN THE SCENARIO DATA, IF SO, DONT USE FUNCTION BELOW!
 scenario_data <- scenario_data %>%
   correct_automotive_scendata(interpolation_years = c(2031:2034, 2036:2039)) %>%
-  filter(
+  dplyr::filter(
     ald_sector %in% sectors_lookup &
       technology %in% technologies_lookup &
       scenario_geography == scenario_geography_filter)
@@ -233,7 +233,7 @@ df_price <- read_price_data(
     version = "old",
     expected_technologies = technologies_lookup
   ) %>%
-  filter(year >= start_year) %>%
+  dplyr::filter(year >= start_year) %>%
   check_price_consistency()
 
 # Load excluded companies-------------------------------
@@ -415,7 +415,7 @@ for (i in seq(1, nrow(transition_scenarios))) {
     )
 
   plan_carsten_equity <- pacta_equity_results %>%
-    filter(
+    dplyr::filter(
       .data$year == start_year,
       .data$technology %in% technologies_lookup,
       .data$scenario_geography == scenario_geography_filter,

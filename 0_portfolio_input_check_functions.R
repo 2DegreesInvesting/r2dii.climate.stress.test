@@ -9,9 +9,9 @@ map_security_sectors <- function(fin_data, sector_bridge){
 
   fin_data_na <- fin_data %>% dplyr::filter(is.na(sector)) %>% dplyr::select(-c(sector,sector_boe,sector_ipr,subsector_ipr,sector_dnb,subsector_boe))
 
-  fin_data <- fin_data %>% filter(!is.na(sector))
+  fin_data <- fin_data %>% dplyr::filter(!is.na(sector))
 
-  fin_data_na <- fin_data_na %>% dplyr::left_join(sector_bridge %>% filter(source == "ICB") %>% dplyr::select(-source),
+  fin_data_na <- fin_data_na %>% dplyr::left_join(sector_bridge %>% dplyr::filter(source == "ICB") %>% dplyr::select(-source),
                                            by = c("security_icb_subsector" = "industry_classification"))
 
   fin_data <- fin_data %>% bind_rows(fin_data_na)
@@ -202,7 +202,7 @@ check_funds_wo_bbg <- function(fund_data, fin_data){
 
   fund_isins <- fund_data %>% dplyr::select(fund_isin) %>% dplyr::distinct()
 
-  fund_isins_missing_bbg <- fund_isins %>% filter(!fund_isin %in% fin_data_funds$isin)
+  fund_isins_missing_bbg <- fund_isins %>% dplyr::filter(!fund_isin %in% fin_data_funds$isin)
 
   known_missing_isins <- read_csv("data-raw/fund_isins_without_bbg_data.csv", col_types =  "c")
 
@@ -230,7 +230,7 @@ get_and_clean_fin_data <- function(fund_data){
 
   fin_data <- fin_data_raw
 
-  fin_data <- fin_data %>% filter(!is.na(isin))
+  fin_data <- fin_data %>% dplyr::filter(!is.na(isin))
 
   fin_data <- map_security_sectors(fin_data, sector_bridge)
 

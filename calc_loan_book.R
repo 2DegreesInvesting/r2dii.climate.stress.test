@@ -193,7 +193,7 @@ matched_company_weighted <- matched_non_negative %>%
     by_company = TRUE,
     weight_production = TRUE
   ) %>%
-  filter(
+  dplyr::filter(
     (sector == "automotive" & scenario_source == "etp_2017") |
       (sector == "coal" & scenario_source == "weo_2019") |
       (sector == "oil and gas" & scenario_source == "weo_2019") |
@@ -214,7 +214,7 @@ matched_company_unweighted <- matched_non_negative %>%
     by_company = TRUE,
     weight_production = FALSE
   ) %>%
-  filter(
+  dplyr::filter(
     (sector == "automotive" & scenario_source == "etp_2017") |
       (sector == "coal" & scenario_source == "weo_2019") |
       (sector == "oil and gas" & scenario_source == "weo_2019") |
