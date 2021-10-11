@@ -89,7 +89,7 @@ calculate_pd_change_overall <- function(data,
       t = data$term[i]
     )
 
-    result[i, ] <- dplyr::bind_cols(data[i, ], merton_baseline$Survival)
+    result[i, ] <- dplyr::bind_cols(data[i, ], dplyr::select(merton_baseline, Survival))
   }
 
   result <- result %>% add_cols_result_df_pd_changes(horizon = "overall")
@@ -107,10 +107,7 @@ calculate_pd_change_overall <- function(data,
   }
 
   results <- result %>%
-    dplyr::rename_with(
-      ~ glue::glue("{.x}_late_sudden"),
-      .cols = c(Maturity, Vt, St, Dt, Survival)
-    ) %>%
+    dplyr::rename(Survival_late_sudden = Survival) %>%
     dplyr::mutate(
       PD_baseline = 1 - .data$Survival_baseline,
       PD_late_sudden = 1 - .data$Survival_late_sudden,
