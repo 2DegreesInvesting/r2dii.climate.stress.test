@@ -217,7 +217,7 @@ if(twodii_internal == TRUE | start_year < 2020) {
       direction = Direction,
       fair_share_perc = FairSharePerc
     ) %>%
-    dplyr::mutate(scenario = str_replace(scenario, "NPSRTS", "NPS"))
+    dplyr::mutate(scenario = stringr::str_replace(scenario, "NPSRTS", "NPS"))
 } else {
   scenario_data <- readr::read_csv(scen_data_file, col_types = "ccccccncn") %>%
     dplyr::rename(source = scenario_source)
@@ -226,7 +226,7 @@ if(twodii_internal == TRUE | start_year < 2020) {
 scenario_data <- scenario_data %>%
   dplyr::filter(source %in% c("ETP2017", "WEO2019")) %>% #TODO: this should be set elsewhere
   dplyr::filter(!(source == "ETP2017" & ald_sector == "Power")) %>%
-  dplyr::mutate(scenario = ifelse(str_detect(scenario, "_"), str_extract(scenario, "[^_]*$"), scenario)) %>%
+  dplyr::mutate(scenario = ifelse(stringr::str_detect(scenario, "_"), stringr::str_extract(scenario, "[^_]*$"), scenario)) %>%
   check_scenario_timeframe(start_year = start_year, end_year = end_year)
 
 # Correct for automotive scenario data error. CHECK IF ALREADY RESOLVED IN THE SCENARIO DATA, IF SO, DONT USE FUNCTION BELOW!

@@ -208,7 +208,7 @@ scen_data_file <- ifelse(twodii_internal == TRUE,
 scenario_data <- readr::read_csv(scen_data_file, col_types = cols(.default = col_guess())) %>%
   dplyr::rename(source = scenario_source) %>%
   dplyr::filter(source %in% c("ETP2017", "WEO2019")) %>%
-  dplyr::mutate(scenario = ifelse(str_detect(scenario, "_"), str_extract(scenario, "[^_]*$"), scenario)) %>%
+  dplyr::mutate(scenario = ifelse(stringr::str_detect(scenario, "_"), stringr::str_extract(scenario, "[^_]*$"), scenario)) %>%
   check_scenario_timeframe(start_year = start_year, end_year = end_year)
 
 
@@ -296,7 +296,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
   pacta_equity_results_full <- pacta_equity_results_full %>%
     dplyr::filter(!(scenario == "ETP2017_NPS" & ald_sector == "Power")) %>%
     dplyr::filter(scenario %in% scenarios) %>%
-    dplyr::mutate(scenario = ifelse(str_detect(scenario, "_"), str_extract(scenario, "[^_]*$"), scenario)) %>%
+    dplyr::mutate(scenario = ifelse(stringr::str_detect(scenario, "_"), stringr::str_extract(scenario, "[^_]*$"), scenario)) %>%
     check_portfolio_consistency(start_year = start_year)
 
   pacta_equity_results <- pacta_equity_results_full %>%
@@ -318,7 +318,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
       allocation == allocation_method_equity,
       equity_market %in% equity_market_filter
     ) %>%
-    dplyr::mutate(scenario = str_replace(scenario, "NPSRTS", "NPS")) %>%
+    dplyr::mutate(scenario = stringr::str_replace(scenario, "NPSRTS", "NPS")) %>%
     dplyr::distinct_all()
 
   if (nrow(pacta_equity_results) <= 0) {
@@ -496,7 +496,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
   pacta_bonds_results_full <- pacta_bonds_results_full %>%
     dplyr::filter(!(scenario == "ETP2017_NPS" & ald_sector == "Power")) %>%
     dplyr::filter(scenario %in% scenarios) %>%
-    dplyr::mutate(scenario = ifelse(str_detect(scenario, "_"), str_extract(scenario, "[^_]*$"), scenario)) %>%
+    dplyr::mutate(scenario = ifelse(stringr::str_detect(scenario, "_"), stringr::str_extract(scenario, "[^_]*$"), scenario)) %>%
     check_portfolio_consistency(start_year = start_year)
 
   pacta_bonds_results <- pacta_bonds_results_full %>%
@@ -518,7 +518,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
       allocation == allocation_method_equity,
       equity_market %in% equity_market_filter
     ) %>%
-    dplyr::mutate(scenario = str_replace(scenario, "NPSRTS", "NPS")) %>%
+    dplyr::mutate(scenario = stringr::str_replace(scenario, "NPSRTS", "NPS")) %>%
     dplyr::distinct_all()
 
   if (nrow(pacta_bonds_results) <= 0) {
