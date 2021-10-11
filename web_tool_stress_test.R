@@ -335,7 +335,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
     equity_port_aum <- sector_exposures %>%
       filter(asset_type == "Equity") %>%
       dplyr::group_by(investor_name, portfolio_name) %>%
-      summarise(
+      dplyr::dplyr::summarise(
         asset_portfolio_value = sum(valid_value_usd),
         .groups = "drop_last"
       )

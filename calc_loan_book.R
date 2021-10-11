@@ -99,16 +99,16 @@ matched_non_negative <- matched %>%
 
 # portfolio_size <- matched %>%
 portfolio_size <- loanbook %>%
-  distinct(id_loan, loan_size_outstanding, loan_size_credit_limit) %>%
-  summarise(
+  dplyr::distinct(id_loan, loan_size_outstanding, loan_size_credit_limit) %>%
+  dplyr::summarise(
     portfolio_loan_size_outstanding = sum(loan_size_outstanding, na.rm = TRUE),
     portfolio_loan_size_credit_limit = sum(loan_size_credit_limit, na.rm = TRUE),
     .groups = "drop"
   )
 
 matched_portfolio_size <- matched_non_negative %>%
-  distinct(id_loan, loan_size_outstanding, loan_size_credit_limit) %>%
-  summarise(
+  dplyr::distinct(id_loan, loan_size_outstanding, loan_size_credit_limit) %>%
+  dplyr::summarise(
     matched_portfolio_loan_size_outstanding = sum(loan_size_outstanding, na.rm = TRUE),
     matched_portfolio_loan_size_credit_limit = sum(loan_size_credit_limit, na.rm = TRUE),
     .groups = "drop"
@@ -160,7 +160,7 @@ loan_share %>%
 
 sector_share <- matched_non_negative %>%
   dplyr::group_by(sector_ald, loan_size_outstanding_currency, loan_size_credit_limit_currency) %>%
-  summarise(
+  dplyr::summarise(
     sector_loan_share_outstanding = sum(loan_size_outstanding, na.rm = TRUE)/portfolio_size$portfolio_loan_size_outstanding,
     sector_loan_size_outstanding = sum(loan_size_outstanding, na.rm = TRUE),
     sector_loan_share_credit_limit = sum(loan_size_credit_limit, na.rm = TRUE)/portfolio_size$portfolio_loan_size_credit_limit,

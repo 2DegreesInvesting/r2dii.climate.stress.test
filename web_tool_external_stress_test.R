@@ -67,7 +67,7 @@ if (file.exists(file.path(proc_input_path, pf_name, "total_portfolio.rda")) &
   portfolio_overview <- read_rds(file.path(proc_input_path, pf_name, "overview_portfolio.rda")) %>%
     filter(valid_input == TRUE, asset_type %in% c("Equity", "Bonds"), investor_name == investor_name_filter) %>%
     group_by(investor_name, portfolio_name, asset_type) %>%
-    summarise(
+    dplyr::summarise(
       portfolio_size = sum(valid_value_usd),
       .groups = "drop_last"
     )
@@ -114,7 +114,7 @@ if (exists("portfolio")) {
     as.data.frame() %>%
     filter(asset_type == "Equity") %>%
     group_by(investor_name, portfolio_name, sector_ipr, subsector_ipr) %>%
-    summarise(
+    dplyr::summarise(
       exposure = sum(value_usd, na.rm = TRUE),
       .groups = "drop_last"
     ) %>%

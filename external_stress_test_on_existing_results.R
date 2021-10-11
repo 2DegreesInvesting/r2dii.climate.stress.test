@@ -127,7 +127,7 @@ portfolio <- readRDS(file.path(project_location, "30_Processed_Inputs", paste0(p
 portfolio_overview <- readRDS(file.path(project_location, "30_Processed_Inputs", paste0(project_name, "_overview_portfolio.rda"))) %>%
   filter(valid_input == TRUE, asset_type %in% c("Equity", "Bonds"), investor_name == investor_name_filter) %>%
   dplyr::group_by(investor_name, portfolio_name, asset_type) %>%
-  summarise(
+  dplyr::summarise(
     portfolio_size = sum(valid_value_usd),
     .groups = "drop_last"
   )
@@ -183,7 +183,7 @@ calc_boe_exposures <- function(pacta_exposures) {
       )
     ) %>%
     dplyr::group_by(investor_name, portfolio_name, sector, subsector) %>%
-    summarise(
+    dplyr::summarise(
       exposure = sum(tech_exposure, na.rm = T),
       .groups = "drop_last"
     )
@@ -203,7 +203,7 @@ results_dnb <- portfolio %>%
   as.data.frame() %>%
   filter(asset_type == "Equity") %>%
   dplyr::group_by(investor_name, portfolio_name, sector_dnb) %>%
-  summarise(
+  dplyr::summarise(
     exposure = sum(value_usd, na.rm = TRUE),
     .groups = "drop_last"
   ) %>%
@@ -222,7 +222,7 @@ results_ipr <- portfolio %>%
     subsector_ipr = ifelse(is.na(subsector_ipr), "Other", subsector_ipr)
   ) %>%
   dplyr::group_by(investor_name, portfolio_name, sector_ipr, subsector_ipr) %>%
-  summarise(
+  dplyr::summarise(
     exposure = sum(value_usd, na.rm = TRUE),
     .groups = "drop_last"
   ) %>%
@@ -240,7 +240,7 @@ results_boe <- portfolio %>%
     sector_boe %in% c("Agriculture", "Food logistics", "Real estate", "Materials")
   ) %>%
   dplyr::group_by(investor_name, portfolio_name, sector_boe, subsector_boe, asset_type) %>%
-  summarise(
+  dplyr::summarise(
     exposure = sum(value_usd, na.rm = TRUE),
     .groups = "drop_last"
   ) %>%
