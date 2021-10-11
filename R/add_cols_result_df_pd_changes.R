@@ -40,13 +40,9 @@ add_cols_result_df_pd_changes <- function(data,
   data <- data %>%
     dplyr::rename_with(
       ~ glue::glue("{.x}_baseline"),
-      .cols = c(.data$Maturity, .data$Vt, .data$St, .data$Dt, .data$Survival)
+      .cols = c(.data$Survival)
     ) %>%
     dplyr::mutate(
-      Maturity = NA_real_,
-      Vt = NA_real_,
-      St = NA_real_,
-      Dt = NA_real_,
       Survival = NA_real_
     )
 
