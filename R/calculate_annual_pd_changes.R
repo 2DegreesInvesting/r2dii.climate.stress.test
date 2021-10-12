@@ -74,39 +74,21 @@ calculate_pd_change_annual <- function(data,
       term = 1 # annual
     )
 
-  result <- create_empty_result_df_pd_changes(
-    data = data,
-    horizon = "annual"
-  )
-
-  for (i in seq_along(1:nrow(data))) {
-    merton_baseline <- calc_survival_probabily_merton(
-      L = data$debt[i],
-      V0 = data$equity_t_baseline[i] + data$debt[i],
-      sigma = data$volatility[i],
-      r = data$risk_free_rate[i],
-      t = data$term[i]
-    )
-
-    result[i, ] <- dplyr::bind_cols(data[i, ], dplyr::select(merton_baseline, Survival))
-  }
-
-  result <- result %>% add_cols_result_df_pd_changes(horizon = "annual")
-
-  for (i in seq_along(1:nrow(data))) {
-    merton_late_sudden <- calc_survival_probabily_merton(
-      L = data$debt[i],
-      V0 = data$equity_t_late_sudden[i] + data$debt[i],
-      sigma = data$volatility[i],
-      r = data$risk_free_rate[i],
-      t = data$term[i]
-    )
-
-    result[i, "Survival"] <- merton_late_sudden$Survival
-  }
-
-  results <- result %>%
-    dplyr::rename(Survival_late_sudden = Survival) %>%
+  results <- data %>%
+    dplyr::mutate(Survival_baseline = calc_survival_probability_merton(
+      L = data$debt,
+      V0 = data$equity_t_baseline + data$debt,
+      sigma = data$volatility,
+      r = data$risk_free_rate,
+      t = data$term
+    )) %>%
+    dplyr::mutate(Survival_late_sudden = calc_survival_probability_merton(
+      L = data$debt,
+      V0 = data$equity_t_late_sudden + data$debt,
+      sigma = data$volatility,
+      r = data$risk_free_rate,
+      t = data$term
+    )) %>%
     dplyr::mutate(
       PD_baseline = 1 - .data$Survival_baseline,
       PD_late_sudden = 1 - .data$Survival_late_sudden,

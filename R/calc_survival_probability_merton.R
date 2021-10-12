@@ -15,8 +15,9 @@
 #' @param r Numeric vector, holding risk free interest rates.
 #' @param t Vector vector holding debt maturities.
 #'
-#' @return A tibble holding survival probabilities,
-calc_survival_probabily_merton <- function(L, V0, sigma, r, t) {
+#' @return A vector holding survival probabilities,
+calc_survival_probability_merton <- function(L, V0, sigma, r, t) {
+
   input_args <- list(L, V0, sigma, r, t)
 
   if (dplyr::n_distinct(purrr::map_int(input_args, length)) > 1) {
@@ -42,7 +43,5 @@ calc_survival_probabily_merton <- function(L, V0, sigma, r, t) {
   # Survival Probability Q(tau > T)
   p_survival <- 1 - p_default
 
-  survival <- tibble::tibble(Survival = p_survival)
-
-  return(survival)
+  return(p_survival)
 }

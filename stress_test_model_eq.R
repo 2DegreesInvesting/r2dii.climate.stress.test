@@ -21,7 +21,6 @@ function_paths <- c(
   file.path(
     "R",
     c(
-      "add_cols_result_df_pd_changes.R",
       "annual_pd_change_company_technology.R",
       "annual_pd_change_technology_shock_year.R",
       "apply_filters.R",
@@ -30,7 +29,6 @@ function_paths <- c(
       "calculate_aum.R",
       "calculate_overall_pd_changes.R",
       "calc_survival_probability_merton.R",
-      "create_empty_result_df_pd_changes.R",
       "company_asset_value_at_risk.R",
       "company_expected_loss.R",
       "convert_cap_to_generation.R",
