@@ -52,10 +52,6 @@ create_empty_result_df_pd_changes <- function(data,
       volatility = NA_real_,
       risk_free_rate = NA_real_,
       term = NA_real_,
-      Maturity = NA_real_,
-      Vt = NA_real_,
-      St = NA_real_,
-      Dt = NA_real_,
       Survival = NA_real_,
       .rows = nrow(data)
     )
@@ -76,10 +72,6 @@ create_empty_result_df_pd_changes <- function(data,
       volatility = NA_real_,
       risk_free_rate = NA_real_,
       term = NA_real_,
-      Maturity = NA_real_,
-      Vt = NA_real_,
-      St = NA_real_,
-      Dt = NA_real_,
       Survival = NA_real_,
       .rows = nrow(data)
     )

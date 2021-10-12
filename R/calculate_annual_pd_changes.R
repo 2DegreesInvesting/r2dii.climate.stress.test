@@ -88,7 +88,7 @@ calculate_pd_change_annual <- function(data,
       t = data$term[i]
     )
 
-    result[i, ] <- dplyr::bind_cols(data[i, ], merton_baseline)
+    result[i, ] <- dplyr::bind_cols(data[i, ], dplyr::select(merton_baseline, Survival))
   }
 
   result <- result %>% add_cols_result_df_pd_changes(horizon = "annual")
@@ -102,18 +102,11 @@ calculate_pd_change_annual <- function(data,
       t = data$term[i]
     )
 
-    result[i, "Maturity"] <- merton_late_sudden$Maturity
-    result[i, "Vt"] <- merton_late_sudden$Vt
-    result[i, "St"] <- merton_late_sudden$St
-    result[i, "Dt"] <- merton_late_sudden$Dt
     result[i, "Survival"] <- merton_late_sudden$Survival
   }
 
   results <- result %>%
-    dplyr::rename_with(
-      ~ glue::glue("{.x}_late_sudden"),
-      .cols = c(Maturity, Vt, St, Dt, Survival)
-    ) %>%
+    dplyr::rename(Survival_late_sudden = Survival) %>%
     dplyr::mutate(
       PD_baseline = 1 - .data$Survival_baseline,
       PD_late_sudden = 1 - .data$Survival_late_sudden,
