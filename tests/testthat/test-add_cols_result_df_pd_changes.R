@@ -42,7 +42,7 @@ test_that("with expected data input, add_cols_result_df_pd_changes() returns
     horizon = test_horizon
   )
 
-  add_model_output_cols <- c("Maturity", "Vt", "St", "Dt", "Survival")
+  add_model_output_cols <- c("Survival")
 
   testthat::expect_equal(
     nrow(rename_and_add_cols),
@@ -66,10 +66,6 @@ test_that("with expected data input, add_cols_result_df_pd_changes() contains
   )
 
   changed_col_names <- c(
-    "Maturity_baseline",
-    "Vt_baseline",
-    "St_baseline",
-    "Dt_baseline",
     "Survival_baseline"
   )
 
