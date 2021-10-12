@@ -12,5 +12,4 @@ test_that("with all arguments set, read_pacta_results returns data.frame", {
   )
 
   testthat::expect_s3_class(test_data, "data.frame")
-
 })

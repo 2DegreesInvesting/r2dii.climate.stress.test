@@ -2,7 +2,6 @@
 # Project Initialisation---------------------------------------------------
 ###########################################################################
 
-library(CreditRisk)
 library(dplyr)
 library(forcats)
 library(ggplot2)
@@ -28,6 +27,7 @@ function_paths <- c(
       "calculate_annual_pd_changes.R",
       "calculate_aum.R",
       "calculate_overall_pd_changes.R",
+      "calc_survival_probability_merton.R",
       "create_empty_result_df_pd_changes.R",
       "company_asset_value_at_risk.R",
       "company_expected_loss.R",

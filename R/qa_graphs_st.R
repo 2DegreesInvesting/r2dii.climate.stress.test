@@ -9,8 +9,7 @@
 #' @return ggplot object
 #'
 #' @export
-show_price_trajectories <- function(
-                                    data = df_price,
+show_price_trajectories <- function(data = df_price,
                                     price_scenarios = c(
                                       "B2DS", "NPS", "SDS", "Baseline"
                                     )) {
@@ -20,8 +19,10 @@ show_price_trajectories <- function(
   stopifnot(data_has_expected_columns)
 
   price_long <- data %>%
-    dplyr::select(c("year", "sector", "technology",
-                    dplyr::all_of(price_scenarios))) %>%
+    dplyr::select(c(
+      "year", "sector", "technology",
+      dplyr::all_of(price_scenarios)
+    )) %>%
     tidyr::pivot_longer(
       cols = c(!!!rlang::syms(price_scenarios)),
       names_to = "scenario",
@@ -49,8 +50,7 @@ show_price_trajectories <- function(
 #' @return ggplot object
 #'
 #' @export
-show_prod_trajectories <- function(
-                                   data = scenario_data,
+show_prod_trajectories <- function(data = scenario_data,
                                    end_year = 2040,
                                    source = NULL,
                                    ald_sector = NULL,
@@ -96,16 +96,14 @@ show_prod_trajectories <- function(
 #' @return ggplot object
 #'
 #' @export
-show_impact_by_shock_year <- function(
-                                      data,
+show_impact_by_shock_year <- function(data,
                                       level = NULL) {
   valid_level_input <- level %in% c("technology", "ald_sector")
   stopifnot(valid_level_input)
 
   if (level == "technology") {
     var_level <- "VaR_technology"
-  }
-  else {
+  } else {
     var_level <- "VaR_sector"
   }
 
@@ -148,16 +146,14 @@ show_impact_by_shock_year <- function(
 #' @return ggplot object
 #'
 #' @export
-show_var_change_by_shock_year <- function(
-                                          data,
+show_var_change_by_shock_year <- function(data,
                                           level = NULL) {
   valid_level_input <- level %in% c("technology", "ald_sector")
   stopifnot(valid_level_input)
 
   if (level == "technology") {
     var_level <- "VaR_technology"
-  }
-  else {
+  } else {
     var_level <- "VaR_sector"
   }
 
@@ -204,8 +200,7 @@ show_var_change_by_shock_year <- function(
 #' @return ggplot object
 #'
 #' @export
-show_prod_baseline_target_ls_pf <- function(
-                                            data,
+show_prod_baseline_target_ls_pf <- function(data,
                                             geography_filter = NULL,
                                             shock_year = NULL) {
   data_has_expected_columns <- all(c(
