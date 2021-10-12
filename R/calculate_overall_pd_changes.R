@@ -81,7 +81,7 @@ calculate_pd_change_overall <- function(data,
   )
 
   for (i in seq_along(1:nrow(data))) {
-    merton_baseline <- calc_survival_probabily_merton(
+    merton_baseline <- calc_survival_probability_merton(
       L = data$debt[i],
       V0 = data$equity_0_baseline[i] + data$debt[i],
       sigma = data$volatility[i],
@@ -95,7 +95,7 @@ calculate_pd_change_overall <- function(data,
   result <- result %>% add_cols_result_df_pd_changes(horizon = "overall")
 
   for (i in seq_along(1:nrow(data))) {
-    merton_late_sudden <- calc_survival_probabily_merton(
+    merton_late_sudden <- calc_survival_probability_merton(
       L = data$debt[i],
       V0 = data$equity_0_late_sudden[i] + data$debt[i],
       sigma = data$volatility[i],
