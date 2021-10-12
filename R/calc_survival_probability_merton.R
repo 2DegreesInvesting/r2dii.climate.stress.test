@@ -18,7 +18,7 @@
 #' @return A tibble holding survival probabilities,
 calc_survival_probabily_merton <- function(L, V0, sigma, r, t) {
 
-  input_args <- c(L, V0, signma, r, t)
+  input_args <- c(L, V0, sigma, r, t)
 
   if (dplyr::n_distinct(length(input_args)) > 1) {
     stop("All input arugments need to have the same length.")
