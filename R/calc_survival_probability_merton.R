@@ -9,10 +9,10 @@
 #' 1. has additional input validation by checking that all input values are
 #' non negative numeric vectors of the same length.
 #'
-#' @param L Numeric vector, holding dept values at maturity.
-#' @param V0 Numeric vector, holding values at time t0.
+#' @param L Numeric vector, holding debt values at maturity.
+#' @param V0 Numeric vector, holding company values at time t0.
 #' @param sigma Numeric vector, holding volatility values.
-#' @param r Numeric vector, holding risk free rates.
+#' @param r Numeric vector, holding risk free interest rates.
 #' @param t Vector vector holding debt maturities.
 #'
 #' @return A tibble holding survival probabilities,

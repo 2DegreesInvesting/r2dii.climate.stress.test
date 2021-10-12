@@ -7,13 +7,13 @@
 calc_survival_probabily_merton(L, V0, sigma, r, t)
 }
 \arguments{
-\item{L}{Numeric vector, holding dept values at maturity.}
+\item{L}{Numeric vector, holding debt values at maturity.}
 
-\item{V0}{Numeric vector, holding values at time t0.}
+\item{V0}{Numeric vector, holding company values at time t0.}
 
 \item{sigma}{Numeric vector, holding volatility values.}
 
-\item{r}{Numeric vector, holding risk free rates.}
+\item{r}{Numeric vector, holding risk free interest rates.}
 
 \item{t}{Vector vector holding debt maturities.}
 }
