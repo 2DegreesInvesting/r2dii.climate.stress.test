@@ -488,7 +488,6 @@ for (i in seq(1, nrow(transition_scenarios))) {
     calculate_pd_change_overall(
       shock_year = transition_scenario_i$year_of_shock,
       end_of_analysis = end_year,
-      exclusion = excluded_companies,
       risk_free_interest_rate = risk_free_rate
     )
 
@@ -514,7 +513,6 @@ for (i in seq(1, nrow(transition_scenarios))) {
       data = equity_annual_profits,
       shock_year = transition_scenario_i$year_of_shock,
       end_of_analysis = end_year,
-      exclusion = excluded_companies,
       risk_free_interest_rate = risk_free_rate
     )
   )
@@ -536,16 +534,18 @@ equity_results %>% write_results(
 # Output equity credit risk results
 equity_expected_loss <- equity_expected_loss %>%
   dplyr::select(
-    scenario_name, scenario_geography, investor_name, portfolio_name,
-    company_name, id, ald_sector, technology, equity_0_baseline,
-    equity_0_late_sudden, debt, volatility, risk_free_rate, term,
-    Survival_baseline, Survival_late_sudden, PD_baseline, PD_late_sudden,
-    PD_change, pd, lgd, percent_exposure, exposure_at_default,
-    expected_loss_baseline, expected_loss_late_sudden
+    .data$scenario_name, .data$scenario_geography, .data$investor_name,
+    .data$portfolio_name, .data$company_name, .data$id, .data$ald_sector,
+    .data$equity_0_baseline, .data$equity_0_late_sudden, .data$debt,
+    .data$volatility, .data$risk_free_rate, .data$term, .data$Survival_baseline,
+    .data$Survival_late_sudden, .data$PD_baseline, .data$PD_late_sudden, # TODO: keep all tehse PDs??
+    .data$PD_change, .data$pd, .data$lgd, .data$percent_exposure,
+    .data$exposure_at_default, .data$expected_loss_baseline,
+    .data$expected_loss_late_sudden
   ) %>%
   dplyr::arrange(
-    scenario_geography, scenario_name, investor_name, portfolio_name,
-    company_name, ald_sector, technology
+    .data$scenario_geography, .data$scenario_name, .data$investor_name,
+    .data$portfolio_name, .data$company_name, .data$ald_sector
   )
 
 equity_expected_loss %>%
@@ -554,20 +554,20 @@ equity_expected_loss %>%
     paste0("stress_test_results_eq_comp_el_", project_name, ".csv")
   ))
 
-# TODO: this is an unweighted average so far. keep in mind.
 equity_annual_pd_changes_sector <- equity_annual_pd_changes %>%
   dplyr::group_by(
-    scenario_name, scenario_geography, investor_name, portfolio_name,
-    ald_sector, technology, year
+    .data$scenario_name, .data$scenario_geography, .data$investor_name,
+    .data$portfolio_name, .data$ald_sector, .data$year
   ) %>%
   dplyr::summarise(
-    PD_change_late_sudden = mean((PD_late_sudden - PD_baseline), na.rm = TRUE),
+    # ADO 2312 - weight the PD change by baseline equity because this represents the original exposure better
+    PD_change = weighted.mean(x = .data$PD_change, w = .data$equity_t_baseline, na.rm = TRUE),
     .groups = "drop"
   ) %>%
   dplyr::ungroup() %>%
   dplyr::arrange(
-    scenario_geography, scenario_name, investor_name, portfolio_name,
-    ald_sector, technology, year
+    .data$scenario_geography, .data$scenario_name, .data$investor_name,
+    .data$portfolio_name, .data$ald_sector, .data$year
   )
 
 equity_annual_pd_changes_sector %>%
@@ -576,20 +576,20 @@ equity_annual_pd_changes_sector %>%
     paste0("stress_test_results_eq_sector_pd_changes_annual.csv")
   ))
 
-# TODO: this is an unweighted average so far. keep in mind.
 equity_overall_pd_changes_sector <- equity_expected_loss %>%
   dplyr::group_by(
-    scenario_name, scenario_geography, investor_name, portfolio_name,
-    ald_sector, technology, term
+    .data$scenario_name, .data$scenario_geography, .data$investor_name,
+    .data$portfolio_name, .data$ald_sector, .data$term
   ) %>%
   dplyr::summarise(
-    PD_change_late_sudden = mean((PD_late_sudden - PD_baseline), na.rm = TRUE),
+    # ADO 2312 - weight the PD change by baseline equity because this represents the original exposure better
+    PD_change = weighted.mean(x = .data$PD_change, w = .data$equity_0_baseline, na.rm = TRUE),
     .groups = "drop"
   ) %>%
   dplyr::ungroup() %>%
   dplyr::arrange(
-    scenario_geography, scenario_name, investor_name, portfolio_name,
-    ald_sector, technology, term
+    .data$scenario_geography, .data$scenario_name, .data$investor_name,
+    .data$portfolio_name, .data$ald_sector, .data$term
   )
 
 equity_overall_pd_changes_sector %>%
