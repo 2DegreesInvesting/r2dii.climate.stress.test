@@ -1,3 +1,22 @@
+source(file.path("R", "functions.R"))
+
+function_paths <- c(
+  "stress_test_model_functions.R",
+  "0_global_functions_st.R",
+  file.path(
+    "R",
+    c(
+      "annual_pd_change_company_technology.R",
+      "annual_pd_change_technology_shock_year.R",
+      "overall_pd_change_company_technology.R",
+      "overall_pd_change_technology_shock_year.R",
+      "qa_graphs_st.R"
+    )
+  )
+)
+
+source_all(function_paths)
+
 # price trajectories-----------------------------------------------------------
 # expectation for QA: trajectories should be monotonous, no sudden jumps
 # for scenarios in use
