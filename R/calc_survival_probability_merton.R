@@ -6,8 +6,8 @@
 #' Unlike [CreditRisk::Merton()] this implementation:
 #' 1. only holds functionality to calculate probability of survival
 #' 1. can be called in vectorised fashion
-#' 1. has more robust input validation by checking that all input values are
-#' non-negative numeric vectors of the same length.
+#' 1. has additional input validation by checking that all input values are
+#' non negative numeric vectors of the same length.
 #'
 #' @param L Numeric vector, holding dept values at maturity.
 #' @param V0 Numeric vector, holding values at time t0.
@@ -36,10 +36,10 @@ calc_survival_probabily_merton <- function(L, V0, sigma, r, t) {
   d2 <- d1 - sigma * sqrt(t)
 
   # Default Probability
-  Q <- stats::pnorm(-d2)
+  p_default <- stats::pnorm(-d2)
 
   # Survival Probability Q(tau > T)
-  p_survival <- 1 - Q
+  p_survival <- 1 - p_default
 
   survival <- tibble::tibble(Survival = p_survival)
 
