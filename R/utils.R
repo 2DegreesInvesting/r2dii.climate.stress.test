@@ -211,7 +211,6 @@ report_all_duplicate_kinds <- function(data, composite_unique_cols, throw_error 
 #' @return NULL
 #' @export
 report_missing_col_combinations <- function(data, composite_unique_cols, throw_error = FALSE) {
-
   all_combinations <- data %>%
     tidyr::expand(!!!dplyr::syms(composite_unique_cols))
 

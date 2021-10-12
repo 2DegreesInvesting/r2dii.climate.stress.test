@@ -14,7 +14,6 @@
 #'
 #' @export
 read_company_data <- function(path = NULL, asset_type) {
-
   path %||% stop("Must provide 'path'")
 
   if (!asset_type %in% c("bonds", "equity", "loans")) {
