@@ -12,8 +12,8 @@
 #'
 #' @export
 annual_pd_change_sector_shock_year <- function(data,
-                                                   shock_year_filter = NULL,
-                                                   geography_filter = NULL) {
+                                               shock_year_filter = NULL,
+                                               geography_filter = NULL) {
   force(data)
 
   shock_year_filter %||% stop("Must provide input for 'shock_year_filter'", call. = FALSE)

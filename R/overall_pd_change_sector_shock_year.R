@@ -12,8 +12,8 @@
 #'
 #' @export
 overall_pd_change_sector_shock_year <- function(data,
-                                                    scenario_filter = NULL,
-                                                    geography_filter = NULL) {
+                                                scenario_filter = NULL,
+                                                geography_filter = NULL) {
   force(data)
 
   scenario_filter %||% stop("Must provide input for 'scenario_filter'", call. = FALSE)
