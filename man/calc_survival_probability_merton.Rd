@@ -18,7 +18,7 @@ calc_survival_probability_merton(L, V0, sigma, r, t)
 \item{t}{Vector vector holding debt maturities.}
 }
 \value{
-A tvector holding survival probabilities,
+A vector holding survival probabilities,
 }
 \description{
 Function calculates survival probability for a maturity based on a structural

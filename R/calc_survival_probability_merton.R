@@ -15,7 +15,7 @@
 #' @param r Numeric vector, holding risk free interest rates.
 #' @param t Vector vector holding debt maturities.
 #'
-#' @return A tvector holding survival probabilities,
+#' @return A vector holding survival probabilities,
 calc_survival_probability_merton <- function(L, V0, sigma, r, t) {
 
   input_args <- list(L, V0, sigma, r, t)
