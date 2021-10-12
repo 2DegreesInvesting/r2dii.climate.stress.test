@@ -11,7 +11,6 @@
 #' @return `sector_exposures` holding only valid rows for `asset_type`
 #' @export
 wrangle_and_check_sector_exposures_eq_cb <- function(sector_exposures, asset_type) {
-
   if (!asset_type %in% c("Bonds", "Equity")) {
     stop("Can only wrangle dataset for asset types bonds and equity.")
   }
@@ -81,5 +80,4 @@ wrangle_and_check_pacta_results <- function(pacta_results, start_year, time_hori
       .data$equity_market == equity_market_filter
     ) %>%
     dplyr::distinct_all()
-
 }

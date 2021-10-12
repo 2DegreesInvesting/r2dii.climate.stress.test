@@ -135,5 +135,4 @@ test_that("Warnings are thrown for dataset with full and partial duplicates", {
     data = data,
     composite_unique_cols = c("a", "b")
   )))
-
 })

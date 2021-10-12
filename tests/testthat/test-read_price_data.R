@@ -163,4 +163,3 @@ test_that("with valid arguments set, read_price_data_internal_old() returns
 
   unlink(file.path(tempdir(), "internal_old_prices_data_input.csv"))
 })
-
