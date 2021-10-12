@@ -47,7 +47,7 @@ test_that("Function returns vector of identical length as input args", {
     t = c(1, 2)
   )
 
-  expect_equal(dim(p_survival), c(2, 1))
+  expect_equal(length(p_survival), 2)
 })
 
 
@@ -64,5 +64,5 @@ test_that("Function returns results for 0 inputs", {
     t = c(1, 1, 1, 1, 0)
   )
 
-  expect_equal(dim(p_survival), c(5, 1))
+  expect_equal(length(p_survival), 5)
 })
