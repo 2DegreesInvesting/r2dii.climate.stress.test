@@ -83,7 +83,7 @@ company_expected_loss <- function(data,
       expected_loss_baseline = .data$pd *
         .data$lgd *
         .data$exposure_at_default,
-      expected_loss_late_sudden = (.data$pd  + .data$PD_change) *
+      expected_loss_late_sudden = (.data$pd + .data$PD_change) *
         .data$lgd *
         .data$exposure_at_default
     )

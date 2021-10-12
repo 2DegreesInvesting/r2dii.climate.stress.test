@@ -26,12 +26,10 @@
 #' @return data frame
 #'
 #' @export
-format_loanbook_st <- function(
-                               data,
+format_loanbook_st <- function(data,
                                investor_name = "investor_name",
                                portfolio_name = "portfolio_name",
                                credit = loan_share_credit_type) {
-
   data_has_required_cols <- all(c(
     "sector",
     "technology",

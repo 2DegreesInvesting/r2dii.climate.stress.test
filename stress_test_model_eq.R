@@ -21,13 +21,12 @@ function_paths <- c(
   file.path(
     "R",
     c(
-      "add_cols_result_df_pd_changes.R",
       "apply_filters.R",
       "asset_value_at_risk.R",
       "calculate_annual_pd_changes.R",
       "calculate_aum.R",
       "calculate_overall_pd_changes.R",
-      "create_empty_result_df_pd_changes.R",
+      "calc_survival_probability_merton.R",
       "company_asset_value_at_risk.R",
       "company_expected_loss.R",
       "convert_cap_to_generation.R",
@@ -88,7 +87,7 @@ set_project_paths(
 # Analysis Parameters----------------------------------------
 # Get analysis parameters from the projects AnalysisParameters.yml - similar to PACTA_analysis
 
-cfg <- config::get(file = file.path(project_location, "10_Parameter_File","AnalysisParameters.yml"))
+cfg <- config::get(file = file.path(project_location, "10_Parameter_File", "AnalysisParameters.yml"))
 # OPEN: check_valid_cfg() not applicable here
 start_year <- cfg$AnalysisPeriod$Years.Startyear
 time_horizon <- cfg$AnalysisPeriod$Years.Horizon
@@ -146,8 +145,10 @@ stresstest_masterdata_files <- create_stressdata_masterdata_file_paths(
 )
 
 # ... for equity---------------------------------------------------------------
-financial_data_equity <- read_company_data(path = stresstest_masterdata_files$listed_equity,
-                                           asset_type = "equity")
+financial_data_equity <- read_company_data(
+  path = stresstest_masterdata_files$listed_equity,
+  asset_type = "equity"
+)
 
 # Load PACTA results / equity portfolio------------------------
 equity_path <- file.path(results_path, paste0("Equity_results_", calculation_level, ".rda"))
@@ -194,7 +195,7 @@ scen_data_file <- ifelse(twodii_internal == TRUE,
 )
 
 # TODO: EITHER wrap check into more evocative function OR remove this when common format is agreed upon
-if(twodii_internal == TRUE | start_year < 2020) {
+if (twodii_internal == TRUE | start_year < 2020) {
   scenario_data <- readr::read_csv(scen_data_file, col_types = "ccccccccnnnncnnn") %>%
     dplyr::filter(Indicator %in% c("Capacity", "Production", "Sales")) %>%
     dplyr::filter(!(Technology == "RenewablesCap" & !is.na(Sub_Technology))) %>%
@@ -217,7 +218,8 @@ if(twodii_internal == TRUE | start_year < 2020) {
 }
 
 scenario_data <- scenario_data %>%
-  dplyr::filter(source %in% c("ETP2017", "WEO2019")) %>% #TODO: this should be set elsewhere
+  dplyr::filter(source %in% c("ETP2017", "WEO2019")) %>%
+  # TODO: this should be set elsewhere
   dplyr::filter(!(source == "ETP2017" & ald_sector == "Power")) %>%
   dplyr::mutate(scenario = ifelse(stringr::str_detect(scenario, "_"), stringr::str_extract(scenario, "[^_]*$"), scenario)) %>%
   check_scenario_timeframe(start_year = start_year, end_year = end_year)
@@ -228,14 +230,15 @@ scenario_data <- scenario_data %>%
   dplyr::filter(
     ald_sector %in% sectors_lookup &
       technology %in% technologies_lookup &
-      scenario_geography == scenario_geography_filter)
+      scenario_geography == scenario_geography_filter
+  )
 
 # Load price data----------------------------------------
 df_price <- read_price_data(
-    path = file.path(data_location, paste0("prices_data_", price_data_version, ".csv")),
-    version = "old",
-    expected_technologies = technologies_lookup
-  ) %>%
+  path = file.path(data_location, paste0("prices_data_", price_data_version, ".csv")),
+  version = "old",
+  expected_technologies = technologies_lookup
+) %>%
   dplyr::filter(year >= start_year) %>%
   check_price_consistency()
 
@@ -282,7 +285,7 @@ financial_data_equity <- financial_data_equity %>%
       .data$ald_emissions_factor_unit, .data$ald_emissions_factor
     )
   )
-#TODO: any logic/bounds needed for debt/equity ratio and volatility?
+# TODO: any logic/bounds needed for debt/equity ratio and volatility?
 
 # check scenario availability across data inputs for equity
 check_scenario_availability(
@@ -333,14 +336,15 @@ for (i in seq(1, nrow(transition_scenarios))) {
 
   # Calculate late and sudden prices for scenario i
   df_prices <- df_price %>%
-    dplyr::mutate(Baseline = NPS) %>% # FIXME this should be parameterized!!
+    dplyr::mutate(Baseline = NPS) %>%
+    # FIXME this should be parameterized!!
     dplyr::rename(
       year = year, ald_sector = sector, technology = technology, NPS_price = NPS,
       SDS_price = SDS, Baseline_price = Baseline, B2DS_price = B2DS
     ) %>%
     dplyr::group_by(ald_sector, technology) %>%
     #### OPEN: Potentially a problem with the LS price calculation. Concerning warning
-  dplyr::mutate(
+    dplyr::mutate(
       late_sudden_price = late_sudden_prices(
         SDS_price = SDS_price,
         Baseline_price = Baseline_price,
@@ -393,9 +397,11 @@ for (i in seq(1, nrow(transition_scenarios))) {
       by = c("company_name", "ald_sector", "technology")
     )
 
-  cat("number of rows dropped by joining financial data on
+  cat(
+    "number of rows dropped by joining financial data on
       company_name, ald_sector and technology = ",
-      rows_equity - nrow(equity_annual_profits), "\n")
+    rows_equity - nrow(equity_annual_profits), "\n"
+  )
   # TODO: ADO 879 - note which companies are removed here, due to mismatch
 
   equity_annual_profits <- equity_annual_profits %>%
@@ -446,9 +452,11 @@ for (i in seq(1, nrow(transition_scenarios))) {
   plan_carsten_equity <- plan_carsten_equity %>%
     dplyr::inner_join(financial_data_equity_pd, by = c("company_name", "ald_sector", "technology"))
 
-  cat("number of rows dropped from technology_exposure by joining financial data
+  cat(
+    "number of rows dropped from technology_exposure by joining financial data
       on company_name, ald_sector and technology = ",
-      rows_plan_carsten - nrow(plan_carsten_equity), "\n")
+    rows_plan_carsten - nrow(plan_carsten_equity), "\n"
+  )
   # TODO: ADO 879 - note which companies are removed here, due to mismatch
 
   equity_annual_profits <- equity_annual_profits %>%
@@ -514,7 +522,6 @@ for (i in seq(1, nrow(transition_scenarios))) {
 
   # TODO: ADO 879 - note which companies produce missing results due to
   # insufficient input information (e.g. NAs for financials or 0 equity value)
-
 }
 
 # Output equity results
@@ -592,4 +599,3 @@ equity_overall_pd_changes_sector %>%
     results_path,
     paste0("stress_test_results_eq_sector_pd_changes_overall.csv")
   ))
-
