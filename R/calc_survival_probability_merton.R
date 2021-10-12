@@ -17,7 +17,6 @@
 #'
 #' @return A tibble holding survival probabilities,
 calc_survival_probabily_merton <- function(L, V0, sigma, r, t) {
-
   input_args <- list(L, V0, sigma, r, t)
 
   if (dplyr::n_distinct(purrr::map_int(input_args, length)) > 1) {
@@ -28,7 +27,9 @@ calc_survival_probabily_merton <- function(L, V0, sigma, r, t) {
     stop("All input arguments need to be numeric.")
   }
 
-  if (!all(unique(purrr::map_lgl(input_args, function(x) {all(x >= 0)})))) {
+  if (!all(unique(purrr::map_lgl(input_args, function(x) {
+    all(x >= 0)
+  })))) {
     stop("Input arguments may not hold negative numbers.")
   }
 
