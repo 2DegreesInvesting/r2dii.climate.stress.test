@@ -13,7 +13,7 @@
 #' @return ggplot object
 #'
 #' @export
-overall_pd_change_company_technology <- function(data,
+overall_pd_change_company_sector <- function(data,
                                                  shock_year = NULL,
                                                  sector_filter = NULL,
                                                  company_filter = NULL,
@@ -26,8 +26,8 @@ overall_pd_change_company_technology <- function(data,
   geography_filter %||% stop("Must provide input for 'geography_filter'", call. = FALSE)
 
   data_has_expected_columns <- all(c(
-    "scenario_name", "company_name", "ald_sector", "technology",
-    "scenario_geography", "term", "PD_change"
+    "scenario_name", "company_name", "ald_sector", "scenario_geography", "term",
+    "PD_change"
   )
   %in% colnames(data))
   stopifnot(data_has_expected_columns)
@@ -53,10 +53,10 @@ overall_pd_change_company_technology <- function(data,
     labs(
       x = "Maturity",
       y = "PD change in % points",
-      title = "PD change by company, technology",
+      title = "PD change by company, sector",
       subtitle = shock_year
     ) +
-    facet_wrap(.data$company_name ~ .data$technology, scales = "free") +
+    facet_wrap(.data$company_name ~ .data$ald_sector, scales = "free") +
     r2dii.plot::theme_2dii() +
     theme(
       plot.subtitle = element_text(

@@ -12,7 +12,7 @@
 #' @return ggplot object
 #'
 #' @export
-annual_pd_change_company_technology <- function(data,
+annual_pd_change_company_sector <- function(data,
                                                 shock_year = NULL,
                                                 company_filter = NULL,
                                                 geography_filter = NULL) {
@@ -23,8 +23,8 @@ annual_pd_change_company_technology <- function(data,
   geography_filter %||% stop("Must provide input for 'geography_filter'", call. = FALSE)
 
   data_has_expected_columns <- all(c(
-    "scenario_name", "company_name", "ald_sector", "technology",
-    "scenario_geography", "year", "PD_change"
+    "scenario_name", "company_name", "ald_sector", "scenario_geography", "year",
+    "PD_change"
   )
   %in% colnames(data))
   stopifnot(data_has_expected_columns)
@@ -50,12 +50,12 @@ annual_pd_change_company_technology <- function(data,
       x = "Year",
       y = "PD change in % points",
       fill = "PD change in % points",
-      title = "Annual PD change by company, technology",
+      title = "Annual PD change by company, sector",
       subtitle = shock_year
     ) +
     scale_fill_gradient2(low = "blue", mid = "lightgrey", high = "red") +
     facet_grid(
-      rows = vars(.data$ald_sector, .data$technology),
+      rows = vars(.data$ald_sector),
       cols = vars(.data$company_name),
       scales = "free"
     ) +

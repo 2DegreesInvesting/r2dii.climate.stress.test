@@ -11,7 +11,7 @@
 #' @return ggplot object
 #'
 #' @export
-overall_pd_change_technology_shock_year <- function(data,
+overall_pd_change_sector_shock_year <- function(data,
                                                     scenario_filter = NULL,
                                                     geography_filter = NULL) {
   force(data)
@@ -20,8 +20,8 @@ overall_pd_change_technology_shock_year <- function(data,
   geography_filter %||% stop("Must provide input for 'geography_filter'", call. = FALSE)
 
   data_has_expected_columns <- all(c(
-    "scenario_name", "ald_sector", "technology", "scenario_geography", "term",
-    "PD_change_late_sudden"
+    "scenario_name", "ald_sector", "scenario_geography", "term",
+    "PD_change"
   )
   %in% colnames(data))
   stopifnot(data_has_expected_columns)
@@ -41,8 +41,8 @@ overall_pd_change_technology_shock_year <- function(data,
     ggplot(
       aes(
         x = .data$term,
-        y = .data$PD_change_late_sudden * 100,
-        fill = .data$PD_change_late_sudden * 100
+        y = .data$PD_change * 100,
+        fill = .data$PD_change * 100
       )
     ) +
     geom_col(position = "dodge") +
@@ -54,7 +54,7 @@ overall_pd_change_technology_shock_year <- function(data,
     ) +
     facet_grid(
       rows = vars(.data$scenario_name),
-      cols = vars(.data$ald_sector, .data$technology),
+      cols = vars(.data$ald_sector),
       scales = "free"
     ) +
     r2dii.plot::theme_2dii()
