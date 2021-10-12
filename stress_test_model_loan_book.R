@@ -22,8 +22,6 @@ function_paths <- c(
     "R",
     c(
       "add_cols_result_df_pd_changes.R",
-      "annual_pd_change_company_technology.R",
-      "annual_pd_change_technology_shock_year.R",
       "apply_filters.R",
       "calculate_annual_pd_changes.R",
       "calculate_aum.R",
@@ -38,9 +36,6 @@ function_paths <- c(
       "get_st_data_path.R",
       "interpolate_automotive_scenario.R",
       "lookup.R",
-      "overall_pd_change_company_technology.R",
-      "overall_pd_change_technology_shock_year.R",
-      "qa_graphs_st.R",
       "read_capacity_factors.R",
       "read_company_data.R",
       "read_pacta_results.R",
