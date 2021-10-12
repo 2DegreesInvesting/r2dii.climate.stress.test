@@ -27,7 +27,7 @@ function_paths <- c(
       "calculate_annual_pd_changes.R",
       "calculate_aum.R",
       "calculate_overall_pd_changes.R",
-      "calc_survival_probabily_merton.R",
+      "calc_survival_probability_merton.R",
       "create_empty_result_df_pd_changes.R",
       "company_asset_value_at_risk.R",
       "company_expected_loss.R",
@@ -104,7 +104,7 @@ set_project_paths(
 # TODO: where to get this parameter
 cfg <- config::get(file = file.path(project_location, "10_Parameter_File","AnalysisParameters.yml"))
 # OPEN: check_valid_cfg() not applicable here
-start_year <- cfg$AnalysisPeriod$Years.Startyear
+start_year <- 2020
 time_horizon <- cfg$AnalysisPeriod$Years.Horizon
 
 ##### Filters----------------------------------------
