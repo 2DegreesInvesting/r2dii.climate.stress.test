@@ -6,16 +6,31 @@
 #' Unlike [CreditRisk::Merton()] this implementation:
 #' 1. only holds functionality to calculate probability of survival
 #' 1. can be called in vectorised fashion
-#' 1. has more robust input validation.
+#' 1. has more robust input validation by checking that all input values are
+#' non-negative numeric vectors of the same length.
 #'
-#' @param L Numeric, holding dept value at maturity.
-#' @param V0 Numeric, holding value at time t0.
-#' @param sigma Numeric, holding volatility value.
-#' @param r Numeric, holding risk free rate.
-#' @param t Vector holding debt maturity.
+#' @param L Numeric vector, holding dept values at maturity.
+#' @param V0 Numeric vector, holding values at time t0.
+#' @param sigma Numeric vector, holding volatility values.
+#' @param r Numeric vector, holding risk free rates.
+#' @param t Vector vector holding debt maturities.
 #'
-#' @return A tibble holding survival probability,
+#' @return A tibble holding survival probabilities,
 calc_survival_probabily_merton <- function(L, V0, sigma, r, t) {
+
+  input_args <- c(L, V0, signma, r, t)
+
+  if (dplyr::n_distinct(length(input_args)) > 1) {
+    stop("All input arugments need to have the same length.")
+  }
+
+  if (!all(unique(purrr::map_lgl(input_args, is.numeric)))) {
+    stop("All input arguments need to be numeric.")
+  }
+
+  if (!all(unique(purrr::map_lgl(input_args, function(x) {all(x >= 0)})))) {
+    stop("Input arguments may not hold negative numbers.")
+  }
 
   d1 <- (log(V0 / L) + (r + (sigma^2 / 2) * t)) / (sigma * sqrt(t))
   d2 <- d1 - sigma * sqrt(t)
