@@ -93,7 +93,7 @@ set_project_paths(
 # Analysis Parameters----------------------------------------
 # Get analysis parameters from the projects AnalysisParameters.yml - similar to PACTA_analysis
 
-cfg <- config::get(file = file.path(project_location, "10_Parameter_File","AnalysisParameters.yml"))
+cfg <- config::get(file = file.path(project_location, "10_Parameter_File", "AnalysisParameters.yml"))
 # OPEN: check_valid_cfg() not applicable here
 start_year <- cfg$AnalysisPeriod$Years.Startyear
 time_horizon <- cfg$AnalysisPeriod$Years.Horizon
@@ -152,8 +152,10 @@ stresstest_masterdata_files <- create_stressdata_masterdata_file_paths(
 )
 
 # ... for bonds----------------------------------------------------------------
-financial_data_bonds <- read_company_data(path = stresstest_masterdata_files$bonds,
-                                          asset_type = "bonds")
+financial_data_bonds <- read_company_data(
+  path = stresstest_masterdata_files$bonds,
+  asset_type = "bonds"
+)
 
 
 # Load PACTA results / bonds portfolio------------------------
@@ -163,7 +165,7 @@ pacta_bonds_results <- read_pacta_results(
   path = bonds_path,
   asset_type = "bonds",
   level = calculation_level
-  ) %>%
+) %>%
   wrangle_and_check_pacta_results(
     start_year = start_year,
     time_horizon = time_horizon,
@@ -196,12 +198,12 @@ capacity_factors_power <- read_capacity_factors(
 
 # Load scenario data----------------------------------------
 scen_data_file <- ifelse(twodii_internal == TRUE,
-                         path_dropbox_2dii("PortCheck", "00_Data", "01_ProcessedData", "03_ScenarioData", paste0("Scenarios_AnalysisInput_", start_year, ".csv")),
-                         file.path(data_location, paste0("Scenarios_AnalysisInput_", start_year, ".csv"))
+  path_dropbox_2dii("PortCheck", "00_Data", "01_ProcessedData", "03_ScenarioData", paste0("Scenarios_AnalysisInput_", start_year, ".csv")),
+  file.path(data_location, paste0("Scenarios_AnalysisInput_", start_year, ".csv"))
 )
 
 # TODO: EITHER wrap check into more evocative function OR remove this when common format is agreed upon
-if(twodii_internal == TRUE | start_year < 2020) {
+if (twodii_internal == TRUE | start_year < 2020) {
   scenario_data <- readr::read_csv(scen_data_file, col_types = "ccccccccnnnncnnn") %>%
     dplyr::filter(Indicator %in% c("Capacity", "Production", "Sales")) %>%
     dplyr::filter(!(Technology == "RenewablesCap" & !is.na(Sub_Technology))) %>%
@@ -224,7 +226,8 @@ if(twodii_internal == TRUE | start_year < 2020) {
 }
 
 scenario_data <- scenario_data %>%
-  dplyr::filter(source %in% c("ETP2017", "WEO2019")) %>% #TODO: this should be set elsewhere
+  dplyr::filter(source %in% c("ETP2017", "WEO2019")) %>%
+  # TODO: this should be set elsewhere
   dplyr::filter(!(source == "ETP2017" & ald_sector == "Power")) %>%
   dplyr::mutate(scenario = ifelse(stringr::str_detect(scenario, "_"), stringr::str_extract(scenario, "[^_]*$"), scenario)) %>%
   check_scenario_timeframe(start_year = start_year, end_year = end_year)
@@ -235,7 +238,8 @@ scenario_data <- scenario_data %>%
   dplyr::filter(
     ald_sector %in% sectors_lookup &
       technology %in% technologies_lookup &
-      scenario_geography == scenario_geography_filter)
+      scenario_geography == scenario_geography_filter
+  )
 
 # Load price data----------------------------------------
 df_price <- read_price_data(
@@ -264,7 +268,7 @@ if (company_exclusion) {
 
 financial_data_bonds <- financial_data_bonds %>%
   dplyr::mutate(net_profit_margin = profit_margin_preferred) %>%
-  #TODO: logic unclear thus far
+  # TODO: logic unclear thus far
   dplyr::mutate(
     net_profit_margin = dplyr::case_when(
       net_profit_margin < 0 & dplyr::between(profit_margin_unpreferred, 0, 1) ~ profit_margin_unpreferred,
@@ -289,7 +293,7 @@ financial_data_bonds <- financial_data_bonds %>%
       .data$ald_emissions_factor_unit, .data$ald_emissions_factor
     )
   )
-#TODO: any logic/bounds needed for debt/equity ratio and volatility?
+# TODO: any logic/bounds needed for debt/equity ratio and volatility?
 
 # check scenario availability across data inputs for bonds
 check_scenario_availability(
@@ -340,7 +344,8 @@ for (i in seq(1, nrow(transition_scenarios))) {
   print(overshoot_method)
   # Calculate late and sudden prices for scenario i
   df_prices <- df_price %>%
-    dplyr::mutate(Baseline = NPS) %>% # FIXME this should be parameterized!!
+    dplyr::mutate(Baseline = NPS) %>%
+    # FIXME this should be parameterized!!
     dplyr::rename(
       year = year, ald_sector = sector, technology = technology, NPS_price = NPS,
       SDS_price = SDS, Baseline_price = Baseline, B2DS_price = B2DS
@@ -397,9 +402,11 @@ for (i in seq(1, nrow(transition_scenarios))) {
       by = c("company_name", "id" = "corporate_bond_ticker", "ald_sector", "technology")
     )
 
-  cat("number of rows dropped by joining financial data on
+  cat(
+    "number of rows dropped by joining financial data on
       company_name, corporate_bond_ticker, ald_sector, and technology: ",
-      rows_bonds - nrow(bonds_annual_profits), "\n")
+    rows_bonds - nrow(bonds_annual_profits), "\n"
+  )
   # TODO: ADO 879 - note which companies are removed here, due to mismatch
 
   bonds_annual_profits <- bonds_annual_profits %>%
@@ -450,9 +457,11 @@ for (i in seq(1, nrow(transition_scenarios))) {
   plan_carsten_bonds <- plan_carsten_bonds %>%
     dplyr::inner_join(financial_data_bonds_pd, by = c("company_name", "id" = "corporate_bond_ticker", "ald_sector", "technology"))
 
-  cat("number of rows dropped from technology_exposure by joining financial data
+  cat(
+    "number of rows dropped from technology_exposure by joining financial data
       on company_name, corporate_bond_ticker, ald_sector and technology = ",
-      rows_plan_carsten - nrow(plan_carsten_bonds), "\n")
+    rows_plan_carsten - nrow(plan_carsten_bonds), "\n"
+  )
   # TODO: ADO 879 - note which companies are removed here, due to mismatch
 
   bonds_annual_profits <- bonds_annual_profits %>%
