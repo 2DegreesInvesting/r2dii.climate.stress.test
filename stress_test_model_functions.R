@@ -72,7 +72,7 @@ late_sudden_prices <- function(SDS_price, Baseline_price, overshoot_method,
   baseline_price_at_shock <- Baseline_price[0 + position_shock_year]
   SDS_price_end_shockperiod <- SDS_price[duration_of_shock + position_shock_year - 1]
 
-  ls_price[position_shock_year:(position_shock_year + duration_of_shock - 1)] <- na.approx(c(baseline_price_at_shock, rep(NA, duration_of_shock - 2), SDS_price_end_shockperiod))
+  ls_price[position_shock_year:(position_shock_year + duration_of_shock - 1)] <- zoo::na.approx(c(baseline_price_at_shock, rep(NA, duration_of_shock - 2), SDS_price_end_shockperiod))
   if (!overshoot_method) {
     ls_price[(position_shock_year + duration_of_shock):length(ls_price)] <- SDS_price[(position_shock_year + duration_of_shock - 1):length(SDS_price)]
   }
