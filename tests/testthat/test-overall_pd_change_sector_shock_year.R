@@ -1,21 +1,19 @@
 test_that("without specified arguments, function throws error", {
   testthat::expect_error(
-    annual_pd_change_company_technology(),
+    overall_pd_change_sector_shock_year(),
     "argument \"data\" is missing"
   )
 })
 
 test_that("production trajectories function returns a ggplot object", {
-  test_input_graph <- read_test_data("graph_annual_pd_change_company_technology.csv")
+  test_input_graph <- read_test_data("graph_overall_pd_change_sector_shock_year.csv")
 
-  test_shock_year <- 2030
-  test_company_filter <- c("Oil company", "Car Manufacturer")
+  test_scenario_filter <- c("Carbon balance 2025", "Carbon balance 2030")
   test_geography_filter <- "Global"
 
-  test_plot <- annual_pd_change_company_technology(
+  test_plot <- overall_pd_change_sector_shock_year(
     data = test_input_graph,
-    shock_year = test_shock_year,
-    company_filter = test_company_filter,
+    scenario_filter = test_scenario_filter,
     geography_filter = test_geography_filter
   )
 

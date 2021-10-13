@@ -20,8 +20,6 @@ function_paths <- c(
   file.path(
     "R",
     c(
-      "annual_pd_change_company_technology.R",
-      "annual_pd_change_technology_shock_year.R",
       "apply_filters.R",
       "calculate_annual_pd_changes.R",
       "calculate_aum.R",
@@ -36,9 +34,6 @@ function_paths <- c(
       "get_st_data_path.R",
       "interpolate_automotive_scenario.R",
       "lookup.R",
-      "overall_pd_change_company_technology.R",
-      "overall_pd_change_technology_shock_year.R",
-      "qa_graphs_st.R",
       "read_capacity_factors.R",
       "read_company_data.R",
       "read_pacta_results.R",
@@ -552,7 +547,6 @@ for (i in seq(1, nrow(transition_scenarios))) {
     calculate_pd_change_overall(
       shock_year = transition_scenario_i$year_of_shock,
       end_of_analysis = end_year,
-      exclusion = excluded_companies,
       risk_free_interest_rate = risk_free_rate
     )
 
@@ -579,7 +573,6 @@ for (i in seq(1, nrow(transition_scenarios))) {
       data = loanbook_annual_profits,
       shock_year = transition_scenario_i$year_of_shock,
       end_of_analysis = end_year,
-      exclusion = excluded_companies,
       risk_free_interest_rate = risk_free_rate
     )
   )
@@ -600,16 +593,18 @@ loanbook_results %>% write_results(
 # Output loan book credit risk results
 loanbook_expected_loss <- loanbook_expected_loss %>%
   dplyr::select(
-    scenario_name, scenario_geography, investor_name, portfolio_name,
-    company_name, id, ald_sector, technology, equity_0_baseline,
-    equity_0_late_sudden, debt, volatility, risk_free_rate, term,
-    Survival_baseline, Survival_late_sudden, PD_baseline, PD_late_sudden,
-    PD_change, pd, lgd, percent_exposure, exposure_at_default,
-    expected_loss_baseline, expected_loss_late_sudden
+    .data$scenario_name, .data$scenario_geography, .data$investor_name,
+    .data$portfolio_name, .data$company_name, .data$id, .data$ald_sector,
+    .data$equity_0_baseline, .data$equity_0_late_sudden, .data$debt,
+    .data$volatility, .data$risk_free_rate, .data$term, .data$Survival_baseline,
+    .data$Survival_late_sudden, .data$PD_baseline, .data$PD_late_sudden,
+    .data$PD_change, .data$pd, .data$lgd, .data$percent_exposure, # TODO: keep all tehse PDs??
+    .data$exposure_at_default, .data$expected_loss_baseline,
+    .data$expected_loss_late_sudden
   ) %>%
   dplyr::arrange(
-    scenario_geography, scenario_name, investor_name, portfolio_name,
-    company_name, ald_sector, technology
+    .data$scenario_geography, .data$scenario_name, .data$investor_name,
+    .data$portfolio_name, .data$company_name, .data$ald_sector
   )
 
 loanbook_expected_loss %>%
@@ -621,17 +616,18 @@ loanbook_expected_loss %>%
 # TODO: this is an unweighted average so far. keep in mind.
 loanbook_annual_pd_changes_sector <- loanbook_annual_pd_changes %>%
   dplyr::group_by(
-    scenario_name, scenario_geography, investor_name, portfolio_name,
-    ald_sector, technology, year
+    .data$scenario_name, .data$scenario_geography, .data$investor_name,
+    .data$portfolio_name, .data$ald_sector, .data$year
   ) %>%
   dplyr::summarise(
-    PD_change_late_sudden = mean((PD_late_sudden - PD_baseline), na.rm = TRUE),
+    # ADO 2312 - weight the PD change by baseline equity because this represents the original exposure better
+    PD_change = weighted.mean(x = .data$PD_change, w = .data$equity_t_baseline, na.rm = TRUE),
     .groups = "drop"
   ) %>%
   dplyr::ungroup() %>%
   dplyr::arrange(
-    scenario_geography, scenario_name, investor_name, portfolio_name,
-    ald_sector, technology, year
+    .data$scenario_geography, .data$scenario_name, .data$investor_name,
+    .data$portfolio_name, .data$ald_sector, .data$year
   )
 
 loanbook_annual_pd_changes_sector %>%
@@ -643,17 +639,18 @@ loanbook_annual_pd_changes_sector %>%
 # TODO: this is an unweighted average so far. keep in mind.
 loanbook_overall_pd_changes_sector <- loanbook_expected_loss %>%
   dplyr::group_by(
-    scenario_name, scenario_geography, investor_name, portfolio_name,
-    ald_sector, technology, term
+    .data$scenario_name, .data$scenario_geography, .data$investor_name,
+    .data$portfolio_name, .data$ald_sector, .data$term
   ) %>%
   dplyr::summarise(
-    PD_change_late_sudden = mean((PD_late_sudden - PD_baseline), na.rm = TRUE),
+    # ADO 2312 - weight the PD change by baseline equity because this represents the original exposure better
+    PD_change = weighted.mean(x = .data$PD_change, w = .data$equity_0_baseline, na.rm = TRUE),
     .groups = "drop"
   ) %>%
   dplyr::ungroup() %>%
   dplyr::arrange(
-    scenario_geography, scenario_name, investor_name, portfolio_name,
-    ald_sector, technology, term
+    .data$scenario_geography, .data$scenario_name, .data$investor_name,
+    .data$portfolio_name, .data$ald_sector, .data$term
   )
 
 loanbook_overall_pd_changes_sector %>%

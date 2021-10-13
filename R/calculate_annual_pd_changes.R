@@ -15,15 +15,11 @@
 #'   the policy shock strikes in a given scenario
 #' @param end_of_analysis A numeric vector of length one that indicates until
 #'   which year the analysis runs
-#' @param exclusion Optional. A dataframe with two character columns,
-#'   "company_name" and "technology", that lists which technologies from which
-#'   companies should be set to 0 in the remainder of the analysis.
 #' @param risk_free_interest_rate A numeric vector of length one that indicates
 #'   the risk free rate of interest
 calculate_pd_change_annual <- function(data,
                                        shock_year = NULL,
                                        end_of_analysis = NULL,
-                                       exclusion = NULL,
                                        risk_free_interest_rate = NULL) {
   force(data)
   shock_year %||% stop("Must provide input for 'shock_year'", call. = FALSE)
@@ -42,15 +38,28 @@ calculate_pd_change_annual <- function(data,
 
   data <- data %>%
     dplyr::filter(.data$year >= .env$shock_year) %>%
+    # ADO 2313 - summarise by company, drop technology
+    dplyr::group_by(
+      .data$scenario_name, .data$scenario_geography, .data$investor_name,
+      .data$portfolio_name, .data$id, .data$company_name, .data$ald_sector,
+      .data$year, .data$debt_equity_ratio, .data$volatility
+    ) %>%
+    dplyr::summarise(
+      discounted_net_profit_baseline = sum(.data$discounted_net_profit_baseline, na.rm = TRUE),
+      discounted_net_profit_ls = sum(.data$discounted_net_profit_ls, na.rm = TRUE),
+      .groups = "drop"
+    ) %>%
+    dplyr::ungroup() %>%
+    # ADO 2313 -  cumulative sum by year to obtain inputs for annual PD calculations
     dplyr::arrange(
       .data$scenario_name, .data$scenario_geography, .data$investor_name,
       .data$portfolio_name, .data$id, .data$company_name, .data$ald_sector,
-      .data$technology, .data$year, .data$debt_equity_ratio, .data$volatility
+      .data$year, .data$debt_equity_ratio, .data$volatility
     ) %>%
     dplyr::group_by(
-      .data$investor_name, .data$portfolio_name, .data$id, .data$company_name,
-      .data$ald_sector, .data$technology, .data$scenario_name,
-      .data$scenario_geography, .data$debt_equity_ratio, .data$volatility
+      .data$scenario_name, .data$scenario_geography, .data$investor_name,
+      .data$portfolio_name, .data$id, .data$company_name, .data$ald_sector,
+      .data$year, .data$debt_equity_ratio, .data$volatility
     ) %>%
     dplyr::mutate(
       equity_t_baseline = cumsum(.data$discounted_net_profit_baseline),
@@ -60,8 +69,8 @@ calculate_pd_change_annual <- function(data,
     dplyr::select(
       .data$investor_name, .data$portfolio_name, .data$scenario_name,
       .data$scenario_geography, .data$id, .data$company_name, .data$ald_sector,
-      .data$technology, .data$year, .data$equity_t_baseline,
-      .data$equity_t_late_sudden, .data$debt_equity_ratio, .data$volatility
+      .data$year, .data$equity_t_baseline, .data$equity_t_late_sudden,
+      .data$debt_equity_ratio, .data$volatility
     )
 
   data <- data %>%
@@ -95,37 +104,6 @@ calculate_pd_change_annual <- function(data,
       PD_change = .data$PD_late_sudden - .data$PD_baseline
     )
 
-  if (!is.null(exclusion)) {
-    exclusion_has_expected_columns <- all(
-      c("company_name", "technology") %in% colnames(exclusion)
-    )
-    stopifnot(exclusion_has_expected_columns)
+  return(results)
 
-    exclusion <- exclusion %>%
-      dplyr::mutate(exclude = TRUE)
-
-    results <- results %>%
-      dplyr::left_join(
-        exclusion,
-        by = c("company_name", "technology")
-      ) %>%
-      dplyr::mutate(
-        exclude = dplyr::if_else(
-          is.na(.data$exclude),
-          FALSE,
-          .data$exclude
-        )
-      )
-
-    results <- results %>%
-      dplyr::mutate(
-        PD_change = dplyr::if_else(
-          .data$exclude == TRUE,
-          0,
-          .data$PD_change
-        )
-      )
-  } else {
-    return(results)
-  }
 }

@@ -11,69 +11,17 @@ test_that("with missing argument for shock_year, calculate_pd_change_overall
   test_data <- read_test_data("loanbook_annual_profits.csv")
 
   test_end_of_analysis <- 2040
-  test_exclusion <- NULL
   test_risk_free_rate <- 0.05
 
   testthat::expect_error(
     calculate_pd_change_overall(
       data = test_data,
       end_of_analysis = test_end_of_analysis,
-      exclusion = test_exclusion,
       risk_free_interest_rate = test_risk_free_rate
     ),
     "Must provide input for 'shock_year'"
   )
 })
-
-test_that("with missing argument for exclusion, calculate_pd_change_overall
-          returns data.frame", {
-  test_data <- read_test_data("loanbook_annual_profits.csv")
-
-  test_shock_year <- 2030
-  test_end_of_analysis <- 2040
-  test_risk_free_rate <- 0.05
-
-  test_results <- calculate_pd_change_overall(
-    data = test_data,
-    shock_year = test_shock_year,
-    end_of_analysis = test_end_of_analysis,
-    risk_free_interest_rate = test_risk_free_rate
-  )
-
-  testthat::expect_s3_class(test_results, "data.frame")
-})
-
-test_that("with excluded company, calculate_pd_change_overall returns data.frame
-          with equal number of rows as without", {
-  test_data <- read_test_data("loanbook_annual_profits.csv")
-  test_exclusion <- read_test_data("exclude_companies.csv")
-
-  test_shock_year <- 2030
-  test_end_of_analysis <- 2040
-  test_risk_free_rate <- 0.05
-
-  test_results_no_exclusion <- calculate_pd_change_overall(
-    data = test_data,
-    shock_year = test_shock_year,
-    end_of_analysis = test_end_of_analysis,
-    exclusion = NULL,
-    risk_free_interest_rate = test_risk_free_rate
-  )
-
-  test_results_with_exclusion <- calculate_pd_change_overall(
-    data = test_data,
-    shock_year = test_shock_year,
-    end_of_analysis = test_end_of_analysis,
-    exclusion = test_exclusion,
-    risk_free_interest_rate = test_risk_free_rate
-  )
-
-  testthat::expect_equal(
-    nrow(test_results_no_exclusion),
-    nrow(test_results_with_exclusion)
-  )
-})
-
 
 test_that("PD_changes point in expected direction", {
   test_data <- read_test_data("loanbook_annual_profits.csv")
@@ -88,7 +36,6 @@ test_that("PD_changes point in expected direction", {
       .data$scenario_geography,
       .data$company_name,
       .data$ald_sector,
-      .data$technology,
       .data$discounted_net_profit_baseline,
       .data$discounted_net_profit_ls
     ) %>%
@@ -104,7 +51,6 @@ test_that("PD_changes point in expected direction", {
     data = test_data,
     shock_year = test_shock_year,
     end_of_analysis = test_end_of_analysis,
-    exclusion = NULL,
     risk_free_interest_rate = test_risk_free_rate
   )
 
@@ -119,8 +65,7 @@ test_that("PD_changes point in expected direction", {
     dplyr::inner_join(
       expected_direction,
       by = c(
-        "scenario_name", "scenario_geography", "company_name", "ald_sector",
-        "technology"
+        "scenario_name", "scenario_geography", "company_name", "ald_sector"
       )
     )
 
