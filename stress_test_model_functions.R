@@ -5,7 +5,7 @@ create_shock_scenario <- function(transition_scenario) {
   if (transition_scenario$overshoot_method) {
     # print('Integral method selected for calculation of late&sudden production scenarios.
     #       Production shocks are function of scenarios (and possibly of company production plans if enabled), they will be calculated in function set_ls_trajectory')
-    tibble(
+    tibble::tibble(
       "scenario_name" = transition_scenario$scenario_name,
       "year_of_shock" = transition_scenario$year_of_shock,
       "duration_of_shock" = 2040 - transition_scenario$year_of_shock + 1,
@@ -25,7 +25,7 @@ create_shock_scenario <- function(transition_scenario) {
   } else {
     print("technology production shocks set by user (overshoot_method==FALSE)")
 
-    tibble(
+    tibble::tibble(
       "scenario_name" = transition_scenario$scenario_name,
       "year_of_shock" = transition_scenario$year_of_shock,
       "duration_of_shock" = transition_scenario$duration_of_shock,
