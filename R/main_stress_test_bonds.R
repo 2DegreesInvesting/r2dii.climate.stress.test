@@ -1,3 +1,7 @@
+#' Run stress testing for bonds
+#'
+#' @return NULL
+#' @export
 run_stress_test_bonds <- function() {
   ###########################################################################
   # Project Initialisation---------------------------------------------------

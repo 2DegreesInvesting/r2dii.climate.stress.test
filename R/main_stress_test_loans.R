@@ -1,3 +1,7 @@
+#' Run stress testing for loans
+#'
+#' @return NULL
+#' @export
 run_stress_test_loans <- function() {
   ###########################################################################
   # Project Initialisation---------------------------------------------------

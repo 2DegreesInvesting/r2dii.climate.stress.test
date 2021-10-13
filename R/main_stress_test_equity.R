@@ -1,3 +1,7 @@
+#' Run stress testing for equity
+#'
+#' @return NULL
+#' @export
 run_stress_test_equity <- function() {
   ###########################################################################
   # Project Initialisation---------------------------------------------------
