@@ -89,7 +89,7 @@ set_project_paths(
 
 cfg <- config::get(file = file.path(project_location, "10_Parameter_File", "AnalysisParameters.yml"))
 # OPEN: check_valid_cfg() not applicable here
-start_year <- cfg$AnalysisPeriod$Years.Startyear
+start_year <- 2020
 time_horizon <- cfg$AnalysisPeriod$Years.Horizon
 
 # Filters----------------------------------------
