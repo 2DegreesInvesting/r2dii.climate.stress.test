@@ -3,61 +3,8 @@ run_stress_test_loans <- function() {
   # Project Initialisation---------------------------------------------------
   ###########################################################################
 
-  library(dplyr)
-  library(forcats)
-  library(ggplot2)
-  library(readr)
-  library(stringr)
-  library(tibble)
-  library(tidyr)
-  library(purrr)
-  library(zoo)
-
-  source(file.path("R", "functions.R"))
-
-  function_paths <- c(
-    "stress_test_model_functions.R",
-    "0_global_functions_st.R",
-    file.path(
-      "R",
-      c(
-        "apply_filters.R",
-        "calculate_annual_pd_changes.R",
-        "calculate_aum.R",
-        "calculate_overall_pd_changes.R",
-        "calc_survival_probability_merton.R",
-        "company_asset_value_at_risk.R",
-        "company_expected_loss.R",
-        "convert_cap_to_generation.R",
-        "exclude_companies.R",
-        "extend_scenario_trajectory.R",
-        "format_loanbook_st.R",
-        "get_st_data_path.R",
-        "interpolate_automotive_scenario.R",
-        "lookup.R",
-        "read_capacity_factors.R",
-        "read_company_data.R",
-        "read_pacta_results.R",
-        "read_price_data.R",
-        "read_transition_scenarios.R",
-        "set_paths.R",
-        "set_tech_trajectories.R",
-        "show_carbon_budget.R",
-        "utils.R",
-        "wrangle_and_check.R",
-        "write_results.R"
-      )
-    )
-  )
-
-  source_all(function_paths)
-
-  # RUN calc_loan_book.R to get the required portfolio inputs
-  # source("calc_loan_book.R") # TODO: sourcing the whole work flow unnecessary and slow. Generalize
-
-  ################
-  # INPUT VARIABLES
-  ################
+  # FIXME: Very bad solution for temporart use only
+  source_all(c("stress_test_model_functions.R", "0_global_functions_st.R"))
 
   #### Project location----------------------------------------
 
