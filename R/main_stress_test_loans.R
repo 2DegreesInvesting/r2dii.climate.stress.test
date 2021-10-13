@@ -147,7 +147,7 @@ run_stress_test_loans <- function() {
   sector_credit_type <- paste0("sector_loan_size_", credit_type)
   credit_currency <- paste0("loan_size_", credit_type, "_currency")
 
-  sector_exposures <- read_csv(
+  sector_exposures <- readr::read_csv(
     path_dropbox_2dii("PortCheck_v2", "10_Projects", project_name, "30_Processed_Inputs", paste0("portfolio_overview_", project_name, ".csv")),
     col_types = "cddcddc"
   ) %>%
