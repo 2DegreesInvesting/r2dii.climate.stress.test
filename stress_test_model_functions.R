@@ -174,7 +174,7 @@ check_portfolio_consistency <- function(df, start_year) {
 
 check_price_consistency <- function(df) {
   # the year of shock must be greater or equal to the start year of the analysis
-  if (!all(df %>% pull(year) >= start_year)) {
+  if (!all(df %>% dplyr::pull(year) >= start_year)) {
     write_log(
       msg = "Timerange for price data out of bounds. Past prices cannot be
       included in the further analysis.",
@@ -190,7 +190,7 @@ check_price_consistency <- function(df) {
 
 check_scenario_availability <- function(portfolio, scen_data, scenarios = scenarios) {
   # check that scenarios in portfolio are allowed
-  if (!all(portfolio %>% pull(scenario) %>% unique() %in% scenarios)) {
+  if (!all(portfolio %>% dplyr::pull(scenario) %>% unique() %in% scenarios)) {
     write_log(
       msg = "Some scenarios in this data frame are not in the list of allowed
       scenarios. Please check!",
@@ -202,7 +202,7 @@ check_scenario_availability <- function(portfolio, scen_data, scenarios = scenar
     )
   }
   # check that at least two allowed scenarios remain in portfolio
-  if (length(portfolio %>% pull(scenario) %>% unique()) < 2) {
+  if (length(portfolio %>% dplyr::pull(scenario) %>% unique()) < 2) {
     write_log(
       msg = "There are less than two allowed scenarios in the portfolio. Stress
       test requires at least two!",
@@ -214,7 +214,7 @@ check_scenario_availability <- function(portfolio, scen_data, scenarios = scenar
     )
   }
   # check scenarios in portfolio correspond to scenarios in scen data
-  if (!all(portfolio %>% pull(scenario) %>% unique() %in% (scen_data %>% pull(scenario) %>% unique()))) {
+  if (!all(portfolio %>% dplyr::pull(scenario) %>% unique() %in% (scen_data %>% dplyr::pull(scenario) %>% unique()))) {
     write_log(
       msg = "Scenarios differ between portfolio and scenario trajectory data.
       Check if correct inputs were used.",
@@ -229,7 +229,7 @@ check_scenario_availability <- function(portfolio, scen_data, scenarios = scenar
 
 # check if the imported scenario data covers every year within the timeframe of analysis
 check_scenario_timeframe <- function(scenario_data, start_year = start_year, end_year = end_year) {
-  if (!all(seq(start_year, end_year) %in% (scenario_data %>% pull(year) %>% unique()))) {
+  if (!all(seq(start_year, end_year) %in% (scenario_data %>% dplyr::pull(year) %>% unique()))) {
     write_log(
       msg = glue::glue(
         "Imported scenario data does not cover the full time frame of the
