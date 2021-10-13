@@ -130,7 +130,7 @@ calculate_net_profits <- function(df) {
   # Calculates annual net profits
   # Input: dataframe that has the baseline & LS production, prices and technoogy net profit margins
   df %>%
-    mutate(
+    dplyr::mutate(
       net_profits_ls = late_sudden * late_sudden_price * net_profit_margin,
       net_profits_baseline = baseline * Baseline_price * net_profit_margin
     )
