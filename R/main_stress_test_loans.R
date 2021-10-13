@@ -152,7 +152,7 @@ run_stress_test_loans <- function() {
     col_types = "cddcddc"
   ) %>%
     dplyr::mutate(
-      sector_ald = case_when(
+      sector_ald = dplyr::case_when(
         sector_ald == "power" ~ "Power",
         sector_ald == "oil and gas" ~ "Oil&Gas",
         sector_ald == "coal" ~ "Coal",
