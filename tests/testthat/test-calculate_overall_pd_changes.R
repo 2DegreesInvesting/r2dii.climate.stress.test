@@ -36,7 +36,6 @@ test_that("PD_changes point in expected direction", {
       .data$scenario_geography,
       .data$company_name,
       .data$ald_sector,
-      # .data$technology,
       .data$discounted_net_profit_baseline,
       .data$discounted_net_profit_ls
     ) %>%

@@ -36,7 +36,6 @@ calculate_pd_change_overall <- function(data,
     dplyr::filter(.data$year >= .env$shock_year) %>%
     dplyr::group_by(
       .data$investor_name, .data$portfolio_name, .data$id, .data$company_name,
-      # .data$ald_sector, .data$technology, .data$scenario_name,
       .data$ald_sector, .data$scenario_name,
       .data$scenario_geography, .data$debt_equity_ratio, .data$volatility
     ) %>%
@@ -49,7 +48,6 @@ calculate_pd_change_overall <- function(data,
     dplyr::select(
       .data$investor_name, .data$portfolio_name, .data$scenario_name,
       .data$scenario_geography, .data$id, .data$company_name, .data$ald_sector,
-      # .data$technology, .data$equity_0_baseline, .data$equity_0_late_sudden,
       .data$equity_0_baseline, .data$equity_0_late_sudden,
       .data$debt_equity_ratio, .data$volatility
     )
