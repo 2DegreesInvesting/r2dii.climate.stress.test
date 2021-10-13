@@ -43,7 +43,7 @@ run_stress_test_equity <- function() {
 
   cfg <- config::get(file = file.path(project_location, "10_Parameter_File", "AnalysisParameters.yml"))
   # OPEN: check_valid_cfg() not applicable here
-  start_year <- cfg$AnalysisPeriod$Years.Startyear
+  start_year <- 2020
   time_horizon <- cfg$AnalysisPeriod$Years.Horizon
 
   # Filters----------------------------------------
@@ -302,7 +302,10 @@ run_stress_test_equity <- function() {
         late_sudden_price = late_sudden_prices(
           SDS_price = SDS_price,
           Baseline_price = Baseline_price,
-          overshoot_method = overshoot_method
+          overshoot_method = overshoot_method,
+          year_of_shock = year_of_shock,
+          start_year = start_year,
+          duration_of_shock = duration_of_shock
         )
       ) %>%
       dplyr::ungroup()
