@@ -194,7 +194,7 @@ run_stress_test_equity <- function() {
     expected_technologies = technologies_lookup
   ) %>%
     dplyr::filter(year >= start_year) %>%
-    check_price_consistency()
+    check_price_consistency(start_year = start_year)
 
   # Load excluded companies-------------------------------
   if (company_exclusion) {

@@ -172,9 +172,9 @@ check_portfolio_consistency <- function(df, start_year) {
 #   return(df)
 # }
 
-check_price_consistency <- function(df) {
+check_price_consistency <- function(df, start_year) {
   # the year of shock must be greater or equal to the start year of the analysis
-  if (!all(df %>% dplyr::pull(year) >= start_year)) {
+  if (!all(df$year >= start_year)) {
     write_log(
       msg = "Timerange for price data out of bounds. Past prices cannot be
       included in the further analysis.",
