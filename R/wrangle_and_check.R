@@ -63,7 +63,7 @@ wrangle_and_check_pacta_results <- function(pacta_results, start_year, time_hori
     dplyr::mutate(scenario = stringr::str_replace(.data$scenario, "NPSRTS", "NPS")) %>%
     tidyr::complete(
       year = seq(start_year, start_year + time_horizon),
-      nesting(!!!rlang::syms(nesting_vars_lookup))
+      tidyr::nesting(!!!rlang::syms(nesting_vars_lookup))
     ) %>%
     dplyr::mutate(plan_tech_prod = dplyr::if_else(is.na(.data$plan_tech_prod), 0, .data$plan_tech_prod)) %>%
     apply_filters(
