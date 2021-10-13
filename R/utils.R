@@ -212,7 +212,7 @@ report_all_duplicate_kinds <- function(data, composite_unique_cols, throw_error 
 #' @export
 report_missing_col_combinations <- function(data, composite_unique_cols, throw_error = FALSE) {
   all_combinations <- data %>%
-    tidyr::expand(!!!dplyr::syms(composite_unique_cols))
+    tidyr::expand(!!!rlang::syms(composite_unique_cols))
 
   missing_rows <- all_combinations %>%
     dplyr::anti_join(data, by = composite_unique_cols)
@@ -239,9 +239,9 @@ report_missing_col_combinations <- function(data, composite_unique_cols, throw_e
 #' @return NULL
 report_duplicates <- function(data, cols, throw_error = FALSE) {
   duplicates <- data %>%
-    dplyr::group_by(!!!dplyr::syms(cols)) %>%
+    dplyr::group_by(!!!rlang::syms(cols)) %>%
     dplyr::filter(dplyr::n() > 1) %>%
-    dplyr::select(!!!dplyr::syms(cols)) %>%
+    dplyr::select(!!!rlang::syms(cols)) %>%
     dplyr::distinct_all()
 
   if (nrow(duplicates) > 0) {
