@@ -6,10 +6,10 @@ function_paths <- c(
   file.path(
     "R",
     c(
-      "annual_pd_change_company_technology.R",
-      "annual_pd_change_technology_shock_year.R",
-      "overall_pd_change_company_technology.R",
-      "overall_pd_change_technology_shock_year.R",
+      "annual_pd_change_company_sector.R",
+      "annual_pd_change_sector_shock_year.R",
+      "overall_pd_change_company_sector.R",
+      "overall_pd_change_sector_shock_year.R",
       "qa_graphs_st.R"
     )
   )
@@ -129,7 +129,7 @@ plot_pd_change_company_sector <- equity_expected_loss %>%
 ggplot2::ggsave(
   "plot_pd_change_company_sector.png",
   plot = plot_pd_change_company_sector,
-  path = r2dii.utils::path_dropbox_2dii(outputs_path)
+  path = outputs_path
 )
 
 plot_pd_change_shock_year_sector <- equity_overall_pd_changes_sector %>%
@@ -141,7 +141,7 @@ plot_pd_change_shock_year_sector <- equity_overall_pd_changes_sector %>%
 ggplot2::ggsave(
   "plot_pd_change_shock_year_sector.png",
   plot = plot_pd_change_shock_year_sector,
-  path = r2dii.utils::path_dropbox_2dii(outputs_path)
+  path = outputs_path
 )
 
 # ... annual change of credit risk graphs--------------------------------------
@@ -155,7 +155,7 @@ plot_annual_pd_change_company_sector <- equity_annual_pd_changes %>%
 ggplot2::ggsave(
   "plot_annual_pd_change_company_sector.png",
   plot = plot_annual_pd_change_company_sector,
-  path = r2dii.utils::path_dropbox_2dii(outputs_path)
+  path = outputs_path
 )
 
 plot_annual_pd_change_shock_year_sector <- equity_annual_pd_changes_sector %>%
@@ -167,5 +167,5 @@ plot_annual_pd_change_shock_year_sector <- equity_annual_pd_changes_sector %>%
 ggplot2::ggsave(
   "plot_annual_pd_change_shock_year_sector.png",
   plot = plot_annual_pd_change_shock_year_sector,
-  path = r2dii.utils::path_dropbox_2dii(outputs_path)
+  path = outputs_path
 )

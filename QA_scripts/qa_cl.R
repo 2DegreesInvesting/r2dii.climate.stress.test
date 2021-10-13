@@ -6,10 +6,10 @@ function_paths <- c(
   file.path(
     "R",
     c(
-      "annual_pd_change_company_technology.R",
-      "annual_pd_change_technology_shock_year.R",
-      "overall_pd_change_company_technology.R",
-      "overall_pd_change_technology_shock_year.R",
+      "annual_pd_change_company_sector.R",
+      "annual_pd_change_sector_shock_year.R",
+      "overall_pd_change_company_sector.R",
+      "overall_pd_change_sector_shock_year.R",
       "qa_graphs_st.R"
     )
   )
