@@ -57,9 +57,9 @@ calculate_pd_change_annual <- function(data,
       .data$year, .data$debt_equity_ratio, .data$volatility
     ) %>%
     dplyr::group_by(
-      .data$investor_name, .data$portfolio_name, .data$id, .data$company_name,
-      .data$ald_sector, .data$scenario_name,
-      .data$scenario_geography, .data$debt_equity_ratio, .data$volatility
+      .data$scenario_name, .data$scenario_geography, .data$investor_name,
+      .data$portfolio_name, .data$id, .data$company_name, .data$ald_sector,
+      .data$year, .data$debt_equity_ratio, .data$volatility
     ) %>%
     dplyr::mutate(
       equity_t_baseline = cumsum(.data$discounted_net_profit_baseline),
@@ -69,8 +69,8 @@ calculate_pd_change_annual <- function(data,
     dplyr::select(
       .data$investor_name, .data$portfolio_name, .data$scenario_name,
       .data$scenario_geography, .data$id, .data$company_name, .data$ald_sector,
-      .data$year, .data$equity_t_baseline,
-      .data$equity_t_late_sudden, .data$debt_equity_ratio, .data$volatility
+      .data$year, .data$equity_t_baseline, .data$equity_t_late_sudden,
+      .data$debt_equity_ratio, .data$volatility
     )
 
   data <- data %>%
