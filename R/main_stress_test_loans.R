@@ -410,7 +410,7 @@ run_stress_test_loans <- function() {
     # sector/tech in the financial data and the portfolio
 
     loanbook_annual_profits <- loanbook_annual_profits %>%
-      arrange(
+      dplyr::arrange(
         scenario_name, investor_name, portfolio_name, scenario_geography, id,
         company_name, ald_sector, technology, year
       ) %>%
