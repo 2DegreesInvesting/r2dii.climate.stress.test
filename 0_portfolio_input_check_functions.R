@@ -18,7 +18,7 @@ map_security_sectors <- function(fin_data, sector_bridge){
 
   fin_data <- fin_data %>% dplyr::select(-security_mapped_sector,sector_boe,sector_ipr,subsector_ipr,sector_dnb,subsector_boe) %>% dplyr::rename(security_mapped_sector = sector)
 
-  fin_data %>% dplyr::group_by(security_mapped_sector) %>% dplyr::filter(is.na(security_mapped_sector)) %>% dplyr::summarise(count = n(), .groups = "drop_last")
+  fin_data %>% dplyr::group_by(security_mapped_sector) %>% dplyr::filter(is.na(security_mapped_sector)) %>% dplyr::summarise(count = dplyr::n(), .groups = "drop_last")
   fin_data_na <- fin_data %>% dplyr::filter(is.na(security_mapped_sector))
 
   if(nrow(fin_data) != initial_no_rows){stop("Rows being dropped in mapping sectors")}
