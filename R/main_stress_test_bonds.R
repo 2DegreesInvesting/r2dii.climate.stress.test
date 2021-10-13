@@ -146,8 +146,8 @@ run_stress_test_bonds <- function() {
 
   # Load scenario data----------------------------------------
   scen_data_file <- ifelse(twodii_internal == TRUE,
-                           path_dropbox_2dii("PortCheck", "00_Data", "01_ProcessedData", "03_ScenarioData", paste0("Scenarios_AnalysisInput_", start_year, ".csv")),
-                           file.path(data_location, paste0("Scenarios_AnalysisInput_", start_year, ".csv"))
+    path_dropbox_2dii("PortCheck", "00_Data", "01_ProcessedData", "03_ScenarioData", paste0("Scenarios_AnalysisInput_", start_year, ".csv")),
+    file.path(data_location, paste0("Scenarios_AnalysisInput_", start_year, ".csv"))
   )
 
   # TODO: EITHER wrap check into more evocative function OR remove this when common format is agreed upon
@@ -350,7 +350,7 @@ run_stress_test_bonds <- function() {
 
     bonds_annual_profits <- bonds_annual_profits %>%
       dplyr::inner_join(financial_data_bonds,
-                        by = c("company_name", "id" = "corporate_bond_ticker", "ald_sector", "technology")
+        by = c("company_name", "id" = "corporate_bond_ticker", "ald_sector", "technology")
       )
 
     cat(

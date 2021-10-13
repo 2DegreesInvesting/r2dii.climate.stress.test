@@ -192,8 +192,8 @@ run_stress_test_loans <- function() {
 
   # Load scenario data----------------------------------------
   scen_data_file <- ifelse(twodii_internal == TRUE,
-                           path_dropbox_2dii("PortCheck", "00_Data", "01_ProcessedData", "03_ScenarioData", paste0("Scenarios_AnalysisInput_", start_year, ".csv")),
-                           file.path(data_location, paste0("Scenarios_AnalysisInput_", start_year, ".csv"))
+    path_dropbox_2dii("PortCheck", "00_Data", "01_ProcessedData", "03_ScenarioData", paste0("Scenarios_AnalysisInput_", start_year, ".csv")),
+    file.path(data_location, paste0("Scenarios_AnalysisInput_", start_year, ".csv"))
   )
 
   # TODO: EITHER wrap check into more evocative function OR remove this when common format is agreed upon
