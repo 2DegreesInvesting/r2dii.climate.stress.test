@@ -57,10 +57,11 @@ check_all_equal <- function(old_results, new_results) {
 ### 0. set a seed at the top of stress_test_model_eq.R
 
 ### 1. check out master branch of repo (or whichever branch you want to use as reference)
-source("stress_test_model_eq.R") # calculates results with checked out branch
+devtools::load_all()
+run_stress_test_equity()
 
 ### 2. run the following lines to obtain results
-project_name <- cfg_st$project_name
+project_name <- config::get(file = "st_project_settings.yml")$project_name
 investor_name <- "Meta Investor"
 
 old_results <- import_asset_results(
@@ -69,7 +70,9 @@ old_results <- import_asset_results(
 )
 
 ### 3. check out dev branch of repo (or whichever branch you want to use as comparison)
-source("stress_test_model_eq.R") # calculates results with checked out branch
+devtools::load_all()
+run_stress_test_equity()
+
 
 ### 4. run the following lines to run script or equity and bonds and obtain results
 new_results <- import_asset_results(

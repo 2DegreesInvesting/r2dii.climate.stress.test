@@ -224,7 +224,7 @@ df_price <- read_price_data(
     expected_technologies = technologies
   ) %>%
   dplyr::filter(year >= start_year) %>%
-  check_price_consistency()
+  check_price_consistency(start_year = start_year)
 
 
 #############
@@ -370,7 +370,10 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
           late_sudden_price = late_sudden_prices(
             SDS_price = SDS_price,
             Baseline_price = Baseline_price,
-            overshoot_method = overshoot_method
+            overshoot_method = overshoot_method,
+            year_of_shock = year_of_shock,
+            start_year = start_year,
+            duration_of_shock = duration_of_shock
           )
         ) %>%
         dplyr::ungroup()
@@ -568,7 +571,10 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
           late_sudden_price = late_sudden_prices(
             SDS_price = SDS_price,
             Baseline_price = Baseline_price,
-            overshoot_method = overshoot_method
+            overshoot_method = overshoot_method,
+            year_of_shock = year_of_shock,
+            start_year = start_year,
+            duration_of_shock = duration_of_shock
           )
         ) %>%
         dplyr::ungroup()
