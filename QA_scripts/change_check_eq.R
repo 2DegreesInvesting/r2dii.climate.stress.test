@@ -61,7 +61,7 @@ devtools::load_all()
 run_stress_test_equity()
 
 ### 2. run the following lines to obtain results
-project_name <- cfg_st$project_name
+project_name <- config::get(file = "st_project_settings.yml")$project_name
 investor_name <- "Meta Investor"
 
 old_results <- import_asset_results(
