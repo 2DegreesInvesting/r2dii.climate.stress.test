@@ -175,8 +175,7 @@ write_results <- function(data,
 #'   be written to the result path. Currently supports "csv" and "rda".
 #'
 #' @family output functions
-#'
-#' @export
+#' @return NULL
 write_results_new <- function(data,
                               path_to_results = NULL,
                               asset_type = NULL,
