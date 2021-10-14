@@ -106,7 +106,7 @@ run_stress_test_loans <- function() {
   ###########################################################################
 
   # Load company financial and production data-----------------------------------
-  financial_data_equity <- read_company_data(
+  financial_data_loans <- read_company_data(
     path = create_stressdata_masterdata_file_paths()$loans,
     asset_type = "loans"
   )

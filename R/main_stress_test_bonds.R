@@ -98,7 +98,7 @@ run_stress_test_bonds <- function() {
 
   # Load company financial and production data-----------------------------------
   # ... get file paths for stresstest masterdata --------------------------------
-  financial_data_equity <- read_company_data(
+  financial_data_bonds <- read_company_data(
     path = create_stressdata_masterdata_file_paths()$bonds,
     asset_type = "bonds"
   )
