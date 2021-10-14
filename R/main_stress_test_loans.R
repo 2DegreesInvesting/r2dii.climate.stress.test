@@ -98,19 +98,10 @@ run_stress_test_loans <- function() {
   ###########################################################################
 
   # Load company financial and production data-----------------------------------
-  # ... get file paths for stresstest masterdata --------------------------------
-  stresstest_masterdata_files <- create_stressdata_masterdata_file_paths(
-    data_prep_timestamp = cfg$TimeStamps$DataPrep.Timestamp,
-    twodii_internal = twodii_internal
-  )
-
-  # ... for loans----------------------------------------------------------------
   financial_data_loans <- read_company_data(
-    path = stresstest_masterdata_files$loans,
+    path = create_stressdata_masterdata_file_paths()$loans,
     asset_type = "loans"
   )
-
-
   # Load PACTA results / loans portfolio------------------------
   # TODO: select the right scenarios
   # TODO: select the right geography

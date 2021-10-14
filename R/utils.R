@@ -90,23 +90,13 @@ write_log <- function(msg,
 
 #' Get path for stress test masterdata files
 #'
-#' Get path for stress test masterdata files when called in 2dii internal mode.
+#' Return list of paths for stress test masterdata files.
 #'
-#' @param data_prep_timestamp Character scalar holding timestamp of data prep.
-#' @param twodii_internal Boolean, if TRUE 2dii internal mode is used.
-#'
-#' @return A list with 2 file paths.
+#' @return A list with 3 file paths.
 #' @export
-create_stressdata_masterdata_file_paths <- function(data_prep_timestamp, twodii_internal) {
-  if (!twodii_internal) {
-    stop("Currently cannot provide data files for external mode.")
-  }
+create_stressdata_masterdata_file_paths <- function() {
 
-  if (!is.character(data_prep_timestamp)) {
-    stop("Timestamp is not provided in correct format")
-  }
-
-  path_parent <- path_dropbox_2dii("PortCheck", "00_Data", "07_AnalysisInputs", data_prep_timestamp)
+  path_parent <- get_st_data_path("ST_DATA_PATH_TEMP")
 
   paths <- list(
     "prewrangled_financial_data_bonds.rds",

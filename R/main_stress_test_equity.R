@@ -87,17 +87,8 @@ run_stress_test_equity <- function() {
   ###########################################################################
   # Load input datasets------------------------------------------------------
   ###########################################################################
-
-  # Load company financial and production data-----------------------------------
-  # ... get file paths for stresstest masterdata --------------------------------
-  stresstest_masterdata_files <- create_stressdata_masterdata_file_paths(
-    data_prep_timestamp = cfg$TimeStamps$DataPrep.Timestamp,
-    twodii_internal = twodii_internal
-  )
-
-  # ... for equity---------------------------------------------------------------
   financial_data_equity <- read_company_data(
-    path = stresstest_masterdata_files$listed_equity,
+    path = create_stressdata_masterdata_file_paths()$listed_equity,
     asset_type = "equity"
   )
 
