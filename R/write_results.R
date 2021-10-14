@@ -178,10 +178,10 @@ write_results <- function(data,
 #'
 #' @export
 write_results_new <- function(data,
-                          path_to_results = NULL,
-                          asset_type = NULL,
-                          level = NULL,
-                          file_type = NULL) {
+                              path_to_results = NULL,
+                              asset_type = NULL,
+                              level = NULL,
+                              file_type = NULL) {
   path_to_results %||% stop("Must provide 'path_to_results'")
   level %||% stop("Must provide 'level'")
 
@@ -195,92 +195,92 @@ write_results_new <- function(data,
     stop("Only calculation level company is supported.")
   }
 
-    data_has_expected_columns <- all(
-      c(
-        "investor_name", "portfolio_name", "company_name", "scenario_geography",
-        "scenario_name", "year_of_shock", "duration_of_shock", "ald_sector",
-        "technology", "production_shock_perc", "asset_portfolio_value",
-        "tech_company_exposure", "VaR_tech_company", "tech_company_value_change",
-        "company_exposure", "VaR_company", "company_value_change",
-        "technology_exposure", "VaR_technology", "technology_value_change",
-        "sector_exposure", "VaR_sector", "sector_value_change",
-        "analysed_sectors_exposure", "VaR_analysed_sectors",
-        "analysed_sectors_value_change", "portfolio_aum",
-        "portfolio_value_change_perc", "portfolio_value_change"
-      ) %in% colnames(data)
-    )
+  data_has_expected_columns <- all(
+    c(
+      "investor_name", "portfolio_name", "company_name", "scenario_geography",
+      "scenario_name", "year_of_shock", "duration_of_shock", "ald_sector",
+      "technology", "production_shock_perc", "asset_portfolio_value",
+      "tech_company_exposure", "VaR_tech_company", "tech_company_value_change",
+      "company_exposure", "VaR_company", "company_value_change",
+      "technology_exposure", "VaR_technology", "technology_value_change",
+      "sector_exposure", "VaR_sector", "sector_value_change",
+      "analysed_sectors_exposure", "VaR_analysed_sectors",
+      "analysed_sectors_value_change", "portfolio_aum",
+      "portfolio_value_change_perc", "portfolio_value_change"
+    ) %in% colnames(data)
+  )
 
   stopifnot(data_has_expected_columns)
 
-    data <- data %>%
-      dplyr::relocate(
-        .data$investor_name, .data$portfolio_name, .data$company_name,
-        .data$scenario_geography, .data$scenario_name, .data$year_of_shock,
-        .data$duration_of_shock, .data$ald_sector, .data$technology,
-        .data$production_shock_perc, .data$asset_portfolio_value,
-        .data$tech_company_exposure, .data$VaR_tech_company,
-        .data$tech_company_value_change, .data$company_exposure,
-        .data$VaR_company, .data$company_value_change, .data$technology_exposure,
-        .data$VaR_technology, .data$technology_value_change,
-        .data$technology_exposure, .data$VaR_technology,
-        .data$technology_value_change, .data$sector_exposure, .data$VaR_sector,
-        .data$sector_value_change, .data$analysed_sectors_exposure,
-        .data$VaR_analysed_sectors, .data$analysed_sectors_value_change,
-        .data$portfolio_aum, .data$portfolio_value_change_perc,
-        .data$portfolio_value_change
+  data <- data %>%
+    dplyr::relocate(
+      .data$investor_name, .data$portfolio_name, .data$company_name,
+      .data$scenario_geography, .data$scenario_name, .data$year_of_shock,
+      .data$duration_of_shock, .data$ald_sector, .data$technology,
+      .data$production_shock_perc, .data$asset_portfolio_value,
+      .data$tech_company_exposure, .data$VaR_tech_company,
+      .data$tech_company_value_change, .data$company_exposure,
+      .data$VaR_company, .data$company_value_change, .data$technology_exposure,
+      .data$VaR_technology, .data$technology_value_change,
+      .data$technology_exposure, .data$VaR_technology,
+      .data$technology_value_change, .data$sector_exposure, .data$VaR_sector,
+      .data$sector_value_change, .data$analysed_sectors_exposure,
+      .data$VaR_analysed_sectors, .data$analysed_sectors_value_change,
+      .data$portfolio_aum, .data$portfolio_value_change_perc,
+      .data$portfolio_value_change
+    )
+
+  switch(file_type,
+    csv = data %>%
+      readr::write_csv(file.path(
+        path_to_results,
+        glue::glue("stress_test_results_{asset_type}_comp.csv")
+      )),
+    rda = data %>%
+      saveRDS(file.path(
+        path_to_results,
+        glue::glue("stress_test_results_{asset_type}_comp.rda")
+      )),
+    stop("Invalid file_type provided. Please use csv or rda!")
+  )
+
+  data <- data %>%
+    dplyr::select(
+      -c(
+        .data$company_name,
+        .data$VaR_tech_company,
+        .data$tech_company_exposure,
+        .data$tech_company_value_change,
+        .data$VaR_company,
+        .data$company_exposure,
+        .data$company_value_change
       )
+    ) %>%
+    dplyr::distinct_all() %>%
+    dplyr::relocate(
+      .data$investor_name, .data$portfolio_name, .data$scenario_geography,
+      .data$scenario_name, .data$year_of_shock, .data$duration_of_shock,
+      .data$ald_sector, .data$technology, .data$production_shock_perc,
+      .data$asset_portfolio_value, .data$technology_exposure,
+      .data$VaR_technology, .data$technology_value_change,
+      .data$sector_exposure, .data$VaR_sector, .data$sector_value_change,
+      .data$analysed_sectors_exposure, .data$VaR_analysed_sectors,
+      .data$analysed_sectors_value_change, .data$portfolio_aum,
+      .data$portfolio_value_change_perc, .data$portfolio_value_change
+    ) %>%
+    dplyr::arrange(.data$year_of_shock, .data$ald_sector, .data$technology)
 
-    switch(file_type,
-           csv = data %>%
-             readr::write_csv(file.path(
-               path_to_results,
-               glue::glue("stress_test_results_{asset_type}_comp.csv")
-             )),
-           rda = data %>%
-             saveRDS(file.path(
-               path_to_results,
-               glue::glue("stress_test_results_{asset_type}_comp.rda")
-             )),
-           stop("Invalid file_type provided. Please use csv or rda!")
-    )
-
-    data <- data %>%
-      dplyr::select(
-        -c(
-          .data$company_name,
-          .data$VaR_tech_company,
-          .data$tech_company_exposure,
-          .data$tech_company_value_change,
-          .data$VaR_company,
-          .data$company_exposure,
-          .data$company_value_change
-        )
-      ) %>%
-      dplyr::distinct_all() %>%
-      dplyr::relocate(
-        .data$investor_name, .data$portfolio_name, .data$scenario_geography,
-        .data$scenario_name, .data$year_of_shock, .data$duration_of_shock,
-        .data$ald_sector, .data$technology, .data$production_shock_perc,
-        .data$asset_portfolio_value, .data$technology_exposure,
-        .data$VaR_technology, .data$technology_value_change,
-        .data$sector_exposure, .data$VaR_sector, .data$sector_value_change,
-        .data$analysed_sectors_exposure, .data$VaR_analysed_sectors,
-        .data$analysed_sectors_value_change, .data$portfolio_aum,
-        .data$portfolio_value_change_perc, .data$portfolio_value_change
-      ) %>%
-      dplyr::arrange(.data$year_of_shock, .data$ald_sector, .data$technology)
-
-    switch(file_type,
-           csv = data %>%
-             readr::write_csv(file.path(
-               path_to_results,
-               glue::glue("stress_test_results_{asset_type}_port.csv")
-             )),
-           rda = data %>%
-             saveRDS(file.path(
-               path_to_results,
-               glue::glue("stress_test_results_{asset_type}_port.rda")
-             )),
-           stop("Invalid file_type provided. Please use csv or rda!")
-    )
+  switch(file_type,
+    csv = data %>%
+      readr::write_csv(file.path(
+        path_to_results,
+        glue::glue("stress_test_results_{asset_type}_port.csv")
+      )),
+    rda = data %>%
+      saveRDS(file.path(
+        path_to_results,
+        glue::glue("stress_test_results_{asset_type}_port.rda")
+      )),
+    stop("Invalid file_type provided. Please use csv or rda!")
+  )
 }
