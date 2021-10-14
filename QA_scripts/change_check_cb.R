@@ -1,11 +1,11 @@
 #-------------- Change checking helper
 
 # defining some functions
-import_asset_results <- function(project_name, investor_name) {
-  results_path <- path_dropbox_2dii("PortCheck_v2", "10_Projects", project_name, "40_Results")
+import_asset_results <- function(project_name) {
+  results_path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "outputs")
 
-  bonds_results_company <- readr::read_csv(file.path(results_path, investor_name, "stress_test_results_bonds_comp.csv"))
-  bonds_results_port <- readr::read_csv(file.path(results_path, investor_name, "stress_test_results_bonds_port.csv"))
+  bonds_results_company <- readr::read_csv(file.path(results_path, "stress_test_results_bonds_comp.csv"))
+  bonds_results_port <- readr::read_csv(file.path(results_path, "stress_test_results_bonds_port.csv"))
   bonds_expected_loss <- readr::read_csv(file.path(results_path, paste0("stress_test_results_cb_comp_el_", project_name, ".csv")))
   bonds_annual_pd_changes_sector <- readr::read_csv(file.path(results_path, paste0("stress_test_results_cb_sector_pd_changes_annual.csv")))
   bonds_overall_pd_changes_sector <- readr::read_csv(file.path(results_path, paste0("stress_test_results_cb_sector_pd_changes_overall.csv")))
@@ -61,11 +61,9 @@ run_stress_test_bonds()
 
 ### 2. run the following lines to obtain results
 project_name <- config::get(file = "st_project_settings.yml")$project_name
-investor_name <- "Meta Investor"
 
 old_results <- import_asset_results(
-  project_name = project_name,
-  investor_name = investor_name
+  project_name = project_name
 )
 
 ### 3. check out dev branch of repo (or whichever branch you want to use as comparison)
@@ -74,8 +72,7 @@ run_stress_test_bonds()
 
 ### 4. run the following lines to run script or equity and bonds and obtain results
 new_results <- import_asset_results(
-  project_name = project_name,
-  investor_name = investor_name
+  project_name = project_name
 )
 
 ### 5. run the following line to check that data remained unchanged.
