@@ -478,12 +478,11 @@ run_stress_test_equity <- function() {
     # insufficient input information (e.g. NAs for financials or 0 equity value)
   }
 
-  result_path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "outputs")
+  results_path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "outputs")
 
   # Output equity results
-  equity_results %>% write_results(
+  equity_results %>% write_results_new(
     path_to_results = results_path,
-    investorname = investor_name_placeholder,
     asset_type = "equity",
     level = calculation_level,
     file_type = "csv"
