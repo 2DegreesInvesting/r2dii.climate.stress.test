@@ -2,6 +2,7 @@
 
 # defining some functions
 import_asset_results <- function(project_name) {
+
   results_path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "outputs")
 
   equity_results_company <- readr::read_csv(file.path(results_path, "stress_test_results_equity_comp.csv"))
@@ -64,7 +65,7 @@ run_stress_test_equity()
 project_name <- config::get(file = "st_project_settings.yml")$project_name
 
 old_results <- import_asset_results(
-  project_name = project_name,
+  project_name = project_name
 )
 
 ### 3. check out dev branch of repo (or whichever branch you want to use as comparison)
@@ -74,7 +75,7 @@ run_stress_test_equity()
 
 ### 4. run the following lines to run script or equity and bonds and obtain results
 new_results <- import_asset_results(
-  investor_name = investor_name
+  project_name = project_name
 )
 
 ### 5. run the following line to check that data remained unchanged.
