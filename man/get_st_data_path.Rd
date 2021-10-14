@@ -2,8 +2,8 @@
 % Please edit documentation in R/get_st_data_path.R
 \name{get_st_data_path}
 \alias{get_st_data_path}
-\title{Get the path to the required stress test auxiliary data location. Can be
-provided either via environment variable or options.}
+\title{Get the path to the required stress test data location. Can be provided
+either via environment variable or options.}
 \usage{
 get_st_data_path(var = "ST_DATA_PATH")
 }
@@ -19,8 +19,8 @@ option to get the path is, again, "ST_DATA_PATH".}
 Character
 }
 \description{
-Get the path to the required stress test auxiliary data location. Can be
-provided either via environment variable or options.
+Get the path to the required stress test data location. Can be provided
+either via environment variable or options.
 }
 \seealso{
 Other miscellaneous utility functions: 
