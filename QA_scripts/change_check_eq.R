@@ -74,7 +74,6 @@ run_stress_test_equity()
 
 ### 4. run the following lines to run script or equity and bonds and obtain results
 new_results <- import_asset_results(
-  project_name = project_name,
   investor_name = investor_name
 )
 
