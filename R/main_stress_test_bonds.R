@@ -35,17 +35,10 @@ run_stress_test_bonds <- function() {
 
   data_location <- file.path(get_st_data_path(), data_path())
 
-  # set input path
-  set_project_paths(
-    project_name = project_name,
-    twodii_internal = twodii_internal,
-    project_location_ext = project_location_ext
-  )
-
   # Analysis Parameters----------------------------------------
   # Get analysis parameters from the projects AnalysisParameters.yml - similar to PACTA_analysis
 
-  cfg <- config::get(file = file.path(project_location, "10_Parameter_File", "AnalysisParameters.yml"))
+  cfg <- config::get(file = file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", "AnalysisParameters.yml"))
   # OPEN: check_valid_cfg() not applicable here
   start_year <- cfg$AnalysisPeriod$Years.Startyear
   time_horizon <- cfg$AnalysisPeriod$Years.Horizon
@@ -104,7 +97,7 @@ run_stress_test_bonds <- function() {
   )
 
   # Load PACTA results / bonds portfolio------------------------
-  bonds_path <- file.path(results_path, paste0("Bonds_results_", calculation_level, ".rda"))
+  bonds_path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", paste0("Bonds_results_", calculation_level, ".rda"))
 
   pacta_bonds_results <- read_pacta_results(
     path = bonds_path,
@@ -125,7 +118,7 @@ run_stress_test_bonds <- function() {
     dplyr::ungroup()
 
   # Load sector exposures of portfolio------------------------
-  sector_exposures <- readRDS(file.path(proc_input_path, "overview_portfolio.rda")) %>%
+  sector_exposures <- readRDS(file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", "overview_portfolio.rda")) %>%
     wrangle_and_check_sector_exposures_eq_cb(asset_type = "Bonds")
 
   # Load policy shock transition scenarios--------------------
@@ -476,10 +469,11 @@ run_stress_test_bonds <- function() {
     # insufficient input information (e.g. NAs for financials or 0 equity value)
   }
 
+  results_path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "outputs")
+
   # Output bonds results
-  bonds_results %>% write_results(
+  bonds_results %>% write_results_new(
     path_to_results = results_path,
-    investorname = investor_name_placeholder,
     asset_type = "bonds",
     level = calculation_level,
     file_type = "csv"

@@ -1,8 +1,8 @@
 #-------------- Change checking helper
 
 # defining some functions
-import_asset_results <- function(project_name, investor_name) {
-  results_path <- path_dropbox_2dii("PortCheck_v2", "10_Projects", project_name, "40_Results")
+import_asset_results <- function(project_name) {
+  results_path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "outputs")
 
   loanbook_results_company <- readr::read_csv(file.path(results_path, paste0("stress_test_results_lb_comp_", project_name, ".csv")))
   loanbook_results_port <- readr::read_csv(file.path(results_path, paste0("stress_test_results_lb_port_", project_name, ".csv")))
@@ -59,11 +59,9 @@ run_stress_test_loans()
 
 ### 2. run the following lines to obtain results
 project_name <- config::get(file = "st_project_settings.yml")$project_name
-investor_name <- "Meta Investor"
 
 old_results <- import_asset_results(
-  project_name = project_name,
-  investor_name = investor_name
+  project_name = project_name
 )
 
 ### 3. check out dev branch of repo (or whichever branch you want to use as comparison)
@@ -73,8 +71,7 @@ run_stress_test_loans()
 
 ### 4. run the following lines to run script or equity and bonds and obtain results
 new_results <- import_asset_results(
-  project_name = project_name,
-  investor_name = investor_name
+  project_name = project_name
 )
 
 ### 5. run the following line to check that data remained unchanged.
