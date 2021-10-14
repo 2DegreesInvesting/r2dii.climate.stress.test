@@ -2,10 +2,10 @@
 
 # defining some functions
 import_asset_results <- function(project_name, investor_name) {
-  results_path <- path_dropbox_2dii("PortCheck_v2", "10_Projects", project_name, "40_Results")
+  results_path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "outputs")
 
-  equity_results_company <- readr::read_csv(file.path(results_path, investor_name, "stress_test_results_equity_comp.csv"))
-  equity_results_port <- readr::read_csv(file.path(results_path, investor_name, "stress_test_results_equity_port.csv"))
+  equity_results_company <- readr::read_csv(file.path(results_path, "stress_test_results_equity_comp.csv"))
+  equity_results_port <- readr::read_csv(file.path(results_path, "stress_test_results_equity_port.csv"))
   equity_expected_loss <- readr::read_csv(file.path(results_path, paste0("stress_test_results_eq_comp_el_", project_name, ".csv")))
   equity_annual_pd_changes_sector <- readr::read_csv(file.path(results_path, paste0("stress_test_results_eq_sector_pd_changes_annual.csv")))
   equity_overall_pd_changes_sector <- readr::read_csv(file.path(results_path, paste0("stress_test_results_eq_sector_pd_changes_overall.csv")))
