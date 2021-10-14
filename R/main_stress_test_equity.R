@@ -102,7 +102,7 @@ run_stress_test_equity <- function() {
   )
 
   # Load PACTA results / equity portfolio------------------------
-  equity_path <- file.path(results_path, paste0("Equity_results_", calculation_level, ".rda"))
+  equity_path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", paste0("Equity_results_", calculation_level, ".rda"))
 
   pacta_equity_results <- read_pacta_results(
     path = equity_path,
@@ -123,7 +123,7 @@ run_stress_test_equity <- function() {
     dplyr::ungroup()
 
   # Load sector exposures of portfolio------------------------
-  sector_exposures <- readRDS(file.path(proc_input_path, "overview_portfolio.rda")) %>%
+  sector_exposures <- readRDS(file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", "overview_portfolio.rda")) %>%
     wrangle_and_check_sector_exposures_eq_cb(asset_type = "Equity")
 
   # Load policy shock transition scenarios--------------------
