@@ -38,7 +38,7 @@ run_stress_test_equity <- function() {
   # Analysis Parameters----------------------------------------
   # Get analysis parameters from the projects AnalysisParameters.yml - similar to PACTA_analysis
 
-  cfg <- config::get(file = file.path(get_st_data_path("ST_PROJECT_FOLDER"), "AnalysisParameters.yml"))
+  cfg <- config::get(file = file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", "AnalysisParameters.yml"))
   # OPEN: check_valid_cfg() not applicable here
   start_year <- cfg$AnalysisPeriod$Years.Startyear
   time_horizon <- cfg$AnalysisPeriod$Years.Horizon
