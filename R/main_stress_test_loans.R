@@ -486,9 +486,9 @@ run_stress_test_loans <- function() {
     # insufficient input information (e.g. NAs for financials or 0 equity value)
   }
 
-  write_stress_test_results(results = loans_results,
-                            expected_loss = loans_expected_loss,
-                            annual_pd_changes = loans_annual_pd_changes,
+  write_stress_test_results(results = loanbook_results,
+                            expected_loss = loanbook_expected_loss,
+                            annual_pd_changes = loanbook_annual_pd_changes,
                             asset_type = "loans",
                             calculation_level = calculation_level)
 }
