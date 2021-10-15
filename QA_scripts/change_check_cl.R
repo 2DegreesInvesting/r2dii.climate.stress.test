@@ -1,14 +1,14 @@
 #-------------- Change checking helper
 
 # defining some functions
-import_asset_results <- function(project_name) {
+import_asset_results <- function() {
   results_path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "outputs")
 
-  loanbook_results_company <- readr::read_csv(file.path(results_path, paste0("stress_test_results_lb_comp_", project_name, ".csv")))
-  loanbook_results_port <- readr::read_csv(file.path(results_path, paste0("stress_test_results_lb_port_", project_name, ".csv")))
-  loanbook_expected_loss <- readr::read_csv(file.path(results_path, paste0("stress_test_results_lb_comp_el_", project_name, ".csv")))
-  loanbook_annual_pd_changes_sector <- readr::read_csv(file.path(results_path, "stress_test_results_lb_sector_pd_changes_annual.csv"))
-  loanbook_overall_pd_changes_sector <- readr::read_csv(file.path(results_path, "stress_test_results_lb_sector_pd_changes_overall.csv"))
+  loanbook_results_company <- readr::read_csv(file.path(results_path, "stress_test_results_loans_comp.csv"))
+  loanbook_results_port <- readr::read_csv(file.path(results_path, "stress_test_results_loans_port.csv"))
+  loanbook_expected_loss <- readr::read_csv(file.path(results_path, "stress_test_results_loans_comp_el.csv"))
+  loanbook_annual_pd_changes_sector <- readr::read_csv(file.path(results_path, "stress_test_results_loans_sector_pd_changes_annual.csv"))
+  loanbook_overall_pd_changes_sector <- readr::read_csv(file.path(results_path, "stress_test_results_loans_sector_pd_changes_overall.csv"))
 
   asset_results <- list(
     loanbook_results_company = loanbook_results_company,
@@ -58,11 +58,7 @@ devtools::load_all()
 run_stress_test_loans()
 
 ### 2. run the following lines to obtain results
-project_name <- config::get(file = "st_project_settings.yml")$project_name
-
-old_results <- import_asset_results(
-  project_name = project_name
-)
+old_results <- import_asset_results()
 
 ### 3. check out dev branch of repo (or whichever branch you want to use as comparison)
 devtools::load_all()
@@ -70,9 +66,7 @@ run_stress_test_loans()
 
 
 ### 4. run the following lines to run script or equity and bonds and obtain results
-new_results <- import_asset_results(
-  project_name = project_name
-)
+new_results <- import_asset_results()
 
 ### 5. run the following line to check that data remained unchanged.
 check <- check_all_equal(old_results = old_results, new_results = new_results)

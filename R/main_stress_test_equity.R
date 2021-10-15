@@ -435,80 +435,9 @@ run_stress_test_equity <- function() {
     # insufficient input information (e.g. NAs for financials or 0 equity value)
   }
 
-  results_path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "outputs")
-
-  # Output equity results
-  equity_results %>% write_results_new(
-    path_to_results = results_path,
-    asset_type = "equity",
-    level = calculation_level,
-    file_type = "csv"
-  )
-
-  # Output equity credit risk results
-  equity_expected_loss <- equity_expected_loss %>%
-    dplyr::select(
-      .data$scenario_name, .data$scenario_geography, .data$investor_name,
-      .data$portfolio_name, .data$company_name, .data$id, .data$ald_sector,
-      .data$equity_0_baseline, .data$equity_0_late_sudden, .data$debt,
-      .data$volatility, .data$risk_free_rate, .data$term, .data$Survival_baseline,
-      .data$Survival_late_sudden, .data$PD_baseline, .data$PD_late_sudden, # TODO: keep all tehse PDs??
-      .data$PD_change, .data$pd, .data$lgd, .data$percent_exposure,
-      .data$exposure_at_default, .data$expected_loss_baseline,
-      .data$expected_loss_late_sudden
-    ) %>%
-    dplyr::arrange(
-      .data$scenario_geography, .data$scenario_name, .data$investor_name,
-      .data$portfolio_name, .data$company_name, .data$ald_sector
-    )
-
-  equity_expected_loss %>%
-    readr::write_csv(file.path(
-      results_path,
-      paste0("stress_test_results_eq_comp_el_", project_name, ".csv")
-    ))
-
-  equity_annual_pd_changes_sector <- equity_annual_pd_changes %>%
-    dplyr::group_by(
-      .data$scenario_name, .data$scenario_geography, .data$investor_name,
-      .data$portfolio_name, .data$ald_sector, .data$year
-    ) %>%
-    dplyr::summarise(
-      # ADO 2312 - weight the PD change by baseline equity because this represents the original exposure better
-      PD_change = weighted.mean(x = .data$PD_change, w = .data$equity_t_baseline, na.rm = TRUE),
-      .groups = "drop"
-    ) %>%
-    dplyr::ungroup() %>%
-    dplyr::arrange(
-      .data$scenario_geography, .data$scenario_name, .data$investor_name,
-      .data$portfolio_name, .data$ald_sector, .data$year
-    )
-
-  equity_annual_pd_changes_sector %>%
-    readr::write_csv(file.path(
-      results_path,
-      paste0("stress_test_results_eq_sector_pd_changes_annual.csv")
-    ))
-
-  equity_overall_pd_changes_sector <- equity_expected_loss %>%
-    dplyr::group_by(
-      .data$scenario_name, .data$scenario_geography, .data$investor_name,
-      .data$portfolio_name, .data$ald_sector, .data$term
-    ) %>%
-    dplyr::summarise(
-      # ADO 2312 - weight the PD change by baseline equity because this represents the original exposure better
-      PD_change = weighted.mean(x = .data$PD_change, w = .data$equity_0_baseline, na.rm = TRUE),
-      .groups = "drop"
-    ) %>%
-    dplyr::ungroup() %>%
-    dplyr::arrange(
-      .data$scenario_geography, .data$scenario_name, .data$investor_name,
-      .data$portfolio_name, .data$ald_sector, .data$term
-    )
-
-  equity_overall_pd_changes_sector %>%
-    readr::write_csv(file.path(
-      results_path,
-      paste0("stress_test_results_eq_sector_pd_changes_overall.csv")
-    ))
+  write_stress_test_results(results = equity_results,
+                            expected_loss = equity_expected_loss,
+                            annual_pd_changes = equity_annual_pd_changes,
+                            asset_type = "equity",
+                            calculation_level = calculation_level)
 }
