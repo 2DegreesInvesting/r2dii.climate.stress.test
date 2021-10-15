@@ -32,8 +32,8 @@
 #'
 #' @export
 set_baseline_trajectory <- function(data,
-                                    scenario_to_follow_baseline = "NPS",
-                                    use_prod_forecasts = TRUE) {
+                                    scenario_to_follow_baseline,
+                                    use_prod_forecasts) {
   if (!"id" %in% names(data)) {
     data$id <- "PortfolioLevel"
   }
