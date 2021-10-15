@@ -83,7 +83,6 @@ wrangle_and_check_pacta_results <- function(pacta_results, start_year, time_hori
 }
 
 wrange_financial_data <- function(financial_data) {
-
   financial_data <- financial_data %>%
     dplyr::mutate(net_profit_margin = profit_margin_preferred) %>%
     # TODO: logic unclear thus far
@@ -113,5 +112,4 @@ wrange_financial_data <- function(financial_data) {
     )
   # TODO: any logic/bounds needed for debt/equity ratio and volatility?
   return(financial_data)
-
 }
