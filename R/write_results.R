@@ -3,16 +3,14 @@ write_stress_test_results <- function(results, expected_loss,
 
   results_path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "outputs")
 
-  # Output bonds results
-  bonds_results %>% write_results_new(
+  results %>% write_results_new(
     path_to_results = results_path,
-    asset_type = "bonds",
+    asset_type = asset_type,
     level = calculation_level,
     file_type = "csv"
   )
 
-  # Output bonds credit risk results
-  bonds_expected_loss <- bonds_expected_loss %>%
+  expected_loss <- expected_loss %>%
     dplyr::select(
       .data$scenario_name, .data$scenario_geography, .data$investor_name,
       .data$portfolio_name, .data$company_name, .data$id, .data$ald_sector,
@@ -28,13 +26,13 @@ write_stress_test_results <- function(results, expected_loss,
       .data$portfolio_name, .data$company_name, .data$ald_sector
     )
 
-  bonds_expected_loss %>%
+  expected_loss %>%
     readr::write_csv(file.path(
       results_path,
-      paste0("stress_test_results_cb_comp_el_", project_name, ".csv")
+      paste0("stress_test_results_", asset_type, "_comp_el.csv")
     ))
 
-  bonds_annual_pd_changes_sector <- bonds_annual_pd_changes %>%
+  annual_pd_changes_sector <- annual_pd_changes %>%
     dplyr::group_by(
       .data$scenario_name, .data$scenario_geography, .data$investor_name,
       .data$portfolio_name, .data$ald_sector, .data$year
@@ -50,13 +48,13 @@ write_stress_test_results <- function(results, expected_loss,
       .data$portfolio_name, .data$ald_sector, .data$year
     )
 
-  bonds_annual_pd_changes_sector %>%
+  annual_pd_changes_sector %>%
     readr::write_csv(file.path(
       results_path,
-      paste0("stress_test_results_cb_sector_pd_changes_annual.csv")
+      paste0("stress_test_results_", asset_type, "_sector_pd_changes_annual.csv")
     ))
 
-  bonds_overall_pd_changes_sector <- bonds_expected_loss %>%
+  overall_pd_changes_sector <- expected_loss %>%
     dplyr::group_by(
       .data$scenario_name, .data$scenario_geography, .data$investor_name,
       .data$portfolio_name, .data$ald_sector, .data$term
@@ -72,10 +70,10 @@ write_stress_test_results <- function(results, expected_loss,
       .data$portfolio_name, .data$ald_sector, .data$term
     )
 
-  bonds_overall_pd_changes_sector %>%
+  overall_pd_changes_sector %>%
     readr::write_csv(file.path(
       results_path,
-      paste0("stress_test_results_cb_sector_pd_changes_overall.csv")
+      paste0("stress_test_results_ ",asset_type," _sector_pd_changes_overall.csv")
     ))
 
 
