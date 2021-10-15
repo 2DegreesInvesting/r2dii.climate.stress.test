@@ -438,5 +438,6 @@ run_stress_test_bonds <- function() {
   write_stress_test_results(results = bonds_results,
                             expected_loss = bonds_expected_loss,
                             annual_pd_changes = bonds_annual_pd_changes,
-                            asset_type = "bonds")
+                            asset_type = "bonds",
+                            calculation_level = calculation_level)
 }

@@ -1,5 +1,6 @@
 write_stress_test_results <- function(results, expected_loss,
-                                      annual_pd_changes_sector, asset_type) {
+                                      annual_pd_changes, asset_type,
+                                      calculation_level) {
 
   results_path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "outputs")
 
@@ -75,10 +76,6 @@ write_stress_test_results <- function(results, expected_loss,
       results_path,
       paste0("stress_test_results_ ",asset_type," _sector_pd_changes_overall.csv")
     ))
-
-
-
-
 }
 
 
