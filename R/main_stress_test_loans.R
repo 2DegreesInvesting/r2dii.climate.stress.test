@@ -266,7 +266,6 @@ run_stress_test_loans <- function() {
       debt_equity_ratio = leverage_s_avg,
       volatility = asset_volatility_s_avg
     ) %>%
-    dplyr::mutate(company_name = stringr::str_to_lower(.data$company_name)) %>%
     # ADO 879 - remove year and production/EFs to simplify joins that do not need yearly variation yet
     dplyr::filter(.data$year == .env$start_year) %>%
     dplyr::select(
@@ -274,7 +273,8 @@ run_stress_test_loans <- function() {
         .data$year, .data$ald_production_unit, .data$ald_production,
         .data$ald_emissions_factor_unit, .data$ald_emissions_factor
       )
-    )
+    ) %>%
+    dplyr::mutate(company_name = stringr::str_to_lower(.data$company_name))
   # TODO: any logic/bounds needed for debt/equity ratio and volatility?
 
   # check scenario availability across data inputs for bonds
