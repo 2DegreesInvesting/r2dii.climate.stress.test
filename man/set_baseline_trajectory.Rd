@@ -5,11 +5,7 @@
 \title{Defines which scenario values to use for the baseline trajectory in the
 stress test.}
 \usage{
-set_baseline_trajectory(
-  data,
-  scenario_to_follow_baseline = "NPS",
-  use_prod_forecasts = TRUE
-)
+set_baseline_trajectory(data, scenario_to_follow_baseline, use_prod_forecasts)
 }
 \arguments{
 \item{data}{A dataframe that contains scenario trajectories by technology

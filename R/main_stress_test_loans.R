@@ -61,13 +61,11 @@ run_stress_test_loans <- function() {
   # Scenarios in the model_parameters.yml file must have the short names (SDS, NPS, etc)
   scenario_to_follow_baseline <- cfg_mod$scenarios$scenario_to_follow_baseline # sets which scenario trajectory the baseline scenario follows
   scenario_to_follow_ls <- cfg_mod$scenarios$scenario_to_follow_ls # sets which scenario trajectory LS scenario follows after shock period
-  scenario_to_follow_ls_aligned <- cfg_mod$scenarios$scenario_to_follow_ls_aligned
 
   scenarios_filter <- unique(
     c(
       scenario_to_follow_baseline,
-      scenario_to_follow_ls,
-      scenario_to_follow_ls_aligned
+      scenario_to_follow_ls
     )
   )
 
@@ -101,7 +99,10 @@ run_stress_test_loans <- function() {
   financial_data_loans <- read_company_data(
     path = create_stressdata_masterdata_file_paths()$loans,
     asset_type = "loans"
-  )
+  ) %>%
+    wrangle_financial_data(start_year = start_year) %>%
+    dplyr::mutate(company_name = stringr::str_to_lower(.data$company_name))
+
   # Load PACTA results / loans portfolio------------------------
   # TODO: select the right scenarios
   # TODO: select the right geography
@@ -241,42 +242,6 @@ run_stress_test_loans <- function() {
     excluded_companies <- NULL
   }
 
-  ###########################################################################
-  # Data wrangling / preparation---------------------------------------------
-  ###########################################################################
-
-  # Prepare net profit margins loans----------------------
-
-  financial_data_loans <- financial_data_loans %>%
-    dplyr::mutate(net_profit_margin = profit_margin_preferred) %>%
-    # TODO: logic unclear thus far
-    dplyr::mutate(
-      net_profit_margin = dplyr::case_when(
-        net_profit_margin < 0 & dplyr::between(profit_margin_unpreferred, 0, 1) ~ profit_margin_unpreferred,
-        net_profit_margin < 0 & profit_margin_unpreferred < 0 ~ 0,
-        net_profit_margin < 0 & profit_margin_unpreferred > 1 ~ 0,
-        net_profit_margin > 1 & dplyr::between(profit_margin_unpreferred, 0, 1) ~ profit_margin_unpreferred,
-        net_profit_margin > 1 & profit_margin_unpreferred > 1 ~ 1,
-        net_profit_margin > 1 & profit_margin_unpreferred < 0 ~ 1,
-        TRUE ~ net_profit_margin
-      )
-    ) %>%
-    dplyr::select(-c(profit_margin_preferred, profit_margin_unpreferred)) %>%
-    dplyr::rename(
-      debt_equity_ratio = leverage_s_avg,
-      volatility = asset_volatility_s_avg
-    ) %>%
-    dplyr::mutate(company_name = stringr::str_to_lower(.data$company_name)) %>%
-    # ADO 879 - remove year and production/EFs to simplify joins that do not need yearly variation yet
-    dplyr::filter(.data$year == .env$start_year) %>%
-    dplyr::select(
-      -c(
-        .data$year, .data$ald_production_unit, .data$ald_production,
-        .data$ald_emissions_factor_unit, .data$ald_emissions_factor
-      )
-    )
-  # TODO: any logic/bounds needed for debt/equity ratio and volatility?
-
   # check scenario availability across data inputs for bonds
   check_scenario_availability(
     portfolio = pacta_loanbook_results,
@@ -327,8 +292,7 @@ run_stress_test_loans <- function() {
     print(overshoot_method)
     # Calculate late and sudden prices for scenario i
     df_prices <- df_price %>%
-      dplyr::mutate(Baseline = NPS) %>%
-      # FIXME this should be parameterized!!
+      dplyr::mutate(Baseline = !!rlang::sym(scenario_to_follow_baseline)) %>%
       dplyr::rename(
         year = year, ald_sector = sector, technology = technology, NPS_price = NPS,
         SDS_price = SDS, Baseline_price = Baseline, B2DS_price = B2DS
@@ -366,7 +330,7 @@ run_stress_test_loans <- function() {
         shock_scenario = shock_scenario,
         use_production_forecasts_ls = use_prod_forecasts_ls,
         overshoot_method = overshoot_method,
-        scenario_to_follow_ls_aligned = scenario_to_follow_ls_aligned,
+        scenario_to_follow_ls_aligned = scenario_to_follow_ls,
         start_year = start_year,
         end_year = end_year,
         analysis_time_frame = time_horizon
@@ -519,82 +483,9 @@ run_stress_test_loans <- function() {
     # insufficient input information (e.g. NAs for financials or 0 equity value)
   }
 
-  results_path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "outputs")
-
-  # Output corporate loan book results
-  loanbook_results %>% write_results_new(
-    path_to_results = results_path,
-    asset_type = "loans",
-    level = calculation_level,
-    file_type = "csv"
-  )
-
-  # Output loan book credit risk results
-  loanbook_expected_loss <- loanbook_expected_loss %>%
-    dplyr::select(
-      .data$scenario_name, .data$scenario_geography, .data$investor_name,
-      .data$portfolio_name, .data$company_name, .data$id, .data$ald_sector,
-      .data$equity_0_baseline, .data$equity_0_late_sudden, .data$debt,
-      .data$volatility, .data$risk_free_rate, .data$term, .data$Survival_baseline,
-      .data$Survival_late_sudden, .data$PD_baseline, .data$PD_late_sudden,
-      .data$PD_change, .data$pd, .data$lgd, .data$percent_exposure, # TODO: keep all tehse PDs??
-      .data$exposure_at_default, .data$expected_loss_baseline,
-      .data$expected_loss_late_sudden
-    ) %>%
-    dplyr::arrange(
-      .data$scenario_geography, .data$scenario_name, .data$investor_name,
-      .data$portfolio_name, .data$company_name, .data$ald_sector
-    )
-
-  loanbook_expected_loss %>%
-    readr::write_csv(file.path(
-      results_path,
-      paste0("stress_test_results_lb_comp_el_", project_name, ".csv")
-    ))
-
-  # TODO: this is an unweighted average so far. keep in mind.
-  loanbook_annual_pd_changes_sector <- loanbook_annual_pd_changes %>%
-    dplyr::group_by(
-      .data$scenario_name, .data$scenario_geography, .data$investor_name,
-      .data$portfolio_name, .data$ald_sector, .data$year
-    ) %>%
-    dplyr::summarise(
-      # ADO 2312 - weight the PD change by baseline equity because this represents the original exposure better
-      PD_change = weighted.mean(x = .data$PD_change, w = .data$equity_t_baseline, na.rm = TRUE),
-      .groups = "drop"
-    ) %>%
-    dplyr::ungroup() %>%
-    dplyr::arrange(
-      .data$scenario_geography, .data$scenario_name, .data$investor_name,
-      .data$portfolio_name, .data$ald_sector, .data$year
-    )
-
-  loanbook_annual_pd_changes_sector %>%
-    readr::write_csv(file.path(
-      results_path,
-      paste0("stress_test_results_lb_sector_pd_changes_annual.csv")
-    ))
-
-  # TODO: this is an unweighted average so far. keep in mind.
-  loanbook_overall_pd_changes_sector <- loanbook_expected_loss %>%
-    dplyr::group_by(
-      .data$scenario_name, .data$scenario_geography, .data$investor_name,
-      .data$portfolio_name, .data$ald_sector, .data$term
-    ) %>%
-    dplyr::summarise(
-      # ADO 2312 - weight the PD change by baseline equity because this represents the original exposure better
-      PD_change = weighted.mean(x = .data$PD_change, w = .data$equity_0_baseline, na.rm = TRUE),
-      .groups = "drop"
-    ) %>%
-    dplyr::ungroup() %>%
-    dplyr::arrange(
-      .data$scenario_geography, .data$scenario_name, .data$investor_name,
-      .data$portfolio_name, .data$ald_sector, .data$term
-    )
-
-  loanbook_overall_pd_changes_sector %>%
-    readr::write_csv(file.path(
-      results_path,
-      paste0("stress_test_results_lb_sector_pd_changes_overall.csv")
-    ))
+  write_stress_test_results(results = loanbook_results,
+                            expected_loss = loanbook_expected_loss,
+                            annual_pd_changes = loanbook_annual_pd_changes,
+                            asset_type = "loans",
+                            calculation_level = calculation_level)
 }
