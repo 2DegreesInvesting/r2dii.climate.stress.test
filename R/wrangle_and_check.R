@@ -91,7 +91,7 @@ wrangle_and_check_pacta_results <- function(pacta_results, start_year, time_hori
 #' @param start_year String holding start year of analysis.
 #'
 #' @return A prewrangled `financal_data` set.
-wrange_financial_data <- function(financial_data, start_year) {
+wrangle_financial_data <- function(financial_data, start_year) {
   financial_data <- financial_data %>%
     dplyr::mutate(net_profit_margin = profit_margin_preferred) %>%
     # TODO: logic unclear thus far
