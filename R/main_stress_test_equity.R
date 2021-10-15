@@ -59,13 +59,11 @@ run_stress_test_equity <- function() {
   # Scenarios in the model_parameters.yml file must have the short names (SDS, NPS, etc)
   scenario_to_follow_baseline <- cfg_mod$scenarios$scenario_to_follow_baseline # sets which scenario trajectory the baseline scenario follows
   scenario_to_follow_ls <- cfg_mod$scenarios$scenario_to_follow_ls # sets which scenario trajectory LS scenario follows after shock period
-  scenario_to_follow_ls_aligned <- cfg_mod$scenarios$scenario_to_follow_ls_aligned
 
   scenarios_filter <- unique(
     c(
       scenario_to_follow_baseline,
-      scenario_to_follow_ls,
-      scenario_to_follow_ls_aligned
+      scenario_to_follow_ls
     )
   )
 
@@ -285,7 +283,7 @@ run_stress_test_equity <- function() {
         shock_scenario = shock_scenario,
         use_production_forecasts_ls = use_prod_forecasts_ls,
         overshoot_method = overshoot_method,
-        scenario_to_follow_ls_aligned = scenario_to_follow_ls_aligned,
+        scenario_to_follow_ls_aligned = scenario_to_follow_ls,
         start_year = start_year,
         end_year = end_year,
         analysis_time_frame = time_horizon
