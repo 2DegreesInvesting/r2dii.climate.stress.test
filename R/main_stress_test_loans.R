@@ -101,7 +101,10 @@ run_stress_test_loans <- function() {
   financial_data_loans <- read_company_data(
     path = create_stressdata_masterdata_file_paths()$loans,
     asset_type = "loans"
-  )
+  ) %>%
+    wrangle_financial_data(start_year = start_year) %>%
+    dplyr::mutate(company_name = stringr::str_to_lower(.data$company_name))
+
   # Load PACTA results / loans portfolio------------------------
   # TODO: select the right scenarios
   # TODO: select the right geography
@@ -240,42 +243,6 @@ run_stress_test_loans <- function() {
   } else {
     excluded_companies <- NULL
   }
-
-  ###########################################################################
-  # Data wrangling / preparation---------------------------------------------
-  ###########################################################################
-
-  # Prepare net profit margins loans----------------------
-
-  financial_data_loans <- financial_data_loans %>%
-    dplyr::mutate(net_profit_margin = profit_margin_preferred) %>%
-    # TODO: logic unclear thus far
-    dplyr::mutate(
-      net_profit_margin = dplyr::case_when(
-        net_profit_margin < 0 & dplyr::between(profit_margin_unpreferred, 0, 1) ~ profit_margin_unpreferred,
-        net_profit_margin < 0 & profit_margin_unpreferred < 0 ~ 0,
-        net_profit_margin < 0 & profit_margin_unpreferred > 1 ~ 0,
-        net_profit_margin > 1 & dplyr::between(profit_margin_unpreferred, 0, 1) ~ profit_margin_unpreferred,
-        net_profit_margin > 1 & profit_margin_unpreferred > 1 ~ 1,
-        net_profit_margin > 1 & profit_margin_unpreferred < 0 ~ 1,
-        TRUE ~ net_profit_margin
-      )
-    ) %>%
-    dplyr::select(-c(profit_margin_preferred, profit_margin_unpreferred)) %>%
-    dplyr::rename(
-      debt_equity_ratio = leverage_s_avg,
-      volatility = asset_volatility_s_avg
-    ) %>%
-    dplyr::mutate(company_name = stringr::str_to_lower(.data$company_name)) %>%
-    # ADO 879 - remove year and production/EFs to simplify joins that do not need yearly variation yet
-    dplyr::filter(.data$year == .env$start_year) %>%
-    dplyr::select(
-      -c(
-        .data$year, .data$ald_production_unit, .data$ald_production,
-        .data$ald_emissions_factor_unit, .data$ald_emissions_factor
-      )
-    )
-  # TODO: any logic/bounds needed for debt/equity ratio and volatility?
 
   # check scenario availability across data inputs for bonds
   check_scenario_availability(
