@@ -91,7 +91,7 @@ run_stress_test_equity <- function() {
     path = create_stressdata_masterdata_file_paths()$listed_equity,
     asset_type = "equity"
   ) %>%
-    wrangle_financial_data()
+    wrangle_financial_data(start_year = start_year)
 
   # Load PACTA results / equity portfolio------------------------
   equity_path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", paste0("Equity_results_", calculation_level, ".rda"))

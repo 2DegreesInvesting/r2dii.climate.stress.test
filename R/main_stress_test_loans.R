@@ -102,7 +102,7 @@ run_stress_test_loans <- function() {
     path = create_stressdata_masterdata_file_paths()$loans,
     asset_type = "loans"
   ) %>%
-    wrange_financial_data() %>%
+    wrange_financial_data(start_year = start_year) %>%
     dplyr::mutate(company_name = stringr::str_to_lower(.data$company_name))
 
   # Load PACTA results / loans portfolio------------------------

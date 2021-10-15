@@ -82,7 +82,7 @@ wrangle_and_check_pacta_results <- function(pacta_results, start_year, time_hori
     dplyr::distinct_all()
 }
 
-wrange_financial_data <- function(financial_data) {
+wrange_financial_data <- function(financial_data, start_year) {
   financial_data <- financial_data %>%
     dplyr::mutate(net_profit_margin = profit_margin_preferred) %>%
     # TODO: logic unclear thus far
@@ -103,7 +103,7 @@ wrange_financial_data <- function(financial_data) {
       volatility = asset_volatility_s_avg
     ) %>%
     # ADO 879 - remove year and production/EFs to simplify joins that do not need yearly variation yet
-    dplyr::filter(.data$year == .env$start_year) %>%
+    dplyr::filter(.data$year == start_year) %>%
     dplyr::select(
       -c(
         .data$year, .data$ald_production_unit, .data$ald_production,

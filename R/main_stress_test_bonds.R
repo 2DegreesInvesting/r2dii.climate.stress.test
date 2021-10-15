@@ -95,7 +95,7 @@ run_stress_test_bonds <- function() {
     path = create_stressdata_masterdata_file_paths()$bonds,
     asset_type = "bonds"
   ) %>%
-    wrangle_financial_data()
+    wrangle_financial_data(start_year = start_year)
 
   # Load PACTA results / bonds portfolio------------------------
   bonds_path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", paste0("Bonds_results_", calculation_level, ".rda"))
