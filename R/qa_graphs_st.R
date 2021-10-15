@@ -57,7 +57,7 @@ show_prod_trajectories <- function(data = scenario_data,
                                    technology = NULL,
                                    geography_filter = NULL) {
   data_has_expected_columns <- all(c(
-    "source", "year", "ald_sector",
+    "scenario_source", "year", "ald_sector",
     "technology", "scenario_geography",
     "scenario", "fair_share_perc"
   )
@@ -67,7 +67,7 @@ show_prod_trajectories <- function(data = scenario_data,
   production_over_time <- data %>%
     dplyr::filter(
       .data$year <= end_year &
-        .data$source %in% source &
+        .data$scenario_source %in% source &
         .data$ald_sector %in% ald_sector &
         .data$technology %in% technology &
         .data$scenario_geography %in% geography_filter
