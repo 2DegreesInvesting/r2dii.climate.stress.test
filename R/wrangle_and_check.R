@@ -81,3 +81,37 @@ wrangle_and_check_pacta_results <- function(pacta_results, start_year, time_hori
     ) %>%
     dplyr::distinct_all()
 }
+
+wrange_financial_data <- function(financial_data) {
+
+  financial_data <- financial_data %>%
+    dplyr::mutate(net_profit_margin = profit_margin_preferred) %>%
+    # TODO: logic unclear thus far
+    dplyr::mutate(
+      net_profit_margin = dplyr::case_when(
+        net_profit_margin < 0 & dplyr::between(profit_margin_unpreferred, 0, 1) ~ profit_margin_unpreferred,
+        net_profit_margin < 0 & profit_margin_unpreferred < 0 ~ 0,
+        net_profit_margin < 0 & profit_margin_unpreferred > 1 ~ 0,
+        net_profit_margin > 1 & dplyr::between(profit_margin_unpreferred, 0, 1) ~ profit_margin_unpreferred,
+        net_profit_margin > 1 & profit_margin_unpreferred > 1 ~ 1,
+        net_profit_margin > 1 & profit_margin_unpreferred < 0 ~ 1,
+        TRUE ~ net_profit_margin
+      )
+    ) %>%
+    dplyr::select(-c(profit_margin_preferred, profit_margin_unpreferred)) %>%
+    dplyr::rename(
+      debt_equity_ratio = leverage_s_avg,
+      volatility = asset_volatility_s_avg
+    ) %>%
+    # ADO 879 - remove year and production/EFs to simplify joins that do not need yearly variation yet
+    dplyr::filter(.data$year == .env$start_year) %>%
+    dplyr::select(
+      -c(
+        .data$year, .data$ald_production_unit, .data$ald_production,
+        .data$ald_emissions_factor_unit, .data$ald_emissions_factor
+      )
+    )
+  # TODO: any logic/bounds needed for debt/equity ratio and volatility?
+  return(financial_data)
+
+}
