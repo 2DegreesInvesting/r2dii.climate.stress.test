@@ -1,3 +1,15 @@
+#' Write stress test reports to output dir
+#'
+#' Stress test results are wrangled and exported to the output dir.
+#'
+#' @param results Tibble holding stress test results.
+#' @param expected_loss Tibble holding stress test results on expected loss.
+#' @param annual_pd_changes Tibble holding stress test results on annual changes
+#'   of probability of default.
+#' @param asset_type String holding asset type.
+#' @param calculation_level String holding calculation level.
+#'
+#' @return NULL
 write_stress_test_results <- function(results, expected_loss,
                                       annual_pd_changes, asset_type,
                                       calculation_level) {
