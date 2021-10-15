@@ -86,7 +86,7 @@ write_stress_test_results <- function(results, expected_loss,
   overall_pd_changes_sector %>%
     readr::write_csv(file.path(
       results_path,
-      paste0("stress_test_results_ ",asset_type,"_sector_pd_changes_overall.csv")
+      paste0("stress_test_results_",asset_type,"_sector_pd_changes_overall.csv")
     ))
 }
 
