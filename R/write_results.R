@@ -1,3 +1,96 @@
+#' Write stress test reports to output dir
+#'
+#' Stress test results are wrangled and exported to the output dir.
+#'
+#' @param results Tibble holding stress test results.
+#' @param expected_loss Tibble holding stress test results on expected loss.
+#' @param annual_pd_changes Tibble holding stress test results on annual changes
+#'   of probability of default.
+#' @param asset_type String holding asset type.
+#' @param calculation_level String holding calculation level.
+#'
+#' @return NULL
+write_stress_test_results <- function(results, expected_loss,
+                                      annual_pd_changes, asset_type,
+                                      calculation_level) {
+
+  results_path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "outputs")
+
+  results %>% write_results_new(
+    path_to_results = results_path,
+    asset_type = asset_type,
+    level = calculation_level,
+    file_type = "csv"
+  )
+
+  expected_loss <- expected_loss %>%
+    dplyr::select(
+      .data$scenario_name, .data$scenario_geography, .data$investor_name,
+      .data$portfolio_name, .data$company_name, .data$id, .data$ald_sector,
+      .data$equity_0_baseline, .data$equity_0_late_sudden, .data$debt,
+      .data$volatility, .data$risk_free_rate, .data$term, .data$Survival_baseline,
+      .data$Survival_late_sudden, .data$PD_baseline, .data$PD_late_sudden,
+      .data$PD_change, .data$pd, .data$lgd, .data$percent_exposure, # TODO: keep all tehse PDs??
+      .data$exposure_at_default, .data$expected_loss_baseline,
+      .data$expected_loss_late_sudden
+    ) %>%
+    dplyr::arrange(
+      .data$scenario_geography, .data$scenario_name, .data$investor_name,
+      .data$portfolio_name, .data$company_name, .data$ald_sector
+    )
+
+  expected_loss %>%
+    readr::write_csv(file.path(
+      results_path,
+      paste0("stress_test_results_", asset_type, "_comp_el.csv")
+    ))
+
+  annual_pd_changes_sector <- annual_pd_changes %>%
+    dplyr::group_by(
+      .data$scenario_name, .data$scenario_geography, .data$investor_name,
+      .data$portfolio_name, .data$ald_sector, .data$year
+    ) %>%
+    dplyr::summarise(
+      # ADO 2312 - weight the PD change by baseline equity because this represents the original exposure better
+      PD_change = weighted.mean(x = .data$PD_change, w = .data$equity_t_baseline, na.rm = TRUE),
+      .groups = "drop"
+    ) %>%
+    dplyr::ungroup() %>%
+    dplyr::arrange(
+      .data$scenario_geography, .data$scenario_name, .data$investor_name,
+      .data$portfolio_name, .data$ald_sector, .data$year
+    )
+
+  annual_pd_changes_sector %>%
+    readr::write_csv(file.path(
+      results_path,
+      paste0("stress_test_results_", asset_type, "_sector_pd_changes_annual.csv")
+    ))
+
+  overall_pd_changes_sector <- expected_loss %>%
+    dplyr::group_by(
+      .data$scenario_name, .data$scenario_geography, .data$investor_name,
+      .data$portfolio_name, .data$ald_sector, .data$term
+    ) %>%
+    dplyr::summarise(
+      # ADO 2312 - weight the PD change by baseline equity because this represents the original exposure better
+      PD_change = weighted.mean(x = .data$PD_change, w = .data$equity_0_baseline, na.rm = TRUE),
+      .groups = "drop"
+    ) %>%
+    dplyr::ungroup() %>%
+    dplyr::arrange(
+      .data$scenario_geography, .data$scenario_name, .data$investor_name,
+      .data$portfolio_name, .data$ald_sector, .data$term
+    )
+
+  overall_pd_changes_sector %>%
+    readr::write_csv(file.path(
+      results_path,
+      paste0("stress_test_results_",asset_type,"_sector_pd_changes_overall.csv")
+    ))
+}
+
+
 #' Write the results to the project directory
 #'
 #' @param data A dataframe the results of the stress test for one asset type
