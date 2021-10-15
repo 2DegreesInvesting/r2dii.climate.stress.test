@@ -242,8 +242,7 @@ run_stress_test_equity <- function() {
 
     # Calculate late and sudden prices for scenario i
     df_prices <- df_price %>%
-      dplyr::mutate(Baseline = NPS) %>%
-      # FIXME this should be parameterized!!
+      dplyr::mutate(Baseline = !!rlang::sym(scenario_to_follow_baseline)) %>%
       dplyr::rename(
         year = year, ald_sector = sector, technology = technology, NPS_price = NPS,
         SDS_price = SDS, Baseline_price = Baseline, B2DS_price = B2DS
