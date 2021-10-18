@@ -26,14 +26,15 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
                                    discount_rate = 0.02,
                                    div_netprofit_prop_coef = 1,
                                    company_exclusion = TRUE) {
-
-  validate_input_values(lgd_senior_claims = lgd_senior_claims,
-                        lgd_subordinated_claims = lgd_subordinated_claims,
-                        terminal_value = terminal_value,
-                        risk_free_rate = risk_free_rate,
-                        discount_rate = discount_rate,
-                        div_netprofit_prop_coef = div_netprofit_prop_coef,
-                        company_exclusion = company_exclusion)
+  validate_input_values(
+    lgd_senior_claims = lgd_senior_claims,
+    lgd_subordinated_claims = lgd_subordinated_claims,
+    terminal_value = terminal_value,
+    risk_free_rate = risk_free_rate,
+    discount_rate = discount_rate,
+    div_netprofit_prop_coef = div_netprofit_prop_coef,
+    company_exclusion = company_exclusion
+  )
 
   scenario_to_follow_baseline <- baseline_scenario_lookup
   scenario_to_follow_ls <- shock_scenario_lookup
@@ -434,9 +435,11 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
     # insufficient input information (e.g. NAs for financials or 0 equity value)
   }
 
-  write_stress_test_results(results = equity_results,
-                            expected_loss = equity_expected_loss,
-                            annual_pd_changes = equity_annual_pd_changes,
-                            asset_type = "equity",
-                            calculation_level = calculation_level)
+  write_stress_test_results(
+    results = equity_results,
+    expected_loss = equity_expected_loss,
+    annual_pd_changes = equity_annual_pd_changes,
+    asset_type = "equity",
+    calculation_level = calculation_level
+  )
 }

@@ -5,8 +5,9 @@
 #' @inheritParams run_stress_test_equity
 #'
 #' @return NULL
-validate_input_values <- function(lgd_senior_claims, lgd_subordinated_claims, terminal_value, risk_free_rate, discount_rate, div_netprofit_prop_coef, company_exclusion) {
-
+validate_input_values <- function(lgd_senior_claims, lgd_subordinated_claims,
+                                  terminal_value, risk_free_rate, discount_rate,
+                                  div_netprofit_prop_coef, company_exclusion) {
   if (!is.logical(company_exclusion)) {
     stop("Company exclusion must be a boolean.")
   }
