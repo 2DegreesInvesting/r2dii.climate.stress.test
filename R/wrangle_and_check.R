@@ -85,13 +85,15 @@ wrangle_and_check_pacta_results <- function(pacta_results, start_year, time_hori
 #' Wrangle financial data
 #'
 #' Applies custom improvements of `net_profit_margin` and does row and cols
-#' selections as well as filtering.
+#' selections as well as filtering. Rows that have implausible values below or
+#' equal to 0 are removed.
 #'
 #' @param financial_data A data set of `financal_data`.
 #' @param start_year String holding start year of analysis.
 #'
 #' @return A prewrangled `financal_data` set.
 wrangle_financial_data <- function(financial_data, start_year) {
+
   financial_data <- financial_data %>%
     dplyr::mutate(net_profit_margin = profit_margin_preferred) %>%
     # TODO: logic unclear thus far
@@ -106,6 +108,7 @@ wrangle_financial_data <- function(financial_data, start_year) {
         TRUE ~ net_profit_margin
       )
     ) %>%
+   dplyr::filter(net_profit_margin > 0) %>%
     dplyr::select(-c(profit_margin_preferred, profit_margin_unpreferred)) %>%
     dplyr::rename(
       debt_equity_ratio = leverage_s_avg,
@@ -120,5 +123,6 @@ wrangle_financial_data <- function(financial_data, start_year) {
       )
     )
   # TODO: any logic/bounds needed for debt/equity ratio and volatility?
+
   return(financial_data)
 }
