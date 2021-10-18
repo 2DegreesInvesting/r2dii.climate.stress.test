@@ -119,6 +119,8 @@ if (exists("portfolio")) {
       .groups = "drop_last"
     ) %>%
     dplyr::rename(sector = sector_ipr, subsector = subsector_ipr) %>%
+    # ADO 1945 - left join ensures that all holdings that are not classified in
+    # any IPR sector can be identifies as "Other"
     dplyr::left_join(
       shocks %>% dplyr::filter(methodology == "IPR") %>% dplyr::select(-c(methodology)),
       by = c("sector", "subsector")
