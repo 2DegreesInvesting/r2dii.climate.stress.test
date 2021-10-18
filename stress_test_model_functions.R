@@ -122,8 +122,8 @@ join_price_data <- function(df, df_prices) {
 
 join_net_profit_margins <- function(df, net_profit_margins) {
   # Joins net profit margins by technology
-  df %>%
-    dplyr::left_join(net_profit_margins, by = "technology")
+  df <- df %>%
+    dplyr::inner_join(net_profit_margins, by = "technology")
 }
 
 calculate_net_profits <- function(df) {
