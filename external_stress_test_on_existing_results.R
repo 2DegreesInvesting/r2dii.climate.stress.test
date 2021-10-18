@@ -207,12 +207,18 @@ results_dnb <- portfolio %>%
     exposure = sum(value_usd, na.rm = TRUE),
     .groups = "drop_last"
   ) %>%
+  dplyr::ungroup() %>%
   dplyr::rename(sector = sector_dnb) %>%
+  # ADO 1945 - left join ensures that all holdings that are not classified in
+  # any DNB sector can be identifies as "Other"
   dplyr::left_join(
     shocks %>% dplyr::filter(methodology == "DNB") %>% dplyr::select(-c(methodology)),
     by = c("sector")
   ) %>%
-  dplyr::mutate(loss = exposure * shock / 100)
+  dplyr::mutate(
+    loss = exposure * shock / 100,
+    sector = ifelse(is.na(sector), "Other", sector)
+  )
 
 results_ipr <- portfolio %>%
   as.data.frame() %>%
@@ -226,12 +232,18 @@ results_ipr <- portfolio %>%
     exposure = sum(value_usd, na.rm = TRUE),
     .groups = "drop_last"
   ) %>%
+  dplyr::ungroup() %>%
   dplyr::rename(sector = sector_ipr, subsector = subsector_ipr) %>%
+  # ADO 1945 - left join ensures that all holdings that are not classified in
+  # any IPR sector can be identifies as "Other"
   dplyr::left_join(
     shocks %>% dplyr::filter(methodology == "IPR") %>% dplyr::select(-c(methodology)),
     by = c("sector", "subsector")
   ) %>%
-  dplyr::mutate(loss = exposure * shock / 100)
+  dplyr::mutate(
+    loss = exposure * shock / 100,
+    sector = ifelse(is.na(sector), "Other", sector)
+  )
 
 results_boe <- portfolio %>%
   as.data.frame() %>%
@@ -244,15 +256,19 @@ results_boe <- portfolio %>%
     exposure = sum(value_usd, na.rm = TRUE),
     .groups = "drop_last"
   ) %>%
+  dplyr::ungroup() %>%
   dplyr::rename(sector = sector_boe, subsector = subsector_boe) %>%
   dplyr::bind_rows(boe_exposures_cb, boe_exposures_eq) %>%
+  # ADO 1945 - left join ensures that all holdings that are not classified in
+  # any IPR sector can be identifies as "Other"
   dplyr::left_join(
     shocks %>% dplyr::filter(methodology == "BoE") %>% dplyr::select(-c(description, methodology)),
     by = c("sector", "subsector")
   ) %>%
   dplyr::mutate(
     shock = ifelse(asset_type == "Bonds", 0.15 * shock, shock),
-    loss = exposure * shock / 100
+    loss = exposure * shock / 100,
+    sector = ifelse(is.na(sector), "Other", sector)
   )
 
 results_boe %>%
