@@ -1,8 +1,12 @@
 #' Run stress testing for equity
 #'
+#' @param company_exlusion Boolean, indicating if companies provided in dataset
+#'   excluded_companies.csv shall be excluded.
 #' @return NULL
 #' @export
-run_stress_test_equity <- function() {
+run_stress_test_equity <- function(company_exclusion = TRUE) {
+
+  validate_input_values(company_exclusion = company_exclusion)
   ###########################################################################
   # Project Initialisation---------------------------------------------------
   ###########################################################################
@@ -31,7 +35,6 @@ run_stress_test_equity <- function() {
   project_location_ext <- cfg_st$project_internal$project_location_ext
   price_data_version <- cfg_st$price_data_version
   calculation_level <- "company"
-  company_exclusion <- cfg_st$company_exclusion
 
   data_location <- file.path(get_st_data_path(), data_path())
 
