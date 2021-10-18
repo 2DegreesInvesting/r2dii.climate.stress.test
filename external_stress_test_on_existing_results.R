@@ -140,7 +140,7 @@ cb_exposures <- readRDS(file.path(project_location, "40_Results", investor_name_
     equity_market %in% c("Global", "GlobalMarket")
   ) %>%
   dplyr::distinct(investor_name, portfolio_name, ald_sector, technology, plan_carsten, plan_sec_carsten) %>%
-  dplyr::left_join(
+  dplyr::inner_join(
     portfolio_overview %>% dplyr::filter(asset_type == "Bonds"),
     by = c("investor_name", "portfolio_name")
   ) %>%
@@ -153,7 +153,7 @@ eq_exposures <- readRDS(file.path(project_location, "40_Results", investor_name_
     equity_market %in% c("Global", "GlobalMarket")
   ) %>%
   dplyr::distinct(investor_name, portfolio_name, ald_sector, technology, plan_carsten, plan_sec_carsten) %>%
-  dplyr::left_join(
+  dplyr::inner_join(
     portfolio_overview %>% dplyr::filter(asset_type == "Equity"),
     by = c("investor_name", "portfolio_name")
   ) %>%
