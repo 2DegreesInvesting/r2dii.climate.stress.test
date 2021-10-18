@@ -108,7 +108,7 @@ wrangle_financial_data <- function(financial_data, start_year) {
         TRUE ~ net_profit_margin
       )
     ) %>%
-   dplyr::filter(net_profit_margin > 0) %>%
+    dplyr::filter(net_profit_margin > 0) %>%
     dplyr::select(-c(profit_margin_preferred, profit_margin_unpreferred)) %>%
     dplyr::rename(
       debt_equity_ratio = leverage_s_avg,

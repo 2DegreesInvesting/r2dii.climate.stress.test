@@ -4,11 +4,15 @@
 \alias{keep_merton_compatible_rows}
 \title{Keep rows that fulfill constraints of the merton model}
 \usage{
-keep_merton_compatible_rows(data)
+keep_merton_compatible_rows(data, stage)
 }
 \arguments{
-\item{data}{A tibble holding at least the columns \code{debt}, \code{equity_0_baseline},
-\code{equity_0_late_sudden}, \code{volatility}, \code{risk_free_rate} and \code{term}.}
+\item{data}{A tibble holding at least the columns \code{debt},
+\code{equity_0_baseline} or \code{equity_t_baseline}, \code{equity_0_late_sudden} or \code{equity_t_late_sudden}, \code{volatility}, \code{risk_free_rate}
+and \code{term}.}
+
+\item{stage}{String, indicating if checks are done for overall or annual
+results.}
 }
 \value{
 Tibble holding rows from \code{data} that are compatible with constraints
