@@ -83,6 +83,8 @@ calculate_pd_change_annual <- function(data,
       term = 1 # annual
     )
 
+  data <- keep_merton_compatible_rows(data)
+
   results <- data %>%
     dplyr::mutate(Survival_baseline = calc_survival_probability_merton(
       L = data$debt,
