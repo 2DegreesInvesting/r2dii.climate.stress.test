@@ -83,7 +83,6 @@ asset_value_at_risk <- function(data,
     ) %>%
     dplyr::select(-c(.data$total_disc_npv_ls, .data$total_disc_npv_baseline))
 
-  browser()
   data <- data %>%
     dplyr::inner_join(
       plan_carsten,
