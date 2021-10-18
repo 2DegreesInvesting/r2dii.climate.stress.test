@@ -6,8 +6,9 @@
 #' Unlike [CreditRisk::Merton()] this implementation:
 #' 1. only holds functionality to calculate probability of survival
 #' 1. can be called in vectorised fashion
-#' 1. has additional input validation by checking that all input values are
-#' non negative numeric vectors of the same length.
+#' 1. additionally checks that all input values are of the same length
+#' 1. additionally checks input vectors for implausible values (`r` must be => 0
+#' and all other args > 0)
 #'
 #' @param L Numeric vector, holding debt values at maturity.
 #' @param V0 Numeric vector, holding company values at time t0.
@@ -28,10 +29,15 @@ calc_survival_probability_merton <- function(L, V0, sigma, r, t) {
     stop("All input arguments need to be numeric.")
   }
 
-  if (!all(unique(purrr::map_lgl(input_args, function(x) {
-    all(x >= 0)
+  if (!all(r >= 0)) {
+    stop("Argument r may not be negative.")
+  }
+
+  if (!all(unique(purrr::map_lgl(list(L, V0, sigma, t), function(x) {
+    all(x > 0)
   })))) {
-    stop("Input arguments may not hold negative numbers.")
+
+    stop(paste0("Unexpected non positive numbers detected on at least one of arguments L, V0, sigma, t."))
   }
 
   d1 <- (log(V0 / L) + (r + (sigma^2 / 2) * t)) / (sigma * sqrt(t))
