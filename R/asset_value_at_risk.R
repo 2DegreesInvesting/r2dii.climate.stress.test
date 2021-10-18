@@ -83,14 +83,15 @@ asset_value_at_risk <- function(data,
     ) %>%
     dplyr::select(-c(.data$total_disc_npv_ls, .data$total_disc_npv_baseline))
 
+  browser()
   data <- data %>%
-    dplyr::left_join(
+    dplyr::inner_join(
       plan_carsten,
       by = c("investor_name", "portfolio_name", "technology", "ald_sector", "scenario_geography")
     )
 
   data <- data %>%
-    dplyr::left_join(
+    dplyr::inner_join(
       port_aum,
       by = c("investor_name", "portfolio_name")
     )
@@ -129,7 +130,7 @@ asset_value_at_risk <- function(data,
     )
 
   data <- data %>%
-    dplyr::left_join(
+    dplyr::inner_join(
       shock_scenario_long,
       by = c("scenario_name", "technology")
     ) %>%
