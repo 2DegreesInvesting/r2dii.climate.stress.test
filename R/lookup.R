@@ -23,6 +23,9 @@ scenarios_lookup <- c(
 baseline_scenario_lookup <- "NPS"
 shock_scenario_lookup <- "SDS"
 
+lgd_senior_claims_range_lookup <- c(0.3, 0.6)
+lgd_subordinated_claims_range_lookup <- c(0.6, 0.9)
+
 # vector holding considered sectors in stress testing
 sectors_lookup <- c("Power", "Oil&Gas", "Coal", "Automotive")
 

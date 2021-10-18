@@ -2,11 +2,18 @@
 #'
 #' @param company_exlusion Boolean, indicating if companies provided in dataset
 #'   excluded_companies.csv shall be excluded.
+#' @param lgd_senior_claims Numeric, holding the loss given default for senior claims, for accepted value range check `lgd_senior_claims_range_lookup`.
+#' @param lgd_subordinated_claims Numeric, holding the loss given default for subordinated claims, for accepted value range check `lgd_subordinated_claims_range_lookup`.
 #' @return NULL
 #' @export
-run_stress_test_equity <- function(company_exclusion = TRUE) {
+run_stress_test_equity <- function(lgd_senior_claims = 0.45,
+                                   lgd_subordinated_claims = 0.75,
+                                   company_exclusion = TRUE) {
 
-  validate_input_values(company_exclusion = company_exclusion)
+  validate_input_values(company_exclusion = company_exclusion,
+                        lgd_senior_claims = lgd_senior_claims,
+                        lgd_subordinated_claims = lgd_subordinated_claims)
+
   scenario_to_follow_baseline <- baseline_scenario_lookup
   scenario_to_follow_ls <- shock_scenario_lookup
 
@@ -81,8 +88,6 @@ run_stress_test_equity <- function(company_exclusion = TRUE) {
   terminal_value <- cfg_mod$financials$terminal_value
   div_netprofit_prop_coef <- cfg_mod$financials$div_netprofit_prop_coef # determine this value using bloomberg data
   risk_free_rate <- cfg_mod$financials$risk_free_rate
-  lgd_senior_claims <- cfg_mod$financials$lgd_senior_claims
-  lgd_subordinated_claims <- cfg_mod$financials$lgd_subordinated_claims
 
   ###########################################################################
   # Load input datasets------------------------------------------------------
