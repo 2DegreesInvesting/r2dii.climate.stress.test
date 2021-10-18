@@ -16,6 +16,6 @@ A prewrangled \code{financal_data} set.
 }
 \description{
 Applies custom improvements of \code{net_profit_margin} and does row and cols
-selections as well as filtering. Rows that have implausible values below or
-equal to 0 are removed.
+selections as well as filtering. Rows that have implausible
+net_profit_margins below or equal to 0 are removed.
 }

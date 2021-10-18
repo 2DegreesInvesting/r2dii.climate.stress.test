@@ -85,8 +85,8 @@ wrangle_and_check_pacta_results <- function(pacta_results, start_year, time_hori
 #' Wrangle financial data
 #'
 #' Applies custom improvements of `net_profit_margin` and does row and cols
-#' selections as well as filtering. Rows that have implausible values below or
-#' equal to 0 are removed.
+#' selections as well as filtering. Rows that have implausible
+#' net_profit_margins below or equal to 0 are removed.
 #'
 #' @param financial_data A data set of `financal_data`.
 #' @param start_year String holding start year of analysis.
