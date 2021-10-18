@@ -20,6 +20,9 @@ scenarios_lookup <- c(
   "WEO2019_SDS"
 )
 
+baseline_scenario_lookup <- "NPS"
+shock_scenario_lookup <- "SDS"
+
 # vector holding considered sectors in stress testing
 sectors_lookup <- c("Power", "Oil&Gas", "Coal", "Automotive")
 

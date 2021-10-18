@@ -7,6 +7,9 @@
 run_stress_test_equity <- function(company_exclusion = TRUE) {
 
   validate_input_values(company_exclusion = company_exclusion)
+  scenario_to_follow_baseline <- baseline_scenario_lookup
+  scenario_to_follow_ls <- shock_scenario_lookup
+
   ###########################################################################
   # Project Initialisation---------------------------------------------------
   ###########################################################################
@@ -58,10 +61,6 @@ run_stress_test_equity <- function(company_exclusion = TRUE) {
 
   # OPEN: wrap reading in of params in function and move to global_functions
   end_year <- cfg_mod$end_year # Set to 2040 cause current scenario data goes until 2040. can be extended when WEO2020 turns out extended horizon
-
-  # Scenarios in the model_parameters.yml file must have the short names (SDS, NPS, etc)
-  scenario_to_follow_baseline <- cfg_mod$scenarios$scenario_to_follow_baseline # sets which scenario trajectory the baseline scenario follows
-  scenario_to_follow_ls <- cfg_mod$scenarios$scenario_to_follow_ls # sets which scenario trajectory LS scenario follows after shock period
 
   scenarios_filter <- unique(
     c(
