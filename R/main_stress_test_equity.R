@@ -50,12 +50,9 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
   cfg_st <- config::get(file = "st_project_settings.yml")
   check_valid_cfg(cfg = cfg_st, expected_no_args = 5)
   project_name <- cfg_st$project_name
-  twodii_internal <- cfg_st$project_internal$twodii_internal
-  project_location_ext <- cfg_st$project_internal$project_location_ext
   price_data_version <- cfg_st$price_data_version
 
-
-  data_location <- file.path(get_st_data_path(), data_path())
+  data_location <- get_st_data_path()
 
   # Analysis Parameters----------------------------------------
   # Get analysis parameters from the projects AnalysisParameters.yml - similar to PACTA_analysis

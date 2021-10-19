@@ -18,7 +18,7 @@ function_paths <- c(
 
 source_all(function_paths)
 
-inputs_path <- get_st_data_path("ST_DATA_PATH_TEMP")
+inputs_path <- get_st_data_path()
 results_path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "outputs")
 graph_path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "outputs", "graphs")
 if (!fs::dir_exists(graph_path)) {fs::dir_create(graph_path)}
