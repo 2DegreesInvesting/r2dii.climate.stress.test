@@ -11,24 +11,9 @@ run_stress_test_bonds <- function() {
   source_all(c("stress_test_model_functions.R", "0_global_functions_st.R"))
 
   #### Project location----------------------------------------
-
-  # Set Project Settings
-
-  # within the "st_project_setting.yml" config file, set the project_name, the twodii_internal switch,
-  # and the external data locations, if necessary.
-  # the project_name will determine the name of the folder that is to be used for locating
-  # input and output directories for this project
-  # Set twodii_internal to TRUE to run the analysis on an internal 2dii laptop
-  # This setting uses the dropbox connection for data import
-  # Set twodii_internal to FALSE, tu use external data locations
-  # Specify these data locations in the config file "st_project_settings.yml" in the repo
-
-
   cfg_st <- config::get(file = "st_project_settings.yml")
   check_valid_cfg(cfg = cfg_st, expected_no_args = 5)
   project_name <- cfg_st$project_name
-  twodii_internal <- cfg_st$project_internal$twodii_internal
-  project_location_ext <- cfg_st$project_internal$project_location_ext
   price_data_version <- cfg_st$price_data_version
   calculation_level <- "company"
   company_exclusion <- cfg_st$company_exclusion
