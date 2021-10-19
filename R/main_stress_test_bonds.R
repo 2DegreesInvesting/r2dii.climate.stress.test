@@ -15,7 +15,7 @@
 #' @param div_netprofit_prop_coef Numeric. A coefficient that determines how
 #'   strongly the future dividends propagate to the company value. For accepted
 #'   range compare `div_netprofit_prop_coef_range_lookup`.
-#' @param company_exlusion Boolean, indicating if companies provided in dataset
+#' @param company_exclusion Boolean, indicating if companies provided in dataset
 #'   excluded_companies.csv shall be excluded.
 #' @return NULL
 #' @export

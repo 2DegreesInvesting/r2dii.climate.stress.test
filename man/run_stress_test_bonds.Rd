@@ -36,7 +36,7 @@ year in the DCF. For accepted range compare \code{discount_rate_range_lookup}.}
 strongly the future dividends propagate to the company value. For accepted
 range compare \code{div_netprofit_prop_coef_range_lookup}.}
 
-\item{company_exlusion}{Boolean, indicating if companies provided in dataset
+\item{company_exclusion}{Boolean, indicating if companies provided in dataset
 excluded_companies.csv shall be excluded.}
 }
 \description{
