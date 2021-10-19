@@ -24,13 +24,13 @@ subordinated claims, for accepted value range check
 
 \item{terminal_value}{Numeric. A ratio to determine the share of the
 discounted value used in the terminal value calculation beyond the
-projected time frame. For accepted range compare \code{terminal_value_lookup}.}
+projected time frame. For accepted range compare \code{terminal_value_range_lookup}.}
 
 \item{risk_free_rate}{Numeric that indicates the risk free rate of interest.
-For accepted range compare \code{risk_free_rate_lookup}.}
+For accepted range compare \code{risk_free_rate_range_lookup}.}
 
 \item{discount_rate}{Numeric, that holds the discount rate of dividends per
-year in the DCF. For accepted range compare \code{discount_rate_lookup}.}
+year in the DCF. For accepted range compare \code{discount_rate_range_lookup}.}
 
 \item{div_netprofit_prop_coef}{Numeric. A coefficient that determines how
 strongly the future dividends propagate to the company value. For accepted
