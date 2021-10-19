@@ -209,4 +209,6 @@ company_asset_value_at_risk <- function(data,
       by = c("scenario_name", "technology")
     ) %>%
     dplyr::select(-c(.data$plan_carsten, .data$plan_sec_carsten, .data$year))
+
+  return(data)
 }
