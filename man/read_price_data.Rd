@@ -22,6 +22,7 @@ Read in price data from csv and check that all expected columns are given.
 }
 \seealso{
 Other import functions: 
+\code{\link{generate_transition_shocks}()},
 \code{\link{read_capacity_factors}()},
 \code{\link{read_company_data}()},
 \code{\link{read_ngfs_carbon_tax}()},

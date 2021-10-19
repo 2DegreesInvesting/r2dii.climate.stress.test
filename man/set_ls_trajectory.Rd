@@ -10,7 +10,6 @@ set_ls_trajectory(
   scenario_to_follow_ls = "SDS",
   shock_scenario = shock_scenario,
   use_production_forecasts_ls = TRUE,
-  overshoot_method = TRUE,
   scenario_to_follow_ls_aligned = "SDS",
   start_year = 2020,
   end_year = 2040,
@@ -33,11 +32,6 @@ sizes.}
 \item{use_production_forecasts_ls}{Logical. A logical vector of length 1
 that indicates whether or not the late & sudden trajectory should make
 use of the production forecast provided by PACTA results.}
-
-\item{overshoot_method}{Logical. A logical vector of length 1 that indicates
-if (when TRUE) the integral/overshoot method should be used to calculate
-shock size endogenously based on carbon budgets, or (when FALSE) the shock
-sizes need to be supplied by the user.}
 
 \item{scenario_to_follow_ls_aligned}{Character. A string that indicates which
 of the scenarios included in the analysis should be used to set the
