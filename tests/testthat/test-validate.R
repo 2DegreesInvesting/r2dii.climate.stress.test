@@ -11,7 +11,7 @@ test_that("Error is thrown if an input value is out of bounds", {
   ), "risk_free_rate")
 })
 
-test_that("No rrror is thrown if an input value equals a bound", {
+test_that("No error is thrown if an input value equals a bound", {
   expect_null(validate_input_values(
     lgd_senior_claims = 0.45,
     lgd_subordinated_claims = 0.75,
