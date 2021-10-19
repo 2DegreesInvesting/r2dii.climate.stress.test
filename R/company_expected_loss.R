@@ -68,6 +68,9 @@ company_expected_loss <- function(data,
     dplyr::mutate(lgd = loss_given_default)
 
   data <- data %>%
+    # ADO 1945: this left join keeps all maturities in the data, even if no such
+    # holding in the loan book.
+    # TODO: make inner_join when working on reading in external term structure
     dplyr::left_join(
       company_exposure,
       by = c(

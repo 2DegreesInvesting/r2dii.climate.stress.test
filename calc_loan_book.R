@@ -234,6 +234,7 @@ matched_company <- matched_company_weighted %>%
   dplyr::distinct_all()
 
 matched_company_loan_share <- matched_company %>%
+  # TODO: check if inner_join sufficient when refactoring
   dplyr::left_join(loan_share, by = c("sector" = "sector_ald", "name_ald")) %>%
   dplyr::filter(region == "global") %>%
   dplyr::select(

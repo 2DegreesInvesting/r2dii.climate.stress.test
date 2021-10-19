@@ -116,14 +116,14 @@ net_profit_margin_setup <- function(net_profit_margin_coal,
 join_price_data <- function(df, df_prices) {
   # Joins price data by sector, technology, year
   # scenario_geography NOT YET INCLUDED!
-  df %>%
-    dplyr::left_join(df_prices, by = c("technology", "ald_sector", "year"))
+  df <- df %>%
+    dplyr::inner_join(df_prices, by = c("technology", "ald_sector", "year"))
 }
 
 join_net_profit_margins <- function(df, net_profit_margins) {
   # Joins net profit margins by technology
-  df %>%
-    dplyr::left_join(net_profit_margins, by = "technology")
+  df <- df %>%
+    dplyr::inner_join(net_profit_margins, by = "technology")
 }
 
 calculate_net_profits <- function(df) {
