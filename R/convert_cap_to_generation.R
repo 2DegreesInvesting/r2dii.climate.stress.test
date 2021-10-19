@@ -31,6 +31,8 @@ convert_cap_to_generation <- function(data,
   )
   stopifnot(capacity_factors_has_expected_columns)
 
+  # ADO 1945 - Left join is applied since only rows in data from ald_sector
+  # power will have matching rows in capacity_factors_power
   data <- data %>%
     dplyr::left_join(
       capacity_factors_power,
@@ -107,8 +109,8 @@ convert_power_cap_to_generation <- function(data,
     dplyr::rename(capacity_factor_plan = .data$capacity_factor) %>%
     dplyr::select(-.data$scenario)
 
-  # Left join is applied since only rows in data from ald_sector power will
-  # have matching rows in capacity_factors_power
+  # ADO 1945 - Left join is applied since only rows in data from ald_sector
+  # power will have matching rows in capacity_factors_power
   data <- data %>%
     dplyr::left_join(
       capacity_factors_power,

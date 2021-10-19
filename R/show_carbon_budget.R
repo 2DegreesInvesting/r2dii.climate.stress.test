@@ -74,6 +74,8 @@ show_carbon_budget <- function(data,
     ) %>%
     dplyr::ungroup()
 
+  # ADO 1945 - fix qa script, then check if left_join can be replaced
+  # TODO: check left_join
   data <- data %>%
     dplyr::filter(.data$scenario_name == .env$scenario_name_qa) %>%
     dplyr::left_join(
