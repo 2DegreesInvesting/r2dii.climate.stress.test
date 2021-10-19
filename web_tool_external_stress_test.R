@@ -81,7 +81,7 @@ if (file.exists(file.path(results_path, pf_name, "Bonds_results_portfolio.rda"))
   cb_exposures <- read_rds(file.path(results_path, pf_name, "Bonds_results_portfolio.rda")) %>%
     dplyr::filter(year == start_year, scenario_geography == "Global", equity_market %in% c("Global", "GlobalMarket")) %>%
     dplyr::distinct(investor_name, portfolio_name, ald_sector, technology, plan_carsten, plan_sec_carsten) %>%
-    dplyr::left_join(portfolio_overview %>%
+    dplyr::inner_join(portfolio_overview %>%
                        dplyr::filter(asset_type == "Equity"), by = c("investor_name", "portfolio_name")) %>%
     dplyr::mutate(tech_exposure = plan_carsten * portfolio_size)
 } else {
@@ -92,7 +92,7 @@ if (file.exists(file.path(results_path, pf_name, "Equity_results_portfolio.rda")
   eq_exposures <- read_rds(file.path(results_path, pf_name, "Equity_results_portfolio.rda")) %>%
     dplyr::filter(year == start_year, scenario_geography == "Global", equity_market %in% c("Global", "GlobalMarket")) %>%
     dplyr::distinct(investor_name, portfolio_name, ald_sector, technology, plan_carsten, plan_sec_carsten) %>%
-    dplyr::left_join(portfolio_overview %>%
+    dplyr::inner_join(portfolio_overview %>%
                        dplyr::filter(asset_type == "Equity"), by = c("investor_name", "portfolio_name")) %>%
     dplyr::mutate(tech_exposure = plan_carsten * portfolio_size)
 } else {
@@ -119,6 +119,8 @@ if (exists("portfolio")) {
       .groups = "drop_last"
     ) %>%
     dplyr::rename(sector = sector_ipr, subsector = subsector_ipr) %>%
+    # ADO 1945 - left join ensures that all holdings that are not classified in
+    # any IPR sector can be identifies as "Other"
     dplyr::left_join(
       shocks %>% dplyr::filter(methodology == "IPR") %>% dplyr::select(-c(methodology)),
       by = c("sector", "subsector")

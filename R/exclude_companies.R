@@ -44,6 +44,9 @@ exclude_companies <- function(data,
     dplyr::mutate(exclude = TRUE)
 
   data <- data %>%
+    # ADO 1945: we opt for a left join and a flag rather than an anti join so
+    # that we know which values were removed in the final outcome. This
+    # mechanism should be revisited as part of an overhaul of the compensation.
     dplyr::left_join(exclusion, by = c("company_name", "technology")) %>%
     dplyr::mutate(
       exclude = dplyr::if_else(

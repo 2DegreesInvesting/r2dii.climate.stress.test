@@ -28,7 +28,8 @@ Unlike \code{\link[CreditRisk:Merton]{CreditRisk::Merton()}} this implementation
 \enumerate{
 \item only holds functionality to calculate probability of survival
 \item can be called in vectorised fashion
-\item has additional input validation by checking that all input values are
-non negative numeric vectors of the same length.
+\item additionally checks that all input values are of the same length
+\item additionally checks input vectors for implausible values (\code{r} must be => 0
+and all other args > 0)
 }
 }

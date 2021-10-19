@@ -71,6 +71,8 @@ calculate_pd_change_overall <- function(data,
     ) %>%
     dplyr::filter(!is.na(.data$term))
 
+  data <- keep_merton_compatible_rows(data, stage = "overall")
+
   results <- data %>%
     dplyr::mutate(Survival_baseline = calc_survival_probability_merton(
       L = .data$debt,

@@ -210,7 +210,7 @@ set_ls_trajectory <- function(data,
     )
 
   data <- data %>%
-    dplyr::left_join(
+    dplyr::inner_join(
       shock_scenario,
       by = "technology"
     ) %>%
