@@ -33,7 +33,7 @@ run_stress_test_loans <- function() {
   calculation_level <- "company"
   company_exclusion <- cfg_st$company_exclusion
 
-  data_location <- file.path(get_st_data_path(), data_path())
+  data_location <- file.path(get_st_data_path())
 
   #### Analysis Parameters----------------------------------------
   # Get analysis parameters from the projects AnalysisParameters.yml - similar to PACTA_analysis

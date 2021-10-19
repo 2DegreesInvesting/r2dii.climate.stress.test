@@ -96,7 +96,7 @@ write_log <- function(msg,
 #' @export
 create_stressdata_masterdata_file_paths <- function() {
 
-  path_parent <- get_st_data_path("ST_DATA_PATH_TEMP")
+  path_parent <- get_st_data_path()
 
   paths <- list(
     "prewrangled_financial_data_bonds.rds",
