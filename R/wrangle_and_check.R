@@ -93,7 +93,6 @@ wrangle_and_check_pacta_results <- function(pacta_results, start_year, time_hori
 #'
 #' @return A prewrangled `financal_data` set.
 wrangle_financial_data <- function(financial_data, start_year) {
-
   financial_data <- financial_data %>%
     dplyr::mutate(net_profit_margin = profit_margin_preferred) %>%
     # TODO: logic unclear thus far
@@ -125,4 +124,25 @@ wrangle_financial_data <- function(financial_data, start_year) {
   # TODO: any logic/bounds needed for debt/equity ratio and volatility?
 
   return(financial_data)
+}
+
+#' Wrangle scenario data
+#'
+#' Function applies custom wrangling to scenario data.
+#'
+#' @param scenario_data A tibble holding scenario data.
+#' @param start_year Start year of analysis.
+#' @param end_year End year of analysis.
+#'
+#' @return A tibble holding wrangled scenario_data.
+wrangle_scenario_data <- function(scenario_data, start_year, end_year) {
+  scenario_data %>%
+    dplyr::rename(source = .data$scenario_source) %>%
+    dplyr::filter(.data$source %in% c("ETP2017", "WEO2019")) %>%
+    # TODO: this should be set elsewhere
+    dplyr::filter(!(.data$source == "ETP2017" & .data$ald_sector == "Power")) %>%
+    dplyr::mutate(scenario = ifelse(stringr::str_detect(.data$scenario, "_"), stringr::str_extract(.data$scenario, "[^_]*$"), .data$scenario)) %>%
+    check_scenario_timeframe(start_year = start_year, end_year = end_year) %>%
+    correct_automotive_scendata(interpolation_years = c(2031:2034, 2036:2039))
+  return(scenario_data)
 }
