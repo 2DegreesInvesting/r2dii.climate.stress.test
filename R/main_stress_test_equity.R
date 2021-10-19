@@ -122,11 +122,6 @@ run_stress_test_equity <- function() {
     end_of_analysis = end_year,
     shock_years = c(2025:2035)
   )
-  # transition_scenarios <- read_transition_scenarios(
-  #   path = file.path(data_location, "transition_scenario_input.csv"),
-  #   start_of_analysis = start_year,
-  #   end_of_analysis = end_year
-  # )
 
   # Load utilization factors power----------------------------
   capacity_factors_power <- read_capacity_factors(

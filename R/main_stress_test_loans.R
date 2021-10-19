@@ -166,10 +166,10 @@ run_stress_test_loans <- function() {
   # TODO: potentially convert currencies to USD or at least common currency
 
   # Load transition scenarios that will be run by the model
-  transition_scenarios <- read_transition_scenarios(
-    path = file.path(data_location, "transition_scenario_input.csv"),
+  transition_scenarios <- generate_transition_shocks(
     start_of_analysis = start_year,
-    end_of_analysis = end_year
+    end_of_analysis = end_year,
+    shock_years = c(2025:2035)
   )
 
   # Load utilization factors power
@@ -280,7 +280,6 @@ run_stress_test_loans <- function() {
 
   for (i in seq(1, nrow(transition_scenarios))) {
     transition_scenario_i <- transition_scenarios[i, ]
-    overshoot_method <- transition_scenario_i$overshoot_method
     year_of_shock <- transition_scenario_i$year_of_shock
     duration_of_shock <- transition_scenario_i$duration_of_shock
     use_prod_forecasts_baseline <- transition_scenario_i$use_prod_forecasts_baseline
@@ -302,7 +301,6 @@ run_stress_test_loans <- function() {
         late_sudden_price = late_sudden_prices(
           SDS_price = SDS_price,
           Baseline_price = Baseline_price,
-          overshoot_method = overshoot_method,
           year_of_shock = year_of_shock,
           start_year = start_year,
           duration_of_shock = duration_of_shock
@@ -329,7 +327,6 @@ run_stress_test_loans <- function() {
         scenario_to_follow_ls = scenario_to_follow_ls,
         shock_scenario = shock_scenario,
         use_production_forecasts_ls = use_prod_forecasts_ls,
-        overshoot_method = overshoot_method,
         scenario_to_follow_ls_aligned = scenario_to_follow_ls,
         start_year = start_year,
         end_year = end_year,
