@@ -2,47 +2,24 @@
 # Create shock scenario
 #######################
 create_shock_scenario <- function(transition_scenario) {
-  if (transition_scenario$overshoot_method) {
-    # print('Integral method selected for calculation of late&sudden production scenarios.
-    #       Production shocks are function of scenarios (and possibly of company production plans if enabled), they will be calculated in function set_ls_trajectory')
-    tibble::tibble(
-      "scenario_name" = transition_scenario$scenario_name,
-      "year_of_shock" = transition_scenario$year_of_shock,
-      "duration_of_shock" = 2040 - transition_scenario$year_of_shock + 1,
-      "Coal" = NA,
-      "Oil" = NA,
-      "Gas" = NA,
-      "GasCap" = NA,
-      "RenewablesCap" = NA,
-      "NuclearCap" = NA,
-      "CoalCap" = NA,
-      "HydroCap" = NA,
-      "OilCap" = NA,
-      "ICE" = NA,
-      "Electric" = NA,
-      "Hybrid" = NA
-    )
-  } else {
-    print("technology production shocks set by user (overshoot_method==FALSE)")
-
-    tibble::tibble(
-      "scenario_name" = transition_scenario$scenario_name,
-      "year_of_shock" = transition_scenario$year_of_shock,
-      "duration_of_shock" = transition_scenario$duration_of_shock,
-      "Coal" = transition_scenario$Coal,
-      "Oil" = transition_scenario$Oil,
-      "Gas" = transition_scenario$Gas,
-      "GasCap" = transition_scenario$GasCap,
-      "RenewablesCap" = transition_scenario$RenewablesCap,
-      "NuclearCap" = transition_scenario$NuclearCap,
-      "CoalCap" = transition_scenario$CoalCap,
-      "HydroCap" = transition_scenario$HydroCap,
-      "OilCap" = transition_scenario$OilCap,
-      "ICE" = transition_scenario$ICE,
-      "Electric" = transition_scenario$Electric,
-      "Hybrid" = transition_scenario$Hybrid
-    )
-  }
+  data <- tibble::tibble(
+    "scenario_name" = transition_scenario$scenario_name,
+    "year_of_shock" = transition_scenario$year_of_shock,
+    "duration_of_shock" = 2040 - transition_scenario$year_of_shock + 1,
+    "Coal" = NA,
+    "Oil" = NA,
+    "Gas" = NA,
+    "GasCap" = NA,
+    "RenewablesCap" = NA,
+    "NuclearCap" = NA,
+    "CoalCap" = NA,
+    "HydroCap" = NA,
+    "OilCap" = NA,
+    "ICE" = NA,
+    "Electric" = NA,
+    "Hybrid" = NA
+  )
+  return(data)
 }
 
 # STILL TO FIX: five year moving average
@@ -60,12 +37,17 @@ f <- function(shock_strength_calc) {
 
 # LATE AND SUDDEN PRICES ----------------------------------------
 
-late_sudden_prices <- function(SDS_price, Baseline_price, overshoot_method,
-                               year_of_shock, start_year, duration_of_shock) {
+late_sudden_prices <- function(
+    SDS_price,
+    Baseline_price,
+    year_of_shock,
+    start_year,
+    duration_of_shock
+  ) {
   # input:
   # vector with SDS and Baseline (NPS) prices
   # Calculates late and sudden prices based on these two vectors
-  # At the moment LS prices follow SDS prices until shricesock, then LS prices linearly reach NPS prices during the shock period. After shock period, LS prices follow SDS prices
+  # At the moment LS prices follow SDS prices until price shock, then LS prices linearly reach NPS prices during the shock period. After shock period, LS prices follow SDS prices
   position_shock_year <- year_of_shock - start_year + 1
   ls_price <- Baseline_price
 
@@ -73,9 +55,6 @@ late_sudden_prices <- function(SDS_price, Baseline_price, overshoot_method,
   SDS_price_end_shockperiod <- SDS_price[duration_of_shock + position_shock_year - 1]
 
   ls_price[position_shock_year:(position_shock_year + duration_of_shock - 1)] <- zoo::na.approx(c(baseline_price_at_shock, rep(NA, duration_of_shock - 2), SDS_price_end_shockperiod))
-  if (!overshoot_method) {
-    ls_price[(position_shock_year + duration_of_shock):length(ls_price)] <- SDS_price[(position_shock_year + duration_of_shock - 1):length(SDS_price)]
-  }
 
   return(ls_price)
 }

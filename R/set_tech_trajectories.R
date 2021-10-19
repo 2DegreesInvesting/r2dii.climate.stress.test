@@ -147,10 +147,6 @@ calc_future_prod_follows_scen <- function(planned_prod = .data$plan_tech_prod,
 #' @param use_production_forecasts_ls Logical. A logical vector of length 1
 #'   that indicates whether or not the late & sudden trajectory should make
 #'   use of the production forecast provided by PACTA results.
-#' @param overshoot_method Logical. A logical vector of length 1 that indicates
-#'   if (when TRUE) the integral/overshoot method should be used to calculate
-#'   shock size endogenously based on carbon budgets, or (when FALSE) the shock
-#'   sizes need to be supplied by the user.
 #' @param scenario_to_follow_ls_aligned Character. A string that indicates which
 #'   of the scenarios included in the analysis should be used to set the
 #'   late & sudden technology trajectories in case the company is aligned after
@@ -171,7 +167,7 @@ set_ls_trajectory <- function(data,
                               scenario_to_follow_ls = "SDS",
                               shock_scenario = shock_scenario,
                               use_production_forecasts_ls = TRUE,
-                              overshoot_method = TRUE,
+                              # overshoot_method = TRUE,
                               scenario_to_follow_ls_aligned = "SDS",
                               start_year = 2020,
                               end_year = 2040,
@@ -260,25 +256,21 @@ set_ls_trajectory <- function(data,
       .data$scenario_geography
     ) %>%
     dplyr::mutate(
-      late_sudden = dplyr::if_else(
-        shock_strength == 0 & !overshoot_method,
-        .data$baseline,
-        calc_late_sudden_traj(
-          start_year = start_year,
-          end_year = end_year,
-          year_of_shock = year_of_shock,
-          duration_of_shock = duration_of_shock,
-          shock_strength = .data$shock_strength,
-          scen_to_follow = .data$scen_to_follow,
-          planned_prod = .data$plan_tech_prod,
-          late_and_sudden = .data$late_sudden,
-          scenario_change = .data$scenario_change,
-          scenario_change_baseline = .data$scenario_change_baseline,
-          scenario_change_aligned = .data$scenario_change_aligned,
-          overshoot_method = overshoot_method,
-          overshoot_direction = .data$overshoot_direction[1],
-          time_frame = .env$analysis_time_frame
-        )
+      late_sudden = calc_late_sudden_traj(
+        start_year = start_year,
+        end_year = end_year,
+        year_of_shock = year_of_shock,
+        duration_of_shock = duration_of_shock,
+        shock_strength = .data$shock_strength,
+        scen_to_follow = .data$scen_to_follow,
+        planned_prod = .data$plan_tech_prod,
+        late_and_sudden = .data$late_sudden,
+        scenario_change = .data$scenario_change,
+        scenario_change_baseline = .data$scenario_change_baseline,
+        scenario_change_aligned = .data$scenario_change_aligned,
+        # overshoot_method = overshoot_method,
+        overshoot_direction = .data$overshoot_direction[1],
+        time_frame = .env$analysis_time_frame
       )
     ) %>%
     dplyr::ungroup() %>%
@@ -350,10 +342,6 @@ set_ls_trajectory <- function(data,
 #'   company/technology at hand, in case the company/technology is aligned
 #'   with the target after the forecast period.
 #'   TODO: (move to data argument)
-#' @param overshoot_method Logical. A logical vector of length 1 that indicates
-#'   if (when TRUE) the integral/overshoot method should be used to calculate
-#'   shock size endogenously based on carbon budgets, or (when FALSE) the shock
-#'   sizes need to be supplied by the user.
 #' @param overshoot_direction Character. A character vector that indicates if
 #'   the technology at hand is increasing or decreasing over the time frame of
 #'   the analysis.
@@ -369,7 +357,7 @@ set_ls_trajectory <- function(data,
 calc_late_sudden_traj <- function(start_year, end_year, year_of_shock, duration_of_shock,
                                   shock_strength, scen_to_follow, planned_prod, late_and_sudden,
                                   scenario_change, scenario_change_baseline, scenario_change_aligned,
-                                  overshoot_method, overshoot_direction, time_frame) {
+                                  overshoot_direction, time_frame) {
   time_frame %||% stop("Must provide input for 'time_frame'", call. = FALSE)
 
   # calculate the position where the shock kicks in
@@ -394,69 +382,49 @@ calc_late_sudden_traj <- function(start_year, end_year, year_of_shock, duration_
   }
 
   # integral/overshoot compensation method
-  if (overshoot_method) {
-
-    # If the company production plans are already aligned (or outperforming SDS),
-    # we do not need to compensate production capacity, and we set
-    # the LS trajectory equal to the SDS trajectory
-    if ((
+  # If the company production plans are already aligned (or outperforming SDS),
+  # we do not need to compensate production capacity, and we set
+  # the LS trajectory equal to the SDS trajectory
+  if (
+    (
       overshoot_direction == "Decreasing" &
         sum(scen_to_follow[1:time_frame]) < sum(late_and_sudden[1:time_frame])
-    ) | (
+      ) | (
       overshoot_direction == "Increasing" &
         sum(scen_to_follow[1:time_frame]) > sum(late_and_sudden[1:time_frame])
-    )
+      )
     ) {
-      x <- (sum(scen_to_follow) -
-        sum(late_and_sudden[1:(position_shock_year - 1)]) -
-        (end_year - year_of_shock + 1) * late_and_sudden[position_shock_year - 1]) /
-        (-sum(seq(1, end_year - year_of_shock + 1)))
-
-      # add the absolute production increase/decrease for each year during
-      # the shock period, capping at a 0 lower bound for production volume
-      for (j in seq(position_shock_year, length(scen_to_follow))) {
-        late_and_sudden[j] <- max(
-          late_and_sudden[position_shock_year - 1] - (j - position_shock_year + 1) * x,
-          0
-        )
-      }
-
-      shock_strength <- 100 *
-        (late_and_sudden[position_shock_year + 1] - late_and_sudden[position_shock_year]) /
-        late_and_sudden[position_shock_year]
-    } else {
-      # company plans are already aligned
-      # no need for overshoot in production cap, set LS trajectory to follow
-      # the scenario indicated as late & sudden aligned
-
-      for (k in seq(first_production_na, length(scen_to_follow))) {
-        late_and_sudden[k] <- late_and_sudden[k - 1] + scenario_change_aligned[k]
-      }
-    }
-  } else {
-    # Calculates the production increase/decrease by taking the scenario value
-    # at the year of shock and multiplying it by the corresponding shock strength.
-    # We apply the increase/decrease calculated in abs_prod_shock
-    # for each year in the shock period.
-    abs_prod_shock <- late_and_sudden[position_shock_year] *
-      (shock_strength[1] / 100)
+      x <- (
+            sum(scen_to_follow) -
+            sum(late_and_sudden[1:(position_shock_year - 1)]) -
+            (end_year - year_of_shock + 1) * late_and_sudden[position_shock_year - 1]
+           ) /
+           (
+             -sum(seq(1, end_year - year_of_shock + 1))
+             )
 
     # add the absolute production increase/decrease for each year during
     # the shock period, capping at a 0 lower bound for production volume
-    for (j in seq(0, duration_of_shock - 1)) {
-      late_and_sudden[position_shock_year + j] <- max(
-        late_and_sudden[position_shock_year + j - 1] + abs_prod_shock,
+    for (j in seq(position_shock_year, length(scen_to_follow))) {
+      late_and_sudden[j] <- max(
+        late_and_sudden[position_shock_year - 1] - (j - position_shock_year + 1) * x,
         0
       )
     }
-    # after the shock period, let the late & sudden scenario follow
-    # the scenario trajectory set with variable 'scenario_to_follow_ls'
-    for (k in seq(duration_of_shock + position_shock_year, length(scen_to_follow))) {
-      late_and_sudden[k] <- late_and_sudden[k - 1] + scenario_change[k]
+
+    shock_strength <- 100 *
+      (late_and_sudden[position_shock_year + 1] - late_and_sudden[position_shock_year]) /
+      late_and_sudden[position_shock_year]
+  } else {
+    # company plans are already aligned
+    # no need for overshoot in production cap, set LS trajectory to follow
+    # the scenario indicated as late & sudden aligned
+
+    for (k in seq(first_production_na, length(scen_to_follow))) {
+      late_and_sudden[k] <- late_and_sudden[k - 1] + scenario_change_aligned[k]
     }
   }
-
-  return(late_and_sudden)
+ return(late_and_sudden)
 }
 
 #' Remove negative late and sudden rows

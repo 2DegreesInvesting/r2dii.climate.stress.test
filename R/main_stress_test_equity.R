@@ -117,11 +117,16 @@ run_stress_test_equity <- function() {
     wrangle_and_check_sector_exposures_eq_cb(asset_type = "Equity")
 
   # Load policy shock transition scenarios--------------------
-  transition_scenarios <- read_transition_scenarios(
-    path = file.path(data_location, "transition_scenario_input.csv"),
+  transition_scenarios <- generate_transition_shocks(
     start_of_analysis = start_year,
-    end_of_analysis = end_year
+    end_of_analysis = end_year,
+    shock_years = c(2025:2035)
   )
+  # transition_scenarios <- read_transition_scenarios(
+  #   path = file.path(data_location, "transition_scenario_input.csv"),
+  #   start_of_analysis = start_year,
+  #   end_of_analysis = end_year
+  # )
 
   # Load utilization factors power----------------------------
   capacity_factors_power <- read_capacity_factors(
@@ -230,7 +235,6 @@ run_stress_test_equity <- function() {
 
   for (i in seq(1, nrow(transition_scenarios))) {
     transition_scenario_i <- transition_scenarios[i, ]
-    overshoot_method <- transition_scenario_i$overshoot_method
     year_of_shock <- transition_scenario_i$year_of_shock
     duration_of_shock <- transition_scenario_i$duration_of_shock
     use_prod_forecasts_baseline <- transition_scenario_i$use_prod_forecasts_baseline
@@ -253,7 +257,6 @@ run_stress_test_equity <- function() {
         late_sudden_price = late_sudden_prices(
           SDS_price = SDS_price,
           Baseline_price = Baseline_price,
-          overshoot_method = overshoot_method,
           year_of_shock = year_of_shock,
           start_year = start_year,
           duration_of_shock = duration_of_shock
@@ -281,7 +284,6 @@ run_stress_test_equity <- function() {
         scenario_to_follow_ls = scenario_to_follow_ls,
         shock_scenario = shock_scenario,
         use_production_forecasts_ls = use_prod_forecasts_ls,
-        overshoot_method = overshoot_method,
         scenario_to_follow_ls_aligned = scenario_to_follow_ls,
         start_year = start_year,
         end_year = end_year,
