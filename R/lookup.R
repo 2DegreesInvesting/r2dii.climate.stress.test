@@ -31,6 +31,8 @@ risk_free_rate_range_lookup <- c(0, 0.05)
 discount_rate_range_lookup <- c(-0.01, 0.05)
 div_netprofit_prop_coef_range_lookup <- c(0.8, 1.0)
 
+credit_type_lookup <- c("outstanding", "credit_limit")
+
 # vector holding considered sectors in stress testing
 sectors_lookup <- c("Power", "Oil&Gas", "Coal", "Automotive")
 

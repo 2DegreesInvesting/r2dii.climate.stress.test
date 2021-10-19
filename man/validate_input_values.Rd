@@ -11,7 +11,8 @@ validate_input_values(
   risk_free_rate,
   discount_rate,
   div_netprofit_prop_coef,
-  company_exclusion
+  company_exclusion,
+  credit_type = NULL
 )
 }
 \arguments{
@@ -35,6 +36,9 @@ year in the DCF. For accepted range compare \code{discount_rate_range_lookup}.}
 \item{div_netprofit_prop_coef}{Numeric. A coefficient that determines how
 strongly the future dividends propagate to the company value. For accepted
 range compare \code{div_netprofit_prop_coef_range_lookup}.}
+
+\item{credit_type}{Type of credit. For accepted values please compare
+\code{credit_type_loans}.}
 }
 \description{
 Checks that user inputs are within defined ranges.

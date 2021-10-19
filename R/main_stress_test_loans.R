@@ -17,6 +17,8 @@
 #'   range compare `div_netprofit_prop_coef_range_lookup`.
 #' @param company_exlusion Boolean, indicating if companies provided in dataset
 #'   excluded_companies.csv shall be excluded.
+#' @param credit_type Type of credit. For accepted values please compare
+#'   `credit_type_loans`.
 #' @return NULL
 #' @export
 run_stress_test_loans <- function(lgd_senior_claims = 0.45,
@@ -25,7 +27,8 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
                                   risk_free_rate = 0.02,
                                   discount_rate = 0.02,
                                   div_netprofit_prop_coef = 1,
-                                  company_exclusion = TRUE) {
+                                  company_exclusion = TRUE,
+                                  credit_type = "credit_limit") {
   validate_input_values(
     lgd_senior_claims = lgd_senior_claims,
     lgd_subordinated_claims = lgd_subordinated_claims,
@@ -33,7 +36,8 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
     risk_free_rate = risk_free_rate,
     discount_rate = discount_rate,
     div_netprofit_prop_coef = div_netprofit_prop_coef,
-    company_exclusion = company_exclusion
+    company_exclusion = company_exclusion,
+    credit_type = credit_type
   )
 
   scenario_to_follow_baseline <- baseline_scenario_lookup
@@ -85,13 +89,6 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
     )
   )
 
-  # TODO: move to config file
-  credit_type <- c(
-    # "outstanding"
-    "credit_limit"
-  )
-  loan_share_credit_type <- paste0("loan_share_", credit_type)
-
   ###########################################################################
   # Load input datasets------------------------------------------------------
   ###########################################################################
@@ -118,7 +115,7 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
     format_loanbook_st(
       investor_name = investor_name_placeholder,
       portfolio_name = investor_name_placeholder,
-      credit = loan_share_credit_type
+      credit = paste0("loan_share_", credit_type)
     ) %>%
     wrangle_and_check_pacta_results(
       start_year = start_year,
