@@ -133,48 +133,14 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
   )
 
   # Load scenario data----------------------------------------
-  scen_data_file <- ifelse(twodii_internal == TRUE,
-    path_dropbox_2dii("PortCheck", "00_Data", "01_ProcessedData", "03_ScenarioData", paste0("Scenarios_AnalysisInput_", start_year, ".csv")),
-    file.path(data_location, paste0("Scenarios_AnalysisInput_", start_year, ".csv"))
-  )
-
-  # TODO: EITHER wrap check into more evocative function OR remove this when common format is agreed upon
-  if (twodii_internal == TRUE | start_year < 2020) {
-    scenario_data <- readr::read_csv(scen_data_file, col_types = "ccccccccnnnncnnn") %>%
-      dplyr::filter(Indicator %in% c("Capacity", "Production", "Sales")) %>%
-      dplyr::filter(!(Technology == "RenewablesCap" & !is.na(Sub_Technology))) %>%
-      dplyr::select(-c(Sub_Technology, Indicator, AnnualvalIEAtech, refvalIEAtech, refvalIEAsec, mktFSRatio, techFSRatio)) %>%
-      dplyr::rename(
-        source = Source,
-        scenario_geography = ScenarioGeography,
-        scenario = Scenario,
-        ald_sector = Sector,
-        units = Units,
-        technology = Technology,
-        year = Year,
-        direction = Direction,
-        fair_share_perc = FairSharePerc
-      ) %>%
-      dplyr::mutate(scenario = stringr::str_replace(scenario, "NPSRTS", "NPS"))
-  } else {
-    scenario_data <- readr::read_csv(scen_data_file, col_types = "ccccccncn") %>%
-      dplyr::rename(source = scenario_source)
-  }
-
-  scenario_data <- scenario_data %>%
-    dplyr::filter(source %in% c("ETP2017", "WEO2019")) %>%
-    # TODO: this should be set elsewhere
-    dplyr::filter(!(source == "ETP2017" & ald_sector == "Power")) %>%
-    dplyr::mutate(scenario = ifelse(stringr::str_detect(scenario, "_"), stringr::str_extract(scenario, "[^_]*$"), scenario)) %>%
-    check_scenario_timeframe(start_year = start_year, end_year = end_year)
-
-  # Correct for automotive scenario data error. CHECK IF ALREADY RESOLVED IN THE SCENARIO DATA, IF SO, DONT USE FUNCTION BELOW!
-  scenario_data <- scenario_data %>%
-    correct_automotive_scendata(interpolation_years = c(2031:2034, 2036:2039)) %>%
+  scenario_data <- read_scenario_data(
+    path = file.path(data_location, paste0("Scenarios_AnalysisInput_", start_year, ".csv"))
+  ) %>%
+    wrangle_scenario_data(start_year = start_year, end_year = end_year) %>%
     dplyr::filter(
-      ald_sector %in% sectors_lookup &
-        technology %in% technologies_lookup &
-        scenario_geography == scenario_geography_filter
+      .data$ald_sector %in% sectors_lookup &
+        .data$technology %in% technologies_lookup &
+        .data$scenario_geography == scenario_geography_filter
     )
 
   # Load price data----------------------------------------

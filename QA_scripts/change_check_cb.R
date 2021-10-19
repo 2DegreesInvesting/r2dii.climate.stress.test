@@ -7,8 +7,8 @@ import_asset_results <- function() {
   bonds_results_company <- readr::read_csv(file.path(results_path, "stress_test_results_bonds_comp.csv"))
   bonds_results_port <- readr::read_csv(file.path(results_path, "stress_test_results_bonds_port.csv"))
   bonds_expected_loss <- readr::read_csv(file.path(results_path, "stress_test_results_bonds_comp_el.csv"))
-  bonds_annual_pd_changes_sector <- readr::read_csv(file.path(results_path, "stress_test_results_cb_sector_bonds_changes_annual.csv"))
-  bonds_overall_pd_changes_sector <- readr::read_csv(file.path(results_path, "stress_test_results_cb_sector_bonds_changes_overall.csv"))
+  bonds_annual_pd_changes_sector <- readr::read_csv(file.path(results_path, "stress_test_results_bonds_sector_pd_changes_annual.csv"))
+  bonds_overall_pd_changes_sector <- readr::read_csv(file.path(results_path, "stress_test_results_bonds_sector_pd_changes_overall.csv"))
 
   asset_results <- list(
     bonds_results_company = bonds_results_company,
