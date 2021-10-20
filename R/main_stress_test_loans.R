@@ -69,13 +69,6 @@ run_stress_test_loans <- function() {
     )
   )
 
-  # Moved to transition scenario input file:
-  # use_prod_forecasts_baseline <- FALSE   # TRUE: Use company production forecasts until no longer available for baseline. FALSE: Let baseline immediately follow scenario (and not follow production forecasts first)
-  # use_prod_forecasts_ls <- FALSE  # TRUE: Use company production forecasts until no longer available for late&sudden. FALSE: Let late&sudden scenario immediately follow IEA scenario (and not follow production forecasts first)
-  # overshoot_method <- TRUE          # TRUE: use integral/overshoot method for late&sudden trajectory, FALSE: use user defined shocks
-  ##### OPEN: this is currently not used, defined in transition_scenario loop
-  # duration_div <- duration_of_shock
-
   discount_rate <- cfg_mod$financials$discount_rate # Discount rate
   ##### OPEN: this needs to be estimated based on data
   terminal_value <- cfg_mod$financials$terminal_value
@@ -254,12 +247,7 @@ run_stress_test_loans <- function() {
   # TODO: validate
   loan_book_port_aum <- calculate_aum(sector_exposures)
 
-  #### OPEN: both objects in condition not available as of now,
-  # since they are read in into a loop afterwards
-  # deactivated, for the time being
-
-  # if(use_prod_forecasts_ls & overshoot_method){
-  ## i.e. we use the integral/overshoot late&sudden method, and we use company production plans the first 5 years
+  ## if we use the integral/overshoot late&sudden method, and we use company production plans the first 5 years
   ## the integral method works on company level, however,
   ## when we aggregate the company LS trajectories to port-technology level, the integrals of SDS and LS are not the same, due to 2 reasons:
   ## 1) for companies that outperform SDS, capacity shhould not be compensated for, hence we take a LS trajecorty that equal SDS

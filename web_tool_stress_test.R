@@ -142,13 +142,6 @@ scenarios_filter <- unique(
   )
 )
 
-# Moved to transition scenario input file:
-# use_prod_forecasts_baseline <- FALSE   # TRUE: Use company production forecasts until no longer available for baseline. FALSE: Let baseline immediately follow scenario (and not follow production forecasts first)
-# use_prod_forecasts_ls <- FALSE  # TRUE: Use company production forecasts until no longer available for late&sudden. FALSE: Let late&sudden scenario immediately follow IEA scenario (and not follow production forecasts first)
-# overshoot_method <- TRUE          # TRUE: use integral/overshoot method for late&sudden trajectory, FALSE: use user defined shocks
-##### OPEN: this is currently not used, defined in transition_scenario loop
-# duration_div <- duration_of_shock
-
 discount_rate <- cfg_mod$financials$discount_rate # Discount rate
 ##### OPEN: this needs to be estimated based on data
 terminal_value <- cfg_mod$financials$terminal_value
@@ -263,15 +256,10 @@ if (identical(calculation_level, "company") & company_exclusion) {
 # Create input data for stress test model----------------------------------------
 ###############
 
-#### OPEN: both objects in condition not available as of now,
-# since they are read in into a loop afterwards
-# deactivated, for the time being
-
-# if(use_prod_forecasts_ls & overshoot_method){
-## i.e. we use the integral/overshoot late&sudden method, and we use company production plans the first 5 years
+## if we use the integral/overshoot late&sudden method, and we use company production plans the first 5 years
 ## the integral method works on company level, however,
 ## when we aggregate the company LS trajectories to port-technology level, the integrals of SDS and LS are not the same, due to 2 reasons:
-## 1) for companies that outperform SDS, capacity shhould not be compensated for, hence we take a LS trajecorty that equal SDS
+## 1) for companies that outperform SDS, capacity shhould not be compensated for, hence we take a LS trajectory that equal SDS
 ## 2) there are cases for which the linear compensation is so strong, that the LS production falls below zero, which is then set to zero (as negative production is not possible), hence we have an underestimation in overshoot
 ## For these two reasons, if we use company production plans, we perform the integral method on technology level (and not on company level), until we had a proper session on how to deal with these issues
 
@@ -348,14 +336,10 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
       transition_scenario_i <- transition_scenarios[i, ]
       year_of_shock <- transition_scenario_i$year_of_shock
       duration_of_shock <- transition_scenario_i$duration_of_shock
-      #overshoot_method <- transition_scenario_i$overshoot_method
-      #use_prod_forecasts_baseline <- transition_scenario_i$use_prod_forecasts_baseline
-      #use_prod_forecasts_ls <- transition_scenario_i$use_prod_forecasts_ls
 
       # Create shock scenario dataframe for scenario i
       # For now we use the old shock scenario dataframe format. Should change this over time as its far from optimal
       shock_scenario <- create_shock_scenario(transition_scenario = transition_scenario_i)
-
 
       # Calculate late and sudden prices for scenario i
       df_prices <- df_price %>%
