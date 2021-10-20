@@ -155,7 +155,6 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
     asset_type = asset_type
   )
 
-  transition_scenarios <- input_data_list$transition_scenarios
   excluded_companies <- input_data_list$excluded_companies
   scenario_data <- input_data_list$scenario_data
   financial_data_loans <- input_data_list$financial_data %>%

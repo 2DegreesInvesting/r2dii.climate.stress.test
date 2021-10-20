@@ -26,12 +26,6 @@ read_and_prepare_project_agnostic_data <- function(start_year, end_year, company
     version = "new"
   )
 
-  transition_scenarios <- read_transition_scenarios(
-    path = file.path(data_location, "transition_scenario_input.csv"),
-    start_of_analysis = start_year,
-    end_of_analysis = end_year
-  )
-
   if (company_exclusion) {
     excluded_companies <- readr::read_csv(
       file.path(data_location, "exclude-companies.csv"),
@@ -70,7 +64,6 @@ read_and_prepare_project_agnostic_data <- function(start_year, end_year, company
 
   return(list(
     capacity_factors_power = capacity_factors_power,
-    transition_scenarios = transition_scenarios,
     excluded_companies = excluded_companies,
     df_price = df_price,
     scenario_data = scenario_data,
