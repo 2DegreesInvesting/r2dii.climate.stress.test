@@ -111,7 +111,7 @@ run_stress_test_bonds <- function(lgd_senior_claims = 0.45,
   transition_scenario <- generate_transition_shocks(
     start_of_analysis = start_year,
     end_of_analysis = end_year,
-    shock_years = c(2025:2035)
+    shock_years = 2030
   )
 
   # Load project agnostic data sets -----------------------------------------
@@ -149,16 +149,6 @@ run_stress_test_bonds <- function(lgd_senior_claims = 0.45,
   # Calculation of results---------------------------------------------------
   ###########################################################################
 
-  # Corporate bonds results -----------------------------------------------------
-
-  bonds_results <- c()
-  qa_annual_profits_cb <- c()
-  bonds_expected_loss <- c()
-  bonds_annual_pd_changes <- c()
-  qa_pd_changes <- c()
-
-  transition_scenario_i <- transition_scenarios[i, ]
-
   # Calculate late and sudden prices for scenario i
   df_prices <- input_data_list$df_price %>%
     dplyr::mutate(Baseline = !!rlang::sym(scenario_to_follow_baseline)) %>%
@@ -171,9 +161,9 @@ run_stress_test_bonds <- function(lgd_senior_claims = 0.45,
       late_sudden_price = late_sudden_prices(
         SDS_price = SDS_price,
         Baseline_price = Baseline_price,
-        year_of_shock = transition_scenario_i$year_of_shock,
+        year_of_shock = transition_scenario$year_of_shock,
         start_year = start_year,
-        duration_of_shock = transition_scenario_i$duration_of_shock
+        duration_of_shock = transition_scenario$duration_of_shock
       )
     ) %>%
     dplyr::ungroup()
@@ -194,7 +184,7 @@ run_stress_test_bonds <- function(lgd_senior_claims = 0.45,
     ) %>%
     set_ls_trajectory(
       scenario_to_follow_ls = scenario_to_follow_ls,
-      shock_scenario = transition_scenario_i,
+      shock_scenario = transition_scenario,
       scenario_to_follow_ls_aligned = scenario_to_follow_ls,
       start_year = start_year,
       end_year = end_year,
@@ -245,11 +235,8 @@ run_stress_test_bonds <- function(lgd_senior_claims = 0.45,
     calculate_net_profits() %>%
     dcf_model_techlevel(discount_rate = discount_rate)
 
-  qa_annual_profits_cb <- qa_annual_profits_cb %>%
-    dplyr::bind_rows(
-      bonds_annual_profits %>%
-        dplyr::mutate(year_of_shock = transition_scenario_i$year_of_shock)
-    )
+  qa_annual_profits_cb <- bonds_annual_profits %>%
+    dplyr::mutate(year_of_shock = transition_scenario$year_of_shock)
 
   plan_carsten_bonds <- pacta_bonds_results %>%
     dplyr::filter(
@@ -293,23 +280,20 @@ run_stress_test_bonds <- function(lgd_senior_claims = 0.45,
     cols = names(plan_carsten_bonds)
   )
 
-  bonds_results <- dplyr::bind_rows(
-    bonds_results,
-    company_asset_value_at_risk(
-      data = bonds_annual_profits,
-      terminal_value = terminal_value,
-      shock_scenario = transition_scenario_i,
-      div_netprofit_prop_coef = div_netprofit_prop_coef,
-      plan_carsten = plan_carsten_bonds,
-      port_aum = bonds_port_aum,
-      flat_multiplier = 0.15,
-      exclusion = excluded_companies
-    )
+  bonds_results <- company_asset_value_at_risk(
+    data = bonds_annual_profits,
+    terminal_value = terminal_value,
+    shock_scenario = transition_scenario,
+    div_netprofit_prop_coef = div_netprofit_prop_coef,
+    plan_carsten = plan_carsten_bonds,
+    port_aum = bonds_port_aum,
+    flat_multiplier = 0.15,
+    exclusion = excluded_companies
   )
 
   bonds_overall_pd_changes <- bonds_annual_profits %>%
     calculate_pd_change_overall(
-      shock_year = transition_scenario_i$year_of_shock,
+      shock_year = transition_scenario$year_of_shock,
       end_of_analysis = end_year,
       risk_free_interest_rate = risk_free_rate
     )
@@ -317,28 +301,23 @@ run_stress_test_bonds <- function(lgd_senior_claims = 0.45,
   # TODO: ADO 879 - note which companies produce missing results due to
   # insufficient input information (e.g. NAs for financials or 0 equity value)
 
-  bonds_expected_loss <- dplyr::bind_rows(
-    bonds_expected_loss,
-    company_expected_loss(
-      data = bonds_overall_pd_changes,
-      loss_given_default = lgd_subordinated_claims,
-      exposure_at_default = plan_carsten_bonds,
-      port_aum = bonds_port_aum
-    )
+  bonds_expected_loss <- company_expected_loss(
+    data = bonds_overall_pd_changes,
+    loss_given_default = lgd_subordinated_claims,
+    exposure_at_default = plan_carsten_bonds,
+    port_aum = bonds_port_aum
   )
 
   # TODO: ADO 879 - note which companies produce missing results due to
   # insufficient output from overall pd changes or related financial data inputs
 
-  bonds_annual_pd_changes <- dplyr::bind_rows(
-    bonds_annual_pd_changes,
-    calculate_pd_change_annual(
-      data = bonds_annual_profits,
-      shock_year = transition_scenario_i$year_of_shock,
-      end_of_analysis = end_year,
-      risk_free_interest_rate = risk_free_rate
-    )
+  bonds_annual_pd_changes <- calculate_pd_change_annual(
+    data = bonds_annual_profits,
+    shock_year = transition_scenario$year_of_shock,
+    end_of_analysis = end_year,
+    risk_free_interest_rate = risk_free_rate
   )
+
   # TODO: ADO 879 - note which companies produce missing results due to
   # insufficient input information (e.g. NAs for financials or 0 equity value)
 
