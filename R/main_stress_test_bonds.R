@@ -111,7 +111,7 @@ run_stress_test_bonds <- function(lgd_senior_claims = 0.45,
   transition_scenario <- generate_transition_shocks(
     start_of_analysis = start_year,
     end_of_analysis = end_year,
-    shock_years = 2030
+    shock_years = shock_year
   )
 
   # Load project agnostic data sets -----------------------------------------
