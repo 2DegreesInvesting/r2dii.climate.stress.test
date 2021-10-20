@@ -124,6 +124,7 @@ asset_value_at_risk <- function(data,
   data <- data %>%
     dplyr::mutate(
       duration_of_shock = .env$shock_scenario$duration_of_shock,
+      year_of_shock = .env$shock_scenario$year_of_shock,
       production_shock_perc = NA_real_
     ) %>%
     dplyr::select(-c(.data$plan_carsten, .data$plan_sec_carsten, .data$year))
