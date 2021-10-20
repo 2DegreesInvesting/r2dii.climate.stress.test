@@ -17,7 +17,6 @@ calc_late_sudden_traj(
   scenario_change,
   scenario_change_baseline,
   scenario_change_aligned,
-  overshoot_method,
   overshoot_direction,
   time_frame
 )
@@ -73,11 +72,6 @@ absolute changes of the aligned target scenario in yearly steps for the
 company/technology at hand, in case the company/technology is aligned
 with the target after the forecast period.
 TODO: (move to data argument)}
-
-\item{overshoot_method}{Logical. A logical vector of length 1 that indicates
-if (when TRUE) the integral/overshoot method should be used to calculate
-shock size endogenously based on carbon budgets, or (when FALSE) the shock
-sizes need to be supplied by the user.}
 
 \item{overshoot_direction}{Character. A character vector that indicates if
 the technology at hand is increasing or decreasing over the time frame of
