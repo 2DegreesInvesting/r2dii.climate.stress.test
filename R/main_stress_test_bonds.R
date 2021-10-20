@@ -40,6 +40,8 @@ run_stress_test_bonds <- function(lgd_senior_claims = 0.45,
   scenario_to_follow_baseline <- baseline_scenario_lookup
   scenario_to_follow_ls <- shock_scenario_lookup
   calculation_level <- calculation_level_lookup
+  end_year <- end_year_lookup
+
   ###########################################################################
   # Project Initialisation---------------------------------------------------
   ###########################################################################
@@ -68,13 +70,6 @@ run_stress_test_bonds <- function(lgd_senior_claims = 0.45,
   # move to config once mechanism to include/exclude filters from original pacta project exists
 
   scenario_geography_filter <- "Global"
-
-  # Model variables----------------------------------------
-  #### OPEN: This should be moved into a StressTestModelParameters.yml
-  cfg_mod <- config::get(file = "model_parameters.yml")
-
-  # OPEN: wrap reading in of params in function and move to global_functions
-  end_year <- cfg_mod$end_year # Set to 2040 cause current scenario data goes until 2040. can be extended when WEO2020 turns out extended horizon
 
   scenarios_filter <- unique(
     c(
