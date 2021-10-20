@@ -78,12 +78,6 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
   ###########################################################################
   # Load input datasets------------------------------------------------------
   ###########################################################################
-  financial_data_equity <- read_company_data(
-    path = create_stressdata_masterdata_file_paths()$listed_equity,
-    asset_type = "equity"
-  ) %>%
-    wrangle_financial_data(start_year = start_year)
-
   # Load PACTA results / equity portfolio------------------------
   equity_path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", paste0("Equity_results_", calculation_level, ".rda"))
 
@@ -110,12 +104,13 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
     wrangle_and_check_sector_exposures_eq_cb(asset_type = "Equity")
 
   # FIXME: Simplify by passing data directly
-  input_data_list <- read_and_prepare(start_year = start_year, end_year = end_year, company_exclusion = company_exclusion, scenario_geography_filter = scenario_geography_filter)
+  input_data_list <- read_and_prepare(start_year = start_year, end_year = end_year, company_exclusion = company_exclusion, scenario_geography_filter = scenario_geography_filter, asset_type = asset_type)
   capacity_factors_power <- input_data_list$capacity_factors_power
   transition_scenarios <- input_data_list$transition_scenarios
   excluded_companies <- input_data_list$excluded_companies
   df_price <- input_data_list$df_price
   scenario_data <- input_data_list$scenario_data
+  financial_data_equity <- input_data_list$financial_data
 
   # check scenario availability across data inputs for equity
   check_scenario_availability(

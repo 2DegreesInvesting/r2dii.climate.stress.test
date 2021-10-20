@@ -1,4 +1,4 @@
-read_and_prepare <- function(start_year, end_year, company_exclusion, scenario_geography_filter) {
+read_and_prepare <- function(start_year, end_year, company_exclusion, scenario_geography_filter, asset_type) {
 
   data_location <- get_st_data_path()
 
@@ -41,10 +41,17 @@ read_and_prepare <- function(start_year, end_year, company_exclusion, scenario_g
         .data$scenario_geography == scenario_geography_filter
     )
 
+  financial_data <- read_company_data(
+    path = get(asset_type, create_stressdata_masterdata_file_paths()),
+    asset_type = asset_type
+  ) %>%
+    wrangle_financial_data(start_year = start_year)
+
   return(list(capacity_factors_power = capacity_factors_power,
               transition_scenarios = transition_scenarios,
               excluded_companies = excluded_companies,
               df_price = df_price,
-              scenario_data = scenario_data))
+              scenario_data = scenario_data,
+              financial_data = financial_data))
 
 }

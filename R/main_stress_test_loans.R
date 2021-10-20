@@ -86,14 +86,6 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
   # Load input datasets------------------------------------------------------
   ###########################################################################
 
-  # Load company financial and production data-----------------------------------
-  financial_data_loans <- read_company_data(
-    path = create_stressdata_masterdata_file_paths()$loans,
-    asset_type = "loans"
-  ) %>%
-    wrangle_financial_data(start_year = start_year) %>%
-    dplyr::mutate(company_name = stringr::str_to_lower(.data$company_name))
-
   # Load PACTA results / loans portfolio------------------------
   # TODO: select the right scenarios
   # TODO: select the right geography
@@ -157,12 +149,14 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
   # TODO: potentially convert currencies to USD or at least common currency
 
   # FIXME: Simplify by passing data directly
-  input_data_list <- read_and_prepare(start_year = start_year, end_year = end_year, company_exclusion = company_exclusion, scenario_geography_filter = scenario_geography_filter)
+  input_data_list <- read_and_prepare(start_year = start_year, end_year = end_year, company_exclusion = company_exclusion, scenario_geography_filter = scenario_geography_filter, asset_type = asset_type)
   capacity_factors_power <- input_data_list$capacity_factors_power
   transition_scenarios <- input_data_list$transition_scenarios
   excluded_companies <- input_data_list$excluded_companies
   df_price <- input_data_list$df_price
   scenario_data <- input_data_list$scenario_data
+  financial_data_loans <- input_data_list$financial_data  %>%
+    dplyr::mutate(company_name = stringr::str_to_lower(.data$company_name))
 
   # check scenario availability across data inputs for bonds
   check_scenario_availability(
