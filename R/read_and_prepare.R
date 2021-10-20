@@ -23,8 +23,17 @@ read_and_prepare <- function(start_year, end_year, company_exclusion) {
     excluded_companies <- NULL
   }
 
+  df_price <- read_price_data(
+    path = file.path(data_location, paste0("prices_data_", config::get(file = "st_project_settings.yml")$price_data_version, ".csv")),
+    version = "old",
+    expected_technologies = technologies_lookup
+  ) %>%
+    dplyr::filter(year >= start_year) %>%
+    check_price_consistency(start_year = start_year)
+
   return(list(capacity_factors_power = capacity_factors_power,
               transition_scenarios = transition_scenarios,
-              excluded_companies = excluded_companies))
+              excluded_companies = excluded_companies,
+              df_price = df_price))
 
 }

@@ -51,7 +51,6 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
   cfg_st <- config::get(file = "st_project_settings.yml")
   check_valid_cfg(cfg = cfg_st, expected_no_args = 5)
   project_name <- cfg_st$project_name
-  price_data_version <- cfg_st$price_data_version
 
   data_location <- get_st_data_path()
 
@@ -115,6 +114,7 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
   capacity_factors_power <- input_data_list$capacity_factors_power
   transition_scenarios <- input_data_list$transition_scenarios
   excluded_companies <- input_data_list$excluded_companies
+  df_price <- input_data_list$df_price
 
   # Load scenario data----------------------------------------
   scenario_data <- read_scenario_data(
@@ -126,15 +126,6 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
         .data$technology %in% technologies_lookup &
         .data$scenario_geography == scenario_geography_filter
     )
-
-  # Load price data----------------------------------------
-  df_price <- read_price_data(
-    path = file.path(data_location, paste0("prices_data_", price_data_version, ".csv")),
-    version = "old",
-    expected_technologies = technologies_lookup
-  ) %>%
-    dplyr::filter(year >= start_year) %>%
-    check_price_consistency(start_year = start_year)
 
   # check scenario availability across data inputs for equity
   check_scenario_availability(
