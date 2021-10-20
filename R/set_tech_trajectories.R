@@ -59,7 +59,7 @@ set_baseline_trajectory <- function(data,
     ) %>%
     dplyr::mutate(
       scenario_change = .data$scen_to_follow - dplyr::lag(.data$scen_to_follow),
-      baseline =  calc_future_prod_follows_scen(
+      baseline = calc_future_prod_follows_scen(
         planned_prod = .data$plan_tech_prod,
         change_scen_prod = .data$scenario_change
       )
@@ -355,22 +355,17 @@ calc_late_sudden_traj <- function(start_year, end_year, year_of_shock, duration_
   # we do not need to compensate production capacity, and we set
   # the LS trajectory equal to the SDS trajectory
   if (
-    (
-      overshoot_direction == "Decreasing" &
-        sum(scen_to_follow[1:time_frame]) < sum(late_and_sudden[1:time_frame])
-      ) | (
-      overshoot_direction == "Increasing" &
-        sum(scen_to_follow[1:time_frame]) > sum(late_and_sudden[1:time_frame])
+    (overshoot_direction == "Decreasing" & sum(scen_to_follow[1:time_frame]) < sum(late_and_sudden[1:time_frame])) |
+      (overshoot_direction == "Increasing" & sum(scen_to_follow[1:time_frame]) > sum(late_and_sudden[1:time_frame]))
+  ) {
+    x <- (
+      sum(scen_to_follow) -
+        sum(late_and_sudden[1:(position_shock_year - 1)]) -
+        (end_year - year_of_shock + 1) * late_and_sudden[position_shock_year - 1]
+    ) /
+      (
+        -sum(seq(1, end_year - year_of_shock + 1))
       )
-    ) {
-      x <- (
-            sum(scen_to_follow) -
-            sum(late_and_sudden[1:(position_shock_year - 1)]) -
-            (end_year - year_of_shock + 1) * late_and_sudden[position_shock_year - 1]
-           ) /
-           (
-             -sum(seq(1, end_year - year_of_shock + 1))
-             )
 
     # add the absolute production increase/decrease for each year during
     # the shock period, capping at a 0 lower bound for production volume
@@ -393,7 +388,7 @@ calc_late_sudden_traj <- function(start_year, end_year, year_of_shock, duration_
       late_and_sudden[k] <- late_and_sudden[k - 1] + scenario_change_aligned[k]
     }
   }
- return(late_and_sudden)
+  return(late_and_sudden)
 }
 
 #' Remove negative late and sudden rows
