@@ -157,18 +157,10 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
     )
   # TODO: potentially convert currencies to USD or at least common currency
 
-  # Load transition scenarios that will be run by the model
-  transition_scenarios <- read_transition_scenarios(
-    path = file.path(data_location, "transition_scenario_input.csv"),
-    start_of_analysis = start_year,
-    end_of_analysis = end_year
-  )
-
-  # Load utilization factors power
-  capacity_factors_power <- read_capacity_factors(
-    path = file.path(data_location, "capacity_factors_WEO_2020.csv"),
-    version = "new"
-  )
+  # FIXME: Simplify by passing data directly
+  input_data_list <- read_and_prepare(start_year = start_year, end_year = end_year)
+  capacity_factors_power <- input_data_list$capacity_factors_power
+  transition_scenarios <- input_data_list$transition_scenarios
 
   # Load scenario data----------------------------------------
   scenario_data <- read_scenario_data(
