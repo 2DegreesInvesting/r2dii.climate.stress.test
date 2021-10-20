@@ -122,19 +122,7 @@ generate_transition_shocks <- function(start_of_analysis,
   data <- tibble::tibble(
     year_of_shock = shock_years,
     scenario_name = glue::glue("Carbon balance {year_of_shock}"),
-    duration_of_shock = end_of_analysis - year_of_shock + 1,
-    Coal = NA_real_,
-    Oil = NA_real_,
-    Gas = NA_real_,
-    CoalCap = NA_real_,
-    GasCap = NA_real_,
-    NuclearCap = NA_real_,
-    RenewablesCap = NA_real_,
-    HydroCap = NA_real_,
-    OilCap = NA_real_,
-    Electric = NA_real_,
-    Hybrid = NA_real_,
-    ICE = NA_real_
+    duration_of_shock = end_of_analysis - year_of_shock + 1
   )
 
   output_has_expected_columns <- all(

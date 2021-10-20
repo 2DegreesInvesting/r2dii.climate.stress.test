@@ -133,9 +133,8 @@ calc_future_prod_follows_scen <- function(planned_prod = .data$plan_tech_prod,
 #'   of the scenarios included in the analysis should be used to set the
 #'   late & sudden technology trajectories.
 #' @param shock_scenario A dataframe that contains information about the
-#'   transition scenario, specifically the shock year, the overshoot method,
-#'   whether to include production forecasts and potentially explicit shock
-#'   sizes.
+#'   transition scenario, specifically the shock year and, duration of the
+#'   shock and the name of the shock scenario
 #' @param scenario_to_follow_ls_aligned Character. A string that indicates which
 #'   of the scenarios included in the analysis should be used to set the
 #'   late & sudden technology trajectories in case the company is aligned after
@@ -154,15 +153,12 @@ calc_future_prod_follows_scen <- function(planned_prod = .data$plan_tech_prod,
 #' @export
 set_ls_trajectory <- function(data,
                               scenario_to_follow_ls = "SDS",
-                              shock_scenario = shock_scenario,
+                              shock_scenario,
                               scenario_to_follow_ls_aligned = "SDS",
                               start_year = 2020,
                               end_year = 2040,
                               analysis_time_frame = NULL) {
   analysis_time_frame %||% stop("Must provide input for 'time_frame'", call. = FALSE)
-
-  year_of_shock <- shock_scenario$year_of_shock
-  duration_of_shock <- shock_scenario$duration_of_shock
 
   if (!"id" %in% names(data)) {
     data$id <- "PortfolioLevel"
@@ -184,20 +180,13 @@ set_ls_trajectory <- function(data,
   ) %in% colnames(shock_scenario))
   stopifnot(shock_scenario_has_expected_columns)
 
-  shock_scenario <- shock_scenario %>%
-    dplyr::select(-c(.data$year_of_shock, .data$duration_of_shock)) %>%
-    tidyr::pivot_longer(
-      cols = -c("scenario_name"),
-      names_to = "technology",
-      values_to = "shock_strength"
-    )
+  scenario_name <- shock_scenario$scenario_name
+  year_of_shock <- shock_scenario$year_of_shock
+  duration_of_shock <- shock_scenario$duration_of_shock
 
   data <- data %>%
-    dplyr::inner_join(
-      shock_scenario,
-      by = "technology"
-    ) %>%
     dplyr::mutate(
+      scenario_name = .env$scenario_name,
       scen_to_follow = !!rlang::sym(scenario_to_follow_ls),
       scen_to_follow_aligned = !!rlang::sym(scenario_to_follow_ls_aligned),
       late_sudden = .data$plan_tech_prod
@@ -244,7 +233,6 @@ set_ls_trajectory <- function(data,
         end_year = end_year,
         year_of_shock = year_of_shock,
         duration_of_shock = duration_of_shock,
-        shock_strength = .data$shock_strength,
         scen_to_follow = .data$scen_to_follow,
         planned_prod = .data$plan_tech_prod,
         late_and_sudden = .data$late_sudden,
@@ -259,7 +247,6 @@ set_ls_trajectory <- function(data,
     dplyr::select(
       -c(
         .data$scen_to_follow,
-        .data$shock_strength,
         .data$scenario_change,
         .data$scenario_change_baseline,
         .data$overshoot_direction

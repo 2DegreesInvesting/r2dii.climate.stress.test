@@ -1,27 +1,3 @@
-#######################
-# Create shock scenario
-#######################
-create_shock_scenario <- function(transition_scenario) {
-  data <- tibble::tibble(
-    "scenario_name" = transition_scenario$scenario_name,
-    "year_of_shock" = transition_scenario$year_of_shock,
-    "duration_of_shock" = 2040 - transition_scenario$year_of_shock + 1,
-    "Coal" = NA,
-    "Oil" = NA,
-    "Gas" = NA,
-    "GasCap" = NA,
-    "RenewablesCap" = NA,
-    "NuclearCap" = NA,
-    "CoalCap" = NA,
-    "HydroCap" = NA,
-    "OilCap" = NA,
-    "ICE" = NA,
-    "Electric" = NA,
-    "Hybrid" = NA
-  )
-  return(data)
-}
-
 # STILL TO FIX: five year moving average
 # FIXME: can probably be removed
 f <- function(shock_strength_calc) {
