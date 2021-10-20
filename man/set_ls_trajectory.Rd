@@ -8,7 +8,7 @@ stress test.}
 set_ls_trajectory(
   data,
   scenario_to_follow_ls = "SDS",
-  shock_scenario = shock_scenario,
+  shock_scenario,
   scenario_to_follow_ls_aligned = "SDS",
   start_year = 2020,
   end_year = 2040,
@@ -24,9 +24,8 @@ of the scenarios included in the analysis should be used to set the
 late & sudden technology trajectories.}
 
 \item{shock_scenario}{A dataframe that contains information about the
-transition scenario, specifically the shock year, the overshoot method,
-whether to include production forecasts and potentially explicit shock
-sizes.}
+transition scenario, specifically the shock year and, duration of the
+shock and the name of the shock scenario}
 
 \item{scenario_to_follow_ls_aligned}{Character. A string that indicates which
 of the scenarios included in the analysis should be used to set the
