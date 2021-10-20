@@ -15,6 +15,9 @@
 #' @param div_netprofit_prop_coef Numeric. A coefficient that determines how
 #'   strongly the future dividends propagate to the company value. For accepted
 #'   range compare `div_netprofit_prop_coef_range_lookup`.
+#' @param term Numeric. A coefficient that determines for which maturity the
+#'   expected loss should be calculated in the credit risk section. For accepted
+#'   range compare `term_range_lookup`.
 #' @param company_exclusion Boolean, indicating if companies provided in dataset
 #'   excluded_companies.csv shall be excluded.
 #' @param credit_type Type of credit. For accepted values please compare
@@ -27,6 +30,7 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
                                   risk_free_rate = 0.02,
                                   discount_rate = 0.02,
                                   div_netprofit_prop_coef = 1,
+                                  term = 2,
                                   company_exclusion = TRUE,
                                   credit_type = "credit_limit") {
   validate_input_values(
@@ -36,6 +40,7 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
     risk_free_rate = risk_free_rate,
     discount_rate = discount_rate,
     div_netprofit_prop_coef = div_netprofit_prop_coef,
+    term = term,
     company_exclusion = company_exclusion,
     credit_type = credit_type
   )
@@ -124,11 +129,9 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
       scenarios_filter = scenarios_filter,
       equity_market_filter = cfg$Lists$Equity.Market.List
     ) %>%
-    dplyr::group_by(company_name) %>%
-    dplyr::mutate(
-      term = round(runif(n = 1, min = 1, max = 10), 0) # TODO: temporary addition, needs to come directly from input
-    ) %>%
-    dplyr::ungroup()
+    # ADO 1943 - for the time being, one global term value is set by the user.
+    # TODO: next version to allow term input on holding/company level
+    dplyr::mutate(term = term)
 
   sector_credit_type <- paste0("sector_loan_size_", credit_type)
   credit_currency <- paste0("loan_size_", credit_type, "_currency")
