@@ -268,9 +268,6 @@ run_stress_test_loans <- function() {
 
   for (i in seq(1, nrow(transition_scenarios))) {
     transition_scenario_i <- transition_scenarios[i, ]
-    scenario_name <- transition_scenario_i$scenario_name
-    year_of_shock <- transition_scenario_i$year_of_shock
-    duration_of_shock <- transition_scenario_i$duration_of_shock
 
     # Calculate late and sudden prices for scenario i
     df_prices <- df_price %>%
@@ -284,9 +281,9 @@ run_stress_test_loans <- function() {
         late_sudden_price = late_sudden_prices(
           SDS_price = SDS_price,
           Baseline_price = Baseline_price,
-          year_of_shock = year_of_shock,
+          year_of_shock = transition_scenario_i$year_of_shock,
           start_year = start_year,
-          duration_of_shock = duration_of_shock
+          duration_of_shock = transition_scenario_i$duration_of_shock
         )
       ) %>%
       dplyr::ungroup()
