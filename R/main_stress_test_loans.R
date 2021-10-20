@@ -158,9 +158,10 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
   # TODO: potentially convert currencies to USD or at least common currency
 
   # FIXME: Simplify by passing data directly
-  input_data_list <- read_and_prepare(start_year = start_year, end_year = end_year)
+  input_data_list <- read_and_prepare(start_year = start_year, end_year = end_year, company_exclusion = company_exclusion)
   capacity_factors_power <- input_data_list$capacity_factors_power
   transition_scenarios <- input_data_list$transition_scenarios
+  excluded_companies <- input_data_list$excluded_companies
 
   # Load scenario data----------------------------------------
   scenario_data <- read_scenario_data(
@@ -181,16 +182,6 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
   ) %>%
     dplyr::filter(year >= start_year) %>%
     check_price_consistency(start_year = start_year)
-
-  # Load excluded companies-------------------------------
-  if (company_exclusion) {
-    excluded_companies <- readr::read_csv(
-      file.path(data_location, "exclude-companies.csv"),
-      col_types = "cc"
-    )
-  } else {
-    excluded_companies <- NULL
-  }
 
   # check scenario availability across data inputs for bonds
   check_scenario_availability(

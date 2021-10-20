@@ -1,4 +1,4 @@
-read_and_prepare <- function(start_year, end_year) {
+read_and_prepare <- function(start_year, end_year, company_exclusion) {
 
   data_location <- get_st_data_path()
 
@@ -13,7 +13,18 @@ read_and_prepare <- function(start_year, end_year) {
     end_of_analysis = end_year
   )
 
+  if (company_exclusion) {
+    excluded_companies <- readr::read_csv(
+      file.path(data_location, "exclude-companies.csv"),
+      col_types = readr::cols(company_name = "c",
+                              technology = "c")
+    )
+  } else {
+    excluded_companies <- NULL
+  }
+
   return(list(capacity_factors_power = capacity_factors_power,
-              transition_scenarios = transition_scenarios))
+              transition_scenarios = transition_scenarios,
+              excluded_companies = excluded_companies))
 
 }
