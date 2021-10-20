@@ -121,17 +121,11 @@ asset_value_at_risk <- function(data,
     ) %>%
     dplyr::ungroup()
 
-  shock_scenario_long <- shock_scenario %>%
-    tidyr::pivot_longer(
-      cols = -c(scenario_name, year_of_shock, duration_of_shock),
-      names_to = "technology",
-      values_to = "production_shock_perc"
-    )
-
   data <- data %>%
-    dplyr::inner_join(
-      shock_scenario_long,
-      by = c("scenario_name", "technology")
+    dplyr::mutate(
+      duration_of_shock = .env$shock_scenario$duration_of_shock,
+      year_of_shock = .env$shock_scenario$year_of_shock,
+      production_shock_perc = NA_real_
     ) %>%
     dplyr::select(-c(.data$plan_carsten, .data$plan_sec_carsten, .data$year))
 

@@ -146,13 +146,20 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
     )
   # TODO: potentially convert currencies to USD or at least common currency
 
+  # Load transition scenarios that will be run by the model
+  transition_scenarios <- generate_transition_shocks(
+    start_of_analysis = start_year,
+    end_of_analysis = end_year,
+    shock_years = c(2025:2035)
+  )
+
   # Load project agnostic data sets -----------------------------------------
   input_data_list <- read_and_prepare_project_agnostic_data(
     start_year = start_year,
     end_year = end_year,
     company_exclusion = company_exclusion,
     scenario_geography_filter = scenario_geography_filter,
-    asset_type = asset_type
+    asset_type = "loans"
   )
 
   excluded_companies <- input_data_list$excluded_companies
@@ -172,12 +179,7 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
   # TODO: validate
   loan_book_port_aum <- calculate_aum(sector_exposures)
 
-  #### OPEN: both objects in condition not available as of now,
-  # since they are read in into a loop afterwards
-  # deactivated, for the time being
-
-  # if(use_prod_forecasts_ls & overshoot_method){
-  ## i.e. we use the integral/overshoot late&sudden method, and we use company production plans the first 5 years
+  ## if we use the integral/overshoot late&sudden method, and we use company production plans the first 5 years
   ## the integral method works on company level, however,
   ## when we aggregate the company LS trajectories to port-technology level, the integrals of SDS and LS are not the same, due to 2 reasons:
   ## 1) for companies that outperform SDS, capacity shhould not be compensated for, hence we take a LS trajecorty that equal SDS
@@ -198,16 +200,7 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
 
   for (i in seq(1, nrow(transition_scenarios))) {
     transition_scenario_i <- transition_scenarios[i, ]
-    overshoot_method <- transition_scenario_i$overshoot_method
-    year_of_shock <- transition_scenario_i$year_of_shock
-    duration_of_shock <- transition_scenario_i$duration_of_shock
-    use_prod_forecasts_baseline <- transition_scenario_i$use_prod_forecasts_baseline
-    use_prod_forecasts_ls <- transition_scenario_i$use_prod_forecasts_ls
 
-    # Create shock scenario dataframe for scenario i
-    # For now we use the old shock scenario dataframe format. Should change this over time as its far from optimal
-    shock_scenario <- create_shock_scenario(transition_scenario = transition_scenario_i)
-    print(overshoot_method)
     # Calculate late and sudden prices for scenario i
     df_prices <- input_data_list$df_price %>%
       dplyr::mutate(Baseline = !!rlang::sym(scenario_to_follow_baseline)) %>%
@@ -220,10 +213,9 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
         late_sudden_price = late_sudden_prices(
           SDS_price = SDS_price,
           Baseline_price = Baseline_price,
-          overshoot_method = overshoot_method,
-          year_of_shock = year_of_shock,
+          year_of_shock = transition_scenario_i$year_of_shock,
           start_year = start_year,
-          duration_of_shock = duration_of_shock
+          duration_of_shock = transition_scenario_i$duration_of_shock
         )
       ) %>%
       dplyr::ungroup()
@@ -240,14 +232,11 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
         time_frame = time_horizon
       ) %>%
       set_baseline_trajectory(
-        scenario_to_follow_baseline = scenario_to_follow_baseline,
-        use_prod_forecasts = use_prod_forecasts_baseline
+        scenario_to_follow_baseline = scenario_to_follow_baseline
       ) %>%
       set_ls_trajectory(
         scenario_to_follow_ls = scenario_to_follow_ls,
-        shock_scenario = shock_scenario,
-        use_production_forecasts_ls = use_prod_forecasts_ls,
-        overshoot_method = overshoot_method,
+        shock_scenario = transition_scenario_i,
         scenario_to_follow_ls_aligned = scenario_to_follow_ls,
         start_year = start_year,
         end_year = end_year,
@@ -354,7 +343,7 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
       company_asset_value_at_risk(
         data = loanbook_annual_profits,
         terminal_value = terminal_value,
-        shock_scenario = shock_scenario,
+        shock_scenario = transition_scenario_i,
         div_netprofit_prop_coef = div_netprofit_prop_coef,
         plan_carsten = plan_carsten_loanbook,
         port_aum = loan_book_port_aum,

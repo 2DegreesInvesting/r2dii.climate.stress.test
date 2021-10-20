@@ -28,6 +28,7 @@ for \code{àsset_type} loans
 }
 \seealso{
 Other import functions: 
+\code{\link{generate_transition_shocks}()},
 \code{\link{read_capacity_factors}()},
 \code{\link{read_ngfs_carbon_tax}()},
 \code{\link{read_pacta_results}()},

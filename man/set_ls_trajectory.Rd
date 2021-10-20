@@ -8,9 +8,7 @@ stress test.}
 set_ls_trajectory(
   data,
   scenario_to_follow_ls = "SDS",
-  shock_scenario = shock_scenario,
-  use_production_forecasts_ls = TRUE,
-  overshoot_method = TRUE,
+  shock_scenario,
   scenario_to_follow_ls_aligned = "SDS",
   start_year = 2020,
   end_year = 2040,
@@ -26,18 +24,8 @@ of the scenarios included in the analysis should be used to set the
 late & sudden technology trajectories.}
 
 \item{shock_scenario}{A dataframe that contains information about the
-transition scenario, specifically the shock year, the overshoot method,
-whether to include production forecasts and potentially explicit shock
-sizes.}
-
-\item{use_production_forecasts_ls}{Logical. A logical vector of length 1
-that indicates whether or not the late & sudden trajectory should make
-use of the production forecast provided by PACTA results.}
-
-\item{overshoot_method}{Logical. A logical vector of length 1 that indicates
-if (when TRUE) the integral/overshoot method should be used to calculate
-shock size endogenously based on carbon budgets, or (when FALSE) the shock
-sizes need to be supplied by the user.}
+transition scenario, specifically the shock year and, duration of the
+shock and the name of the shock scenario}
 
 \item{scenario_to_follow_ls_aligned}{Character. A string that indicates which
 of the scenarios included in the analysis should be used to set the
