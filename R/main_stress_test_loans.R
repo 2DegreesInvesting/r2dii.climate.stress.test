@@ -15,6 +15,8 @@
 #' @param div_netprofit_prop_coef Numeric. A coefficient that determines how
 #'   strongly the future dividends propagate to the company value. For accepted
 #'   range compare `div_netprofit_prop_coef_range_lookup`.
+#' @param shock_year Numeric, holding year the shock is applied. For accepted
+#'   range compare `shock_year_range_lookup`.
 #' @param company_exclusion Boolean, indicating if companies provided in dataset
 #'   excluded_companies.csv shall be excluded.
 #' @param credit_type Type of credit. For accepted values please compare
@@ -27,6 +29,7 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
                                   risk_free_rate = 0.02,
                                   discount_rate = 0.02,
                                   div_netprofit_prop_coef = 1,
+                                  shock_year = 2030,
                                   company_exclusion = TRUE,
                                   credit_type = "credit_limit") {
   validate_input_values(
@@ -36,6 +39,7 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
     risk_free_rate = risk_free_rate,
     discount_rate = discount_rate,
     div_netprofit_prop_coef = div_netprofit_prop_coef,
+    shock_year = shock_year,
     company_exclusion = company_exclusion,
     credit_type = credit_type
   )

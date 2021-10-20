@@ -7,8 +7,8 @@
 #' @return NULL
 validate_input_values <- function(lgd_senior_claims, lgd_subordinated_claims,
                                   terminal_value, risk_free_rate, discount_rate,
-                                  div_netprofit_prop_coef, company_exclusion,
-                                  credit_type = NULL) {
+                                  div_netprofit_prop_coef, shock_year,
+                                  company_exclusion, credit_type = NULL) {
   if (!is.logical(company_exclusion)) {
     stop("Company exclusion must be a boolean.")
   }
@@ -34,7 +34,11 @@ validate_input_values <- function(lgd_senior_claims, lgd_subordinated_claims,
   }
 
   if (!dplyr::between(div_netprofit_prop_coef, min(div_netprofit_prop_coef_range_lookup), max(div_netprofit_prop_coef_range_lookup))) {
-    stop("Argument div_netprofit_prop_coef_range_lookup is outside accepted range.")
+    stop("Argument div_netprofit_prop_coef is outside accepted range.")
+  }
+
+  if (!dplyr::between(shock_year, min(shock_year_range_lookup), max(shock_year_range_lookup))) {
+    stop("Argument shock_year is outside accepted range.")
   }
 
   if (!is.null(credit_type) && !credit_type %in% credit_type_lookup) {
