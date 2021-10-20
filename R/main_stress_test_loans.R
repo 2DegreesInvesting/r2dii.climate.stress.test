@@ -157,22 +157,12 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
   # TODO: potentially convert currencies to USD or at least common currency
 
   # FIXME: Simplify by passing data directly
-  input_data_list <- read_and_prepare(start_year = start_year, end_year = end_year, company_exclusion = company_exclusion)
+  input_data_list <- read_and_prepare(start_year = start_year, end_year = end_year, company_exclusion = company_exclusion, scenario_geography_filter = scenario_geography_filter)
   capacity_factors_power <- input_data_list$capacity_factors_power
   transition_scenarios <- input_data_list$transition_scenarios
   excluded_companies <- input_data_list$excluded_companies
   df_price <- input_data_list$df_price
-
-  # Load scenario data----------------------------------------
-  scenario_data <- read_scenario_data(
-    path = file.path(data_location, paste0("Scenarios_AnalysisInput_", start_year, ".csv"))
-  ) %>%
-    wrangle_scenario_data(start_year = start_year, end_year = end_year) %>%
-    dplyr::filter(
-      .data$ald_sector %in% sectors_lookup &
-        .data$technology %in% technologies_lookup &
-        .data$scenario_geography == scenario_geography_filter
-    )
+  scenario_data <- input_data_list$scenario_data
 
   # check scenario availability across data inputs for bonds
   check_scenario_availability(

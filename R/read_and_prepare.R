@@ -1,4 +1,4 @@
-read_and_prepare <- function(start_year, end_year, company_exclusion) {
+read_and_prepare <- function(start_year, end_year, company_exclusion, scenario_geography_filter) {
 
   data_location <- get_st_data_path()
 
@@ -31,9 +31,20 @@ read_and_prepare <- function(start_year, end_year, company_exclusion) {
     dplyr::filter(year >= start_year) %>%
     check_price_consistency(start_year = start_year)
 
+  scenario_data <- read_scenario_data(
+    path = file.path(data_location, paste0("Scenarios_AnalysisInput_", start_year, ".csv"))
+  ) %>%
+    wrangle_scenario_data(start_year = start_year, end_year = end_year) %>%
+    dplyr::filter(
+      .data$ald_sector %in% sectors_lookup &
+        .data$technology %in% technologies_lookup &
+        .data$scenario_geography == scenario_geography_filter
+    )
+
   return(list(capacity_factors_power = capacity_factors_power,
               transition_scenarios = transition_scenarios,
               excluded_companies = excluded_companies,
-              df_price = df_price))
+              df_price = df_price,
+              scenario_data = scenario_data))
 
 }
