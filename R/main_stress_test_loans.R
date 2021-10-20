@@ -159,7 +159,7 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
     end_year = end_year,
     company_exclusion = company_exclusion,
     scenario_geography_filter = scenario_geography_filter,
-    asset_type = "Loans"
+    asset_type = "loans"
   )
 
   excluded_companies <- input_data_list$excluded_companies
