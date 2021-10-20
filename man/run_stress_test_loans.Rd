@@ -11,6 +11,7 @@ run_stress_test_loans(
   risk_free_rate = 0.02,
   discount_rate = 0.02,
   div_netprofit_prop_coef = 1,
+  term = 2,
   company_exclusion = TRUE,
   credit_type = "credit_limit"
 )
@@ -36,6 +37,10 @@ year in the DCF. For accepted range compare \code{discount_rate_range_lookup}.}
 \item{div_netprofit_prop_coef}{Numeric. A coefficient that determines how
 strongly the future dividends propagate to the company value. For accepted
 range compare \code{div_netprofit_prop_coef_range_lookup}.}
+
+\item{term}{Numeric. A coefficient that determines for which maturity the
+expected loss should be calculated in the credit risk section. For accepted
+range compare \code{term_range_lookup}.}
 
 \item{company_exclusion}{Boolean, indicating if companies provided in dataset
 excluded_companies.csv shall be excluded.}
