@@ -22,9 +22,6 @@
 #' @param scenario_to_follow_baseline Character. A string that indicates which
 #'   of the scenarios included in the analysis should be used to set the
 #'   baseline technology trajectories.
-#' @param use_prod_forecasts Logical. Indicates whether or not to offset the
-#'   baseline trajectories with the actual production plans for the first few
-#'   years
 #'
 #' @family scenario definition
 #'
@@ -32,8 +29,7 @@
 #'
 #' @export
 set_baseline_trajectory <- function(data,
-                                    scenario_to_follow_baseline,
-                                    use_prod_forecasts) {
+                                    scenario_to_follow_baseline) {
   if (!"id" %in% names(data)) {
     data$id <- "PortfolioLevel"
   }
@@ -63,13 +59,9 @@ set_baseline_trajectory <- function(data,
     ) %>%
     dplyr::mutate(
       scenario_change = .data$scen_to_follow - dplyr::lag(.data$scen_to_follow),
-      baseline = dplyr::if_else(
-        rep(use_prod_forecasts, dplyr::n()),
-        calc_future_prod_follows_scen(
-          planned_prod = .data$plan_tech_prod,
-          change_scen_prod = .data$scenario_change
-        ),
-        .data$scen_to_follow
+      baseline =  calc_future_prod_follows_scen(
+        planned_prod = .data$plan_tech_prod,
+        change_scen_prod = .data$scenario_change
       )
     ) %>%
     dplyr::ungroup() %>%
@@ -144,9 +136,6 @@ calc_future_prod_follows_scen <- function(planned_prod = .data$plan_tech_prod,
 #'   transition scenario, specifically the shock year, the overshoot method,
 #'   whether to include production forecasts and potentially explicit shock
 #'   sizes.
-#' @param use_production_forecasts_ls Logical. A logical vector of length 1
-#'   that indicates whether or not the late & sudden trajectory should make
-#'   use of the production forecast provided by PACTA results.
 #' @param scenario_to_follow_ls_aligned Character. A string that indicates which
 #'   of the scenarios included in the analysis should be used to set the
 #'   late & sudden technology trajectories in case the company is aligned after
@@ -166,8 +155,6 @@ calc_future_prod_follows_scen <- function(planned_prod = .data$plan_tech_prod,
 set_ls_trajectory <- function(data,
                               scenario_to_follow_ls = "SDS",
                               shock_scenario = shock_scenario,
-                              use_production_forecasts_ls = TRUE,
-                              # overshoot_method = TRUE,
                               scenario_to_follow_ls_aligned = "SDS",
                               start_year = 2020,
                               end_year = 2040,
@@ -210,14 +197,10 @@ set_ls_trajectory <- function(data,
       shock_scenario,
       by = "technology"
     ) %>%
-    dplyr::mutate(scen_to_follow = !!rlang::sym(scenario_to_follow_ls)) %>%
-    dplyr::mutate(scen_to_follow_aligned = !!rlang::sym(scenario_to_follow_ls_aligned)) %>%
     dplyr::mutate(
-      late_sudden = dplyr::if_else(
-        rep(use_production_forecasts_ls, dplyr::n()),
-        .data$plan_tech_prod,
-        .data$baseline
-      )
+      scen_to_follow = !!rlang::sym(scenario_to_follow_ls),
+      scen_to_follow_aligned = !!rlang::sym(scenario_to_follow_ls_aligned),
+      late_sudden = .data$plan_tech_prod
     )
 
   data <- data %>%

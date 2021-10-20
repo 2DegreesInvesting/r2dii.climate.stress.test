@@ -4,36 +4,18 @@ test_that("set_baseline_trajectories returns a data frame", {
 
   baseline_trajectory <- set_baseline_trajectory(
     data = test_data_set_baseline,
-    scenario_to_follow_baseline = "NPS",
-    use_prod_forecasts = TRUE
+    scenario_to_follow_baseline = "NPS"
   )
 
   testthat::expect_s3_class(baseline_trajectory, "data.frame")
 })
 
-test_that("set_baseline_trajectories fully replicates indicated scenario,
-          if prod forecast is FALSE", {
+test_that("set_baseline_trajectories does not fully replicate indicated scenario", {
   test_data_set_baseline <- read_test_data("data_set_baseline_traj.csv")
 
   baseline_trajectory <- set_baseline_trajectory(
     data = test_data_set_baseline,
-    scenario_to_follow_baseline = "NPS",
-    use_prod_forecasts = FALSE
-  )
-
-  testthat::expect_true(
-    all(baseline_trajectory$NPS == baseline_trajectory$baseline)
-  )
-})
-
-test_that("set_baseline_trajectories does not fully replicate indicated scenario,
-          if prod forecast is TRUE", {
-  test_data_set_baseline <- read_test_data("data_set_baseline_traj.csv")
-
-  baseline_trajectory <- set_baseline_trajectory(
-    data = test_data_set_baseline,
-    scenario_to_follow_baseline = "NPS",
-    use_prod_forecasts = TRUE
+    scenario_to_follow_baseline = "NPS"
   )
 
   testthat::expect_false(
@@ -42,7 +24,7 @@ test_that("set_baseline_trajectories does not fully replicate indicated scenario
 })
 
 test_that("set_baseline_trajectories replicates provided production trajectory
-          until end of production forecast period, if prod forecast is TRUE", {
+          until end of production forecast period", {
   test_data_set_baseline <- read_test_data("data_set_baseline_traj.csv")
 
   # find number of years with provided production forecast per tech
@@ -57,8 +39,7 @@ test_that("set_baseline_trajectories replicates provided production trajectory
 
   baseline_trajectory <- set_baseline_trajectory(
     data = test_data_set_baseline,
-    scenario_to_follow_baseline = "NPS",
-    use_prod_forecasts = TRUE
+    scenario_to_follow_baseline = "NPS"
   )
 
   baseline_trajectory_forecast <- baseline_trajectory %>% head(forecast_length)
@@ -126,7 +107,6 @@ test_that("set_ls_trajectory returns a data frame", {
     data = test_data_set_late_sudden,
     scenario_to_follow_ls = "SDS",
     shock_scenario = test_shock_scenario,
-    use_production_forecasts_ls = TRUE,
     scenario_to_follow_ls_aligned = "SDS",
     start_year = 2020,
     end_year = 2040,
@@ -147,7 +127,6 @@ test_that("set_ls_trajectory fully replicates baseline until year before shock,
     data = test_data_set_late_sudden,
     scenario_to_follow_ls = "SDS",
     shock_scenario = test_shock_scenario,
-    use_production_forecasts_ls = TRUE,
     scenario_to_follow_ls_aligned = "SDS",
     start_year = 2020,
     end_year = 2040,
@@ -172,7 +151,6 @@ test_that("when technology is aligned, set_ls_trajectory fully replicates
     data = test_data_set_late_sudden,
     scenario_to_follow_ls = "SDS",
     shock_scenario = test_shock_scenario,
-    use_production_forecasts_ls = TRUE,
     scenario_to_follow_ls_aligned = "SDS",
     start_year = 2020,
     end_year = 2040,

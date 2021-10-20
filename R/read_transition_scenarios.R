@@ -122,8 +122,6 @@ generate_transition_shocks <- function(start_of_analysis,
   data <- tibble::tibble(
     year_of_shock = shock_years,
     scenario_name = glue::glue("Carbon balance {year_of_shock}"),
-    use_prod_forecasts_ls = TRUE,
-    use_prod_forecasts_baseline = TRUE,
     duration_of_shock = end_of_analysis - year_of_shock + 1,
     Coal = NA_real_,
     Oil = NA_real_,
@@ -141,8 +139,7 @@ generate_transition_shocks <- function(start_of_analysis,
 
   output_has_expected_columns <- all(
     c(
-      "scenario_name", "year_of_shock", "duration_of_shock",
-      "use_prod_forecasts_ls", "use_prod_forecasts_baseline"
+      "scenario_name", "year_of_shock", "duration_of_shock"
     ) %in% colnames(data)
   )
   stopifnot(output_has_expected_columns)
