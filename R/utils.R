@@ -110,7 +110,7 @@ create_stressdata_masterdata_file_paths <- function() {
       }
       return(file_path)
     }) %>%
-    purrr::set_names(c("bonds", "listed_equity", "loans"))
+    purrr::set_names(c("bonds", "equity", "loans"))
 
   return(paths)
 }
