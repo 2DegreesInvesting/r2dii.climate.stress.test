@@ -43,6 +43,7 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
   scenario_to_follow_baseline <- baseline_scenario_lookup
   scenario_to_follow_ls <- shock_scenario_lookup
   calculation_level <- calculation_level_lookup
+  end_year <- end_year_lookup
 
   ###########################################################################
   # Project Initialisation---------------------------------------------------
@@ -55,9 +56,6 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
   cfg_st <- config::get(file = "st_project_settings.yml")
   check_valid_cfg(cfg = cfg_st, expected_no_args = 5)
   project_name <- cfg_st$project_name
-  price_data_version <- cfg_st$price_data_version
-
-  data_location <- get_st_data_path()
 
   #### Analysis Parameters----------------------------------------
   # Get analysis parameters from the projects AnalysisParameters.yml - similar to PACTA_analysis
@@ -75,13 +73,6 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
 
   scenario_geography_filter <- "Global"
 
-  #### Model variables----------------------------------------
-  #### OPEN: This should be moved into a StressTestModelParameters.yml
-  cfg_mod <- config::get(file = "model_parameters.yml")
-
-  # OPEN: wrap reading in of params in function and move to global_functions
-  end_year <- cfg_mod$end_year # Set to 2040 cause current scenario data goes until 2040. can be extended when WEO2020 turns out extended horizon
-
   scenarios_filter <- unique(
     c(
       scenario_to_follow_baseline,
@@ -92,14 +83,6 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
   ###########################################################################
   # Load input datasets------------------------------------------------------
   ###########################################################################
-
-  # Load company financial and production data-----------------------------------
-  financial_data_loans <- read_company_data(
-    path = create_stressdata_masterdata_file_paths()$loans,
-    asset_type = "loans"
-  ) %>%
-    wrangle_financial_data(start_year = start_year) %>%
-    dplyr::mutate(company_name = stringr::str_to_lower(.data$company_name))
 
   # Load PACTA results / loans portfolio------------------------
   # TODO: select the right scenarios
@@ -170,41 +153,19 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
     shock_years = c(2025:2035)
   )
 
-  # Load utilization factors power
-  capacity_factors_power <- read_capacity_factors(
-    path = file.path(data_location, "capacity_factors_WEO_2020.csv"),
-    version = "new"
+  # Load project agnostic data sets -----------------------------------------
+  input_data_list <- read_and_prepare_project_agnostic_data(
+    start_year = start_year,
+    end_year = end_year,
+    company_exclusion = company_exclusion,
+    scenario_geography_filter = scenario_geography_filter,
+    asset_type = "loans"
   )
 
-  # Load scenario data----------------------------------------
-  scenario_data <- read_scenario_data(
-    path = file.path(data_location, paste0("Scenarios_AnalysisInput_", start_year, ".csv"))
-  ) %>%
-    wrangle_scenario_data(start_year = start_year, end_year = end_year) %>%
-    dplyr::filter(
-      .data$ald_sector %in% sectors_lookup &
-        .data$technology %in% technologies_lookup &
-        .data$scenario_geography == scenario_geography_filter
-    )
-
-  # Load price data----------------------------------------
-  df_price <- read_price_data(
-    path = file.path(data_location, paste0("prices_data_", price_data_version, ".csv")),
-    version = "old",
-    expected_technologies = technologies_lookup
-  ) %>%
-    dplyr::filter(year >= start_year) %>%
-    check_price_consistency(start_year = start_year)
-
-  # Load excluded companies-------------------------------
-  if (company_exclusion) {
-    excluded_companies <- readr::read_csv(
-      file.path(data_location, "exclude-companies.csv"),
-      col_types = "cc"
-    )
-  } else {
-    excluded_companies <- NULL
-  }
+  excluded_companies <- input_data_list$excluded_companies
+  scenario_data <- input_data_list$scenario_data
+  financial_data_loans <- input_data_list$financial_data %>%
+    dplyr::mutate(company_name = stringr::str_to_lower(.data$company_name))
 
   # check scenario availability across data inputs for bonds
   check_scenario_availability(
@@ -241,7 +202,7 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
     transition_scenario_i <- transition_scenarios[i, ]
 
     # Calculate late and sudden prices for scenario i
-    df_prices <- df_price %>%
+    df_prices <- input_data_list$df_price %>%
       dplyr::mutate(Baseline = !!rlang::sym(scenario_to_follow_baseline)) %>%
       dplyr::rename(
         year = year, ald_sector = sector, technology = technology, NPS_price = NPS,
@@ -261,7 +222,7 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
 
     loanbook_annual_profits <- pacta_loanbook_results %>%
       convert_power_cap_to_generation(
-        capacity_factors_power = capacity_factors_power,
+        capacity_factors_power = input_data_list$capacity_factors_power,
         baseline_scenario = scenario_to_follow_baseline
       ) %>%
       extend_scenario_trajectory(
