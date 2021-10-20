@@ -5,7 +5,7 @@
 \title{Defines which scenario values to use for the baseline trajectory in the
 stress test.}
 \usage{
-set_baseline_trajectory(data, scenario_to_follow_baseline, use_prod_forecasts)
+set_baseline_trajectory(data, scenario_to_follow_baseline)
 }
 \arguments{
 \item{data}{A dataframe that contains scenario trajectories by technology
@@ -16,10 +16,6 @@ usually for 5 years, based on PACTA results.}
 \item{scenario_to_follow_baseline}{Character. A string that indicates which
 of the scenarios included in the analysis should be used to set the
 baseline technology trajectories.}
-
-\item{use_prod_forecasts}{Logical. Indicates whether or not to offset the
-baseline trajectories with the actual production plans for the first few
-years}
 }
 \value{
 dataframe

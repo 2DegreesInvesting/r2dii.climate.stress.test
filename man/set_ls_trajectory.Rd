@@ -9,7 +9,6 @@ set_ls_trajectory(
   data,
   scenario_to_follow_ls = "SDS",
   shock_scenario = shock_scenario,
-  use_production_forecasts_ls = TRUE,
   scenario_to_follow_ls_aligned = "SDS",
   start_year = 2020,
   end_year = 2040,
@@ -28,10 +27,6 @@ late & sudden technology trajectories.}
 transition scenario, specifically the shock year, the overshoot method,
 whether to include production forecasts and potentially explicit shock
 sizes.}
-
-\item{use_production_forecasts_ls}{Logical. A logical vector of length 1
-that indicates whether or not the late & sudden trajectory should make
-use of the production forecast provided by PACTA results.}
 
 \item{scenario_to_follow_ls_aligned}{Character. A string that indicates which
 of the scenarios included in the analysis should be used to set the
