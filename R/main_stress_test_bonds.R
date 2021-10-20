@@ -1,8 +1,45 @@
 #' Run stress testing for bonds
 #'
+#' @param lgd_senior_claims Numeric, holding the loss given default for senior
+#'   claims, for accepted value range check `lgd_senior_claims_range_lookup`.
+#' @param lgd_subordinated_claims Numeric, holding the loss given default for
+#'   subordinated claims, for accepted value range check
+#'   `lgd_subordinated_claims_range_lookup`.
+#' @param terminal_value Numeric. A ratio to determine the share of the
+#'   discounted value used in the terminal value calculation beyond the
+#'   projected time frame. For accepted range compare `terminal_value_range_lookup`.
+#' @param risk_free_rate Numeric that indicates the risk free rate of interest.
+#'   For accepted range compare `risk_free_rate_range_lookup`.
+#' @param discount_rate Numeric, that holds the discount rate of dividends per
+#'   year in the DCF. For accepted range compare `discount_rate_range_lookup`.
+#' @param div_netprofit_prop_coef Numeric. A coefficient that determines how
+#'   strongly the future dividends propagate to the company value. For accepted
+#'   range compare `div_netprofit_prop_coef_range_lookup`.
+#' @param company_exclusion Boolean, indicating if companies provided in dataset
+#'   excluded_companies.csv shall be excluded.
 #' @return NULL
 #' @export
-run_stress_test_bonds <- function() {
+run_stress_test_bonds <- function(lgd_senior_claims = 0.45,
+                                  lgd_subordinated_claims = 0.75,
+                                  terminal_value = 0,
+                                  risk_free_rate = 0.02,
+                                  discount_rate = 0.02,
+                                  div_netprofit_prop_coef = 1,
+                                  company_exclusion = TRUE) {
+
+  validate_input_values(
+    lgd_senior_claims = lgd_senior_claims,
+    lgd_subordinated_claims = lgd_subordinated_claims,
+    terminal_value = terminal_value,
+    risk_free_rate = risk_free_rate,
+    discount_rate = discount_rate,
+    div_netprofit_prop_coef = div_netprofit_prop_coef,
+    company_exclusion = company_exclusion
+  )
+
+  scenario_to_follow_baseline <- baseline_scenario_lookup
+  scenario_to_follow_ls <- shock_scenario_lookup
+  calculation_level <- calculation_level_lookup
   ###########################################################################
   # Project Initialisation---------------------------------------------------
   ###########################################################################
@@ -10,13 +47,10 @@ run_stress_test_bonds <- function() {
   # FIXME: Very bad solution for temporart use only
   source_all(c("stress_test_model_functions.R", "0_global_functions_st.R"))
 
-  #### Project location----------------------------------------
   cfg_st <- config::get(file = "st_project_settings.yml")
   check_valid_cfg(cfg = cfg_st, expected_no_args = 5)
   project_name <- cfg_st$project_name
   price_data_version <- cfg_st$price_data_version
-  calculation_level <- "company"
-  company_exclusion <- cfg_st$company_exclusion
 
   data_location <- get_st_data_path()
 
@@ -42,31 +76,12 @@ run_stress_test_bonds <- function() {
   # OPEN: wrap reading in of params in function and move to global_functions
   end_year <- cfg_mod$end_year # Set to 2040 cause current scenario data goes until 2040. can be extended when WEO2020 turns out extended horizon
 
-  # Scenarios in the model_parameters.yml file must have the short names (SDS, NPS, etc)
-  scenario_to_follow_baseline <- cfg_mod$scenarios$scenario_to_follow_baseline # sets which scenario trajectory the baseline scenario follows
-  scenario_to_follow_ls <- cfg_mod$scenarios$scenario_to_follow_ls # sets which scenario trajectory LS scenario follows after shock period
-
   scenarios_filter <- unique(
     c(
       scenario_to_follow_baseline,
       scenario_to_follow_ls
     )
   )
-
-  # Moved to transition scenario input file:
-  # use_prod_forecasts_baseline <- FALSE   # TRUE: Use company production forecasts until no longer available for baseline. FALSE: Let baseline immediately follow scenario (and not follow production forecasts first)
-  # use_prod_forecasts_ls <- FALSE  # TRUE: Use company production forecasts until no longer available for late&sudden. FALSE: Let late&sudden scenario immediately follow IEA scenario (and not follow production forecasts first)
-  # overshoot_method <- TRUE          # TRUE: use integral/overshoot method for late&sudden trajectory, FALSE: use user defined shocks
-  ##### OPEN: this is currently not used, defined in transition_scenario loop
-  # duration_div <- duration_of_shock
-
-  discount_rate <- cfg_mod$financials$discount_rate # Discount rate
-  ##### OPEN: this needs to be estimated based on data
-  terminal_value <- cfg_mod$financials$terminal_value
-  div_netprofit_prop_coef <- cfg_mod$financials$div_netprofit_prop_coef # determine this value using bloomberg data
-  risk_free_rate <- cfg_mod$financials$risk_free_rate
-  lgd_senior_claims <- cfg_mod$financials$lgd_senior_claims
-  lgd_subordinated_claims <- cfg_mod$financials$lgd_subordinated_claims
 
   ###########################################################################
   # Load input datasets------------------------------------------------------
