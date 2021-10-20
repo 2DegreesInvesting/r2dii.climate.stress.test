@@ -194,17 +194,7 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
   # Calculation of results---------------------------------------------------
   ###########################################################################
 
-  # Bank loan book results (flat multiplier PRA 0.15) ---------------------------------------------------------
-
-  loanbook_results <- c()
-  qa_annual_profits_lbk <- c()
-  loanbook_expected_loss <- c()
-  loanbook_annual_pd_changes <- c()
-  qa_pd_changes <- c()
-
-  transition_scenario_i <- transition_scenarios[i, ]
-
-  # Calculate late and sudden prices for scenario i
+  # Calculate late and sudden prices
   df_prices <- input_data_list$df_price %>%
     dplyr::mutate(Baseline = !!rlang::sym(scenario_to_follow_baseline)) %>%
     dplyr::rename(
@@ -216,9 +206,9 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
       late_sudden_price = late_sudden_prices(
         SDS_price = SDS_price,
         Baseline_price = Baseline_price,
-        year_of_shock = transition_scenario_i$year_of_shock,
+        year_of_shock = transition_scenario$year_of_shock,
         start_year = start_year,
-        duration_of_shock = transition_scenario_i$duration_of_shock
+        duration_of_shock = transition_scenario$duration_of_shock
       )
     ) %>%
     dplyr::ungroup()
@@ -239,7 +229,7 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
     ) %>%
     set_ls_trajectory(
       scenario_to_follow_ls = scenario_to_follow_ls,
-      shock_scenario = transition_scenario_i,
+      shock_scenario = transition_scenario,
       scenario_to_follow_ls_aligned = scenario_to_follow_ls,
       start_year = start_year,
       end_year = end_year,
@@ -292,11 +282,8 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
     dcf_model_techlevel(discount_rate = discount_rate)
   # TODO: ADO 879 - note rows with zero profits/NPVs will produce NaN in the Merton model
 
-  qa_annual_profits_lbk <- qa_annual_profits_lbk %>%
-    dplyr::bind_rows(
-      loanbook_annual_profits %>%
-        dplyr::mutate(year_of_shock = transition_scenario_i$year_of_shock)
-    )
+  qa_annual_profits_lbk <- loanbook_annual_profits %>%
+    dplyr::mutate(year_of_shock = transition_scenario$year_of_shock)
 
   plan_carsten_loanbook <- pacta_loanbook_results %>%
     dplyr::filter(
@@ -341,23 +328,20 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
     cols = names(plan_carsten_loanbook)
   )
 
-  loanbook_results <- dplyr::bind_rows(
-    loanbook_results,
-    company_asset_value_at_risk(
+  loanbook_results <- company_asset_value_at_risk(
       data = loanbook_annual_profits,
       terminal_value = terminal_value,
-      shock_scenario = transition_scenario_i,
+      shock_scenario = transition_scenario,
       div_netprofit_prop_coef = div_netprofit_prop_coef,
       plan_carsten = plan_carsten_loanbook,
       port_aum = loan_book_port_aum,
       flat_multiplier = 0.15,
       exclusion = excluded_companies
     )
-  )
 
   loanbook_overall_pd_changes <- loanbook_annual_profits %>%
     calculate_pd_change_overall(
-      shock_year = transition_scenario_i$year_of_shock,
+      shock_year = transition_scenario$year_of_shock,
       end_of_analysis = end_year,
       risk_free_interest_rate = risk_free_rate
     )
@@ -365,28 +349,22 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
   # TODO: ADO 879 - note which companies produce missing results due to
   # insufficient input information (e.g. NAs for financials or 0 equity value)
 
-  loanbook_expected_loss <- dplyr::bind_rows(
-    loanbook_expected_loss,
-    company_expected_loss(
-      data = loanbook_overall_pd_changes,
-      loss_given_default = lgd_senior_claims,
-      exposure_at_default = plan_carsten_loanbook,
-      # TODO: what to do with this? some sector level exposure for loanbook?
-      port_aum = loan_book_port_aum
-    )
+  loanbook_expected_loss <- company_expected_loss(
+    data = loanbook_overall_pd_changes,
+    loss_given_default = lgd_senior_claims,
+    exposure_at_default = plan_carsten_loanbook,
+    # TODO: what to do with this? some sector level exposure for loanbook?
+    port_aum = loan_book_port_aum
   )
 
   # TODO: ADO 879 - note which companies produce missing results due to
   # insufficient output from overall pd changes or related financial data inputs
 
-  loanbook_annual_pd_changes <- dplyr::bind_rows(
-    loanbook_annual_pd_changes,
-    calculate_pd_change_annual(
-      data = loanbook_annual_profits,
-      shock_year = transition_scenario_i$year_of_shock,
-      end_of_analysis = end_year,
-      risk_free_interest_rate = risk_free_rate
-    )
+  loanbook_annual_pd_changes <- calculate_pd_change_annual(
+    data = loanbook_annual_profits,
+    shock_year = transition_scenario$year_of_shock,
+    end_of_analysis = end_year,
+    risk_free_interest_rate = risk_free_rate
   )
 
   # TODO: ADO 879 - note which companies produce missing results due to

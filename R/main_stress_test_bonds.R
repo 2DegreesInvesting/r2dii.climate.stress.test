@@ -149,7 +149,7 @@ run_stress_test_bonds <- function(lgd_senior_claims = 0.45,
   # Calculation of results---------------------------------------------------
   ###########################################################################
 
-  # Calculate late and sudden prices for scenario i
+  # Calculate late and sudden prices
   df_prices <- input_data_list$df_price %>%
     dplyr::mutate(Baseline = !!rlang::sym(scenario_to_follow_baseline)) %>%
     dplyr::rename(
