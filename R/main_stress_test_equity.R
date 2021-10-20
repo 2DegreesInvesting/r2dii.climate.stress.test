@@ -101,12 +101,17 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
   sector_exposures <- readRDS(file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", "overview_portfolio.rda")) %>%
     wrangle_and_check_sector_exposures_eq_cb(asset_type = "Equity")
 
-  # FIXME: Simplify by passing data directly
-  input_data_list <- read_and_prepare(start_year = start_year, end_year = end_year, company_exclusion = company_exclusion, scenario_geography_filter = scenario_geography_filter, asset_type = asset_type)
-  capacity_factors_power <- input_data_list$capacity_factors_power
+  # Load project agnostic data sets -----------------------------------------
+  input_data_list <- read_and_prepare_project_agnostic_data(
+    start_year = start_year,
+    end_year = end_year,
+    company_exclusion = company_exclusion,
+    scenario_geography_filter = scenario_geography_filter,
+    asset_type = asset_type
+  )
+
   transition_scenarios <- input_data_list$transition_scenarios
   excluded_companies <- input_data_list$excluded_companies
-  df_price <- input_data_list$df_price
   scenario_data <- input_data_list$scenario_data
   financial_data_equity <- input_data_list$financial_data
 
@@ -158,7 +163,7 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
     shock_scenario <- create_shock_scenario(transition_scenario = transition_scenario_i)
 
     # Calculate late and sudden prices for scenario i
-    df_prices <- df_price %>%
+    df_prices <- input_data_list$df_price %>%
       dplyr::mutate(Baseline = !!rlang::sym(scenario_to_follow_baseline)) %>%
       dplyr::rename(
         year = year, ald_sector = sector, technology = technology, NPS_price = NPS,
@@ -181,7 +186,7 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
     # Convert capacity (MW) to generation (MWh) for power sector
     equity_annual_profits <- pacta_equity_results %>%
       convert_power_cap_to_generation(
-        capacity_factors_power = capacity_factors_power,
+        capacity_factors_power = input_data_list$capacity_factors_power,
         baseline_scenario = scenario_to_follow_baseline
       ) %>%
       extend_scenario_trajectory(
