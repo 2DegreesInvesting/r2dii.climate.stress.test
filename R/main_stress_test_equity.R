@@ -218,12 +218,9 @@ run_stress_test_equity <- function() {
 
   for (i in seq(1, nrow(transition_scenarios))) {
     transition_scenario_i <- transition_scenarios[i, ]
+    scenario_name <- transition_scenario_i$scenario_name
     year_of_shock <- transition_scenario_i$year_of_shock
     duration_of_shock <- transition_scenario_i$duration_of_shock
-
-    # Create shock scenario dataframe for scenario i
-    # For now we use the old shock scenario dataframe format. Should change this over time as its far from optimal
-    shock_scenario <- create_shock_scenario(transition_scenario = transition_scenario_i)
 
     # Calculate late and sudden prices for scenario i
     df_prices <- df_price %>%
@@ -262,7 +259,7 @@ run_stress_test_equity <- function() {
       ) %>%
       set_ls_trajectory(
         scenario_to_follow_ls = scenario_to_follow_ls,
-        shock_scenario = shock_scenario,
+        shock_scenario = transition_scenario_i,
         scenario_to_follow_ls_aligned = scenario_to_follow_ls,
         start_year = start_year,
         end_year = end_year,
@@ -367,7 +364,7 @@ run_stress_test_equity <- function() {
       company_asset_value_at_risk(
         data = equity_annual_profits,
         terminal_value = terminal_value,
-        shock_scenario = shock_scenario,
+        shock_scenario = transition_scenario_i,
         div_netprofit_prop_coef = div_netprofit_prop_coef,
         plan_carsten = plan_carsten_equity,
         port_aum = equity_port_aum,
