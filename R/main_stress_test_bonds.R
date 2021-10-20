@@ -53,8 +53,6 @@ run_stress_test_bonds <- function(lgd_senior_claims = 0.45,
   check_valid_cfg(cfg = cfg_st, expected_no_args = 5)
   project_name <- cfg_st$project_name
 
-  data_location <- get_st_data_path()
-
   # Analysis Parameters----------------------------------------
   # Get analysis parameters from the projects AnalysisParameters.yml - similar to PACTA_analysis
 
