@@ -12,6 +12,8 @@ nesting_vars_lookup <- c(
   "scenario", "allocation", "scenario_geography", "company_name"
 )
 
+asset_types_lookup <- c("equity", "bonds", "loans")
+
 # vector holding scenarios to filter PACTA results by for stresstesting
 scenarios_lookup <- c(
   "ETP2017_NPS",

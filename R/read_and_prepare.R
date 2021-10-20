@@ -1,4 +1,23 @@
-read_and_prepare <- function(start_year, end_year, company_exclusion, scenario_geography_filter, asset_type) {
+#' Read and prepare project agnostic data
+#'
+#' Function reads in data that are independent of the project and conducts some
+#' checking and wrangling.
+#'
+#' @param start_year Start year of analysis.
+#' @param end_year End year of analysis.
+#' @param company_exclusion Boolean, indicating if companies provided in dataset
+#'   excluded_companies.csv shall be excluded.
+#' @param scenario_geography_filter String holding geographic asset locations to
+#'   be considered in analysis.
+#' @param asset_type Type of asset, can be bonds, loans or equity.
+#'
+#' @return A list holding prepared project agnostic data.
+read_and_prepare_project_agnostic_data <- function(start_year, end_year, company_exclusion,
+                                                   scenario_geography_filter, asset_type) {
+
+  if (!asset_type %in% asset_types_lookup) {
+    stop("Invalid asset type provided.")
+  }
 
   data_location <- get_st_data_path()
 
@@ -16,8 +35,10 @@ read_and_prepare <- function(start_year, end_year, company_exclusion, scenario_g
   if (company_exclusion) {
     excluded_companies <- readr::read_csv(
       file.path(data_location, "exclude-companies.csv"),
-      col_types = readr::cols(company_name = "c",
-                              technology = "c")
+      col_types = readr::cols(
+        company_name = "c",
+        technology = "c"
+      )
     )
   } else {
     excluded_companies <- NULL
@@ -47,11 +68,12 @@ read_and_prepare <- function(start_year, end_year, company_exclusion, scenario_g
   ) %>%
     wrangle_financial_data(start_year = start_year)
 
-  return(list(capacity_factors_power = capacity_factors_power,
-              transition_scenarios = transition_scenarios,
-              excluded_companies = excluded_companies,
-              df_price = df_price,
-              scenario_data = scenario_data,
-              financial_data = financial_data))
-
+  return(list(
+    capacity_factors_power = capacity_factors_power,
+    transition_scenarios = transition_scenarios,
+    excluded_companies = excluded_companies,
+    df_price = df_price,
+    scenario_data = scenario_data,
+    financial_data = financial_data
+  ))
 }
