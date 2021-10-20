@@ -96,7 +96,9 @@ read_transition_scenarios <- function(path = NULL,
 generate_transition_shocks <- function(start_of_analysis,
                                        end_of_analysis,
                                        shock_years) {
-  if (dplyr::n_distinct(purrr::map_int(c(.env$start_of_analysis, .env$end_of_analysis), length)) > 1) {
+  bounds <- list(start_of_analysis, end_of_analysis)
+
+  if (dplyr::n_distinct(purrr::map_int(bounds, length)) > 1) {
     stop("Input arugments for start_of_analysis and end_of_analysis need to have length 1.")
   }
 
