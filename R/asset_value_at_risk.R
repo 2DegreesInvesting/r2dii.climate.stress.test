@@ -127,4 +127,6 @@ asset_value_at_risk <- function(data,
       production_shock_perc = NA_real_
     ) %>%
     dplyr::select(-c(.data$plan_carsten, .data$plan_sec_carsten, .data$year))
+
+  return(data)
 }

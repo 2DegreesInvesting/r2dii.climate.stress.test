@@ -1,8 +1,45 @@
 #' Run stress testing for equity
 #'
+#' @param lgd_senior_claims Numeric, holding the loss given default for senior
+#'   claims, for accepted value range check `lgd_senior_claims_range_lookup`.
+#' @param lgd_subordinated_claims Numeric, holding the loss given default for
+#'   subordinated claims, for accepted value range check
+#'   `lgd_subordinated_claims_range_lookup`.
+#' @param terminal_value Numeric. A ratio to determine the share of the
+#'   discounted value used in the terminal value calculation beyond the
+#'   projected time frame. For accepted range compare `terminal_value_range_lookup`.
+#' @param risk_free_rate Numeric that indicates the risk free rate of interest.
+#'   For accepted range compare `risk_free_rate_range_lookup`.
+#' @param discount_rate Numeric, that holds the discount rate of dividends per
+#'   year in the DCF. For accepted range compare `discount_rate_range_lookup`.
+#' @param div_netprofit_prop_coef Numeric. A coefficient that determines how
+#'   strongly the future dividends propagate to the company value. For accepted
+#'   range compare `div_netprofit_prop_coef_range_lookup`.
+#' @param company_exclusion Boolean, indicating if companies provided in dataset
+#'   excluded_companies.csv shall be excluded.
 #' @return NULL
 #' @export
-run_stress_test_equity <- function() {
+run_stress_test_equity <- function(lgd_senior_claims = 0.45,
+                                   lgd_subordinated_claims = 0.75,
+                                   terminal_value = 0,
+                                   risk_free_rate = 0.02,
+                                   discount_rate = 0.02,
+                                   div_netprofit_prop_coef = 1,
+                                   company_exclusion = TRUE) {
+  validate_input_values(
+    lgd_senior_claims = lgd_senior_claims,
+    lgd_subordinated_claims = lgd_subordinated_claims,
+    terminal_value = terminal_value,
+    risk_free_rate = risk_free_rate,
+    discount_rate = discount_rate,
+    div_netprofit_prop_coef = div_netprofit_prop_coef,
+    company_exclusion = company_exclusion
+  )
+
+  scenario_to_follow_baseline <- baseline_scenario_lookup
+  scenario_to_follow_ls <- shock_scenario_lookup
+  calculation_level <- calculation_level_lookup
+
   ###########################################################################
   # Project Initialisation---------------------------------------------------
   ###########################################################################
@@ -10,30 +47,12 @@ run_stress_test_equity <- function() {
   # FIXME: Very bad solution for temporart use only
   source_all(c("stress_test_model_functions.R", "0_global_functions_st.R"))
 
-  #### Project location----------------------------------------
-
-  # Set Project Settings
-
-  # within the "st_project_setting.yml" config file, set the project_name, the twodii_internal switch,
-  # and the external data locations, if necessary.
-  # the project_name will determine the name of the folder that is to be used for locating
-  # input and output directories for this project
-  # Set twodii_internal to TRUE to run the analysis on an internal 2dii laptop
-  # This setting uses the dropbox connection for data import
-  # Set twodii_internal to FALSE, tu use external data locations
-  # Specify these data locations in the config file "st_project_settings.yml" in the repo
-
-
   cfg_st <- config::get(file = "st_project_settings.yml")
   check_valid_cfg(cfg = cfg_st, expected_no_args = 5)
   project_name <- cfg_st$project_name
-  twodii_internal <- cfg_st$project_internal$twodii_internal
-  project_location_ext <- cfg_st$project_internal$project_location_ext
   price_data_version <- cfg_st$price_data_version
-  calculation_level <- "company"
-  company_exclusion <- cfg_st$company_exclusion
 
-  data_location <- file.path(get_st_data_path(), data_path())
+  data_location <- get_st_data_path()
 
   # Analysis Parameters----------------------------------------
   # Get analysis parameters from the projects AnalysisParameters.yml - similar to PACTA_analysis
@@ -56,24 +75,12 @@ run_stress_test_equity <- function() {
   # OPEN: wrap reading in of params in function and move to global_functions
   end_year <- cfg_mod$end_year # Set to 2040 cause current scenario data goes until 2040. can be extended when WEO2020 turns out extended horizon
 
-  # Scenarios in the model_parameters.yml file must have the short names (SDS, NPS, etc)
-  scenario_to_follow_baseline <- cfg_mod$scenarios$scenario_to_follow_baseline # sets which scenario trajectory the baseline scenario follows
-  scenario_to_follow_ls <- cfg_mod$scenarios$scenario_to_follow_ls # sets which scenario trajectory LS scenario follows after shock period
-
   scenarios_filter <- unique(
     c(
       scenario_to_follow_baseline,
       scenario_to_follow_ls
     )
   )
-
-  discount_rate <- cfg_mod$financials$discount_rate # Discount rate
-  ##### OPEN: this needs to be estimated based on data
-  terminal_value <- cfg_mod$financials$terminal_value
-  div_netprofit_prop_coef <- cfg_mod$financials$div_netprofit_prop_coef # determine this value using bloomberg data
-  risk_free_rate <- cfg_mod$financials$risk_free_rate
-  lgd_senior_claims <- cfg_mod$financials$lgd_senior_claims
-  lgd_subordinated_claims <- cfg_mod$financials$lgd_subordinated_claims
 
   ###########################################################################
   # Load input datasets------------------------------------------------------
@@ -123,48 +130,14 @@ run_stress_test_equity <- function() {
   )
 
   # Load scenario data----------------------------------------
-  scen_data_file <- ifelse(twodii_internal == TRUE,
-    path_dropbox_2dii("PortCheck", "00_Data", "01_ProcessedData", "03_ScenarioData", paste0("Scenarios_AnalysisInput_", start_year, ".csv")),
-    file.path(data_location, paste0("Scenarios_AnalysisInput_", start_year, ".csv"))
-  )
-
-  # TODO: EITHER wrap check into more evocative function OR remove this when common format is agreed upon
-  if (twodii_internal == TRUE | start_year < 2020) {
-    scenario_data <- readr::read_csv(scen_data_file, col_types = "ccccccccnnnncnnn") %>%
-      dplyr::filter(Indicator %in% c("Capacity", "Production", "Sales")) %>%
-      dplyr::filter(!(Technology == "RenewablesCap" & !is.na(Sub_Technology))) %>%
-      dplyr::select(-c(Sub_Technology, Indicator, AnnualvalIEAtech, refvalIEAtech, refvalIEAsec, mktFSRatio, techFSRatio)) %>%
-      dplyr::rename(
-        source = Source,
-        scenario_geography = ScenarioGeography,
-        scenario = Scenario,
-        ald_sector = Sector,
-        units = Units,
-        technology = Technology,
-        year = Year,
-        direction = Direction,
-        fair_share_perc = FairSharePerc
-      ) %>%
-      dplyr::mutate(scenario = stringr::str_replace(scenario, "NPSRTS", "NPS"))
-  } else {
-    scenario_data <- readr::read_csv(scen_data_file, col_types = "ccccccncn") %>%
-      dplyr::rename(source = scenario_source)
-  }
-
-  scenario_data <- scenario_data %>%
-    dplyr::filter(source %in% c("ETP2017", "WEO2019")) %>%
-    # TODO: this should be set elsewhere
-    dplyr::filter(!(source == "ETP2017" & ald_sector == "Power")) %>%
-    dplyr::mutate(scenario = ifelse(stringr::str_detect(scenario, "_"), stringr::str_extract(scenario, "[^_]*$"), scenario)) %>%
-    check_scenario_timeframe(start_year = start_year, end_year = end_year)
-
-  # Correct for automotive scenario data error. CHECK IF ALREADY RESOLVED IN THE SCENARIO DATA, IF SO, DONT USE FUNCTION BELOW!
-  scenario_data <- scenario_data %>%
-    correct_automotive_scendata(interpolation_years = c(2031:2034, 2036:2039)) %>%
+  scenario_data <- read_scenario_data(
+    path = file.path(data_location, paste0("Scenarios_AnalysisInput_", start_year, ".csv"))
+  ) %>%
+    wrangle_scenario_data(start_year = start_year, end_year = end_year) %>%
     dplyr::filter(
-      ald_sector %in% sectors_lookup &
-        technology %in% technologies_lookup &
-        scenario_geography == scenario_geography_filter
+      .data$ald_sector %in% sectors_lookup &
+        .data$technology %in% technologies_lookup &
+        .data$scenario_geography == scenario_geography_filter
     )
 
   # Load price data----------------------------------------
@@ -407,9 +380,11 @@ run_stress_test_equity <- function() {
     # insufficient input information (e.g. NAs for financials or 0 equity value)
   }
 
-  write_stress_test_results(results = equity_results,
-                            expected_loss = equity_expected_loss,
-                            annual_pd_changes = equity_annual_pd_changes,
-                            asset_type = "equity",
-                            calculation_level = calculation_level)
+  write_stress_test_results(
+    results = equity_results,
+    expected_loss = equity_expected_loss,
+    annual_pd_changes = equity_annual_pd_changes,
+    asset_type = "equity",
+    calculation_level = calculation_level
+  )
 }
