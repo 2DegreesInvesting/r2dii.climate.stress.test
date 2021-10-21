@@ -41,6 +41,10 @@ validate_input_values <- function(lgd_senior_claims, lgd_subordinated_claims,
     stop("Argument term is outside accepted range.")
   }
 
+  if (!term%%1 == 0) {
+    stop("Argmuent term must be a whole number")
+  }
+
   if (!is.null(credit_type) && !credit_type %in% credit_type_lookup) {
     stop("Argument credit_type does not hold an accepted value.")
   }
