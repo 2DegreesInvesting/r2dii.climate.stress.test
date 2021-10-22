@@ -21,6 +21,10 @@ check_and_filter_data <- function(st_data_list, start_year, end_year, scenarios_
     dplyr::filter(.data$technology %in% technologies_lookup) %>%
     dplyr::filter(dplyr::between(.data$year, start_year, end_year))
 
+  financial_data_filtered <- st_data_list$financial_data %>%
+    dplyr::filter(.data$ald_sector %in% sectors_lookup) %>%
+    dplyr::filter(.data$technology %in% technologies_lookup)
+
   report_all_duplicate_kinds(
     data = capacity_factors_power_filtered,
     composite_unique_cols = c("scenario", "scenario_geography", "technology", "year"))
@@ -36,6 +40,10 @@ check_and_filter_data <- function(st_data_list, start_year, end_year, scenarios_
   report_all_duplicate_kinds(
     data = scenario_data_filtered,
     composite_unique_cols = c("scenario_geography", "scenario", "ald_sector", "technology", "year"))
+
+  report_all_duplicate_kinds(
+    data = financial_data_filtered,
+    composite_unique_cols = c("company_name", "company_id", "ald_sector", "technology"))
 
   return(list(
     capacity_factors_power = capacity_factors_power_filtered,
