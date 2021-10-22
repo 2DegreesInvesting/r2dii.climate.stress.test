@@ -118,6 +118,11 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
     company_exclusion = company_exclusion,
     scenario_geography_filter = scenario_geography_filter,
     asset_type = "equity"
+  ) %>% check_and_filter_data(
+    start_year = start_year,
+    end_year = end_year,
+    scenarios_filter = scenarios_filter,
+    scenario_geography_filter = scenario_geography_filter
   )
 
   excluded_companies <- input_data_list$excluded_companies
