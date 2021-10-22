@@ -18,7 +18,7 @@ data.}
 
 \item{start_year}{String holding start year of analysis.}
 
-\item{end_year}{String holding endyear of analysis.}
+\item{end_year}{String holding end year of analysis.}
 
 \item{scenarios_filter}{String vector holding name of baseline and shock
 scenario.}
