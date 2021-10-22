@@ -154,8 +154,6 @@ validate_data_has_expected_cols <- function(data,
 #' 1. it is checked if there are duplicate rows.
 #' 1. it is checked if there are duplicate rows on `composite_unique_cols`.
 #'
-#' Function is currently not used in code but helps for data wrangling/data
-#' research tasks. It will be added to critical data sets in the future.
 #'
 #' @param data A tibble.
 #' @param composite_unique_cols A vector of names of columns that shall be
@@ -165,7 +163,7 @@ validate_data_has_expected_cols <- function(data,
 #'
 #' @return NULL
 #' @export
-report_all_duplicate_kinds <- function(data, composite_unique_cols, throw_error = FALSE) {
+report_all_duplicate_kinds <- function(data, composite_unique_cols, throw_error = TRUE) {
   validate_data_has_expected_cols(
     data = data,
     expected_columns = composite_unique_cols
