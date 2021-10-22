@@ -6,9 +6,10 @@
 #' @param baseline_scenario String holding name of the baseline scenario.
 #' @param transition_scenario Tibble with 1 row holding at least variables
 #'   `year_of_shock` and `duration_of_shock`.
+#' @param start_year Numeric, holding start year of analysis.
 #'
 #' @return A tibble holding late_and_sudden_prices
-calc_late_sudden_prices <- function(price_data, baseline_scenario, transition_scenario) {
+calc_late_sudden_prices <- function(price_data, baseline_scenario, transition_scenario, start_year) {
   late_sudden_prices_data <- price_data %>%
     dplyr::mutate(Baseline = !!rlang::sym(baseline_scenario)) %>%
     dplyr::rename(

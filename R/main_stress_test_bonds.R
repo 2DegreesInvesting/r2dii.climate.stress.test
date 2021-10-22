@@ -154,7 +154,8 @@ run_stress_test_bonds <- function(lgd_senior_claims = 0.45,
   df_prices <- input_data_list$df_price %>%
     calc_late_sudden_prices(
       baseline_scenario = scenario_to_follow_baseline,
-      transition_scenario = transition_scenario
+      transition_scenario = transition_scenario,
+      start_year = start_year
     )
 
   bonds_annual_profits <- pacta_bonds_results %>%
