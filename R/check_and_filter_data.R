@@ -75,9 +75,7 @@ check_and_filter_data <- function(st_data_list, start_year, end_year,
   report_all_duplicate_kinds(
     data = financial_data_filtered,
     composite_unique_cols = c(
-      "company_name", "company_id", "ald_sector", "technology", "investor_name",
-      "portfolio_name"
-    )
+      "company_name", "company_id", "ald_sector", "technology")
   )
 
   report_all_duplicate_kinds(
@@ -90,7 +88,7 @@ check_and_filter_data <- function(st_data_list, start_year, end_year,
 
   report_all_duplicate_kinds(
     data = st_data_list$sector_exposures,
-    composite_unique_cols = c("financial_sector")
+    composite_unique_cols = c("financial_sector", "investor_name", "portfolio_name")
   )
 
   return(list(
