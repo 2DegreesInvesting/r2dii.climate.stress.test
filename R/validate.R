@@ -7,10 +7,10 @@
 #' @return NULL
 validate_input_values <- function(lgd_senior_claims, lgd_subordinated_claims,
                                   terminal_value, risk_free_rate, discount_rate,
-                                  div_netprofit_prop_coef, shock_year,
+                                  div_netprofit_prop_coef, shock_year, term,
                                   company_exclusion, credit_type = NULL) {
   if (!is.logical(company_exclusion)) {
-    stop("Company exclusion must be a boolean.")
+    stop("Argmuent company_exclusion must be a boolean.")
   }
 
   if (!dplyr::between(lgd_senior_claims, min(lgd_senior_claims_range_lookup), max(lgd_senior_claims_range_lookup))) {
@@ -41,7 +41,17 @@ validate_input_values <- function(lgd_senior_claims, lgd_subordinated_claims,
     stop("Argument shock_year is outside accepted range.")
   }
 
+  if (!dplyr::between(term, min(term_range_lookup), max(term_range_lookup))) {
+    stop("Argument term is outside accepted range.")
+  }
+
+  # ADO 1943 - Once we decide to add a separate Merton calculation on the average
+  # maturity of a portfolio, this check will need to be removed
+  if (!term %% 1 == 0) {
+    stop("Argmuent term must be a whole number")
+  }
+
   if (!is.null(credit_type) && !credit_type %in% credit_type_lookup) {
-    stop("Argument credit type does not hold an accepted value.")
+    stop("Argument credit_type does not hold an accepted value.")
   }
 }

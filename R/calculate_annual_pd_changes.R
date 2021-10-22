@@ -75,14 +75,14 @@ calculate_pd_change_annual <- function(data,
     )
 
   data <- data %>%
-    dplyr::mutate(debt = .data$equity_t_baseline * .data$debt_equity_ratio) %>%
-    dplyr::select(-.data$debt_equity_ratio)
-
-  data <- data %>%
     dplyr::mutate(
-      risk_free_rate = risk_free_interest_rate,
-      term = 1 # annual
-    )
+      debt = .data$equity_t_baseline * .data$debt_equity_ratio,
+      risk_free_rate = .env$risk_free_interest_rate,
+      # ADO 1943 - this remains set to 1 irrespective of the main input argument,
+      # as we describe the overall annual trend, not a change in the portfolio
+      term = 1
+    ) %>%
+    dplyr::select(-.data$debt_equity_ratio)
 
   data <- keep_merton_compatible_rows(data, stage = "annual")
 

@@ -53,18 +53,19 @@ calculate_pd_change_overall <- function(data,
     )
 
   data <- data %>%
-    dplyr::mutate(debt = .data$equity_0_baseline * .data$debt_equity_ratio) %>%
-    dplyr::select(-.data$debt_equity_ratio)
-
-  data <- data %>%
     dplyr::mutate(
-      risk_free_rate = risk_free_interest_rate,
+      debt = .data$equity_0_baseline * .data$debt_equity_ratio,
+      risk_free_rate = .env$risk_free_interest_rate,
+      # ADO 1943 - see nesting step below
       term = NA_integer_
-    )
+    ) %>%
+    dplyr::select(-.data$debt_equity_ratio)
 
   nesting_names <- c(colnames(data %>% dplyr::select(-term)))
 
   data <- data %>%
+    # ADO 1943 - this remains set to 1:5 irrespective of the main input argument,
+    # as we describe the overall trend of PDs, not a change in the portfolio
     tidyr::complete(
       tidyr::nesting(!!!rlang::syms(nesting_names)),
       term = 1:5

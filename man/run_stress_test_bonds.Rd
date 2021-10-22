@@ -12,6 +12,7 @@ run_stress_test_bonds(
   discount_rate = 0.02,
   div_netprofit_prop_coef = 1,
   shock_year = 2030,
+  term = 2,
   company_exclusion = TRUE
 )
 }
@@ -39,6 +40,10 @@ range compare \code{div_netprofit_prop_coef_range_lookup}.}
 
 \item{shock_year}{Numeric, holding year the shock is applied. For accepted
 range compare \code{shock_year_range_lookup}.}
+
+\item{term}{Numeric. A coefficient that determines for which maturity the
+expected loss should be calculated in the credit risk section. For accepted
+range compare \code{term_range_lookup}.}
 
 \item{company_exclusion}{Boolean, indicating if companies provided in dataset
 excluded_companies.csv shall be excluded.}

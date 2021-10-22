@@ -33,6 +33,7 @@ risk_free_rate_range_lookup <- c(0, 0.05)
 discount_rate_range_lookup <- c(-0.01, 0.05)
 div_netprofit_prop_coef_range_lookup <- c(0.8, 1.0)
 shock_year_range_lookup <- c(2025, 2040)
+term_range_lookup <- c(1, 10)
 
 end_year_lookup <- 2040
 

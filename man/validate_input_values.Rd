@@ -12,6 +12,7 @@ validate_input_values(
   discount_rate,
   div_netprofit_prop_coef,
   shock_year,
+  term,
   company_exclusion,
   credit_type = NULL
 )
@@ -40,6 +41,10 @@ range compare \code{div_netprofit_prop_coef_range_lookup}.}
 
 \item{shock_year}{Numeric, holding year the shock is applied. For accepted
 range compare \code{shock_year_range_lookup}.}
+
+\item{term}{Numeric. A coefficient that determines for which maturity the
+expected loss should be calculated in the credit risk section. For accepted
+range compare \code{term_range_lookup}.}
 
 \item{company_exclusion}{Boolean, indicating if companies provided in dataset
 excluded_companies.csv shall be excluded.}
