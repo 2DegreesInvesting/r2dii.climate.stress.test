@@ -211,12 +211,6 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
       )
   }
 
-    plan_carsten_equity <- pacta_equity_results %>%
-      dplyr::filter(
-        .data$year == start_year,
-        .data$scenario %in% .env$scenario_to_follow_ls
-      )
-
   rows_equity <- nrow(equity_annual_profits)
 
   equity_annual_profits <- equity_annual_profits %>%
@@ -259,8 +253,6 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
   plan_carsten_equity <- pacta_equity_results %>%
     dplyr::filter(
       .data$year == start_year,
-      .data$technology %in% technologies_lookup,
-      .data$scenario_geography == scenario_geography_filter,
       .data$scenario %in% .env$scenario_to_follow_ls
     )
 
