@@ -3,6 +3,10 @@
 #' Function filters dataset so that only rows relevant for analysis remain. Also
 #' an error is thrown if duplicate entries are detected.
 #'
+#' Note that dataset `sector_exposures` is not filtered for considered sectors
+#' as data is used in [calculate_aum()] where the asset under management of the
+#' entire portfolio is calculated.
+#'
 #' @param st_data_list A list holding imported and prewrangled stress test input
 #'   data.
 #' @param start_year String holding start year of analysis.
@@ -48,9 +52,6 @@ check_and_filter_data <- function(st_data_list, start_year, end_year,
     dplyr::filter(.data$technology %in% technologies_lookup) %>%
     dplyr::filter(dplyr::between(.data$year, start_year, end_year))
 
-  sector_exposures_filtered <- st_data_list$sector_exposures %>%
-    dplyr::filter(.data$financial_sector %in% sectors_lookup)
-
   report_all_duplicate_kinds(
     data = capacity_factors_power_filtered,
     composite_unique_cols = c("scenario", "scenario_geography", "technology", "year")
@@ -88,7 +89,7 @@ check_and_filter_data <- function(st_data_list, start_year, end_year,
   )
 
   report_all_duplicate_kinds(
-    data = sector_exposures_filtered,
+    data = st_data_list$sector_exposures,
     composite_unique_cols = c("financial_sector")
   )
 
@@ -99,6 +100,6 @@ check_and_filter_data <- function(st_data_list, start_year, end_year,
     scenario_data = scenario_data_filtered,
     financial_data = financial_data_filtered,
     pacta_results = pacta_results_filtered,
-    sector_exposures = sector_exposures_filtered
+    sector_exposures = st_data_list$sector_exposures
   ))
 }

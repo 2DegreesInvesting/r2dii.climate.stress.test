@@ -34,3 +34,8 @@ analysis.
 Function filters dataset so that only rows relevant for analysis remain. Also
 an error is thrown if duplicate entries are detected.
 }
+\details{
+Note that dataset \code{sector_exposures} is not filtered for considered sectors
+as data is used in \code{\link[=calculate_aum]{calculate_aum()}} where the asset under management of the
+entire portfolio is calculated.
+}
