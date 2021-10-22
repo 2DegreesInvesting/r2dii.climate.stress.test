@@ -25,5 +25,5 @@ calc_late_sudden_prices(
 A tibble holding late_and_sudden_prices
 }
 \description{
-Wrapper function around call to \code{\link[=late_sudden_prices]{late_sudden_prices()}}.
+Wrapper function around call to late_sudden_prices.
 }

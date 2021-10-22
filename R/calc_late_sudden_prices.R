@@ -1,6 +1,6 @@
 #' Calculate late and sudden prices
 #'
-#' Wrapper function around call to [late_sudden_prices()].
+#' Wrapper function around call to late_sudden_prices.
 #'
 #' @param price_data A tibble holding price data.
 #' @param baseline_scenario String holding name of the baseline scenario.
