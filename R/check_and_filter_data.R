@@ -73,12 +73,18 @@ check_and_filter_data <- function(st_data_list, start_year, end_year,
 
   report_all_duplicate_kinds(
     data = financial_data_filtered,
-    composite_unique_cols = c("company_name", "company_id", "ald_sector", "technology")
+    composite_unique_cols = c(
+      "company_name", "company_id", "ald_sector", "technology", "investor_name",
+      "portfolio_name"
+    )
   )
 
   report_all_duplicate_kinds(
     data = pacta_results_filtered,
-    composite_unique_cols = c("year", "equity_market", "ald_sector", "technology", "scenario", "allocation", "scenario_geography", "company_name", "id")
+    composite_unique_cols = c(
+      "year", "equity_market", "ald_sector", "technology", "scenario", "allocation",
+      "scenario_geography", "company_name", "id", "investor_name", "portfolio_name"
+    )
   )
 
   report_all_duplicate_kinds(
