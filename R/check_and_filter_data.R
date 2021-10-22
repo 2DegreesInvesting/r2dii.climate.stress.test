@@ -69,7 +69,7 @@ check_and_filter_data <- function(st_data_list, start_year, end_year, scenarios_
     df_price = df_price_filtered,
     scenario_data = scenario_data_filtered,
     financial_data = financial_data_filtered,
-    pacta_result = pacta_results_filtered,
+    pacta_results = pacta_results_filtered,
     sector_exposures = sector_exposures_filtered
   ))
 }
