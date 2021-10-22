@@ -1,5 +1,21 @@
-check_and_filter_data <- function(st_data_list, start_year, end_year, scenarios_filter, scenario_geography_filter) {
-
+#' Check and filter data
+#'
+#' Function filters dataset so that only rows relevant for analysis remain. Also
+#' an error is thrown if duplicate entries are detected.
+#'
+#' @param st_data_list A list holding imported and prewrangled stress test input
+#'   data.
+#' @param start_year String holding start year of analysis.
+#' @param end_year String holding endyear of analysis.
+#' @param scenarios_filter String vector holding name of baseline and shock
+#'   scenario.
+#' @param scenario_geography_filter String holding name of considered
+#'   geographical regions.
+#'
+#' @return List `st_data_list` with tibbles subset to rows required for
+#'   analysis.
+check_and_filter_data <- function(st_data_list, start_year, end_year,
+                                  scenarios_filter, scenario_geography_filter) {
   capacity_factors_power_filtered <- st_data_list$capacity_factors_power %>%
     dplyr::filter(.data$scenario %in% scenarios_filter) %>%
     dplyr::filter(.data$scenario_geography %in% scenario_geography_filter) %>%
@@ -37,31 +53,38 @@ check_and_filter_data <- function(st_data_list, start_year, end_year, scenarios_
 
   report_all_duplicate_kinds(
     data = capacity_factors_power_filtered,
-    composite_unique_cols = c("scenario", "scenario_geography", "technology", "year"))
+    composite_unique_cols = c("scenario", "scenario_geography", "technology", "year")
+  )
 
   report_all_duplicate_kinds(
     data = excluded_companies_filtered,
-    composite_unique_cols = c("company_name", "technology"))
+    composite_unique_cols = c("company_name", "technology")
+  )
 
   report_all_duplicate_kinds(
     data = df_price_filtered,
-    composite_unique_cols = c("year", "sector", "technology"))
+    composite_unique_cols = c("year", "sector", "technology")
+  )
 
   report_all_duplicate_kinds(
     data = scenario_data_filtered,
-    composite_unique_cols = c("scenario_geography", "scenario", "ald_sector", "technology", "year"))
+    composite_unique_cols = c("scenario_geography", "scenario", "ald_sector", "technology", "year")
+  )
 
   report_all_duplicate_kinds(
     data = financial_data_filtered,
-    composite_unique_cols = c("company_name", "company_id", "ald_sector", "technology"))
+    composite_unique_cols = c("company_name", "company_id", "ald_sector", "technology")
+  )
 
   report_all_duplicate_kinds(
     data = pacta_results_filtered,
-    composite_unique_cols = c("year", "equity_market", "ald_sector", "technology", "scenario", "allocation", "scenario_geography", "company_name", "id"))
+    composite_unique_cols = c("year", "equity_market", "ald_sector", "technology", "scenario", "allocation", "scenario_geography", "company_name", "id")
+  )
 
   report_all_duplicate_kinds(
     data = sector_exposures_filtered,
-    composite_unique_cols = c("financial_sector"))
+    composite_unique_cols = c("financial_sector")
+  )
 
   return(list(
     capacity_factors_power = capacity_factors_power_filtered,
