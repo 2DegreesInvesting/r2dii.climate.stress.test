@@ -41,6 +41,10 @@ validate_input_values <- function(lgd_senior_claims, lgd_subordinated_claims,
     stop("Argument shock_year is outside accepted range.")
   }
 
+  if (!shock_year %% 1 == 0) {
+    stop("Argmuent shock_year must be a whole number")
+  }
+
   if (!dplyr::between(term, min(term_range_lookup), max(term_range_lookup))) {
     stop("Argument term is outside accepted range.")
   }
