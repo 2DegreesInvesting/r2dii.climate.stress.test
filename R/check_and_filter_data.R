@@ -33,7 +33,7 @@ check_and_filter_data <- function(st_data_list, start_year, end_year, scenarios_
     dplyr::filter(dplyr::between(.data$year, start_year, end_year))
 
   sector_exposures_filtered <- st_data_list$sector_exposures %>%
-    dplyr::filter(.data$financial_sector %in% sectors_lookup) %>%
+    dplyr::filter(.data$financial_sector %in% sectors_lookup)
 
   report_all_duplicate_kinds(
     data = capacity_factors_power_filtered,
