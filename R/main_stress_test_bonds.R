@@ -15,6 +15,8 @@
 #' @param div_netprofit_prop_coef Numeric. A coefficient that determines how
 #'   strongly the future dividends propagate to the company value. For accepted
 #'   range compare `div_netprofit_prop_coef_range_lookup`.
+#' @param shock_year Numeric, holding year the shock is applied. For accepted
+#'   range compare `shock_year_range_lookup`.
 #' @param term Numeric. A coefficient that determines for which maturity the
 #'   expected loss should be calculated in the credit risk section. For accepted
 #'   range compare `term_range_lookup`.
@@ -28,6 +30,7 @@ run_stress_test_bonds <- function(lgd_senior_claims = 0.45,
                                   risk_free_rate = 0.02,
                                   discount_rate = 0.02,
                                   div_netprofit_prop_coef = 1,
+                                  shock_year = 2030,
                                   term = 2,
                                   company_exclusion = TRUE) {
 
@@ -38,6 +41,7 @@ run_stress_test_bonds <- function(lgd_senior_claims = 0.45,
     risk_free_rate = risk_free_rate,
     discount_rate = discount_rate,
     div_netprofit_prop_coef = div_netprofit_prop_coef,
+    shock_year = shock_year,
     term = term,
     company_exclusion = company_exclusion
   )
@@ -107,10 +111,10 @@ run_stress_test_bonds <- function(lgd_senior_claims = 0.45,
     wrangle_and_check_sector_exposures_eq_cb(asset_type = "Bonds")
 
   # Load policy shock transition scenarios--------------------
-  transition_scenarios <- generate_transition_shocks(
+  transition_scenario <- generate_transition_shocks(
     start_of_analysis = start_year,
     end_of_analysis = end_year,
-    shock_years = c(2025:2035)
+    shock_years = shock_year
   )
 
   # Load project agnostic data sets -----------------------------------------
@@ -156,198 +160,175 @@ run_stress_test_bonds <- function(lgd_senior_claims = 0.45,
   # Calculation of results---------------------------------------------------
   ###########################################################################
 
-  # Corporate bonds results -----------------------------------------------------
-
-  bonds_results <- c()
-  qa_annual_profits_cb <- c()
-  bonds_expected_loss <- c()
-  bonds_annual_pd_changes <- c()
-  qa_pd_changes <- c()
-
-  for (i in seq(1, nrow(transition_scenarios))) {
-    transition_scenario_i <- transition_scenarios[i, ]
-
-    # Calculate late and sudden prices for scenario i
-    df_prices <- input_data_list$df_price %>%
-      dplyr::mutate(Baseline = !!rlang::sym(scenario_to_follow_baseline)) %>%
-      dplyr::rename(
-        year = year, ald_sector = sector, technology = technology, NPS_price = NPS,
-        SDS_price = SDS, Baseline_price = Baseline, B2DS_price = B2DS
-      ) %>%
-      dplyr::group_by(ald_sector, technology) %>%
-      dplyr::mutate(
-        late_sudden_price = late_sudden_prices(
-          SDS_price = SDS_price,
-          Baseline_price = Baseline_price,
-          year_of_shock = transition_scenario_i$year_of_shock,
-          start_year = start_year,
-          duration_of_shock = transition_scenario_i$duration_of_shock
-        )
-      ) %>%
-      dplyr::ungroup()
-
-    bonds_annual_profits <- pacta_bonds_results %>%
-      convert_power_cap_to_generation(
-        capacity_factors_power = input_data_list$capacity_factors_power,
-        baseline_scenario = scenario_to_follow_baseline
-      ) %>%
-      extend_scenario_trajectory(
-        scenario_data = scenario_data,
-        start_analysis = start_year,
-        end_analysis = end_year,
-        time_frame = time_horizon
-      ) %>%
-      set_baseline_trajectory(
-        scenario_to_follow_baseline = scenario_to_follow_baseline
-      ) %>%
-      set_ls_trajectory(
-        scenario_to_follow_ls = scenario_to_follow_ls,
-        shock_scenario = transition_scenario_i,
-        scenario_to_follow_ls_aligned = scenario_to_follow_ls,
+  # Calculate late and sudden prices
+  df_prices <- input_data_list$df_price %>%
+    dplyr::mutate(Baseline = !!rlang::sym(scenario_to_follow_baseline)) %>%
+    dplyr::rename(
+      year = year, ald_sector = sector, technology = technology, NPS_price = NPS,
+      SDS_price = SDS, Baseline_price = Baseline, B2DS_price = B2DS
+    ) %>%
+    dplyr::group_by(ald_sector, technology) %>%
+    dplyr::mutate(
+      late_sudden_price = late_sudden_prices(
+        SDS_price = SDS_price,
+        Baseline_price = Baseline_price,
+        year_of_shock = transition_scenario$year_of_shock,
         start_year = start_year,
-        end_year = end_year,
-        analysis_time_frame = time_horizon
+        duration_of_shock = transition_scenario$duration_of_shock
       )
+    ) %>%
+    dplyr::ungroup()
 
-    if (company_exclusion) {
-      bonds_annual_profits <- bonds_annual_profits %>%
-        exclude_companies(
-          exclusion = excluded_companies,
-          scenario_baseline = scenario_to_follow_baseline,
-          scenario_ls = scenario_to_follow_ls
-        )
-    }
+  bonds_annual_profits <- pacta_bonds_results %>%
+    convert_power_cap_to_generation(
+      capacity_factors_power = input_data_list$capacity_factors_power,
+      baseline_scenario = scenario_to_follow_baseline
+    ) %>%
+    extend_scenario_trajectory(
+      scenario_data = scenario_data,
+      start_analysis = start_year,
+      end_analysis = end_year,
+      time_frame = time_horizon
+    ) %>%
+    set_baseline_trajectory(
+      scenario_to_follow_baseline = scenario_to_follow_baseline
+    ) %>%
+    set_ls_trajectory(
+      scenario_to_follow_ls = scenario_to_follow_ls,
+      shock_scenario = transition_scenario,
+      scenario_to_follow_ls_aligned = scenario_to_follow_ls,
+      start_year = start_year,
+      end_year = end_year,
+      analysis_time_frame = time_horizon
+    )
 
-    rows_bonds <- nrow(bonds_annual_profits)
-
+  if (company_exclusion) {
     bonds_annual_profits <- bonds_annual_profits %>%
-      dplyr::inner_join(financial_data_bonds,
-        by = c("company_name", "id" = "corporate_bond_ticker", "ald_sector", "technology")
+      exclude_companies(
+        exclusion = excluded_companies,
+        scenario_baseline = scenario_to_follow_baseline,
+        scenario_ls = scenario_to_follow_ls
       )
-
-    cat(
-      "number of rows dropped by joining financial data on
-      company_name, corporate_bond_ticker, ald_sector, and technology: ",
-      rows_bonds - nrow(bonds_annual_profits), "\n"
-    )
-    # TODO: ADO 879 - note which companies are removed here, due to mismatch
-
-    bonds_annual_profits <- bonds_annual_profits %>%
-      dplyr::arrange(
-        scenario_name, investor_name, portfolio_name, scenario_geography, id,
-        company_name, ald_sector, technology, year
-      ) %>%
-      dplyr::group_by(
-        scenario_name, investor_name, portfolio_name, scenario_geography, id,
-        company_name, ald_sector, technology
-      ) %>%
-      # NOTE: this assumes emissions factors stay constant after forecast and prod not continued
-      tidyr::fill(
-        company_id, pd, net_profit_margin, debt_equity_ratio, volatility,
-        .direction = "down"
-      ) %>%
-      dplyr::ungroup()
-
-    bonds_annual_profits <- bonds_annual_profits %>%
-      join_price_data(df_prices = df_prices) %>%
-      calculate_net_profits() %>%
-      dcf_model_techlevel(discount_rate = discount_rate)
-
-    qa_annual_profits_cb <- qa_annual_profits_cb %>%
-      dplyr::bind_rows(
-        bonds_annual_profits %>%
-          dplyr::mutate(year_of_shock = transition_scenario_i$year_of_shock)
-      )
-
-    plan_carsten_bonds <- pacta_bonds_results %>%
-      dplyr::filter(
-        .data$year == start_year,
-        .data$scenario %in% .env$scenario_to_follow_ls
-      )
-
-    financial_data_bonds_pd <- financial_data_bonds %>%
-      dplyr::select(company_name, corporate_bond_ticker, ald_sector, technology, pd)
-
-    report_duplicates(
-      data = financial_data_bonds_pd,
-      cols = names(financial_data_bonds_pd)
-    )
-
-    rows_plan_carsten <- nrow(plan_carsten_bonds)
-
-    plan_carsten_bonds <- plan_carsten_bonds %>%
-      dplyr::inner_join(financial_data_bonds_pd, by = c("company_name", "id" = "corporate_bond_ticker", "ald_sector", "technology"))
-
-    cat(
-      "number of rows dropped from technology_exposure by joining financial data
-      on company_name, corporate_bond_ticker, ald_sector and technology = ",
-      rows_plan_carsten - nrow(plan_carsten_bonds), "\n"
-    )
-    # TODO: ADO 879 - note which companies are removed here, due to mismatch
-
-    bonds_annual_profits <- bonds_annual_profits %>%
-      dplyr::filter(!is.na(company_id))
-
-    plan_carsten_bonds <- plan_carsten_bonds %>%
-      dplyr::select(
-        investor_name, portfolio_name, company_name, ald_sector, technology,
-        scenario_geography, year, plan_carsten, plan_sec_carsten, term, pd
-      )
-
-    report_duplicates(
-      data = plan_carsten_bonds,
-      cols = names(plan_carsten_bonds)
-    )
-
-    bonds_results <- dplyr::bind_rows(
-      bonds_results,
-      company_asset_value_at_risk(
-        data = bonds_annual_profits,
-        terminal_value = terminal_value,
-        shock_scenario = transition_scenario_i,
-        div_netprofit_prop_coef = div_netprofit_prop_coef,
-        plan_carsten = plan_carsten_bonds,
-        port_aum = bonds_port_aum,
-        flat_multiplier = 0.15,
-        exclusion = excluded_companies
-      )
-    )
-
-    bonds_overall_pd_changes <- bonds_annual_profits %>%
-      calculate_pd_change_overall(
-        shock_year = transition_scenario_i$year_of_shock,
-        end_of_analysis = end_year,
-        risk_free_interest_rate = risk_free_rate
-      )
-
-    # TODO: ADO 879 - note which companies produce missing results due to
-    # insufficient input information (e.g. NAs for financials or 0 equity value)
-
-    bonds_expected_loss <- dplyr::bind_rows(
-      bonds_expected_loss,
-      company_expected_loss(
-        data = bonds_overall_pd_changes,
-        loss_given_default = lgd_subordinated_claims,
-        exposure_at_default = plan_carsten_bonds,
-        port_aum = bonds_port_aum
-      )
-    )
-
-    # TODO: ADO 879 - note which companies produce missing results due to
-    # insufficient output from overall pd changes or related financial data inputs
-
-    bonds_annual_pd_changes <- dplyr::bind_rows(
-      bonds_annual_pd_changes,
-      calculate_pd_change_annual(
-        data = bonds_annual_profits,
-        shock_year = transition_scenario_i$year_of_shock,
-        end_of_analysis = end_year,
-        risk_free_interest_rate = risk_free_rate
-      )
-    )
-    # TODO: ADO 879 - note which companies produce missing results due to
-    # insufficient input information (e.g. NAs for financials or 0 equity value)
   }
+
+  rows_bonds <- nrow(bonds_annual_profits)
+
+  bonds_annual_profits <- bonds_annual_profits %>%
+    dplyr::inner_join(financial_data_bonds,
+                      by = c("company_name", "id" = "corporate_bond_ticker", "ald_sector", "technology")
+    )
+
+  cat(
+    "number of rows dropped by joining financial data on
+      company_name, corporate_bond_ticker, ald_sector, and technology: ",
+    rows_bonds - nrow(bonds_annual_profits), "\n"
+  )
+  # TODO: ADO 879 - note which companies are removed here, due to mismatch
+
+  bonds_annual_profits <- bonds_annual_profits %>%
+    dplyr::arrange(
+      scenario_name, investor_name, portfolio_name, scenario_geography, id,
+      company_name, ald_sector, technology, year
+    ) %>%
+    dplyr::group_by(
+      scenario_name, investor_name, portfolio_name, scenario_geography, id,
+      company_name, ald_sector, technology
+    ) %>%
+    # NOTE: this assumes emissions factors stay constant after forecast and prod not continued
+    tidyr::fill(
+      company_id, pd, net_profit_margin, debt_equity_ratio, volatility,
+      .direction = "down"
+    ) %>%
+    dplyr::ungroup()
+
+  bonds_annual_profits <- bonds_annual_profits %>%
+    join_price_data(df_prices = df_prices) %>%
+    calculate_net_profits() %>%
+    dcf_model_techlevel(discount_rate = discount_rate)
+
+  qa_annual_profits_cb <- bonds_annual_profits %>%
+    dplyr::mutate(year_of_shock = transition_scenario$year_of_shock)
+
+  plan_carsten_bonds <- pacta_bonds_results %>%
+    dplyr::filter(
+      .data$year == start_year,
+      .data$scenario %in% .env$scenario_to_follow_ls
+    )
+
+  financial_data_bonds_pd <- financial_data_bonds %>%
+    dplyr::select(company_name, corporate_bond_ticker, ald_sector, technology, pd)
+
+  report_duplicates(
+    data = financial_data_bonds_pd,
+    cols = names(financial_data_bonds_pd)
+  )
+
+  rows_plan_carsten <- nrow(plan_carsten_bonds)
+
+  plan_carsten_bonds <- plan_carsten_bonds %>%
+    dplyr::inner_join(financial_data_bonds_pd, by = c("company_name", "id" = "corporate_bond_ticker", "ald_sector", "technology"))
+
+  cat(
+    "number of rows dropped from technology_exposure by joining financial data
+      on company_name, corporate_bond_ticker, ald_sector and technology = ",
+    rows_plan_carsten - nrow(plan_carsten_bonds), "\n"
+  )
+  # TODO: ADO 879 - note which companies are removed here, due to mismatch
+
+  bonds_annual_profits <- bonds_annual_profits %>%
+    dplyr::filter(!is.na(company_id))
+
+  plan_carsten_bonds <- plan_carsten_bonds %>%
+    dplyr::select(
+      investor_name, portfolio_name, company_name, ald_sector, technology,
+      scenario_geography, year, plan_carsten, plan_sec_carsten, term, pd
+    )
+
+  report_duplicates(
+    data = plan_carsten_bonds,
+    cols = names(plan_carsten_bonds)
+  )
+
+  bonds_results <- company_asset_value_at_risk(
+    data = bonds_annual_profits,
+    terminal_value = terminal_value,
+    shock_scenario = transition_scenario,
+    div_netprofit_prop_coef = div_netprofit_prop_coef,
+    plan_carsten = plan_carsten_bonds,
+    port_aum = bonds_port_aum,
+    flat_multiplier = 0.15,
+    exclusion = excluded_companies
+  )
+
+  bonds_overall_pd_changes <- bonds_annual_profits %>%
+    calculate_pd_change_overall(
+      shock_year = transition_scenario$year_of_shock,
+      end_of_analysis = end_year,
+      risk_free_interest_rate = risk_free_rate
+    )
+
+  # TODO: ADO 879 - note which companies produce missing results due to
+  # insufficient input information (e.g. NAs for financials or 0 equity value)
+
+  bonds_expected_loss <- company_expected_loss(
+    data = bonds_overall_pd_changes,
+    loss_given_default = lgd_subordinated_claims,
+    exposure_at_default = plan_carsten_bonds,
+    port_aum = bonds_port_aum
+  )
+
+  # TODO: ADO 879 - note which companies produce missing results due to
+  # insufficient output from overall pd changes or related financial data inputs
+
+  bonds_annual_pd_changes <- calculate_pd_change_annual(
+    data = bonds_annual_profits,
+    shock_year = transition_scenario$year_of_shock,
+    end_of_analysis = end_year,
+    risk_free_interest_rate = risk_free_rate
+  )
+
+  # TODO: ADO 879 - note which companies produce missing results due to
+  # insufficient input information (e.g. NAs for financials or 0 equity value)
 
   write_stress_test_results(results = bonds_results,
                             expected_loss = bonds_expected_loss,

@@ -11,6 +11,7 @@ run_stress_test_bonds(
   risk_free_rate = 0.02,
   discount_rate = 0.02,
   div_netprofit_prop_coef = 1,
+  shock_year = 2030,
   term = 2,
   company_exclusion = TRUE
 )
@@ -36,6 +37,9 @@ year in the DCF. For accepted range compare \code{discount_rate_range_lookup}.}
 \item{div_netprofit_prop_coef}{Numeric. A coefficient that determines how
 strongly the future dividends propagate to the company value. For accepted
 range compare \code{div_netprofit_prop_coef_range_lookup}.}
+
+\item{shock_year}{Numeric, holding year the shock is applied. For accepted
+range compare \code{shock_year_range_lookup}.}
 
 \item{term}{Numeric. A coefficient that determines for which maturity the
 expected loss should be calculated in the credit risk section. For accepted
