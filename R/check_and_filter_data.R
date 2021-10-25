@@ -21,36 +21,36 @@
 check_and_filter_data <- function(st_data_list, start_year, end_year,
                                   scenarios_filter, scenario_geography_filter) {
   capacity_factors_power_filtered <- st_data_list$capacity_factors_power %>%
-    dplyr::filter(.data$scenario %in% scenarios_filter) %>%
-    dplyr::filter(.data$scenario_geography %in% scenario_geography_filter) %>%
-    dplyr::filter(.data$technology %in% technologies_lookup) %>%
-    dplyr::filter(dplyr::between(.data$year, start_year, end_year))
+    dplyr::filter(.data$scenario %in% .env$scenarios_filter) %>%
+    dplyr::filter(.data$scenario_geography %in% .env$scenario_geography_filter) %>%
+    dplyr::filter(.data$technology %in% .env$technologies_lookup) %>%
+    dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year))
 
   excluded_companies_filtered <- st_data_list$excluded_companies %>%
-    dplyr::filter(.data$technology %in% technologies_lookup)
+    dplyr::filter(.data$technology %in% .env$technologies_lookup)
 
   df_price_filtered <- st_data_list$df_price %>%
-    dplyr::filter(.data$sector %in% sectors_lookup) %>%
-    dplyr::filter(.data$technology %in% technologies_lookup) %>%
-    dplyr::filter(dplyr::between(.data$year, start_year, end_year))
+    dplyr::filter(.data$sector %in% .env$sectors_lookup) %>%
+    dplyr::filter(.data$technology %in% .env$technologies_lookup) %>%
+    dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year))
 
   scenario_data_filtered <- st_data_list$scenario_data %>%
-    dplyr::filter(.data$scenario %in% scenarios_filter) %>%
-    dplyr::filter(.data$scenario_geography %in% scenario_geography_filter) %>%
-    dplyr::filter(.data$ald_sector %in% sectors_lookup) %>%
-    dplyr::filter(.data$technology %in% technologies_lookup) %>%
-    dplyr::filter(dplyr::between(.data$year, start_year, end_year))
+    dplyr::filter(.data$scenario %in% .env$scenarios_filter) %>%
+    dplyr::filter(.data$scenario_geography %in% .env$scenario_geography_filter) %>%
+    dplyr::filter(.data$ald_sector %in% .env$sectors_lookup) %>%
+    dplyr::filter(.data$technology %in% .env$technologies_lookup) %>%
+    dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year))
 
   financial_data_filtered <- st_data_list$financial_data %>%
-    dplyr::filter(.data$ald_sector %in% sectors_lookup) %>%
-    dplyr::filter(.data$technology %in% technologies_lookup)
+    dplyr::filter(.data$ald_sector %in% .env$sectors_lookup) %>%
+    dplyr::filter(.data$technology %in% .env$technologies_lookup)
 
   pacta_results_filtered <- st_data_list$pacta_results %>%
-    dplyr::filter(.data$scenario %in% scenarios_filter) %>%
-    dplyr::filter(.data$scenario_geography %in% scenario_geography_filter) %>%
-    dplyr::filter(.data$ald_sector %in% sectors_lookup) %>%
-    dplyr::filter(.data$technology %in% technologies_lookup) %>%
-    dplyr::filter(dplyr::between(.data$year, start_year, end_year))
+    dplyr::filter(.data$scenario %in% .env$scenarios_filter) %>%
+    dplyr::filter(.data$scenario_geography %in% .env$scenario_geography_filter) %>%
+    dplyr::filter(.data$ald_sector %in% .env$sectors_lookup) %>%
+    dplyr::filter(.data$technology %in% .env$technologies_lookup) %>%
+    dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year))
 
   report_all_duplicate_kinds(
     data = capacity_factors_power_filtered,
