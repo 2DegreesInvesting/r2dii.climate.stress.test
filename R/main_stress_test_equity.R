@@ -57,10 +57,6 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
   # FIXME: Very bad solution for temporart use only
   source_all(c("stress_test_model_functions.R", "0_global_functions_st.R"))
 
-  cfg_st <- config::get(file = "st_project_settings.yml")
-  check_valid_cfg(cfg = cfg_st, expected_no_args = 5)
-  project_name <- cfg_st$project_name
-
   # Analysis Parameters----------------------------------------
   # Get analysis parameters from the projects AnalysisParameters.yml - similar to PACTA_analysis
 

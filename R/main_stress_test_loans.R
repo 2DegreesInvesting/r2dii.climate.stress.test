@@ -61,11 +61,6 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
   # FIXME: Very bad solution for temporart use only
   source_all(c("stress_test_model_functions.R", "0_global_functions_st.R"))
 
-  #### Project location----------------------------------------
-  cfg_st <- config::get(file = "st_project_settings.yml")
-  check_valid_cfg(cfg = cfg_st, expected_no_args = 5)
-  project_name <- cfg_st$project_name
-
   #### Analysis Parameters----------------------------------------
   # Get analysis parameters from the projects AnalysisParameters.yml - similar to PACTA_analysis
 
@@ -104,7 +99,7 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
   # TODO: select the right scenarios
   # TODO: select the right geography
   # TODO: must contain term and initial PD
-  loanbook_path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", paste0("company_results_lb_", project_name, ".csv"))
+  loanbook_path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", paste0("Loans_results_", calculation_level, ".rda"))
 
   pacta_results <- read_pacta_results(
     path = loanbook_path,
@@ -130,34 +125,7 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
   # sector_credit_type <- paste0("sector_loan_size_", credit_type)
   # credit_currency <- paste0("loan_size_", credit_type, "_currency")
 
-  sector_exposures <- readr::read_csv(
-    file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", paste0("portfolio_overview_", project_name, ".csv")),
-    col_types = "cddcddc"
-  ) #%>%
-    # dplyr::mutate(
-    #   sector_ald = dplyr::case_when(
-    #     sector_ald == "power" ~ "Power",
-    #     sector_ald == "oil and gas" ~ "Oil&Gas",
-    #     sector_ald == "coal" ~ "Coal",
-    #     sector_ald == "automotive" ~ "Automotive",
-    #     sector_ald == "steel" ~ "Steel",
-    #     sector_ald == "cement" ~ "Cement",
-    #     TRUE ~ sector_ald
-    #   )
-    # ) %>%
-    # dplyr::select(
-    #   sector_ald,
-    #   !!rlang::sym(sector_credit_type),
-    #   !!rlang::sym(credit_currency)
-    # ) %>%
-    # dplyr::rename(
-    #   financial_sector = sector_ald,
-    #   valid_value_usd = !!rlang::sym(sector_credit_type)
-    # ) %>%
-    # dplyr::mutate(
-    #   investor_name = investor_name_placeholder,
-    #   portfolio_name = investor_name_placeholder
-    # )
+  sector_exposures <- readRDS(file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", "overview_portfolio.rda"))
   # TODO: potentially convert currencies to USD or at least common currency
 
   # Load transition scenarios that will be run by the model
