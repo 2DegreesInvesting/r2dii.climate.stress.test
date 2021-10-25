@@ -283,7 +283,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
 
   pacta_equity_results_full <- pacta_equity_results_full %>%
     dplyr::filter(!(scenario == "ETP2017_NPS" & ald_sector == "Power")) %>%
-    # hotfix - ensure scenario names match across data sets (SPS is the follow up to NPS)
+    # ADO 2473 - hotfix - ensure scenario names match across data sets (SPS is the follow up to NPS)
     dplyr::mutate(scenario = dplyr::if_else(stringr::str_detect(scenario, "WEO2019_SPS"), "WEO2019_NPS", scenario)) %>%
     dplyr::filter(scenario %in% scenarios) %>%
     dplyr::mutate(scenario = ifelse(stringr::str_detect(scenario, "_"), stringr::str_extract(scenario, "[^_]*$"), scenario)) %>%
@@ -474,7 +474,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
 
   pacta_bonds_results_full <- pacta_bonds_results_full %>%
     dplyr::filter(!(scenario == "ETP2017_NPS" & ald_sector == "Power")) %>%
-    # hotfix - ensure scenario names match across data sets (SPS is the follow up to NPS)
+    # ADO 2473 - hotfix - ensure scenario names match across data sets (SPS is the follow up to NPS)
     dplyr::mutate(scenario = dplyr::if_else(stringr::str_detect(scenario, "WEO2019_SPS"), "WEO2019_NPS", scenario)) %>%
     dplyr::filter(scenario %in% scenarios) %>%
     dplyr::mutate(scenario = ifelse(stringr::str_detect(scenario, "_"), stringr::str_extract(scenario, "[^_]*$"), scenario)) %>%
