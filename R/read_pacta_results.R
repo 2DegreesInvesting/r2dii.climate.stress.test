@@ -52,23 +52,7 @@ read_pacta_results <- function(path = NULL,
     output_has_expected_columns <- all(expected_columns %in% colnames(data))
     stopifnot(output_has_expected_columns)
   } else {
-    data <- readr::read_csv(
-      path,
-      col_types = readr::cols(
-        sector = "c",
-        technology = "c",
-        year = "d",
-        region = "c",
-        scenario_source = "c",
-        name_ald = "c",
-        metric = "c",
-        production_weighted = "d",
-        technology_share = "d",
-        production_unweighted = "d",
-        loan_share_outstanding = "d",
-        loan_share_credit_limit = "d"
-      )
-    )
+    data <- readRDS(path)
 
     expected_columns <- c(
       "sector", "technology", "year", "region", "scenario_source", "name_ald",
