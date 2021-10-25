@@ -93,6 +93,13 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
   # Load input datasets------------------------------------------------------
   ###########################################################################
 
+  run_prep_calculation_loans(
+    project_name = project_name,
+    year_production_data = 2019,
+    year_scenario_data = 2019,
+    credit_type = credit_type
+  )
+
   # Load PACTA results / loans portfolio------------------------
   # TODO: select the right scenarios
   # TODO: select the right geography
@@ -104,11 +111,11 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
     asset_type = "loans",
     level = calculation_level
   ) %>%
-    format_loanbook_st(
-      investor_name = investor_name_placeholder,
-      portfolio_name = investor_name_placeholder,
-      credit = paste0("loan_share_", credit_type)
-    ) %>%
+    # format_loanbook_st(
+    #   investor_name = investor_name_placeholder,
+    #   portfolio_name = investor_name_placeholder,
+    #   credit = paste0("loan_share_", credit_type)
+    # ) %>%
     wrangle_and_check_pacta_results(
       start_year = start_year,
       time_horizon = time_horizon,
@@ -120,37 +127,37 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
     # TODO: next version to allow term input on holding/company level
     dplyr::mutate(term = term)
 
-  sector_credit_type <- paste0("sector_loan_size_", credit_type)
-  credit_currency <- paste0("loan_size_", credit_type, "_currency")
+  # sector_credit_type <- paste0("sector_loan_size_", credit_type)
+  # credit_currency <- paste0("loan_size_", credit_type, "_currency")
 
   sector_exposures <- readr::read_csv(
     file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", paste0("portfolio_overview_", project_name, ".csv")),
     col_types = "cddcddc"
-  ) %>%
-    dplyr::mutate(
-      sector_ald = dplyr::case_when(
-        sector_ald == "power" ~ "Power",
-        sector_ald == "oil and gas" ~ "Oil&Gas",
-        sector_ald == "coal" ~ "Coal",
-        sector_ald == "automotive" ~ "Automotive",
-        sector_ald == "steel" ~ "Steel",
-        sector_ald == "cement" ~ "Cement",
-        TRUE ~ sector_ald
-      )
-    ) %>%
-    dplyr::select(
-      sector_ald,
-      !!rlang::sym(sector_credit_type),
-      !!rlang::sym(credit_currency)
-    ) %>%
-    dplyr::rename(
-      financial_sector = sector_ald,
-      valid_value_usd = !!rlang::sym(sector_credit_type)
-    ) %>%
-    dplyr::mutate(
-      investor_name = investor_name_placeholder,
-      portfolio_name = investor_name_placeholder
-    )
+  ) #%>%
+    # dplyr::mutate(
+    #   sector_ald = dplyr::case_when(
+    #     sector_ald == "power" ~ "Power",
+    #     sector_ald == "oil and gas" ~ "Oil&Gas",
+    #     sector_ald == "coal" ~ "Coal",
+    #     sector_ald == "automotive" ~ "Automotive",
+    #     sector_ald == "steel" ~ "Steel",
+    #     sector_ald == "cement" ~ "Cement",
+    #     TRUE ~ sector_ald
+    #   )
+    # ) %>%
+    # dplyr::select(
+    #   sector_ald,
+    #   !!rlang::sym(sector_credit_type),
+    #   !!rlang::sym(credit_currency)
+    # ) %>%
+    # dplyr::rename(
+    #   financial_sector = sector_ald,
+    #   valid_value_usd = !!rlang::sym(sector_credit_type)
+    # ) %>%
+    # dplyr::mutate(
+    #   investor_name = investor_name_placeholder,
+    #   portfolio_name = investor_name_placeholder
+    # )
   # TODO: potentially convert currencies to USD or at least common currency
 
   # Load transition scenarios that will be run by the model
