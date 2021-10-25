@@ -108,11 +108,6 @@ dcf_model_techlevel <- function(data, discount_rate) {
 check_portfolio_consistency <- function(df, start_year) {
   # first year in data set must be the same as start year defined in parameters
   if (min(df$year, na.rm = TRUE) != start_year) {
-    write_log(
-      msg = "Start year of the analysis and first year in the input portfolio do
-      not match. This will lead to errors in the stress test calculations.",
-      location = project_location
-    )
     stop("Start year of the analysis and first year in the input portfolio do not match.")
   }
   return(df)
@@ -122,7 +117,6 @@ check_portfolio_consistency <- function(df, start_year) {
 # check_scenario_consistency <- function(df) {
 #   # the year of shock must be greater or equal to the start year of the analysis
 #   if (!all(df %>% pull(year_of_shock) >= start_year)) {
-#     write_log("Year of shock out of bounds. Shock cannot happen before the start year of the anaylsis.")
 #     stop("Year of shock out of bounds. Shock cannot happen before the start year of the anaylsis.")
 #   }
 #   return(df)
@@ -131,11 +125,6 @@ check_portfolio_consistency <- function(df, start_year) {
 check_price_consistency <- function(df, start_year) {
   # the year of shock must be greater or equal to the start year of the analysis
   if (!all(df$year >= start_year)) {
-    write_log(
-      msg = "Timerange for price data out of bounds. Past prices cannot be
-      included in the further analysis.",
-      location = project_location
-    )
     stop(
       "Timerange for price data out of bounds. Past prices cannot be included
       in the further analysis."
@@ -147,11 +136,6 @@ check_price_consistency <- function(df, start_year) {
 check_scenario_availability <- function(portfolio, scen_data, scenarios = scenarios) {
   # check that scenarios in portfolio are allowed
   if (!all(portfolio %>% dplyr::pull(scenario) %>% unique() %in% scenarios)) {
-    write_log(
-      msg = "Some scenarios in this data frame are not in the list of allowed
-      scenarios. Please check!",
-      location = project_location
-    )
     stop(
       "Some scenarios in this data frame are not in the list allowed of scenarios.
       Please check!"
@@ -159,11 +143,6 @@ check_scenario_availability <- function(portfolio, scen_data, scenarios = scenar
   }
   # check that at least two allowed scenarios remain in portfolio
   if (length(portfolio %>% dplyr::pull(scenario) %>% unique()) < 2) {
-    write_log(
-      msg = "There are less than two allowed scenarios in the portfolio. Stress
-      test requires at least two!",
-      location = project_location
-    )
     stop(
       "There are less than two allowed scenarios in the portfolio. Stress test
       requires at least two!"
@@ -171,11 +150,6 @@ check_scenario_availability <- function(portfolio, scen_data, scenarios = scenar
   }
   # check scenarios in portfolio correspond to scenarios in scen data
   if (!all(portfolio %>% dplyr::pull(scenario) %>% unique() %in% (scen_data %>% dplyr::pull(scenario) %>% unique()))) {
-    write_log(
-      msg = "Scenarios differ between portfolio and scenario trajectory data.
-      Check if correct inputs were used.",
-      location = project_location
-    )
     stop(
       "Scenarios differ between portfolio and scenario trajectory data. Check if
       correct inputs were used."
@@ -186,14 +160,6 @@ check_scenario_availability <- function(portfolio, scen_data, scenarios = scenar
 # check if the imported scenario data covers every year within the timeframe of analysis
 check_scenario_timeframe <- function(scenario_data, start_year = start_year, end_year = end_year) {
   if (!all(seq(start_year, end_year) %in% (scenario_data %>% dplyr::pull(year) %>% unique()))) {
-    write_log(
-      msg = glue::glue(
-        "Imported scenario data does not cover the full time frame of the
-        analysis. Scenario data must cover at least the period from {start_year}
-        to {end_year}"
-      ),
-      location = project_location
-    )
     stop(
       glue::glue(
         "Imported scenario data does not cover the full time frame of the
