@@ -2,10 +2,6 @@
 # practical purpose.
 investor_name_placeholder <- "Meta Investor"
 
-# columns on which in composition there may be no duplicates for sector
-# exposures for equity and bonds
-cuc_sector_exposures_eq_cb <- c("investor_name", "portfolio_name", "financial_sector")
-
 # vector holding vars to nest pacta results by
 nesting_vars_lookup <- c(
   "investor_name", "portfolio_name", "equity_market", "ald_sector", "technology",

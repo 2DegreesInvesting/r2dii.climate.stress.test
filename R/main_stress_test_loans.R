@@ -99,7 +99,7 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
   # TODO: must contain term and initial PD
   loanbook_path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", paste0("company_results_lb_", project_name, ".csv"))
 
-  pacta_loanbook_results <- read_pacta_results(
+  pacta_results <- read_pacta_results(
     path = loanbook_path,
     asset_type = "loans",
     level = calculation_level
@@ -167,8 +167,16 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
     company_exclusion = company_exclusion,
     scenario_geography_filter = scenario_geography_filter,
     asset_type = "loans"
-  )
+  ) %>%
+    c(list(pacta_results = pacta_results, sector_exposures = sector_exposures)) %>%
+    check_and_filter_data(
+      start_year = start_year,
+      end_year = end_year,
+      scenarios_filter = scenarios_filter,
+      scenario_geography_filter = scenario_geography_filter
+    )
 
+  pacta_loanbook_results <- input_data_list$pacta_results
   excluded_companies <- input_data_list$excluded_companies
   scenario_data <- input_data_list$scenario_data
   financial_data_loans <- input_data_list$financial_data %>%
@@ -184,7 +192,7 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
   # Prepare sector exposure data-------------------------------------------------
   # ...for loans portfolio-------------------------------------------------------
   # TODO: validate
-  loan_book_port_aum <- calculate_aum(sector_exposures)
+  loan_book_port_aum <- calculate_aum(input_data_list$sector_exposures)
 
   ## if we use the integral/overshoot late&sudden method, and we use company production plans the first 5 years
   ## the integral method works on company level, however,
@@ -278,8 +286,6 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
   plan_carsten_loanbook <- pacta_loanbook_results %>%
     dplyr::filter(
       .data$year == .env$start_year,
-      .data$technology %in% technologies_lookup,
-      .data$scenario_geography == .env$scenario_geography_filter,
       .data$scenario %in% .env$scenario_to_follow_ls
     )
 
