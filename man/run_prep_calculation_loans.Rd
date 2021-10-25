@@ -16,7 +16,7 @@ release year the production data should be taken from. For accepted
 range compare \code{year_production_data_range_lookup}.}
 
 \item{year_scenario_data}{Numeric. A vector of length 1 that indicates which
-release year the production data should be taken from. For accepted
+release year the scenario data should be taken from. For accepted
 range compare \code{year_scenario_data_range_lookup}.}
 
 \item{credit_type}{Type of credit. For accepted values please compare
