@@ -1,7 +1,5 @@
 #' Run stress testing for loans
 #'
-#' @param project_name Character. A vector of length 1 that indicates the name
-#'   of the project.
 #' @param year_production_data Numeric. A vector of length 1 that indicates which
 #'   release year the production data should be taken from. For accepted
 #'   range compare `year_production_data_range_lookup`.
@@ -12,15 +10,9 @@
 #'   `credit_type_loans`.
 #' @return NULL
 #' @export
-run_prep_calculation_loans <- function(project_name,
-                                       year_production_data,
+run_prep_calculation_loans <- function(year_production_data,
                                        year_scenario_data,
                                        credit_type) {
-
-  # cfg_st <- config::get(file = "st_project_settings.yml")
-  # project_name <- cfg_st$project_name
-  # year_production_data_forecast <- 2019
-  # year_scenario_data <- 2019
 
   ###########################################################################
   # Project Initialisation---------------------------------------------------
@@ -38,8 +30,7 @@ run_prep_calculation_loans <- function(project_name,
 
   # raw loan book
   loanbook <- readr::read_csv(
-    file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", paste0("raw_loanbook_", project_name, ".csv")),
-    # path_dropbox_2dii("PortCheck_v2", "10_Projects", project_name, "20_Raw_Inputs", paste0("raw_loanbook_", project_name, ".csv")),
+    file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", paste0("raw_loanbook.csv")),
     col_types = readr::cols(
       id_loan = "c",
       id_direct_loantaker = "c",
@@ -66,7 +57,6 @@ run_prep_calculation_loans <- function(project_name,
   # matched loan book
   matched  <- readr::read_csv(
     file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", "matched_loan_book.csv"),
-    # r2dii.utils::path_dropbox_2dii(path_processed_loanbook, "matched_loan_book.csv"),
     col_types = readr::cols_only(
       id_loan = "c",
       id_direct_loantaker = "c",
@@ -245,11 +235,7 @@ run_prep_calculation_loans <- function(project_name,
 
   loan_share %>%
     readr::write_csv(
-      file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", glue::glue("comp_overview_{project_name}.csv"))
-      # r2dii.utils::path_dropbox_2dii(
-      #   "PortCheck_v2", "10_Projects", project_name, "30_Processed_Inputs",
-      #   glue::glue("comp_overview_{project_name}.csv")
-      # )
+      file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", "overview_companies.csv")
     )
 
   ###########################################################################
@@ -316,12 +302,8 @@ run_prep_calculation_loans <- function(project_name,
   # TODO: potentially convert currencies to USD or at least common currency
 
   portfolio_overview %>%
-    readr::write_csv(
-      file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", glue::glue("portfolio_overview_{project_name}.csv"))
-      # r2dii.utils::path_dropbox_2dii(
-      #   "PortCheck_v2", "10_Projects", project_name, "30_Processed_Inputs",
-      #   glue::glue("portfolio_overview_{project_name}.csv")
-      # )
+    saveRDS(
+      file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", "overview_portfolio.rda")
     )
 
   ###########################################################################
@@ -411,11 +393,7 @@ run_prep_calculation_loans <- function(project_name,
       credit = paste0("loan_share_", credit_type)
     ) %>%
     readr::write_csv(
-      file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", glue::glue("company_results_lb_{project_name}.csv"))
-      # r2dii.utils::path_dropbox_2dii(
-      #   "PortCheck_v2", "10_Projects", project_name, "40_Results",
-      #   glue::glue("company_results_lb_{project_name}.csv")
-      # )
+      file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", "Loans_results_company.csv")
     )
 
 }

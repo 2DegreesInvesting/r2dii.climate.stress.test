@@ -5,16 +5,12 @@
 \title{Run stress testing for loans}
 \usage{
 run_prep_calculation_loans(
-  project_name,
   year_production_data,
   year_scenario_data,
   credit_type
 )
 }
 \arguments{
-\item{project_name}{Character. A vector of length 1 that indicates the name
-of the project.}
-
 \item{year_production_data}{Numeric. A vector of length 1 that indicates which
 release year the production data should be taken from. For accepted
 range compare \code{year_production_data_range_lookup}.}

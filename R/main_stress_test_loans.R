@@ -89,7 +89,6 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
   ###########################################################################
 
   run_prep_calculation_loans(
-    project_name = project_name,
     year_production_data = 2019,
     year_scenario_data = 2019,
     credit_type = credit_type
