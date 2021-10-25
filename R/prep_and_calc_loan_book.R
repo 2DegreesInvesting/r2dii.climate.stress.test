@@ -4,7 +4,7 @@
 #'   release year the production data should be taken from. For accepted
 #'   range compare `year_production_data_range_lookup`.
 #' @param year_scenario_data Numeric. A vector of length 1 that indicates which
-#'   release year the production data should be taken from. For accepted
+#'   release year the scenario data should be taken from. For accepted
 #'   range compare `year_scenario_data_range_lookup`.
 #' @param credit_type Type of credit. For accepted values please compare
 #'   `credit_type_loans`.
@@ -13,16 +13,6 @@
 run_prep_calculation_loans <- function(year_production_data,
                                        year_scenario_data,
                                        credit_type) {
-
-  ###########################################################################
-  # Project Initialisation---------------------------------------------------
-  ###########################################################################
-
-  # source(file.path("R", "utils.R"))
-  # source(file.path("R", "set_paths.R"))
-  # source("stress_test_model_functions.R")
-  # source("0_global_functions_st.R")
-  # source(file.path("R", "format_loanbook_st.R"))
 
   ###########################################################################
   # Load input datasets------------------------------------------------------
@@ -93,38 +83,22 @@ run_prep_calculation_loans <- function(year_production_data,
   regions <- r2dii.data::region_isos
 
   # Production forecast data
-  if (year_production_data_forecast == 2019) {
-    # TODO: put in ST_INPUTS_MASTER directory
-    production_data_forecast <- readxl::read_xlsx(
-      r2dii.utils::path_dropbox_2dii(
-        "2° Investing Team", "1. RESEARCH", "1. Studies (projects)", "PACTA",
-        "Banks work", "02_Documentation", "Public launch", "ready",
-        "ald_15092020.xlsx"
-      )
+  if (year_production_data == 2019) {
+    production_forecast_data <- readr::read_csv(
+      file.path(get_st_data_path(), "ald_15092020.csv")
     )
-  } else if (year_production_data_forecast == 2020) {
-    # TODO: put in ST_INPUTS_MASTER directory
-    production_data_forecast <- readr::read_csv(
-      r2dii.utils::path_dropbox_2dii(
-        "2° Investing Team", "1. RESEARCH", "1. Studies (projects)", "PACTA",
-        "Banks work", "04_Data", "Data", "20200701_r2dii_release_data", "data",
-        "ald_15092020.csv"
-      )
+  } else if (year_production_data == 2020) {
+    production_forecast_data <- readxl::read_xlsx(
+      file.path(get_st_data_path(), "2021-07-15_AR_2020Q4_PACTA-Data (3).xlsx"),
+      sheet = "Company Indicators - PACTA"
     )
-  } else stop(
-    glue::glue(
-      "No production forecast data available for {year_production_data_forecast}"
-    )
-  )
+  } else {
+    stop(glue::glue("No production forecast data found for {year_production_data}."))
+  }
 
   # Scenario data - market share
   scenario_data_market_share <- readr::read_csv(
-    # TODO: put in ST_INPUTS_MASTER directory
-    r2dii.utils::path_dropbox_2dii(
-      "2° Investing Team", "1. RESEARCH", "1. Studies (projects)", "PACTA",
-      "Banks work", "04_Data", "Data", "20200701_r2dii_release_data", "data",
-      glue::glue("scenario_{year_scenario_data}.csv")
-    ),
+    file.path(get_st_data_path(), glue::glue("scenario_{year_scenario_data}.csv")),
     col_types = readr::cols(
       scenario_source = "c",
       scenario = "c",
@@ -139,12 +113,7 @@ run_prep_calculation_loans <- function(year_production_data,
 
   # Scenario data - emission intensity
   scenario_data_emissions_intensity <- readr::read_csv(
-    # TODO: put in ST_INPUTS_MASTER directory
-    r2dii.utils::path_dropbox_2dii(
-      "2° Investing Team", "1. RESEARCH", "1. Studies (projects)", "PACTA",
-      "Banks work", "04_Data", "Data", "20200701_r2dii_release_data", "data",
-      glue::glue("co2_intensity_scenario_{year_scenario_data}.csv")
-    ),
+    file.path(get_st_data_path(), glue::glue("co2_intensity_scenario_{year_scenario_data}.csv")),
     col_types = readr::cols(
       scenario_source = "c",
       scenario = "c",
@@ -312,33 +281,33 @@ run_prep_calculation_loans <- function(year_production_data,
 
   #----Calculate weighted company level PACTA results--------------------
 
-  matched_company_weighted <- matched_non_negative %>%
-    r2dii.analysis::target_market_share(
-      ald = production_data_forecast,
-      scenario = scenario_data_market_share,
-      region_isos = regions,
-      use_credit_limit = TRUE,
-      by_company = TRUE,
-      weight_production = TRUE
-    ) %>%
-    # TODO filter must be generalised for diff scenario inputs
-    dplyr::filter(
-      (.data$sector == "automotive" & .data$scenario_source == "etp_2017") |
-        (.data$sector == "coal" & .data$scenario_source == "weo_2019") |
-        (.data$sector == "oil and gas" & .data$scenario_source == "weo_2019") |
-        (.data$sector == "power" & .data$scenario_source == "weo_2019")
-    ) %>%
-    dplyr::rename(
-      production_weighted = .data$production
-    ) %>%
-    dplyr::mutate(technology_share = round(.data$technology_share, 8)) %>% # rounding errors can lead to duplicates
-    # TODO: why distinct_all?
-    dplyr::distinct_all()
+  # matched_company_weighted <- matched_non_negative %>%
+  #   r2dii.analysis::target_market_share(
+  #     ald = production_forecast_data,
+  #     scenario = scenario_data_market_share,
+  #     region_isos = regions,
+  #     use_credit_limit = TRUE,
+  #     by_company = TRUE,
+  #     weight_production = TRUE
+  #   ) %>%
+  #   # TODO filter must be generalised for diff scenario inputs
+  #   dplyr::filter(
+  #     (.data$sector == "automotive" & .data$scenario_source == "etp_2017") |
+  #       (.data$sector == "coal" & .data$scenario_source == "weo_2019") |
+  #       (.data$sector == "oil and gas" & .data$scenario_source == "weo_2019") |
+  #       (.data$sector == "power" & .data$scenario_source == "weo_2019")
+  #   ) %>%
+  #   dplyr::rename(
+  #     production_weighted = .data$production
+  #   ) %>%
+  #   dplyr::mutate(technology_share = round(.data$technology_share, 8)) %>% # rounding errors can lead to duplicates
+  #   # TODO: why distinct_all?
+  #   dplyr::distinct_all()
 
   #----Calculate unweighted company level PACTA results--------------------
   matched_company_unweighted <- matched_non_negative %>%
     r2dii.analysis::target_market_share(
-      ald = production_data_forecast,
+      ald = production_forecast_data,
       scenario = scenario_data_market_share,
       region_isos = regions,
       use_credit_limit = TRUE,
@@ -354,21 +323,22 @@ run_prep_calculation_loans <- function(year_production_data,
     ) %>%
     dplyr::rename(
       production_unweighted = .data$production
-    ) %>%
-    dplyr::select(-.data$technology_share) %>%
+    )  %>%
+    dplyr::mutate(technology_share = round(.data$technology_share, 8)) %>% # rounding errors can lead to duplicates
     # TODO: why distinct_all?
     dplyr::distinct_all()
 
   #----Create joint results with weighted and unweighted PACTA results--------------------
-  matched_company <- matched_company_weighted %>%
-    dplyr::inner_join(
-      matched_company_unweighted,
-      by = c("sector", "technology", "year", "region", "scenario_source", "name_ald", "metric")
-    ) %>%
-    dplyr::distinct_all()
+  # matched_company <- matched_company_weighted %>%
+  #   dplyr::inner_join(
+  #     matched_company_unweighted,
+  #     by = c("sector", "technology", "year", "region", "scenario_source", "name_ald", "metric")
+  #   ) %>%
+  #   dplyr::distinct_all()
 
   #----Add loan share information to PACTA results--------------------
-  matched_company_loan_share <- matched_company %>%
+  # matched_company_loan_share <- matched_company %>%
+  matched_company_loan_share <- matched_company_unweighted %>%
     # TODO why left_join?
     dplyr::left_join(loan_share, by = c("sector" = "sector_ald", "name_ald")) %>%
     dplyr::filter(.data$region == "global") %>%
@@ -386,14 +356,16 @@ run_prep_calculation_loans <- function(year_production_data,
   ###########################################################################
   # Format company level PACTA results---------------------------------------
   ###########################################################################
-  matched_company_loan_share %>%
+  pacta_result_loans <- matched_company_loan_share %>%
     format_loanbook_st(
       investor_name = investor_name_placeholder,
       portfolio_name = investor_name_placeholder,
       credit = paste0("loan_share_", credit_type)
-    ) %>%
-    readr::write_csv(
-      file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", "Loans_results_company.csv")
+    )
+
+  pacta_result_loans %>%
+    saveRDS(
+      file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", "Loans_results_company.rda")
     )
 
 }
