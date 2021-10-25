@@ -58,10 +58,6 @@ run_stress_test_bonds <- function(lgd_senior_claims = 0.45,
   # FIXME: Very bad solution for temporart use only
   source_all(c("stress_test_model_functions.R", "0_global_functions_st.R"))
 
-  cfg_st <- config::get(file = "st_project_settings.yml")
-  check_valid_cfg(cfg = cfg_st, expected_no_args = 5)
-  project_name <- cfg_st$project_name
-
   # Analysis Parameters----------------------------------------
   # Get analysis parameters from the projects AnalysisParameters.yml - similar to PACTA_analysis
 
@@ -90,7 +86,7 @@ run_stress_test_bonds <- function(lgd_senior_claims = 0.45,
   # Load PACTA results / bonds portfolio------------------------
   bonds_path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", paste0("Bonds_results_", calculation_level, ".rda"))
 
-  pacta_bonds_results <- read_pacta_results(
+  pacta_results <- read_pacta_results(
     path = bonds_path,
     asset_type = "bonds",
     level = calculation_level
@@ -124,8 +120,16 @@ run_stress_test_bonds <- function(lgd_senior_claims = 0.45,
     company_exclusion = company_exclusion,
     scenario_geography_filter = scenario_geography_filter,
     asset_type = "bonds"
-  )
+  ) %>%
+    c(list(pacta_results = pacta_results, sector_exposures = sector_exposures)) %>%
+    check_and_filter_data(
+      start_year = start_year,
+      end_year = end_year,
+      scenarios_filter = scenarios_filter,
+      scenario_geography_filter = scenario_geography_filter
+    )
 
+  pacta_bonds_results <- input_data_list$pacta_results
   excluded_companies <- input_data_list$excluded_companies
   scenario_data <- input_data_list$scenario_data
   financial_data_bonds <- input_data_list$financial_data
@@ -139,7 +143,7 @@ run_stress_test_bonds <- function(lgd_senior_claims = 0.45,
 
   # Prepare sector exposure data-------------------------------------------------
   # ...for bonds portfolio-------------------------------------------------------
-  bonds_port_aum <- calculate_aum(sector_exposures)
+  bonds_port_aum <- calculate_aum(input_data_list$sector_exposures)
 
   ## if we use the integral/overshoot late&sudden method, and we use company production plans the first 5 years
   ## the integral method works on company level, however,
@@ -231,8 +235,6 @@ run_stress_test_bonds <- function(lgd_senior_claims = 0.45,
   plan_carsten_bonds <- pacta_bonds_results %>%
     dplyr::filter(
       .data$year == start_year,
-      .data$technology %in% technologies_lookup,
-      .data$scenario_geography == scenario_geography_filter,
       .data$scenario %in% .env$scenario_to_follow_ls
     )
 

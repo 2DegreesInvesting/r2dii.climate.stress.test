@@ -61,33 +61,6 @@ path_dropbox_2dii <- function(...) {
   fs::path_home(custom %||% default, ...)
 }
 
-#' Write error logs to the project log files. Appends the most recent message
-#' to that file.
-#'
-#' @param msg A string containing the error message
-#' @param location A string containing the path to the project directory
-#' @param ... unnamed arguments are pasted at the end of the log message.
-#'
-#' @family miscellaneous utility functions
-#'
-#' @return A string.
-#'
-#' @export
-write_log <- function(msg,
-                      location,
-                      ...) {
-  composed <- paste(
-    as.character(Sys.time()),
-    as.character(msg),
-    ...
-  )
-  write(
-    composed,
-    file = glue::glue("{location}/00_Log_Files/error_messages.txt"),
-    append = TRUE
-  )
-}
-
 #' Get path for stress test masterdata files
 #'
 #' Return list of paths for stress test masterdata files.
@@ -154,8 +127,6 @@ validate_data_has_expected_cols <- function(data,
 #' 1. it is checked if there are duplicate rows.
 #' 1. it is checked if there are duplicate rows on `composite_unique_cols`.
 #'
-#' Function is currently not used in code but helps for data wrangling/data
-#' research tasks. It will be added to critical data sets in the future.
 #'
 #' @param data A tibble.
 #' @param composite_unique_cols A vector of names of columns that shall be
@@ -165,7 +136,7 @@ validate_data_has_expected_cols <- function(data,
 #'
 #' @return NULL
 #' @export
-report_all_duplicate_kinds <- function(data, composite_unique_cols, throw_error = FALSE) {
+report_all_duplicate_kinds <- function(data, composite_unique_cols, throw_error = TRUE) {
   validate_data_has_expected_cols(
     data = data,
     expected_columns = composite_unique_cols

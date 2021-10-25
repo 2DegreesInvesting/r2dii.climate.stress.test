@@ -27,7 +27,6 @@ data_path()
 Other miscellaneous utility functions: 
 \code{\link{degrees}()},
 \code{\link{dropbox_exists}()},
-\code{\link{get_st_data_path}()},
-\code{\link{write_log}()}
+\code{\link{get_st_data_path}()}
 }
 \concept{miscellaneous utility functions}

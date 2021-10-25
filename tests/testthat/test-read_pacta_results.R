@@ -32,7 +32,7 @@ test_that("with all arguments set, read_pacta_results returns data.frame", {
 
   testthat::expect_s3_class(test_data_new, "data.frame")
 
-  test_path <- testthat::test_path("test_data", "raw_input_loanbook.csv")
+  test_path <- testthat::test_path("test_data", "raw_input_loanbook.rda")
   test_asset_type <- "loans"
   test_level <- "company"
 
