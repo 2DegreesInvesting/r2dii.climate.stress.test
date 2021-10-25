@@ -105,26 +105,22 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
     asset_type = "loans",
     level = calculation_level
   ) %>%
-    # format_loanbook_st(
-    #   investor_name = investor_name_placeholder,
-    #   portfolio_name = investor_name_placeholder,
-    #   credit = paste0("loan_share_", credit_type)
-    # ) %>%
-    wrangle_and_check_pacta_results(
-      start_year = start_year,
-      time_horizon = time_horizon,
-      scenario_geography_filter = scenario_geography_filter,
-      scenarios_filter = scenarios_filter,
-      equity_market_filter = cfg$Lists$Equity.Market.List
-    ) %>%
-    # ADO 1943 - for the time being, one global term value is set by the user.
-    # TODO: next version to allow term input on holding/company level
-    dplyr::mutate(term = term)
+  wrangle_and_check_pacta_results(
+    start_year = start_year,
+    time_horizon = time_horizon,
+    scenario_geography_filter = scenario_geography_filter,
+    scenarios_filter = scenarios_filter,
+    equity_market_filter = cfg$Lists$Equity.Market.List
+  ) %>%
+  # ADO 1943 - for the time being, one global term value is set by the user.
+  # TODO: next version to allow term input on holding/company level
+  dplyr::mutate(term = term)
 
   # sector_credit_type <- paste0("sector_loan_size_", credit_type)
   # credit_currency <- paste0("loan_size_", credit_type, "_currency")
 
   sector_exposures <- readRDS(file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", "overview_portfolio.rda"))
+  # TODO: add the wrangling step as in eq/cb
   # TODO: potentially convert currencies to USD or at least common currency
 
   # Load transition scenarios that will be run by the model
