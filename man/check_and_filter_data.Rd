@@ -16,9 +16,9 @@ check_and_filter_data(
 \item{st_data_list}{A list holding imported and prewrangled stress test input
 data.}
 
-\item{start_year}{String holding start year of analysis.}
+\item{start_year}{Numeric holding start year of analysis.}
 
-\item{end_year}{String holding end year of analysis.}
+\item{end_year}{Numeric holding end year of analysis.}
 
 \item{scenarios_filter}{String vector holding name of baseline and shock
 scenario.}

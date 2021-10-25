@@ -9,8 +9,8 @@
 #'
 #' @param st_data_list A list holding imported and prewrangled stress test input
 #'   data.
-#' @param start_year String holding start year of analysis.
-#' @param end_year String holding end year of analysis.
+#' @param start_year Numeric holding start year of analysis.
+#' @param end_year Numeric holding end year of analysis.
 #' @param scenarios_filter String vector holding name of baseline and shock
 #'   scenario.
 #' @param scenario_geography_filter String holding name of considered
