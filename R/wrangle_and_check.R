@@ -24,8 +24,6 @@ wrangle_and_check_sector_exposures_eq_cb <- function(sector_exposures, asset_typ
     stop("No valid sector exposures available.")
   }
 
-  report_all_duplicate_kinds(valid_sector_exposures, cuc_sector_exposures_eq_cb)
-
   return(valid_sector_exposures)
 }
 
