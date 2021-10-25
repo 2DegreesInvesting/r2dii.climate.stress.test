@@ -157,26 +157,12 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
   ###########################################################################
   # Calculation of results---------------------------------------------------
   ###########################################################################
-
-  # Calculate late and sudden prices
   df_prices <- input_data_list$df_price %>%
-    dplyr::mutate(Baseline = !!rlang::sym(scenario_to_follow_baseline)) %>%
-    dplyr::rename(
-      year = year, ald_sector = sector, technology = technology, NPS_price = NPS,
-      SDS_price = SDS, Baseline_price = Baseline, B2DS_price = B2DS
-    ) %>%
-    dplyr::group_by(ald_sector, technology) %>%
-    #### OPEN: Potentially a problem with the LS price calculation. Concerning warning
-    dplyr::mutate(
-      late_sudden_price = late_sudden_prices(
-        SDS_price = SDS_price,
-        Baseline_price = Baseline_price,
-        year_of_shock = transition_scenario$year_of_shock,
-        start_year = start_year,
-        duration_of_shock = transition_scenario$duration_of_shock
-      )
-    ) %>%
-    dplyr::ungroup()
+    calc_late_sudden_prices(
+      baseline_scenario = scenario_to_follow_baseline,
+      transition_scenario = transition_scenario,
+      start_year = start_year
+    )
 
   # Convert capacity (MW) to generation (MWh) for power sector
   equity_annual_profits <- pacta_equity_results %>%
