@@ -4,7 +4,7 @@
 \alias{report_all_duplicate_kinds}
 \title{Checks data for missings and duplicates}
 \usage{
-report_all_duplicate_kinds(data, composite_unique_cols, throw_error = FALSE)
+report_all_duplicate_kinds(data, composite_unique_cols, throw_error = TRUE)
 }
 \arguments{
 \item{data}{A tibble.}
@@ -24,7 +24,4 @@ that should be unique in combination. In concrete:
 \item it is checked if there are duplicate rows.
 \item it is checked if there are duplicate rows on \code{composite_unique_cols}.
 }
-
-Function is currently not used in code but helps for data wrangling/data
-research tasks. It will be added to critical data sets in the future.
 }

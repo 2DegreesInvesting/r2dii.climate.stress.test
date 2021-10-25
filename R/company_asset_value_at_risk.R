@@ -97,6 +97,9 @@ company_asset_value_at_risk <- function(data,
       dplyr::mutate(exclude = TRUE)
 
     data <- data %>%
+      # ADO 1945: we opt for a left join and a flag rather than an anti join so
+      # that we know which values were removed in the final outcome. This
+      # mechanism should be revisited as part of an overhaul of the compensation.
       dplyr::left_join(
         exclusion,
         by = c("company_name", "technology")
@@ -120,7 +123,7 @@ company_asset_value_at_risk <- function(data,
   }
 
   data <- data %>%
-    dplyr::left_join(
+    dplyr::inner_join(
       plan_carsten,
       by = c(
         "investor_name", "portfolio_name", "company_name",
@@ -129,7 +132,7 @@ company_asset_value_at_risk <- function(data,
     )
 
   data <- data %>%
-    dplyr::left_join(
+    dplyr::inner_join(
       port_aum,
       by = c("investor_name", "portfolio_name")
     )
@@ -193,17 +196,13 @@ company_asset_value_at_risk <- function(data,
     ) %>%
     dplyr::ungroup()
 
-  shock_scenario_long <- shock_scenario %>%
-    tidyr::pivot_longer(
-      cols = -c(scenario_name, year_of_shock, duration_of_shock),
-      names_to = "technology",
-      values_to = "production_shock_perc"
-    )
-
   data <- data %>%
-    dplyr::left_join(
-      shock_scenario_long,
-      by = c("scenario_name", "technology")
+    dplyr::mutate(
+      duration_of_shock = .env$shock_scenario$duration_of_shock,
+      year_of_shock = .env$shock_scenario$year_of_shock,
+      production_shock_perc = NA_real_
     ) %>%
     dplyr::select(-c(.data$plan_carsten, .data$plan_sec_carsten, .data$year))
+
+  return(data)
 }

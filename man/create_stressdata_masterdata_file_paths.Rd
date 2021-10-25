@@ -4,16 +4,11 @@
 \alias{create_stressdata_masterdata_file_paths}
 \title{Get path for stress test masterdata files}
 \usage{
-create_stressdata_masterdata_file_paths(data_prep_timestamp, twodii_internal)
-}
-\arguments{
-\item{data_prep_timestamp}{Character scalar holding timestamp of data prep.}
-
-\item{twodii_internal}{Boolean, if TRUE 2dii internal mode is used.}
+create_stressdata_masterdata_file_paths()
 }
 \value{
-A list with 2 file paths.
+A list with 3 file paths.
 }
 \description{
-Get path for stress test masterdata files when called in 2dii internal mode.
+Return list of paths for stress test masterdata files.
 }

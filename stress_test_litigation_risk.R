@@ -772,7 +772,7 @@ company_results_dcf <- company_results_dcf %>%
     .data$sector
   ) %>%
   dplyr::mutate(
-    t_calc = seq(0, (n() - 1)),
+    t_calc = seq(0, (dplyr::n() - 1)),
     dividends = .data$ebit * (1 + .env$growth_rate) ^ .data$t_calc,
     dividends_litigation = dplyr::if_else(
       # year == start_year + years_to_litigation_event,

@@ -1,7 +1,5 @@
 test_that("production trajectories function returns a ggplot object", {
-  test_scenario_data <- readRDS(
-    testthat::test_path("test_data", "test_interpolate_auto.rds")
-  )
+  test_scenario_data <- read_test_data("scenario_data_temp.csv")
 
   ggplot_production_trajectories <- show_prod_trajectories(
     data = test_scenario_data,

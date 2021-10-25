@@ -339,7 +339,6 @@ sector_share %>%
     )
   )
 
-
 #----Calculate comp level scenario targets--------------------
 
 matched_company_weighted <- matched_non_negative %>%

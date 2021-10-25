@@ -90,23 +90,13 @@ write_log <- function(msg,
 
 #' Get path for stress test masterdata files
 #'
-#' Get path for stress test masterdata files when called in 2dii internal mode.
+#' Return list of paths for stress test masterdata files.
 #'
-#' @param data_prep_timestamp Character scalar holding timestamp of data prep.
-#' @param twodii_internal Boolean, if TRUE 2dii internal mode is used.
-#'
-#' @return A list with 2 file paths.
+#' @return A list with 3 file paths.
 #' @export
-create_stressdata_masterdata_file_paths <- function(data_prep_timestamp, twodii_internal) {
-  if (!twodii_internal) {
-    stop("Currently cannot provide data files for external mode.")
-  }
+create_stressdata_masterdata_file_paths <- function() {
 
-  if (!is.character(data_prep_timestamp)) {
-    stop("Timestamp is not provided in correct format")
-  }
-
-  path_parent <- path_dropbox_2dii("PortCheck", "00_Data", "07_AnalysisInputs", data_prep_timestamp)
+  path_parent <- get_st_data_path()
 
   paths <- list(
     "prewrangled_financial_data_bonds.rds",
@@ -120,7 +110,7 @@ create_stressdata_masterdata_file_paths <- function(data_prep_timestamp, twodii_
       }
       return(file_path)
     }) %>%
-    purrr::set_names(c("bonds", "listed_equity", "loans"))
+    purrr::set_names(c("bonds", "equity", "loans"))
 
   return(paths)
 }
@@ -164,8 +154,6 @@ validate_data_has_expected_cols <- function(data,
 #' 1. it is checked if there are duplicate rows.
 #' 1. it is checked if there are duplicate rows on `composite_unique_cols`.
 #'
-#' Function is currently not used in code but helps for data wrangling/data
-#' research tasks. It will be added to critical data sets in the future.
 #'
 #' @param data A tibble.
 #' @param composite_unique_cols A vector of names of columns that shall be
@@ -175,7 +163,7 @@ validate_data_has_expected_cols <- function(data,
 #'
 #' @return NULL
 #' @export
-report_all_duplicate_kinds <- function(data, composite_unique_cols, throw_error = FALSE) {
+report_all_duplicate_kinds <- function(data, composite_unique_cols, throw_error = TRUE) {
   validate_data_has_expected_cols(
     data = data,
     expected_columns = composite_unique_cols
@@ -211,9 +199,8 @@ report_all_duplicate_kinds <- function(data, composite_unique_cols, throw_error 
 #' @return NULL
 #' @export
 report_missing_col_combinations <- function(data, composite_unique_cols, throw_error = FALSE) {
-
   all_combinations <- data %>%
-    tidyr::expand(!!!dplyr::syms(composite_unique_cols))
+    tidyr::expand(!!!rlang::syms(composite_unique_cols))
 
   missing_rows <- all_combinations %>%
     dplyr::anti_join(data, by = composite_unique_cols)
@@ -240,9 +227,9 @@ report_missing_col_combinations <- function(data, composite_unique_cols, throw_e
 #' @return NULL
 report_duplicates <- function(data, cols, throw_error = FALSE) {
   duplicates <- data %>%
-    dplyr::group_by(!!!dplyr::syms(cols)) %>%
+    dplyr::group_by(!!!rlang::syms(cols)) %>%
     dplyr::filter(dplyr::n() > 1) %>%
-    dplyr::select(!!!dplyr::syms(cols)) %>%
+    dplyr::select(!!!rlang::syms(cols)) %>%
     dplyr::distinct_all()
 
   if (nrow(duplicates) > 0) {

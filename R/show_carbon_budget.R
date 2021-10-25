@@ -19,13 +19,11 @@
 #'
 #' @export
 
-show_carbon_budget <- function(
-                               data,
+show_carbon_budget <- function(data,
                                scenarios = NULL,
                                target_scenario = NULL,
                                scenario_name_qa = "Carbon balance 2030",
                                cumulative = FALSE) {
-
   scenarios <- scenarios %||% .env$scenario_data
   target_scenario <- target_scenario %||% .env$scenario_to_follow_ls
 
@@ -76,6 +74,8 @@ show_carbon_budget <- function(
     ) %>%
     dplyr::ungroup()
 
+  # ADO 1945 - fix qa script, then check if left_join can be replaced
+  # TODO: check left_join
   data <- data %>%
     dplyr::filter(.data$scenario_name == .env$scenario_name_qa) %>%
     dplyr::left_join(
@@ -156,5 +156,4 @@ show_carbon_budget <- function(
         )
       )
   }
-
 }

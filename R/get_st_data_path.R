@@ -1,5 +1,5 @@
-#' Get the path to the required stress test auxiliary data location. Can be
-#' provided either via environment variable or options.
+#' Get the path to the required stress test data location. Can be provided
+#' either via environment variable or options.
 #'
 #' @param var String. Provide the name of the environment variable that points
 #'   to the data directory/repo. Default is "ST_DATA_PATH". If no environment

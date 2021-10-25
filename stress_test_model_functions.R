@@ -1,50 +1,3 @@
-#######################
-# Create shock scenario
-#######################
-create_shock_scenario <- function(transition_scenario) {
-  if (transition_scenario$overshoot_method) {
-    # print('Integral method selected for calculation of late&sudden production scenarios.
-    #       Production shocks are function of scenarios (and possibly of company production plans if enabled), they will be calculated in function set_ls_trajectory')
-    tibble(
-      "scenario_name" = transition_scenario$scenario_name,
-      "year_of_shock" = transition_scenario$year_of_shock,
-      "duration_of_shock" = 2040 - transition_scenario$year_of_shock + 1,
-      "Coal" = NA,
-      "Oil" = NA,
-      "Gas" = NA,
-      "GasCap" = NA,
-      "RenewablesCap" = NA,
-      "NuclearCap" = NA,
-      "CoalCap" = NA,
-      "HydroCap" = NA,
-      "OilCap" = NA,
-      "ICE" = NA,
-      "Electric" = NA,
-      "Hybrid" = NA
-    )
-  } else {
-    print("technology production shocks set by user (overshoot_method==FALSE)")
-
-    tibble(
-      "scenario_name" = transition_scenario$scenario_name,
-      "year_of_shock" = transition_scenario$year_of_shock,
-      "duration_of_shock" = transition_scenario$duration_of_shock,
-      "Coal" = transition_scenario$Coal,
-      "Oil" = transition_scenario$Oil,
-      "Gas" = transition_scenario$Gas,
-      "GasCap" = transition_scenario$GasCap,
-      "RenewablesCap" = transition_scenario$RenewablesCap,
-      "NuclearCap" = transition_scenario$NuclearCap,
-      "CoalCap" = transition_scenario$CoalCap,
-      "HydroCap" = transition_scenario$HydroCap,
-      "OilCap" = transition_scenario$OilCap,
-      "ICE" = transition_scenario$ICE,
-      "Electric" = transition_scenario$Electric,
-      "Hybrid" = transition_scenario$Hybrid
-    )
-  }
-}
-
 # STILL TO FIX: five year moving average
 # FIXME: can probably be removed
 f <- function(shock_strength_calc) {
@@ -60,21 +13,24 @@ f <- function(shock_strength_calc) {
 
 # LATE AND SUDDEN PRICES ----------------------------------------
 
-late_sudden_prices <- function(SDS_price, Baseline_price, overshoot_method) {
+late_sudden_prices <- function(
+    SDS_price,
+    Baseline_price,
+    year_of_shock,
+    start_year,
+    duration_of_shock
+  ) {
   # input:
   # vector with SDS and Baseline (NPS) prices
   # Calculates late and sudden prices based on these two vectors
-  # At the moment LS prices follow SDS prices until shricesock, then LS prices linearly reach NPS prices during the shock period. After shock period, LS prices follow SDS prices
+  # At the moment LS prices follow SDS prices until price shock, then LS prices linearly reach NPS prices during the shock period. After shock period, LS prices follow SDS prices
   position_shock_year <- year_of_shock - start_year + 1
   ls_price <- Baseline_price
 
   baseline_price_at_shock <- Baseline_price[0 + position_shock_year]
   SDS_price_end_shockperiod <- SDS_price[duration_of_shock + position_shock_year - 1]
 
-  ls_price[position_shock_year:(position_shock_year + duration_of_shock - 1)] <- na.approx(c(baseline_price_at_shock, rep(NA, duration_of_shock - 2), SDS_price_end_shockperiod))
-  if (!overshoot_method) {
-    ls_price[(position_shock_year + duration_of_shock):length(ls_price)] <- SDS_price[(position_shock_year + duration_of_shock - 1):length(SDS_price)]
-  }
+  ls_price[position_shock_year:(position_shock_year + duration_of_shock - 1)] <- zoo::na.approx(c(baseline_price_at_shock, rep(NA, duration_of_shock - 2), SDS_price_end_shockperiod))
 
   return(ls_price)
 }
@@ -115,21 +71,21 @@ net_profit_margin_setup <- function(net_profit_margin_coal,
 join_price_data <- function(df, df_prices) {
   # Joins price data by sector, technology, year
   # scenario_geography NOT YET INCLUDED!
-  df %>%
-    left_join(df_prices, by = c("technology", "ald_sector", "year"))
+  df <- df %>%
+    dplyr::inner_join(df_prices, by = c("technology", "ald_sector", "year"))
 }
 
 join_net_profit_margins <- function(df, net_profit_margins) {
   # Joins net profit margins by technology
-  df %>%
-    left_join(net_profit_margins, by = "technology")
+  df <- df %>%
+    dplyr::inner_join(net_profit_margins, by = "technology")
 }
 
 calculate_net_profits <- function(df) {
   # Calculates annual net profits
   # Input: dataframe that has the baseline & LS production, prices and technoogy net profit margins
   df %>%
-    mutate(
+    dplyr::mutate(
       net_profits_ls = late_sudden * late_sudden_price * net_profit_margin,
       net_profits_baseline = baseline * Baseline_price * net_profit_margin
     )
@@ -140,12 +96,12 @@ dcf_model_techlevel <- function(data, discount_rate) {
   # Calculates the annual discounted net profits on technology level
   data %>%
     dplyr::group_by(investor_name, portfolio_name, id, company_name, ald_sector, technology, scenario_geography) %>%
-    mutate(
-      t_calc = seq(0, (n() - 1)),
+    dplyr::mutate(
+      t_calc = seq(0, (dplyr::n() - 1)),
       discounted_net_profit_baseline = net_profits_baseline / (1 + discount_rate)^t_calc,
       discounted_net_profit_ls = net_profits_ls / (1 + discount_rate)^t_calc
     ) %>%
-    select(-t_calc)
+    dplyr::select(-t_calc)
 }
 
 # run basic portfolio data consistency checks that are required for further data processing
@@ -172,9 +128,9 @@ check_portfolio_consistency <- function(df, start_year) {
 #   return(df)
 # }
 
-check_price_consistency <- function(df) {
+check_price_consistency <- function(df, start_year) {
   # the year of shock must be greater or equal to the start year of the analysis
-  if (!all(df %>% pull(year) >= start_year)) {
+  if (!all(df$year >= start_year)) {
     write_log(
       msg = "Timerange for price data out of bounds. Past prices cannot be
       included in the further analysis.",
@@ -190,7 +146,7 @@ check_price_consistency <- function(df) {
 
 check_scenario_availability <- function(portfolio, scen_data, scenarios = scenarios) {
   # check that scenarios in portfolio are allowed
-  if (!all(portfolio %>% pull(scenario) %>% unique() %in% scenarios)) {
+  if (!all(portfolio %>% dplyr::pull(scenario) %>% unique() %in% scenarios)) {
     write_log(
       msg = "Some scenarios in this data frame are not in the list of allowed
       scenarios. Please check!",
@@ -202,7 +158,7 @@ check_scenario_availability <- function(portfolio, scen_data, scenarios = scenar
     )
   }
   # check that at least two allowed scenarios remain in portfolio
-  if (length(portfolio %>% pull(scenario) %>% unique()) < 2) {
+  if (length(portfolio %>% dplyr::pull(scenario) %>% unique()) < 2) {
     write_log(
       msg = "There are less than two allowed scenarios in the portfolio. Stress
       test requires at least two!",
@@ -214,7 +170,7 @@ check_scenario_availability <- function(portfolio, scen_data, scenarios = scenar
     )
   }
   # check scenarios in portfolio correspond to scenarios in scen data
-  if (!all(portfolio %>% pull(scenario) %>% unique() %in% (scen_data %>% pull(scenario) %>% unique()))) {
+  if (!all(portfolio %>% dplyr::pull(scenario) %>% unique() %in% (scen_data %>% dplyr::pull(scenario) %>% unique()))) {
     write_log(
       msg = "Scenarios differ between portfolio and scenario trajectory data.
       Check if correct inputs were used.",
@@ -229,7 +185,7 @@ check_scenario_availability <- function(portfolio, scen_data, scenarios = scenar
 
 # check if the imported scenario data covers every year within the timeframe of analysis
 check_scenario_timeframe <- function(scenario_data, start_year = start_year, end_year = end_year) {
-  if (!all(seq(start_year, end_year) %in% (scenario_data %>% pull(year) %>% unique()))) {
+  if (!all(seq(start_year, end_year) %in% (scenario_data %>% dplyr::pull(year) %>% unique()))) {
     write_log(
       msg = glue::glue(
         "Imported scenario data does not cover the full time frame of the

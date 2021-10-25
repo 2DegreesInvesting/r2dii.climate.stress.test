@@ -1,15 +1,23 @@
 #-------------- Change checking helper
 
 # defining some functions
-import_asset_results <- function(project_name, investor_name) {
-  results_path <- path_dropbox_2dii("PortCheck_v2", "10_Projects", project_name, "40_Results")
+import_asset_results <- function() {
 
-  equity_results_company <- readr::read_csv(file.path(results_path, investor_name, "stress_test_results_equity_comp.csv"))
-  equity_results_port <- readr::read_csv(file.path(results_path, investor_name, "stress_test_results_equity_port.csv"))
+  results_path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "outputs")
+
+  equity_results_company <- readr::read_csv(file.path(results_path, "stress_test_results_equity_comp.csv"))
+  equity_results_port <- readr::read_csv(file.path(results_path, "stress_test_results_equity_port.csv"))
+  equity_expected_loss <- readr::read_csv(file.path(results_path, "stress_test_results_equity_comp_el.csv"))
+  equity_annual_pd_changes_sector <- readr::read_csv(file.path(results_path, "stress_test_results_equity_sector_pd_changes_annual.csv"))
+  equity_overall_pd_changes_sector <- readr::read_csv(file.path(results_path, "stress_test_results_equity_sector_pd_changes_overall.csv"))
+
 
   asset_results <- list(
     equity_results_company = equity_results_company,
-    equity_results_port = equity_results_port
+    equity_results_port = equity_results_port,
+    equity_expected_loss = equity_expected_loss,
+    equity_annual_pd_changes_sector = equity_annual_pd_changes_sector,
+    equity_overall_pd_changes_sector = equity_overall_pd_changes_sector
   )
 
   return(asset_results)
@@ -47,26 +55,22 @@ check_all_equal <- function(old_results, new_results) {
 ## by a release as it checks for equality of old and new data.
 ## If not you will have to change the expectations to use it.
 
+### 0. set a seed at the top of stress_test_model_eq.R
+
 ### 1. check out master branch of repo (or whichever branch you want to use as reference)
-source("stress_test_model_eq.R") # calculates results with checked out branch
+devtools::load_all()
+run_stress_test_equity()
 
 ### 2. run the following lines to obtain results
-project_name <- cfg_st$project_name
-investor_name <- "Meta Investor"
-
-old_results <- import_asset_results(
-  project_name = project_name,
-  investor_name = investor_name
-)
+old_results <- import_asset_results()
 
 ### 3. check out dev branch of repo (or whichever branch you want to use as comparison)
-source("stress_test_model_eq.R") # calculates results with checked out branch
+devtools::load_all()
+run_stress_test_equity()
+
 
 ### 4. run the following lines to run script or equity and bonds and obtain results
-new_results <- import_asset_results(
-  project_name = project_name,
-  investor_name = investor_name
-)
+new_results <- import_asset_results()
 
 ### 5. run the following line to check that data remained unchanged.
 check <- check_all_equal(old_results = old_results, new_results = new_results)

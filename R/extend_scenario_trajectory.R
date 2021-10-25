@@ -70,7 +70,7 @@ extend_scenario_trajectory <- function(data,
     )
 
   data <- data %>%
-    dplyr::left_join(
+    dplyr::inner_join(
       scenario_data,
       by = c("ald_sector", "technology", "scenario_geography", "scenario", "year")
     ) %>%
