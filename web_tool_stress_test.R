@@ -283,9 +283,11 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
 
   pacta_equity_results_full <- pacta_equity_results_full %>%
     dplyr::filter(!(scenario == "ETP2017_NPS" & ald_sector == "Power")) %>%
+    check_portfolio_consistency(start_year = start_year) %>%
+    # hotfix - ensure scenario names match across data sets (SPS is the follow up to NPS)
+    dplyr::mutate(scenario = dplyr::if_else(stringr::str_detect(scenario, "WEO2019_SPS"), "WEO2019_NPS", scenario)) %>%
     dplyr::filter(scenario %in% scenarios) %>%
-    dplyr::mutate(scenario = ifelse(stringr::str_detect(scenario, "_"), stringr::str_extract(scenario, "[^_]*$"), scenario)) %>%
-    check_portfolio_consistency(start_year = start_year)
+    dplyr::mutate(scenario = ifelse(stringr::str_detect(scenario, "_"), stringr::str_extract(scenario, "[^_]*$"), scenario))
 
   pacta_equity_results <- pacta_equity_results_full %>%
     tidyr::complete(
