@@ -97,7 +97,7 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
   # TODO: select the right scenarios
   # TODO: select the right geography
   # TODO: must contain term and initial PD
-  loanbook_path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", paste0("company_results_lb_", project_name, ".csv"))
+  loanbook_path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", paste0("Loans_results_", calculation_level, ".rda"))
 
   pacta_results <- read_pacta_results(
     path = loanbook_path,
@@ -123,10 +123,7 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
   sector_credit_type <- paste0("sector_loan_size_", credit_type)
   credit_currency <- paste0("loan_size_", credit_type, "_currency")
 
-  sector_exposures <- readr::read_csv(
-    file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", paste0("portfolio_overview_", project_name, ".csv")),
-    col_types = "cddcddc"
-  ) %>%
+  sector_exposures <- readRDS(file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", "overview_portfolio.rda")) %>%
     dplyr::mutate(
       sector_ald = dplyr::case_when(
         sector_ald == "power" ~ "Power",
