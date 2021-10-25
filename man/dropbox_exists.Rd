@@ -19,7 +19,6 @@ dropbox_exists()
 Other miscellaneous utility functions: 
 \code{\link{data_path}()},
 \code{\link{degrees}()},
-\code{\link{get_st_data_path}()},
-\code{\link{write_log}()}
+\code{\link{get_st_data_path}()}
 }
 \concept{miscellaneous utility functions}
