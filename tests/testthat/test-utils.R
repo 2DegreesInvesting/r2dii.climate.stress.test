@@ -136,3 +136,15 @@ test_that("Warnings are thrown for dataset with full and partial duplicates", {
     composite_unique_cols = c("a", "b")
   )))
 })
+
+# report_missings --------------------------------------------------------
+test_that("Missings are reported correctly", {
+  data <- tibble::tibble(
+    a = c("A1", "A1", "A1", NA),
+    b = c("B1", NA, NA, "B1"),
+    c = c(1, 1, 2, NaN)
+  )
+
+  expect_output(report_missings(data, name_data = "some"), "Counted 1 missings on column a")
+
+})
