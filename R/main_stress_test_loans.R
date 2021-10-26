@@ -231,7 +231,7 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
       scenario_ls = scenario_to_follow_ls
     ) %>%
     inner_join_report_drops(
-      data_y = financial_data_equity,
+      data_y = financial_data_loans,
       name_x = "annual profits", name_y = "financial data",
       merge_cols = c("company_name", "ald_sector", "technology")
     ) %>%
