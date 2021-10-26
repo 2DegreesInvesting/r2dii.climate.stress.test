@@ -1,5 +1,7 @@
 #' Effectively exclude certain technologies of companies from calculations
 #'
+#' NOTE: If `exclusion` is NULL `data` are returned.
+#'
 #' @param data A dataframe of the annual profits by company-tech for one asset
 #'   type.
 #' @param exclusion A dataframe with two character columns, "company_name" and
@@ -19,8 +21,12 @@ exclude_companies <- function(data,
                               exclusion = NULL,
                               scenario_baseline = NULL,
                               scenario_ls = NULL) {
+
+  if (is.null(exclusion)) {
+    return(data)
+  }
+
   force(data)
-  exclusion %||% stop("Must provide input for 'exclusion'", call. = FALSE)
   scenario_baseline %||% stop("Must provide input for 'scenario_baseline'", call. = FALSE)
   scenario_ls %||% stop("Must provide input for 'scenario_ls'", call. = FALSE)
 
@@ -74,4 +80,6 @@ exclude_companies <- function(data,
     ) %>%
     dplyr::ungroup() %>%
     dplyr::select(-.data$exclude)
+
+  return(data)
 }

@@ -224,16 +224,12 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
       start_year = start_year,
       end_year = end_year,
       analysis_time_frame = time_horizon
+    ) %>%
+    exclude_companies(
+      exclusion = excluded_companies,
+      scenario_baseline = scenario_to_follow_baseline,
+      scenario_ls = scenario_to_follow_ls
     )
-
-  if (company_exclusion) {
-    loanbook_annual_profits <- loanbook_annual_profits %>%
-      exclude_companies(
-        exclusion = excluded_companies,
-        scenario_baseline = scenario_to_follow_baseline,
-        scenario_ls = scenario_to_follow_ls
-      )
-  }
 
   rows_loanbook <- nrow(loanbook_annual_profits)
   loanbook_annual_profits <- loanbook_annual_profits %>%
