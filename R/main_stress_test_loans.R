@@ -256,7 +256,7 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
       .data$scenario %in% .env$scenario_to_follow_ls
     ) %>%
     inner_join_report_drops(
-      data_y = financial_data_loanbook_pd,
+      data_y = financial_data_loans_pd,
       name_x = "plan carsten", name_y = "financial data",
       merge_cols = c("company_name", "ald_sector", "technology")
     ) %>%
