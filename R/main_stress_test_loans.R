@@ -239,22 +239,7 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
 
   # TODO: ADO 879 - note which companies are removed here, due to mismatch of
   # sector/tech in the financial data and the portfolio
-
-  loanbook_annual_profits <- loanbook_annual_profits %>%
-    dplyr::arrange(
-      scenario_name, investor_name, portfolio_name, scenario_geography, id,
-      company_name, ald_sector, technology, year
-    ) %>%
-    dplyr::group_by(
-      scenario_name, investor_name, portfolio_name, scenario_geography, id,
-      company_name, ald_sector, technology
-    ) %>%
-    # NOTE: this assumes emissions factors stay constant after forecast and prod not continued
-    tidyr::fill(
-      company_id, pd, net_profit_margin, debt_equity_ratio, volatility,
-      .direction = "down"
-    ) %>%
-    dplyr::ungroup()
+  loanbook_annual_profits <- fill_annual_profit_cols(loanbook_annual_profits)
 
   loanbook_annual_profits <- loanbook_annual_profits %>%
     join_price_data(df_prices = df_prices) %>%
