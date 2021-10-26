@@ -187,22 +187,18 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
       exclusion = excluded_companies,
       scenario_baseline = scenario_to_follow_baseline,
       scenario_ls = scenario_to_follow_ls
-    )
-
-  equity_annual_profits <- inner_join_report_drops(
-    data_x = equity_annual_profits, data_y = financial_data_equity,
-    name_x = "annual profits", name_y = "financial data",
-    merge_cols = c("company_name", "ald_sector", "technology")
-  )
-
-  # TODO: ADO 879 - note which companies are removed here, due to mismatch
-
-  equity_annual_profits <- fill_annual_profit_cols(equity_annual_profits)
-
-  equity_annual_profits <- equity_annual_profits %>%
+    ) %>%
+    inner_join_report_drops(
+      data_y = financial_data_equity,
+      name_x = "annual profits", name_y = "financial data",
+      merge_cols = c("company_name", "ald_sector", "technology")
+    ) %>%
+    fill_annual_profit_cols() %>%
+    # TODO: ADO 879 - note which companies are removed here, due to mismatch
     join_price_data(df_prices = df_prices) %>%
     calculate_net_profits() %>%
-    dcf_model_techlevel(discount_rate = discount_rate)
+    dcf_model_techlevel(discount_rate = discount_rate) %>%
+    dplyr::filter(!is.na(company_id))
 
   plan_carsten_equity <- pacta_equity_results %>%
     dplyr::filter(
@@ -223,9 +219,6 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
     name_x = "plan carsten", name_y = "financial data",
     merge_cols = c("company_name", "ald_sector", "technology")
   )
-
-  equity_annual_profits <- equity_annual_profits %>%
-    dplyr::filter(!is.na(company_id))
 
   plan_carsten_equity <- plan_carsten_equity %>%
     dplyr::select(

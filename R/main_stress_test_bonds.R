@@ -188,21 +188,18 @@ run_stress_test_bonds <- function(lgd_senior_claims = 0.45,
       exclusion = excluded_companies,
       scenario_baseline = scenario_to_follow_baseline,
       scenario_ls = scenario_to_follow_ls
-    )
-
-  bonds_annual_profits <- inner_join_report_drops(
-    data_x = bonds_annual_profits, data_y = financial_data_bonds,
-    name_x = "annual profits", name_y = "financial data",
-    merge_cols = c("company_name", "id" = "corporate_bond_ticker", "ald_sector", "technology")
-  )
-
-  # TODO: ADO 879 - note which companies are removed here, due to mismatch
-  bonds_annual_profits <- fill_annual_profit_cols(bonds_annual_profits)
-
-  bonds_annual_profits <- bonds_annual_profits %>%
+    ) %>%
+    inner_join_report_drops(
+      data_y = financial_data_bonds,
+      name_x = "annual profits", name_y = "financial data",
+      merge_cols = c("company_name", "id" = "corporate_bond_ticker", "ald_sector", "technology")
+    ) %>%
+    fill_annual_profit_cols() %>%
+    # TODO: ADO 879 - note which companies are removed here, due to mismatch
     join_price_data(df_prices = df_prices) %>%
     calculate_net_profits() %>%
-    dcf_model_techlevel(discount_rate = discount_rate)
+    dcf_model_techlevel(discount_rate = discount_rate) %>%
+    dplyr::filter(!is.na(company_id))
 
   plan_carsten_bonds <- pacta_bonds_results %>%
     dplyr::filter(
@@ -224,9 +221,6 @@ run_stress_test_bonds <- function(lgd_senior_claims = 0.45,
     merge_cols = c("company_name", "id" = "corporate_bond_ticker", "ald_sector", "technology")
   )
   # TODO: ADO 879 - note which companies are removed here, due to mismatch
-
-  bonds_annual_profits <- bonds_annual_profits %>%
-    dplyr::filter(!is.na(company_id))
 
   plan_carsten_bonds <- plan_carsten_bonds %>%
     dplyr::select(

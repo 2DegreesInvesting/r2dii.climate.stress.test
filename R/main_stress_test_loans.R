@@ -229,19 +229,14 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
       exclusion = excluded_companies,
       scenario_baseline = scenario_to_follow_baseline,
       scenario_ls = scenario_to_follow_ls
-    )
-
-  loanbook_annual_profits <- inner_join_report_drops(
-    data_x = loanbook_annual_profits, data_y = financial_data_equity,
-    name_x = "annual profits", name_y = "financial data",
-    merge_cols = c("company_name", "ald_sector", "technology")
-  )
-
-  # TODO: ADO 879 - note which companies are removed here, due to mismatch of
-  # sector/tech in the financial data and the portfolio
-  loanbook_annual_profits <- fill_annual_profit_cols(loanbook_annual_profits)
-
-  loanbook_annual_profits <- loanbook_annual_profits %>%
+    ) %>%
+    inner_join_report_drops(
+      data_y = financial_data_equity,
+      name_x = "annual profits", name_y = "financial data",
+      merge_cols = c("company_name", "ald_sector", "technology")
+    ) %>%
+    fill_annual_profit_cols() %>%
+    # TODO: ADO 879 - note which companies are removed here
     join_price_data(df_prices = df_prices) %>%
     calculate_net_profits() %>%
     dcf_model_techlevel(discount_rate = discount_rate)
