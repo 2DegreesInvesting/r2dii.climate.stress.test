@@ -215,3 +215,39 @@ report_duplicates <- function(data, cols, throw_error = FALSE) {
 
   return(invisible())
 }
+
+#' Inner join datasets and report number of dropped rows
+#'
+#' Function conducts inner join on two datasets and reports number of dropped
+#' rows.
+#'
+#' @param data_x Tibble with data that is joinable to `data_y`.
+#' @param data_y Tibble with data that is joinable to `data_x`.
+#' @param name_x Name of `data_x`.
+#' @param name_y Name of `data_x`.
+#' @param merge_cols Vector holds columns to join on.
+#'
+#' @return The merged dataset.
+inner_join_report_drops <- function(data_x, data_y, name_x, name_y, merge_cols) {
+
+  rows_x <- nrow(data_x)
+  rows_y <- nrow(data_y)
+
+  data <- data_x %>%
+    dplyr::inner_join(
+      data_y,
+      by = merge_cols
+    )
+
+  rows_data <- nrow(data)
+
+  if (rows_data < rows_x | rows_data < rows_y) {
+    cat(
+      "When joining", name_x, "on", name_y, "on columns", merge_cols, "dropped",
+      rows_x - rows_data, "rows from", name_x, "and", rows_y - rows_data,
+      "rows from", name_y,".\n"
+    )
+  }
+
+  return(data)
+}

@@ -189,19 +189,12 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
       scenario_ls = scenario_to_follow_ls
     )
 
-  rows_equity <- nrow(equity_annual_profits)
-
-  equity_annual_profits <- equity_annual_profits %>%
-    dplyr::inner_join(
-      financial_data_equity,
-      by = c("company_name", "ald_sector", "technology")
-    )
-
-  cat(
-    "number of rows dropped by joining financial data on
-      company_name, ald_sector and technology = ",
-    rows_equity - nrow(equity_annual_profits), "\n"
+  equity_annual_profits <- inner_join_report_drops(
+    data_x = equity_annual_profits, data_y = financial_data_equity,
+    name_x = "annual profits", name_y = "financial data",
+    merge_cols = c("company_name", "ald_sector", "technology")
   )
+
   # TODO: ADO 879 - note which companies are removed here, due to mismatch
 
   equity_annual_profits <- equity_annual_profits %>%
@@ -239,17 +232,11 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
     cols = names(financial_data_equity_pd)
   )
 
-  rows_plan_carsten <- nrow(plan_carsten_equity)
-
-  plan_carsten_equity <- plan_carsten_equity %>%
-    dplyr::inner_join(financial_data_equity_pd, by = c("company_name", "ald_sector", "technology"))
-
-  cat(
-    "number of rows dropped from technology_exposure by joining financial data
-      on company_name, ald_sector and technology = ",
-    rows_plan_carsten - nrow(plan_carsten_equity), "\n"
+  plan_carsten_equity <- inner_join_report_drops(
+    data_x = plan_carsten_equity, data_y = financial_data_equity_pd,
+    name_x = "plan carsten", name_y = "financial data",
+    merge_cols = c("company_name", "ald_sector", "technology")
   )
-  # TODO: ADO 879 - note which companies are removed here, due to mismatch
 
   equity_annual_profits <- equity_annual_profits %>%
     dplyr::filter(!is.na(company_id))

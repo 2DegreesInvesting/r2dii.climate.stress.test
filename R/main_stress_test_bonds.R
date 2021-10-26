@@ -190,18 +190,12 @@ run_stress_test_bonds <- function(lgd_senior_claims = 0.45,
       scenario_ls = scenario_to_follow_ls
     )
 
-  rows_bonds <- nrow(bonds_annual_profits)
-
-  bonds_annual_profits <- bonds_annual_profits %>%
-    dplyr::inner_join(financial_data_bonds,
-                      by = c("company_name", "id" = "corporate_bond_ticker", "ald_sector", "technology")
-    )
-
-  cat(
-    "number of rows dropped by joining financial data on
-      company_name, corporate_bond_ticker, ald_sector, and technology: ",
-    rows_bonds - nrow(bonds_annual_profits), "\n"
+  bonds_annual_profits <- inner_join_report_drops(
+    data_x = bonds_annual_profits, data_y = financial_data_bonds,
+    name_x = "annual profits", name_y = "financial data",
+    merge_cols = c("company_name", "id" = "corporate_bond_ticker", "ald_sector", "technology")
   )
+
   # TODO: ADO 879 - note which companies are removed here, due to mismatch
 
   bonds_annual_profits <- bonds_annual_profits %>%
@@ -239,15 +233,10 @@ run_stress_test_bonds <- function(lgd_senior_claims = 0.45,
     cols = names(financial_data_bonds_pd)
   )
 
-  rows_plan_carsten <- nrow(plan_carsten_bonds)
-
-  plan_carsten_bonds <- plan_carsten_bonds %>%
-    dplyr::inner_join(financial_data_bonds_pd, by = c("company_name", "id" = "corporate_bond_ticker", "ald_sector", "technology"))
-
-  cat(
-    "number of rows dropped from technology_exposure by joining financial data
-      on company_name, corporate_bond_ticker, ald_sector and technology = ",
-    rows_plan_carsten - nrow(plan_carsten_bonds), "\n"
+  plan_carsten_bonds <- inner_join_report_drops(
+    data_x = plan_carsten_bonds, data_y = financial_data_bonds_pd,
+    name_x = "plan carsten", name_y = "financial data",
+    merge_cols = c("company_name", "id" = "corporate_bond_ticker", "ald_sector", "technology")
   )
   # TODO: ADO 879 - note which companies are removed here, due to mismatch
 

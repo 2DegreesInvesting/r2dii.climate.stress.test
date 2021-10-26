@@ -231,18 +231,12 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
       scenario_ls = scenario_to_follow_ls
     )
 
-  rows_loanbook <- nrow(loanbook_annual_profits)
-  loanbook_annual_profits <- loanbook_annual_profits %>%
-    # ADO 879: removed company id from join, but should be re-introduced later on
-    dplyr::inner_join(
-      financial_data_loans,
-      by = c("company_name", "ald_sector", "technology")
-    )
-  cat(
-    "number of rows dropped from loan book by joining financial data on
-      company_name, ald_sector and technology = ",
-    rows_loanbook - nrow(loanbook_annual_profits), "\n"
+  loanbook_annual_profits <- inner_join_report_drops(
+    data_x = loanbook_annual_profits, data_y = financial_data_equity,
+    name_x = "annual profits", name_y = "financial data",
+    merge_cols = c("company_name", "ald_sector", "technology")
   )
+
   # TODO: ADO 879 - note which companies are removed here, due to mismatch of
   # sector/tech in the financial data and the portfolio
 
@@ -282,17 +276,10 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
     cols = names(financial_data_loans_pd)
   )
 
-  rows_plan_carsten <- nrow(plan_carsten_loanbook)
-  plan_carsten_loanbook <- plan_carsten_loanbook %>%
-    # ADO 879: removed company id from join, but should be re-introduced later on
-    dplyr::inner_join(
-      financial_data_loans_pd,
-      by = c("company_name", "ald_sector", "technology")
-    )
-  cat(
-    "number of rows dropped from technology_exposure by joining financial data
-      on company_name, ald_sector and technology = ",
-    rows_plan_carsten - nrow(plan_carsten_loanbook), "\n"
+  plan_carsten_loanbook <- inner_join_report_drops(
+    data_x = plan_carsten_loanbook, data_y = financial_data_loanbook_pd,
+    name_x = "plan carsten", name_y = "financial data",
+    merge_cols = c("company_name", "ald_sector", "technology")
   )
   # TODO: ADO 879 - note which companies are removed here, due to mismatch of
   # sector/tech in the financial data and the portfolio
