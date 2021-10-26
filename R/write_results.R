@@ -42,7 +42,8 @@ write_stress_test_results <- function(results, expected_loss,
   expected_loss %>%
     check_results_structure(
       name_data = "Expected loss",
-      cuc_cols = c("scenario_name", "scenario_geography", "investor_name", "portfolio_name", "company_name", "id", "ald_sector")
+      cuc_cols = c("scenario_name", "scenario_geography", "investor_name",
+                   "portfolio_name", "company_name", "id", "ald_sector", "term")
     ) %>%
     readr::write_csv(file.path(
       results_path,
@@ -94,7 +95,7 @@ write_stress_test_results <- function(results, expected_loss,
   overall_pd_changes_sector %>%
     check_results_structure(
       name_data = "Overall PD changes sector",
-      cuc_cols = c("scenario_name", "scenario_geography", "investor_name", "portfolio_name", "ald_sector")
+      cuc_cols = c("scenario_name", "scenario_geography", "investor_name", "portfolio_name", "ald_sector", "term")
     ) %>%
     readr::write_csv(file.path(
       results_path,
