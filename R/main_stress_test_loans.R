@@ -242,12 +242,6 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
     dcf_model_techlevel(discount_rate = discount_rate)
   # TODO: ADO 879 - note rows with zero profits/NPVs will produce NaN in the Merton model
 
-  plan_carsten_loanbook <- pacta_loanbook_results %>%
-    dplyr::filter(
-      .data$year == .env$start_year,
-      .data$scenario %in% .env$scenario_to_follow_ls
-    )
-
   financial_data_loans_pd <- financial_data_loans %>%
     dplyr::select(company_name, company_id, ald_sector, technology, pd)
 
@@ -256,16 +250,17 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
     cols = names(financial_data_loans_pd)
   )
 
-  plan_carsten_loanbook <- inner_join_report_drops(
-    data_x = plan_carsten_loanbook, data_y = financial_data_loanbook_pd,
-    name_x = "plan carsten", name_y = "financial data",
-    merge_cols = c("company_name", "ald_sector", "technology")
-  )
-  # TODO: ADO 879 - note which companies are removed here, due to mismatch of
-  # sector/tech in the financial data and the portfolio
-  # TODO: what to do with entries that have NAs for pd?
-
-  plan_carsten_loanbook <- plan_carsten_loanbook %>%
+  plan_carsten_loanbook <- pacta_loanbook_results %>%
+    dplyr::filter(
+      .data$year == .env$start_year,
+      .data$scenario %in% .env$scenario_to_follow_ls
+    ) %>%
+    inner_join_report_drops(
+      data_y = financial_data_loanbook_pd,
+      name_x = "plan carsten", name_y = "financial data",
+      merge_cols = c("company_name", "ald_sector", "technology")
+    ) %>%
+    # TODO: ADO 879 - note which companies are removed here, what to do with entries that have NAs for pd?
     dplyr::select(
       investor_name, portfolio_name, company_name, ald_sector, technology,
       scenario_geography, year, plan_carsten, plan_sec_carsten, term, pd

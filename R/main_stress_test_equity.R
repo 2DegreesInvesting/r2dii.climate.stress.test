@@ -200,12 +200,6 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
     dcf_model_techlevel(discount_rate = discount_rate) %>%
     dplyr::filter(!is.na(company_id))
 
-  plan_carsten_equity <- pacta_equity_results %>%
-    dplyr::filter(
-      .data$year == start_year,
-      .data$scenario %in% .env$scenario_to_follow_ls
-    )
-
   financial_data_equity_pd <- financial_data_equity %>%
     dplyr::select(company_name, ald_sector, technology, pd)
 
@@ -214,13 +208,16 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
     cols = names(financial_data_equity_pd)
   )
 
-  plan_carsten_equity <- inner_join_report_drops(
-    data_x = plan_carsten_equity, data_y = financial_data_equity_pd,
-    name_x = "plan carsten", name_y = "financial data",
-    merge_cols = c("company_name", "ald_sector", "technology")
-  )
-
-  plan_carsten_equity <- plan_carsten_equity %>%
+  plan_carsten_equity <- pacta_equity_results %>%
+    dplyr::filter(
+      .data$year == start_year,
+      .data$scenario %in% .env$scenario_to_follow_ls
+    ) %>%
+    inner_join_report_drops(
+      data_y = financial_data_equity_pd,
+      name_x = "plan carsten", name_y = "financial data",
+      merge_cols = c("company_name", "ald_sector", "technology")
+    ) %>%
     dplyr::select(
       investor_name, portfolio_name, company_name, ald_sector, technology,
       scenario_geography, year, plan_carsten, plan_sec_carsten, term, pd
