@@ -215,3 +215,39 @@ report_duplicates <- function(data, cols, throw_error = FALSE) {
 
   return(invisible())
 }
+
+#' Report missing
+#'
+#' Function reports number of missing values per variable.
+#'
+#' @param data Tibble holding a result data set.
+#' @param name_data Name of the data file.
+#'
+#' @return NULL
+report_missings <- function(data, name_data) {
+  missings <- purrr::map_df(data, function(x) sum(is.na(x)))
+
+  cat("Reporting missings on dataset:", name_data, "\n")
+  purrr::iwalk(missings, function(n_na, name) {
+    cat("Counted", n_na, "missings on column", name, "\n")
+  })
+  cat("\n\n")
+}
+
+#' Checks structure of results
+#'
+#' Wrapper to call [report_all_duplicate_kinds()] and [report_missings()] on
+#' results.
+#'
+#' @param data Tibble holding results.
+#' @param name_data Name of results data.
+#' @param cuc_cols Vector of cols the combination of which needs to be unique.
+#'
+#' @return Tibble `data`.
+check_results_structure <- function(data, name_data, cuc_cols) {
+
+  report_all_duplicate_kinds(data = data, composite_unique_cols = cuc_cols, throw_error = FALSE)
+  report_missings(data = data, name_data = name_data)
+
+  return(data)
+}

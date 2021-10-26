@@ -40,6 +40,11 @@ write_stress_test_results <- function(results, expected_loss,
     )
 
   expected_loss %>%
+    check_results_structure(
+      name_data = "Expected loss",
+      cuc_cols = c("scenario_name", "scenario_geography", "investor_name",
+                   "portfolio_name", "company_name", "id", "ald_sector", "term")
+    ) %>%
     readr::write_csv(file.path(
       results_path,
       paste0("stress_test_results_", asset_type, "_comp_el.csv")
@@ -62,6 +67,10 @@ write_stress_test_results <- function(results, expected_loss,
     )
 
   annual_pd_changes_sector %>%
+    check_results_structure(
+      name_data = "Annual PD changes sector",
+      cuc_cols = c("scenario_name", "scenario_geography", "investor_name", "portfolio_name", "ald_sector", "year")
+    ) %>%
     readr::write_csv(file.path(
       results_path,
       paste0("stress_test_results_", asset_type, "_sector_pd_changes_annual.csv")
@@ -84,6 +93,10 @@ write_stress_test_results <- function(results, expected_loss,
     )
 
   overall_pd_changes_sector %>%
+    check_results_structure(
+      name_data = "Overall PD changes sector",
+      cuc_cols = c("scenario_name", "scenario_geography", "investor_name", "portfolio_name", "ald_sector", "term")
+    ) %>%
     readr::write_csv(file.path(
       results_path,
       paste0("stress_test_results_",asset_type,"_sector_pd_changes_overall.csv")
@@ -320,7 +333,13 @@ write_results_new <- function(data,
       .data$VaR_analysed_sectors, .data$analysed_sectors_value_change,
       .data$portfolio_aum, .data$portfolio_value_change_perc,
       .data$portfolio_value_change
-    )
+    ) %>%
+    check_results_structure(
+      name_data = "Stress test results - Company level",
+      cuc_cols = c(
+        "investor_name", "portfolio_name", "company_name", "scenario_geography",
+        "scenario_name", "year_of_shock", "duration_of_shock", "ald_sector", "technology"
+      ))
 
   switch(file_type,
     csv = data %>%
@@ -360,7 +379,13 @@ write_results_new <- function(data,
       .data$analysed_sectors_value_change, .data$portfolio_aum,
       .data$portfolio_value_change_perc, .data$portfolio_value_change
     ) %>%
-    dplyr::arrange(.data$year_of_shock, .data$ald_sector, .data$technology)
+    dplyr::arrange(.data$year_of_shock, .data$ald_sector, .data$technology) %>%
+    check_results_structure(
+      name_data = "Stress test results - Portfolio level",
+      cuc_cols = c(
+        "investor_name", "portfolio_name", "scenario_geography", "scenario_name",
+        "year_of_shock", "duration_of_shock", "ald_sector", "technology"
+      ))
 
   switch(file_type,
     csv = data %>%
