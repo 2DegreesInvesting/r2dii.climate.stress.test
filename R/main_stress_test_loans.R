@@ -268,9 +268,6 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
     dcf_model_techlevel(discount_rate = discount_rate)
   # TODO: ADO 879 - note rows with zero profits/NPVs will produce NaN in the Merton model
 
-  qa_annual_profits_lbk <- loanbook_annual_profits %>%
-    dplyr::mutate(year_of_shock = transition_scenario$year_of_shock)
-
   plan_carsten_loanbook <- pacta_loanbook_results %>%
     dplyr::filter(
       .data$year == .env$start_year,

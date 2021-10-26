@@ -225,9 +225,6 @@ run_stress_test_bonds <- function(lgd_senior_claims = 0.45,
     calculate_net_profits() %>%
     dcf_model_techlevel(discount_rate = discount_rate)
 
-  qa_annual_profits_cb <- bonds_annual_profits %>%
-    dplyr::mutate(year_of_shock = transition_scenario$year_of_shock)
-
   plan_carsten_bonds <- pacta_bonds_results %>%
     dplyr::filter(
       .data$year == start_year,

@@ -225,9 +225,6 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
     calculate_net_profits() %>%
     dcf_model_techlevel(discount_rate = discount_rate)
 
-  qa_annual_profits_eq <- equity_annual_profits %>%
-    dplyr::mutate(year_of_shock = transition_scenario$year_of_shock)
-
   plan_carsten_equity <- pacta_equity_results %>%
     dplyr::filter(
       .data$year == start_year,
