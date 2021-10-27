@@ -55,8 +55,6 @@ check_all_equal <- function(old_results, new_results) {
 ## by a release as it checks for equality of old and new data.
 ## If not you will have to change the expectations to use it.
 
-### 0. set a seed at the top of stress_test_model_eq.R
-
 ### 1. check out master branch of repo (or whichever branch you want to use as reference)
 devtools::load_all()
 run_stress_test_equity()
