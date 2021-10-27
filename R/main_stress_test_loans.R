@@ -171,7 +171,7 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
   pacta_results <- input_data_list$pacta_results
   excluded_companies <- input_data_list$excluded_companies
   scenario_data <- input_data_list$scenario_data
-  financial_data_loans <- input_data_list$financial_data %>%
+  financial_data <- input_data_list$financial_data %>%
     dplyr::mutate(company_name = stringr::str_to_lower(.data$company_name))
 
   # check scenario availability across data inputs for bonds
@@ -230,7 +230,7 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
       scenario_ls = scenario_to_follow_ls
     ) %>%
     inner_join_report_drops(
-      data_y = financial_data_loans,
+      data_y = financial_data,
       name_x = "annual profits", name_y = "financial data",
       merge_cols = c("company_name", "ald_sector", "technology")
     ) %>%
@@ -241,12 +241,12 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
     dcf_model_techlevel(discount_rate = discount_rate)
   # TODO: ADO 879 - note rows with zero profits/NPVs will produce NaN in the Merton model
 
-  financial_data_loans_pd <- financial_data_loans %>%
+  financial_data_pd <- financial_data %>%
     dplyr::select(company_name, company_id, ald_sector, technology, pd)
 
   report_duplicates(
-    data = financial_data_loans_pd,
-    cols = names(financial_data_loans_pd)
+    data = financial_data_pd,
+    cols = names(financial_data_pd)
   )
 
   plan_carsten <- pacta_results %>%
@@ -255,7 +255,7 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
       .data$scenario %in% .env$scenario_to_follow_ls
     ) %>%
     inner_join_report_drops(
-      data_y = financial_data_loans_pd,
+      data_y = financial_data_pd,
       name_x = "plan carsten", name_y = "financial data",
       merge_cols = c("company_name", "ald_sector", "technology")
     ) %>%
