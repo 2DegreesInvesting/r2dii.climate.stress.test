@@ -137,50 +137,21 @@ format_loanbook_st <- function(data,
       .data$plan_tech_prod, .data$plan_carsten, .data$scen_tech_prod,
       .data$plan_sec_prod, .data$plan_sec_carsten
     ) %>%
+    dplyr::inner_join(p4i_p4b_scenario_lookup, by = c("scenario" = "scenario_p4b")) %>%
     dplyr::mutate(
       # TODO: this should be extracted into mapping file
-      scenario = dplyr::case_when(
-        .data$scenario == "target_cps" ~ "CPS",
-        .data$scenario == "target_rts" ~ "NPS",
-        .data$scenario == "target_sps" ~ "NPS",
-        .data$scenario == "target_steps" ~ "NPS",
-        .data$scenario == "target_2ds" ~ "SDS",
-        .data$scenario == "target_sds" ~ "SDS",
-        .data$scenario == "target_b2ds" ~ "B2DS",
-        TRUE ~ .data$scenario
-      ),
+      scenario = .data$scenario_p4i,
       scenario_source = stringr::str_to_upper(
         stringr::str_remove(.data$scenario_source, "_")
-      ),
-      # TODO: this should be extracted into mapping file
-      ald_sector = dplyr::case_when(
-        .data$ald_sector == "power" ~ "Power",
-        .data$ald_sector == "oil and gas" ~ "Oil&Gas",
-        .data$ald_sector == "coal" ~ "Coal",
-        .data$ald_sector == "automotive" ~ "Automotive",
-        .data$ald_sector == "steel" ~ "Steel",
-        TRUE ~ .data$ald_sector
-      ),
-      # TODO: this should be extracted into mapping file
-      technology = dplyr::case_when(
-        .data$technology == "coalcap" ~ "CoalCap",
-        .data$technology == "gascap" ~ "GasCap",
-        .data$technology == "renewablescap" ~ "RenewablesCap",
-        .data$technology == "nuclearcap" ~ "NuclearCap",
-        .data$technology == "hydrocap" ~ "HydroCap",
-        .data$technology == "oilcap" ~ "OilCap",
-        .data$technology == "oil" ~ "Oil",
-        .data$technology == "gas" ~ "Gas",
-        .data$technology == "coal" ~ "Coal",
-        .data$technology == "electric" ~ "Electric",
-        .data$technology == "hybrid" ~ "Hybrid",
-        .data$technology == "ice" ~ "ICE",
-        TRUE ~ .data$technology
       )
     ) %>%
     # adjusting scenario column to hold source_scenario, to be compatible with PACTA
     # results for EQ and CB
     dplyr::mutate(scenario = paste(.data$scenario_source, .data$scenario, sep = "_")) %>%
+    dplyr::inner_join(p4i_p4b_sectors_lookup, by = c("ald_sector" = "sector_p4b")) %>%
+    dplyr::mutate(ald_sector = .data$sector_p4i) %>%
+    dplyr::inner_join(p4i_p4b_technology_lookup, by = c("technology" = "technology_p4b")) %>%
+    dplyr::mutate(technology = .data$technology_p4i) %>%
     # ADO 1933 - add temporary placeholder for id to make the columns consistent with P4I
     # For loans, this variable should not be used for anything and not be filtered out
     dplyr::mutate(id = NA_real_) %>%

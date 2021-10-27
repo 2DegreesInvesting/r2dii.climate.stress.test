@@ -252,32 +252,22 @@ run_prep_calculation_loans <- function(year_production_data,
   credit_currency <- glue::glue("loan_size_{credit_type}_currency")
 
   portfolio_overview <- sector_share %>%
-  dplyr::mutate(
-    # TODO: this should be extracted into mapping file
-    sector_ald = dplyr::case_when(
-      sector_ald == "power" ~ "Power",
-      sector_ald == "oil and gas" ~ "Oil&Gas",
-      sector_ald == "coal" ~ "Coal",
-      sector_ald == "automotive" ~ "Automotive",
-      sector_ald == "steel" ~ "Steel",
-      sector_ald == "cement" ~ "Cement",
-      TRUE ~ sector_ald
+    dplyr::inner_join(p4i_p4b_sectors_lookup, by = c("sector_ald" = "sector_p4b")) %>%
+    dplyr::mutate(sector_ald = .data$sector_p4i) %>%
+    dplyr::select(
+      .data$sector_ald,
+      !!rlang::sym(sector_credit_type),
+      !!rlang::sym(credit_currency)
+    ) %>%
+    dplyr::rename(
+      financial_sector = .data$sector_ald,
+      valid_value_usd = !!rlang::sym(sector_credit_type)
+    ) %>%
+    dplyr::mutate(
+      investor_name = investor_name_placeholder,
+      portfolio_name = investor_name_placeholder
     )
-  ) %>%
-  dplyr::select(
-    .data$sector_ald,
-    !!rlang::sym(sector_credit_type),
-    !!rlang::sym(credit_currency)
-  ) %>%
-  dplyr::rename(
-    financial_sector = .data$sector_ald,
-    valid_value_usd = !!rlang::sym(sector_credit_type)
-  ) %>%
-  dplyr::mutate(
-    investor_name = investor_name_placeholder,
-    portfolio_name = investor_name_placeholder
-  )
-  # TODO: potentially convert currencies to USD or at least common currency
+    # TODO: potentially convert currencies to USD or at least common currency
 
   portfolio_overview %>%
     saveRDS(
