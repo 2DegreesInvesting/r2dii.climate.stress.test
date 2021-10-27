@@ -17,6 +17,10 @@
 #' @param portfolio_name Character. A string that indicates for which portfolio
 #'   the data should be transformed. Must be a portfolio that belongs to the
 #'   indicated investor.
+#' @param equity_market Character. A string that indicates the location of the
+#'   equity market of the analysis. This is required to match the P4I data
+#'   structure and should use the equity_market_filter passed form the user
+#'   function as input.
 #' @param credit Character. Indicates whether the formatted output should return
 #'   data for outstanding credits or credit limits. The stress test will then be
 #'   run on the chosen indicator.
@@ -27,17 +31,16 @@
 #'
 #' @export
 format_loanbook_st <- function(data,
-                               investor_name = "investor_name",
-                               portfolio_name = "portfolio_name",
-                               credit = loan_share_credit_type) {
+                               investor_name,
+                               portfolio_name,
+                               equity_market,
+                               credit) {
   data_has_required_cols <- all(c(
     "sector",
     "technology",
     "year",
     "region",
     "scenario_source",
-    # TODO: is id_2dii required? corresponds to id in PACTA_analysis 1-to-1?
-    # "id_2dii",
     "name_ald",
     "metric",
     "production_unweighted",
@@ -47,12 +50,6 @@ format_loanbook_st <- function(data,
   ) %in% colnames(data))
 
   stopifnot(data_has_required_cols)
-
-  credit_allowed <- credit %in% c(
-    "loan_share_outstanding",
-    "loan_share_credit_limit"
-  )
-  stopifnot(credit_allowed)
 
   group_vars <- c(
     "investor_name",
@@ -68,12 +65,16 @@ format_loanbook_st <- function(data,
     "company_name"
   )
 
+  credit <- glue::glue("loan_share_{credit}")
+
   results_loanbook <- data %>%
     dplyr::mutate(
       investor_name = investor_name,
       portfolio_name = investor_name,
-      allocation = "portfolio_weight", # TODO: This should be an input and take whatever the workflow passes
-      equity_market = "GlobalMarket", # TODO: This should be an input and take whatever the workflow passes
+      allocation = allocation_method_lookup,
+      # ADO 1933 - there is no actual equity market for loans, this variable is
+      # added as a placeholder to match the P4I data structure
+      equity_market = equity_market,
       credit_choice = !!rlang::sym(credit),
       plan_carsten = .data$technology_share * .data$credit_choice,
       plan_tech_prod = .data$production_unweighted,
@@ -95,6 +96,8 @@ format_loanbook_st <- function(data,
     ) %>%
     dplyr::group_by(!!!rlang::syms(group_vars)) %>%
     dplyr::mutate(
+      # TODO: This ensure the first letter is written as capital.
+      # May not be safe for geographies with more than one word
       scenario_geography = paste0(toupper(substr(.data$scenario_geography, 1, 1)), substr(.data$scenario_geography, 2, nchar(.data$scenario_geography))),
       plan_sec_prod = sum(.data$plan_tech_prod, na.rm = TRUE),
       plan_sec_carsten = sum(.data$plan_carsten, na.rm = TRUE)
@@ -107,10 +110,12 @@ format_loanbook_st <- function(data,
     )
 
   plan <- results_loanbook %>%
+    # scenario == "projected" corresponds to company production plans in P4B
     dplyr::filter(.data$scenario == "projected") %>%
     dplyr::select(-.data$scen_tech_prod)
 
   scen <- results_loanbook %>%
+    # TODO: this should be a list in lookup or similar
     dplyr::filter(.data$scenario %in% c("target_b2ds", "target_cps", "target_rts", "target_sps", "target_steps", "target_2ds", "target_sds")) %>% # TODO: pass corporate_economy and filter in workflow?
     dplyr::select(
       -c(
@@ -133,7 +138,7 @@ format_loanbook_st <- function(data,
       .data$plan_sec_prod, .data$plan_sec_carsten
     ) %>%
     dplyr::mutate(
-      # TODO: validate scenario mapping
+      # TODO: this should be extracted into mapping file
       scenario = dplyr::case_when(
         .data$scenario == "target_cps" ~ "CPS",
         .data$scenario == "target_rts" ~ "NPS",
@@ -147,6 +152,7 @@ format_loanbook_st <- function(data,
       scenario_source = stringr::str_to_upper(
         stringr::str_remove(.data$scenario_source, "_")
       ),
+      # TODO: this should be extracted into mapping file
       ald_sector = dplyr::case_when(
         .data$ald_sector == "power" ~ "Power",
         .data$ald_sector == "oil and gas" ~ "Oil&Gas",
@@ -155,6 +161,7 @@ format_loanbook_st <- function(data,
         .data$ald_sector == "steel" ~ "Steel",
         TRUE ~ .data$ald_sector
       ),
+      # TODO: this should be extracted into mapping file
       technology = dplyr::case_when(
         .data$technology == "coalcap" ~ "CoalCap",
         .data$technology == "gascap" ~ "GasCap",
@@ -174,10 +181,16 @@ format_loanbook_st <- function(data,
     # adjusting scenario column to hold source_scenario, to be compatible with PACTA
     # results for EQ and CB
     dplyr::mutate(scenario = paste(.data$scenario_source, .data$scenario, sep = "_")) %>%
-    dplyr::select(-.data$scenario_source) %>%
     # ADO 1933 - add temporary placeholder for id to make the columns consistent with P4I
     # For loans, this variable should not be used for anything and not be filtered out
-    dplyr::mutate(id = NA_real_)
+    dplyr::mutate(id = NA_real_) %>%
+    dplyr::select(
+      .data$investor_name, .data$portfolio_name, .data$scenario,
+      .data$allocation, .data$id, .data$company_name, .data$equity_market,
+      .data$scenario_geography, .data$year, .data$ald_sector, .data$technology,
+      .data$plan_tech_prod, .data$plan_carsten, .data$scen_tech_prod,
+      .data$plan_sec_prod, .data$plan_sec_carsten
+    )
 
   output_has_required_cols <- all(c(
     "investor_name",

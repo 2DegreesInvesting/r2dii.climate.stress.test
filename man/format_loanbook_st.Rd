@@ -5,12 +5,7 @@
 \title{Transforms the PACTA for banks output to PACTA EQ/CB format to enable use
 in stress test model.}
 \usage{
-format_loanbook_st(
-  data,
-  investor_name = "investor_name",
-  portfolio_name = "portfolio_name",
-  credit = loan_share_credit_type
-)
+format_loanbook_st(data, investor_name, portfolio_name, equity_market, credit)
 }
 \arguments{
 \item{data}{A dataframe that contains augmented PACTA for banks results for
@@ -23,6 +18,11 @@ the data should be transformed.}
 \item{portfolio_name}{Character. A string that indicates for which portfolio
 the data should be transformed. Must be a portfolio that belongs to the
 indicated investor.}
+
+\item{equity_market}{Character. A string that indicates the location of the
+equity market of the analysis. This is required to match the P4I data
+structure and should use the equity_market_filter passed form the user
+function as input.}
 
 \item{credit}{Character. Indicates whether the formatted output should return
 data for outstanding credits or credit limits. The stress test will then be
