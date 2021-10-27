@@ -220,7 +220,7 @@ report_duplicates <- function(data, cols, throw_error = FALSE) {
 #' Inner join datasets and report number of dropped rows
 #'
 #' Function conducts inner join on two datasets and reports number of dropped
-#' rows.
+#' rows on `data_x`.
 #'
 #' @param data_x Tibble with data that is joinable to `data_y`.
 #' @param data_y Tibble with data that is joinable to `data_x`.

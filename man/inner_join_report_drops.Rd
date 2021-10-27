@@ -22,5 +22,5 @@ The merged dataset.
 }
 \description{
 Function conducts inner join on two datasets and reports number of dropped
-rows.
+rows on \code{data_x}.
 }
