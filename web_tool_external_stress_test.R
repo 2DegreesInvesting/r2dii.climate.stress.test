@@ -28,7 +28,6 @@ source(file.path(stress_test_path, "R", "set_params_st.R"))
 
 
 devtools::load_all()
-setup_project()
 
 ################
 # INPUT VARIABLES
@@ -42,10 +41,6 @@ data_location <- file.path(get_st_data_path(), data_path())
 pf_name <- portfolio_name_ref_all
 investor_name_filter <- investor_name
 
-
-#### Analysis Parameters----------------------------------------
-# Get analysis parameters from the projects AnalysisParameters.yml - similar to PACTA_analysis
-set_project_parameters(file.path(working_location, "parameter_files",paste0("ProjectParameters_", project_code, ".yml")))
 
 ####################
 #### DATA FILES ####

@@ -53,7 +53,6 @@ function_paths <- c(
 source_all(function_paths)
 
 devtools::load_all()
-setup_project()
 
 ################
 # INPUT VARIABLES
@@ -71,12 +70,6 @@ pf_name <- portfolio_name_ref_all
 price_data_version <- if (exists("price_data_version")) price_data_version else "2020Q4"
 calculation_level <- if (exists("calculation_level")) calculation_level else "portfolio"
 company_exclusion <- if (exists("company_exclusion")) company_exclusion else FALSE
-
-
-#### Analysis Parameters----------------------------------------
-# Get analysis parameters from the projects AnalysisParameters.yml - similar to PACTA_analysis
-# TODO: should this remain "working location"? comes from PACTA, so probably okay?
-set_project_parameters(file.path(working_location, "parameter_files", paste0("ProjectParameters_", project_code, ".yml")))
 
 ##### Filters----------------------------------------
 # The filter settings should comply with the filters from the parent PACTA project as per default
