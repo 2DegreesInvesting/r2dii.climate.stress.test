@@ -74,7 +74,7 @@ equity_results <- readr::read_csv(file.path(results_path, "stress_test_results_e
 # than later shock years
 
 technology_impact_by_shock_year_cb <- show_impact_by_shock_year(
-  data = bonds_results,
+  data = results,
   level = "technology"
 )
 
@@ -90,7 +90,7 @@ ggplot2::ggsave(
 # than later shock years
 
 sector_impact_by_shock_year_cb <- show_impact_by_shock_year(
-  data = bonds_results,
+  data = results,
   level = "ald_sector"
 )
 
@@ -103,7 +103,7 @@ ggplot2::ggsave(
 # expectation for QA: changes should be monotonous over the shock years
 
 technology_change_by_shock_year_cb <- show_var_change_by_shock_year(
-  data = bonds_results,
+  data = results,
   level = "technology"
 )
 
@@ -117,13 +117,13 @@ ggplot2::ggsave(
 # in the portfolio
 # expectation: In sum, these should be well below 1, but must be greater than 0
 # TODO: currently not possibe because input file is unavailable
-tech_share_cb <- show_pf_technology_shares(data = plan_carsten_bonds)
+tech_share_cb <- show_pf_technology_shares(data = plan_carsten)
 
 
 # Check if carbon budgets are met for all technologies-------------------------
 # TODO: currently not possibe because input file is unavailable
 # ... yearly-------------------------------------------------------------------
-qa_annual_profits_cb <- bonds_annual_profits %>%
+qa_annual_profits_cb <- annual_profits %>%
   dplyr::mutate(year_of_shock = transition_scenario$year_of_shock)
 
 carbon_budgets_cb <- qa_annual_profits_cb %>%
