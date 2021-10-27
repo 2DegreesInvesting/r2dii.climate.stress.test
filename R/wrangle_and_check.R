@@ -144,3 +144,33 @@ wrangle_scenario_data <- function(scenario_data, start_year, end_year) {
     correct_automotive_scendata(interpolation_years = c(2031:2034, 2036:2039))
   return(scenario_data_wrangled)
 }
+
+
+#' Fill missing values on annual_profits
+#'
+#' Function fill missing rows on cols company_id, pd, net_profit_margin,
+#' debt_equity_ratio, volatility.
+#'
+#' @param annual_profits A tibble holding annual profit data.
+#'
+#' @return Tibble holding `annual profits` with replaces missings.
+fill_annual_profit_cols <- function(annual_profits) {
+
+  annual_profits_filled <- annual_profits %>%
+    dplyr::arrange(
+      scenario_name, investor_name, portfolio_name, scenario_geography, id,
+      company_name, ald_sector, technology, year
+    ) %>%
+    dplyr::group_by(
+      scenario_name, investor_name, portfolio_name, scenario_geography, id,
+      company_name, ald_sector, technology
+    ) %>%
+    # NOTE: this assumes emissions factors stay constant after forecast and prod not continued
+    tidyr::fill(
+      company_id, pd, net_profit_margin, debt_equity_ratio, volatility,
+      .direction = "down"
+    ) %>%
+    dplyr::ungroup()
+
+  return(annual_profits_filled)
+}

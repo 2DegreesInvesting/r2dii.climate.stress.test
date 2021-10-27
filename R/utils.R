@@ -215,3 +215,74 @@ report_duplicates <- function(data, cols, throw_error = FALSE) {
 
   return(invisible())
 }
+
+
+#' Inner join datasets and report number of dropped rows
+#'
+#' Function conducts inner join on two datasets and reports number of dropped
+#' rows on `data_x`.
+#'
+#' @param data_x Tibble with data that is joinable to `data_y`.
+#' @param data_y Tibble with data that is joinable to `data_x`.
+#' @param name_x Name of `data_x`.
+#' @param name_y Name of `data_x`.
+#' @param merge_cols Vector holds columns to join on.
+#'
+#' @return The merged dataset.
+inner_join_report_drops <- function(data_x, data_y, name_x, name_y, merge_cols) {
+
+  rows_x <- nrow(data_x)
+  rows_y <- nrow(data_y)
+
+  data <- data_x %>%
+    dplyr::inner_join(
+      data_y,
+      by = merge_cols
+    )
+
+  rows_data <- nrow(data)
+
+  if (rows_data < rows_x) {
+    cat(
+      "When joining", name_x, "on", name_y, "on columns", merge_cols, "dropped",
+      rows_x - rows_data, "rows from", name_x, ".\n"
+    )
+  }
+  return(data)
+}
+
+#' Report missing
+#'
+#' Function reports number of missing values per variable.
+#'
+#' @param data Tibble holding a result data set.
+#' @param name_data Name of the data file.
+#'
+#' @return NULL
+report_missings <- function(data, name_data) {
+  missings <- purrr::map_df(data, function(x) sum(is.na(x)))
+
+  cat("Reporting missings on dataset:", name_data, "\n")
+  purrr::iwalk(missings, function(n_na, name) {
+    cat("Counted", n_na, "missings on column", name, "\n")
+  })
+  cat("\n\n")
+}
+
+#' Checks structure of results
+#'
+#' Wrapper to call [report_all_duplicate_kinds()] and [report_missings()] on
+#' results.
+#'
+#' @param data Tibble holding results.
+#' @param name_data Name of results data.
+#' @param cuc_cols Vector of cols the combination of which needs to be unique.
+#'
+#' @return Tibble `data`.
+check_results_structure <- function(data, name_data, cuc_cols) {
+
+  report_all_duplicate_kinds(data = data, composite_unique_cols = cuc_cols, throw_error = FALSE)
+  report_missings(data = data, name_data = name_data)
+
+  return(data)
+}

@@ -40,6 +40,11 @@ write_stress_test_results <- function(results, expected_loss,
     )
 
   expected_loss %>%
+    check_results_structure(
+      name_data = "Expected loss",
+      cuc_cols = c("scenario_name", "scenario_geography", "investor_name",
+                   "portfolio_name", "company_name", "id", "ald_sector", "term")
+    ) %>%
     readr::write_csv(file.path(
       results_path,
       paste0("stress_test_results_", asset_type, "_comp_el.csv")
@@ -62,6 +67,10 @@ write_stress_test_results <- function(results, expected_loss,
     )
 
   annual_pd_changes_sector %>%
+    check_results_structure(
+      name_data = "Annual PD changes sector",
+      cuc_cols = c("scenario_name", "scenario_geography", "investor_name", "portfolio_name", "ald_sector", "year")
+    ) %>%
     readr::write_csv(file.path(
       results_path,
       paste0("stress_test_results_", asset_type, "_sector_pd_changes_annual.csv")
@@ -84,6 +93,10 @@ write_stress_test_results <- function(results, expected_loss,
     )
 
   overall_pd_changes_sector %>%
+    check_results_structure(
+      name_data = "Overall PD changes sector",
+      cuc_cols = c("scenario_name", "scenario_geography", "investor_name", "portfolio_name", "ald_sector", "term")
+    ) %>%
     readr::write_csv(file.path(
       results_path,
       paste0("stress_test_results_",asset_type,"_sector_pd_changes_overall.csv")
@@ -305,7 +318,8 @@ write_results_new <- function(data,
   stopifnot(data_has_expected_columns)
 
   data <- data %>%
-    dplyr::relocate(
+    # ADO 2549 - select instead of relocate so that no surplus columns can sneak in
+    dplyr::select(
       .data$investor_name, .data$portfolio_name, .data$company_name,
       .data$scenario_geography, .data$scenario_name, .data$year_of_shock,
       .data$duration_of_shock, .data$ald_sector, .data$technology,
@@ -314,13 +328,18 @@ write_results_new <- function(data,
       .data$tech_company_value_change, .data$company_exposure,
       .data$VaR_company, .data$company_value_change, .data$technology_exposure,
       .data$VaR_technology, .data$technology_value_change,
-      .data$technology_exposure, .data$VaR_technology,
-      .data$technology_value_change, .data$sector_exposure, .data$VaR_sector,
-      .data$sector_value_change, .data$analysed_sectors_exposure,
-      .data$VaR_analysed_sectors, .data$analysed_sectors_value_change,
-      .data$portfolio_aum, .data$portfolio_value_change_perc,
-      .data$portfolio_value_change
-    )
+      .data$sector_exposure, .data$VaR_sector, .data$sector_value_change,
+      .data$analysed_sectors_exposure, .data$VaR_analysed_sectors,
+      .data$analysed_sectors_value_change, .data$portfolio_aum,
+      .data$portfolio_value_change_perc, .data$portfolio_value_change,
+      .data$exclude
+    ) %>%
+    check_results_structure(
+      name_data = "Stress test results - Company level",
+      cuc_cols = c(
+        "investor_name", "portfolio_name", "company_name", "scenario_geography",
+        "scenario_name", "year_of_shock", "duration_of_shock", "ald_sector", "technology"
+      ))
 
   switch(file_type,
     csv = data %>%
@@ -337,19 +356,9 @@ write_results_new <- function(data,
   )
 
   data <- data %>%
+    # ADO 2549 - actively select all columns that should remain in the portfolio
+    # level results, rather than unselecting some. This avoids extra columns.
     dplyr::select(
-      -c(
-        .data$company_name,
-        .data$VaR_tech_company,
-        .data$tech_company_exposure,
-        .data$tech_company_value_change,
-        .data$VaR_company,
-        .data$company_exposure,
-        .data$company_value_change
-      )
-    ) %>%
-    dplyr::distinct_all() %>%
-    dplyr::relocate(
       .data$investor_name, .data$portfolio_name, .data$scenario_geography,
       .data$scenario_name, .data$year_of_shock, .data$duration_of_shock,
       .data$ald_sector, .data$technology, .data$production_shock_perc,
@@ -360,7 +369,16 @@ write_results_new <- function(data,
       .data$analysed_sectors_value_change, .data$portfolio_aum,
       .data$portfolio_value_change_perc, .data$portfolio_value_change
     ) %>%
-    dplyr::arrange(.data$year_of_shock, .data$ald_sector, .data$technology)
+    # ADO 2549 - all numeric variables should be unique across the CUC variables
+    # running distinct all and the check afterwards ensures this is the case
+    dplyr::distinct_all() %>%
+    dplyr::arrange(.data$year_of_shock, .data$ald_sector, .data$technology) %>%
+    check_results_structure(
+      name_data = "Stress test results - Portfolio level",
+      cuc_cols = c(
+        "investor_name", "portfolio_name", "scenario_geography", "scenario_name",
+        "year_of_shock", "duration_of_shock", "ald_sector", "technology"
+      ))
 
   switch(file_type,
     csv = data %>%
