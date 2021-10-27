@@ -91,6 +91,8 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
   run_prep_calculation_loans(
     year_production_data = start_year,
     year_scenario_data = start_year,
+    # FIXME: ADO 1933 - passing a config list may be unsafe. Could have length > 1
+    equity_market = cfg$Lists$Equity.Market.List,
     credit_type = credit_type
   )
 
@@ -110,6 +112,7 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
     time_horizon = time_horizon,
     scenario_geography_filter = scenario_geography_filter,
     scenarios_filter = scenarios_filter,
+    # FIXME: passing a config list may be unsafe. Could have length > 1
     equity_market_filter = cfg$Lists$Equity.Market.List
   ) %>%
   # ADO 1943 - for the time being, one global term value is set by the user.
