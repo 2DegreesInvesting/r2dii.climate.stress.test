@@ -97,7 +97,20 @@ run_prep_calculation_loans <- function(year_production_data,
   # Production forecast data
   if (year_production_data == 2020) {
     production_forecast_data <- readr::read_csv(
-      file.path(get_st_data_path(), "ald_15092020.csv")
+      file.path(get_st_data_path(), "ald_15092020.csv"),
+      col_types = readr::cols(
+        name_company = "c",
+        sector = "c",
+        technology = "c",
+        year = "d",
+        production = "d",
+        production_unit = "c",
+        emission_factor = "d",
+        ald_emission_factor_unit = "c",
+        plant_location = "c",
+        is_ultimate_owner = "l",
+        ald_timestamp = "c"
+      )
     )
   } else if (year_production_data == 2021) {
     production_forecast_data <- readxl::read_xlsx(
