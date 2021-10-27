@@ -123,6 +123,8 @@ tech_share_cb <- show_pf_technology_shares(data = plan_carsten_bonds)
 # Check if carbon budgets are met for all technologies-------------------------
 # TODO: currently not possibe because input file is unavailable
 # ... yearly-------------------------------------------------------------------
+qa_annual_profits_cb <- bonds_annual_profits %>%
+  dplyr::mutate(year_of_shock = transition_scenario$year_of_shock)
 
 carbon_budgets_cb <- qa_annual_profits_cb %>%
   show_carbon_budget(

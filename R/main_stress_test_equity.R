@@ -182,61 +182,23 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
       start_year = start_year,
       end_year = end_year,
       analysis_time_frame = time_horizon
-    )
-
-  if (company_exclusion) {
-    equity_annual_profits <- equity_annual_profits %>%
-      exclude_companies(
-        exclusion = excluded_companies,
-        scenario_baseline = scenario_to_follow_baseline,
-        scenario_ls = scenario_to_follow_ls
-      )
-  }
-
-  rows_equity <- nrow(equity_annual_profits)
-
-  equity_annual_profits <- equity_annual_profits %>%
-    dplyr::inner_join(
-      financial_data_equity,
-      by = c("company_name", "ald_sector", "technology")
-    )
-
-  cat(
-    "number of rows dropped by joining financial data on
-      company_name, ald_sector and technology = ",
-    rows_equity - nrow(equity_annual_profits), "\n"
-  )
-  # TODO: ADO 879 - note which companies are removed here, due to mismatch
-
-  equity_annual_profits <- equity_annual_profits %>%
-    dplyr::arrange(
-      scenario_name, investor_name, portfolio_name, scenario_geography, id,
-      company_name, ald_sector, technology, year
     ) %>%
-    dplyr::group_by(
-      scenario_name, investor_name, portfolio_name, scenario_geography, id,
-      company_name, ald_sector, technology
+    exclude_companies(
+      exclusion = excluded_companies,
+      scenario_baseline = scenario_to_follow_baseline,
+      scenario_ls = scenario_to_follow_ls
     ) %>%
-    # NOTE: this assumes emissions factors stay constant after forecast and prod not continued
-    tidyr::fill(
-      company_id, pd, net_profit_margin, debt_equity_ratio, volatility,
-      .direction = "down"
+    inner_join_report_drops(
+      data_y = financial_data_equity,
+      name_x = "annual profits", name_y = "financial data",
+      merge_cols = c("company_name", "ald_sector", "technology")
     ) %>%
-    dplyr::ungroup()
-
-  equity_annual_profits <- equity_annual_profits %>%
+    fill_annual_profit_cols() %>%
+    # TODO: ADO 879 - note which companies are removed here, due to mismatch
     join_price_data(df_prices = df_prices) %>%
     calculate_net_profits() %>%
-    dcf_model_techlevel(discount_rate = discount_rate)
-
-  qa_annual_profits_eq <- equity_annual_profits %>%
-    dplyr::mutate(year_of_shock = transition_scenario$year_of_shock)
-
-  plan_carsten_equity <- pacta_equity_results %>%
-    dplyr::filter(
-      .data$year == start_year,
-      .data$scenario %in% .env$scenario_to_follow_ls
-    )
+    dcf_model_techlevel(discount_rate = discount_rate) %>%
+    dplyr::filter(!is.na(company_id))
 
   financial_data_equity_pd <- financial_data_equity %>%
     dplyr::select(company_name, ald_sector, technology, pd)
@@ -246,22 +208,16 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
     cols = names(financial_data_equity_pd)
   )
 
-  rows_plan_carsten <- nrow(plan_carsten_equity)
-
-  plan_carsten_equity <- plan_carsten_equity %>%
-    dplyr::inner_join(financial_data_equity_pd, by = c("company_name", "ald_sector", "technology"))
-
-  cat(
-    "number of rows dropped from technology_exposure by joining financial data
-      on company_name, ald_sector and technology = ",
-    rows_plan_carsten - nrow(plan_carsten_equity), "\n"
-  )
-  # TODO: ADO 879 - note which companies are removed here, due to mismatch
-
-  equity_annual_profits <- equity_annual_profits %>%
-    dplyr::filter(!is.na(company_id))
-
-  plan_carsten_equity <- plan_carsten_equity %>%
+  plan_carsten_equity <- pacta_equity_results %>%
+    dplyr::filter(
+      .data$year == start_year,
+      .data$scenario %in% .env$scenario_to_follow_ls
+    ) %>%
+    inner_join_report_drops(
+      data_y = financial_data_equity_pd,
+      name_x = "plan carsten", name_y = "financial data",
+      merge_cols = c("company_name", "ald_sector", "technology")
+    ) %>%
     dplyr::select(
       investor_name, portfolio_name, company_name, ald_sector, technology,
       scenario_geography, year, plan_carsten, plan_sec_carsten, term, pd

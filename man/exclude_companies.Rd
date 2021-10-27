@@ -28,6 +28,6 @@ in late and sudden.  Usually this should be the same as throughout the
 workflow.}
 }
 \description{
-Effectively exclude certain technologies of companies from calculations
+NOTE: If \code{exclusion} is NULL \code{data} are returned.
 }
 \concept{processing functions}

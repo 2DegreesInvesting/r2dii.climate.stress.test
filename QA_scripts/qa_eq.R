@@ -115,6 +115,9 @@ ggplot2::ggsave(
 
 # comparison of baseline, target and l&s production paths by technology--------
 # TODO: currently not possibe because input file is unavailable
+qa_annual_profits_eq <- equity_annual_profits %>%
+  dplyr::mutate(year_of_shock = transition_scenario$year_of_shock)
+
 data_prod_baseline <- qa_annual_profits_eq
 
 data_prod_baseline <- data_prod_baseline %>%
