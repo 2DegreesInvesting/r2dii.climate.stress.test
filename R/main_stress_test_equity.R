@@ -82,10 +82,10 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
   # Load input datasets------------------------------------------------------
   ###########################################################################
   # Load PACTA results / equity portfolio------------------------
-  equity_path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", paste0("Equity_results_", calculation_level, ".rda"))
+  path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", paste0("Equity_results_", calculation_level, ".rda"))
 
   pacta_results <- read_pacta_results(
-    path = equity_path,
+    path = path,
     asset_type = "equity",
     level = calculation_level
   ) %>%
@@ -128,21 +128,19 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
     scenario_geography_filter = scenario_geography_filter
   )
 
-  pacta_equity_results <- input_data_list$pacta_results
+  pacta_results <- input_data_list$pacta_results
   excluded_companies <- input_data_list$excluded_companies
   scenario_data <- input_data_list$scenario_data
-  financial_data_equity <- input_data_list$financial_data
+  financial_data <- input_data_list$financial_data
 
-  # check scenario availability across data inputs for equity
   check_scenario_availability(
-    portfolio = pacta_equity_results,
+    portfolio = pacta_results,
     scen_data = scenario_data,
     scenarios = scenarios_filter
   )
 
   # Prepare sector exposure data-------------------------------------------------
-  # ...for equity portfolio------------------------------------------------------
-  equity_port_aum <- calculate_aum(input_data_list$sector_exposures)
+  port_aum <- calculate_aum(input_data_list$sector_exposures)
 
   ## if we use the integral/overshoot late&sudden method, and we use company production plans the first 5 years
   ## the integral method works on company level, however,
@@ -161,8 +159,7 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
       start_year = start_year
     )
 
-  # Convert capacity (MW) to generation (MWh) for power sector
-  equity_annual_profits <- pacta_equity_results %>%
+  annual_profits <- pacta_results %>%
     convert_power_cap_to_generation(
       capacity_factors_power = input_data_list$capacity_factors_power,
       baseline_scenario = scenario_to_follow_baseline
@@ -190,7 +187,7 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
       scenario_ls = scenario_to_follow_ls
     ) %>%
     inner_join_report_drops(
-      data_y = financial_data_equity,
+      data_y = financial_data,
       name_x = "annual profits", name_y = "financial data",
       merge_cols = c("company_name", "ald_sector", "technology")
     ) %>%
@@ -201,21 +198,21 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
     dcf_model_techlevel(discount_rate = discount_rate) %>%
     dplyr::filter(!is.na(company_id))
 
-  financial_data_equity_pd <- financial_data_equity %>%
+  financial_data_pd <- financial_data %>%
     dplyr::select(company_name, ald_sector, technology, pd)
 
   report_duplicates(
-    data = financial_data_equity_pd,
-    cols = names(financial_data_equity_pd)
+    data = financial_data_pd,
+    cols = names(financial_data_pd)
   )
 
-  plan_carsten_equity <- pacta_equity_results %>%
+  plan_carsten <- pacta_results %>%
     dplyr::filter(
       .data$year == start_year,
       .data$scenario %in% .env$scenario_to_follow_ls
     ) %>%
     inner_join_report_drops(
-      data_y = financial_data_equity_pd,
+      data_y = financial_data_pd,
       name_x = "plan carsten", name_y = "financial data",
       merge_cols = c("company_name", "ald_sector", "technology")
     ) %>%
@@ -225,22 +222,22 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
     )
 
   report_duplicates(
-    data = plan_carsten_equity,
-    cols = names(plan_carsten_equity)
+    data = plan_carsten,
+    cols = names(plan_carsten)
   )
 
-  equity_results <- company_asset_value_at_risk(
-    data = equity_annual_profits,
+  results <- company_asset_value_at_risk(
+    data = annual_profits,
     terminal_value = terminal_value,
     shock_scenario = transition_scenario,
     div_netprofit_prop_coef = div_netprofit_prop_coef,
-    plan_carsten = plan_carsten_equity,
-    port_aum = equity_port_aum,
+    plan_carsten = plan_carsten,
+    port_aum = port_aum,
     flat_multiplier = 1,
     exclusion = excluded_companies
   )
 
-  equity_overall_pd_changes <- equity_annual_profits %>%
+  overall_pd_changes <- annual_profits %>%
     calculate_pd_change_overall(
       shock_year = transition_scenario$year_of_shock,
       end_of_analysis = end_year,
@@ -250,18 +247,18 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
   # TODO: ADO 879 - note which companies produce missing results due to
   # insufficient input information (e.g. NAs for financials or 0 equity value)
 
-  equity_expected_loss <- company_expected_loss(
-    data = equity_overall_pd_changes,
+  expected_loss <- company_expected_loss(
+    data = overall_pd_changes,
     loss_given_default = lgd_subordinated_claims, # TODO: which one?
-    exposure_at_default = plan_carsten_equity,
-    port_aum = equity_port_aum
+    exposure_at_default = plan_carsten,
+    port_aum = port_aum
   )
 
   # TODO: ADO 879 - note which companies produce missing results due to
   # insufficient output from overall pd changes or related financial data inputs
 
-  equity_annual_pd_changes <- calculate_pd_change_annual(
-    data = equity_annual_profits,
+  annual_pd_changes <- calculate_pd_change_annual(
+    data = annual_profits,
     shock_year = transition_scenario$year_of_shock,
     end_of_analysis = end_year,
     risk_free_interest_rate = risk_free_rate
@@ -271,9 +268,9 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
   # insufficient input information (e.g. NAs for financials or 0 equity value)
 
   write_stress_test_results(
-    results = equity_results,
-    expected_loss = equity_expected_loss,
-    annual_pd_changes = equity_annual_pd_changes,
+    results = results,
+    expected_loss = expected_loss,
+    annual_pd_changes = annual_pd_changes,
     asset_type = "equity",
     calculation_level = calculation_level
   )

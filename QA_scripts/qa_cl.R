@@ -128,7 +128,7 @@ ggplot2::ggsave(
 # TODO: currently not possibe because input file is unavailable
 # pre processing
 
-qa_annual_profits_lbk <- loanbook_annual_profits %>%
+qa_annual_profits_lbk <- annual_profits %>%
   dplyr::mutate(year_of_shock = transition_scenario$year_of_shock)
 
 qa_annual_profits_lbk_pf <- qa_annual_profits_lbk %>%
@@ -163,7 +163,7 @@ prod_baseline_target_ls <- show_prod_baseline_target_ls_pf(
 # in the portfolio
 # TODO: currently not possibe because input file is unavailable
 # pre process: needs aggregation to pf level
-plan_carsten_loanbook_pf <- plan_carsten_loanbook %>%
+plan_carsten_loanbook_pf <- plan_carsten %>%
   dplyr::group_by(year, investor_name, portfolio_name, scenario_geography,
            ald_sector, technology) %>%
   dplyr::summarise(plan_carsten = sum(plan_carsten, na.rm = TRUE)) %>%

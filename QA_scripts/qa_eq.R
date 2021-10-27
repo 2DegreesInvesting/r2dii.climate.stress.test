@@ -115,7 +115,7 @@ ggplot2::ggsave(
 
 # comparison of baseline, target and l&s production paths by technology--------
 # TODO: currently not possibe because input file is unavailable
-qa_annual_profits_eq <- equity_annual_profits %>%
+qa_annual_profits_eq <- annual_profits %>%
   dplyr::mutate(year_of_shock = transition_scenario$year_of_shock)
 
 data_prod_baseline <- qa_annual_profits_eq
@@ -142,7 +142,7 @@ prod_baseline_target_ls <- show_prod_baseline_target_ls_pf(
 # in the portfolio
 # expectation: In sum, these should be well below 1, but must be greater than 0
 # TODO: currently not possibe because input file is unavailable
-tech_share_eq <- show_pf_technology_shares(data = plan_carsten_equity)
+tech_share_eq <- show_pf_technology_shares(data = plan_carsten)
 
 # Check if carbon budgets are met for all technologies-------------------------
 # TODO: currently not possibe because input file is unavailable
