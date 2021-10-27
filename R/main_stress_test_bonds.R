@@ -183,60 +183,23 @@ run_stress_test_bonds <- function(lgd_senior_claims = 0.45,
       start_year = start_year,
       end_year = end_year,
       analysis_time_frame = time_horizon
-    )
-
-  if (company_exclusion) {
-    bonds_annual_profits <- bonds_annual_profits %>%
-      exclude_companies(
-        exclusion = excluded_companies,
-        scenario_baseline = scenario_to_follow_baseline,
-        scenario_ls = scenario_to_follow_ls
-      )
-  }
-
-  rows_bonds <- nrow(bonds_annual_profits)
-
-  bonds_annual_profits <- bonds_annual_profits %>%
-    dplyr::inner_join(financial_data_bonds,
-                      by = c("company_name", "id" = "corporate_bond_ticker", "ald_sector", "technology")
-    )
-
-  cat(
-    "number of rows dropped by joining financial data on
-      company_name, corporate_bond_ticker, ald_sector, and technology: ",
-    rows_bonds - nrow(bonds_annual_profits), "\n"
-  )
-  # TODO: ADO 879 - note which companies are removed here, due to mismatch
-
-  bonds_annual_profits <- bonds_annual_profits %>%
-    dplyr::arrange(
-      scenario_name, investor_name, portfolio_name, scenario_geography, id,
-      company_name, ald_sector, technology, year
     ) %>%
-    dplyr::group_by(
-      scenario_name, investor_name, portfolio_name, scenario_geography, id,
-      company_name, ald_sector, technology
+    exclude_companies(
+      exclusion = excluded_companies,
+      scenario_baseline = scenario_to_follow_baseline,
+      scenario_ls = scenario_to_follow_ls
     ) %>%
-    # NOTE: this assumes emissions factors stay constant after forecast and prod not continued
-    tidyr::fill(
-      company_id, pd, net_profit_margin, debt_equity_ratio, volatility,
-      .direction = "down"
+    inner_join_report_drops(
+      data_y = financial_data_bonds,
+      name_x = "annual profits", name_y = "financial data",
+      merge_cols = c("company_name", "id" = "corporate_bond_ticker", "ald_sector", "technology")
     ) %>%
-    dplyr::ungroup()
-
-  bonds_annual_profits <- bonds_annual_profits %>%
+    fill_annual_profit_cols() %>%
+    # TODO: ADO 879 - note which companies are removed here, due to mismatch
     join_price_data(df_prices = df_prices) %>%
     calculate_net_profits() %>%
-    dcf_model_techlevel(discount_rate = discount_rate)
-
-  qa_annual_profits_cb <- bonds_annual_profits %>%
-    dplyr::mutate(year_of_shock = transition_scenario$year_of_shock)
-
-  plan_carsten_bonds <- pacta_bonds_results %>%
-    dplyr::filter(
-      .data$year == start_year,
-      .data$scenario %in% .env$scenario_to_follow_ls
-    )
+    dcf_model_techlevel(discount_rate = discount_rate) %>%
+    dplyr::filter(!is.na(company_id))
 
   financial_data_bonds_pd <- financial_data_bonds %>%
     dplyr::select(company_name, corporate_bond_ticker, ald_sector, technology, pd)
@@ -246,22 +209,17 @@ run_stress_test_bonds <- function(lgd_senior_claims = 0.45,
     cols = names(financial_data_bonds_pd)
   )
 
-  rows_plan_carsten <- nrow(plan_carsten_bonds)
-
-  plan_carsten_bonds <- plan_carsten_bonds %>%
-    dplyr::inner_join(financial_data_bonds_pd, by = c("company_name", "id" = "corporate_bond_ticker", "ald_sector", "technology"))
-
-  cat(
-    "number of rows dropped from technology_exposure by joining financial data
-      on company_name, corporate_bond_ticker, ald_sector and technology = ",
-    rows_plan_carsten - nrow(plan_carsten_bonds), "\n"
-  )
-  # TODO: ADO 879 - note which companies are removed here, due to mismatch
-
-  bonds_annual_profits <- bonds_annual_profits %>%
-    dplyr::filter(!is.na(company_id))
-
-  plan_carsten_bonds <- plan_carsten_bonds %>%
+  plan_carsten_bonds <- pacta_bonds_results %>%
+    dplyr::filter(
+      .data$year == start_year,
+      .data$scenario %in% .env$scenario_to_follow_ls
+    ) %>%
+    inner_join_report_drops(
+      data_y = financial_data_bonds_pd,
+      name_x = "plan carsten", name_y = "financial data",
+      merge_cols = c("company_name", "id" = "corporate_bond_ticker", "ald_sector", "technology")
+    ) %>%
+    # TODO: ADO 879 - note which companies are removed here, due to mismatch
     dplyr::select(
       investor_name, portfolio_name, company_name, ald_sector, technology,
       scenario_geography, year, plan_carsten, plan_sec_carsten, term, pd

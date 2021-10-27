@@ -224,62 +224,23 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
       start_year = start_year,
       end_year = end_year,
       analysis_time_frame = time_horizon
-    )
-
-  if (company_exclusion) {
-    loanbook_annual_profits <- loanbook_annual_profits %>%
-      exclude_companies(
-        exclusion = excluded_companies,
-        scenario_baseline = scenario_to_follow_baseline,
-        scenario_ls = scenario_to_follow_ls
-      )
-  }
-
-  rows_loanbook <- nrow(loanbook_annual_profits)
-  loanbook_annual_profits <- loanbook_annual_profits %>%
-    # ADO 879: removed company id from join, but should be re-introduced later on
-    dplyr::inner_join(
-      financial_data_loans,
-      by = c("company_name", "ald_sector", "technology")
-    )
-  cat(
-    "number of rows dropped from loan book by joining financial data on
-      company_name, ald_sector and technology = ",
-    rows_loanbook - nrow(loanbook_annual_profits), "\n"
-  )
-  # TODO: ADO 879 - note which companies are removed here, due to mismatch of
-  # sector/tech in the financial data and the portfolio
-
-  loanbook_annual_profits <- loanbook_annual_profits %>%
-    dplyr::arrange(
-      scenario_name, investor_name, portfolio_name, scenario_geography, id,
-      company_name, ald_sector, technology, year
     ) %>%
-    dplyr::group_by(
-      scenario_name, investor_name, portfolio_name, scenario_geography, id,
-      company_name, ald_sector, technology
+    exclude_companies(
+      exclusion = excluded_companies,
+      scenario_baseline = scenario_to_follow_baseline,
+      scenario_ls = scenario_to_follow_ls
     ) %>%
-    # NOTE: this assumes emissions factors stay constant after forecast and prod not continued
-    tidyr::fill(
-      company_id, pd, net_profit_margin, debt_equity_ratio, volatility,
-      .direction = "down"
+    inner_join_report_drops(
+      data_y = financial_data_loans,
+      name_x = "annual profits", name_y = "financial data",
+      merge_cols = c("company_name", "ald_sector", "technology")
     ) %>%
-    dplyr::ungroup()
-
-  loanbook_annual_profits <- loanbook_annual_profits %>%
+    fill_annual_profit_cols() %>%
+    # TODO: ADO 879 - note which companies are removed here
     join_price_data(df_prices = df_prices) %>%
     calculate_net_profits() %>%
     dcf_model_techlevel(discount_rate = discount_rate)
   # TODO: ADO 879 - note rows with zero profits/NPVs will produce NaN in the Merton model
-
-  qa_annual_profits_lbk <- loanbook_annual_profits %>%
-    dplyr::mutate(year_of_shock = transition_scenario$year_of_shock)
-
-  plan_carsten_loanbook <- pacta_loanbook_results %>%
-    dplyr::filter(
-      .data$year == .env$start_year,
-      .data$scenario %in% .env$scenario_to_follow_ls
-    )
 
   financial_data_loans_pd <- financial_data_loans %>%
     dplyr::select(company_name, company_id, ald_sector, technology, pd)
@@ -289,23 +250,17 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
     cols = names(financial_data_loans_pd)
   )
 
-  rows_plan_carsten <- nrow(plan_carsten_loanbook)
-  plan_carsten_loanbook <- plan_carsten_loanbook %>%
-    # ADO 879: removed company id from join, but should be re-introduced later on
-    dplyr::inner_join(
-      financial_data_loans_pd,
-      by = c("company_name", "ald_sector", "technology")
-    )
-  cat(
-    "number of rows dropped from technology_exposure by joining financial data
-      on company_name, ald_sector and technology = ",
-    rows_plan_carsten - nrow(plan_carsten_loanbook), "\n"
-  )
-  # TODO: ADO 879 - note which companies are removed here, due to mismatch of
-  # sector/tech in the financial data and the portfolio
-  # TODO: what to do with entries that have NAs for pd?
-
-  plan_carsten_loanbook <- plan_carsten_loanbook %>%
+  plan_carsten_loanbook <- pacta_loanbook_results %>%
+    dplyr::filter(
+      .data$year == .env$start_year,
+      .data$scenario %in% .env$scenario_to_follow_ls
+    ) %>%
+    inner_join_report_drops(
+      data_y = financial_data_loans_pd,
+      name_x = "plan carsten", name_y = "financial data",
+      merge_cols = c("company_name", "ald_sector", "technology")
+    ) %>%
+    # TODO: ADO 879 - note which companies are removed here, what to do with entries that have NAs for pd?
     dplyr::select(
       investor_name, portfolio_name, company_name, ald_sector, technology,
       scenario_geography, year, plan_carsten, plan_sec_carsten, term, pd
