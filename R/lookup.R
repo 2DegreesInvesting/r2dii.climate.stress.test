@@ -89,3 +89,8 @@ p4i_p4b_scenario_lookup <- tibble::tribble(
   "target_sds",   "SDS",
   "target_b2ds",  "B2DS",
 )
+
+# P4B scenario list
+p4b_scenarios_lookup <- c("target_b2ds", "target_cps", "target_rts",
+                          "target_sps", "target_steps", "target_2ds",
+                          "target_sds")

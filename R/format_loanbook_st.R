@@ -115,8 +115,7 @@ format_loanbook_st <- function(data,
     dplyr::select(-.data$scen_tech_prod)
 
   scen <- results_loanbook %>%
-    # TODO: this should be a list in lookup or similar
-    dplyr::filter(.data$scenario %in% c("target_b2ds", "target_cps", "target_rts", "target_sps", "target_steps", "target_2ds", "target_sds")) %>% # TODO: pass corporate_economy and filter in workflow?
+    dplyr::filter(.data$scenario %in% p4b_scenarios_lookup) %>%
     dplyr::select(
       -c(
         .data$plan_tech_prod, .data$plan_carsten,
@@ -139,7 +138,6 @@ format_loanbook_st <- function(data,
     ) %>%
     dplyr::inner_join(p4i_p4b_scenario_lookup, by = c("scenario" = "scenario_p4b")) %>%
     dplyr::mutate(
-      # TODO: this should be extracted into mapping file
       scenario = .data$scenario_p4i,
       scenario_source = stringr::str_to_upper(
         stringr::str_remove(.data$scenario_source, "_")
