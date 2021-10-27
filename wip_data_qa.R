@@ -12,7 +12,7 @@ library(ggplot2)
 # TODO: decide on good graphs to look at
 
 # equity
-qa_annual_profits_eq <- equity_annual_profits %>%
+qa_annual_profits_eq <- annual_profits %>%
   dplyr::mutate(year_of_shock = transition_scenario$year_of_shock)
 
 eq_annual_profits_over_time_ls <- qa_annual_profits_eq %>%
