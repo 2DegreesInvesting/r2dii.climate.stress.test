@@ -7,6 +7,7 @@
 run_prep_calculation_loans(
   year_production_data,
   year_scenario_data,
+  equity_market,
   credit_type
 )
 }
@@ -18,6 +19,11 @@ range compare \code{year_production_data_range_lookup}.}
 \item{year_scenario_data}{Numeric. A vector of length 1 that indicates which
 release year the scenario data should be taken from. For accepted
 range compare \code{year_scenario_data_range_lookup}.}
+
+\item{equity_market}{Character. A string that indicates the location of the
+equity market of the analysis. This is required to match the P4I data
+structure and should use the equity_market_filter passed form the user
+function as input.}
 
 \item{credit_type}{Type of credit. For accepted values please compare
 \code{credit_type_loans}.}
