@@ -19,11 +19,11 @@ run_prep_calculation_loans <- function(year_production_data,
                                        equity_market,
                                        credit_type) {
 
-  if (!dplyr::between(year_production_data, 2020, 2021)) {
+  if (!dplyr::between(year_production_data, min(p4b_production_data_years_lookup), max(p4b_production_data_years_lookup))) {
     stop("Argument year_production_data is outside accepted range.")
   }
 
-  if (!dplyr::between(year_scenario_data, 2020, 2021)) {
+  if (!dplyr::between(year_scenario_data, min(p4b_scenario_data_years_lookup), max(p4b_scenario_data_years_lookup))) {
     stop("Argument year_scenario_data is outside accepted range.")
   }
   ###########################################################################
