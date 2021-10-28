@@ -128,10 +128,8 @@ run_stress_test_bonds <- function(lgd_senior_claims = 0.45,
       scenario_geography_filter = scenario_geography_filter
     )
 
-  pacta_results <- input_data_list$pacta_results
-
   check_scenario_availability(
-    portfolio = pacta_results,
+    portfolio = input_data_list$pacta_results,
     scen_data = input_data_list$scenario_data,
     scenarios = scenarios_filter
   )
@@ -156,7 +154,7 @@ run_stress_test_bonds <- function(lgd_senior_claims = 0.45,
       start_year = start_year
     )
 
-  annual_profits <- pacta_results %>%
+  annual_profits <- input_data_list$pacta_results %>%
     convert_power_cap_to_generation(
       capacity_factors_power = input_data_list$capacity_factors_power,
       baseline_scenario = scenario_to_follow_baseline
@@ -203,7 +201,7 @@ run_stress_test_bonds <- function(lgd_senior_claims = 0.45,
     cols = names(financial_data_pd)
   )
 
-  plan_carsten <- pacta_results %>%
+  plan_carsten <- input_data_list$pacta_results %>%
     dplyr::filter(
       .data$year == .env$start_year,
       .data$scenario %in% .env$scenario_to_follow_ls
