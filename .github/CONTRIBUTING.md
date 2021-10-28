@@ -2,7 +2,7 @@ As a developer you'll need to set two enviornmental variables (e.g.
 in .Renviron):
 
 ```
-# Where to save project agnistic files?
+# Where to save project agnostic files?
 # For example, see 2DII's Dropbox at
 # PortCheck/00_Data/07_AnalysisInputs/ST_INPUTS_MASTER
 ST_DATA_PATH=/a/path
