@@ -208,7 +208,7 @@ run_stress_test_bonds <- function(lgd_senior_claims = 0.45,
 
   plan_carsten <- pacta_results %>%
     dplyr::filter(
-      .data$year == start_year,
+      .data$year == .env$start_year,
       .data$scenario %in% .env$scenario_to_follow_ls
     ) %>%
     inner_join_report_drops(

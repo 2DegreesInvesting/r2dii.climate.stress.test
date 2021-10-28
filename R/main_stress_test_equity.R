@@ -191,7 +191,7 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
       merge_cols = c("company_name", "ald_sector", "technology")
     ) %>%
     fill_annual_profit_cols() %>%
-    # TODO: ADO 879 - note which companies are removed here, due to mismatch
+    # TODO: ADO 879 - note which companies are removed here
     join_price_data(df_prices = df_prices) %>%
     calculate_net_profits() %>%
     dcf_model_techlevel(discount_rate = discount_rate) %>%
@@ -207,7 +207,7 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
 
   plan_carsten <- pacta_results %>%
     dplyr::filter(
-      .data$year == start_year,
+      .data$year == .env$start_year,
       .data$scenario %in% .env$scenario_to_follow_ls
     ) %>%
     inner_join_report_drops(
