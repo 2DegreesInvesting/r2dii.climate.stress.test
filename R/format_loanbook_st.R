@@ -28,8 +28,6 @@
 #' @family utility functions
 #'
 #' @return data frame
-#'
-#' @export
 format_loanbook_st <- function(data,
                                investor_name,
                                portfolio_name,
