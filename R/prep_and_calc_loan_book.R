@@ -26,6 +26,10 @@ run_prep_calculation_loans <- function(year_production_data,
   if (!dplyr::between(year_scenario_data, min(p4b_scenario_data_years_lookup), max(p4b_scenario_data_years_lookup))) {
     stop("Argument year_scenario_data is outside accepted range.")
   }
+
+  if (length(equity_market) != 1) {
+    stop("Input argument equity_market must be of length 1")
+  }
   ###########################################################################
   # Load input datasets------------------------------------------------------
   ###########################################################################
