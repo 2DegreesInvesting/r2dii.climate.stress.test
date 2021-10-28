@@ -80,6 +80,13 @@ calculate_annual_profits <- function(asset_type, input_data_list, scenario_to_fo
   return(annual_profits)
 }
 
+#' Calculate exposure_by_technology_and_company
+#'
+#' Wrapper to calculate exposure_by_technology_and_company.
+#'
+#' @inheritParams calculate_annual_profits
+#'
+#' @return A tibble holding exposure_by_technology_and_company.
 calculate_exposure_by_technology_and_company <- function(asset_type,
                                                          input_data_list, start_year,
                                                          scenario_to_follow_ls) {
