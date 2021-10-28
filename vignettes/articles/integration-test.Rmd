@@ -1,0 +1,51 @@
+---
+title: "Integration test"
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r}
+library(purrr)
+library(fs)
+library(here)
+library(r2dii.climate.stress.test)
+packageVersion("r2dii.climate.stress.test")
+```
+
+Setup
+
+```{r}
+readLines(here::here(".Renviron"))
+```
+
+Empty outputs/
+
+```{r}
+outputs <- function() {
+  dir_ls(path(Sys.getenv("ST_PROJECT_FOLDER"), "outputs"))
+}
+
+outputs()
+file_delete(outputs())
+
+outputs()
+```
+
+Populate outputs/
+
+```{r}
+done <- quietly(run_stress_test_bonds)()
+outputs()
+```
+
+Inspect the last object
+
+```{r}
+done
+```
+

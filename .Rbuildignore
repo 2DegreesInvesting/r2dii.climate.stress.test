@@ -24,3 +24,5 @@
 ^wip_data_qa\.R$
 ^\.github$
 ^\.Renviron$
+^inst/ns/model_parameters/\.gitkeep\.txt$
+^vignettes/articles$
