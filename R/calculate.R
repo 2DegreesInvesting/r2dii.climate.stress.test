@@ -1,3 +1,23 @@
+#' Calculate annual profits
+#'
+#' Wrapper function to calculate annual profits.
+#'
+#' @inheritParams run_stress_test_equity
+#' @param asset_type String holding type of asset.
+#' @param input_data_list List with project agnostic and project specific input data
+#' @param scenario_to_follow_baseline Character. A string that indicates which
+#'   of the scenarios included in the analysis should be used to set the
+#'   baseline technology trajectories.
+#' @param scenario_to_follow_ls Character. A string that indicates which
+#'   of the scenarios included in the analysis should be used to set the
+#'   late & sudden technology trajectories.
+#' @param transition_scenario Tibble with 1 row holding at least variables
+#'   `year_of_shock` and `duration_of_shock`.
+#' @param start_year Numeric, holding start year of analysis.
+#' @param end_year Numeric, holding end year of analysis.
+#' @param time_horizon Considered timeframe for PACTA analysis.
+#'
+#' @return A tibble holding annual profits
 calculate_annual_profits <- function(asset_type, input_data_list, scenario_to_follow_baseline,
                                      scenario_to_follow_ls, transition_scenario, start_year,
                                      end_year, time_horizon, discount_rate) {
