@@ -220,11 +220,6 @@ run_prep_calculation_loans <- function(credit_type = "credit_limit") {
     # TODO why distinct_all?
     dplyr::distinct_all()
 
-  loan_share %>%
-    readr::write_csv(
-      file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", "overview_companies.csv")
-    )
-
   #### Calculate tech level loan book size and value share----------------------
   # TODO: figure out a way to get tech share. Is this still relevant?
 
