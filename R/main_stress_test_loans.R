@@ -105,9 +105,6 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
   # TODO: next version to allow term input on holding/company level
   dplyr::mutate(term = term)
 
-  # sector_credit_type <- paste0("sector_loan_size_", credit_type)
-  # credit_currency <- paste0("loan_size_", credit_type, "_currency")
-
   sector_exposures <- readRDS(file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", "overview_portfolio.rda"))
   # TODO: add the wrangling step as in eq/cb
   # TODO: potentially convert currencies to USD or at least common currency
