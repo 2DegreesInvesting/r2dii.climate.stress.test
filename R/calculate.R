@@ -79,3 +79,37 @@ calculate_annual_profits <- function(asset_type, input_data_list, scenario_to_fo
 
   return(annual_profits)
 }
+
+calculate_exposure_by_technology_and_company <- function(asset_type,
+                                                         input_data_list, start_year,
+                                                         scenario_to_follow_ls) {
+
+  financial_data_pd <- input_data_list$financial_data %>%
+    dplyr::select(company_name, ald_sector, technology, pd)
+
+  report_duplicates(
+    data = financial_data_pd,
+    cols = names(financial_data_pd)
+  )
+
+  plan_carsten <- input_data_list$pacta_results %>%
+    dplyr::filter(
+      .data$year == .env$start_year,
+      .data$scenario %in% .env$scenario_to_follow_ls
+    ) %>%
+    inner_join_report_drops(
+      data_y = financial_data_pd,
+      name_x = "plan carsten", name_y = "financial data",
+      merge_cols = c("company_name", "ald_sector", "technology")
+    ) %>%
+    dplyr::select(
+      investor_name, portfolio_name, company_name, ald_sector, technology,
+      scenario_geography, year, plan_carsten, plan_sec_carsten, term, pd
+    )
+
+  report_duplicates(
+    data = plan_carsten,
+    cols = names(plan_carsten)
+  )
+
+}
