@@ -95,7 +95,11 @@ calculate_exposure_by_technology_and_company <- function(asset_type,
     subset_cols <- c("company_name", "corporate_bond_ticker", "ald_sector", "technology", "pd")
     merge_cols <- c("company_name", "id" = "corporate_bond_ticker", "ald_sector", "technology")
   } else {
-    subset_cols <- c("company_name", "ald_sector", "technology", "pd")
+    if (asset_type == "equity") {
+      subset_cols <- c("company_name", "ald_sector", "technology", "pd")
+    } else {
+      subset_cols <- c("company_name", "company_id", "ald_sector", "technology", "pd")
+    }
     merge_cols <- c("company_name", "ald_sector", "technology")
   }
 
@@ -116,7 +120,7 @@ calculate_exposure_by_technology_and_company <- function(asset_type,
       data_y = financial_data_subset,
       name_x = "plan carsten", name_y = "financial data",
       merge_cols = merge_cols
-    ) %>%
+    ) %>% # TODO: ADO 879 - note which companies are removed here, what to do with entries that have NAs for pd?
     dplyr::select(
       investor_name, portfolio_name, company_name, ald_sector, technology,
       scenario_geography, year, plan_carsten, plan_sec_carsten, term, pd
