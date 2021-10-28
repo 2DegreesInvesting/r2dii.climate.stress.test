@@ -271,15 +271,15 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
   )
 
   results <- company_asset_value_at_risk(
-      data = annual_profits,
-      terminal_value = terminal_value,
-      shock_scenario = transition_scenario,
-      div_netprofit_prop_coef = div_netprofit_prop_coef,
-      plan_carsten = plan_carsten,
-      port_aum = port_aum,
-      flat_multiplier = 0.15,
-      exclusion = excluded_companies
-    )
+    data = annual_profits,
+    terminal_value = terminal_value,
+    shock_scenario = transition_scenario,
+    div_netprofit_prop_coef = div_netprofit_prop_coef,
+    plan_carsten = plan_carsten,
+    port_aum = port_aum,
+    flat_multiplier = 0.15,
+    exclusion = excluded_companies
+  )
 
   overall_pd_changes <- annual_profits %>%
     calculate_pd_change_overall(
@@ -312,10 +312,11 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
   # TODO: ADO 879 - note which companies produce missing results due to
   # insufficient input information (e.g. NAs for financials or 0 equity value)
 
-
-  write_stress_test_results(results = results,
-                            expected_loss = expected_loss,
-                            annual_pd_changes = annual_pd_changes,
-                            asset_type = "loans",
-                            calculation_level = calculation_level)
+  write_stress_test_results(
+    results = results,
+    expected_loss = expected_loss,
+    annual_pd_changes = annual_pd_changes,
+    asset_type = "loans",
+    calculation_level = calculation_level
+  )
 }

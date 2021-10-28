@@ -33,7 +33,6 @@ run_stress_test_bonds <- function(lgd_senior_claims = 0.45,
                                   shock_year = 2030,
                                   term = 2,
                                   company_exclusion = TRUE) {
-
   validate_input_values(
     lgd_senior_claims = lgd_senior_claims,
     lgd_subordinated_claims = lgd_subordinated_claims,
@@ -269,9 +268,11 @@ run_stress_test_bonds <- function(lgd_senior_claims = 0.45,
   # TODO: ADO 879 - note which companies produce missing results due to
   # insufficient input information (e.g. NAs for financials or 0 equity value)
 
-  write_stress_test_results(results = results,
-                            expected_loss = expected_loss,
-                            annual_pd_changes = annual_pd_changes,
-                            asset_type = "bonds",
-                            calculation_level = calculation_level)
+  write_stress_test_results(
+    results = results,
+    expected_loss = expected_loss,
+    annual_pd_changes = annual_pd_changes,
+    asset_type = "bonds",
+    calculation_level = calculation_level
+  )
 }

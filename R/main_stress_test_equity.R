@@ -121,11 +121,11 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
   ) %>%
     c(list(pacta_results = pacta_results, sector_exposures = sector_exposures)) %>%
     check_and_filter_data(
-    start_year = start_year,
-    end_year = end_year,
-    scenarios_filter = scenarios_filter,
-    scenario_geography_filter = scenario_geography_filter
-  )
+      start_year = start_year,
+      end_year = end_year,
+      scenarios_filter = scenarios_filter,
+      scenario_geography_filter = scenario_geography_filter
+    )
 
   pacta_results <- input_data_list$pacta_results
   excluded_companies <- input_data_list$excluded_companies
