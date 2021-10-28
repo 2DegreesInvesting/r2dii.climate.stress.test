@@ -205,7 +205,7 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
   )
 
   exposure_by_technology_and_company <- calculate_exposure_by_technology_and_company(
-    asset_type = "equity",
+    asset_type = "loans",
     input_data_list = input_data_list,
     start_year = start_year,
     scenario_to_follow_ls = scenario_to_follow_ls
