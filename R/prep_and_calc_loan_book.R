@@ -280,13 +280,28 @@ run_prep_calculation_loans <- function(year_production_data,
     ) %>%
     dplyr::rename(
       financial_sector = .data$sector_ald,
-      valid_value_usd = !!rlang::sym(sector_credit_type)
+      valid_value_usd = !!rlang::sym(sector_credit_type),
+      # TODO: convert currencies to USD or at least common currency
+      currency = !!rlang::sym(credit_currency)
     ) %>%
     dplyr::mutate(
       investor_name = investor_name_placeholder,
-      portfolio_name = investor_name_placeholder
+      portfolio_name = investor_name_placeholder,
+      asset_type = "Loans",
+      # ADO 1933 - all remaining value can be assumed valid. Possibly add everything that has been removed as invalid.
+      valid_input = TRUE
+    ) %>%
+    dplyr::group_by(.data$investor_name, .data$portfolio_name, .data$asset_type, .data$valid_input) %>%
+    dplyr::mutate(asset_value_usd = sum(.data$valid_value_usd, na.rm = TRUE)) %>%
+    dplyr::ungroup() %>%
+    dplyr::group_by(.data$investor_name, .data$portfolio_name, .data$valid_input) %>%
+    dplyr::mutate(portfolio_value_usd = sum(.data$valid_value_usd, na.rm = TRUE)) %>%
+    dplyr::ungroup() %>%
+    dplyr::select(
+      .data$investor_name, .data$portfolio_name, .data$asset_type,
+      .data$financial_sector, .data$valid_input, .data$valid_value_usd,
+      .data$asset_value_usd, .data$portfolio_value_usd, .data$currency
     )
-    # TODO: potentially convert currencies to USD or at least common currency
 
   portfolio_overview %>%
     saveRDS(
