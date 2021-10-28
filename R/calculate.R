@@ -68,7 +68,7 @@ calculate_annual_profits <- function(asset_type, input_data_list, scenario_to_fo
     # TODO: ADO 879 - note which companies are removed here
     join_price_data(df_prices = price_data) %>%
     calculate_net_profits() %>%
-    dcf_model_techlevel(discount_rate = discount_rate) %>%
+    dcf_model_techlevel(discount_rate = discount_rate) %>% # TODO: ADO 879 - note rows with zero profits/NPVs will produce NaN in the Merton model
     dplyr::filter(!is.na(company_id))
 
   return(annual_profits)
