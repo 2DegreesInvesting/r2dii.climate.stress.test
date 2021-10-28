@@ -248,7 +248,7 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
 
   expected_loss <- company_expected_loss(
     data = overall_pd_changes,
-    loss_given_default = lgd_subordinated_claims, # TODO: which one?
+    loss_given_default = lgd_subordinated_claims,
     exposure_at_default = plan_carsten,
     port_aum = port_aum
   )
