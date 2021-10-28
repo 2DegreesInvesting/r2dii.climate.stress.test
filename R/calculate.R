@@ -74,7 +74,8 @@ calculate_annual_profits <- function(asset_type, input_data_list, scenario_to_fo
     # TODO: ADO 879 - note which companies are removed here
     join_price_data(df_prices = price_data) %>%
     calculate_net_profits() %>%
-    dcf_model_techlevel(discount_rate = discount_rate) %>% # TODO: ADO 879 - note rows with zero profits/NPVs will produce NaN in the Merton model
+    dcf_model_techlevel(discount_rate = discount_rate) %>%
+    # TODO: ADO 879 - note rows with zero profits/NPVs will produce NaN in the Merton model
     dplyr::filter(!is.na(company_id))
 
   return(annual_profits)
@@ -90,22 +91,21 @@ calculate_annual_profits <- function(asset_type, input_data_list, scenario_to_fo
 calculate_exposure_by_technology_and_company <- function(asset_type,
                                                          input_data_list, start_year,
                                                          scenario_to_follow_ls) {
-
-  financial_data_pd <- input_data_list$financial_data %>%
+  financial_data_subset <- input_data_list$financial_data %>%
     dplyr::select(company_name, ald_sector, technology, pd)
 
   report_duplicates(
-    data = financial_data_pd,
-    cols = names(financial_data_pd)
+    data = financial_data_subset,
+    cols = names(financial_data_subset)
   )
 
-  plan_carsten <- input_data_list$pacta_results %>%
+  exposure_by_technology_and_company <- input_data_list$pacta_results %>%
     dplyr::filter(
       .data$year == .env$start_year,
       .data$scenario %in% .env$scenario_to_follow_ls
     ) %>%
     inner_join_report_drops(
-      data_y = financial_data_pd,
+      data_y = financial_data_subset,
       name_x = "plan carsten", name_y = "financial data",
       merge_cols = c("company_name", "ald_sector", "technology")
     ) %>%
@@ -115,8 +115,9 @@ calculate_exposure_by_technology_and_company <- function(asset_type,
     )
 
   report_duplicates(
-    data = plan_carsten,
-    cols = names(plan_carsten)
+    data = exposure_by_technology_and_company,
+    cols = names(exposure_by_technology_and_company)
   )
 
+  return(exposure_by_technology_and_company)
 }
