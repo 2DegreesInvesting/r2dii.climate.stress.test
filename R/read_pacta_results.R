@@ -3,9 +3,6 @@
 #'
 #' @param path A string that points to the location of the file containing the
 #'   pacta results
-#' @param asset_type A character vector of length 1 that indicates the type of
-#'   asset to be read in. Wrangling steps vary by asset, so this is essential.
-#'   Allowed values are "equity", "bonds", "loans".
 #' @param level A character vector of length 1 that indicates whether results on
 #'   the company level or on the portfolio level are to be analyzed.
 #'   Allowed values are "company", "portfolio".
@@ -14,17 +11,12 @@
 #'
 #' @export
 read_pacta_results <- function(path = NULL,
-                               asset_type = NULL,
                                level = NULL) {
   path %||% stop("Must provide 'path'")
-  asset_type %||% stop("Must provide 'asset_type'")
   level %||% stop("Must provide 'level'")
 
   level_allowed <- level %in% c("company", "portfolio")
   stopifnot(level_allowed)
-
-  asset_type_allowed <- asset_type %in% c("equity", "bonds", "loans")
-  stopifnot(asset_type_allowed)
 
   valid_input_file_path <- file.exists(file.path(path))
   stopifnot(valid_input_file_path)
