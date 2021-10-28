@@ -1152,3 +1152,7 @@ expected loss = share price change \* company exposure
 
 By default, the module will estimate that impact for all relevant
 companies in the portfolio at hand.
+
+-----
+
+[CONTRIBUTING](https://github.com/2DegreesInvesting/r2dii.climate.stress.test/blob/master/.github/CONTRIBUTING.md)
