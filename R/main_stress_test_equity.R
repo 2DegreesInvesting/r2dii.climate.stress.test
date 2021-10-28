@@ -128,8 +128,6 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
     )
 
   pacta_results <- input_data_list$pacta_results
-  excluded_companies <- input_data_list$excluded_companies
-  financial_data <- input_data_list$financial_data
 
   check_scenario_availability(
     portfolio = pacta_results,
@@ -180,12 +178,12 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
       analysis_time_frame = time_horizon
     ) %>%
     exclude_companies(
-      exclusion = excluded_companies,
+      exclusion = input_data_list$excluded_companies,
       scenario_baseline = scenario_to_follow_baseline,
       scenario_ls = scenario_to_follow_ls
     ) %>%
     inner_join_report_drops(
-      data_y = financial_data,
+      data_y = input_data_list$financial_data,
       name_x = "annual profits", name_y = "financial data",
       merge_cols = c("company_name", "ald_sector", "technology")
     ) %>%
@@ -196,7 +194,7 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
     dcf_model_techlevel(discount_rate = discount_rate) %>%
     dplyr::filter(!is.na(company_id))
 
-  financial_data_pd <- financial_data %>%
+  financial_data_pd <- input_data_list$financial_data %>%
     dplyr::select(company_name, ald_sector, technology, pd)
 
   report_duplicates(
@@ -232,7 +230,7 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
     plan_carsten = plan_carsten,
     port_aum = port_aum,
     flat_multiplier = 1,
-    exclusion = excluded_companies
+    exclusion = input_data_list$excluded_companies
   )
 
   overall_pd_changes <- annual_profits %>%
