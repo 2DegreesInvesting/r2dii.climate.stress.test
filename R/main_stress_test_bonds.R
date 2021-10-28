@@ -95,7 +95,6 @@ run_stress_test_bonds <- function(lgd_senior_claims = 0.45,
       time_horizon = time_horizon,
       scenario_geography_filter = scenario_geography_filter,
       scenarios_filter = scenarios_filter,
-      # FIXME: passing a config list may be unsafe. Could have length > 1
       equity_market_filter = cfg$Lists$Equity.Market.List
     ) %>%
     # ADO 1943 - for the time being, one global term value is set by the user.
