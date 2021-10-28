@@ -56,11 +56,17 @@ calculate_annual_profits <- function(asset_type, input_data_list, scenario_to_fo
       scenario_ls = scenario_to_follow_ls
     )
 
+  if (asset_type == "bonds") {
+    merge_cols <- c("company_name", "id" = "corporate_bond_ticker", "ald_sector", "technology")
+  } else {
+    merge_cols <- c("company_name", "ald_sector", "technology")
+  }
+
   extended_pacta_results_with_financials <- extended_pacta_results %>%
     inner_join_report_drops(
       data_y = input_data_list$financial_data,
       name_x = "annual profits", name_y = "financial data",
-      merge_cols = c("company_name", "ald_sector", "technology")
+      merge_cols = merge_cols
     ) %>%
     fill_annual_profit_cols()
 
