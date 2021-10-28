@@ -4,7 +4,7 @@
 #'   `credit_type_loans`.
 #' @return NULL
 #' @export
-run_prep_calculation_loans <- function(credit_type = "outstanding") {
+run_prep_calculation_loans <- function(credit_type = "credit_limit") {
 
   #### Validate input-----------------------------------------------------------
 
