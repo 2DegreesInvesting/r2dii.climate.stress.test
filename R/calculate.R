@@ -91,8 +91,16 @@ calculate_annual_profits <- function(asset_type, input_data_list, scenario_to_fo
 calculate_exposure_by_technology_and_company <- function(asset_type,
                                                          input_data_list, start_year,
                                                          scenario_to_follow_ls) {
+  if (asset_type == "bonds") {
+    subset_cols <- c("company_name", "corporate_bond_ticker", "ald_sector", "technology", "pd")
+    merge_cols <- c("company_name", "id" = "corporate_bond_ticker", "ald_sector", "technology")
+  } else {
+    subset_cols <- c("company_name", "ald_sector", "technology", "pd")
+    merge_cols <- c("company_name", "ald_sector", "technology")
+  }
+
   financial_data_subset <- input_data_list$financial_data %>%
-    dplyr::select(company_name, ald_sector, technology, pd)
+    dplyr::select(!!!rlang::syms(subset_cols))
 
   report_duplicates(
     data = financial_data_subset,
@@ -107,7 +115,7 @@ calculate_exposure_by_technology_and_company <- function(asset_type,
     inner_join_report_drops(
       data_y = financial_data_subset,
       name_x = "plan carsten", name_y = "financial data",
-      merge_cols = c("company_name", "ald_sector", "technology")
+      merge_cols = merge_cols
     ) %>%
     dplyr::select(
       investor_name, portfolio_name, company_name, ald_sector, technology,
