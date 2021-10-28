@@ -8,7 +8,7 @@ run_prep_calculation_loans(credit_type = "credit_limit")
 }
 \arguments{
 \item{credit_type}{Type of credit. For accepted values please compare
-\code{credit_type_loans}.}
+\code{credit_type_lookup}.}
 }
 \description{
 Run stress testing for loans
