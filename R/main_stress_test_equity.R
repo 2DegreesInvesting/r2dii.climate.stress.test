@@ -129,12 +129,11 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
 
   pacta_results <- input_data_list$pacta_results
   excluded_companies <- input_data_list$excluded_companies
-  scenario_data <- input_data_list$scenario_data
   financial_data <- input_data_list$financial_data
 
   check_scenario_availability(
     portfolio = pacta_results,
-    scen_data = scenario_data,
+    scen_data = input_data_list$scenario_data,
     scenarios = scenarios_filter
   )
 
@@ -164,7 +163,7 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
       baseline_scenario = scenario_to_follow_baseline
     ) %>%
     extend_scenario_trajectory(
-      scenario_data = scenario_data,
+      scenario_data = input_data_list$scenario_data,
       start_analysis = start_year,
       end_analysis = end_year,
       time_frame = time_horizon
