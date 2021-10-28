@@ -48,3 +48,54 @@ technologies_lookup <- c(
 
 # holding allocation method used for stress testing
 allocation_method_lookup <- "portfolio_weight"
+
+# technology and sector mapping between P4I and P4B
+# HDV and shipping not consistently defined across both versions at this time
+p4i_p4b_sector_technology_lookup <- tibble::tribble(
+  ~sector_p4b,   ~technology_p4b,             ~sector_p4i,    ~technology_p4i,
+  "automotive",  "electric",                 "Automotive",   "Electric",
+  "automotive",  "hybrid",                   "Automotive",   "Hybrid",
+  "automotive",  "fuelcell",                 "Automotive",   "FuelCell",
+  "automotive",  "ice",                      "Automotive",   "ICE",
+  "coal",        "coal",                     "Coal",         "Coal",
+  "oil and gas", "gas",                      "Oil&Gas",      "Gas",
+  "oil and gas", "oil",                      "Oil&Gas",      "Oil",
+  "power",       "coalcap",                  "Power",        "CoalCap",
+  "power",       "gascap",                   "Power",        "GasCap",
+  "power",       "hydrocap",                 "Power",        "HydroCap",
+  "power",       "nuclearcap",               "Power",        "NuclearCap",
+  "power",       "oilcap",                   "Power",        "OilCap",
+  "power",       "renewablescap",            "Power",        "RenewablesCap",
+  "aviation",    "freight",                  "Aviation",     "Freight",
+  "aviation",    "passenger",                "Aviation",     "Passenger",
+  "cement",      "grinding",                 "Cement",       "Grinding",
+  "cement",      "integrated facility",      "Cement",       "Integrated facility",
+  "steel",       "ac-electric arc furnace",  "Steel",        "Ac-Electric Arc Furnace",
+  "steel",       "bof shop",                 "Steel",        "Bof Shop",
+  "steel",       "dc-electric arc furnace",  "Steel",        "Dc-Electric Arc Furnace",
+  "steel",       "open hearth meltshop",     "Steel",        "Open Hearth Meltshop"
+)
+
+# scenario mapping between P4I and P4B
+# TODO: should the implicit mappin a la sps is the follow up NPS be hapening elsewhere?
+p4i_p4b_scenario_lookup <- tibble::tribble(
+  ~scenario_p4b,   ~scenario_p4i,
+  "target_cps",   "CPS",
+  "target_rts",   "NPS",
+  "target_sps",   "NPS",
+  "target_steps", "NPS",
+  "target_2ds",   "SDS",
+  "target_sds",   "SDS",
+  "target_b2ds",  "B2DS",
+)
+
+# P4B scenario list
+p4b_scenarios_lookup <- c("target_b2ds", "target_cps", "target_rts",
+                          "target_sps", "target_steps", "target_2ds",
+                          "target_sds")
+
+# allowed input years p4b production data file
+p4b_production_data_years_lookup <- c(2020, 2021)
+
+# allowed input years p4b scenario data file
+p4b_scenario_data_years_lookup <- c(2020, 2021)

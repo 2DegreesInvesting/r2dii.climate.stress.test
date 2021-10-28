@@ -270,7 +270,6 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
 
   pacta_equity_results_full <- read_pacta_results(
     path = equity_path,
-    asset_type = "equity",
     level = calculation_level
   )
 
@@ -461,7 +460,6 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
 
   pacta_bonds_results_full <- read_pacta_results(
     path = bonds_path,
-    asset_type = "bonds",
     level = calculation_level
   )
 

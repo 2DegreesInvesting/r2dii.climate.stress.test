@@ -8,16 +8,12 @@
 validate_input_values <- function(lgd_senior_claims, lgd_subordinated_claims,
                                   terminal_value, risk_free_rate, discount_rate,
                                   div_netprofit_prop_coef, shock_year, term,
-                                  company_exclusion, credit_type = NULL) {
+                                  company_exclusion) {
 
   input_args <- list(
     lgd_senior_claims, lgd_subordinated_claims, terminal_value, risk_free_rate,
     discount_rate, div_netprofit_prop_coef, shock_year, term, company_exclusion
   )
-
-  if (!is.null(credit_type)) {
-    inputs_args <- c(input_args, credit_type)
-  }
 
   if (any(purrr::map_int(input_args, length) != 1)) {
     stop("Input arguments to stress test run need to be of length 1")
@@ -67,9 +63,5 @@ validate_input_values <- function(lgd_senior_claims, lgd_subordinated_claims,
   # maturity of a portfolio, this check will need to be removed
   if (!term %% 1 == 0) {
     stop("Argmuent term must be a whole number")
-  }
-
-  if (!is.null(credit_type) && !credit_type %in% credit_type_lookup) {
-    stop("Argument credit_type does not hold an accepted value.")
   }
 }

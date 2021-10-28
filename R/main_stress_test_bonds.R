@@ -88,7 +88,6 @@ run_stress_test_bonds <- function(lgd_senior_claims = 0.45,
 
   pacta_results <- read_pacta_results(
     path = path,
-    asset_type = "bonds",
     level = calculation_level
   ) %>%
     wrangle_and_check_pacta_results(
@@ -104,7 +103,7 @@ run_stress_test_bonds <- function(lgd_senior_claims = 0.45,
 
   # Load sector exposures of portfolio------------------------
   sector_exposures <- readRDS(file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", "overview_portfolio.rda")) %>%
-    wrangle_and_check_sector_exposures_eq_cb(asset_type = "Bonds")
+    wrangle_and_check_sector_exposures(asset_type = "Bonds")
 
   # Load policy shock transition scenarios--------------------
   transition_scenario <- generate_transition_shocks(

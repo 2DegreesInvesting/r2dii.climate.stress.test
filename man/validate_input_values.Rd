@@ -13,8 +13,7 @@ validate_input_values(
   div_netprofit_prop_coef,
   shock_year,
   term,
-  company_exclusion,
-  credit_type = NULL
+  company_exclusion
 )
 }
 \arguments{
@@ -48,9 +47,6 @@ range compare \code{term_range_lookup}.}
 
 \item{company_exclusion}{Boolean, indicating if companies provided in dataset
 excluded_companies.csv shall be excluded.}
-
-\item{credit_type}{Type of credit. For accepted values please compare
-\code{credit_type_loans}.}
 }
 \description{
 Checks that user inputs are of length 1 and within defined ranges.

@@ -66,7 +66,6 @@ test_that("Error is thrown if an input value is of length other than 1", {
     div_netprofit_prop_coef = 1,
     shock_year = 2030,
     term = 4,
-    company_exclusion = TRUE,
-    credit_type = "outstanding"
+    company_exclusion = TRUE
   ), "length 1")
 })

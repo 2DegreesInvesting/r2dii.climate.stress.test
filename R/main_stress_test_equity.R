@@ -86,7 +86,6 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
 
   pacta_results <- read_pacta_results(
     path = path,
-    asset_type = "equity",
     level = calculation_level
   ) %>%
     wrangle_and_check_pacta_results(
@@ -102,7 +101,7 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
 
   # Load sector exposures of portfolio------------------------
   sector_exposures <- readRDS(file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", "overview_portfolio.rda")) %>%
-    wrangle_and_check_sector_exposures_eq_cb(asset_type = "Equity")
+    wrangle_and_check_sector_exposures(asset_type = "Equity")
 
   # Load policy shock transition scenarios--------------------
   transition_scenario <- generate_transition_shocks(
