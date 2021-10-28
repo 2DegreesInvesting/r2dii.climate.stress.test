@@ -94,9 +94,7 @@ format_loanbook_st <- function(data,
     ) %>%
     dplyr::group_by(!!!rlang::syms(group_vars)) %>%
     dplyr::mutate(
-      # TODO: This ensure the first letter is written as capital.
-      # May not be safe for geographies with more than one word
-      scenario_geography = paste0(toupper(substr(.data$scenario_geography, 1, 1)), substr(.data$scenario_geography, 2, nchar(.data$scenario_geography))),
+      scenario_geography = stringr::str_to_title(.data$scenario_geography),
       plan_sec_prod = sum(.data$plan_tech_prod, na.rm = TRUE),
       plan_sec_carsten = sum(.data$plan_carsten, na.rm = TRUE)
     ) %>%
