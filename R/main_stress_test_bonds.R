@@ -88,7 +88,6 @@ run_stress_test_bonds <- function(lgd_senior_claims = 0.45,
 
   pacta_results <- read_pacta_results(
     path = path,
-    asset_type = "bonds",
     level = calculation_level
   ) %>%
     wrangle_and_check_pacta_results(

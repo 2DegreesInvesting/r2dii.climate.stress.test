@@ -104,7 +104,6 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
 
   pacta_results <- read_pacta_results(
     path = path,
-    asset_type = "loans",
     level = calculation_level
   ) %>%
   wrangle_and_check_pacta_results(
