@@ -4,7 +4,7 @@
 \alias{run_prep_calculation_loans}
 \title{Run stress testing for loans}
 \usage{
-run_prep_calculation_loans(credit_type = "outstanding")
+run_prep_calculation_loans(credit_type = "credit_limit")
 }
 \arguments{
 \item{credit_type}{Type of credit. For accepted values please compare
