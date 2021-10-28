@@ -22,8 +22,6 @@
 #'   range compare `term_range_lookup`.
 #' @param company_exclusion Boolean, indicating if companies provided in dataset
 #'   excluded_companies.csv shall be excluded.
-#' @param credit_type Type of credit. For accepted values please compare
-#'   `credit_type_loans`.
 #' @return NULL
 #' @export
 run_stress_test_loans <- function(lgd_senior_claims = 0.45,
@@ -34,8 +32,7 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
                                   div_netprofit_prop_coef = 1,
                                   shock_year = 2030,
                                   term = 2,
-                                  company_exclusion = TRUE,
-                                  credit_type = "credit_limit") {
+                                  company_exclusion = TRUE) {
   validate_input_values(
     lgd_senior_claims = lgd_senior_claims,
     lgd_subordinated_claims = lgd_subordinated_claims,
@@ -45,8 +42,7 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
     div_netprofit_prop_coef = div_netprofit_prop_coef,
     shock_year = shock_year,
     term = term,
-    company_exclusion = company_exclusion,
-    credit_type = credit_type
+    company_exclusion = company_exclusion
   )
 
   scenario_to_follow_baseline <- baseline_scenario_lookup
