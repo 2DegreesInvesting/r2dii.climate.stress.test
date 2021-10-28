@@ -1,38 +1,35 @@
 #' Run stress testing for loans
 #'
-#' @param year_production_data Numeric. A vector of length 1 that indicates which
-#'   release year the production data should be taken from. For accepted
-#'   range compare `year_production_data_range_lookup`.
-#' @param year_scenario_data Numeric. A vector of length 1 that indicates which
-#'   release year the scenario data should be taken from. For accepted
-#'   range compare `year_scenario_data_range_lookup`.
-#' @param equity_market Character. A string that indicates the location of the
-#'   equity market of the analysis. This is required to match the P4I data
-#'   structure and should use the equity_market_filter passed form the user
-#'   function as input.
 #' @param credit_type Type of credit. For accepted values please compare
 #'   `credit_type_loans`.
 #' @return NULL
 #' @export
-run_prep_calculation_loans <- function(year_production_data,
-                                       year_scenario_data,
-                                       equity_market,
-                                       credit_type) {
+run_prep_calculation_loans <- function(credit_type = "outstanding") {
 
-  if (!dplyr::between(year_production_data, min(p4b_production_data_years_lookup), max(p4b_production_data_years_lookup))) {
-    stop("Argument year_production_data is outside accepted range.")
+  #### Validate input-----------------------------------------------------------
+
+  if (!is.null(credit_type) && !credit_type %in% credit_type_lookup) {
+    stop("Argument credit_type does not hold an accepted value.")
   }
 
-  if (!dplyr::between(year_scenario_data, min(p4b_scenario_data_years_lookup), max(p4b_scenario_data_years_lookup))) {
-    stop("Argument year_scenario_data is outside accepted range.")
+  #### Load and validate input parameters---------------------------------------
+
+  cfg <- config::get(file = file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", "AnalysisParameters.yml"))
+
+  start_year <- cfg$AnalysisPeriod$Years.Startyear
+  if (!dplyr::between(start_year, min(p4b_production_data_years_lookup), max(p4b_production_data_years_lookup))) {
+    stop("start_year is outside accepted range for production data inputs.")
+  }
+  if (!dplyr::between(start_year, min(p4b_scenario_data_years_lookup), max(p4b_scenario_data_years_lookup))) {
+    stop("start_year is outside accepted range for scenario data inputs.")
   }
 
+  equity_market <- cfg$Lists$Equity.Market.List
   if (length(equity_market) != 1) {
     stop("Input argument equity_market must be of length 1")
   }
-  ###########################################################################
-  # Load input datasets------------------------------------------------------
-  ###########################################################################
+
+  #### Load input data sets-----------------------------------------------------
 
   # raw loan book
   loanbook <- readr::read_csv(
@@ -99,7 +96,7 @@ run_prep_calculation_loans <- function(year_production_data,
   regions <- r2dii.data::region_isos
 
   # Production forecast data
-  if (year_production_data == 2020) {
+  if (start_year == 2020) {
     production_forecast_data <- readr::read_csv(
       file.path(get_st_data_path(), "ald_15092020.csv"),
       col_types = readr::cols(
@@ -116,7 +113,7 @@ run_prep_calculation_loans <- function(year_production_data,
         ald_timestamp = "c"
       )
     )
-  } else if (year_production_data == 2021) {
+  } else if (start_year == 2021) {
     production_forecast_data <- readxl::read_xlsx(
       file.path(get_st_data_path(), "2021-07-15_AR_2020Q4_PACTA-Data (3).xlsx"),
       sheet = "Company Indicators - PACTA"
@@ -125,7 +122,7 @@ run_prep_calculation_loans <- function(year_production_data,
 
   # Scenario data - market share
   scenario_data_market_share <- readr::read_csv(
-    file.path(get_st_data_path(), glue::glue("scenario_{year_scenario_data}.csv")),
+    file.path(get_st_data_path(), glue::glue("scenario_{start_year}.csv")),
     col_types = readr::cols(
       scenario_source = "c",
       scenario = "c",
@@ -140,7 +137,7 @@ run_prep_calculation_loans <- function(year_production_data,
 
   # Scenario data - emission intensity
   scenario_data_emissions_intensity <- readr::read_csv(
-    file.path(get_st_data_path(), glue::glue("co2_intensity_scenario_{year_scenario_data}.csv")),
+    file.path(get_st_data_path(), glue::glue("co2_intensity_scenario_{start_year}.csv")),
     col_types = readr::cols(
       scenario_source = "c",
       scenario = "c",
@@ -152,9 +149,7 @@ run_prep_calculation_loans <- function(year_production_data,
     )
   )
 
-  ###########################################################################
-  # Wrangle and prepare data-------------------------------------------------
-  ###########################################################################
+  #### Wrangle and prepare data-------------------------------------------------
 
   # TODO: what to do with negative credit limits?
   matched_non_negative <- matched %>%
@@ -190,9 +185,7 @@ run_prep_calculation_loans <- function(year_production_data,
     )
 
 
-  ###########################################################################
-  # Calculate loan-tech level loan book size and value share-----------------
-  ###########################################################################
+  #### Calculate loan-tech level loan book size and value share-----------------
 
   loan_share <- matched_non_negative %>%
     dplyr::mutate(
@@ -232,14 +225,10 @@ run_prep_calculation_loans <- function(year_production_data,
       file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", "overview_companies.csv")
     )
 
-  ###########################################################################
-  # Calculate tech level loan book size and value share----------------------
-  ###########################################################################
+  #### Calculate tech level loan book size and value share----------------------
   # TODO: figure out a way to get tech share. Is this still relevant?
 
-  ###########################################################################
-  # Calculate sector level loan book size and value share--------------------
-  ###########################################################################
+  #### Calculate sector level loan book size and value share--------------------
 
   sector_share <- matched_non_negative %>%
     dplyr::group_by(
@@ -264,7 +253,8 @@ run_prep_calculation_loans <- function(year_production_data,
       .data$loan_size_credit_limit_currency
     )
 
-  #----Wrangle portfolio overview to P4I format--------------------
+  #### Wrangle portfolio overview to P4I format---------------------------------
+
   sector_credit_type <- glue::glue("sector_loan_size_{credit_type}")
   credit_currency <- glue::glue("loan_size_{credit_type}_currency")
 
@@ -308,11 +298,8 @@ run_prep_calculation_loans <- function(year_production_data,
       file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", "overview_portfolio.rda")
     )
 
-  ###########################################################################
-  # Calculate company level PACTA results------------------------------------
-  ###########################################################################
+  #### Calculate unweighted company level PACTA results-------------------------
 
-  #----Calculate unweighted company level PACTA results--------------------
   p4b_tms_results <- matched_non_negative %>%
     r2dii.analysis::target_market_share(
       ald = production_forecast_data,
@@ -336,7 +323,8 @@ run_prep_calculation_loans <- function(year_production_data,
     # TODO: why distinct_all?
     dplyr::distinct_all()
 
-  #----Add loan share information to PACTA results--------------------
+  #### Add loan share information to PACTA results------------------------------
+
   p4b_tms_results_loan_share <- p4b_tms_results %>%
     # TODO why left_join?
     dplyr::left_join(loan_share, by = c("sector" = "sector_ald", "name_ald")) %>%
@@ -352,9 +340,8 @@ run_prep_calculation_loans <- function(year_production_data,
       loan_share_credit_limit = .data$comp_loan_share_credit_limit
     )
 
-  ###########################################################################
-  # Format company level PACTA results---------------------------------------
-  ###########################################################################
+  #### Format company level PACTA results---------------------------------------
+
   # ADO 1933 - for now, this only includes sectors with production pathways
   # in the future, sectors with emissions factors based pathways may follow
   loans_results_company <- p4b_tms_results_loan_share %>%

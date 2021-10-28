@@ -14,7 +14,7 @@ run_stress_test_loans(
   shock_year = 2030,
   term = 2,
   company_exclusion = TRUE,
-  credit_type = "credit_limit"
+  credit_type = "outstanding"
 )
 }
 \arguments{

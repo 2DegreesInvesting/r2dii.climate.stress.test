@@ -35,7 +35,7 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
                                   shock_year = 2030,
                                   term = 2,
                                   company_exclusion = TRUE,
-                                  credit_type = "credit_limit") {
+                                  credit_type = "outstanding") {
   validate_input_values(
     lgd_senior_claims = lgd_senior_claims,
     lgd_subordinated_claims = lgd_subordinated_claims,
@@ -87,19 +87,7 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
   ###########################################################################
   # Load input datasets------------------------------------------------------
   ###########################################################################
-
-  run_prep_calculation_loans(
-    year_production_data = start_year,
-    year_scenario_data = start_year,
-    # FIXME: ADO 1933 - passing a config list may be unsafe. Could have length > 1
-    equity_market = cfg$Lists$Equity.Market.List,
-    credit_type = credit_type
-  )
-
   # Load PACTA results / loans portfolio------------------------
-  # TODO: select the right scenarios
-  # TODO: select the right geography
-  # TODO: must contain term and initial PD
   path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", paste0("Loans_results_", calculation_level, ".rda"))
 
   pacta_results <- read_pacta_results(
