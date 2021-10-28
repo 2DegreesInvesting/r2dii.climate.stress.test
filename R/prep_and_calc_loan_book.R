@@ -269,7 +269,9 @@ run_prep_calculation_loans <- function(year_production_data,
   credit_currency <- glue::glue("loan_size_{credit_type}_currency")
 
   portfolio_overview <- sector_share %>%
-    dplyr::inner_join(p4i_p4b_sectors_lookup, by = c("sector_ald" = "sector_p4b")) %>%
+    dplyr::inner_join(
+      p4i_p4b_sector_technology_lookup %>% dplyr::distinct(.data$sector_p4b, .data$sector_p4i),
+      by = c("sector_ald" = "sector_p4b")) %>%
     dplyr::mutate(sector_ald = .data$sector_p4i) %>%
     dplyr::select(
       .data$sector_ald,

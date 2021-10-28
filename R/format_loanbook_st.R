@@ -142,10 +142,14 @@ format_loanbook_st <- function(data,
     # adjusting scenario column to hold source_scenario, to be compatible with PACTA
     # results for EQ and CB
     dplyr::mutate(scenario = paste(.data$scenario_source, .data$scenario, sep = "_")) %>%
-    dplyr::inner_join(p4i_p4b_sectors_lookup, by = c("ald_sector" = "sector_p4b")) %>%
-    dplyr::mutate(ald_sector = .data$sector_p4i) %>%
-    dplyr::inner_join(p4i_p4b_technology_lookup, by = c("technology" = "technology_p4b")) %>%
-    dplyr::mutate(technology = .data$technology_p4i) %>%
+    dplyr::inner_join(
+      p4i_p4b_sector_technology_lookup,
+      by = c("ald_sector" = "sector_p4b", "technology" = "technology_p4b")
+    ) %>%
+    dplyr::mutate(
+      ald_sector = .data$sector_p4i,
+      technology = .data$technology_p4i
+    ) %>%
     # ADO 1933 - add temporary placeholder for id to make the columns consistent with P4I
     # For loans, this variable should not be used for anything and not be filtered out
     dplyr::mutate(id = NA_real_) %>%
