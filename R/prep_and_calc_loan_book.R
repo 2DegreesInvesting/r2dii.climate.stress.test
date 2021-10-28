@@ -1,14 +1,14 @@
 #' Run stress testing for loans
 #'
 #' @param credit_type Type of credit. For accepted values please compare
-#'   `credit_type_loans`.
+#'   `credit_type_lookup`.
 #' @return NULL
 #' @export
 run_prep_calculation_loans <- function(credit_type = "credit_limit") {
 
   #### Validate input-----------------------------------------------------------
 
-  if (!is.null(credit_type) && !credit_type %in% credit_type_lookup) {
+  if (!credit_type %in% credit_type_lookup) {
     stop("Argument credit_type does not hold an accepted value.")
   }
 
