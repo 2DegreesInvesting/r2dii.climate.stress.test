@@ -104,9 +104,9 @@
 <li><p><code>exec_stress_test_with()</code> calls any function from the <code>run_stress_test_*()</code> family with a list of one element, which name matches the name of one argument, and which values are the one you want to iterate over. The output files are saved in a destination directory of your choice. It defaults to subdirectories inside the outputs/ directory, and their names reflect the name of the argument and values used to iterate.</p></li>
 <li><p><code>combine_outputs()</code> reads into a directory (and subdirectories), combines the outputs of similar types, and records the argument name and argument value in dedicated columns <code>run_arg</code> and <code>run_val</code>. The output is a list of data frames that can be easily saved with <code><a href="https://purrr.tidyverse.org/reference/map2.html">purrr::walk2()</a></code>.</p></li>
 </ul>
-<p>The other functions are helpers – including a slightly modified version of <code>run_stress_test_bonds2()</code> that includes destination directory, and suppresses printed output.</p>
+<p>The other functions are helpers – including a slightly modified version of <code>run_stress_test_bonds2()</code> that inputs a destination directory, and suppresses the printed output.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">#' Vectorized version of run_stress_test_bonds</span>
+<code class="sourceCode R"><span class="co">#' Call a `run_stress_test_*()` with multiple values of one argumet</span>
 <span class="va">exec_stress_test_with</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">.fn</span>, <span class="va">params</span>, <span class="va">destdir</span> <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">argument</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>
   <span class="va">values</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unname.html">unname</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span><span class="op">)</span>
@@ -121,16 +121,12 @@
 <span class="op">}</span>
 
 <span class="co">#' Thin wrapper of `run_stress_test_bonds()`</span>
-<span class="co">#'</span>
 <span class="co">#' * Hides printed output to highlight more important warnings and errors.</span>
 <span class="co">#' * Makes the output directory an explicit argument.</span>
-<span class="co">#' * Returns the first argument invisibly.</span>
-<span class="co">#' </span>
 <span class="co">#' @examples</span>
 <span class="co">#' run_stress_test_bonds2(tempdir())</span>
 <span class="co">#' # Confirm</span>
 <span class="co">#' dir_ls(tempdir(), regexp = "stress_test")</span>
-<span class="co">#' @noRd</span>
 <span class="va">run_stress_test_bonds2</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">destdir</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">output</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/capture.output.html">capture.output</a></span><span class="op">(</span><span class="fu"><a href="../../reference/run_stress_test_bonds.html">run_stress_test_bonds</a></span><span class="op">(</span><span class="va">...</span><span class="op">)</span><span class="op">)</span>
   
@@ -143,10 +139,8 @@
 <span class="op">}</span>
 
 <span class="co">#' Combine similar outputs spread across subdirectories</span>
-<span class="co">#'</span>
 <span class="co">#' @examples</span>
 <span class="co">#' combine_outputs()</span>
-<span class="co">#' @noRd</span>
 <span class="va">combine_outputs</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">path</span> <span class="op">=</span> <span class="fu">outputs_path</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">files</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://fs.r-lib.org/reference/dir_ls.html">dir_ls</a></span><span class="op">(</span><span class="va">path</span>, recurse <span class="op">=</span> <span class="cn">TRUE</span>, type <span class="op">=</span> <span class="st">"file"</span><span class="op">)</span>
   <span class="va">types</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="fu"><a href="http://fs.r-lib.org/reference/path_file.html">path_file</a></span><span class="op">(</span><span class="va">files</span><span class="op">)</span><span class="op">)</span>
@@ -170,10 +164,8 @@
 <span class="op">}</span>
 
 <span class="co">#' Help access the outputs/ directory</span>
-<span class="co">#'</span>
 <span class="co">#' @examples </span>
 <span class="co">#' outputs_path()</span>
-<span class="co">#' @noRd</span>
 <span class="va">outputs_path</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span>
   <span class="fu"><a href="http://fs.r-lib.org/reference/path.html">path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html">Sys.getenv</a></span><span class="op">(</span><span class="st">"ST_PROJECT_FOLDER"</span><span class="op">)</span>, <span class="st">"outputs"</span><span class="op">)</span>
 <span class="op">}</span></code></pre></div>
