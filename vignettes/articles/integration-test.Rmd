@@ -36,20 +36,22 @@ outputs <- function() {
   dir_ls(path(Sys.getenv("ST_PROJECT_FOLDER"), "outputs"))
 }
 
-outputs()
+path_file(outputs())
 file_delete(outputs())
 
 outputs()
 ```
 
-Populate outputs/
+Populate outputs/ quietly
 
 ```{r}
-done <- quietly(run_stress_test_bonds)()
-outputs()
+run_stress_test_bonds_quietly <- quietly(run_stress_test_bonds)
+done <- run_stress_test_bonds_quietly()
+
+path_file(outputs())
 ```
 
-Inspect the last object
+Inspect what the result, and all the stuff printed to the console
 
 ```{r}
 done
