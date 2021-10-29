@@ -106,6 +106,9 @@
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/path_dropbox_2dii.html</loc>
   </url>
   <url>
+    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/pipe.html</loc>
+  </url>
+  <url>
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/read_and_prepare_project_agnostic_data.html</loc>
   </url>
   <url>
@@ -220,6 +223,6 @@
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/write_stress_test_results.html</loc>
   </url>
   <url>
-    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/integration-test.html</loc>
+    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/sensitivity.html</loc>
   </url>
 </urlset>
