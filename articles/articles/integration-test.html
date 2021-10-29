@@ -82,17 +82,19 @@
 
     
     
+<p>The goal of this article is to provide a developer-facing integration test. It shows that the package can be used in a user-mode, i.e. with this package installed in their system. This is by contrast with a developer-mode, which implies access to the package’s source code.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://purrr.tidyverse.org">purrr</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://fs.r-lib.org">fs</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://here.r-lib.org/">here</a></span><span class="op">)</span>
 <span class="co">#&gt; here() starts at /home/mauro/git/r2dii.climate.stress.test</span>
+
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">r2dii.climate.stress.test</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html">packageVersion</a></span><span class="op">(</span><span class="st">"r2dii.climate.stress.test"</span><span class="op">)</span>
 <span class="co">#&gt; [1] '0.0.0.9000'</span></code></pre></div>
 <p>Setup</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/readLines.html">readLines</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org//reference/here.html">here</a></span><span class="op">(</span><span class="st">".Renviron"</span><span class="op">)</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/readLines.html">readLines</a></span><span class="op">(</span><span class="fu"><a href="https://here.r-lib.org//reference/here.html">here</a></span><span class="op">(</span><span class="st">".Renviron"</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [1] "ST_PROJECT_FOLDER=/home/mauro/tmp/ST_TESTING_BONDS"</span>
 <span class="co">#&gt; [2] "ST_DATA_PATH=/home/mauro/tmp/ST_INPUTS_MASTER"     </span>
 <span class="co">#&gt; [3] ""</span></code></pre></div>
