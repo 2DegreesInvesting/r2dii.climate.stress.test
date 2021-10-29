@@ -104,26 +104,28 @@
   <span class="fu"><a href="http://fs.r-lib.org/reference/dir_ls.html">dir_ls</a></span><span class="op">(</span><span class="fu"><a href="http://fs.r-lib.org/reference/path.html">path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html">Sys.getenv</a></span><span class="op">(</span><span class="st">"ST_PROJECT_FOLDER"</span><span class="op">)</span>, <span class="st">"outputs"</span><span class="op">)</span><span class="op">)</span>
 <span class="op">}</span>
 
-<span class="fu">outputs</span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; /home/mauro/tmp/ST_TESTING_BONDS/outputs/stress_test_results_bonds_comp.csv</span>
-<span class="co">#&gt; /home/mauro/tmp/ST_TESTING_BONDS/outputs/stress_test_results_bonds_comp_el.csv</span>
-<span class="co">#&gt; /home/mauro/tmp/ST_TESTING_BONDS/outputs/stress_test_results_bonds_port.csv</span>
-<span class="co">#&gt; /home/mauro/tmp/ST_TESTING_BONDS/outputs/stress_test_results_bonds_sector_pd_changes_annual.csv</span>
-<span class="co">#&gt; /home/mauro/tmp/ST_TESTING_BONDS/outputs/stress_test_results_bonds_sector_pd_changes_overall.csv</span>
+<span class="fu"><a href="http://fs.r-lib.org/reference/path_file.html">path_file</a></span><span class="op">(</span><span class="fu">outputs</span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; [1] "stress_test_results_bonds_comp.csv"                     </span>
+<span class="co">#&gt; [2] "stress_test_results_bonds_comp_el.csv"                  </span>
+<span class="co">#&gt; [3] "stress_test_results_bonds_port.csv"                     </span>
+<span class="co">#&gt; [4] "stress_test_results_bonds_sector_pd_changes_annual.csv" </span>
+<span class="co">#&gt; [5] "stress_test_results_bonds_sector_pd_changes_overall.csv"</span>
 <span class="fu"><a href="http://fs.r-lib.org/reference/delete.html">file_delete</a></span><span class="op">(</span><span class="fu">outputs</span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
 
 <span class="fu">outputs</span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; character(0)</span></code></pre></div>
-<p>Populate outputs/</p>
+<p>Populate outputs/ quietly</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">done</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/safely.html">quietly</a></span><span class="op">(</span><span class="va">run_stress_test_bonds</span><span class="op">)</span><span class="op">(</span><span class="op">)</span>
-<span class="fu">outputs</span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; /home/mauro/tmp/ST_TESTING_BONDS/outputs/stress_test_results_bonds_comp.csv</span>
-<span class="co">#&gt; /home/mauro/tmp/ST_TESTING_BONDS/outputs/stress_test_results_bonds_comp_el.csv</span>
-<span class="co">#&gt; /home/mauro/tmp/ST_TESTING_BONDS/outputs/stress_test_results_bonds_port.csv</span>
-<span class="co">#&gt; /home/mauro/tmp/ST_TESTING_BONDS/outputs/stress_test_results_bonds_sector_pd_changes_annual.csv</span>
-<span class="co">#&gt; /home/mauro/tmp/ST_TESTING_BONDS/outputs/stress_test_results_bonds_sector_pd_changes_overall.csv</span></code></pre></div>
-<p>Inspect the last object</p>
+<code class="sourceCode R"><span class="va">run_stress_test_bonds_quietly</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/safely.html">quietly</a></span><span class="op">(</span><span class="va">run_stress_test_bonds</span><span class="op">)</span>
+<span class="va">done</span> <span class="op">&lt;-</span> <span class="fu">run_stress_test_bonds_quietly</span><span class="op">(</span><span class="op">)</span>
+
+<span class="fu"><a href="http://fs.r-lib.org/reference/path_file.html">path_file</a></span><span class="op">(</span><span class="fu">outputs</span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; [1] "stress_test_results_bonds_comp.csv"                     </span>
+<span class="co">#&gt; [2] "stress_test_results_bonds_comp_el.csv"                  </span>
+<span class="co">#&gt; [3] "stress_test_results_bonds_port.csv"                     </span>
+<span class="co">#&gt; [4] "stress_test_results_bonds_sector_pd_changes_annual.csv" </span>
+<span class="co">#&gt; [5] "stress_test_results_bonds_sector_pd_changes_overall.csv"</span></code></pre></div>
+<p>Inspect what the result, and all the stuff printed to the console</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">done</span>
 <span class="co">#&gt; $result</span>
