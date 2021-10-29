@@ -4,7 +4,7 @@
 #'   `credit_type_lookup`.
 #' @return NULL
 #' @export
-run_prep_calculation_loans <- function(credit_type = "credit_limit") {
+run_prep_calculation_loans <- function(credit_type = "outstanding") {
 
   #### Validate input-----------------------------------------------------------
 
@@ -295,12 +295,13 @@ run_prep_calculation_loans <- function(credit_type = "credit_limit") {
 
   #### Calculate unweighted company level PACTA results-------------------------
 
+  use_credit_limit <- if (credit_type == "credit_limit") {TRUE} else {FALSE}
   p4b_tms_results <- matched_non_negative %>%
     r2dii.analysis::target_market_share(
       ald = production_forecast_data,
       scenario = scenario_data_market_share,
       region_isos = regions,
-      use_credit_limit = TRUE,
+      use_credit_limit = use_credit_limit,
       by_company = TRUE,
       weight_production = FALSE
     ) %>%
