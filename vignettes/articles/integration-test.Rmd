@@ -9,10 +9,16 @@ knitr::opts_chunk$set(
 )
 ```
 
+The goal of this article is to provide a developer-facing integration test. It
+shows that the package can be used in a user-mode, i.e. with this package
+installed in their system. This is by contrast with a developer-mode, which
+implies access to the package's source code.
+
 ```{r}
 library(purrr)
 library(fs)
 library(here)
+
 library(r2dii.climate.stress.test)
 packageVersion("r2dii.climate.stress.test")
 ```
@@ -20,7 +26,7 @@ packageVersion("r2dii.climate.stress.test")
 Setup
 
 ```{r}
-readLines(here::here(".Renviron"))
+readLines(here(".Renviron"))
 ```
 
 Empty outputs/
