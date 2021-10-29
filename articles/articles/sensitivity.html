@@ -101,10 +101,10 @@
 <a href="#functions" class="anchor"></a>Functions</h3>
 <p>I’ll define two main functions that do most of the interesting work:</p>
 <ul>
-<li><p><code>exec_stress_test_with()</code> allows calling any function from the <code>run_stress_test_*()</code> family with a list containing the name of one parameter and any number of values to iterate over. The output files are not stored in the root of the outputs/ directory but in a destination of your choice. It defaults to a subdirectory inside the outputs/ directory. The subdirectories reflect the name of the argument and values used to iterate.</p></li>
-<li><p><code>combine_outputs()</code> reads into the a directory (and subdirectories), combines the outputs of similar types, and records the argument name and argument value in dedicated columns. The output is a list of data frames that can be easily saved with <code><a href="https://purrr.tidyverse.org/reference/map2.html">purrr::walk2()</a></code>.</p></li>
+<li><p><code>exec_stress_test_with()</code> calls any function from the <code>run_stress_test_*()</code> family with a list of one element, which name matches the name of one argument, and which values are the one you want to iterate over. The output files are saved in a destination directory of your choice. It defaults to subdirectories inside the outputs/ directory, and their names reflect the name of the argument and values used to iterate.</p></li>
+<li><p><code>combine_outputs()</code> reads into a directory (and subdirectories), combines the outputs of similar types, and records the argument name and argument value in dedicated columns <code>run_arg</code> and <code>run_val</code>. The output is a list of data frames that can be easily saved with <code><a href="https://purrr.tidyverse.org/reference/map2.html">purrr::walk2()</a></code>.</p></li>
 </ul>
-<p>I also wrote a few helpers including a slightly modified version of <code>run_stress_test_bonds2()</code> that includes destination directory, and suppresses printed output.</p>
+<p>The other functions are helpers – including a slightly modified version of <code>run_stress_test_bonds2()</code> that includes destination directory, and suppresses printed output.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">#' Vectorized version of run_stress_test_bonds</span>
 <span class="va">exec_stress_test_with</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">.fn</span>, <span class="va">params</span>, <span class="va">destdir</span> <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">{</span>
