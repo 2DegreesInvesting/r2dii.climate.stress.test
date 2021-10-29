@@ -26,3 +26,6 @@
 ^\.Renviron$
 ^inst/ns/model_parameters/\.gitkeep\.txt$
 ^vignettes/articles$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
