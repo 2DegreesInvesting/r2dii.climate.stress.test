@@ -65,6 +65,7 @@ run_stress_test <- function(lgd_senior_claims = 0.45,
   #####  Analysis Parameters----------------------------------------
   # Get analysis parameters from the projects AnalysisParameters.yml - similar to PACTA_analysis
 
+  # TODO: where to get this parameter
   cfg <- config::get(file = file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", "AnalysisParameters.yml"))
   # OPEN: check_valid_cfg() not applicable here
   start_year <- cfg$AnalysisPeriod$Years.Startyear
