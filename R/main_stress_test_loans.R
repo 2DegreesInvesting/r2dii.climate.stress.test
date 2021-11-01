@@ -115,8 +115,10 @@ run_stress_test <- function(lgd_senior_claims = 0.45,
       scenario_geography_filter = scenario_geography_filter
     )
 
-  input_data_list$financial_data <- input_data_list$financial_data %>%
-    dplyr::mutate(company_name = stringr::str_to_lower(.data$company_name))
+  if (asset_type == "loans") {
+    input_data_list$financial_data <- input_data_list$financial_data %>%
+      dplyr::mutate(company_name = stringr::str_to_lower(.data$company_name))
+  }
 
   check_scenario_availability(
     portfolio = input_data_list$pacta_results,
