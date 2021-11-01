@@ -118,7 +118,6 @@ run_stress_test <- function(lgd_senior_claims = 0.45,
   input_data_list$financial_data <- input_data_list$financial_data %>%
     dplyr::mutate(company_name = stringr::str_to_lower(.data$company_name))
 
-  # check scenario availability across data inputs for bonds
   check_scenario_availability(
     portfolio = input_data_list$pacta_results,
     scen_data = input_data_list$scenario_data,
