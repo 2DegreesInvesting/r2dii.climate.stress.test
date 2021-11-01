@@ -133,7 +133,8 @@ run_stress_test <- function(lgd_senior_claims = 0.45,
   ###########################################################################
   # Calculation of results---------------------------------------------------
   ###########################################################################
-  # Load policy shock transition scenarios--------------------
+
+  # Load transition scenarios that will be run by the model
   transition_scenario <- generate_transition_shocks(
     start_of_analysis = start_year,
     end_of_analysis = end_year,
@@ -184,6 +185,7 @@ run_stress_test <- function(lgd_senior_claims = 0.45,
     data = overall_pd_changes,
     loss_given_default = lgd_subordinated_claims,
     exposure_at_default = exposure_by_technology_and_company,
+    # TODO: what to do with this? some sector level exposure for loanbook?
     port_aum = port_aum
   )
 
