@@ -54,6 +54,10 @@ run_stress_test <- function(lgd_senior_claims = 0.45,
   calculation_level <- calculation_level_lookup
   end_year <- end_year_lookup
   flat_multiplier <- assign_flat_multiplier(asset_type = asset_type)
+  lgd <- assign_lgd(
+    asset_type = asset_type, lgd_senior_claims = lgd_senior_claims,
+    lgd_subordinated_claims = lgd_subordinated_claims
+  )
 
   ###########################################################################
   # Project Initialisation---------------------------------------------------
@@ -184,7 +188,7 @@ run_stress_test <- function(lgd_senior_claims = 0.45,
 
   expected_loss <- company_expected_loss(
     data = overall_pd_changes,
-    loss_given_default = lgd_subordinated_claims,
+    loss_given_default = lgd,
     exposure_at_default = exposure_by_technology_and_company,
     # TODO: what to do with this? some sector level exposure for loanbook?
     port_aum = port_aum

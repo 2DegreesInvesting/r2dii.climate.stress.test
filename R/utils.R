@@ -302,3 +302,21 @@ assign_flat_multiplier <- function(asset_type) {
   }
   return(flat_multiplier)
 }
+
+#' Assign value of lgd
+#'
+#' Assigns value of lgd based on `asset_type`. Can be from `lgd_senior_claims`
+#' or `lgd_subordinated_claims`.
+#'
+#' @inheritParams run_stress_test
+#'
+#' @return A numerix holding value of lgd.
+assign_lgd <- function(asset_type, lgd_senior_claims,
+                       lgd_subordinated_claims) {
+  if (asset_type %in% c("equity", "bonds")) {
+    lgd <- lgd_subordinated_claims
+  } else {
+    lgd <- lgd_senior_claims
+  }
+  return(lgd)
+}
