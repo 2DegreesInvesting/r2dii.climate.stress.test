@@ -8,6 +8,7 @@ write_stress_test_results(
   results,
   expected_loss,
   annual_pd_changes,
+  overall_pd_changes,
   asset_type,
   calculation_level
 )
@@ -18,6 +19,9 @@ write_stress_test_results(
 \item{expected_loss}{Tibble holding stress test results on expected loss.}
 
 \item{annual_pd_changes}{Tibble holding stress test results on annual changes
+of probability of default.}
+
+\item{overall_pd_changes}{Tibble holding stress test results on overall changes
 of probability of default.}
 
 \item{asset_type}{String holding asset type.}

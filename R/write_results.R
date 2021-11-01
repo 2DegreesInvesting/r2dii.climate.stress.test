@@ -6,13 +6,15 @@
 #' @param expected_loss Tibble holding stress test results on expected loss.
 #' @param annual_pd_changes Tibble holding stress test results on annual changes
 #'   of probability of default.
+#' @param overall_pd_changes Tibble holding stress test results on overall changes
+#'   of probability of default.
 #' @param asset_type String holding asset type.
 #' @param calculation_level String holding calculation level.
 #'
 #' @return NULL
 write_stress_test_results <- function(results, expected_loss,
-                                      annual_pd_changes, asset_type,
-                                      calculation_level) {
+                                      annual_pd_changes, overall_pd_changes,
+                                      asset_type, calculation_level) {
 
   results_path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "outputs")
 
@@ -76,7 +78,7 @@ write_stress_test_results <- function(results, expected_loss,
       paste0("stress_test_results_", asset_type, "_sector_pd_changes_annual.csv")
     ))
 
-  overall_pd_changes_sector <- expected_loss %>%
+  overall_pd_changes_sector <- overall_pd_changes %>%
     dplyr::group_by(
       .data$scenario_name, .data$scenario_geography, .data$investor_name,
       .data$portfolio_name, .data$ald_sector, .data$term
