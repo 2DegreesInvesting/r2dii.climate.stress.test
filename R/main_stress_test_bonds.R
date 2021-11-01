@@ -1,4 +1,4 @@
-#' Run stress testing for bonds
+#' Run stress testing for provided asset type.
 #'
 #' @param lgd_senior_claims Numeric, holding the loss given default for senior
 #'   claims, for accepted value range check `lgd_senior_claims_range_lookup`.
@@ -35,7 +35,7 @@ run_stress_test <- function(lgd_senior_claims = 0.45,
                             shock_year = 2030,
                             term = 2,
                             company_exclusion = TRUE,
-                            asset_type = "bonds") {
+                            asset_type) {
   validate_input_values(
     lgd_senior_claims = lgd_senior_claims,
     lgd_subordinated_claims = lgd_subordinated_claims,
