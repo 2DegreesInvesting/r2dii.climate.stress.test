@@ -45,6 +45,7 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
     company_exclusion = company_exclusion
   )
 
+  asset_type <- "equity"
   scenario_to_follow_baseline <- baseline_scenario_lookup
   scenario_to_follow_ls <- shock_scenario_lookup
   calculation_level <- calculation_level_lookup
@@ -101,7 +102,7 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
 
   # Load sector exposures of portfolio------------------------
   sector_exposures <- readRDS(file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", "overview_portfolio.rda")) %>%
-    wrangle_and_check_sector_exposures(asset_type = "Equity")
+    wrangle_and_check_sector_exposures(asset_type = asset_type)
 
   # Load policy shock transition scenarios--------------------
   transition_scenario <- generate_transition_shocks(
@@ -116,24 +117,19 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
     end_year = end_year,
     company_exclusion = company_exclusion,
     scenario_geography_filter = scenario_geography_filter,
-    asset_type = "equity"
+    asset_type = asset_type
   ) %>%
     c(list(pacta_results = pacta_results, sector_exposures = sector_exposures)) %>%
     check_and_filter_data(
-    start_year = start_year,
-    end_year = end_year,
-    scenarios_filter = scenarios_filter,
-    scenario_geography_filter = scenario_geography_filter
-  )
-
-  pacta_results <- input_data_list$pacta_results
-  excluded_companies <- input_data_list$excluded_companies
-  scenario_data <- input_data_list$scenario_data
-  financial_data <- input_data_list$financial_data
+      start_year = start_year,
+      end_year = end_year,
+      scenarios_filter = scenarios_filter,
+      scenario_geography_filter = scenario_geography_filter
+    )
 
   check_scenario_availability(
-    portfolio = pacta_results,
-    scen_data = scenario_data,
+    portfolio = input_data_list$pacta_results,
+    scen_data = input_data_list$scenario_data,
     scenarios = scenarios_filter
   )
 
@@ -150,78 +146,23 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
   ###########################################################################
   # Calculation of results---------------------------------------------------
   ###########################################################################
-  df_prices <- input_data_list$df_price %>%
-    calc_late_sudden_prices(
-      baseline_scenario = scenario_to_follow_baseline,
-      transition_scenario = transition_scenario,
-      start_year = start_year
-    )
-
-  annual_profits <- pacta_results %>%
-    convert_power_cap_to_generation(
-      capacity_factors_power = input_data_list$capacity_factors_power,
-      baseline_scenario = scenario_to_follow_baseline
-    ) %>%
-    extend_scenario_trajectory(
-      scenario_data = scenario_data,
-      start_analysis = start_year,
-      end_analysis = end_year,
-      time_frame = time_horizon
-    ) %>%
-    set_baseline_trajectory(
-      scenario_to_follow_baseline = scenario_to_follow_baseline
-    ) %>%
-    set_ls_trajectory(
-      scenario_to_follow_ls = scenario_to_follow_ls,
-      shock_scenario = transition_scenario,
-      scenario_to_follow_ls_aligned = scenario_to_follow_ls,
-      start_year = start_year,
-      end_year = end_year,
-      analysis_time_frame = time_horizon
-    ) %>%
-    exclude_companies(
-      exclusion = excluded_companies,
-      scenario_baseline = scenario_to_follow_baseline,
-      scenario_ls = scenario_to_follow_ls
-    ) %>%
-    inner_join_report_drops(
-      data_y = financial_data,
-      name_x = "annual profits", name_y = "financial data",
-      merge_cols = c("company_name", "ald_sector", "technology")
-    ) %>%
-    fill_annual_profit_cols() %>%
-    # TODO: ADO 879 - note which companies are removed here, due to mismatch
-    join_price_data(df_prices = df_prices) %>%
-    calculate_net_profits() %>%
-    dcf_model_techlevel(discount_rate = discount_rate) %>%
-    dplyr::filter(!is.na(company_id))
-
-  financial_data_pd <- financial_data %>%
-    dplyr::select(company_name, ald_sector, technology, pd)
-
-  report_duplicates(
-    data = financial_data_pd,
-    cols = names(financial_data_pd)
+  annual_profits <- calculate_annual_profits(
+    asset_type = asset_type,
+    input_data_list = input_data_list,
+    scenario_to_follow_baseline = scenario_to_follow_baseline,
+    scenario_to_follow_ls = scenario_to_follow_ls,
+    transition_scenario = transition_scenario,
+    start_year = start_year,
+    end_year = end_year,
+    time_horizon = time_horizon,
+    discount_rate = discount_rate
   )
 
-  plan_carsten <- pacta_results %>%
-    dplyr::filter(
-      .data$year == start_year,
-      .data$scenario %in% .env$scenario_to_follow_ls
-    ) %>%
-    inner_join_report_drops(
-      data_y = financial_data_pd,
-      name_x = "plan carsten", name_y = "financial data",
-      merge_cols = c("company_name", "ald_sector", "technology")
-    ) %>%
-    dplyr::select(
-      investor_name, portfolio_name, company_name, ald_sector, technology,
-      scenario_geography, year, plan_carsten, plan_sec_carsten, term, pd
-    )
-
-  report_duplicates(
-    data = plan_carsten,
-    cols = names(plan_carsten)
+  exposure_by_technology_and_company <- calculate_exposure_by_technology_and_company(
+    asset_type = asset_type,
+    input_data_list = input_data_list,
+    start_year = start_year,
+    scenario_to_follow_ls = scenario_to_follow_ls
   )
 
   results <- company_asset_value_at_risk(
@@ -229,10 +170,10 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
     terminal_value = terminal_value,
     shock_scenario = transition_scenario,
     div_netprofit_prop_coef = div_netprofit_prop_coef,
-    plan_carsten = plan_carsten,
+    plan_carsten = exposure_by_technology_and_company,
     port_aum = port_aum,
     flat_multiplier = 1,
-    exclusion = excluded_companies
+    exclusion = input_data_list$excluded_companies
   )
 
   overall_pd_changes <- annual_profits %>%
@@ -247,8 +188,8 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
 
   expected_loss <- company_expected_loss(
     data = overall_pd_changes,
-    loss_given_default = lgd_subordinated_claims, # TODO: which one?
-    exposure_at_default = plan_carsten,
+    loss_given_default = lgd_subordinated_claims,
+    exposure_at_default = exposure_by_technology_and_company,
     port_aum = port_aum
   )
 
@@ -269,7 +210,7 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
     results = results,
     expected_loss = expected_loss,
     annual_pd_changes = annual_pd_changes,
-    asset_type = "equity",
+    asset_type = asset_type,
     calculation_level = calculation_level
   )
 }

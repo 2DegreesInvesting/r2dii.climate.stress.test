@@ -74,13 +74,13 @@ apply_filters <- function(data,
       .data$year == .env$start_analysis
     ) %>%
     dplyr::mutate(
-      key = paste(.data$id, .data$ald_sector, .data$technology, .data$scenario_geography)
+      key = paste(.data$company_name, .data$id, .data$ald_sector, .data$technology, .data$scenario_geography)
     ) %>%
     dplyr::distinct(.data$key)
 
   data <- data %>%
     dplyr::mutate(
-      key = paste(.data$id, .data$ald_sector, .data$technology, .data$scenario_geography)
+      key = paste(.data$company_name, .data$id, .data$ald_sector, .data$technology, .data$scenario_geography)
     ) %>%
     dplyr::filter(!.data$key %in% unique(remove$key)) %>%
     dplyr::select(-.data$key)
