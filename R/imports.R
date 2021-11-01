@@ -46,6 +46,7 @@ globalVariables(
     "net_profit_margin",
     "pacta_sectors_not_analysed",
     "pd",
+    "plan_carsten",
     "plan_sec_carsten",
     "portfolio_name",
     "profit_margin_preferred",
