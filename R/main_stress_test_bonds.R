@@ -84,7 +84,7 @@ run_stress_test_bonds <- function(lgd_senior_claims = 0.45,
   # Load input datasets------------------------------------------------------
   ###########################################################################
   # Load PACTA results / bonds portfolio------------------------
-  path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", paste0("Bonds_results_", calculation_level, ".rda"))
+  path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", paste0(stringr::str_to_title(asset_type), "_results_", calculation_level, ".rda"))
 
   pacta_results <- read_pacta_results(
     path = path,
