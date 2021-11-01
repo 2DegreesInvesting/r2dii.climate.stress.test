@@ -5,15 +5,11 @@
 \title{Read in the PACTA results from a given project and check that all expected
 columns are given.}
 \usage{
-read_pacta_results(path = NULL, asset_type = NULL, level = NULL)
+read_pacta_results(path = NULL, level = NULL)
 }
 \arguments{
 \item{path}{A string that points to the location of the file containing the
 pacta results}
-
-\item{asset_type}{A character vector of length 1 that indicates the type of
-asset to be read in. Wrangling steps vary by asset, so this is essential.
-Allowed values are "equity", "bonds", "loans".}
 
 \item{level}{A character vector of length 1 that indicates whether results on
 the company level or on the portfolio level are to be analyzed.

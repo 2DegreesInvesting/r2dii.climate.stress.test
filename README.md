@@ -54,6 +54,9 @@ pacta-data files as an Environment Variable, using:
     # shell
     export PACTA_DATA_PATH="<path to data>"
 
+Alternatively, setup environmental variables in a user- or
+project-specific .Renviron file (see `usethis::edit_r_environ()`).
+
 **NOTE:**
 
 The path passed via the environment variable or option is expected to be
@@ -1149,3 +1152,7 @@ expected loss = share price change \* company exposure
 
 By default, the module will estimate that impact for all relevant
 companies in the portfolio at hand.
+
+-----
+
+[CONTRIBUTING](https://github.com/2DegreesInvesting/r2dii.climate.stress.test/blob/master/.github/CONTRIBUTING.md)

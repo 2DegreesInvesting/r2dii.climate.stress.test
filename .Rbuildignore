@@ -23,3 +23,4 @@
 ^web_tool_stress_test\.R$
 ^wip_data_qa\.R$
 ^\.github$
+^\.Renviron$

@@ -13,8 +13,7 @@ run_stress_test_loans(
   div_netprofit_prop_coef = 1,
   shock_year = 2030,
   term = 2,
-  company_exclusion = TRUE,
-  credit_type = "credit_limit"
+  company_exclusion = TRUE
 )
 }
 \arguments{
@@ -48,9 +47,6 @@ range compare \code{term_range_lookup}.}
 
 \item{company_exclusion}{Boolean, indicating if companies provided in dataset
 excluded_companies.csv shall be excluded.}
-
-\item{credit_type}{Type of credit. For accepted values please compare
-\code{credit_type_loans}.}
 }
 \description{
 Run stress testing for loans

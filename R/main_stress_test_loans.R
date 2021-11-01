@@ -22,8 +22,6 @@
 #'   range compare `term_range_lookup`.
 #' @param company_exclusion Boolean, indicating if companies provided in dataset
 #'   excluded_companies.csv shall be excluded.
-#' @param credit_type Type of credit. For accepted values please compare
-#'   `credit_type_loans`.
 #' @return NULL
 #' @export
 run_stress_test_loans <- function(lgd_senior_claims = 0.45,
@@ -34,8 +32,7 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
                                   div_netprofit_prop_coef = 1,
                                   shock_year = 2030,
                                   term = 2,
-                                  company_exclusion = TRUE,
-                                  credit_type = "credit_limit") {
+                                  company_exclusion = TRUE) {
   validate_input_values(
     lgd_senior_claims = lgd_senior_claims,
     lgd_subordinated_claims = lgd_subordinated_claims,
@@ -45,8 +42,7 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
     div_netprofit_prop_coef = div_netprofit_prop_coef,
     shock_year = shock_year,
     term = term,
-    company_exclusion = company_exclusion,
-    credit_type = credit_type
+    company_exclusion = company_exclusion
   )
 
   scenario_to_follow_baseline <- baseline_scenario_lookup
@@ -87,62 +83,26 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
   ###########################################################################
   # Load input datasets------------------------------------------------------
   ###########################################################################
-
   # Load PACTA results / loans portfolio------------------------
-  # TODO: select the right scenarios
-  # TODO: select the right geography
-  # TODO: must contain term and initial PD
   path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", paste0("Loans_results_", calculation_level, ".rda"))
 
   pacta_results <- read_pacta_results(
     path = path,
-    asset_type = "loans",
     level = calculation_level
   ) %>%
-    format_loanbook_st(
-      investor_name = investor_name_placeholder,
-      portfolio_name = investor_name_placeholder,
-      credit = paste0("loan_share_", credit_type)
-    ) %>%
-    wrangle_and_check_pacta_results(
-      start_year = start_year,
-      time_horizon = time_horizon,
-      scenario_geography_filter = scenario_geography_filter,
-      scenarios_filter = scenarios_filter,
-      equity_market_filter = cfg$Lists$Equity.Market.List
-    ) %>%
-    # ADO 1943 - for the time being, one global term value is set by the user.
-    # TODO: next version to allow term input on holding/company level
-    dplyr::mutate(term = term)
-
-  sector_credit_type <- paste0("sector_loan_size_", credit_type)
-  credit_currency <- paste0("loan_size_", credit_type, "_currency")
+  wrangle_and_check_pacta_results(
+    start_year = start_year,
+    time_horizon = time_horizon,
+    scenario_geography_filter = scenario_geography_filter,
+    scenarios_filter = scenarios_filter,
+    equity_market_filter = cfg$Lists$Equity.Market.List
+  ) %>%
+  # ADO 1943 - for the time being, one global term value is set by the user.
+  # TODO: next version to allow term input on holding/company level
+  dplyr::mutate(term = term)
 
   sector_exposures <- readRDS(file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", "overview_portfolio.rda")) %>%
-    dplyr::mutate(
-      sector_ald = dplyr::case_when(
-        sector_ald == "power" ~ "Power",
-        sector_ald == "oil and gas" ~ "Oil&Gas",
-        sector_ald == "coal" ~ "Coal",
-        sector_ald == "automotive" ~ "Automotive",
-        sector_ald == "steel" ~ "Steel",
-        sector_ald == "cement" ~ "Cement",
-        TRUE ~ sector_ald
-      )
-    ) %>%
-    dplyr::select(
-      sector_ald,
-      !!rlang::sym(sector_credit_type),
-      !!rlang::sym(credit_currency)
-    ) %>%
-    dplyr::rename(
-      financial_sector = sector_ald,
-      valid_value_usd = !!rlang::sym(sector_credit_type)
-    ) %>%
-    dplyr::mutate(
-      investor_name = investor_name_placeholder,
-      portfolio_name = investor_name_placeholder
-    )
+    wrangle_and_check_sector_exposures(asset_type = "Loans")
   # TODO: potentially convert currencies to USD or at least common currency
 
   # Load transition scenarios that will be run by the model
