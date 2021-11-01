@@ -71,6 +71,15 @@ read_and_prepare_project_agnostic_data <- function(start_year, end_year, company
   ))
 }
 
+#' Read and prepare project specific data
+#'
+#' Function reads in data that are specific the project and conducts some
+#' checking and wrangling.
+#'
+#' @inheritParams run_stress_test_equity
+#' @inheritParams read_and_prepare_project_agnostic_data
+#'
+#' @return  A list holding prepared project agnostic data.
 read_and_prepare_project_specific_data <- function(asset_type, calculation_level,
                                                    start_year, time_horizon,
                                                    scenario_geography_filter,
