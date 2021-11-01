@@ -24,3 +24,4 @@
 ^wip_data_qa\.R$
 ^\.github$
 ^\.Renviron$
+^vignettes/articles$
