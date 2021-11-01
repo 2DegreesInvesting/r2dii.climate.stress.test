@@ -83,7 +83,6 @@ run_stress_test_bonds <- function(lgd_senior_claims = 0.45,
   ###########################################################################
   # Load input datasets------------------------------------------------------
   ###########################################################################
-  # Load PACTA results / bonds portfolio------------------------
   path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", paste0(stringr::str_to_title(asset_type), "_results_", calculation_level, ".rda"))
 
   pacta_results <- read_pacta_results(
@@ -104,13 +103,6 @@ run_stress_test_bonds <- function(lgd_senior_claims = 0.45,
   # Load sector exposures of portfolio------------------------
   sector_exposures <- readRDS(file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", "overview_portfolio.rda")) %>%
     wrangle_and_check_sector_exposures(asset_type = asset_type)
-
-  # Load policy shock transition scenarios--------------------
-  transition_scenario <- generate_transition_shocks(
-    start_of_analysis = start_year,
-    end_of_analysis = end_year,
-    shock_years = shock_year
-  )
 
   # Load project agnostic data sets -----------------------------------------
   input_data_list <- read_and_prepare_project_agnostic_data(
@@ -147,6 +139,13 @@ run_stress_test_bonds <- function(lgd_senior_claims = 0.45,
   ###########################################################################
   # Calculation of results---------------------------------------------------
   ###########################################################################
+  # Load policy shock transition scenarios--------------------
+  transition_scenario <- generate_transition_shocks(
+    start_of_analysis = start_year,
+    end_of_analysis = end_year,
+    shock_years = shock_year
+  )
+
   annual_profits <- calculate_annual_profits(
     asset_type = asset_type,
     input_data_list = input_data_list,
