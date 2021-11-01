@@ -45,6 +45,7 @@ jobs:
 
       - name: Install older sessionInfo
         run: |
+          install.packages("devtools")
           devtools::install_version("sessionInfo", "1.1.1")
         shell: Rscript {0}
 
