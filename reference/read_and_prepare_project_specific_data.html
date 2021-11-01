@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Source scripts quietly based on a list of input paths — source_all • r2dii.climate.stress.test</title>
+<title>Read and prepare project specific data — read_and_prepare_project_specific_data • r2dii.climate.stress.test</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,9 @@
 
 
 
-<meta property="og:title" content="Source scripts quietly based on a list of input paths — source_all" />
-<meta property="og:description" content="Source scripts quietly based on a list of input paths" />
+<meta property="og:title" content="Read and prepare project specific data — read_and_prepare_project_specific_data" />
+<meta property="og:description" content="Function reads in data that are specific the project and conducts some
+checking and wrangling." />
 
 
 
@@ -103,28 +104,71 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Source scripts quietly based on a list of input paths</h1>
+    <h1>Read and prepare project specific data</h1>
     
-    <div class="hidden name"><code>source_all.Rd</code></div>
+    <div class="hidden name"><code>read_and_prepare_project_specific_data.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Source scripts quietly based on a list of input paths</p>
+    <p>Function reads in data that are specific the project and conducts some
+checking and wrangling.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>source_all</span><span class='op'>(</span><span class='va'>paths</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>read_and_prepare_project_specific_data</span><span class='op'>(</span>
+  <span class='va'>asset_type</span>,
+  <span class='va'>calculation_level</span>,
+  <span class='va'>start_year</span>,
+  <span class='va'>time_horizon</span>,
+  <span class='va'>scenario_geography_filter</span>,
+  <span class='va'>scenarios_filter</span>,
+  <span class='va'>equity_market_filter</span>,
+  <span class='va'>term</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>paths</th>
-      <td><p>A vector of paths to scripts that need to be sourced for running
-the work flow at hand. Usually this will point to files that contain
-function definitions.</p></td>
+      <th>asset_type</th>
+      <td><p>Type of asset, can be bonds, loans or equity.</p></td>
+    </tr>
+    <tr>
+      <th>calculation_level</th>
+      <td><p>String holding level of calculation.</p></td>
+    </tr>
+    <tr>
+      <th>start_year</th>
+      <td><p>Start year of analysis.</p></td>
+    </tr>
+    <tr>
+      <th>time_horizon</th>
+      <td><p>Considered timefram for PACTA analysis.</p></td>
+    </tr>
+    <tr>
+      <th>scenario_geography_filter</th>
+      <td><p>String holding geographic asset locations to
+be considered in analysis.</p></td>
+    </tr>
+    <tr>
+      <th>scenarios_filter</th>
+      <td><p>Vector holding baseline and shock scenario name.</p></td>
+    </tr>
+    <tr>
+      <th>equity_market_filter</th>
+      <td><p>Character. A vector of length 1 that
+indicates which equity market to apply in the analysis.</p></td>
+    </tr>
+    <tr>
+      <th>term</th>
+      <td><p>Numeric. A coefficient that determines for which maturity the
+expected loss should be calculated in the credit risk section. For accepted
+range compare <code>term_range_lookup</code>.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A list holding prepared project agnostic data.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Source scripts quietly based on a list of input paths — source_all • r2dii.climate.stress.test</title>
+<title>Calculate exposure_by_technology_and_company — calculate_exposure_by_technology_and_company • r2dii.climate.stress.test</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Source scripts quietly based on a list of input paths — source_all" />
-<meta property="og:description" content="Source scripts quietly based on a list of input paths" />
+<meta property="og:title" content="Calculate exposure_by_technology_and_company — calculate_exposure_by_technology_and_company" />
+<meta property="og:description" content="Wrapper to calculate exposure_by_technology_and_company." />
 
 
 
@@ -103,28 +103,48 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Source scripts quietly based on a list of input paths</h1>
+    <h1>Calculate exposure_by_technology_and_company</h1>
     
-    <div class="hidden name"><code>source_all.Rd</code></div>
+    <div class="hidden name"><code>calculate_exposure_by_technology_and_company.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Source scripts quietly based on a list of input paths</p>
+    <p>Wrapper to calculate exposure_by_technology_and_company.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>source_all</span><span class='op'>(</span><span class='va'>paths</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>calculate_exposure_by_technology_and_company</span><span class='op'>(</span>
+  <span class='va'>asset_type</span>,
+  <span class='va'>input_data_list</span>,
+  <span class='va'>start_year</span>,
+  <span class='va'>scenario_to_follow_ls</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>paths</th>
-      <td><p>A vector of paths to scripts that need to be sourced for running
-the work flow at hand. Usually this will point to files that contain
-function definitions.</p></td>
+      <th>asset_type</th>
+      <td><p>String holding type of asset.</p></td>
+    </tr>
+    <tr>
+      <th>input_data_list</th>
+      <td><p>List with project agnostic and project specific input data</p></td>
+    </tr>
+    <tr>
+      <th>start_year</th>
+      <td><p>Numeric, holding start year of analysis.</p></td>
+    </tr>
+    <tr>
+      <th>scenario_to_follow_ls</th>
+      <td><p>Character. A string that indicates which
+of the scenarios included in the analysis should be used to set the
+late &amp; sudden technology trajectories.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A tibble holding exposure_by_technology_and_company.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
