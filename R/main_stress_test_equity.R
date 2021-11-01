@@ -45,7 +45,8 @@ run_stress_test <- function(lgd_senior_claims = 0.45,
     div_netprofit_prop_coef = div_netprofit_prop_coef,
     shock_year = shock_year,
     term = term,
-    company_exclusion = company_exclusion
+    company_exclusion = company_exclusion,
+    asset_type = asset_type
   )
 
   scenario_to_follow_baseline <- baseline_scenario_lookup
