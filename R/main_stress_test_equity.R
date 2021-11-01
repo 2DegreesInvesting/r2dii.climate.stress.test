@@ -22,17 +22,20 @@
 #'   range compare `term_range_lookup`.
 #' @param company_exclusion Boolean, indicating if companies provided in dataset
 #'   excluded_companies.csv shall be excluded.
+#' @param asset_type String holding asset_type, for allowed value compare
+#'   `asset_types_lookup`
 #' @return NULL
 #' @export
-run_stress_test_equity <- function(lgd_senior_claims = 0.45,
-                                   lgd_subordinated_claims = 0.75,
-                                   terminal_value = 0,
-                                   risk_free_rate = 0.02,
-                                   discount_rate = 0.02,
-                                   div_netprofit_prop_coef = 1,
-                                   shock_year = 2030,
-                                   term = 2,
-                                   company_exclusion = TRUE) {
+run_stress_test <- function(lgd_senior_claims = 0.45,
+                            lgd_subordinated_claims = 0.75,
+                            terminal_value = 0,
+                            risk_free_rate = 0.02,
+                            discount_rate = 0.02,
+                            div_netprofit_prop_coef = 1,
+                            shock_year = 2030,
+                            term = 2,
+                            company_exclusion = TRUE,
+                            asset_type = "equity") {
   validate_input_values(
     lgd_senior_claims = lgd_senior_claims,
     lgd_subordinated_claims = lgd_subordinated_claims,
@@ -45,7 +48,6 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
     company_exclusion = company_exclusion
   )
 
-  asset_type <- "equity"
   scenario_to_follow_baseline <- baseline_scenario_lookup
   scenario_to_follow_ls <- shock_scenario_lookup
   calculation_level <- calculation_level_lookup
