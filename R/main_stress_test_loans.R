@@ -95,22 +95,16 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
     term = term
     )
 
-  # Load transition scenarios that will be run by the model
-  transition_scenario <- generate_transition_shocks(
-    start_of_analysis = start_year,
-    end_of_analysis = end_year,
-    shock_years = shock_year
-  )
-
-  # Load project agnostic data sets -----------------------------------------
-  input_data_list <- read_and_prepare_project_agnostic_data(
+  project_agnostic_data_list <- read_and_prepare_project_agnostic_data(
     start_year = start_year,
     end_year = end_year,
     company_exclusion = company_exclusion,
     scenario_geography_filter = scenario_geography_filter,
     asset_type = asset_type
-  ) %>%
-    c(list(pacta_results = pacta_results, sector_exposures = sector_exposures)) %>%
+  )
+
+  # Load project agnostic data sets -----------------------------------------
+  input_data_list <- c(project_specific_data_list, project_agnostic_data_list) %>%
     check_and_filter_data(
       start_year = start_year,
       end_year = end_year,
@@ -142,6 +136,14 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
   ###########################################################################
   # Calculation of results---------------------------------------------------
   ###########################################################################
+
+  # Load transition scenarios that will be run by the model
+  transition_scenario <- generate_transition_shocks(
+    start_of_analysis = start_year,
+    end_of_analysis = end_year,
+    shock_years = shock_year
+  )
+
   annual_profits <- calculate_annual_profits(
     asset_type = asset_type,
     input_data_list = input_data_list,
