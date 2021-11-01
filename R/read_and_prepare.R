@@ -14,7 +14,6 @@
 #' @return A list holding prepared project agnostic data.
 read_and_prepare_project_agnostic_data <- function(start_year, end_year, company_exclusion,
                                                    scenario_geography_filter, asset_type) {
-
   if (!asset_type %in% asset_types_lookup) {
     stop("Invalid asset type provided.")
   }
@@ -68,5 +67,48 @@ read_and_prepare_project_agnostic_data <- function(start_year, end_year, company
     df_price = df_price,
     scenario_data = scenario_data,
     financial_data = financial_data
+  ))
+}
+
+#' Read and prepare project specific data
+#'
+#' Function reads in data that are specific the project and conducts some
+#' checking and wrangling.
+#'
+#' @inheritParams run_stress_test_equity
+#' @inheritParams read_and_prepare_project_agnostic_data
+#' @inheritParams wrangle_and_check_pacta_results
+#' @param calculation_level String holding level of calculation.
+#'
+#' @return  A list holding prepared project agnostic data.
+read_and_prepare_project_specific_data <- function(asset_type, calculation_level,
+                                                   start_year, time_horizon,
+                                                   scenario_geography_filter,
+                                                   scenarios_filter, equity_market_filter,
+                                                   term) {
+  path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", paste0(stringr::str_to_title(asset_type), "_results_", calculation_level, ".rda"))
+
+  pacta_results <- read_pacta_results(
+    path = path,
+    level = calculation_level
+  ) %>%
+    wrangle_and_check_pacta_results(
+      start_year = start_year,
+      time_horizon = time_horizon,
+      scenario_geography_filter = scenario_geography_filter,
+      scenarios_filter = scenarios_filter,
+      equity_market_filter = equity_market_filter
+    ) %>%
+    # ADO 1943 - for the time being, one global term value is set by the user.
+    # TODO: next version to allow term input on holding/company level
+    dplyr::mutate(term = term)
+
+  sector_exposures <- readRDS(file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", "overview_portfolio.rda")) %>%
+    wrangle_and_check_sector_exposures(asset_type = asset_type)
+  # TODO: potentially convert currencies to USD or at least common currency
+
+  return(list(
+    pacta_results = pacta_results,
+    sector_exposures = sector_exposures
   ))
 }

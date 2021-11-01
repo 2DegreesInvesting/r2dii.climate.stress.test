@@ -82,44 +82,26 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
   ###########################################################################
   # Load input datasets------------------------------------------------------
   ###########################################################################
-  # Load PACTA results / equity portfolio------------------------
-  path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", paste0("Equity_results_", calculation_level, ".rda"))
-
-  pacta_results <- read_pacta_results(
-    path = path,
-    level = calculation_level
-  ) %>%
-    wrangle_and_check_pacta_results(
-      start_year = start_year,
-      time_horizon = time_horizon,
-      scenario_geography_filter = scenario_geography_filter,
-      scenarios_filter = scenarios_filter,
-      equity_market_filter = cfg$Lists$Equity.Market.List
-    ) %>%
-    # ADO 1943 - for the time being, one global term value is set by the user.
-    # TODO: next version to allow term input on holding/company level
-    dplyr::mutate(term = term)
-
-  # Load sector exposures of portfolio------------------------
-  sector_exposures <- readRDS(file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", "overview_portfolio.rda")) %>%
-    wrangle_and_check_sector_exposures(asset_type = asset_type)
-
-  # Load policy shock transition scenarios--------------------
-  transition_scenario <- generate_transition_shocks(
-    start_of_analysis = start_year,
-    end_of_analysis = end_year,
-    shock_years = shock_year
+  project_specific_data_list <- read_and_prepare_project_specific_data(
+    asset_type = asset_type,
+    calculation_level = calculation_level,
+    start_year = start_year,
+    time_horizon = time_horizon,
+    scenario_geography_filter = scenario_geography_filter,
+    scenarios_filter = scenarios_filter,
+    equity_market_filter = cfg$Lists$Equity.Market.List,
+    term = term
   )
 
-  # Load project agnostic data sets -----------------------------------------
-  input_data_list <- read_and_prepare_project_agnostic_data(
+  project_agnostic_data_list <- read_and_prepare_project_agnostic_data(
     start_year = start_year,
     end_year = end_year,
     company_exclusion = company_exclusion,
     scenario_geography_filter = scenario_geography_filter,
     asset_type = asset_type
-  ) %>%
-    c(list(pacta_results = pacta_results, sector_exposures = sector_exposures)) %>%
+  )
+
+  input_data_list <- c(project_specific_data_list, project_agnostic_data_list) %>%
     check_and_filter_data(
       start_year = start_year,
       end_year = end_year,
@@ -146,6 +128,13 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
   ###########################################################################
   # Calculation of results---------------------------------------------------
   ###########################################################################
+  # Load policy shock transition scenarios--------------------
+  transition_scenario <- generate_transition_shocks(
+    start_of_analysis = start_year,
+    end_of_analysis = end_year,
+    shock_years = shock_year
+  )
+
   annual_profits <- calculate_annual_profits(
     asset_type = asset_type,
     input_data_list = input_data_list,
