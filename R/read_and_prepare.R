@@ -14,7 +14,6 @@
 #' @return A list holding prepared project agnostic data.
 read_and_prepare_project_agnostic_data <- function(start_year, end_year, company_exclusion,
                                                    scenario_geography_filter, asset_type) {
-
   if (!asset_type %in% asset_types_lookup) {
     stop("Invalid asset type provided.")
   }
@@ -85,7 +84,6 @@ read_and_prepare_project_specific_data <- function(asset_type, calculation_level
                                                    scenario_geography_filter,
                                                    scenarios_filter, equity_market_filter,
                                                    term) {
-
   path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", paste0(stringr::str_to_title(asset_type), "_results_", calculation_level, ".rda"))
 
   pacta_results <- read_pacta_results(
@@ -107,7 +105,8 @@ read_and_prepare_project_specific_data <- function(asset_type, calculation_level
     wrangle_and_check_sector_exposures(asset_type = asset_type)
   # TODO: potentially convert currencies to USD or at least common currency
 
-  return(list(pacta_results = pacta_results,
-              sector_exposures = sector_exposures))
-
+  return(list(
+    pacta_results = pacta_results,
+    sector_exposures = sector_exposures
+  ))
 }

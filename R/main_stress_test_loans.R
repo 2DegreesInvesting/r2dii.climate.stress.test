@@ -93,7 +93,7 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
     scenarios_filter = scenarios_filter,
     equity_market_filter = cfg$Lists$Equity.Market.List,
     term = term
-    )
+  )
 
   project_agnostic_data_list <- read_and_prepare_project_agnostic_data(
     start_year = start_year,
@@ -103,7 +103,6 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
     asset_type = asset_type
   )
 
-  # Load project agnostic data sets -----------------------------------------
   input_data_list <- c(project_specific_data_list, project_agnostic_data_list) %>%
     check_and_filter_data(
       start_year = start_year,
