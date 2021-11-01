@@ -77,6 +77,8 @@ read_and_prepare_project_agnostic_data <- function(start_year, end_year, company
 #'
 #' @inheritParams run_stress_test_equity
 #' @inheritParams read_and_prepare_project_agnostic_data
+#' @inheritParams wrangle_and_check_pacta_results
+#' @param calculation_level String holding level of calculation.
 #'
 #' @return  A list holding prepared project agnostic data.
 read_and_prepare_project_specific_data <- function(asset_type, calculation_level,

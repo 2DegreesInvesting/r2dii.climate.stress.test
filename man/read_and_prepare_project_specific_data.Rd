@@ -18,10 +18,19 @@ read_and_prepare_project_specific_data(
 \arguments{
 \item{asset_type}{Type of asset, can be bonds, loans or equity.}
 
+\item{calculation_level}{String holding level of calculation.}
+
 \item{start_year}{Start year of analysis.}
+
+\item{time_horizon}{Considered timefram for PACTA analysis.}
 
 \item{scenario_geography_filter}{String holding geographic asset locations to
 be considered in analysis.}
+
+\item{scenarios_filter}{Vector holding baseline and shock scenario name.}
+
+\item{equity_market_filter}{Character. A vector of length 1 that
+indicates which equity market to apply in the analysis.}
 
 \item{term}{Numeric. A coefficient that determines for which maturity the
 expected loss should be calculated in the credit risk section. For accepted
