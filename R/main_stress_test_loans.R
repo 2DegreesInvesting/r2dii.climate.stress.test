@@ -53,6 +53,7 @@ run_stress_test <- function(lgd_senior_claims = 0.45,
   scenario_to_follow_ls <- shock_scenario_lookup
   calculation_level <- calculation_level_lookup
   end_year <- end_year_lookup
+  flat_multiplier <- assign_flat_multiplier(asset_type = asset_type)
 
   ###########################################################################
   # Project Initialisation---------------------------------------------------
@@ -172,7 +173,7 @@ run_stress_test <- function(lgd_senior_claims = 0.45,
     div_netprofit_prop_coef = div_netprofit_prop_coef,
     plan_carsten = exposure_by_technology_and_company,
     port_aum = port_aum,
-    flat_multiplier = 0.15,
+    flat_multiplier = flat_multiplier,
     exclusion = input_data_list$excluded_companies
   )
 

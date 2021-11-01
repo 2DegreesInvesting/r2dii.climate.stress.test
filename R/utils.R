@@ -286,3 +286,19 @@ check_results_structure <- function(data, name_data, cuc_cols) {
 
   return(data)
 }
+
+#' Assign value of flat multiplier
+#'
+#' Assign value of flat multiplier based on `asset_type`.
+#'
+#' @inheritParams run_stress_test
+#'
+#' @return A double holding value of the flat multiplier.
+assign_flat_multiplier <- function(asset_type) {
+  if (asset_type %in% c("loans", "bonds")) {
+    flat_multiplier <- 0.15
+  } else {
+    flat_multiplier <- 1.0
+  }
+  return(flat_multiplier)
+}
