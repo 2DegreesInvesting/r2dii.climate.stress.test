@@ -95,11 +95,7 @@ calculate_exposure_by_technology_and_company <- function(asset_type,
     subset_cols <- c("company_name", "corporate_bond_ticker", "ald_sector", "technology", "pd")
     merge_cols <- c("company_name", "id" = "corporate_bond_ticker", "ald_sector", "technology")
   } else {
-    if (asset_type == "equity") {
-      subset_cols <- c("company_name", "ald_sector", "technology", "pd")
-    } else {
-      subset_cols <- c("company_name", "company_id", "ald_sector", "technology", "pd")
-    }
+    subset_cols <- c("company_name", "ald_sector", "technology", "pd")
     merge_cols <- c("company_name", "ald_sector", "technology")
   }
 
