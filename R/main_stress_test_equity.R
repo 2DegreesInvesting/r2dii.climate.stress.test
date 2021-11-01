@@ -62,7 +62,7 @@ run_stress_test <- function(lgd_senior_claims = 0.45,
   # FIXME: Very bad solution for temporart use only
   source_all(c("stress_test_model_functions.R", "0_global_functions_st.R"))
 
-  # Analysis Parameters----------------------------------------
+  #####  Analysis Parameters----------------------------------------
   # Get analysis parameters from the projects AnalysisParameters.yml - similar to PACTA_analysis
 
   cfg <- config::get(file = file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", "AnalysisParameters.yml"))
@@ -70,7 +70,7 @@ run_stress_test <- function(lgd_senior_claims = 0.45,
   start_year <- cfg$AnalysisPeriod$Years.Startyear
   time_horizon <- cfg$AnalysisPeriod$Years.Horizon
 
-  # Filters----------------------------------------
+  #####  Filters----------------------------------------
   # The filter settings should comply with the filters from the parent PACTA project as per default
   # There may still be cases of certain sectors or geographies that work in PACTA but not yet in stress testing
   # move to config once mechanism to include/exclude filters from original pacta project exists
