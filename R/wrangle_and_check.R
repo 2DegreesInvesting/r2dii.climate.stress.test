@@ -11,6 +11,9 @@
 #' @return `sector_exposures` holding only valid rows for `asset_type`
 #' @export
 wrangle_and_check_sector_exposures <- function(sector_exposures, asset_type) {
+
+  asset_type <- stringr::str_to_title(asset_type)
+
   if (!asset_type %in% c("Bonds", "Equity", "Loans")) {
     stop("Invalid asset type")
   }

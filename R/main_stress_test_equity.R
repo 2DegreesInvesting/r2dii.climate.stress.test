@@ -45,6 +45,7 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
     company_exclusion = company_exclusion
   )
 
+  asset_type <- "equity"
   scenario_to_follow_baseline <- baseline_scenario_lookup
   scenario_to_follow_ls <- shock_scenario_lookup
   calculation_level <- calculation_level_lookup
@@ -101,7 +102,7 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
 
   # Load sector exposures of portfolio------------------------
   sector_exposures <- readRDS(file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", "overview_portfolio.rda")) %>%
-    wrangle_and_check_sector_exposures(asset_type = "Equity")
+    wrangle_and_check_sector_exposures(asset_type = asset_type)
 
   # Load policy shock transition scenarios--------------------
   transition_scenario <- generate_transition_shocks(
@@ -116,7 +117,7 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
     end_year = end_year,
     company_exclusion = company_exclusion,
     scenario_geography_filter = scenario_geography_filter,
-    asset_type = "equity"
+    asset_type = asset_type
   ) %>%
     c(list(pacta_results = pacta_results, sector_exposures = sector_exposures)) %>%
     check_and_filter_data(
@@ -146,7 +147,7 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
   # Calculation of results---------------------------------------------------
   ###########################################################################
   annual_profits <- calculate_annual_profits(
-    asset_type = "equity",
+    asset_type = asset_type,
     input_data_list = input_data_list,
     scenario_to_follow_baseline = scenario_to_follow_baseline,
     scenario_to_follow_ls = scenario_to_follow_ls,
@@ -158,7 +159,7 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
   )
 
   exposure_by_technology_and_company <- calculate_exposure_by_technology_and_company(
-    asset_type = "equity",
+    asset_type = asset_type,
     input_data_list = input_data_list,
     start_year = start_year,
     scenario_to_follow_ls = scenario_to_follow_ls
@@ -209,7 +210,7 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
     results = results,
     expected_loss = expected_loss,
     annual_pd_changes = annual_pd_changes,
-    asset_type = "equity",
+    asset_type = asset_type,
     calculation_level = calculation_level
   )
 }
