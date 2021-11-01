@@ -75,7 +75,7 @@ read_and_prepare_project_agnostic_data <- function(start_year, end_year, company
 #' Function reads in data that are specific the project and conducts some
 #' checking and wrangling.
 #'
-#' @inheritParams run_stress_test_equity
+#' @inheritParams run_stress_test
 #' @inheritParams read_and_prepare_project_agnostic_data
 #' @inheritParams wrangle_and_check_pacta_results
 #' @param calculation_level String holding level of calculation.
