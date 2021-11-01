@@ -210,6 +210,7 @@ run_stress_test_equity <- function(lgd_senior_claims = 0.45,
     results = results,
     expected_loss = expected_loss,
     annual_pd_changes = annual_pd_changes,
+    overall_pd_changes = overall_pd_changes,
     asset_type = asset_type,
     calculation_level = calculation_level
   )
