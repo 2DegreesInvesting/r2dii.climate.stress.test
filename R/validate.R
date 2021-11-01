@@ -66,6 +66,6 @@ validate_input_values <- function(lgd_senior_claims, lgd_subordinated_claims,
   }
 
   if (!asset_type %in% asset_types_lookup) {
-    stop("Invalid asset_type")
+    stop("Invalid value for argument asset_type")
   }
 }
