@@ -23,8 +23,8 @@ A vector holding survival probabilities,
 \description{
 Function calculates survival probability for a maturity based on a structural
 Merton model.
-For details on implementation please compare \code{\link[CreditRisk:Merton]{CreditRisk::Merton()}}.
-Unlike \code{\link[CreditRisk:Merton]{CreditRisk::Merton()}} this implementation:
+For details on implementation please compare \code{CreditRisk::Merton()}.
+Unlike \code{CreditRisk::Merton()} this implementation:
 \enumerate{
 \item only holds functionality to calculate probability of survival
 \item can be called in vectorised fashion

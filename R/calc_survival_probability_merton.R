@@ -2,8 +2,8 @@
 #'
 #' Function calculates survival probability for a maturity based on a structural
 #' Merton model.
-#' For details on implementation please compare [CreditRisk::Merton()].
-#' Unlike [CreditRisk::Merton()] this implementation:
+#' For details on implementation please compare `CreditRisk::Merton()`.
+#' Unlike `CreditRisk::Merton()` this implementation:
 #' 1. only holds functionality to calculate probability of survival
 #' 1. can be called in vectorised fashion
 #' 1. additionally checks that all input values are of the same length
