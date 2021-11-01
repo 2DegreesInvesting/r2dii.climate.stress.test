@@ -124,7 +124,7 @@ run_stress_test <- function(lgd_senior_claims = 0.45,
     scenarios = scenarios_filter
   )
 
-  # Prepare sector exposure data-------------------------------------------------
+  # Prepare sector exposure data------------------------------------------------
   # TODO: validate
   port_aum <- calculate_aum(input_data_list$sector_exposures)
 
