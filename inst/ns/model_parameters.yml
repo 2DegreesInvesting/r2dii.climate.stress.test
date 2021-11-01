@@ -1,0 +1,31 @@
+default:
+
+  end_year: 2040
+
+  financials:
+    recovery_rate: 0.38
+    discount_rate: 0.02
+    div_netprofit_prop_coef: 1
+    terminal_value: 0
+    risk_free_rate: 0.0129 # US 10Y treasury rate
+    lgd_senior_claims: 0.45
+    lgd_subordinated_claims: 0.75
+
+  scenarios:
+    scenario_to_follow_baseline: NPS
+    scenario_to_follow_ls: SDS
+    scenario_to_follow_ls_aligned: SDS
+
+  net_profit_margin:
+    coal: 0.07
+    coalcap: 0.07
+    electric: 0.07
+    gas: 0.07
+    gascap: 0.07
+    hybrid: 0.07
+    ice: 0.07
+    nuclearcap: 0.07
+    oil: 0.07
+    oilcap: 0.07
+    renewablescap: 0.07
+    hydrocap: 0.07
