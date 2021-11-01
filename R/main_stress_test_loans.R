@@ -84,27 +84,16 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
   ###########################################################################
   # Load input datasets------------------------------------------------------
   ###########################################################################
-  # Load PACTA results / loans portfolio------------------------
-  path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", paste0(stringr::str_to_title(asset_type), "_results_", calculation_level, ".rda"))
-
-  pacta_results <- read_pacta_results(
-    path = path,
-    level = calculation_level
-  ) %>%
-  wrangle_and_check_pacta_results(
+  project_specific_data_list <- read_and_prepare_project_specific_data(
+    asset_type = asset_type,
+    calculation_level = calculation_level,
     start_year = start_year,
     time_horizon = time_horizon,
     scenario_geography_filter = scenario_geography_filter,
     scenarios_filter = scenarios_filter,
-    equity_market_filter = cfg$Lists$Equity.Market.List
-  ) %>%
-  # ADO 1943 - for the time being, one global term value is set by the user.
-  # TODO: next version to allow term input on holding/company level
-  dplyr::mutate(term = term)
-
-  sector_exposures <- readRDS(file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", "overview_portfolio.rda")) %>%
-    wrangle_and_check_sector_exposures(asset_type = asset_type)
-  # TODO: potentially convert currencies to USD or at least common currency
+    equity_market_filter = cfg$Lists$Equity.Market.List,
+    term = term
+    )
 
   # Load transition scenarios that will be run by the model
   transition_scenario <- generate_transition_shocks(
