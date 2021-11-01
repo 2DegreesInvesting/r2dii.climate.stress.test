@@ -43,6 +43,11 @@ jobs:
         with:
           extra-packages: rcmdcheck
 
+      - name: Install older sessionInfo
+        run: |
+          devtools::install_version("sessionInfo", "1.1.1")
+        shell: Rscript {0}
+
       - uses: r-lib/actions/check-r-package@v1
 
       - name: Show testthat output
