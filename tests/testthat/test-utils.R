@@ -149,6 +149,7 @@ test_that("Missings are reported correctly", {
 
 })
 
+
 test_that("Error is thrown if throw_error is TRUE", {
   data <- tibble::tibble(
     a = c("A1", "A1", "A1", NA),
@@ -157,5 +158,23 @@ test_that("Error is thrown if throw_error is TRUE", {
   )
 
   expect_error(report_missings(data, name_data = "some",  throw_error = TRUE), "Missings detected on some")
+
+
+# validate_data_has_expected_cols -----------------------------------------
+test_that("No error is thrown if not colnames are missing", {
+  expect_silent(validate_data_has_expected_cols(
+    data = tibble::tibble(A = 1, B = 2),
+    expected_columns = c("A")
+  ))
+})
+
+test_that("Error is thrown if colnames are missing", {
+  expect_error(
+    validate_data_has_expected_cols(
+      data = tibble::tibble(A = 1, B = 2),
+      expected_columns = c("D", "E")
+    ),
+    "columns: D, E."
+  )
 
 })

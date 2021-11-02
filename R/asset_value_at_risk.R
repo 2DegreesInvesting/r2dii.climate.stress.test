@@ -32,31 +32,29 @@ asset_value_at_risk <- function(data,
   port_aum %||% stop("Must provide input for 'port_aum'", call. = FALSE)
   flat_multiplier %||% stop("Must provide input for 'flat_multiplier'", call. = FALSE)
 
-  data_has_expected_columns <- all(
-    c(
-      "investor_name", "portfolio_name", "year",
-      "scenario_geography", "ald_sector", "technology",
-      # "scenario_name",
-      "discounted_net_profit_ls", "discounted_net_profit_baseline"
-    ) %in% colnames(data)
+  validate_data_has_expected_cols(
+    data = data,
+    expected_columns = c(
+      "investor_name", "portfolio_name", "year", "scenario_geography",
+      "ald_sector", "technology", "discounted_net_profit_ls",
+      "discounted_net_profit_baseline"
+    )
   )
-  stopifnot(data_has_expected_columns)
 
-  shock_scenario_has_expected_columns <- all(
-    c(
+  validate_data_has_expected_cols(
+    data = shock_scenario,
+    expected_columns = c(
       "scenario_name", "year_of_shock", "duration_of_shock"
-    ) %in% colnames(shock_scenario)
+    )
   )
-  stopifnot(shock_scenario_has_expected_columns)
 
-  plan_carsten_has_expected_columns <- all(
-    c(
-      "investor_name", "portfolio_name", "year",
-      "scenario_geography", "ald_sector", "technology",
-      "plan_carsten", "plan_sec_carsten"
-    ) %in% colnames(plan_carsten)
+  validate_data_has_expected_cols(
+    data = plan_carsten,
+    expected_columns = c(
+      "investor_name", "portfolio_name", "year", "scenario_geography",
+      "ald_sector", "technology", "plan_carsten", "plan_sec_carsten"
+    )
   )
-  stopifnot(plan_carsten_has_expected_columns)
 
   data <- data %>%
     dplyr::filter(

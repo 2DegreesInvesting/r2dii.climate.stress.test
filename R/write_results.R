@@ -146,33 +146,32 @@ write_results <- function(data,
   stopifnot(valid_file_type)
 
   if (level == "company") {
-    data_has_expected_columns <- all(
-      c(
-        "investor_name", "portfolio_name", "company_name", "scenario_geography",
-        "scenario_name", "year_of_shock", "duration_of_shock", "ald_sector",
-        "technology", "production_shock_perc", "asset_portfolio_value",
-        "tech_company_exposure", "VaR_tech_company", "tech_company_value_change",
-        "company_exposure", "VaR_company", "company_value_change",
-        "technology_exposure", "VaR_technology", "technology_value_change",
-        "sector_exposure", "VaR_sector", "sector_value_change",
-        "analysed_sectors_exposure", "VaR_analysed_sectors",
-        "analysed_sectors_value_change", "portfolio_aum",
-        "portfolio_value_change_perc", "portfolio_value_change"
-      ) %in% colnames(data)
+    expected_columns <-  c(
+      "investor_name", "portfolio_name", "company_name", "scenario_geography",
+      "scenario_name", "year_of_shock", "duration_of_shock", "ald_sector",
+      "technology", "production_shock_perc", "asset_portfolio_value",
+      "tech_company_exposure", "VaR_tech_company", "tech_company_value_change",
+      "company_exposure", "VaR_company", "company_value_change",
+      "technology_exposure", "VaR_technology", "technology_value_change",
+      "sector_exposure", "VaR_sector", "sector_value_change",
+      "analysed_sectors_exposure", "VaR_analysed_sectors",
+      "analysed_sectors_value_change", "portfolio_aum",
+      "portfolio_value_change_perc", "portfolio_value_change"
     )
   } else {
-    data_has_expected_columns <- all(
-      c(
-        "investor_name", "portfolio_name", "ald_sector", "technology",
-        "scenario_geography", "VaR_technology", "asset_portfolio_value",
-        "VaR_sector", "scenario_name", "technology_exposure", "sector_exposure",
-        "sector_loss", "climate_relevant_var", "portfolio_aum",
-        "portfolio_loss_perc", "year_of_shock", "duration_of_shock",
-        "production_shock_perc"
-      ) %in% colnames(data)
-    )
+   expected_columns <- c(
+     "investor_name", "portfolio_name", "ald_sector", "technology",
+     "scenario_geography", "VaR_technology", "asset_portfolio_value",
+     "VaR_sector", "scenario_name", "technology_exposure", "sector_exposure",
+     "sector_loss", "climate_relevant_var", "portfolio_aum",
+     "portfolio_loss_perc", "year_of_shock", "duration_of_shock",
+     "production_shock_perc"
+   )
   }
-  stopifnot(data_has_expected_columns)
+  validate_data_has_expected_cols(
+    data = data,
+    expected_columns = expected_columns
+  )
 
   if (level == "portfolio") {
     switch(file_type,
@@ -306,8 +305,9 @@ write_results_new <- function(data,
     stop("Only calculation level company is supported.")
   }
 
-  data_has_expected_columns <- all(
-    c(
+  validate_data_has_expected_cols(
+    data = data,
+    expected_columns = c(
       "investor_name", "portfolio_name", "company_name", "scenario_geography",
       "scenario_name", "year_of_shock", "duration_of_shock", "ald_sector",
       "technology", "production_shock_perc", "asset_portfolio_value",
@@ -318,10 +318,8 @@ write_results_new <- function(data,
       "analysed_sectors_exposure", "VaR_analysed_sectors",
       "analysed_sectors_value_change", "portfolio_aum",
       "portfolio_value_change_perc", "portfolio_value_change"
-    ) %in% colnames(data)
+    )
   )
-
-  stopifnot(data_has_expected_columns)
 
   data <- data %>%
     # ADO 2549 - select instead of relocate so that no surplus columns can sneak in
