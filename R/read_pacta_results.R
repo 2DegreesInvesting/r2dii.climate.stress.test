@@ -41,8 +41,10 @@ read_pacta_results <- function(path = NULL,
   data <- data %>%
     dplyr::select(.env$expected_columns)
 
-  output_has_expected_columns <- all(expected_columns %in% colnames(data))
-  stopifnot(output_has_expected_columns)
+  validate_data_has_expected_cols(
+    data = data,
+    expected_columns = expected_columnss
+  )
 
   return(data)
 }

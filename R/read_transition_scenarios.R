@@ -61,13 +61,13 @@ read_transition_scenarios <- function(path = NULL,
          the anaylsis.")
   }
 
-  output_has_expected_columns <- all(
-    c(
+  validate_data_has_expected_cols(
+    data = data,
+    expected_columns = c(
       "scenario_name", "year_of_shock", "overshoot_method", "duration_of_shock",
       "use_prod_forecasts_ls", "use_prod_forecasts_baseline"
-    ) %in% colnames(data)
+    )
   )
-  stopifnot(output_has_expected_columns)
 
   return(data)
 }
@@ -121,12 +121,12 @@ generate_transition_shocks <- function(start_of_analysis,
     duration_of_shock = end_of_analysis - year_of_shock + 1
   )
 
-  output_has_expected_columns <- all(
-    c(
+  validate_data_has_expected_cols(
+    data = data,
+    expected_columns = c(
       "scenario_name", "year_of_shock", "duration_of_shock"
-    ) %in% colnames(data)
+    )
   )
-  stopifnot(output_has_expected_columns)
 
   return(data)
 }

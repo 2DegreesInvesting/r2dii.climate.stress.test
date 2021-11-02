@@ -54,10 +54,13 @@ read_capacity_factors <- function(path = NULL,
       dplyr::rename(capacity_factor = .data$capacityfactor_WEO_2016) %>%
       dplyr::mutate(scenario_geography = "Global")
 
-    output_has_expected_columns <- all(
-      c("technology", "capacity_factor", "scenario_geography") %in% colnames(data)
+    validate_data_has_expected_cols(
+      data = data,
+      expected_columns = c(
+        "technology", "capacity_factor", "scenario_geography"
+      )
     )
-    stopifnot(output_has_expected_columns)
+
   } else {
     data <- data %>%
       dplyr::select(
@@ -69,12 +72,12 @@ read_capacity_factors <- function(path = NULL,
         scenario = dplyr::if_else(.data$scenario == "SPS", "NPS", .data$scenario)
       )
 
-    output_has_expected_columns <- all(
-      c(
+    validate_data_has_expected_cols(
+      data = data,
+      expected_columns = c(
         "scenario", "scenario_geography", "technology", "year", "capacity_factor"
-      ) %in% colnames(data)
+      )
     )
-    stopifnot(output_has_expected_columns)
   }
 
   return(data)
