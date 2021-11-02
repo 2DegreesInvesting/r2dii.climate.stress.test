@@ -45,7 +45,7 @@ read_pacta_results <- function(path = NULL,
 
   validate_data_has_expected_cols(
     data = data,
-    expected_columns = expected_columnss
+    expected_columns = expected_columns
   )
 
   return(data)

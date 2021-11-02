@@ -26,7 +26,7 @@ company_expected_loss <- function(data,
   port_aum %||% stop("Must provide input for 'port_aum'", call. = FALSE)
 
   validate_data_has_expected_cols(
-    data = scenario_data,
+    data = data,
     expected_columns = c(
       "investor_name", "portfolio_name", "company_name", "scenario_geography",
       "ald_sector", "scenario_name", "PD_baseline", "PD_late_sudden",
