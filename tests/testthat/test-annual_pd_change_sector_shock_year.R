@@ -13,7 +13,7 @@ test_that("production trajectories function returns a ggplot object", {
 
   test_plot <- annual_pd_change_sector_shock_year(
     data = test_input_graph,
-    shock_year = test_shock_year,
+    shock_year_filter = test_shock_year,
     geography_filter = test_geography_filter
   )
 
