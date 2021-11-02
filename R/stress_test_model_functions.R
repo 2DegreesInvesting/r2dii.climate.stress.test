@@ -1,4 +1,6 @@
-# STILL TO FIX: five year moving average
+# FIXME: Add tests and documentation
+
+
 # FIXME: can probably be removed
 f <- function(shock_strength_calc) {
   sum(scen_to_follow[1:(position_shock_year + duration_of_shock - 1)]) -
