@@ -296,10 +296,10 @@ report_missings <- function(data, name_data, throw_error = FALSE) {
 #' @param cuc_cols Vector of cols the combination of which needs to be unique.
 #'
 #' @return Tibble `data`.
-check_results_structure <- function(data, name_data, cuc_cols) {
+check_results_structure <- function(data, name_data, cuc_cols, throw_error = FALSE) {
 
-  report_all_duplicate_kinds(data = data, composite_unique_cols = cuc_cols, throw_error = FALSE)
-  report_missings(data = data, name_data = name_data)
+  report_all_duplicate_kinds(data = data, composite_unique_cols = cuc_cols, throw_error = throw_error)
+  report_missings(data = data, name_data = name_data, throw_error = throw_error)
 
   return(data)
 }

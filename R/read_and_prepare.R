@@ -126,7 +126,10 @@ read_sector_exposures <- function(path) {
 
   sector_exposures <- readr::read_rds(path)
 
-  expected_columns <- c("investor_name", "portfolio_name", "valid_value_usd", "valid_input", "asset_type")
+  expected_columns <- c(
+    "investor_name", "portfolio_name", "valid_value_usd", "valid_input",
+    "asset_type", "financial_sector"
+    )
   validate_data_has_expected_cols(
     data = sector_exposures,
     expected_columns = expected_columns
