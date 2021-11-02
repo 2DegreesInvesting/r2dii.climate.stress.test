@@ -16,6 +16,10 @@ write_stress_test_results <- function(results, expected_loss,
                                       annual_pd_changes, overall_pd_changes,
                                       asset_type, calculation_level) {
 
+  if (!dir.exists(file.path(get_st_data_path("ST_PROJECT_FOLDER"), "outputs"))) {
+    dir.create(file.path(get_st_data_path("ST_PROJECT_FOLDER"), "outputs"))
+  }
+
   results_path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "outputs")
 
   results %>% write_results_new(
