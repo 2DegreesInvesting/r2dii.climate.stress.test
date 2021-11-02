@@ -33,6 +33,8 @@ term_range_lookup <- c(1, 10)
 
 end_year_lookup <- 2040
 
+price_data_version_lookup <- "2021Q1"
+
 credit_type_lookup <- c("outstanding", "credit_limit")
 
 # vector holding considered sectors in stress testing
