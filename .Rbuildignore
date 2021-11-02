@@ -4,6 +4,7 @@
 ^LICENSE\.md$
 ^\.pacta$
 ^model_parameters$
+^nonstandard$
 ^0_global_functions_st\.R$
 ^0_portfolio_input_check_functions\.R$
 ^external_stress_test_application_code\.R$
