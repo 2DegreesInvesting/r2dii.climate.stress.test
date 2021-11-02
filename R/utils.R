@@ -295,11 +295,7 @@ check_results_structure <- function(data, name_data, cuc_cols) {
 #'
 #' @return A double holding value of the flat multiplier.
 assign_flat_multiplier <- function(asset_type) {
-  if (asset_type %in% c("loans", "bonds")) {
-    flat_multiplier <- 0.15
-  } else {
-    flat_multiplier <- 1.0
-  }
+  flat_multiplier <- ifelse(asset_type %in% c("loans", "bonds"),  0.15, 1.0)
   return(flat_multiplier)
 }
 
@@ -313,10 +309,6 @@ assign_flat_multiplier <- function(asset_type) {
 #' @return A numerix holding value of lgd.
 assign_lgd <- function(asset_type, lgd_senior_claims,
                        lgd_subordinated_claims) {
-  if (asset_type %in% c("equity", "bonds")) {
-    lgd <- lgd_subordinated_claims
-  } else {
-    lgd <- lgd_senior_claims
-  }
+  lgd <- ifelse(asset_type %in% c("equity", "bonds"), lgd_subordinated_claims, lgd_senior_claims)
   return(lgd)
 }
