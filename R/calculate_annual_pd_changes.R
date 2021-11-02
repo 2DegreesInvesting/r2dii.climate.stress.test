@@ -27,15 +27,15 @@ calculate_pd_change_annual <- function(data,
   end_of_analysis %||% stop("Must provide input for 'end_of_analysis'", call. = FALSE)
   risk_free_interest_rate %||% stop("Must provide input for 'risk_free_interest_rate'", call. = FALSE)
 
-  data_has_expected_columns <- all(
-    c(
+  validate_data_has_expected_cols(
+    data = data,
+    expected_columns = c(
       "investor_name", "portfolio_name", "id", "company_name", "year",
       "scenario_geography", "ald_sector", "technology",
       "scenario_name", "discounted_net_profit_ls",
       "discounted_net_profit_baseline", "debt_equity_ratio", "volatility"
-    ) %in% colnames(data)
+    )
   )
-  stopifnot(data_has_expected_columns)
 
   data <- data %>%
     dplyr::filter(.data$year >= .env$shock_year) %>%

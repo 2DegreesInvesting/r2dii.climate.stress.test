@@ -30,23 +30,23 @@ extend_scenario_trajectory <- function(data,
   end_analysis %||% stop("Must provide input for 'end_analysis'", call. = FALSE)
   time_frame %||% stop("Must provide input for 'time_frame'", call. = FALSE)
 
-  data_has_expected_columns <- all(
-    c(
+  validate_data_has_expected_cols(
+    data = data,
+    expected_columns = c(
       "year", "investor_name", "portfolio_name", "equity_market", "ald_sector",
       "technology", "scenario", "allocation", "scenario_geography",
       "plan_tech_prod", "plan_carsten", "scen_tech_prod", "plan_sec_prod",
       "plan_sec_carsten", "id", "company_name"
-    ) %in% colnames(data)
+    )
   )
-  stopifnot(data_has_expected_columns)
 
-  scenario_data_has_expected_columns <- all(
-    c(
+  validate_data_has_expected_cols(
+    data = scenario_data,
+    expected_columns = c(
       "source", "technology", "scenario_geography", "ald_sector", "units",
       "scenario", "year", "direction", "fair_share_perc"
-    ) %in% colnames(scenario_data)
+    )
   )
-  stopifnot(scenario_data_has_expected_columns)
 
   data <- data %>%
     dplyr::select(
