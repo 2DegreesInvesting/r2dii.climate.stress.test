@@ -128,7 +128,7 @@ read_sector_exposures <- function(path) {
 
   expected_columns <- c("investor_name", "portfolio_name", "valid_value_usd", "valid_input", "asset_type")
   validate_data_has_expected_cols(
-    data = sector_exposure,
+    data = sector_exposures,
     expected_columns = expected_columns
   )
 
