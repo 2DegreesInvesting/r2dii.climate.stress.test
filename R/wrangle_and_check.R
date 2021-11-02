@@ -24,6 +24,8 @@ wrangle_and_check_sector_exposures <- function(sector_exposures, asset_type) {
     stop("Detected implausible inputs on sector exposures", call. = FALSE)
   }
 
+  report_missings(data = sector_exposures, name_data = "sector exposures", throw_error = TRUE)
+
   valid_sector_exposures <- sector_exposures %>%
     dplyr::filter(valid_input) %>%
     dplyr::filter(asset_type == !!asset_type) %>%

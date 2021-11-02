@@ -259,7 +259,7 @@ inner_join_report_drops <- function(data_x, data_y, name_x, name_y, merge_cols) 
 #' @param name_data Name of the data file.
 #'
 #' @return NULL
-report_missings <- function(data, name_data) {
+report_missings <- function(data, name_data, throw_error = FALSE) {
   missings <- purrr::map_df(data, function(x) sum(is.na(x)))
 
   cat("Reporting missings on dataset:", name_data, "\n")
@@ -267,6 +267,12 @@ report_missings <- function(data, name_data) {
     cat("Counted", n_na, "missings on column", name, "\n")
   })
   cat("\n\n")
+
+  if (throw_error) {
+    stop(paste0("Missings detected on ", name_data, ", please check dataset."), call. = FALSE)
+  }
+
+  invisible()
 }
 
 #' Checks structure of results

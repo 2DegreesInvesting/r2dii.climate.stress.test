@@ -148,3 +148,14 @@ test_that("Missings are reported correctly", {
   expect_output(report_missings(data, name_data = "some"), "Counted 1 missings on column a")
 
 })
+
+test_that("Error is thrown if throw_error is TRUE", {
+  data <- tibble::tibble(
+    a = c("A1", "A1", "A1", NA),
+    b = c("B1", NA, NA, "B1"),
+    c = c(1, 1, 2, NaN)
+  )
+
+  expect_error(report_missings(data, name_data = "some",  throw_error = TRUE), "Missings detected on some")
+
+})
