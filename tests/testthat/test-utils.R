@@ -108,6 +108,7 @@ test_that("Error is thrown if there are duplicates on composite unique cols and 
     "Identified 1 duplicates"
   )
 })
+
 test_that("Warning is thrown if there are duplciates on all cols", {
   data <- tibble::tibble(
     a = c("A1", "A1", "A2", "A2", "A2"),
@@ -158,7 +159,7 @@ test_that("Error is thrown if throw_error is TRUE", {
   )
 
   expect_error(report_missings(data, name_data = "some",  throw_error = TRUE), "Missings detected on some")
-
+})
 
 # validate_data_has_expected_cols -----------------------------------------
 test_that("No error is thrown if not colnames are missing", {
