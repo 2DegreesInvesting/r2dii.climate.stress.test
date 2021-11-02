@@ -5,6 +5,7 @@
 \title{Run stress testing for provided asset type.}
 \usage{
 run_stress_test(
+  asset_type,
   lgd_senior_claims = 0.45,
   lgd_subordinated_claims = 0.75,
   terminal_value = 0,
@@ -13,11 +14,13 @@ run_stress_test(
   div_netprofit_prop_coef = 1,
   shock_year = 2030,
   term = 2,
-  company_exclusion = TRUE,
-  asset_type
+  company_exclusion = TRUE
 )
 }
 \arguments{
+\item{asset_type}{String holding asset_type, for allowed value compare
+\code{asset_types_lookup}.}
+
 \item{lgd_senior_claims}{Numeric, holding the loss given default for senior
 claims, for accepted value range check \code{lgd_senior_claims_range_lookup}.}
 
@@ -48,9 +51,6 @@ range compare \code{term_range_lookup}.}
 
 \item{company_exclusion}{Boolean, indicating if companies provided in dataset
 excluded_companies.csv shall be excluded.}
-
-\item{asset_type}{String holding asset_type, for allowed value compare
-\code{asset_types_lookup}.}
 }
 \description{
 Run stress testing for provided asset type.
