@@ -74,22 +74,3 @@ test_that("Error is thrown if an input value is of length other than 1", {
     asset_type = "loans"
   ), "length 1")
 })
-
-# validate_data_has_expected_cols -----------------------------------------
-test_that("No error is thrown if not colnames are missing", {
-  expect_silent(validate_data_has_expected_cols(
-    data = tibble::tibble(A = 1, B = 2),
-    expected_columns = c("A")
-  ))
-})
-
-test_that("Error is thrown if colnames are missing", {
-  expect_error(
-    validate_data_has_expected_cols(
-      data = tibble::tibble(A = 1, B = 2),
-      expected_columns = c("D", "E")
-    ),
-    "columns: D, E."
-  )
-})
-
