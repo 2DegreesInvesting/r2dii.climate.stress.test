@@ -115,9 +115,20 @@ validate_file_exists <- function(path) {
 #' @export
 validate_data_has_expected_cols <- function(data,
                                             expected_columns) {
-  data_has_expected_columns <- all(expected_columns %in% colnames(data))
-  stopifnot(data_has_expected_columns)
+  stopifnot(rlang::is_named(data))
+  stopifnot(is.character(expected_column))
+
+  data_has_expected_columns <-
+    all(expected_columns %in% colnames(data))
+
+  if (!data_has_expected_columns) {
+    stop(paste0("Detected missing columns: ", sort(setdiff(
+      expected_columns, names(data)
+    )), "."), call. = FALSE)
+  }
+  invisible()
 }
+
 
 #' Checks data for missings and duplicates
 #'
