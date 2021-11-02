@@ -10,6 +10,9 @@ report_missings(data, name_data, throw_error = FALSE)
 \item{data}{Tibble holding a result data set.}
 
 \item{name_data}{Name of the data file.}
+
+\item{throw_error}{Boolean, if TRUE error is thrown on failures, otherwise a
+warning.}
 }
 \description{
 Function reports number of missing values per variable.

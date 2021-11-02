@@ -12,6 +12,9 @@ check_data_structure(data, name_data, cuc_cols, throw_error = FALSE)
 \item{name_data}{Name of results data.}
 
 \item{cuc_cols}{Vector of cols the combination of which needs to be unique.}
+
+\item{throw_error}{Boolean, if TRUE error is thrown on failures, otherwise a
+warning.}
 }
 \value{
 Tibble \code{data}.

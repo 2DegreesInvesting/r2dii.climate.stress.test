@@ -266,6 +266,7 @@ inner_join_report_drops <- function(data_x, data_y, name_x, name_y, merge_cols) 
 #'
 #' Function reports number of missing values per variable.
 #'
+#' @inheritParams report_all_duplicate_kinds
 #' @param data Tibble holding a result data set.
 #' @param name_data Name of the data file.
 #'
@@ -291,6 +292,7 @@ report_missings <- function(data, name_data, throw_error = FALSE) {
 #' Wrapper to call [report_all_duplicate_kinds()] and [report_missings()] on
 #' results.
 #'
+#' @inheritParams report_all_duplicate_kinds
 #' @param data Tibble holding results.
 #' @param name_data Name of results data.
 #' @param cuc_cols Vector of cols the combination of which needs to be unique.
