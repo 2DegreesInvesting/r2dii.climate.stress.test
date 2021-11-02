@@ -1,7 +1,6 @@
 source(file.path("R", "functions.R"))
 
 function_paths <- c(
-  "stress_test_model_functions.R",
   "0_global_functions_st.R",
   file.path(
     "R",
@@ -11,7 +10,8 @@ function_paths <- c(
       "get_st_data_path.R",
       "overall_pd_change_company_sector.R",
       "overall_pd_change_sector_shock_year.R",
-      "qa_graphs_st.R"
+      "qa_graphs_st.R",
+      "stress_test_model_functions.R"
     )
   )
 )
