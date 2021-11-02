@@ -51,7 +51,7 @@ net_profit_margin_setup <- function(net_profit_margin_coal,
                                     net_profit_margin_renewablescap,
                                     net_profit_margin_hydrocap,
                                     net_profit_margin_oilcap) {
-  tibble(
+  tibble::tibble(
     "technology" = c("Coal", "CoalCap", "Electric", "Gas", "GasCap", "Hybrid", "ICE", "NuclearCap", "Oil", "RenewablesCap", "HydroCap", "OilCap"),
     "net_profit_margin" = c(
       net_profit_margin_coal,
