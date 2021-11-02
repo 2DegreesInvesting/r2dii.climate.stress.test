@@ -19,12 +19,12 @@ overall_pd_change_sector_shock_year <- function(data,
   scenario_filter %||% stop("Must provide input for 'scenario_filter'", call. = FALSE)
   geography_filter %||% stop("Must provide input for 'geography_filter'", call. = FALSE)
 
-  data_has_expected_columns <- all(c(
-    "scenario_name", "ald_sector", "scenario_geography", "term",
-    "PD_change"
+  validate_data_has_expected_cols(
+    data = data,
+    expected_columns = c(
+      "scenario_name", "ald_sector", "scenario_geography", "term", "PD_change"
+    )
   )
-  %in% colnames(data))
-  stopifnot(data_has_expected_columns)
 
   plot <- data %>%
     dplyr::filter(

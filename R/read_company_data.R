@@ -37,8 +37,10 @@ read_company_data <- function(path = NULL, asset_type) {
     expected_columns <- c(expected_columns, "corporate_bond_ticker")
   }
 
-  data_has_expected_columns <- all(expected_columns %in% colnames(data))
-  stopifnot(data_has_expected_columns)
+  validate_data_has_expected_cols(
+    data = data,
+    expected_columns = expected_columns
+  )
 
   return(data)
 }

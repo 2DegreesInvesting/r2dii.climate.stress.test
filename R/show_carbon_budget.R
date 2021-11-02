@@ -27,22 +27,22 @@ show_carbon_budget <- function(data,
   scenarios <- scenarios %||% .env$scenario_data
   target_scenario <- target_scenario %||% .env$scenario_to_follow_ls
 
-  data_has_expected_columns <- all(
-    c(
+  validate_data_has_expected_cols(
+    data = data,
+    expected_columns = c(
       "investor_name", "portfolio_name", "id", "company_name", "scenario_name",
       "year", "scenario_geography", "ald_sector", "technology", "late_sudden",
       "sector_unit_ds", "year_of_shock"
-    ) %in% colnames(data)
+    )
   )
-  stopifnot(data_has_expected_columns)
 
-  scenarios_has_expected_columns <- all(
-    c(
+  validate_data_has_expected_cols(
+    data = scenarios,
+    expected_columns = c(
       "source", "scenario_geography", "scenario", "ald_sector", "technology",
       "direction"
-    ) %in% colnames(scenarios)
+    )
   )
-  stopifnot(scenarios_has_expected_columns)
 
   target_scenario_is_character <- is.character(target_scenario) &
     length(target_scenario) == 1

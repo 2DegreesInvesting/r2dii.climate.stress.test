@@ -29,14 +29,15 @@ read_capacity_factors <- function(path = NULL,
     # years as a magic number. Once process for the raw data is documented, this
     # will be overhauled
     years <- 2015:2040
-    data_has_expected_columns <- all(
-      c(
+
+    validate_data_has_expected_cols(
+      data = data,
+      expected_columns = c(
         "Region", "Scenario", "Source.x", "Technology", "region_2dii", "Source.y",
         glue::glue("Cap_Y{years}"), glue::glue("Gen_Y{years}"),
         glue::glue("capacityfactor_WEO_{years}")
-      ) %in% colnames(data)
+      )
     )
-    stopifnot(data_has_expected_columns)
 
     data <- data %>%
       dplyr::select(

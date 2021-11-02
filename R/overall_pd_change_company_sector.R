@@ -25,12 +25,13 @@ overall_pd_change_company_sector <- function(data,
   company_filter %||% stop("Must provide input for 'company_filter'", call. = FALSE)
   geography_filter %||% stop("Must provide input for 'geography_filter'", call. = FALSE)
 
-  data_has_expected_columns <- all(c(
-    "scenario_name", "company_name", "ald_sector", "scenario_geography", "term",
-    "PD_change"
+  validate_data_has_expected_cols(
+    data = data,
+    expected_columns = c(
+      "scenario_name", "company_name", "ald_sector", "scenario_geography", "term",
+      "PD_change"
+    )
   )
-  %in% colnames(data))
-  stopifnot(data_has_expected_columns)
 
   shock_year <- stringr::str_c("Carbon balance ", shock_year)
 

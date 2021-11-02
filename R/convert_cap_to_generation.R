@@ -14,22 +14,22 @@ convert_cap_to_generation <- function(data,
   force(data)
   capacity_factors_power %||% stop("Must provide input for 'capacity_factors_power'", call. = FALSE)
 
-  data_has_expected_columns <- all(
-    c(
+  validate_data_has_expected_cols(
+    data = data,
+    expected_columns = c(
       "year", "investor_name", "portfolio_name", "equity_market", "ald_sector",
       "technology", "scenario", "allocation", "scenario_geography",
       "plan_tech_prod", "plan_carsten", "scen_tech_prod", "plan_sec_prod",
       "plan_sec_carsten", "id", "company_name"
-    ) %in% colnames(data)
+    )
   )
-  stopifnot(data_has_expected_columns)
 
-  capacity_factors_has_expected_columns <- all(
-    c(
+  validate_data_has_expected_cols(
+    data = capacity_factors_power,
+    expected_columns = c(
       "technology", "capacity_factor", "scenario_geography"
-    ) %in% colnames(capacity_factors_power)
+    )
   )
-  stopifnot(capacity_factors_has_expected_columns)
 
   # ADO 1945 - Left join is applied since only rows in data from ald_sector
   # power will have matching rows in capacity_factors_power
@@ -82,22 +82,22 @@ convert_power_cap_to_generation <- function(data,
   force(data)
   capacity_factors_power %||% stop("Must provide input for 'capacity_factors_power'", call. = FALSE)
 
-  data_has_expected_columns <- all(
-    c(
+  validate_data_has_expected_cols(
+    data = data,
+    expected_columns = c(
       "year", "investor_name", "portfolio_name", "equity_market", "ald_sector",
       "technology", "scenario", "allocation", "scenario_geography",
       "plan_tech_prod", "plan_carsten", "scen_tech_prod", "plan_sec_prod",
       "plan_sec_carsten", "id", "company_name"
-    ) %in% colnames(data)
+    )
   )
-  stopifnot(data_has_expected_columns)
 
-  capacity_factors_has_expected_columns <- all(
-    c(
+  validate_data_has_expected_cols(
+    data = capacity_factors_power,
+    expected_columns = c(
       "technology", "capacity_factor", "scenario_geography", "year", "scenario"
-    ) %in% colnames(capacity_factors_power)
+    )
   )
-  stopifnot(capacity_factors_has_expected_columns)
 
   # create helper data set for calculation of planned capacity that assumes baseline scenario
   if (!baseline_scenario %in% unique(capacity_factors_power$scenario)) {
