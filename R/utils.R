@@ -279,7 +279,7 @@ report_missings <- function(data, name_data, throw_error = FALSE) {
   })
   cat("\n\n")
 
-  if (throw_error && any(missings$n_na > 0)) {
+  if (throw_error && rowSums(missings) > 0) {
     stop(paste0("Missings detected on ", name_data, ", please check dataset."), call. = FALSE)
   }
 
