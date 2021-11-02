@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Lookup valid values — lookup • r2dii.climate.stress.test</title>
+<title>Assign value of lgd — assign_lgd • r2dii.climate.stress.test</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,9 @@
 
 
 
-<meta property="og:title" content="Lookup valid values — lookup" />
-<meta property="og:description" content="Lookup valid values" />
+<meta property="og:title" content="Assign value of lgd — assign_lgd" />
+<meta property="og:description" content="Assigns value of lgd based on asset_type. Can be from lgd_senior_claims
+or lgd_subordinated_claims." />
 
 
 
@@ -103,45 +104,42 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Lookup valid values</h1>
+    <h1>Assign value of lgd</h1>
     
-    <div class="hidden name"><code>lookup.Rd</code></div>
+    <div class="hidden name"><code>assign_lgd.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Lookup valid values</p>
+    <p>Assigns value of lgd based on <code>asset_type</code>. Can be from <code>lgd_senior_claims</code>
+or <code>lgd_subordinated_claims</code>.</p>
     </div>
 
-    <pre class="usage"><span class='va'>lgd_senior_claims_range_lookup</span>
+    <pre class="usage"><span class='fu'>assign_lgd</span><span class='op'>(</span><span class='va'>asset_type</span>, <span class='va'>lgd_senior_claims</span>, <span class='va'>lgd_subordinated_claims</span><span class='op'>)</span></pre>
 
-<span class='va'>lgd_subordinated_claims_range_lookup</span>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>asset_type</th>
+      <td><p>String holding asset_type, for allowed value compare
+<code>asset_types_lookup</code>.</p></td>
+    </tr>
+    <tr>
+      <th>lgd_senior_claims</th>
+      <td><p>Numeric, holding the loss given default for senior
+claims, for accepted value range check <code>lgd_senior_claims_range_lookup</code>.</p></td>
+    </tr>
+    <tr>
+      <th>lgd_subordinated_claims</th>
+      <td><p>Numeric, holding the loss given default for
+subordinated claims, for accepted value range check
+<code>lgd_subordinated_claims_range_lookup</code>.</p></td>
+    </tr>
+    </table>
 
-<span class='va'>terminal_value_range_lookup</span>
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-<span class='va'>risk_free_rate_range_lookup</span>
-
-<span class='va'>discount_rate_range_lookup</span>
-
-<span class='va'>div_netprofit_prop_coef_range_lookup</span>
-
-<span class='va'>shock_year_range_lookup</span>
-
-<span class='va'>term_range_lookup</span>
-
-<span class='va'>credit_type_lookup</span></pre>
-
-
-    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
-
-    <p>An object of class <code>numeric</code> of length 2.</p>
-<p>An object of class <code>numeric</code> of length 2.</p>
-<p>An object of class <code>numeric</code> of length 2.</p>
-<p>An object of class <code>numeric</code> of length 2.</p>
-<p>An object of class <code>numeric</code> of length 2.</p>
-<p>An object of class <code>numeric</code> of length 2.</p>
-<p>An object of class <code>numeric</code> of length 2.</p>
-<p>An object of class <code>numeric</code> of length 2.</p>
-<p>An object of class <code>character</code> of length 2.</p>
+    <p>A numerix holding value of lgd.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
