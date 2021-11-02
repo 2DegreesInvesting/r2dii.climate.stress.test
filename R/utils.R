@@ -116,15 +116,15 @@ validate_file_exists <- function(path) {
 validate_data_has_expected_cols <- function(data,
                                             expected_columns) {
   stopifnot(rlang::is_named(data))
-  stopifnot(is.character(expected_column))
+  stopifnot(is.character(expected_columns))
 
   data_has_expected_columns <-
     all(expected_columns %in% colnames(data))
 
   if (!data_has_expected_columns) {
-    stop(paste0("Detected missing columns: ", sort(setdiff(
-      expected_columns, names(data)
-    )), "."), call. = FALSE)
+    stop(paste0("Detected missing columns: ", paste0(sort(setdiff(
+      expected_columns, names(data))
+    ), collapse = ", "), "."), call. = FALSE)
   }
   invisible()
 }
