@@ -24,7 +24,7 @@ wrangle_and_check_sector_exposures <- function(sector_exposures, asset_type) {
     stop("Detected implausible inputs on sector exposures", call. = FALSE)
   }
 
-  check_results_structure(
+  check_data_structure(
     data = sector_exposures,
     name_data = "sector exposures",
     cuc_cols = "financial_sector",

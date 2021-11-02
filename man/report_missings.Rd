@@ -4,7 +4,7 @@
 \alias{report_missings}
 \title{Report missing}
 \usage{
-report_missings(data, name_data)
+report_missings(data, name_data, throw_error = FALSE)
 }
 \arguments{
 \item{data}{Tibble holding a result data set.}

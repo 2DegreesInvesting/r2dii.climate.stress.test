@@ -46,7 +46,7 @@ write_stress_test_results <- function(results, expected_loss,
     )
 
   expected_loss %>%
-    check_results_structure(
+    check_data_structure(
       name_data = "Expected loss",
       cuc_cols = c("scenario_name", "scenario_geography", "investor_name",
                    "portfolio_name", "company_name", "id", "ald_sector", "term")
@@ -73,7 +73,7 @@ write_stress_test_results <- function(results, expected_loss,
     )
 
   annual_pd_changes_sector %>%
-    check_results_structure(
+    check_data_structure(
       name_data = "Annual PD changes sector",
       cuc_cols = c("scenario_name", "scenario_geography", "investor_name", "portfolio_name", "ald_sector", "year")
     ) %>%
@@ -99,7 +99,7 @@ write_stress_test_results <- function(results, expected_loss,
     )
 
   overall_pd_changes_sector %>%
-    check_results_structure(
+    check_data_structure(
       name_data = "Overall PD changes sector",
       cuc_cols = c("scenario_name", "scenario_geography", "investor_name", "portfolio_name", "ald_sector", "term")
     ) %>%
@@ -338,7 +338,7 @@ write_results_new <- function(data,
       .data$portfolio_value_change_perc, .data$portfolio_value_change,
       .data$exclude
     ) %>%
-    check_results_structure(
+    check_data_structure(
       name_data = "Stress test results - Company level",
       cuc_cols = c(
         "investor_name", "portfolio_name", "company_name", "scenario_geography",
@@ -377,7 +377,7 @@ write_results_new <- function(data,
     # running distinct all and the check afterwards ensures this is the case
     dplyr::distinct_all() %>%
     dplyr::arrange(.data$year_of_shock, .data$ald_sector, .data$technology) %>%
-    check_results_structure(
+    check_data_structure(
       name_data = "Stress test results - Portfolio level",
       cuc_cols = c(
         "investor_name", "portfolio_name", "scenario_geography", "scenario_name",
