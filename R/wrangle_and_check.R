@@ -15,7 +15,13 @@ wrangle_and_check_sector_exposures <- function(sector_exposures, asset_type) {
   asset_type <- stringr::str_to_title(asset_type)
 
   if (!asset_type %in% c("Bonds", "Equity", "Loans")) {
-    stop("Invalid asset type")
+    stop("Invalid asset type", call. = FALSE )
+  }
+
+  if (!is.logical(sector_exposures$valid_input) ||
+      !is.character(sector_exposures$financial_sector) ||
+      any(sector_exposures$valid_value_usd < 0)) {
+    stop("Detected implausible inputs on sector exposures", call. = FALSE)
   }
 
   valid_sector_exposures <- sector_exposures %>%
