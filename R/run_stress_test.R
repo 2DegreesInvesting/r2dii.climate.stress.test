@@ -62,10 +62,6 @@ run_stress_test <- function(asset_type,
   ###########################################################################
   # Project Initialisation---------------------------------------------------
   ###########################################################################
-
-  # FIXME: Very bad solution for temporart use only
-  source_all(c("stress_test_model_functions.R", "0_global_functions_st.R"))
-
   ##### Analysis Parameters----------------------------------------
   # Get analysis parameters from the projects AnalysisParameters.yml - similar to PACTA_analysis
 

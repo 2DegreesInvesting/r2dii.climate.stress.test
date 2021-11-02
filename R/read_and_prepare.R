@@ -38,7 +38,7 @@ read_and_prepare_project_agnostic_data <- function(start_year, end_year, company
   }
 
   df_price <- read_price_data(
-    path = file.path(data_location, paste0("prices_data_", config::get(file = "st_project_settings.yml")$price_data_version, ".csv")),
+    path = file.path(data_location, paste0("prices_data_", price_data_version_lookup, ".csv")),
     version = "old",
     expected_technologies = technologies_lookup
   ) %>%

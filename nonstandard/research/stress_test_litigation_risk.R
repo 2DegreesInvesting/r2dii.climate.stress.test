@@ -15,7 +15,7 @@ library(zoo)
 source(file.path("R","get_st_data_path.R"))
 source(file.path("R","utils.R"))
 source(file.path("R","set_paths.R"))
-source("stress_test_model_functions.R")
+source(file.path("R","stress_test_model_functions.R"))
 source("0_global_functions_st.R")
 
 ################
