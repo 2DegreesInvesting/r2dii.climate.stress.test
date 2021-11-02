@@ -2,13 +2,13 @@
 #'
 #' Checks that user inputs are of length 1 and within defined ranges.
 #'
-#' @inheritParams run_stress_test_loans
+#' @inheritParams run_stress_test
 #'
 #' @return NULL
 validate_input_values <- function(lgd_senior_claims, lgd_subordinated_claims,
                                   terminal_value, risk_free_rate, discount_rate,
                                   div_netprofit_prop_coef, shock_year, term,
-                                  company_exclusion) {
+                                  company_exclusion, asset_type) {
 
   input_args <- list(
     lgd_senior_claims, lgd_subordinated_claims, terminal_value, risk_free_rate,
@@ -62,6 +62,10 @@ validate_input_values <- function(lgd_senior_claims, lgd_subordinated_claims,
   # ADO 1943 - Once we decide to add a separate Merton calculation on the average
   # maturity of a portfolio, this check will need to be removed
   if (!term %% 1 == 0) {
-    stop("Argmuent term must be a whole number")
+    stop("Argmemnt term must be a whole number")
+  }
+
+  if (!asset_type %in% asset_types_lookup) {
+    stop("Invalid value for argument asset_type")
   }
 }

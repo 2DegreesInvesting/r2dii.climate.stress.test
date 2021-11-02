@@ -1,5 +1,7 @@
-#' Run stress testing for loans
+#' Run stress testing for provided asset type.
 #'
+#' @param asset_type String holding asset_type, for allowed value compare
+#'   `asset_types_lookup`.
 #' @param lgd_senior_claims Numeric, holding the loss given default for senior
 #'   claims, for accepted value range check `lgd_senior_claims_range_lookup`.
 #' @param lgd_subordinated_claims Numeric, holding the loss given default for
@@ -24,15 +26,16 @@
 #'   excluded_companies.csv shall be excluded.
 #' @return NULL
 #' @export
-run_stress_test_loans <- function(lgd_senior_claims = 0.45,
-                                  lgd_subordinated_claims = 0.75,
-                                  terminal_value = 0,
-                                  risk_free_rate = 0.02,
-                                  discount_rate = 0.02,
-                                  div_netprofit_prop_coef = 1,
-                                  shock_year = 2030,
-                                  term = 2,
-                                  company_exclusion = TRUE) {
+run_stress_test <- function(asset_type,
+                            lgd_senior_claims = 0.45,
+                            lgd_subordinated_claims = 0.75,
+                            terminal_value = 0,
+                            risk_free_rate = 0.02,
+                            discount_rate = 0.02,
+                            div_netprofit_prop_coef = 1,
+                            shock_year = 2030,
+                            term = 2,
+                            company_exclusion = TRUE) {
   validate_input_values(
     lgd_senior_claims = lgd_senior_claims,
     lgd_subordinated_claims = lgd_subordinated_claims,
@@ -42,14 +45,19 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
     div_netprofit_prop_coef = div_netprofit_prop_coef,
     shock_year = shock_year,
     term = term,
-    company_exclusion = company_exclusion
+    company_exclusion = company_exclusion,
+    asset_type = asset_type
   )
 
-  asset_type <- "loans"
   scenario_to_follow_baseline <- baseline_scenario_lookup
   scenario_to_follow_ls <- shock_scenario_lookup
   calculation_level <- calculation_level_lookup
   end_year <- end_year_lookup
+  flat_multiplier <- assign_flat_multiplier(asset_type = asset_type)
+  lgd <- assign_lgd(
+    asset_type = asset_type, lgd_senior_claims = lgd_senior_claims,
+    lgd_subordinated_claims = lgd_subordinated_claims
+  )
 
   ###########################################################################
   # Project Initialisation---------------------------------------------------
@@ -58,7 +66,7 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
   # FIXME: Very bad solution for temporart use only
   source_all(c("stress_test_model_functions.R", "0_global_functions_st.R"))
 
-  #### Analysis Parameters----------------------------------------
+  ##### Analysis Parameters----------------------------------------
   # Get analysis parameters from the projects AnalysisParameters.yml - similar to PACTA_analysis
 
   # TODO: where to get this parameter
@@ -111,17 +119,18 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
       scenario_geography_filter = scenario_geography_filter
     )
 
-  input_data_list$financial_data <- input_data_list$financial_data %>%
-    dplyr::mutate(company_name = stringr::str_to_lower(.data$company_name))
+  if (asset_type == "loans") {
+    input_data_list$financial_data <- input_data_list$financial_data %>%
+      dplyr::mutate(company_name = stringr::str_to_lower(.data$company_name))
+  }
 
-  # check scenario availability across data inputs for bonds
   check_scenario_availability(
     portfolio = input_data_list$pacta_results,
     scen_data = input_data_list$scenario_data,
     scenarios = scenarios_filter
   )
 
-  # Prepare sector exposure data-------------------------------------------------
+  # Prepare sector exposure data------------------------------------------------
   # TODO: validate
   port_aum <- calculate_aum(input_data_list$sector_exposures)
 
@@ -169,7 +178,7 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
     div_netprofit_prop_coef = div_netprofit_prop_coef,
     plan_carsten = exposure_by_technology_and_company,
     port_aum = port_aum,
-    flat_multiplier = 0.15,
+    flat_multiplier = flat_multiplier,
     exclusion = input_data_list$excluded_companies
   )
 
@@ -185,7 +194,7 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
 
   expected_loss <- company_expected_loss(
     data = overall_pd_changes,
-    loss_given_default = lgd_senior_claims,
+    loss_given_default = lgd,
     exposure_at_default = exposure_by_technology_and_company,
     # TODO: what to do with this? some sector level exposure for loanbook?
     port_aum = port_aum

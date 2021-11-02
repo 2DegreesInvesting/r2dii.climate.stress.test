@@ -16,7 +16,8 @@ read_and_prepare_project_specific_data(
 )
 }
 \arguments{
-\item{asset_type}{Type of asset, can be bonds, loans or equity.}
+\item{asset_type}{String holding asset_type, for allowed value compare
+\code{asset_types_lookup}.}
 
 \item{calculation_level}{String holding level of calculation.}
 
