@@ -79,15 +79,15 @@ warn_if_asset_type_is_longer_than_1 <- function(asset_type) {
 }
 
 run_stress_test_impl <- function(asset_type,
-                            lgd_senior_claims = 0.45,
-                            lgd_subordinated_claims = 0.75,
-                            terminal_value = 0,
-                            risk_free_rate = 0.02,
-                            discount_rate = 0.02,
-                            div_netprofit_prop_coef = 1,
-                            shock_year = 2030,
-                            term = 2,
-                            company_exclusion = TRUE) {
+                                 lgd_senior_claims = 0.45,
+                                 lgd_subordinated_claims = 0.75,
+                                 terminal_value = 0,
+                                 risk_free_rate = 0.02,
+                                 discount_rate = 0.02,
+                                 div_netprofit_prop_coef = 1,
+                                 shock_year = 2030,
+                                 term = 2,
+                                 company_exclusion = TRUE) {
   validate_input_values(
     lgd_senior_claims = lgd_senior_claims,
     lgd_subordinated_claims = lgd_subordinated_claims,
