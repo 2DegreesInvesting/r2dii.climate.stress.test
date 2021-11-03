@@ -106,21 +106,6 @@ wrangle_and_check_pacta_results <- function(pacta_results, start_year, time_hori
     ) %>%
     dplyr::distinct_all()
 
-  has_negative_values <- wrangled_pacta_results %>%
-    dplyr::select(plan_tech_prod, plan_carsten, scen_tech_prod, plan_sec_prod, plan_sec_carsten) %>%
-    purrr::map_lgl(function(col) {
-      any(col < 0)
-    })
-
-  if (any(has_negative_values)) {
-    stop(
-      paste0("Detected negative values on columns ",
-             paste0(names(has_negative_values[has_negative_values == TRUE]), collapse = ", "),
-             ". Analysis cannot process this."),
-      call. = FALSE
-    )
-  }
-
   return(wrangled_pacta_results)
 }
 

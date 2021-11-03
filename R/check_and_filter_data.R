@@ -88,5 +88,20 @@ check_and_filter_data <- function(st_data_list, start_year, end_year,
   },
   data_list, name_list)
 
+  has_negative_values <- pacta_results_filtered %>%
+    dplyr::select(plan_tech_prod, plan_carsten, scen_tech_prod, plan_sec_prod, plan_sec_carsten) %>%
+    purrr::map_lgl(function(col) {
+      any(col < 0)
+    })
+
+  if (any(has_negative_values)) {
+    stop(
+      paste0("Detected negative values on columns ",
+             paste0(names(has_negative_values[has_negative_values == TRUE]), collapse = ", "),
+             ". Analysis cannot process this."),
+      call. = FALSE
+    )
+  }
+
   return(data_list)
 }
