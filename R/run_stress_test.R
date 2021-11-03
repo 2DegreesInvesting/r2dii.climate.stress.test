@@ -26,7 +26,7 @@
 #'   excluded_companies.csv shall be excluded.
 #' @return NULL
 #' @export
-run_stress_test <- function(asset_type = sort(asset_types_lookup),
+run_stress_test <- function(asset_type = c("bonds", "equity", "loans"),
                             lgd_senior_claims = 0.45,
                             lgd_subordinated_claims = 0.75,
                             terminal_value = 0,
