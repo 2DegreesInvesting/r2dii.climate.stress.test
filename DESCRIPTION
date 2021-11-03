@@ -25,7 +25,6 @@ Imports:
     fs,
     ggplot2,
     glue,
-    here,
     magrittr,
     purrr,
     r2dii.analysis,
@@ -40,6 +39,7 @@ Imports:
     withr,
     zoo
 Suggests: 
+    here,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Encoding: UTF-8
