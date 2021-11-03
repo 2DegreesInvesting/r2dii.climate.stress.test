@@ -57,10 +57,9 @@ read_and_prepare_project_agnostic_data <- function(start_year, end_year, company
     )
 
   financial_data <- read_financial_data(
-    path = get(asset_type, create_stressdata_masterdata_file_paths()),
-    asset_type = asset_type
-  ) #%>%
-    # wrangle_financial_data(start_year = start_year)
+    path = file.path(get_st_data_path(), "prewrangled_financial_data_stress_test.rds")#get(asset_type, create_stressdata_masterdata_file_paths())
+  ) %>%
+  wrangle_financial_data(asset_type = asset_type)
 
   return(list(
     capacity_factors_power = capacity_factors_power,

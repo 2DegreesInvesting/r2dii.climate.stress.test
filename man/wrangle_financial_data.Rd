@@ -4,15 +4,16 @@
 \alias{wrangle_financial_data}
 \title{Wrangle financial data}
 \usage{
-wrangle_financial_data(financial_data, start_year)
+wrangle_financial_data(financial_data, asset_type)
 }
 \arguments{
-\item{financial_data}{A data set of \code{financal_data}.}
+\item{financial_data}{A data set of \code{financial_data}.}
 
-\item{start_year}{String holding start year of analysis.}
+\item{asset_type}{A string indicating if company data are for analysis for
+bond or equity.}
 }
 \value{
-A prewrangled \code{financal_data} set.
+A prewrangled \code{financial_data} set.
 }
 \description{
 Applies custom improvements of \code{net_profit_margin} and does row and cols
