@@ -21,7 +21,7 @@ read_financial_data <- function(path = NULL, asset_type) {
   valid_input_file_path <- file.exists(file.path(path))
   stopifnot(valid_input_file_path)
 
-  data <- readRDS(path)
+  data <- readr::read_rds(path)
 
   expected_columns <- c(
     "company_name", "company_id", "pd", "net_profit_margin", "debt_equity_ratio",

@@ -1,29 +1,24 @@
 Package: r2dii.climate.stress.test
-Title: Climate Stress Test for Listed Equity, Corporate Bond and Corporate Loan Portfolios
+Title: Climate Stress Test for Listed Equity, Corporate Bond and Corporate
+    Loan Portfolios
 Version: 0.0.0.9000
-Authors@R: 
-  c(person(given = "Jacob",
-           family = "Kastl",
-           role = c("aut", "cre"),
-           email = "jacob@2degrees-investing.org"),
-    person(given = "2 Degrees Investing Initiative",
-           role = c("cph", "fnd"),
-           email = "contact@2degrees-investing.org"))
-Description: The package provides functions and workflows for conducting financial
-  stress tests of listed equity, corporate bond and corporate loan portfolios.
-  It specifically focuses on climate change related risks, such as
-  transition/policy risk, litigation risk and physical risk. The methodologies
-  develpoped by 2DII focus on forward looking approaches and asset based analyses
-  where possible. Some external stress tests are also featured.
-  This package is currently in the beta stage and not finalised yet. Changes to
-  the methodology will still be made that can and will impact the outcomes of
-  the analysis. 
-  For more information visit <https://2degrees-investing.org/>.
+Authors@R: c(
+    person("Jacob", "Kastl", , "jacob@2degrees-investing.org", role = c("aut", "cre")),
+    person("2 Degrees Investing Initiative", , , "contact@2degrees-investing.org", role = c("cph", "fnd"))
+  )
+Description: The package provides functions and workflows for conducting
+    financial stress tests of listed equity, corporate bond and corporate
+    loan portfolios.  It specifically focuses on climate change related
+    risks, such as transition/policy risk, litigation risk and physical
+    risk. The methodologies develpoped by 2DII focus on forward looking
+    approaches and asset based analyses where possible. Some external
+    stress tests are also featured.  This package is currently in the beta
+    stage and not finalised yet. Changes to the methodology will still be
+    made that can and will impact the outcomes of the analysis.  For more
+    information visit <https://2degrees-investing.org/>.
 License: file LICENSE
-Encoding: UTF-8
-LazyData: true
-Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.2
+Depends:
+    R (> 3.5)
 Imports: 
     config,
     dplyr,
@@ -43,7 +38,10 @@ Imports:
     tidyr,
     withr,
     zoo
-Remotes: 2DegreesInvesting/r2dii.plot
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.2

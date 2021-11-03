@@ -1,5 +1,5 @@
 test_that("price trajectories function returns a ggplot object", {
-  test_price_data <- readRDS(testthat::test_path("test_data", "price_test.rds"))
+  test_price_data <- readr::read_rds(testthat::test_path("test_data", "price_test.rds"))
 
   ggplot_price_trajectories <- show_price_trajectories(
     data = test_price_data,
@@ -10,7 +10,7 @@ test_that("price trajectories function returns a ggplot object", {
 })
 
 test_that("bogus price scenario results in error", {
-  test_price_data <- readRDS(testthat::test_path("test_data", "price_test.rds"))
+  test_price_data <- readr::read_rds(testthat::test_path("test_data", "price_test.rds"))
 
   testthat::expect_error(
     show_price_trajectories(

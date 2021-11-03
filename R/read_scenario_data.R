@@ -6,6 +6,9 @@
 #'
 #' @return A tibble holding scenario data.
 read_scenario_data <- function(path) {
+
+  validate_file_exists(path)
+
   scenario_data <- readr::read_csv(path, col_types = readr::cols(
     scenario_source = "c",
     scenario_geography = "c",

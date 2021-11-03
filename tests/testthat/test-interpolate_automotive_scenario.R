@@ -1,5 +1,5 @@
 test_that("an empty fair_share_perc in the auto sector is interpolated", {
-  test_scenario_data <- readRDS(testthat::test_path("test_data", "test_interpolate_auto.rds"))
+  test_scenario_data <- readr::read_rds(testthat::test_path("test_data", "test_interpolate_auto.rds"))
 
   pre_fct_count_na_electric <- sum(is.na(test_scenario_data %>% dplyr::filter(technology == "Electric") %>% dplyr::pull(fair_share_perc)))
   post_fct_count_na_electric <- sum(is.na(test_scenario_data %>% correct_automotive_scendata() %>% dplyr::filter(technology == "Electric") %>% dplyr::pull(fair_share_perc)))
@@ -11,7 +11,7 @@ test_that("an empty fair_share_perc in the auto sector is interpolated", {
 
 test_that("a non-empty fair_share_perc in the auto sector that is in the
           interpolation_years, is interpolated", {
-  test_scenario_data <- readRDS(testthat::test_path("test_data", "test_interpolate_auto.rds"))
+  test_scenario_data <- readr::read_rds(testthat::test_path("test_data", "test_interpolate_auto.rds"))
 
   pre_fct_value_electric_2031 <- test_scenario_data %>%
     dplyr::filter(technology == "Electric", year == 2031) %>%
@@ -29,7 +29,7 @@ test_that("a non-empty fair_share_perc in the auto sector that is in the
 })
 
 test_that("no empty values that are not in the auto sector are interpolated", {
-  test_scenario_data <- readRDS(testthat::test_path("test_data", "test_interpolate_auto.rds"))
+  test_scenario_data <- readr::read_rds(testthat::test_path("test_data", "test_interpolate_auto.rds"))
 
   pre_fct_count_na_coal <- sum(is.na(test_scenario_data %>% dplyr::filter(technology == "Coal") %>% dplyr::pull(fair_share_perc)))
   post_fct_count_na_coal <- sum(is.na(test_scenario_data %>% correct_automotive_scendata() %>% dplyr::filter(technology == "Coal") %>% dplyr::pull(fair_share_perc)))
@@ -41,7 +41,7 @@ test_that("no empty values that are not in the auto sector are interpolated", {
 
 test_that("no values are interpolated for years that are passed as
           interpolation_years but sectors not being in the auto sector", {
-  test_scenario_data <- readRDS(testthat::test_path("test_data", "test_interpolate_auto.rds"))
+  test_scenario_data <- readr::read_rds(testthat::test_path("test_data", "test_interpolate_auto.rds"))
 
   pre_fct_value_coal_2031 <- test_scenario_data %>%
     dplyr::filter(technology == "Coal", year == 2031) %>%

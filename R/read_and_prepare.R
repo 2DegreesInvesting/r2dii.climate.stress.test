@@ -26,6 +26,7 @@ read_and_prepare_project_agnostic_data <- function(start_year, end_year, company
   )
 
   if (company_exclusion) {
+    validate_file_exists(file.path(data_location, "exclude-companies.csv"))
     excluded_companies <- readr::read_csv(
       file.path(data_location, "exclude-companies.csv"),
       col_types = readr::cols(
