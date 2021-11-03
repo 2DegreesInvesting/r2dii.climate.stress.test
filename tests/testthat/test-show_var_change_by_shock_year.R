@@ -1,6 +1,6 @@
 test_that("change over time function returns a ggplot object", {
   # NOTE: the test results are entirely made up and inconsistent on purpose
-  test_equity_results <- readRDS(
+  test_equity_results <- readr::read_rds(
     testthat::test_path("test_data", "test_equity_results.rds")
   )
 

@@ -22,7 +22,7 @@ read_pacta_results <- function(path = NULL,
   stopifnot(valid_input_file_path)
 
 
-  data <- readRDS(path)
+  data <- readr::read_rds(path)
 
   expected_columns <- c(
     "investor_name", "portfolio_name", "scenario", "allocation",

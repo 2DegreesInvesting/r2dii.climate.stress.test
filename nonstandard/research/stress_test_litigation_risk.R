@@ -158,7 +158,7 @@ litigation_risk_scenarios <- readr::read_csv(
 ############################################################################
 
 # ADO 1540 - read company emissions from PACTA results
-company_emissions_data_input_raw_eq <- readRDS(
+company_emissions_data_input_raw_eq <- readr::read_rds(
   file.path(
     results_path, investor_name_equity, "Equity_results_company.rda"
   )
@@ -167,7 +167,7 @@ company_emissions_data_input_raw_eq <- readRDS(
 company_emissions_data_input_raw_eq <- company_emissions_data_input_raw_eq %>%
   dplyr::mutate(asset_type = "Equity")
 
-company_emissions_data_input_raw_cb <- readRDS(
+company_emissions_data_input_raw_cb <- readr::read_rds(
   file.path(
     results_path, investor_name_bonds, "Bonds_results_company.rda"
   )
@@ -295,7 +295,7 @@ company_ebit_data_input <- company_ebit_data_input %>%
   dplyr::select(.data$company_name, .data$isin, .data$ebit, .data$currency)
 
 # ADO 1541 - transform ebit to ebit usd
-currencies <- readRDS(file.path(data_location, "currencies.rda")) %>%
+currencies <- readr::read_rds(file.path(data_location, "currencies.rda")) %>%
   dplyr::select(.data$Currency_abbr, .data$ExchangeRate_2019Q4)
 
 company_ebit_data_input <- company_ebit_data_input %>%
@@ -309,7 +309,7 @@ company_ebit_data_input <- company_ebit_data_input %>%
   dplyr::select(-.data$ExchangeRate_2019Q4)
 
 # ADO 1541 - merge in sector
-security_financial_data <- readRDS(
+security_financial_data <- readr::read_rds(
   file.path(path_db_analysis_inputs, "security_financial_data.rda")
 )
 
@@ -868,7 +868,7 @@ technology_share_comp <- company_emissions_data_input %>%
     .data$plan_carsten
   )
 
-sector_exposures <- readRDS(file.path(proc_input_path, glue::glue("{project_name}_overview_portfolio.rda")))
+sector_exposures <- readr::read_rds(file.path(proc_input_path, glue::glue("{project_name}_overview_portfolio.rda")))
 
 # ADO 1544 - transform currency back to target currency
 sector_exposures <- sector_exposures %>%

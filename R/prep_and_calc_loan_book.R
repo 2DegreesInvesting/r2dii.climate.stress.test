@@ -30,7 +30,7 @@ run_prep_calculation_loans <- function(credit_type = "outstanding") {
   }
 
   #### Load input data sets-----------------------------------------------------
-
+  validate_file_exists(file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", paste0("raw_loanbook.csv")))
   # raw loan book
   loanbook <- readr::read_csv(
     file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", paste0("raw_loanbook.csv")),
@@ -58,6 +58,7 @@ run_prep_calculation_loans <- function(credit_type = "outstanding") {
   )
 
   # matched loan book
+  validate_file_exists(file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", "matched_loan_book.csv"))
   matched  <- readr::read_csv(
     file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", "matched_loan_book.csv"),
     col_types = readr::cols_only(
@@ -96,7 +97,9 @@ run_prep_calculation_loans <- function(credit_type = "outstanding") {
   regions <- r2dii.data::region_isos
 
   # Production forecast data
+
   if (start_year == 2020) {
+    validate_file_exists(file.path(get_st_data_path(), "ald_15092020.csv"))
     production_forecast_data <- readr::read_csv(
       file.path(get_st_data_path(), "ald_15092020.csv"),
       col_types = readr::cols(
@@ -114,6 +117,7 @@ run_prep_calculation_loans <- function(credit_type = "outstanding") {
       )
     )
   } else if (start_year == 2021) {
+    validate_file_exists(file.path(get_st_data_path(), "2021-07-15_AR_2020Q4_PACTA-Data (3).xlsx"))
     production_forecast_data <- readxl::read_xlsx(
       file.path(get_st_data_path(), "2021-07-15_AR_2020Q4_PACTA-Data (3).xlsx"),
       sheet = "Company Indicators - PACTA"
@@ -121,6 +125,7 @@ run_prep_calculation_loans <- function(credit_type = "outstanding") {
   }
 
   # Scenario data - market share
+  validate_file_exists(file.path(get_st_data_path(), glue::glue("scenario_{start_year}.csv")))
   scenario_data_market_share <- readr::read_csv(
     file.path(get_st_data_path(), glue::glue("scenario_{start_year}.csv")),
     col_types = readr::cols(
@@ -136,6 +141,7 @@ run_prep_calculation_loans <- function(credit_type = "outstanding") {
   )
 
   # Scenario data - emission intensity
+  validate_file_exists(file.path(get_st_data_path(), glue::glue("co2_intensity_scenario_{start_year}.csv")))
   scenario_data_emissions_intensity <- readr::read_csv(
     file.path(get_st_data_path(), glue::glue("co2_intensity_scenario_{start_year}.csv")),
     col_types = readr::cols(

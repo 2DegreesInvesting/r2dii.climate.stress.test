@@ -24,7 +24,7 @@ read_company_data <- function(path = NULL, asset_type) {
   stopifnot(valid_input_file_path)
 
   # TODO: once the input is in long format the expected col types can be set
-  data <- readRDS(path)
+  data <- readr::read_rds(path)
 
   expected_columns <- c(
     "company_name", "company_id", "ald_sector", "technology", "year",

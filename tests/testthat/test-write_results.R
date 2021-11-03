@@ -3,7 +3,7 @@ test_that("without specified arguments, write_results throws error", {
 })
 
 test_that("with invalid asset type, write_results throws error", {
-  x <- readRDS(testthat::test_path("test_data", "test_data-write-results.rds"))
+  x <- readr::read_rds(testthat::test_path("test_data", "test_data-write-results.rds"))
   result_path <- tempdir()
   investorname_test <- "test_investor"
 
@@ -26,7 +26,7 @@ test_that("with invalid asset type, write_results throws error", {
 })
 
 test_that("with invalid asset type, write_results throws error", {
-  x <- readRDS(testthat::test_path("test_data", "test_data-write-results.rds"))
+  x <- readr::read_rds(testthat::test_path("test_data", "test_data-write-results.rds"))
   result_path <- tempdir()
   investorname_test <- "test_investor"
 
@@ -49,7 +49,7 @@ test_that("with invalid asset type, write_results throws error", {
 })
 
 test_that("with valid inputs, write_results throws no error", {
-  x <- readRDS(testthat::test_path("test_data", "test_data-write-results.rds"))
+  x <- readr::read_rds(testthat::test_path("test_data", "test_data-write-results.rds"))
   result_path <- tempdir()
   investorname_test <- "test_investor"
 
@@ -72,7 +72,7 @@ test_that("with valid inputs, write_results throws no error", {
 
 test_that("company/portfolio level results produce csv with correct number
           of columns for company level pacta input", {
-  x <- readRDS(testthat::test_path("test_data", "test_data-write-results.rds"))
+  x <- readr::read_rds(testthat::test_path("test_data", "test_data-write-results.rds"))
   result_path <- tempdir()
   investorname_test <- "test_investor"
 
@@ -116,7 +116,7 @@ test_that("company/portfolio level results produce csv with correct number
 
 test_that("portfolio level results produce csv with correct number of columns
           for portfolio level pacta input", {
-  x <- readRDS(testthat::test_path("test_data", "test_data-write-results-pf.rds"))
+  x <- readr::read_rds(testthat::test_path("test_data", "test_data-write-results-pf.rds"))
   result_path <- tempdir()
   investorname_test <- "test_investor"
 
