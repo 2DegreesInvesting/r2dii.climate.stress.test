@@ -15,8 +15,32 @@ wrangle_and_check_sector_exposures <- function(sector_exposures, asset_type) {
   asset_type <- stringr::str_to_title(asset_type)
 
   if (!asset_type %in% c("Bonds", "Equity", "Loans")) {
-    stop("Invalid asset type")
+    stop("Invalid asset type", call. = FALSE )
   }
+
+  if (!is.logical(sector_exposures$valid_input)) {
+    stop("Column valid_input needs to be of type logical.", call. = FALSE)
+  }
+
+  if (!is.character(sector_exposures$financial_sector)) {
+    stop("Column financial sector needs to be of type character.", call. = FALSE)
+  }
+
+  if (any(sector_exposures$valid_value_usd < 0)) {
+    affected_sectors <- sector_exposures %>%
+      dplyr::filter(valid_value_usd < 0) %>%
+      dplyr::pull(financial_sector)
+
+    stop(paste0("Asset under management has negative value in sector(s) ", paste0(affected_sectors, collapse = ", "), ".
+                This is not supported by the analysis."), call. = FALSE)
+  }
+
+  check_data_structure(
+    data = sector_exposures,
+    name_data = "sector exposures",
+    cuc_cols = c("investor_name", "portfolio_name", "asset_type", "financial_sector", "valid_input"),
+    throw_error = TRUE
+  )
 
   valid_sector_exposures <- sector_exposures %>%
     dplyr::filter(valid_input) %>%
