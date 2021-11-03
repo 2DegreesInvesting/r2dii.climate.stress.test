@@ -14,6 +14,9 @@ test_that("if `asset_type` is longer than 1 uses default with a warning", {
 })
 
 test_that("returns the first argument invisibly", {
+  skip_on_ci()
+  skip_on_cran()
+
   readRenviron(here::here(".Renviron"))
 
   FIXME <- "Negative absolute production is impossible"
