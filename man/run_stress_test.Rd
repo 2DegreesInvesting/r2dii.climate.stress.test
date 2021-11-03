@@ -5,7 +5,7 @@
 \title{Run stress testing for provided asset type.}
 \usage{
 run_stress_test(
-  asset_type,
+  asset_type = sort(asset_types_lookup),
   lgd_senior_claims = 0.45,
   lgd_subordinated_claims = 0.75,
   terminal_value = 0,

@@ -26,7 +26,59 @@
 #'   excluded_companies.csv shall be excluded.
 #' @return NULL
 #' @export
-run_stress_test <- function(asset_type,
+run_stress_test <- function(asset_type = sort(asset_types_lookup),
+                            lgd_senior_claims = 0.45,
+                            lgd_subordinated_claims = 0.75,
+                            terminal_value = 0,
+                            risk_free_rate = 0.02,
+                            discount_rate = 0.02,
+                            div_netprofit_prop_coef = 1,
+                            shock_year = 2030,
+                            term = 2,
+                            company_exclusion = TRUE) {
+  warn_if_asset_type_is_longer_than_1(asset_type)
+  matched_asset_type <- match.arg(asset_type)
+
+  # Allow testing anything before the long computation that follows
+  if (is_dev_env()) {
+    return(invisible(matched_asset_type))
+  }
+
+  # FIXME: Avoid clutter from printed "messages" that the user can't suppress
+  x <- capture.output(
+    run_stress_test_impl(
+      asset_type = matched_asset_type,
+      lgd_senior_claims = lgd_senior_claims,
+      lgd_subordinated_claims = lgd_subordinated_claims,
+      terminal_value = terminal_value,
+      risk_free_rate = risk_free_rate,
+      discount_rate = discount_rate,
+      div_netprofit_prop_coef = div_netprofit_prop_coef,
+      shock_year = shock_year,
+      term = term,
+      company_exclusion = company_exclusion
+    )
+  )
+
+  invisible(asset_type)
+}
+
+warn_if_asset_type_is_longer_than_1 <- function(asset_type) {
+  if (length(asset_type) > 1L) {
+    warn(c(
+      "`asset_type` should be of length 1.",
+      x = glue("It is of length {length(asset_type)}: {toString(asset_type)}."),
+      i = glue("Using default: {asset_type[[1]]}."),
+      i = glue(
+        "Suppress this warning e.g. with: `run_stress_test(asset_type = 'bonds')`."
+      )
+    ))
+  }
+
+  invisible(asset_type)
+}
+
+run_stress_test_impl <- function(asset_type,
                             lgd_senior_claims = 0.45,
                             lgd_subordinated_claims = 0.75,
                             terminal_value = 0,
