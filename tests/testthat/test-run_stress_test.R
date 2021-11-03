@@ -17,6 +17,8 @@ test_that("returns the first argument invisibly", {
   skip_on_ci()
   skip_on_cran()
 
+  # Avoid dependency on here
+  skip_if_not_installed("here")
   readRenviron(here::here(".Renviron"))
 
   FIXME <- "Negative absolute production is impossible"
