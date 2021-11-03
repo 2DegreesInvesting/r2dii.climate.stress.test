@@ -44,20 +44,17 @@ run_stress_test <- function(asset_type = c("bonds", "equity", "loans"),
     return(invisible(matched_asset_type))
   }
 
-  # FIXME: Avoid clutter from printed "messages" that the user can't suppress
-  x <- utils::capture.output(
-    run_stress_test_impl(
-      asset_type = matched_asset_type,
-      lgd_senior_claims = lgd_senior_claims,
-      lgd_subordinated_claims = lgd_subordinated_claims,
-      terminal_value = terminal_value,
-      risk_free_rate = risk_free_rate,
-      discount_rate = discount_rate,
-      div_netprofit_prop_coef = div_netprofit_prop_coef,
-      shock_year = shock_year,
-      term = term,
-      company_exclusion = company_exclusion
-    )
+  run_stress_test_impl(
+    asset_type = matched_asset_type,
+    lgd_senior_claims = lgd_senior_claims,
+    lgd_subordinated_claims = lgd_subordinated_claims,
+    terminal_value = terminal_value,
+    risk_free_rate = risk_free_rate,
+    discount_rate = discount_rate,
+    div_netprofit_prop_coef = div_netprofit_prop_coef,
+    shock_year = shock_year,
+    term = term,
+    company_exclusion = company_exclusion
   )
 
   invisible(asset_type)

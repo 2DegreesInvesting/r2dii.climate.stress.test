@@ -18,12 +18,6 @@ test_that("returns the first argument invisibly", {
   skip_on_cran()
 
   readRenviron(here::here(".Renviron"))
-
-  FIXME <- "Negative absolute production is impossible"
-  expect_warning(
-    expect_invisible(out <- run_stress_test("bonds")),
-    FIXME
-  )
-
-  expect_equal(out, "bonds")
+  expect_invisible(out <- purrr::quietly(run_stress_test)("bonds"))
+  expect_equal(out$result, "bonds")
 })
