@@ -21,3 +21,7 @@ local_dev_env <- function(envir = parent.frame()) {
 is_dev_env <- function() {
   getOption("r2dii.climate.stress.dev_env") %||% FALSE
 }
+
+is_mauro <- function() {
+  identical(as.character(fs::path_home()), "/home/mauro")
+}

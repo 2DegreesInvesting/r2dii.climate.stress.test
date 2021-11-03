@@ -14,8 +14,7 @@ test_that("if `asset_type` is longer than 1 uses default with a warning", {
 })
 
 test_that("returns the first argument invisibly", {
-  skip_on_ci()
-  skip_on_cran()
+  skip_if_not(is_mauro())
 
   readRenviron(here::here(".Renviron"))
   expect_invisible(out <- purrr::quietly(run_stress_test)("bonds"))
