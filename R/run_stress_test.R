@@ -45,7 +45,7 @@ run_stress_test <- function(asset_type = sort(asset_types_lookup),
   }
 
   # FIXME: Avoid clutter from printed "messages" that the user can't suppress
-  x <- capture.output(
+  x <- utils::capture.output(
     run_stress_test_impl(
       asset_type = matched_asset_type,
       lgd_senior_claims = lgd_senior_claims,
