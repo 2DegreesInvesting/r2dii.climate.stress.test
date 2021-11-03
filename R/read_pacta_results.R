@@ -21,7 +21,6 @@ read_pacta_results <- function(path = NULL,
   valid_input_file_path <- file.exists(file.path(path))
   stopifnot(valid_input_file_path)
 
-
   data <- readr::read_rds(path)
 
   expected_columns <- c(
