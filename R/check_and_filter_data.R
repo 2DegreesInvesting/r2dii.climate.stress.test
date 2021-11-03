@@ -73,10 +73,20 @@ check_and_filter_data <- function(st_data_list, start_year, end_year,
     c("financial_sector", "investor_name", "portfolio_name")
   )
 
+  name_list <- list(
+    "capacity_factors_power", "excluded_companies", "df_price", "scenario_data",
+    "financial_data","pacta_results", "sector_exposures"
+    )
+
   mapply(function(data, cuc_cols) {
     report_all_duplicate_kinds(data = data, composite_unique_cols = cuc_cols)
   },
   data_list, cuc_list)
+
+  mapply(function(data, name_list) {
+    report_missings(data = data, name_data = name_list)
+  },
+  data_list, name_list)
 
   return(data_list)
 }
