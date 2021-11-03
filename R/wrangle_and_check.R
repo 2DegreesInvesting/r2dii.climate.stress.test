@@ -27,7 +27,7 @@ wrangle_and_check_sector_exposures <- function(sector_exposures, asset_type) {
   check_data_structure(
     data = sector_exposures,
     name_data = "sector exposures",
-    cuc_cols = c("investor_name", "portfolio_name", "aset_type", "financial_sector", "valid_input"),
+    cuc_cols = c("investor_name", "portfolio_name", "asset_type", "financial_sector", "valid_input"),
     throw_error = TRUE
   )
 
