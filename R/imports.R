@@ -1,3 +1,4 @@
+#' @importFrom glue glue
 #' @importFrom rlang %||% abort warn .data .env
 #' @importFrom magrittr %>%
 #' @importFrom ggplot2 ggplot aes vars geom_col geom_line geom_point geom_hline
