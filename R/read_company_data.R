@@ -1,9 +1,7 @@
-#' Read in company finacial data processed from eikon exports and AR master data
-#' that contain information on multiple credit risk inputs and company
-#' production plans, aggregated to the ticker/technology/year level for
-#' `asset_type` bonds and aggregated to the company/technology/year level for
-#' `asset_type` equity and aggregated to the loan_taker/technology/year level
-#' for `àsset_type` loans
+#' Read in company financial data processed from eikon exports and AR master data
+#' that contain information on multiple credit risk inputs, aggregated to the
+#' ticker level for `asset_type` bonds, to the company level for `asset_type`
+#' equity and to the loan_taker level for `àsset_type` loans
 #'
 #' @param path A string that points to the location of the file containing the
 #'   company financial data.
@@ -13,7 +11,7 @@
 #' @family import functions
 #'
 #' @export
-read_company_data <- function(path = NULL, asset_type) {
+read_financial_data <- function(path = NULL, asset_type) {
   path %||% stop("Must provide 'path'")
 
   if (!asset_type %in% c("bonds", "equity", "loans")) {
@@ -23,14 +21,11 @@ read_company_data <- function(path = NULL, asset_type) {
   valid_input_file_path <- file.exists(file.path(path))
   stopifnot(valid_input_file_path)
 
-  # TODO: once the input is in long format the expected col types can be set
   data <- readRDS(path)
 
   expected_columns <- c(
-    "company_name", "company_id", "ald_sector", "technology", "year",
-    "ald_production_unit", "ald_emissions_factor_unit", "ald_emissions_factor",
-    "pd", "profit_margin_preferred", "profit_margin_unpreferred", "leverage_s_avg",
-    "asset_volatility_s_avg", "ald_production"
+    "company_name", "company_id", "pd", "net_profit_margin", "debt_equity_ratio",
+    "volatility"
   )
 
   if (asset_type == "bonds") {
