@@ -17,7 +17,7 @@ calculate_aum <- function(sector_exposures) {
     )
 
   if (aum$asset_portfolio_value <= 0) {
-    stop("Calculated implausible asset under management.", call. = FALSE)
+    stop("Asset under management has negative or 0 value. This is not supported by the analysis.", call. = FALSE)
   }
 
   return(aum)
