@@ -18,10 +18,18 @@ wrangle_and_check_sector_exposures <- function(sector_exposures, asset_type) {
     stop("Invalid asset type", call. = FALSE )
   }
 
-  if (!is.logical(sector_exposures$valid_input) ||
-      !is.character(sector_exposures$financial_sector) ||
-      any(sector_exposures$valid_value_usd < 0)) {
-    stop("Detected implausible inputs on sector exposures", call. = FALSE)
+  if (!is.logical(sector_exposures$valid_input)) {
+    stop("Column valid_input needs to be of type logical.", call. = FALSE)
+  }
+
+  if (!is.character(sector_exposures$financial_sector)) {
+    stop("Column financial sector needs to be of type character.", call. = FALSE)
+  }
+
+  if (any(sector_exposures$valid_value_usd < 0)) {
+    affected_sectors <- dplyr::filter(sector_exposures, valid_value_usd < 0)
+    stop(paste0("Asset under management has negative value in sector(s) ", paste0(affected_sectors, collapse = ", "), ".
+                This is not supported by the analysis."), call. = FALSE)
   }
 
   check_data_structure(
