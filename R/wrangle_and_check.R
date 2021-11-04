@@ -153,7 +153,21 @@ check_financial_data <- function(financial_data, asset_type) {
         .data$debt_equity_ratio, .data$volatility
       ) %>%
       dplyr::distinct_all()
+  } else {
+    financial_data <- financial_data %>% dplyr::filter(is.na(corporate_bond_ticker))
   }
+
+  report_missings(
+    data = financial_data,
+    name_data = "Financial Data"
+    )
+
+  report_all_duplicate_kinds(
+    data = financial_data,
+    composite_unique_cols = c(
+      "company_name", "company_id"
+      )
+    )
 
   return(financial_data)
 }
