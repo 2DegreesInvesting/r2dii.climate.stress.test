@@ -29,7 +29,7 @@ wrangle_and_check_sector_exposures <- function(sector_exposures, asset_type) {
   if (any(sector_exposures$valid_value_usd < 0)) {
     affected_sectors <- sector_exposures %>%
       dplyr::filter(valid_value_usd < 0) %>%
-      dplyr::pull(financial_sector)
+      dplyr::pull(.data$financial_sector)
 
     stop(paste0("Asset under management has negative value in sector(s) ", paste0(affected_sectors, collapse = ", "), ".
                 This is not supported by the analysis."), call. = FALSE)
