@@ -112,18 +112,18 @@ wrangle_and_check_pacta_results <- function(pacta_results, start_year, time_hori
     dplyr::distinct_all()
 }
 
-#' Wrangle financial data
+#' Check financial data
 #'
-#' Applies custom improvements of `net_profit_margin` and does row and cols
-#' selections as well as filtering. Rows that have implausible
-#' net_profit_margins below or equal to 0 are removed.
+#' Applies sanity checks to financial data. Also remove column
+#' corporate_bond_ticker if `asset_type` is not bonds.
 #'
 #' @param financial_data A data set of `financial_data`.
 #' @param asset_type A string indicating if company data are for analysis for
 #'   bond or equity.
 #'
 #' @return A prewrangled `financial_data` set.
-wrangle_financial_data <- function(financial_data, asset_type) {
+check_financial_data <- function(financial_data, asset_type) {
+
   if (!asset_type %in% c("bonds", "equity", "loans")) {
     stop("Invalid asset type.")
   }
@@ -138,7 +138,7 @@ wrangle_financial_data <- function(financial_data, asset_type) {
   }
 
   validate_data_has_expected_cols(
-    data = data,
+    data = financial_data,
     expected_columns = expected_columns
   )
 
