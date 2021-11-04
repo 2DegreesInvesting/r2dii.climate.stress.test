@@ -102,7 +102,7 @@ calculate_exposure_by_technology_and_company <- function(asset_type,
   financial_data_subset <- input_data_list$financial_data %>%
     dplyr::select(!!!rlang::syms(subset_cols))
 
-  report_duplicates(
+  report_all_duplicate_kinds(
     data = financial_data_subset,
     cols = names(financial_data_subset)
   )
@@ -122,7 +122,7 @@ calculate_exposure_by_technology_and_company <- function(asset_type,
       scenario_geography, year, plan_carsten, plan_sec_carsten, term, pd
     )
 
-  report_duplicates(
+  report_all_duplicate_kinds(
     data = exposure_by_technology_and_company,
     cols = names(exposure_by_technology_and_company)
   )
