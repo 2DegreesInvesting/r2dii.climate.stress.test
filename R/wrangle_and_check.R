@@ -122,6 +122,7 @@ wrangle_and_check_pacta_results <- function(pacta_results, start_year, time_hori
 #'   bond or equity.
 #'
 #' @return A prewrangled `financial_data` set.
+#' @export
 check_financial_data <- function(financial_data, asset_type) {
 
   if (!asset_type %in% c("bonds", "equity", "loans")) {
