@@ -35,7 +35,7 @@ check_all_equal <- function(old_results, new_results) {
     new_result <- get(n, new_results)
 
     if (!dplyr::setequal(old_result, new_result)) {
-      warning(paste0("Data for ", n, " are not equal."))
+      warning(paste0("Data for ", n, " are not equal."), call. = FALSE)
       list(FALSE) %>%
         purrr::set_names(n)
     } else {

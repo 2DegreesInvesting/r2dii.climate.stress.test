@@ -193,7 +193,7 @@ report_missing_col_combinations <- function(data, composite_unique_cols, throw_e
     if (throw_error) {
       stop(paste0("Identified ", nrow(missing_rows), " missing combinations on columns ", paste(composite_unique_cols, collapse = ", "), "."))
     } else {
-      warning(paste0("Identified ", nrow(missing_rows), " missing combinations on columns ", paste(composite_unique_cols, collapse = ", "), "."))
+      warning(paste0("Identified ", nrow(missing_rows), " missing combinations on columns ", paste(composite_unique_cols, collapse = ", "), "."), call. = FALSE)
     }
   }
 
@@ -220,7 +220,7 @@ report_duplicates <- function(data, cols, throw_error = FALSE) {
     if (throw_error) {
       stop(paste0("Identified ", nrow(duplicates), " duplicates on columns ", paste(cols, collapse = ", "), "."))
     } else {
-      warning(paste0("Identified ", nrow(duplicates), " duplicates on columns ", paste(cols, collapse = ", "), "."))
+      warning(paste0("Identified ", nrow(duplicates), " duplicates on columns ", paste(cols, collapse = ", "), "."), call. = FALSE)
     }
   }
 
