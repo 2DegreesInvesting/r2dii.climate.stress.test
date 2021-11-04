@@ -100,32 +100,29 @@ calculate_exposure_by_technology_and_company <- function(asset_type,
   }
 
   financial_data_subset <- input_data_list$financial_data %>%
-    dplyr::select(!!!rlang::syms(subset_cols))
-
-  report_all_duplicate_kinds(
-    data = financial_data_subset,
-    cols = names(financial_data_subset)
-  )
-
-  exposure_by_technology_and_company <- input_data_list$pacta_results %>%
-    dplyr::filter(
-      .data$year == .env$start_year,
-      .data$scenario %in% .env$scenario_to_follow_ls
-    ) %>%
-    inner_join_report_drops(
-      data_y = financial_data_subset,
-      name_x = "plan carsten", name_y = "financial data",
-      merge_cols = merge_cols
-    ) %>% # TODO: ADO 879 - note which companies are removed here, what to do with entries that have NAs for pd?
-    dplyr::select(
-      investor_name, portfolio_name, company_name, ald_sector, technology,
-      scenario_geography, year, plan_carsten, plan_sec_carsten, term, pd
+    dplyr::select(!!!rlang::syms(subset_cols)) %>%
+    report_all_duplicate_kinds(
+      cols = names(financial_data_subset)
     )
 
-  report_all_duplicate_kinds(
-    data = exposure_by_technology_and_company,
-    cols = names(exposure_by_technology_and_company)
-  )
+  exposure_by_technology_and_company <- input_data_list$pacta_results %>%
+   dplyr::filter(
+     .data$year == .env$start_year,
+     .data$scenario %in% .env$scenario_to_follow_ls
+   ) %>%
+   inner_join_report_drops(
+     data_y = financial_data_subset,
+     name_x = "plan carsten", name_y = "financial data",
+     merge_cols = merge_cols
+   ) %>%
+   # TODO: ADO 879 - note which companies are removed here, what to do with entries that have NAs for pd?
+   dplyr::select(
+     investor_name, portfolio_name, company_name, ald_sector, technology,
+     scenario_geography, year, plan_carsten, plan_sec_carsten, term, pd
+   ) %>%
+   report_all_duplicate_kinds(
+     cols = names(exposure_by_technology_and_company)
+   )
 
   return(exposure_by_technology_and_company)
 }
