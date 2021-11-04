@@ -256,7 +256,7 @@ inner_join_report_drops <- function(data_x, data_y, name_x, name_y, merge_cols) 
   if (rows_data < rows_x) {
     cat(
       "      >> When joining", name_x, "on", name_y, "on columns", merge_cols, "dropped",
-      rows_x - rows_data, "rows from", name_x, ".\n"
+      rows_x - rows_data, "rows from", name_x, "\n"
     )
   }
   return(data)
@@ -274,11 +274,13 @@ inner_join_report_drops <- function(data_x, data_y, name_x, name_y, merge_cols) 
 report_missings <- function(data, name_data, throw_error = FALSE) {
   missings <- purrr::map_df(data, function(x) sum(is.na(x)))
 
-  cat("Reporting missings on dataset:", name_data, "\n")
-  purrr::iwalk(missings, function(n_na, name) {
-    cat("Counted", n_na, "missings on column", name, "\n")
-  })
-  cat("\n\n")
+  if (is_verbose_log_env()) {
+    cat("Reporting missings on dataset:", name_data, "\n")
+    purrr::iwalk(missings, function(n_na, name) {
+      cat("Counted", n_na, "missings on column", name, "\n")
+    })
+    cat("\n\n")
+  }
 
   if (throw_error && rowSums(missings) > 0) {
     stop(paste0("Missings detected on ", name_data, ", please check dataset."), call. = FALSE)
