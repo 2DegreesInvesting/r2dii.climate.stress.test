@@ -169,6 +169,11 @@ check_financial_data <- function(financial_data, asset_type) {
       )
     )
 
+  check_valid_financial_data_values(
+    financial_data = financial_data,
+    asset_type = asset_type
+  )
+
   return(financial_data)
 }
 
@@ -221,4 +226,47 @@ fill_annual_profit_cols <- function(annual_profits) {
     dplyr::ungroup()
 
   return(annual_profits_filled)
+}
+
+#' Check if values in financial data are plausible
+#'
+#' Checks that:
+#' 1. there is a 1 to 1 mapping of company_name and company_id.
+#' 1. numeric columns hold values in acceptable ranges.
+#'
+#' @inheritParams check_financial_data
+#'
+#' @return NULL
+check_valid_financial_data_values <- function(financial_data, asset_type) {
+
+  n_unique_ids <- length(unique(financial_data$company_id))
+  n_unique_names <- length(unique(financial_data$company_name))
+  n_unique_id_names_combinations <- length(unique(paste(financial_data$company_id, financial_data$company_name)))
+
+  if (length(unique(n_unique_ids, n_unique_names, n_unique_id_names_combinations)) > 1) {
+    stop("Mapping between company_names and company_ids is ambiguous.", call. = FALSE)
+  }
+
+  if (any(financial_data$pd < 0 | financial_data$pd >= 1)) {
+    stop("Implausibe value(s) < 0 or >= 1 for pd detected. Please check.")
+  }
+
+  if (any(financial_data$net_profit_margin <= 0 | financial_data$net_profit_margin > 1)) {
+    stop("Implausibe value(s) <= 0 or > 1 for net_profit_margin detected. Please check.")
+  }
+
+  if (asset_type == "equity") {
+    if (any(financial_data$debt_equity_ratio < 0)) {
+      stop("Implausibe value(s) < 0 for debt_equity_ratio detected. Please check.")
+    } else {
+      if (any(financial_data$debt_equity_ratio <= 0)) {
+        stop("Implausibe value(s) <= 0 for debt_equity_ratio detected. Please check.")
+      }
+    }
+  }
+
+  if (any(financial_data$volatility < 0)) {
+    stop("Implausibe value(s) < 0 or >= 1 for volatility detected. Please check.")
+  }
+
 }
