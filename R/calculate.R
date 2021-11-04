@@ -57,9 +57,9 @@ calculate_annual_profits <- function(asset_type, input_data_list, scenario_to_fo
     )
 
   if (asset_type == "bonds") {
-    merge_cols <- c("company_name", "id" = "corporate_bond_ticker", "ald_sector", "technology")
+    merge_cols <- c("company_name", "id" = "corporate_bond_ticker")
   } else {
-    merge_cols <- c("company_name", "ald_sector", "technology")
+    merge_cols <- c("company_name")
   }
 
   extended_pacta_results_with_financials <- extended_pacta_results %>%
@@ -92,11 +92,11 @@ calculate_exposure_by_technology_and_company <- function(asset_type,
                                                          input_data_list, start_year,
                                                          scenario_to_follow_ls) {
   if (asset_type == "bonds") {
-    subset_cols <- c("company_name", "corporate_bond_ticker", "ald_sector", "technology", "pd")
-    merge_cols <- c("company_name", "id" = "corporate_bond_ticker", "ald_sector", "technology")
+    subset_cols <- c("company_name", "corporate_bond_ticker", "pd")
+    merge_cols <- c("company_name", "id" = "corporate_bond_ticker")
   } else {
-    subset_cols <- c("company_name", "ald_sector", "technology", "pd")
-    merge_cols <- c("company_name", "ald_sector", "technology")
+    subset_cols <- c("company_name", "pd")
+    merge_cols <- c("company_name")
   }
 
   financial_data_subset <- input_data_list$financial_data %>%

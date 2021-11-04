@@ -61,33 +61,6 @@ path_dropbox_2dii <- function(...) {
   fs::path_home(custom %||% default, ...)
 }
 
-#' Get path for stress test masterdata files
-#'
-#' Return list of paths for stress test masterdata files.
-#'
-#' @return A list with 3 file paths.
-#' @export
-create_stressdata_masterdata_file_paths <- function() {
-
-  path_parent <- get_st_data_path()
-
-  paths <- list(
-    "prewrangled_financial_data_bonds.rds",
-    "prewrangled_financial_data_equity.rds",
-    "prewrangled_financial_data_loans.rds"
-  ) %>%
-    purrr::map(function(file) {
-      file_path <- file.path(path_parent, file)
-      if (!file.exists(file.path(file_path))) {
-        stop("Stresstest master data file does not exist.")
-      }
-      return(file_path)
-    }) %>%
-    purrr::set_names(c("bonds", "equity", "loans"))
-
-  return(paths)
-}
-
 #' Validate that a file exists in a given directory
 #'
 #' Before performing an operation on a file assumed to be found in a given

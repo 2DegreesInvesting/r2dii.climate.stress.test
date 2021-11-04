@@ -118,40 +118,27 @@ wrangle_and_check_pacta_results <- function(pacta_results, start_year, time_hori
 #' selections as well as filtering. Rows that have implausible
 #' net_profit_margins below or equal to 0 are removed.
 #'
-#' @param financial_data A data set of `financal_data`.
-#' @param start_year String holding start year of analysis.
+#' @param financial_data A data set of `financial_data`.
+#' @param asset_type A string indicating if company data are for analysis for
+#'   bond or equity.
 #'
-#' @return A prewrangled `financal_data` set.
-wrangle_financial_data <- function(financial_data, start_year) {
-  financial_data <- financial_data %>%
-    dplyr::mutate(net_profit_margin = profit_margin_preferred) %>%
-    # TODO: logic unclear thus far
-    dplyr::mutate(
-      net_profit_margin = dplyr::case_when(
-        net_profit_margin < 0 & dplyr::between(profit_margin_unpreferred, 0, 1) ~ profit_margin_unpreferred,
-        net_profit_margin < 0 & profit_margin_unpreferred < 0 ~ 0,
-        net_profit_margin < 0 & profit_margin_unpreferred > 1 ~ 0,
-        net_profit_margin > 1 & dplyr::between(profit_margin_unpreferred, 0, 1) ~ profit_margin_unpreferred,
-        net_profit_margin > 1 & profit_margin_unpreferred > 1 ~ 1,
-        net_profit_margin > 1 & profit_margin_unpreferred < 0 ~ 1,
-        TRUE ~ net_profit_margin
-      )
-    ) %>%
-    dplyr::filter(net_profit_margin > 0) %>%
-    dplyr::select(-c(profit_margin_preferred, profit_margin_unpreferred)) %>%
-    dplyr::rename(
-      debt_equity_ratio = leverage_s_avg,
-      volatility = asset_volatility_s_avg
-    ) %>%
-    # ADO 879 - remove year and production/EFs to simplify joins that do not need yearly variation yet
-    dplyr::filter(.data$year == start_year) %>%
-    dplyr::select(
-      -c(
-        .data$year, .data$ald_production_unit, .data$ald_production,
-        .data$ald_emissions_factor_unit, .data$ald_emissions_factor
-      )
-    )
-  # TODO: any logic/bounds needed for debt/equity ratio and volatility?
+#' @return A prewrangled `financial_data` set.
+wrangle_financial_data <- function(financial_data, asset_type) {
+  if (!asset_type %in% c("bonds", "equity", "loans")) {
+    stop("Invalid asset type.")
+  }
+
+  if (asset_type != "bonds") {
+    # ADO 2493 - if asset_type not bond, ticker not required. Use distinct_all
+    # to remove duplicates from remaining CUC columns since financial data is
+    # always equal for these columns
+    financial_data <- financial_data %>%
+      dplyr::select(
+        .data$company_name, .data$company_id, .data$pd, .data$net_profit_margin,
+        .data$debt_equity_ratio, .data$volatility
+      ) %>%
+      dplyr::distinct_all()
+  }
 
   return(financial_data)
 }
