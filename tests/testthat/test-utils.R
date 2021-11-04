@@ -139,6 +139,22 @@ test_that("Warnings are thrown for dataset with full and partial duplicates", {
   )))
 })
 
+test_that("function returns input", {
+  data <- tibble::tibble(
+    a = c("A1", "A2"),
+    b = c("B1", "B1"),
+    c = c(1, 1)
+  )
+
+  expect_equal(
+    report_all_duplicate_kinds(
+      data = data,
+      composite_unique_cols = c("a", "b")
+    ),
+    data
+  )
+})
+
 # report_missings --------------------------------------------------------
 test_that("Missings are reported correctly", {
   data <- tibble::tibble(
