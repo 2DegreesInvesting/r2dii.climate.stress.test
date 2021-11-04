@@ -102,7 +102,7 @@ calculate_exposure_by_technology_and_company <- function(asset_type,
   financial_data_subset <- input_data_list$financial_data %>%
     dplyr::select(!!!rlang::syms(subset_cols)) %>%
     report_all_duplicate_kinds(
-      cols = names(financial_data_subset)
+      composite_unique_cols = names(.)
     )
 
   exposure_by_technology_and_company <- input_data_list$pacta_results %>%
@@ -121,7 +121,7 @@ calculate_exposure_by_technology_and_company <- function(asset_type,
      scenario_geography, year, plan_carsten, plan_sec_carsten, term, pd
    ) %>%
    report_all_duplicate_kinds(
-     cols = names(exposure_by_technology_and_company)
+     composite_unique_cols = names(.)
    )
 
   return(exposure_by_technology_and_company)

@@ -14,6 +14,9 @@ report_missings(data, name_data, throw_error = FALSE)
 \item{throw_error}{Boolean, if TRUE error is thrown on failures, otherwise a
 warning.}
 }
+\value{
+input \code{data}.
+}
 \description{
 Function reports number of missing values per variable.
 }
