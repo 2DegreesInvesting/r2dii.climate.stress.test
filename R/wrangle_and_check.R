@@ -35,11 +35,16 @@ wrangle_and_check_sector_exposures <- function(sector_exposures, asset_type) {
                 This is not supported by the analysis."), call. = FALSE)
   }
 
-  check_data_structure(
+  report_missings(
     data = sector_exposures,
-    name_data = "sector exposures",
-    cuc_cols = c("investor_name", "portfolio_name", "asset_type", "financial_sector", "valid_input"),
-    throw_error = TRUE
+    name_data = "sector exposures"
+  )
+
+  report_all_duplicate_kinds(
+    data = sector_exposures,
+    composite_unique_cols = c(
+      "investor_name", "portfolio_name", "asset_type", "financial_sector", "valid_input"
+    )
   )
 
   valid_sector_exposures <- sector_exposures %>%
