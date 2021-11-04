@@ -255,7 +255,7 @@ inner_join_report_drops <- function(data_x, data_y, name_x, name_y, merge_cols) 
 
   if (rows_data < rows_x) {
     cat(
-      "When joining", name_x, "on", name_y, "on columns", merge_cols, "dropped",
+      "      >> When joining", name_x, "on", name_y, "on columns", merge_cols, "dropped",
       rows_x - rows_data, "rows from", name_x, ".\n"
     )
   }

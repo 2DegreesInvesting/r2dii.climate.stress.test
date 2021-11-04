@@ -36,6 +36,9 @@ run_stress_test <- function(asset_type,
                             shock_year = 2030,
                             term = 2,
                             company_exclusion = TRUE) {
+
+  cat("-- Validating input arguments. \n")
+
   validate_input_values(
     lgd_senior_claims = lgd_senior_claims,
     lgd_subordinated_claims = lgd_subordinated_claims,
@@ -49,6 +52,8 @@ run_stress_test <- function(asset_type,
     asset_type = asset_type
   )
 
+  cat("-- Configuring analysis settings. \n")
+
   scenario_to_follow_baseline <- baseline_scenario_lookup
   scenario_to_follow_ls <- shock_scenario_lookup
   calculation_level <- calculation_level_lookup
@@ -58,26 +63,10 @@ run_stress_test <- function(asset_type,
     asset_type = asset_type, lgd_senior_claims = lgd_senior_claims,
     lgd_subordinated_claims = lgd_subordinated_claims
   )
-
-  ###########################################################################
-  # Project Initialisation---------------------------------------------------
-  ###########################################################################
-  ##### Analysis Parameters----------------------------------------
-  # Get analysis parameters from the projects AnalysisParameters.yml - similar to PACTA_analysis
-
-  # TODO: where to get this parameter
   cfg <- config::get(file = file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", "AnalysisParameters.yml"))
-  # OPEN: check_valid_cfg() not applicable here
   start_year <- cfg$AnalysisPeriod$Years.Startyear
   time_horizon <- cfg$AnalysisPeriod$Years.Horizon
-
-  ##### Filters----------------------------------------
-  # The filter settings should comply with the filters from the parent PACTA project as per default
-  # There may still be cases of certain sectors or geographies that work in PACTA but not yet in stress testing
-  # move to config once mechanism to include/exclude filters from original pacta project exists
-
   scenario_geography_filter <- "Global"
-
   scenarios_filter <- unique(
     c(
       scenario_to_follow_baseline,
@@ -85,9 +74,8 @@ run_stress_test <- function(asset_type,
     )
   )
 
-  ###########################################################################
-  # Load input datasets------------------------------------------------------
-  ###########################################################################
+  cat("-- Importing and preparing input data from designated input path. \n")
+
   project_specific_data_list <- read_and_prepare_project_specific_data(
     asset_type = asset_type,
     calculation_level = calculation_level,
@@ -126,27 +114,15 @@ run_stress_test <- function(asset_type,
     scenarios = scenarios_filter
   )
 
-  # Prepare sector exposure data------------------------------------------------
   # TODO: validate
   port_aum <- calculate_aum(input_data_list$sector_exposures)
-
-  ## if we use the integral/overshoot late&sudden method, and we use company production plans the first 5 years
-  ## the integral method works on company level, however,
-  ## when we aggregate the company LS trajectories to port-technology level, the integrals of SDS and LS are not the same, due to 2 reasons:
-  ## 1) for companies that outperform SDS, capacity shhould not be compensated for, hence we take a LS trajecorty that equal SDS
-  ## 2) there are cases for which the linear compensation is so strong, that the LS production falls below zero, which is then set to zero (as negative production is not possible), hence we have an underestimation in overshoot
-  ## For these two reasons, if we use company production plans, we perform the integral method on technology level (and not on company level), until we had a proper session on how to deal with these issues
-
-  ###########################################################################
-  # Calculation of results---------------------------------------------------
-  ###########################################################################
-
-  # Load transition scenarios that will be run by the model
   transition_scenario <- generate_transition_shocks(
     start_of_analysis = start_year,
     end_of_analysis = end_year,
     shock_years = shock_year
   )
+
+  cat("-- Calculating market risk. \n")
 
   annual_profits <- calculate_annual_profits(
     asset_type = asset_type,
@@ -177,6 +153,8 @@ run_stress_test <- function(asset_type,
     flat_multiplier = flat_multiplier,
     exclusion = input_data_list$excluded_companies
   )
+
+  cat("-- Calculating credit risk. \n")
 
   overall_pd_changes <- annual_profits %>%
     calculate_pd_change_overall(
@@ -209,6 +187,8 @@ run_stress_test <- function(asset_type,
   # TODO: ADO 879 - note which companies produce missing results due to
   # insufficient input information (e.g. NAs for financials or 0 equity value)
 
+  cat("-- Exporting results to designated output path. \n")
+
   write_stress_test_results(
     results = results,
     expected_loss = expected_loss,
@@ -217,4 +197,6 @@ run_stress_test <- function(asset_type,
     asset_type = asset_type,
     calculation_level = calculation_level
   )
+
+  cat("-- Exported results to designated output path. \n")
 }
