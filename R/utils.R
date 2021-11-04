@@ -287,24 +287,6 @@ report_missings <- function(data, name_data, throw_error = FALSE) {
   invisible()
 }
 
-#' Checks structure of results
-#'
-#' Wrapper to call [report_all_duplicate_kinds()] and [report_missings()] on
-#' results.
-#'
-#' @inheritParams report_all_duplicate_kinds
-#' @param data Tibble holding results.
-#' @param name_data Name of results data.
-#' @param cuc_cols Vector of cols the combination of which needs to be unique.
-#'
-#' @return Tibble `data`.
-check_data_structure <- function(data, name_data, cuc_cols, throw_error = FALSE) {
-
-  report_all_duplicate_kinds(data = data, composite_unique_cols = cuc_cols, throw_error = throw_error)
-  report_missings(data = data, name_data = name_data, throw_error = throw_error)
-
-  return(data)
-}
 
 #' Assign value of flat multiplier
 #'

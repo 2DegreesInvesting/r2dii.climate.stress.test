@@ -76,7 +76,7 @@ test_that("No warning is thrown if no duplicates are in data on composite unique
   ))
 })
 
-test_that("Warning is thrown if there are duplicates on composite unique cols", {
+test_that("Warning is thrown if there are duplicates on composite unique cols and throw_error is FALSE", {
   data <- tibble::tibble(
     a = c("A1", "A1", "A2", "A2", "A2"),
     b = c("B1", "B2", "B1", "B2", "B1"),
@@ -86,13 +86,14 @@ test_that("Warning is thrown if there are duplicates on composite unique cols", 
   expect_warning(
     checked_data <- report_duplicates(
       data = data,
-      cols = c("a", "b")
+      cols = c("a", "b"),
+      throw_error = FALSE
     ),
     "Identified 1 duplicates"
   )
 })
 
-test_that("Error is thrown if there are duplicates on composite unique cols and throw_error is TRUE", {
+test_that("Error is thrown if there are duplicates on composite unique cols", {
   data <- tibble::tibble(
     a = c("A1", "A1", "A2", "A2", "A2"),
     b = c("B1", "B2", "B1", "B2", "B1"),
@@ -103,13 +104,12 @@ test_that("Error is thrown if there are duplicates on composite unique cols and 
     checked_data <- report_duplicates(
       data = data,
       cols = c("a", "b"),
-      throw_error = TRUE
     ),
     "Identified 1 duplicates"
   )
 })
 
-test_that("Warning is thrown if there are duplciates on all cols", {
+test_that("Warning is thrown if there are duplciates on all cols and throw_error is FALSE", {
   data <- tibble::tibble(
     a = c("A1", "A1", "A2", "A2", "A2"),
     b = c("B1", "B2", "B1", "B2", "B1")
@@ -118,7 +118,8 @@ test_that("Warning is thrown if there are duplciates on all cols", {
   expect_warning(
     report_duplicates(
       data = data,
-      cols = names(data)
+      cols = names(data),
+      throw_error = FALSE
     ),
     "Identified 1 duplicates"
   )
