@@ -118,7 +118,7 @@ validate_data_has_expected_cols <- function(data,
 #' @param throw_error Boolean, if TRUE error is thrown on failures, otherwise a
 #'   warning.
 #'
-#' @return NULL
+#' @return input `data`.
 #' @export
 report_all_duplicate_kinds <- function(data, composite_unique_cols, throw_error = TRUE) {
   validate_data_has_expected_cols(
@@ -138,7 +138,7 @@ report_all_duplicate_kinds <- function(data, composite_unique_cols, throw_error 
     throw_error = throw_error
   )
 
-  return(invisible())
+  return(invisible(data))
 }
 
 #' Identify and report missing value combinations
@@ -166,7 +166,7 @@ report_missing_col_combinations <- function(data, composite_unique_cols, throw_e
     if (throw_error) {
       stop(paste0("Identified ", nrow(missing_rows), " missing combinations on columns ", paste(composite_unique_cols, collapse = ", "), "."))
     } else {
-      warning(paste0("Identified ", nrow(missing_rows), " missing combinations on columns ", paste(composite_unique_cols, collapse = ", "), "."))
+      warning(paste0("Identified ", nrow(missing_rows), " missing combinations on columns ", paste(composite_unique_cols, collapse = ", "), "."), call. = FALSE)
     }
   }
 
@@ -182,7 +182,7 @@ report_missing_col_combinations <- function(data, composite_unique_cols, throw_e
 #' @param cols Cols to check for duplicate combinations on.
 #'
 #' @return NULL
-report_duplicates <- function(data, cols, throw_error = FALSE) {
+report_duplicates <- function(data, cols, throw_error = TRUE) {
   duplicates <- data %>%
     dplyr::group_by(!!!rlang::syms(cols)) %>%
     dplyr::filter(dplyr::n() > 1) %>%
@@ -193,7 +193,7 @@ report_duplicates <- function(data, cols, throw_error = FALSE) {
     if (throw_error) {
       stop(paste0("Identified ", nrow(duplicates), " duplicates on columns ", paste(cols, collapse = ", "), "."))
     } else {
-      warning(paste0("Identified ", nrow(duplicates), " duplicates on columns ", paste(cols, collapse = ", "), "."))
+      warning(paste0("Identified ", nrow(duplicates), " duplicates on columns ", paste(cols, collapse = ", "), "."), call. = FALSE)
     }
   }
 
@@ -228,8 +228,8 @@ inner_join_report_drops <- function(data_x, data_y, name_x, name_y, merge_cols) 
 
   if (rows_data < rows_x) {
     cat(
-      "When joining", name_x, "on", name_y, "on columns", merge_cols, "dropped",
-      rows_x - rows_data, "rows from", name_x, ".\n"
+      "      >> When joining", name_x, "on", name_y, "on columns", merge_cols, "dropped",
+      rows_x - rows_data, "rows from", name_x, "\n"
     )
   }
   return(data)
@@ -243,41 +243,25 @@ inner_join_report_drops <- function(data_x, data_y, name_x, name_y, merge_cols) 
 #' @param data Tibble holding a result data set.
 #' @param name_data Name of the data file.
 #'
-#' @return NULL
+#' @return input `data`.
 report_missings <- function(data, name_data, throw_error = FALSE) {
   missings <- purrr::map_df(data, function(x) sum(is.na(x)))
 
-  cat("Reporting missings on dataset:", name_data, "\n")
-  purrr::iwalk(missings, function(n_na, name) {
-    cat("Counted", n_na, "missings on column", name, "\n")
-  })
-  cat("\n\n")
+  if (is_verbose_log_env()) {
+    cat("Reporting missings on dataset:", name_data, "\n")
+    purrr::iwalk(missings, function(n_na, name) {
+      cat("Counted", n_na, "missings on column", name, "\n")
+    })
+    cat("\n\n")
+  }
 
   if (throw_error && rowSums(missings) > 0) {
     stop(paste0("Missings detected on ", name_data, ", please check dataset."), call. = FALSE)
   }
 
-  invisible()
+  invisible(data)
 }
 
-#' Checks structure of results
-#'
-#' Wrapper to call [report_all_duplicate_kinds()] and [report_missings()] on
-#' results.
-#'
-#' @inheritParams report_all_duplicate_kinds
-#' @param data Tibble holding results.
-#' @param name_data Name of results data.
-#' @param cuc_cols Vector of cols the combination of which needs to be unique.
-#'
-#' @return Tibble `data`.
-check_data_structure <- function(data, name_data, cuc_cols, throw_error = FALSE) {
-
-  report_all_duplicate_kinds(data = data, composite_unique_cols = cuc_cols, throw_error = throw_error)
-  report_missings(data = data, name_data = name_data, throw_error = throw_error)
-
-  return(data)
-}
 
 #' Assign value of flat multiplier
 #'

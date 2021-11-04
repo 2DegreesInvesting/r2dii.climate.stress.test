@@ -420,11 +420,14 @@ filter_negative_late_and_sudden <- function(data_with_late_and_sudden) {
       data_with_late_and_sudden %>%
       dplyr::anti_join(negative_late_and_sudden, by = c("company_name", "technology"))
 
-    warning(paste0(
-      "Removed ", n_rows_before_removal - nrow(data_with_late_and_sudden),
-      " rows because negative production compensation targets were set in late and sudden.
+    warning(
+      paste0(
+        "Removed ", n_rows_before_removal - nrow(data_with_late_and_sudden),
+        " rows because negative production compensation targets were set in late and sudden.
                    Negative absolute production is impossible"
-    ))
+      ),
+      call. = FALSE
+    )
 
     if (nrow(data_with_late_and_sudden) == 0) {
       stop("No rows remain after removing negative late and sudden trajectories.")
