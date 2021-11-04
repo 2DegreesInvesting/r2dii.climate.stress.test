@@ -34,6 +34,6 @@ test_that("merton incompatible rows are removed", {
     risk_free_rate = c(1, 2, 2, 2, -1),
     term = c(1, 2, 2, 0, 1)
   )
-  expect_message(filtered_data <- keep_merton_compatible_rows(input_data, stage = "overall"), "Removed 4 rows.")
+  expect_output(filtered_data <- keep_merton_compatible_rows(input_data, stage = "overall"), "Removed 4 rows.")
   expect_equal(input_data %>% dplyr::slice(1), filtered_data)
 })
