@@ -128,6 +128,20 @@ wrangle_financial_data <- function(financial_data, asset_type) {
     stop("Invalid asset type.")
   }
 
+  expected_columns <- c(
+    "company_name", "company_id", "pd", "net_profit_margin",
+    "debt_equity_ratio", "volatility"
+  )
+
+  if (asset_type == "bonds") {
+    expected_columns <- c(expected_columns, "corporate_bond_ticker")
+  }
+
+  validate_data_has_expected_cols(
+    data = data,
+    expected_columns = expected_columns
+  )
+
   if (asset_type != "bonds") {
     # ADO 2493 - if asset_type not bond, ticker not required. Use distinct_all
     # to remove duplicates from remaining CUC columns since financial data is
