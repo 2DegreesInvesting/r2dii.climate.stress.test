@@ -209,7 +209,7 @@ report_missing_col_combinations <- function(data, composite_unique_cols, throw_e
 #' @param cols Cols to check for duplicate combinations on.
 #'
 #' @return NULL
-report_duplicates <- function(data, cols, throw_error = FALSE) {
+report_duplicates <- function(data, cols, throw_error = TRUE) {
   duplicates <- data %>%
     dplyr::group_by(!!!rlang::syms(cols)) %>%
     dplyr::filter(dplyr::n() > 1) %>%
