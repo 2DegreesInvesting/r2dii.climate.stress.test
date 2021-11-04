@@ -11,11 +11,10 @@
 #' @return `sector_exposures` holding only valid rows for `asset_type`
 #' @export
 wrangle_and_check_sector_exposures <- function(sector_exposures, asset_type) {
-
   asset_type <- stringr::str_to_title(asset_type)
 
   if (!asset_type %in% c("Bonds", "Equity", "Loans")) {
-    stop("Invalid asset type", call. = FALSE )
+    stop("Invalid asset type", call. = FALSE)
   }
 
   if (!is.logical(sector_exposures$valid_input)) {
@@ -124,7 +123,6 @@ wrangle_and_check_pacta_results <- function(pacta_results, start_year, time_hori
 #' @return A prewrangled `financial_data` set.
 #' @export
 check_financial_data <- function(financial_data, asset_type) {
-
   if (!asset_type %in% c("bonds", "equity", "loans")) {
     stop("Invalid asset type.")
   }
@@ -160,14 +158,14 @@ check_financial_data <- function(financial_data, asset_type) {
   report_missings(
     data = financial_data,
     name_data = "Financial Data"
-    )
+  )
 
   report_all_duplicate_kinds(
     data = financial_data,
     composite_unique_cols = c(
       "company_name", "company_id"
-      )
     )
+  )
 
   check_valid_financial_data_values(
     financial_data = financial_data,
@@ -208,7 +206,6 @@ wrangle_scenario_data <- function(scenario_data, start_year, end_year) {
 #'
 #' @return Tibble holding `annual profits` with replaces missings.
 fill_annual_profit_cols <- function(annual_profits) {
-
   annual_profits_filled <- annual_profits %>%
     dplyr::arrange(
       scenario_name, investor_name, portfolio_name, scenario_geography, id,
@@ -238,12 +235,11 @@ fill_annual_profit_cols <- function(annual_profits) {
 #'
 #' @return NULL
 check_valid_financial_data_values <- function(financial_data, asset_type) {
-
   n_unique_ids <- length(unique(financial_data$company_id))
   n_unique_names <- length(unique(financial_data$company_name))
   n_unique_id_names_combinations <- length(unique(paste(financial_data$company_id, financial_data$company_name)))
 
-  if (length(unique(n_unique_ids, n_unique_names, n_unique_id_names_combinations)) > 1) {
+  if (length(unique(c(n_unique_ids, n_unique_names, n_unique_id_names_combinations))) > 1) {
     stop("Mapping between company_names and company_ids is ambiguous.", call. = FALSE)
   }
 
@@ -268,5 +264,4 @@ check_valid_financial_data_values <- function(financial_data, asset_type) {
   if (any(financial_data$volatility < 0)) {
     stop("Implausibe value(s) < 0 or >= 1 for volatility detected. Please check.")
   }
-
 }
