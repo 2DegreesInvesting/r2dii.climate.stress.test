@@ -45,20 +45,16 @@ write_stress_test_results <- function(results, expected_loss,
       .data$portfolio_name, .data$company_name, .data$ald_sector
     )
 
-  report_missings(
-    data = expected_loss,
-    name_data = "Expected loss"
-  )
-
-  report_all_duplicate_kinds(
-    data = expected_loss,
-    composite_unique_cols = c(
-      "scenario_name", "scenario_geography", "investor_name", "portfolio_name",
-      "company_name", "id", "ald_sector", "term"
-    )
-  )
-
   expected_loss %>%
+    report_missings(
+      name_data = "Expected loss"
+    ) %>%
+    report_all_duplicate_kinds(
+      composite_unique_cols = c(
+        "scenario_name", "scenario_geography", "investor_name", "portfolio_name",
+        "company_name", "id", "ald_sector", "term"
+      )
+    ) %>%
     readr::write_csv(file.path(
       results_path,
       paste0("stress_test_results_", asset_type, "_comp_el.csv")
@@ -80,20 +76,16 @@ write_stress_test_results <- function(results, expected_loss,
       .data$portfolio_name, .data$ald_sector, .data$year
     )
 
-  report_missings(
-    data = annual_pd_changes_sector,
-    name_data = "Annual PD changes sector"
-  )
-
-  report_all_duplicate_kinds(
-    data = annual_pd_changes_sector,
-    composite_unique_cols = c(
-      "scenario_name", "scenario_geography", "investor_name", "portfolio_name",
-      "ald_sector", "year"
-    )
-  )
-
   annual_pd_changes_sector %>%
+    report_missings(
+      name_data = "Annual PD changes sector"
+    ) %>%
+    report_all_duplicate_kinds(
+      composite_unique_cols = c(
+        "scenario_name", "scenario_geography", "investor_name", "portfolio_name",
+        "ald_sector", "year"
+      )
+    ) %>%
     readr::write_csv(file.path(
       results_path,
       paste0("stress_test_results_", asset_type, "_sector_pd_changes_annual.csv")
@@ -115,23 +107,19 @@ write_stress_test_results <- function(results, expected_loss,
       .data$portfolio_name, .data$ald_sector, .data$term
     )
 
-  report_missings(
-    data = overall_pd_changes_sector,
-    name_data = "Overall PD changes sector"
-  )
-
-  report_all_duplicate_kinds(
-    data = overall_pd_changes_sector,
-    composite_unique_cols = c(
-      "scenario_name", "scenario_geography", "investor_name", "portfolio_name",
-      "ald_sector", "term"
-    )
-  )
-
   overall_pd_changes_sector %>%
+    report_missings(
+      name_data = "Overall PD changes sector"
+    ) %>%
+    report_all_duplicate_kinds(
+      composite_unique_cols = c(
+        "scenario_name", "scenario_geography", "investor_name", "portfolio_name",
+        "ald_sector", "term"
+      )
+    ) %>%
     readr::write_csv(file.path(
       results_path,
-      paste0("stress_test_results_",asset_type,"_sector_pd_changes_overall.csv")
+      paste0("stress_test_results_", asset_type, "_sector_pd_changes_overall.csv")
     ))
 }
 
@@ -363,20 +351,16 @@ write_results_new <- function(data,
       .data$analysed_sectors_value_change, .data$portfolio_aum,
       .data$portfolio_value_change_perc, .data$portfolio_value_change,
       .data$exclude
+    ) %>%
+    report_missings(
+      name_data = "Stress test results - Company level"
+    ) %>%
+    report_all_duplicate_kinds(
+      composite_unique_cols = c(
+        "investor_name", "portfolio_name", "company_name", "scenario_geography",
+        "scenario_name", "year_of_shock", "duration_of_shock", "ald_sector", "technology"
+      )
     )
-
-  report_missings(
-    data = data,
-    name_data = "Stress test results - Company level"
-  )
-
-  report_all_duplicate_kinds(
-    data = data,
-    composite_unique_cols = c(
-      "investor_name", "portfolio_name", "company_name", "scenario_geography",
-      "scenario_name", "year_of_shock", "duration_of_shock", "ald_sector", "technology"
-    )
-  )
 
   switch(file_type,
     csv = data %>%
@@ -409,21 +393,16 @@ write_results_new <- function(data,
     # ADO 2549 - all numeric variables should be unique across the CUC variables
     # running distinct all and the check afterwards ensures this is the case
     dplyr::distinct_all() %>%
-    dplyr::arrange(.data$year_of_shock, .data$ald_sector, .data$technology)
-
-
-  report_missings(
-    data = data,
-    name_data = "Stress test results - Portfolios level"
-  )
-
-  report_all_duplicate_kinds(
-    data = data,
-    composite_unique_cols = c(
-      "investor_name", "portfolio_name", "scenario_geography", "scenario_name",
-      "year_of_shock", "duration_of_shock", "ald_sector", "technology"
+    dplyr::arrange(.data$year_of_shock, .data$ald_sector, .data$technology) %>%
+    report_missings(
+      name_data = "Stress test results - Portfolios level"
+    ) %>%
+    report_all_duplicate_kinds(
+      composite_unique_cols = c(
+        "investor_name", "portfolio_name", "scenario_geography", "scenario_name",
+        "year_of_shock", "duration_of_shock", "ald_sector", "technology"
+      )
     )
-  )
 
   switch(file_type,
     csv = data %>%
