@@ -167,7 +167,7 @@ check_financial_data <- function(financial_data, asset_type) {
       ) %>%
       dplyr::distinct_all()
   } else {
-    financial_data <- financial_data %>% dplyr::filter(!is.na(corporate_bond_ticker))
+    financial_data <- financial_data %>% dplyr::filter(!is.na(.data$corporate_bond_ticker))
   }
 
   report_missings(
