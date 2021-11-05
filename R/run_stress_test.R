@@ -58,14 +58,12 @@ run_stress_test <- function(asset_type,
   scenario_to_follow_ls <- shock_scenario_lookup
   calculation_level <- calculation_level_lookup
   end_year <- end_year_lookup
+  time_horizon <- time_horizon_lookup
   flat_multiplier <- assign_flat_multiplier(asset_type = asset_type)
   lgd <- assign_lgd(
     asset_type = asset_type, lgd_senior_claims = lgd_senior_claims,
     lgd_subordinated_claims = lgd_subordinated_claims
   )
-  cfg <- config::get(file = file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", "AnalysisParameters.yml"))
-  start_year <- cfg$AnalysisPeriod$Years.Startyear
-  time_horizon <- cfg$AnalysisPeriod$Years.Horizon
   scenario_geography_filter <- "Global"
   scenarios_filter <- unique(
     c(

@@ -73,6 +73,8 @@ term_range_lookup <- c(1, 10)
 
 end_year_lookup <- 2040
 
+time_horizon_lookup <- 5
+
 price_data_version_lookup <- "2021Q1"
 
 #' @rdname lookup
