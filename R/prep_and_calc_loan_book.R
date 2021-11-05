@@ -2,12 +2,9 @@
 #'
 #' @param credit_type Type of credit. For accepted values please compare
 #'   `credit_type_lookup`.
-#' @param start_year Start year of the analysis. Determines which input files
-#'   will be required and when the production forecast starts.
 #' @return NULL
 #' @export
-run_prep_calculation_loans <- function(credit_type = "outstanding",
-                                       start_year = 2020) {
+run_prep_calculation_loans <- function(credit_type = "outstanding") {
 
   #### Validate input-----------------------------------------------------------
 
@@ -18,14 +15,6 @@ run_prep_calculation_loans <- function(credit_type = "outstanding",
   #### Load and validate input parameters---------------------------------------
 
   cfg <- config::get(file = file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", "AnalysisParameters.yml"))
-
-  start_year <- start_year
-  if (!dplyr::between(start_year, min(p4b_production_data_years_lookup), max(p4b_production_data_years_lookup))) {
-    stop("start_year is outside accepted range for production data inputs.")
-  }
-  if (!dplyr::between(start_year, min(p4b_scenario_data_years_lookup), max(p4b_scenario_data_years_lookup))) {
-    stop("start_year is outside accepted range for scenario data inputs.")
-  }
 
   equity_market <- cfg$Lists$Equity.Market.List
   if (length(equity_market) != 1) {
@@ -100,37 +89,16 @@ run_prep_calculation_loans <- function(credit_type = "outstanding",
   regions <- r2dii.data::region_isos
 
   # Production forecast data
-
-  if (start_year == 2019) {
-    validate_file_exists(file.path(get_st_data_path(), "ald_15092020.csv"))
-    production_forecast_data <- readr::read_csv(
-      file.path(get_st_data_path(), "ald_15092020.csv"),
-      col_types = readr::cols(
-        name_company = "c",
-        sector = "c",
-        technology = "c",
-        year = "d",
-        production = "d",
-        production_unit = "c",
-        emission_factor = "d",
-        ald_emission_factor_unit = "c",
-        plant_location = "c",
-        is_ultimate_owner = "l",
-        ald_timestamp = "c"
-      )
-    )
-  } else if (start_year == 2020) {
-    validate_file_exists(file.path(get_st_data_path(), "2021-07-15_AR_2020Q4_PACTA-Data (3).xlsx"))
-    production_forecast_data <- readxl::read_xlsx(
-      file.path(get_st_data_path(), "2021-07-15_AR_2020Q4_PACTA-Data (3).xlsx"),
-      sheet = "Company Indicators - PACTA"
-    )
-  }
+  validate_file_exists(file.path(get_st_data_path(), "2021-07-15_AR_2020Q4_PACTA-Data (3).xlsx"))
+  production_forecast_data <- readxl::read_xlsx(
+    file.path(get_st_data_path(), "2021-07-15_AR_2020Q4_PACTA-Data (3).xlsx"),
+    sheet = "Company Indicators - PACTA"
+  )
 
   # Scenario data - market share
-  validate_file_exists(file.path(get_st_data_path(), glue::glue("scenario_{start_year}.csv")))
+  validate_file_exists(file.path(get_st_data_path(), "scenario_2020.csv"))
   scenario_data_market_share <- readr::read_csv(
-    file.path(get_st_data_path(), glue::glue("scenario_{start_year}.csv")),
+    file.path(get_st_data_path(), glue::glue("scenario_2020.csv")),
     col_types = readr::cols(
       scenario_source = "c",
       scenario = "c",
@@ -140,21 +108,6 @@ run_prep_calculation_loans <- function(credit_type = "outstanding",
       year = "d",
       tmsr = "d",
       smsp = "d"
-    )
-  )
-
-  # Scenario data - emission intensity
-  validate_file_exists(file.path(get_st_data_path(), glue::glue("co2_intensity_scenario_{start_year}.csv")))
-  scenario_data_emissions_intensity <- readr::read_csv(
-    file.path(get_st_data_path(), glue::glue("co2_intensity_scenario_{start_year}.csv")),
-    col_types = readr::cols(
-      scenario_source = "c",
-      scenario = "c",
-      sector = "c",
-      region = "c",
-      year = "d",
-      emission_factor = "d",
-      emission_factor_unit = "c"
     )
   )
 

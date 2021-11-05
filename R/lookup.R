@@ -137,9 +137,3 @@ p4i_p4b_scenario_lookup <- tibble::tribble(
 p4b_scenarios_lookup <- c("target_b2ds", "target_cps", "target_rts",
                           "target_sps", "target_steps", "target_2ds",
                           "target_sds")
-
-# allowed input years p4b production data file
-p4b_production_data_years_lookup <- c(2019, 2020)
-
-# allowed input years p4b scenario data file
-p4b_scenario_data_years_lookup <- c(2019, 2020)
