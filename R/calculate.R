@@ -70,7 +70,6 @@ calculate_annual_profits <- function(asset_type, input_data_list, scenario_to_fo
     fill_annual_profit_cols()
 
   annual_profits <- extended_pacta_results_with_financials %>%
-    # TODO: ADO 879 - note which companies are removed here
     join_price_data(df_prices = price_data) %>%
     calculate_net_profits() %>%
     dcf_model_techlevel(discount_rate = discount_rate) %>%
@@ -113,7 +112,7 @@ calculate_exposure_by_technology_and_company <- function(asset_type,
      y = financial_data_subset,
      by = merge_cols
    ) %>%
-   # TODO: ADO 879 - note which companies are removed here, what to do with entries that have NAs for pd?
+   # TODO:  what to do with entries that have NAs for pd?
    dplyr::select(
      investor_name, portfolio_name, company_name, ald_sector, technology,
      scenario_geography, year, plan_carsten, plan_sec_carsten, term, pd

@@ -103,6 +103,11 @@ run_stress_test <- function(asset_type,
       scenario_geography_filter = scenario_geography_filter
     )
 
+  report_company_drops(
+    data_list = input_data_list,
+    asset_type = asset_type
+  )
+
   if (asset_type == "loans") {
     input_data_list$financial_data <- input_data_list$financial_data %>%
       dplyr::mutate(company_name = stringr::str_to_lower(.data$company_name))
