@@ -58,14 +58,12 @@ run_stress_test <- function(asset_type,
   scenario_to_follow_ls <- shock_scenario_lookup
   calculation_level <- calculation_level_lookup
   end_year <- end_year_lookup
+  time_horizon <- time_horizon_lookup
   flat_multiplier <- assign_flat_multiplier(asset_type = asset_type)
   lgd <- assign_lgd(
     asset_type = asset_type, lgd_senior_claims = lgd_senior_claims,
     lgd_subordinated_claims = lgd_subordinated_claims
   )
-  cfg <- config::get(file = file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", "AnalysisParameters.yml"))
-  start_year <- cfg$AnalysisPeriod$Years.Startyear
-  time_horizon <- cfg$AnalysisPeriod$Years.Horizon
   scenario_geography_filter <- "Global"
   scenarios_filter <- unique(
     c(
@@ -76,16 +74,18 @@ run_stress_test <- function(asset_type,
 
   cat("-- Importing and preparing input data from designated input path. \n")
 
-  project_specific_data_list <- read_and_prepare_project_specific_data(
+  pacta_based_data <- read_and_prepare_project_specific_data(
     asset_type = asset_type,
     calculation_level = calculation_level,
-    start_year = start_year,
     time_horizon = time_horizon,
     scenario_geography_filter = scenario_geography_filter,
     scenarios_filter = scenarios_filter,
-    equity_market_filter = cfg$Lists$Equity.Market.List,
+    equity_market_filter = equity_market_filter_lookup,
     term = term
   )
+
+  project_specific_data_list <- pacta_based_data$data_list
+  start_year <- pacta_based_data$start_year
 
   project_agnostic_data_list <- read_and_prepare_project_agnostic_data(
     start_year = start_year,

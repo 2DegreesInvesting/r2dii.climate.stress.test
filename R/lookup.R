@@ -73,6 +73,8 @@ term_range_lookup <- c(1, 10)
 
 end_year_lookup <- 2040
 
+time_horizon_lookup <- 5
+
 price_data_version_lookup <- "2021Q1"
 
 #' @rdname lookup
@@ -92,6 +94,8 @@ technologies_lookup <- c(
 
 # holding allocation method used for stress testing
 allocation_method_lookup <- "portfolio_weight"
+
+equity_market_filter_lookup <- "GlobalMarket"
 
 # technology and sector mapping between P4I and P4B
 # HDV and shipping not consistently defined across both versions at this time

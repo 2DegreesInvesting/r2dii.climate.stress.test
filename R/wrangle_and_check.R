@@ -88,7 +88,6 @@ wrangle_and_check_pacta_results <- function(pacta_results, start_year, time_hori
     # TODO: temporary fix, remove once all scenario data is used from scenario file
     dplyr::filter(!(.data$scenario == "ETP2017_NPS" & .data$ald_sector == "Power")) %>%
     dplyr::mutate(scenario = sub(".*?_", "", scenario)) %>%
-    check_portfolio_consistency(start_year = start_year) %>%
     dplyr::mutate(scenario = stringr::str_replace(.data$scenario, "NPSRTS", "NPS")) %>%
     tidyr::complete(
       year = seq(start_year, start_year + time_horizon),
