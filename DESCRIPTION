@@ -32,6 +32,7 @@ Imports:
     r2dii.plot,
     readr,
     readxl,
+    stringi,
     rlang,
     stringr,
     tibble,
