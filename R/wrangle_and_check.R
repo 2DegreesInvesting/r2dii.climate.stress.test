@@ -250,14 +250,6 @@ fill_annual_profit_cols <- function(annual_profits) {
 #'
 #' @return NULL
 check_valid_financial_data_values <- function(financial_data, asset_type) {
-  n_unique_ids <- length(unique(financial_data$company_id))
-  n_unique_names <- length(unique(financial_data$company_name))
-  n_unique_id_names_combinations <- length(unique(paste(financial_data$company_id, financial_data$company_name)))
-
-  if (length(unique(c(n_unique_ids, n_unique_names, n_unique_id_names_combinations))) > 1) {
-    stop("Mapping between company_names and company_ids is ambiguous.", call. = FALSE)
-  }
-
   if (any(financial_data$pd < 0 | financial_data$pd >= 1)) {
     stop("Implausibe value(s) < 0 or >= 1 for pd detected. Please check.")
   }
