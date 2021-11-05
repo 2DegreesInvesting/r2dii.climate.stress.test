@@ -36,10 +36,5 @@ read_financial_data <- function(path = NULL) {
     expected_columns = expected_columns
   )
 
-  data <- data %>%
-    dplyr::mutate(enc = stringi::stri_enc_mark(.data$company_name))  %>%
-    dplyr::filter(.data$enc != "ASCII") %>%
-    dplyr::select(-.data$enc)
-
   return(data)
 }
