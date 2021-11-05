@@ -200,6 +200,15 @@ report_duplicates <- function(data, cols, throw_error = TRUE) {
   return(invisible())
 }
 
+#' Report dropped companies
+#'
+#' Wrapper to report companies for which all results, or results for some technologies
+#' are lsot due to a missing match in financial_data or price_data.
+#'
+#' @param data_list A list of imported stress test input data.
+#' @inheritParams run_stress_test
+#'
+#' @return NULL
 report_company_drops <- function(data_list, asset_type) {
 
   if (asset_type == "bonds") {
@@ -222,6 +231,7 @@ report_company_drops <- function(data_list, asset_type) {
     merge_cols = c("technology", "ald_sector" = "sector", "year")
   )
 
+  invisible()
 }
 
 #' Inner join datasets and report number of dropped rows
