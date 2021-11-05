@@ -74,16 +74,18 @@ run_stress_test <- function(asset_type,
 
   cat("-- Importing and preparing input data from designated input path. \n")
 
-  project_specific_data_list <- read_and_prepare_project_specific_data(
+  pacta_based_data <- read_and_prepare_project_specific_data(
     asset_type = asset_type,
     calculation_level = calculation_level,
-    start_year = start_year,
     time_horizon = time_horizon,
     scenario_geography_filter = scenario_geography_filter,
     scenarios_filter = scenarios_filter,
-    equity_market_filter = cfg$Lists$Equity.Market.List,
+    equity_market_filter = equity_market_filter_lookup,
     term = term
   )
+
+  project_specific_data_list <- pacta_based_data$data_list
+  start_year <- pacta_based_data$start_year
 
   project_agnostic_data_list <- read_and_prepare_project_agnostic_data(
     start_year = start_year,

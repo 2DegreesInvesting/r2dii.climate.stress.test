@@ -59,7 +59,7 @@ read_and_prepare_project_agnostic_data <- function(start_year, end_year, company
   financial_data <- read_financial_data(
     path = file.path(get_st_data_path(), "prewrangled_financial_data_stress_test.rds")
   ) %>%
-  wrangle_financial_data(asset_type = asset_type)
+    wrangle_financial_data(asset_type = asset_type)
 
   return(list(
     capacity_factors_power = capacity_factors_power,
@@ -73,17 +73,16 @@ read_and_prepare_project_agnostic_data <- function(start_year, end_year, company
 #' Read and prepare project specific data
 #'
 #' Function reads in data that are specific the project and conducts some
-#' checking and wrangling.
+#' checking and wrangling. Also infers start_year of analysis.
 #'
 #' @inheritParams run_stress_test
 #' @inheritParams read_and_prepare_project_agnostic_data
 #' @inheritParams wrangle_and_check_pacta_results
 #' @param calculation_level String holding level of calculation.
 #'
-#' @return  A list holding prepared project agnostic data.
+#' @return A list of lists holding prepared project specific data.
 read_and_prepare_project_specific_data <- function(asset_type, calculation_level,
-                                                   start_year, time_horizon,
-                                                   scenario_geography_filter,
+                                                   time_horizon, scenario_geography_filter,
                                                    scenarios_filter, equity_market_filter,
                                                    term) {
   path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", paste0(stringr::str_to_title(asset_type), "_results_", calculation_level, ".rda"))
@@ -91,7 +90,11 @@ read_and_prepare_project_specific_data <- function(asset_type, calculation_level
   pacta_results <- read_pacta_results(
     path = path,
     level = calculation_level
-  ) %>%
+  )
+
+  start_year <- min(pacta_results$year, na.rm = TRUE) # need to remove NA since year can be nullable in pacta results
+
+  wrangled_pacta_results <- pacta_results %>%
     wrangle_and_check_pacta_results(
       start_year = start_year,
       time_horizon = time_horizon,
@@ -107,10 +110,15 @@ read_and_prepare_project_specific_data <- function(asset_type, calculation_level
     wrangle_and_check_sector_exposures(asset_type = asset_type)
   # TODO: potentially convert currencies to USD or at least common currency
 
-  return(list(
-    pacta_results = pacta_results,
-    sector_exposures = sector_exposures
-  ))
+  return(
+    list(
+      data_list <- list(
+        pacta_results = wrangled_pacta_results,
+        sector_exposures = sector_exposures
+      ),
+      start_year <- start_year
+    )
+  )
 }
 
 
