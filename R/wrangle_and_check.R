@@ -242,9 +242,7 @@ fill_annual_profit_cols <- function(annual_profits) {
 
 #' Check if values in financial data are plausible
 #'
-#' Checks that:
-#' 1. there is a 1 to 1 mapping of company_name and company_id.
-#' 1. numeric columns hold values in acceptable ranges.
+#' Checks that numeric columns hold values in acceptable ranges.
 #'
 #' @inheritParams check_financial_data
 #'

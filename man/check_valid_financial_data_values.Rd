@@ -13,9 +13,5 @@ check_valid_financial_data_values(financial_data, asset_type)
 bond or equity.}
 }
 \description{
-Checks that:
-\enumerate{
-\item there is a 1 to 1 mapping of company_name and company_id.
-\item numeric columns hold values in acceptable ranges.
-}
+Checks that numeric columns hold values in acceptable ranges.
 }
