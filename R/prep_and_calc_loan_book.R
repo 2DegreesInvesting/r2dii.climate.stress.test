@@ -103,17 +103,13 @@ run_prep_calculation_loans <- function(credit_type = "outstanding") {
   )
 
   #### Wrangle and prepare data-------------------------------------------------
-
-  # TODO: what to do with negative credit limits?
-  matched_non_negative <- matched %>%
-    dplyr::mutate(
-      loan_size_outstanding = dplyr::if_else(
-        .data$loan_size_outstanding < 0, 0, .data$loan_size_outstanding
-      ),
-      loan_size_credit_limit = dplyr::if_else(
-        .data$loan_size_credit_limit < 0, 0, .data$loan_size_credit_limit
-      )
-    )
+  if (credit_type == "outstanding") {
+    matched_non_negative <- matched %>%
+      dplyr::filter(.data$loan_size_outstanding >= 0)
+  } else {
+    matched_non_negative <- matched %>%
+      dplyr::filter(.data$loan_size_credit_limit >= 0)
+  }
 
   portfolio_size <- loanbook %>%
     # TODO: why distinct? Is there any way that id_loan is not unique?
@@ -219,7 +215,6 @@ run_prep_calculation_loans <- function(credit_type = "outstanding") {
     dplyr::rename(
       financial_sector = .data$sector_ald,
       valid_value_usd = !!rlang::sym(sector_credit_type),
-      # TODO: convert currencies to USD or at least common currency
       currency = !!rlang::sym(credit_currency)
     ) %>%
     dplyr::mutate(
@@ -232,9 +227,13 @@ run_prep_calculation_loans <- function(credit_type = "outstanding") {
     dplyr::group_by(.data$investor_name, .data$portfolio_name, .data$asset_type, .data$valid_input) %>%
     dplyr::mutate(asset_value_usd = sum(.data$valid_value_usd, na.rm = TRUE)) %>%
     dplyr::ungroup() %>%
-    dplyr::group_by(.data$investor_name, .data$portfolio_name, .data$valid_input) %>%
-    dplyr::mutate(portfolio_value_usd = sum(.data$valid_value_usd, na.rm = TRUE)) %>%
-    dplyr::ungroup() %>%
+    dplyr::mutate(
+      portfolio_value_usd = dplyr::if_else(
+        credit_type == "outstanding",
+        portfolio_size$portfolio_loan_size_outstanding,
+        portfolio_size$portfolio_loan_size_credit_limit
+      )
+    ) %>%
     dplyr::select(
       .data$investor_name, .data$portfolio_name, .data$asset_type,
       .data$financial_sector, .data$valid_input, .data$valid_value_usd,
