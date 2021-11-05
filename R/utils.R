@@ -261,8 +261,8 @@ report_dropped_company_names <- function(data_x, data_y, name_y, merge_cols, nam
     percent_loss <- (n_companies_x - n_companies) * 100/n_companies_x
     affected_companies <- sort(setdiff(data_x$company_name, data$company_name))
     cat(
-      "      >> When joining", name_x, "on", name_y, "on columns", merge_cols, "dropped row for",
-      n_companies_x - n_companies, "out of", n_companies_x, "companies from", name_x, "\n"
+      "      >> When joining", name_x, "on", name_y, "on column(s)", merge_cols, "dropped row for",
+      n_companies_x - n_companies, "out of", n_companies_x, "companies\n"
     )
     cat("        >> percent loss:", percent_loss, "\n")
     cat("        >> affected companies:\n")
