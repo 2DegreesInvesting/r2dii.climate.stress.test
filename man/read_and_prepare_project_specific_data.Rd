@@ -7,7 +7,6 @@
 read_and_prepare_project_specific_data(
   asset_type,
   calculation_level,
-  start_year,
   time_horizon,
   scenario_geography_filter,
   scenarios_filter,
@@ -20,8 +19,6 @@ read_and_prepare_project_specific_data(
 \code{asset_types_lookup}.}
 
 \item{calculation_level}{String holding level of calculation.}
-
-\item{start_year}{Start year of analysis.}
 
 \item{time_horizon}{Considered timefram for PACTA analysis.}
 
@@ -38,9 +35,9 @@ expected loss should be calculated in the credit risk section. For accepted
 range compare \code{term_range_lookup}.}
 }
 \value{
-A list holding prepared project agnostic data.
+A list of lists holding prepared project specific data.
 }
 \description{
 Function reads in data that are specific the project and conducts some
-checking and wrangling.
+checking and wrangling. Also infers start_year of analysis.
 }
