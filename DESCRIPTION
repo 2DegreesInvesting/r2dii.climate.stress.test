@@ -18,7 +18,7 @@ Description: The package provides functions and workflows for conducting
     information visit <https://2degrees-investing.org/>.
 License: MIT + file LICENSE
 Depends:
-    R (> 3.5)
+    R (>= 3.4)
 Imports: 
     config,
     dplyr,
