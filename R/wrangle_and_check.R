@@ -277,6 +277,6 @@ check_valid_financial_data_values <- function(financial_data, asset_type) {
   }
 
   if (any(financial_data$volatility < 0)) {
-    stop("Implausibe value(s) < 0 or >= 1 for volatility detected. Please check.")
+    stop("Implausibe value(s) < 0 for volatility detected. Please check.")
   }
 }
