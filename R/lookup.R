@@ -95,6 +95,8 @@ technologies_lookup <- c(
 # holding allocation method used for stress testing
 allocation_method_lookup <- "portfolio_weight"
 
+equity_market_filter_lookup <- "Global"
+
 # technology and sector mapping between P4I and P4B
 # HDV and shipping not consistently defined across both versions at this time
 p4i_p4b_sector_technology_lookup <- tibble::tribble(
