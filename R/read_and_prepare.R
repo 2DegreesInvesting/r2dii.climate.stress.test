@@ -92,7 +92,7 @@ read_and_prepare_project_specific_data <- function(asset_type, calculation_level
     level = calculation_level
   )
 
-  start_year <- min(pacta_results$year, na.rm = TRUE) # need to remove NA since year can be nullable in pacta results
+  start_year <- min(pacta_results$year, na.rm = TRUE)
 
   wrangled_pacta_results <- pacta_results %>%
     wrangle_and_check_pacta_results(
@@ -112,11 +112,11 @@ read_and_prepare_project_specific_data <- function(asset_type, calculation_level
 
   return(
     list(
-      data_list <- list(
+      data_list = list(
         pacta_results = wrangled_pacta_results,
         sector_exposures = sector_exposures
       ),
-      start_year <- start_year
+      start_year = start_year
     )
   )
 }
