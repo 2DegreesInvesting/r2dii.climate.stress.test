@@ -12,18 +12,9 @@ run_prep_calculation_loans <- function(credit_type = "outstanding") {
     stop("Argument credit_type does not hold an accepted value.")
   }
 
-  #### Load and validate input parameters---------------------------------------
-
-  cfg <- config::get(file = file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", "AnalysisParameters.yml"))
-
-  equity_market <- cfg$Lists$Equity.Market.List
-  if (length(equity_market) != 1) {
-    stop("Input argument equity_market must be of length 1")
-  }
-
   #### Load input data sets-----------------------------------------------------
-  validate_file_exists(file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", paste0("raw_loanbook.csv")))
   # raw loan book
+  validate_file_exists(file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", paste0("raw_loanbook.csv")))
   loanbook <- readr::read_csv(
     file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", paste0("raw_loanbook.csv")),
     col_types = readr::cols(
@@ -306,7 +297,7 @@ run_prep_calculation_loans <- function(credit_type = "outstanding") {
     format_loanbook_st(
       investor_name = investor_name_placeholder,
       portfolio_name = investor_name_placeholder,
-      equity_market = equity_market,
+      equity_market = equity_market_filter_lookup,
       credit = credit_type
     )
 
