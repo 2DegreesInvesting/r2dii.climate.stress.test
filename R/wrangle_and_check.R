@@ -254,10 +254,10 @@ check_valid_financial_data_values <- function(financial_data, asset_type) {
   if (asset_type == "equity") {
     if (any(financial_data$debt_equity_ratio < 0)) {
       stop("Implausibe value(s) < 0 for debt_equity_ratio detected. Please check.")
-    } else {
-      if (any(financial_data$debt_equity_ratio <= 0)) {
-        stop("Implausibe value(s) <= 0 for debt_equity_ratio detected. Please check.")
-      }
+    }
+  } else {
+    if (any(financial_data$debt_equity_ratio <= 0)) {
+      stop("Implausibe value(s) <= 0 for debt_equity_ratio detected. Please check.")
     }
   }
 
