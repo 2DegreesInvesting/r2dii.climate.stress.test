@@ -4,11 +4,14 @@
 \alias{run_prep_calculation_loans}
 \title{Run stress testing for loans}
 \usage{
-run_prep_calculation_loans(credit_type = "outstanding")
+run_prep_calculation_loans(credit_type = "outstanding", start_year = 2020)
 }
 \arguments{
 \item{credit_type}{Type of credit. For accepted values please compare
 \code{credit_type_lookup}.}
+
+\item{start_year}{Start year of the analysis. Determines which input files
+will be required and when the production forecast starts.}
 }
 \description{
 Run stress testing for loans

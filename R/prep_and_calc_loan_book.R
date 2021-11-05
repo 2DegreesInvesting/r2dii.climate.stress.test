@@ -2,9 +2,12 @@
 #'
 #' @param credit_type Type of credit. For accepted values please compare
 #'   `credit_type_lookup`.
+#' @param start_year Start year of the analysis. Determines which input files
+#'   will be required and when the production forecast starts.
 #' @return NULL
 #' @export
-run_prep_calculation_loans <- function(credit_type = "outstanding") {
+run_prep_calculation_loans <- function(credit_type = "outstanding",
+                                       start_year = 2020) {
 
   #### Validate input-----------------------------------------------------------
 
@@ -16,7 +19,7 @@ run_prep_calculation_loans <- function(credit_type = "outstanding") {
 
   cfg <- config::get(file = file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", "AnalysisParameters.yml"))
 
-  start_year <- cfg$AnalysisPeriod$Years.Startyear
+  start_year <- start_year
   if (!dplyr::between(start_year, min(p4b_production_data_years_lookup), max(p4b_production_data_years_lookup))) {
     stop("start_year is outside accepted range for production data inputs.")
   }
@@ -98,7 +101,7 @@ run_prep_calculation_loans <- function(credit_type = "outstanding") {
 
   # Production forecast data
 
-  if (start_year == 2020) {
+  if (start_year == 2019) {
     validate_file_exists(file.path(get_st_data_path(), "ald_15092020.csv"))
     production_forecast_data <- readr::read_csv(
       file.path(get_st_data_path(), "ald_15092020.csv"),
@@ -116,7 +119,7 @@ run_prep_calculation_loans <- function(credit_type = "outstanding") {
         ald_timestamp = "c"
       )
     )
-  } else if (start_year == 2021) {
+  } else if (start_year == 2020) {
     validate_file_exists(file.path(get_st_data_path(), "2021-07-15_AR_2020Q4_PACTA-Data (3).xlsx"))
     production_forecast_data <- readxl::read_xlsx(
       file.path(get_st_data_path(), "2021-07-15_AR_2020Q4_PACTA-Data (3).xlsx"),
