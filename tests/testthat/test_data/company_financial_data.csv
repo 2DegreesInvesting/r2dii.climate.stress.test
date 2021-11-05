@@ -1,0 +1,3 @@
+company_name,company_id,corporate_bond_ticker,pd,net_profit_margin,debt_equity_ratio,volatility
+Power Company,1,ABC1,0.001,0.1,0.25,0.2
+Car Manufacturer,2,CDF2,0.001,0.1,0.25,0.2
