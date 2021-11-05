@@ -122,7 +122,23 @@ wrangle_and_check_pacta_results <- function(pacta_results, start_year, time_hori
 #'
 #' @return A prewrangled `financial_data` set.
 #' @export
+#' @examples
+#' fin_data <- tibble::tibble(
+#'   company_name = c("Firm A", "Firm B"),
+#'   company_id = c(1, 2),
+#'   corporate_bond_ticker = c(NA, "TICK1"),
+#'   pd = c(0.01, 0.002),
+#'   net_profit_margin = c(0.423, 0.2),
+#'   debt_equity_ratio = c(0.1, 0.201),
+#'   volatility = c(0.130, 0.299)
+#' )
+#'
+#' check_financial_data(
+#'   financial_data = fin_data,
+#'   asset_type = "equity"
+#' )
 check_financial_data <- function(financial_data, asset_type) {
+
   if (!asset_type %in% c("bonds", "equity", "loans")) {
     stop("Invalid asset type.")
   }

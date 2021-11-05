@@ -19,3 +19,19 @@ A prewrangled \code{financial_data} set.
 Applies sanity checks to financial data. Also remove column
 corporate_bond_ticker if \code{asset_type} is not bonds.
 }
+\examples{
+fin_data <- tibble::tibble(
+  company_name = c("Firm A", "Firm B"),
+  company_id = c(1, 2),
+  corporate_bond_ticker = c(NA, "TICK1"),
+  pd = c(0.01, 0.002),
+  net_profit_margin = c(0.423, 0.2),
+  debt_equity_ratio = c(0.1, 0.201),
+  volatility = c(0.130, 0.299)
+)
+
+check_financial_data(
+  financial_data = fin_data,
+  asset_type = "equity"
+)
+}
