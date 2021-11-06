@@ -6,8 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Read in power capacity factors from csv and check that all expected columns
-are given. — read_capacity_factors • r2dii.climate.stress.test</title>
+<title>Allow running tests selectively, only for registered developers — is_registered_dev • r2dii.climate.stress.test</title>
 
 
 <!-- jquery -->
@@ -40,10 +39,8 @@ are given. — read_capacity_factors • r2dii.climate.stress.test</title>
 
 
 
-<meta property="og:title" content="Read in power capacity factors from csv and check that all expected columns
-are given. — read_capacity_factors" />
-<meta property="og:description" content="Read in power capacity factors from csv and check that all expected columns
-are given." />
+<meta property="og:title" content="Allow running tests selectively, only for registered developers — is_registered_dev" />
+<meta property="og:description" content="Allow running tests selectively, only for registered developers" />
 
 
 
@@ -106,45 +103,26 @@ are given." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Read in power capacity factors from csv and check that all expected columns
-are given.</h1>
+    <h1>Allow running tests selectively, only for registered developers</h1>
     
-    <div class="hidden name"><code>read_capacity_factors.Rd</code></div>
+    <div class="hidden name"><code>is_registered_dev.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Read in power capacity factors from csv and check that all expected columns
-are given.</p>
+    <p>Allow running tests selectively, only for registered developers</p>
     </div>
 
-    <pre class="usage"><span class='fu'>read_capacity_factors</span><span class='op'>(</span>path <span class='op'>=</span> <span class='cn'>NULL</span>, version <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>is_registered_dev</span><span class='op'>(</span>my_home <span class='op'>=</span> <span class='st'>"/home/mauro"</span><span class='op'>)</span></pre>
 
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>path</th>
-      <td><p>A string that points to the location of the file containing the
-capacity factors</p></td>
-    </tr>
-    <tr>
-      <th>version</th>
-      <td><p>A string indicating whether to prepare the capacity factors
-basedn on the old logic (2017 data set) or the new logic (long format,
-multiple years and scenarios). Must be either "old" or "new".</p></td>
-    </tr>
-    </table>
 
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <div class='dont-index'><p>Other import functions: 
-<code><a href='generate_transition_shocks.html'>generate_transition_shocks</a>()</code>,
-<code><a href='read_financial_data.html'>read_financial_data</a>()</code>,
-<code><a href='read_ngfs_carbon_tax.html'>read_ngfs_carbon_tax</a>()</code>,
-<code><a href='read_pacta_results.html'>read_pacta_results</a>()</code>,
-<code><a href='read_price_data.html'>read_price_data</a>()</code>,
-<code><a href='read_transition_scenarios.html'>read_transition_scenarios</a>()</code></p></div>
+    <p>Logical.</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'>is_registered_dev</span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in is_registered_dev(): could not find function "is_registered_dev"</span></div><div class='input'><span class='fu'>is_registered_dev</span><span class='op'>(</span><span class='st'>"home/you/"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in is_registered_dev("home/you/"): could not find function "is_registered_dev"</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

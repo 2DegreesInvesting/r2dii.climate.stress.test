@@ -6,8 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Read in power capacity factors from csv and check that all expected columns
-are given. — read_capacity_factors • r2dii.climate.stress.test</title>
+<title>Check if values in financial data are plausible — check_valid_financial_data_values • r2dii.climate.stress.test</title>
 
 
 <!-- jquery -->
@@ -40,10 +39,8 @@ are given. — read_capacity_factors • r2dii.climate.stress.test</title>
 
 
 
-<meta property="og:title" content="Read in power capacity factors from csv and check that all expected columns
-are given. — read_capacity_factors" />
-<meta property="og:description" content="Read in power capacity factors from csv and check that all expected columns
-are given." />
+<meta property="og:title" content="Check if values in financial data are plausible — check_valid_financial_data_values" />
+<meta property="og:description" content="Checks that numeric columns hold values in acceptable ranges." />
 
 
 
@@ -106,44 +103,31 @@ are given." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Read in power capacity factors from csv and check that all expected columns
-are given.</h1>
+    <h1>Check if values in financial data are plausible</h1>
     
-    <div class="hidden name"><code>read_capacity_factors.Rd</code></div>
+    <div class="hidden name"><code>check_valid_financial_data_values.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Read in power capacity factors from csv and check that all expected columns
-are given.</p>
+    <p>Checks that numeric columns hold values in acceptable ranges.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>read_capacity_factors</span><span class='op'>(</span>path <span class='op'>=</span> <span class='cn'>NULL</span>, version <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>check_valid_financial_data_values</span><span class='op'>(</span><span class='va'>financial_data</span>, <span class='va'>asset_type</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>path</th>
-      <td><p>A string that points to the location of the file containing the
-capacity factors</p></td>
+      <th>financial_data</th>
+      <td><p>A data set of <code>financial_data</code>.</p></td>
     </tr>
     <tr>
-      <th>version</th>
-      <td><p>A string indicating whether to prepare the capacity factors
-basedn on the old logic (2017 data set) or the new logic (long format,
-multiple years and scenarios). Must be either "old" or "new".</p></td>
+      <th>asset_type</th>
+      <td><p>A string indicating if company data are for analysis for
+bond or equity.</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p>Other import functions: 
-<code><a href='generate_transition_shocks.html'>generate_transition_shocks</a>()</code>,
-<code><a href='read_financial_data.html'>read_financial_data</a>()</code>,
-<code><a href='read_ngfs_carbon_tax.html'>read_ngfs_carbon_tax</a>()</code>,
-<code><a href='read_pacta_results.html'>read_pacta_results</a>()</code>,
-<code><a href='read_price_data.html'>read_price_data</a>()</code>,
-<code><a href='read_transition_scenarios.html'>read_transition_scenarios</a>()</code></p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

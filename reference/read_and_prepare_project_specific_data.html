@@ -41,7 +41,7 @@
 
 <meta property="og:title" content="Read and prepare project specific data — read_and_prepare_project_specific_data" />
 <meta property="og:description" content="Function reads in data that are specific the project and conducts some
-checking and wrangling." />
+checking and wrangling. Also infers start_year of analysis." />
 
 
 
@@ -111,13 +111,12 @@ checking and wrangling." />
 
     <div class="ref-description">
     <p>Function reads in data that are specific the project and conducts some
-checking and wrangling.</p>
+checking and wrangling. Also infers start_year of analysis.</p>
     </div>
 
     <pre class="usage"><span class='fu'>read_and_prepare_project_specific_data</span><span class='op'>(</span>
   <span class='va'>asset_type</span>,
   <span class='va'>calculation_level</span>,
-  <span class='va'>start_year</span>,
   <span class='va'>time_horizon</span>,
   <span class='va'>scenario_geography_filter</span>,
   <span class='va'>scenarios_filter</span>,
@@ -136,10 +135,6 @@ checking and wrangling.</p>
     <tr>
       <th>calculation_level</th>
       <td><p>String holding level of calculation.</p></td>
-    </tr>
-    <tr>
-      <th>start_year</th>
-      <td><p>Start year of analysis.</p></td>
     </tr>
     <tr>
       <th>time_horizon</th>
@@ -169,7 +164,7 @@ range compare <code>term_range_lookup</code>.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A list holding prepared project agnostic data.</p>
+    <p>A list of lists holding prepared project specific data.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

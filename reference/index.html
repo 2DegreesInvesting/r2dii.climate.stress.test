@@ -245,9 +245,15 @@ level.</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="check_results_structure.html">check_results_structure()</a></code> </p>
+          <p><code><a href="check_financial_data.html">check_financial_data()</a></code> </p>
         </td>
-        <td><p>Checks structure of results</p></td>
+        <td><p>Check financial data</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="check_valid_financial_data_values.html">check_valid_financial_data_values()</a></code> </p>
+        </td>
+        <td><p>Check if values in financial data are plausible</p></td>
       </tr><tr>
         
         <td>
@@ -289,12 +295,6 @@ profits.</p></td>
         </td>
         <td><p>interpolate automotive sector scenario data for a specified set of years
 note: this function should eventually be moved to the data_prep repository</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="create_stressdata_masterdata_file_paths.html">create_stressdata_masterdata_file_paths()</a></code> </p>
-        </td>
-        <td><p>Get path for stress test masterdata files</p></td>
       </tr><tr>
         
         <td>
@@ -375,6 +375,12 @@ either via environment variable or options.</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="is_registered_dev.html">is_registered_dev()</a></code> </p>
+        </td>
+        <td><p>Allow running tests selectively, only for registered developers</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="keep_merton_compatible_rows.html">keep_merton_compatible_rows()</a></code> </p>
         </td>
         <td><p>Keep rows that fulfill constraints of the merton model</p></td>
@@ -424,14 +430,10 @@ are given.</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="read_company_data.html">read_company_data()</a></code> </p>
+          <p><code><a href="read_financial_data.html">read_financial_data()</a></code> </p>
         </td>
-        <td><p>Read in company finacial data processed from eikon exports and AR master data
-that contain information on multiple credit risk inputs and company
-production plans, aggregated to the ticker/technology/year level for
-<code>asset_type</code> bonds and aggregated to the company/technology/year level for
-<code>asset_type</code> equity and aggregated to the loan_taker/technology/year level
-for <code>àsset_type</code> loans</p></td>
+        <td><p>Read in company financial data processed from eikon exports and AR master data
+that contain information on multiple credit risk inputs</p></td>
       </tr><tr>
         
         <td>
@@ -473,6 +475,12 @@ columns are given.</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="read_sector_exposures.html">read_sector_exposures()</a></code> </p>
+        </td>
+        <td><p>Read sector exposures</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="read_transition_scenarios.html">read_transition_scenarios()</a></code> </p>
         </td>
         <td><p>Read in transition scenarios from csv and check that all expected columns
@@ -501,6 +509,12 @@ are given.</p></td>
           <p><code><a href="report_missings.html">report_missings()</a></code> </p>
         </td>
         <td><p>Report missing</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="rerun_st.html">rerun_st()</a></code> </p>
+        </td>
+        <td><p>Sensitivity analysis: <code>run_stress_test()</code> multiple times</p></td>
       </tr><tr>
         
         <td>
@@ -606,12 +620,6 @@ late_and_sudden scenarios</p></td>
           <p><code><a href="wrangle_and_check_sector_exposures.html">wrangle_and_check_sector_exposures()</a></code> </p>
         </td>
         <td><p>Wrangles and checks sector exposures</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="wrangle_financial_data.html">wrangle_financial_data()</a></code> </p>
-        </td>
-        <td><p>Wrangle financial data</p></td>
       </tr><tr>
         
         <td>

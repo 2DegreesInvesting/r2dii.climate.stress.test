@@ -112,7 +112,7 @@
     <p>Function reports number of missing values per variable.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>report_missings</span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>name_data</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>report_missings</span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>name_data</span>, throw_error <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -125,8 +125,16 @@
       <th>name_data</th>
       <td><p>Name of the data file.</p></td>
     </tr>
+    <tr>
+      <th>throw_error</th>
+      <td><p>Boolean, if TRUE error is thrown on failures, otherwise a
+warning.</p></td>
+    </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>input <code>data</code>.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
