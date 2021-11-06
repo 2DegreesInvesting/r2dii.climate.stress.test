@@ -146,9 +146,6 @@ stress-test project.</p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A data frame.</p>
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p><code><a href='run_stress_test.html'>run_stress_test()</a></code>.</p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span>, warn.conflicts <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
@@ -169,7 +166,7 @@ stress-test project.</p></td>
 <span class='fu'><a href='https://readr.tidyverse.org/reference/write_delim.html'>write_csv</a></span><span class='op'>(</span><span class='va'>out2</span>, file <span class='op'>=</span> <span class='va'>path</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='error'>Error in is.data.frame(x): object 'out2' not found</span></div><div class='input'><span class='co'># and eventually re-read it</span>
 <span class='fu'><a href='https://readr.tidyverse.org/reference/read_delim.html'>read_csv</a></span><span class='op'>(</span><span class='va'>path</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error: '/tmp/RtmpSvScbS/file16159a2f694f0e' does not exist.</span></div><div class='input'>
+</div><div class='output co'>#&gt; <span class='error'>Error: '/tmp/RtmptsFJfo/file16173a22e2a18' does not exist.</span></div><div class='input'>
 <span class='co'># Or explore interesting results</span>
 <span class='va'>full</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>st_name</span> <span class='op'>==</span> <span class='st'>"port"</span>, <span class='va'>arg_value</span> <span class='op'>==</span> <span class='fl'>2</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='error'>Error in filter(., st_name == "port", arg_value == 2): object 'full' not found</span></div></pre>
