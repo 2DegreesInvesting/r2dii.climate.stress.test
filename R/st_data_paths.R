@@ -30,13 +30,13 @@ st_data_paths <- function(data = Sys.getenv("ST_DATA_PATH"),
                           project = Sys.getenv("ST_PROJECT_FOLDER")) {
   vec_assert(data, character(), 1L)
   vec_assert(project, character(), 1L)
-  vec_set_names(c(data, project), st_envvar_names())
+  vec_set_names(c(data, project), envvar_keys())
 }
 
-#' Names of required environmental variables
+#' The key component of the key-value pair of stress-test environment-variables
 #' @examples
-#' st_envvar_names()
+#' envvar_keys()
 #' @noRd
-st_envvar_names <- function() {
+envvar_keys <- function() {
   c("ST_DATA_PATH", "ST_PROJECT_FOLDER")
 }

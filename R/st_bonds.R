@@ -170,7 +170,7 @@ restructure_st_df <- function(data) {
 
 st <- function(data, asset_type, ..., quiet = TRUE) {
   vec_assert(data, character(), size = 2L)
-  data <- vec_set_names(data, envvar_names())
+  data <- vec_set_names(data, envvar_keys())
   local_envvar(data)
 
   control_verbosity <- ifelse(quiet, utils::capture.output, identity)
@@ -189,8 +189,4 @@ restructure_st <- function(data) {
     mutate(name = path_ext_remove(name)) %>%
     mutate(name = sub("^stress_test_results_", "", name)) %>%
     extract(name, into = c("st_type", "st_name"), "([^_]+)_(.*)")
-}
-
-envvar_names <- function() {
-  c("ST_DATA_PATH", "ST_PROJECT_FOLDER")
 }
