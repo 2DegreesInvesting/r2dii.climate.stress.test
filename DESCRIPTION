@@ -38,7 +38,8 @@ Imports:
     vctrs,
     tidyr,
     withr,
-    zoo
+    zoo,
+    ellipsis
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3

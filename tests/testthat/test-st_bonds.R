@@ -50,3 +50,7 @@ test_that("iterates over the long argument", {
   expected <- c("st_type", "st_name", "arg_name", "arg_value")
   expect_true(all(expected %in% names(out)))
 })
+
+test_that("with partial match to `...` errors gracefully", {
+  expect_error(st_bonds(st_data_paths(), term = c(1, 2)), "problem.*term")
+})
