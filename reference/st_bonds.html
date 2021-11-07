@@ -163,7 +163,109 @@ stress-test project. The easiest way to create this object is with
 <code><a href='run_stress_test.html'>run_stress_test</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"></pre>
+    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://readr.tidyverse.org'>readr</a></span>, warn.conflicts <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
+
+<span class='co'># Give the paths to your data explicitely</span>
+<span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='st_data_paths.html'>st_data_paths</a></span><span class='op'>(</span>
+  data <span class='op'>=</span> <span class='st'>"/home/mauro/tmp/st/ST_INPUTS_MASTER"</span>,
+  project <span class='op'>=</span> <span class='st'>"/home/mauro/tmp/st/ST_TESTING_BONDS"</span>
+<span class='op'>)</span>
+<span class='va'>out</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/warning.html'>suppressWarnings</a></span><span class='op'>(</span>
+  <span class='fu'>st_bonds</span><span class='op'>(</span><span class='va'>data</span>, term <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>
+<span class='op'>)</span>
+
+<span class='co'># Or set these environment variables (e.g. in .Renviron), then omit `data`</span>
+<span class='va'>data</span>
+</div><div class='output co'>#&gt;                          ST_DATA_PATH                     ST_PROJECT_FOLDER 
+#&gt; "/home/mauro/tmp/st/ST_INPUTS_MASTER" "/home/mauro/tmp/st/ST_TESTING_BONDS" </div><div class='input'>
+<span class='co'># Here we omit `data` and make the console output more verbose</span>
+<span class='va'>out</span> <span class='op'>&lt;-</span> <span class='fu'>st_bonds</span><span class='op'>(</span>term <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span><span class='op'>)</span>, quiet <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; -- Validating input arguments. 
+#&gt; -- Configuring analysis settings. 
+#&gt; -- Importing and preparing input data from designated input path. 
+#&gt; -- Calculating market risk. </div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 21 rows because negative production compensation targets were set in late and sudden.</span>
+#&gt; <span class='warning'>                   Negative absolute production is impossible</span></div><div class='output co'>#&gt;       &gt;&gt; When joining annual profits on financial data on columns company_name corporate_bond_ticker dropped 2499 rows from annual profits 
+#&gt;       &gt;&gt; When joining plan carsten on financial data on columns company_name corporate_bond_ticker dropped 119 rows from plan carsten 
+#&gt; -- Calculating credit risk. 
+#&gt; -- Exporting results to designated output path. 
+#&gt; -- Exported results to designated output path. 
+#&gt; -- Validating input arguments. 
+#&gt; -- Configuring analysis settings. 
+#&gt; -- Importing and preparing input data from designated input path. 
+#&gt; -- Calculating market risk. </div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 21 rows because negative production compensation targets were set in late and sudden.</span>
+#&gt; <span class='warning'>                   Negative absolute production is impossible</span></div><div class='output co'>#&gt;       &gt;&gt; When joining annual profits on financial data on columns company_name corporate_bond_ticker dropped 2499 rows from annual profits 
+#&gt;       &gt;&gt; When joining plan carsten on financial data on columns company_name corporate_bond_ticker dropped 119 rows from plan carsten 
+#&gt; -- Calculating credit risk. 
+#&gt; -- Exporting results to designated output path. 
+#&gt; -- Exported results to designated output path. </div><div class='output co'>#&gt; <span class='warning'>Warning: One or more parsing issues, see `problems()` for details</span></div><div class='input'>
+<span class='co'># The data frame output helps you quickly explore and manipulate your results</span>
+<span class='fu'><a href='https://rdrr.io/r/base/subset.html'>subset</a></span><span class='op'>(</span><span class='va'>out</span>, <span class='va'>st_name</span> <span class='op'>==</span> <span class='st'>"port"</span> <span class='op'>&amp;</span> <span class='va'>arg_value</span> <span class='op'>==</span> <span class='fl'>2</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 12 × 53</span>
+#&gt;    st_type st_name arg_name arg_value investor_name portfolio_name company_name
+#&gt;    <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>     <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>         <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>          <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>       
+#&gt; <span style='color: #BCBCBC;'> 1</span> bonds   port    term     2         Meta Investor Meta Investor  <span style='color: #BB0000;'>NA</span>          
+#&gt; <span style='color: #BCBCBC;'> 2</span> bonds   port    term     2         Meta Investor Meta Investor  <span style='color: #BB0000;'>NA</span>          
+#&gt; <span style='color: #BCBCBC;'> 3</span> bonds   port    term     2         Meta Investor Meta Investor  <span style='color: #BB0000;'>NA</span>          
+#&gt; <span style='color: #BCBCBC;'> 4</span> bonds   port    term     2         Meta Investor Meta Investor  <span style='color: #BB0000;'>NA</span>          
+#&gt; <span style='color: #BCBCBC;'> 5</span> bonds   port    term     2         Meta Investor Meta Investor  <span style='color: #BB0000;'>NA</span>          
+#&gt; <span style='color: #BCBCBC;'> 6</span> bonds   port    term     2         Meta Investor Meta Investor  <span style='color: #BB0000;'>NA</span>          
+#&gt; <span style='color: #BCBCBC;'> 7</span> bonds   port    term     2         Meta Investor Meta Investor  <span style='color: #BB0000;'>NA</span>          
+#&gt; <span style='color: #BCBCBC;'> 8</span> bonds   port    term     2         Meta Investor Meta Investor  <span style='color: #BB0000;'>NA</span>          
+#&gt; <span style='color: #BCBCBC;'> 9</span> bonds   port    term     2         Meta Investor Meta Investor  <span style='color: #BB0000;'>NA</span>          
+#&gt; <span style='color: #BCBCBC;'>10</span> bonds   port    term     2         Meta Investor Meta Investor  <span style='color: #BB0000;'>NA</span>          
+#&gt; <span style='color: #BCBCBC;'>11</span> bonds   port    term     2         Meta Investor Meta Investor  <span style='color: #BB0000;'>NA</span>          
+#&gt; <span style='color: #BCBCBC;'>12</span> bonds   port    term     2         Meta Investor Meta Investor  <span style='color: #BB0000;'>NA</span>          
+#&gt; <span style='color: #949494;'># … with 46 more variables: scenario_geography &lt;chr&gt;, scenario_name &lt;chr&gt;,</span>
+#&gt; <span style='color: #949494;'>#   year_of_shock &lt;dbl&gt;, duration_of_shock &lt;dbl&gt;, ald_sector &lt;chr&gt;,</span>
+#&gt; <span style='color: #949494;'>#   technology &lt;chr&gt;, production_shock_perc &lt;lgl&gt;, asset_portfolio_value &lt;dbl&gt;,</span>
+#&gt; <span style='color: #949494;'>#   tech_company_exposure &lt;dbl&gt;, VaR_tech_company &lt;dbl&gt;,</span>
+#&gt; <span style='color: #949494;'>#   tech_company_value_change &lt;dbl&gt;, company_exposure &lt;dbl&gt;, VaR_company &lt;dbl&gt;,</span>
+#&gt; <span style='color: #949494;'>#   company_value_change &lt;dbl&gt;, technology_exposure &lt;dbl&gt;,</span>
+#&gt; <span style='color: #949494;'>#   VaR_technology &lt;dbl&gt;, technology_value_change &lt;dbl&gt;, …</span></div><div class='input'>
+<span class='co'># If you run out of memory, instead write output sequentially to disk</span>
+<span class='va'>path</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='st'>"st"</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/files2.html'>dir.create</a></span><span class='op'>(</span><span class='va'>path</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/warning.html'>suppressWarnings</a></span><span class='op'>(</span>
+  <span class='fu'>st_write_bonds</span><span class='op'>(</span>destdir <span class='op'>=</span> <span class='va'>path</span>, term <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>
+<span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/list.files.html'>list.files</a></span><span class='op'>(</span><span class='va'>path</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] "term___1.csv" "term___2.csv"</div><div class='input'>
+<span class='co'># Later you may read all results at once</span>
+<span class='va'>files</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.files.html'>list.files</a></span><span class='op'>(</span><span class='va'>path</span>, full.names <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+<span class='va'>results</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://readr.tidyverse.org/reference/read_delim.html'>read_csv</a></span><span class='op'>(</span><span class='va'>files</span>, id <span class='op'>=</span> <span class='st'>"arg_val"</span>, show_col_types <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
+<span class='va'>results</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 1,532 × 52</span>
+#&gt;    arg_val           st_type st_name investor_name portfolio_name company_name  
+#&gt;    <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>             <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>         <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>          <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>         
+#&gt; <span style='color: #BCBCBC;'> 1</span> /tmp/Rtmp6GHhOS/… bonds   comp    Meta Investor Meta Investor  Alabama Power…
+#&gt; <span style='color: #BCBCBC;'> 2</span> /tmp/Rtmp6GHhOS/… bonds   comp    Meta Investor Meta Investor  Alabama Power…
+#&gt; <span style='color: #BCBCBC;'> 3</span> /tmp/Rtmp6GHhOS/… bonds   comp    Meta Investor Meta Investor  Alabama Power…
+#&gt; <span style='color: #BCBCBC;'> 4</span> /tmp/Rtmp6GHhOS/… bonds   comp    Meta Investor Meta Investor  Alabama Power…
+#&gt; <span style='color: #BCBCBC;'> 5</span> /tmp/Rtmp6GHhOS/… bonds   comp    Meta Investor Meta Investor  Alabama Power…
+#&gt; <span style='color: #BCBCBC;'> 6</span> /tmp/Rtmp6GHhOS/… bonds   comp    Meta Investor Meta Investor  Alabama Power…
+#&gt; <span style='color: #BCBCBC;'> 7</span> /tmp/Rtmp6GHhOS/… bonds   comp    Meta Investor Meta Investor  Alpiq Holding…
+#&gt; <span style='color: #BCBCBC;'> 8</span> /tmp/Rtmp6GHhOS/… bonds   comp    Meta Investor Meta Investor  Alpiq Holding…
+#&gt; <span style='color: #BCBCBC;'> 9</span> /tmp/Rtmp6GHhOS/… bonds   comp    Meta Investor Meta Investor  Alpiq Holding…
+#&gt; <span style='color: #BCBCBC;'>10</span> /tmp/Rtmp6GHhOS/… bonds   comp    Meta Investor Meta Investor  Ameren Illino…
+#&gt; <span style='color: #949494;'># … with 1,522 more rows, and 46 more variables: scenario_geography &lt;chr&gt;,</span>
+#&gt; <span style='color: #949494;'>#   scenario_name &lt;chr&gt;, year_of_shock &lt;dbl&gt;, duration_of_shock &lt;dbl&gt;,</span>
+#&gt; <span style='color: #949494;'>#   ald_sector &lt;chr&gt;, technology &lt;chr&gt;, production_shock_perc &lt;lgl&gt;,</span>
+#&gt; <span style='color: #949494;'>#   asset_portfolio_value &lt;dbl&gt;, tech_company_exposure &lt;dbl&gt;,</span>
+#&gt; <span style='color: #949494;'>#   VaR_tech_company &lt;dbl&gt;, tech_company_value_change &lt;dbl&gt;,</span>
+#&gt; <span style='color: #949494;'>#   company_exposure &lt;dbl&gt;, VaR_company &lt;dbl&gt;, company_value_change &lt;dbl&gt;,</span>
+#&gt; <span style='color: #949494;'>#   technology_exposure &lt;dbl&gt;, VaR_technology &lt;dbl&gt;, …</span></div><div class='input'>
+<span class='co'># The column `arg_val` helps you identify each run</span>
+<span class='fu'><a href='https://rdrr.io/r/base/unique.html'>unique</a></span><span class='op'>(</span>
+  <span class='fu'><a href='https://rdrr.io/r/base/subset.html'>subset</a></span><span class='op'>(</span><span class='va'>results</span>, <span class='fu'><a href='https://rdrr.io/r/base/grep.html'>grepl</a></span><span class='op'>(</span><span class='st'>"term.*2"</span>, <span class='va'>arg_val</span><span class='op'>)</span>, select <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span><span class='op'>)</span>
+<span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 5 × 3</span>
+#&gt;   arg_val                         st_type st_name                  
+#&gt;   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>                           <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>                    
+#&gt; <span style='color: #BCBCBC;'>1</span> /tmp/Rtmp6GHhOS/st/term___2.csv bonds   comp                     
+#&gt; <span style='color: #BCBCBC;'>2</span> /tmp/Rtmp6GHhOS/st/term___2.csv bonds   comp_el                  
+#&gt; <span style='color: #BCBCBC;'>3</span> /tmp/Rtmp6GHhOS/st/term___2.csv bonds   port                     
+#&gt; <span style='color: #BCBCBC;'>4</span> /tmp/Rtmp6GHhOS/st/term___2.csv bonds   sector_pd_changes_annual 
+#&gt; <span style='color: #BCBCBC;'>5</span> /tmp/Rtmp6GHhOS/st/term___2.csv bonds   sector_pd_changes_overall</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
