@@ -159,7 +159,10 @@ stress-test project. The easiest way to create this object is with
 <code><a href='run_stress_test.html'>run_stress_test</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># Give the paths to your data explicitely</span>
+    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://fs.r-lib.org'>fs</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://readr.tidyverse.org'>readr</a></span>, warn.conflicts <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
+
+<span class='co'># Give the paths to your data explicitely</span>
 <span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='st_data_paths.html'>st_data_paths</a></span><span class='op'>(</span>
   data <span class='op'>=</span> <span class='st'>"/home/mauro/tmp/st/ST_INPUTS_MASTER"</span>,
   project <span class='op'>=</span> <span class='st'>"/home/mauro/tmp/st/ST_TESTING_BONDS"</span>
@@ -195,13 +198,13 @@ stress-test project. The easiest way to create this object is with
 #&gt; <span style='color: #949494;'>#   company_value_change &lt;dbl&gt;, technology_exposure &lt;dbl&gt;,</span>
 #&gt; <span style='color: #949494;'>#   VaR_technology &lt;dbl&gt;, technology_value_change &lt;dbl&gt;, …</span></div><div class='input'>
 <span class='co'># If the output doesn't fit in memory, instead write them one by one to disk</span>
-<span class='va'>path</span> <span class='op'>&lt;-</span> <span class='fu'>path</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='st'>"st"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in path(tempdir(), "st"): could not find function "path"</span></div><div class='input'><span class='fu'>dir_create</span><span class='op'>(</span><span class='va'>path</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in dir_create(path): could not find function "dir_create"</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/warning.html'>suppressWarnings</a></span><span class='op'>(</span><span class='fu'>st_write_bonds</span><span class='op'>(</span>destdir <span class='op'>=</span> <span class='va'>path</span>, term <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>path</span> <span class='op'>&lt;-</span> <span class='fu'><a href='http://fs.r-lib.org/reference/path.html'>path</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='st'>"st"</span><span class='op'>)</span>
+<span class='fu'><a href='http://fs.r-lib.org/reference/create.html'>dir_create</a></span><span class='op'>(</span><span class='va'>path</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/warning.html'>suppressWarnings</a></span><span class='op'>(</span><span class='fu'>st_write_bonds</span><span class='op'>(</span>destdir <span class='op'>=</span> <span class='va'>path</span>, term <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='error'>Error in st_write_bonds(destdir = path, term = c(1, 2)): could not find function "st_write_bonds"</span></div><div class='input'>
 <span class='co'># You may read all results at once</span>
-<span class='fu'>read_csv</span><span class='op'>(</span><span class='fu'>dir_ls</span><span class='op'>(</span><span class='va'>path</span>, recurse <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>, id <span class='op'>=</span> <span class='st'>"path"</span>, show_col_types <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in read_csv(dir_ls(path, recurse = TRUE), id = "path", show_col_types = FALSE): could not find function "read_csv"</span></div></pre>
+<span class='fu'><a href='https://readr.tidyverse.org/reference/read_delim.html'>read_csv</a></span><span class='op'>(</span><span class='fu'><a href='http://fs.r-lib.org/reference/dir_ls.html'>dir_ls</a></span><span class='op'>(</span><span class='va'>path</span>, recurse <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>, id <span class='op'>=</span> <span class='st'>"path"</span>, show_col_types <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 0 × 0</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
