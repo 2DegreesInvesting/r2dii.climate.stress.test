@@ -11,7 +11,7 @@
 #'   [st_data_paths()].
 #' @param destdir Character. Path to a destination directory.
 #' @param ... Arguments passed to [run_stress_test()].
-#' @param quiet Logical. Print non-condiiton messages to the console?
+#' @param quiet Logical. Print non-condition messages to the console?
 #'
 #' @seealso [st_data_paths()].
 #' @family main functions

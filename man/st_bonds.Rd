@@ -30,7 +30,7 @@ stress-test project. The easiest way to create this object is with
 
 \item{...}{Arguments passed to \code{\link[=run_stress_test]{run_stress_test()}}.}
 
-\item{quiet}{Logical. Print non-condiiton messages to the console?}
+\item{quiet}{Logical. Print non-condition messages to the console?}
 
 \item{destdir}{Character. Path to a destination directory.}
 }
