@@ -115,7 +115,7 @@ st_write <- function(data, asset_type, destdir = tempdir(), ..., quiet = TRUE) {
   for (i in seq_along(args)) {
     out <- exec(st, !!!args[[i]])
     out <- unnest(out, st_result)
-    readr::write_csv(out, file = path(destdir, glue("{names(args)[[i]]}.csv")))
+    write_csv(out, file = path(destdir, glue("{names(args)[[i]]}.csv")))
   }
 
   invisible(data)
