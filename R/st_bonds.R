@@ -56,7 +56,7 @@
 #'
 #' # The column `arg_val` helps you identify each run
 #' unique(
-#'   subset(results, grepl("term___2", arg_val), select = 1:3)
+#'   subset(results, grepl("term.*2", arg_val), select = 1:3)
 #' )
 st_bonds <- function(data = st_data_paths(), ..., quiet = TRUE) {
   st_df(data, asset_type = "bonds", ..., quiet = quiet)
