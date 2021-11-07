@@ -43,7 +43,7 @@ type in their name. They run \code{\link[=run_stress_test]{run_stress_test()}} m
 over multiple values of one and only one argument of \code{\link[=run_stress_test]{run_stress_test()}}.
 }
 \examples{
-\dontshow{if (r2dii.climate.stress.test:::is_registered_dev()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (r2dii.climate.stress.test:::is_registered_dev("/home/mauro")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 library(fs)
 library(dplyr, warn.conflicts = FALSE)
 library(readr, warn.conflicts = FALSE)

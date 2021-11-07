@@ -20,7 +20,7 @@
 #'
 #' @export
 #'
-#' @examplesIf r2dii.climate.stress.test:::is_registered_dev()
+#' @examplesIf r2dii.climate.stress.test:::is_registered_dev("/home/mauro")
 #' library(fs)
 #' library(dplyr, warn.conflicts = FALSE)
 #' library(readr, warn.conflicts = FALSE)
