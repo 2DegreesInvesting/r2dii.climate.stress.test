@@ -118,6 +118,12 @@ over multiple values of one and only one argument of <code><a href='run_stress_t
 
     <pre class="usage"><span class='fu'>st_bonds</span><span class='op'>(</span>data <span class='op'>=</span> <span class='fu'><a href='st_data_paths.html'>st_data_paths</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='va'>...</span>, quiet <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 
+<span class='fu'>st_write_bonds</span><span class='op'>(</span>data <span class='op'>=</span> <span class='fu'><a href='st_data_paths.html'>st_data_paths</a></span><span class='op'>(</span><span class='op'>)</span>, destdir <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='va'>...</span>, quiet <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+
+<span class='fu'>st_write_equity</span><span class='op'>(</span>data <span class='op'>=</span> <span class='fu'><a href='st_data_paths.html'>st_data_paths</a></span><span class='op'>(</span><span class='op'>)</span>, destdir <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='va'>...</span>, quiet <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+
+<span class='fu'>st_write_loans</span><span class='op'>(</span>data <span class='op'>=</span> <span class='fu'><a href='st_data_paths.html'>st_data_paths</a></span><span class='op'>(</span><span class='op'>)</span>, destdir <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='va'>...</span>, quiet <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+
 <span class='fu'>st_equity</span><span class='op'>(</span>data <span class='op'>=</span> <span class='fu'><a href='st_data_paths.html'>st_data_paths</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='va'>...</span>, quiet <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 
 <span class='fu'>st_loans</span><span class='op'>(</span>data <span class='op'>=</span> <span class='fu'><a href='st_data_paths.html'>st_data_paths</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='va'>...</span>, quiet <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
@@ -162,10 +168,8 @@ stress-test project. The easiest way to create this object is with
 <span class='va'>data</span>
 </div><div class='output co'>#&gt;                          ST_DATA_PATH                     ST_PROJECT_FOLDER 
 #&gt; "/home/mauro/tmp/st/ST_INPUTS_MASTER" "/home/mauro/tmp/st/ST_TESTING_BONDS" </div><div class='input'>
-<span class='va'>out</span> <span class='op'>&lt;-</span> <span class='fu'>st_bonds</span><span class='op'>(</span>term <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span><span class='op'>)</span>, shock_year <span class='op'>=</span> <span class='fl'>2031</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 21 rows because negative production compensation targets were set in late and sudden.</span>
-#&gt; <span class='warning'>                   Negative absolute production is impossible</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 21 rows because negative production compensation targets were set in late and sudden.</span>
-#&gt; <span class='warning'>                   Negative absolute production is impossible</span></div><div class='output co'>#&gt; <span class='warning'>Warning: One or more parsing issues, see `problems()` for details</span></div><div class='input'>
+<span class='va'>out</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/warning.html'>suppressWarnings</a></span><span class='op'>(</span><span class='fu'>st_bonds</span><span class='op'>(</span>term <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+
 <span class='co'># The data frame output helps you quickly explore and manipulate your results</span>
 <span class='fu'><a href='https://rdrr.io/r/base/subset.html'>subset</a></span><span class='op'>(</span><span class='va'>out</span>, <span class='va'>st_name</span> <span class='op'>==</span> <span class='st'>"port"</span> <span class='op'>&amp;</span> <span class='va'>arg_value</span> <span class='op'>==</span> <span class='fl'>2</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 12 × 53</span>
@@ -189,7 +193,15 @@ stress-test project. The easiest way to create this object is with
 #&gt; <span style='color: #949494;'>#   tech_company_exposure &lt;dbl&gt;, VaR_tech_company &lt;dbl&gt;,</span>
 #&gt; <span style='color: #949494;'>#   tech_company_value_change &lt;dbl&gt;, company_exposure &lt;dbl&gt;, VaR_company &lt;dbl&gt;,</span>
 #&gt; <span style='color: #949494;'>#   company_value_change &lt;dbl&gt;, technology_exposure &lt;dbl&gt;,</span>
-#&gt; <span style='color: #949494;'>#   VaR_technology &lt;dbl&gt;, technology_value_change &lt;dbl&gt;, …</span></div></pre>
+#&gt; <span style='color: #949494;'>#   VaR_technology &lt;dbl&gt;, technology_value_change &lt;dbl&gt;, …</span></div><div class='input'>
+<span class='co'># If the output doesn't fit in memory, instead write them one by one to disk</span>
+<span class='va'>path</span> <span class='op'>&lt;-</span> <span class='fu'>path</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='st'>"st"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in path(tempdir(), "st"): could not find function "path"</span></div><div class='input'><span class='fu'>dir_create</span><span class='op'>(</span><span class='va'>path</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in dir_create(path): could not find function "dir_create"</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/warning.html'>suppressWarnings</a></span><span class='op'>(</span><span class='fu'>st_write_bonds</span><span class='op'>(</span>destdir <span class='op'>=</span> <span class='va'>path</span>, term <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in st_write_bonds(destdir = path, term = c(1, 2)): could not find function "st_write_bonds"</span></div><div class='input'>
+<span class='co'># You may read all results at once</span>
+<span class='fu'>read_csv</span><span class='op'>(</span><span class='fu'>dir_ls</span><span class='op'>(</span><span class='va'>path</span>, recurse <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>, id <span class='op'>=</span> <span class='st'>"path"</span>, show_col_types <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in read_csv(dir_ls(path, recurse = TRUE), id = "path", show_col_types = FALSE): could not find function "read_csv"</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
