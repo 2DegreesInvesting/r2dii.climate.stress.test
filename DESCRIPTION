@@ -22,6 +22,7 @@ Depends:
 Imports: 
     config,
     dplyr,
+    ellipsis,
     fs,
     ggplot2,
     glue,
@@ -35,11 +36,10 @@ Imports:
     rlang,
     stringr,
     tibble,
-    vctrs,
     tidyr,
+    vctrs,
     withr,
-    zoo,
-    ellipsis
+    zoo
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3

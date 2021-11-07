@@ -1,3 +1,4 @@
+#' @importFrom ellipsis check_dots_empty
 #' @importFrom vctrs vec_assert vec_set_names
 #' @importFrom glue glue
 #' @importFrom withr local_envvar local_options

@@ -169,7 +169,7 @@ restructure_st_df <- function(data) {
 }
 
 st <- function(data, asset_type, ..., quiet = TRUE) {
-  ellipsis::check_dots_empty()
+  check_dots_empty()
 
   vec_assert(data, character(), size = 2L)
   data <- vec_set_names(data, envvar_keys())
