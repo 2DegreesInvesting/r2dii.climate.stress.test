@@ -44,8 +44,6 @@ over multiple values of one and only one argument of \code{\link[=run_stress_tes
 }
 \examples{
 \dontshow{if (r2dii.climate.stress.test:::is_registered_dev("/home/mauro")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-library(fs)
-library(dplyr, warn.conflicts = FALSE)
 library(readr, warn.conflicts = FALSE)
 
 # Give the paths to your data explicitely
@@ -53,23 +51,34 @@ data <- st_data_paths(
   data = "/home/mauro/tmp/st/ST_INPUTS_MASTER",
   project = "/home/mauro/tmp/st/ST_TESTING_BONDS"
 )
+out <- suppressWarnings(
+  st_bonds(data, term = c(1, 2))
+)
+
 # Or set these environment variables (e.g. in .Renviron), then omit `data`
 data
 
-out <- suppressWarnings(st_bonds(term = c(1, 2)))
+# Here we omit `data` and make the console output more verbose
+out <- st_bonds(term = c(1, 2), quiet = FALSE))
 
 # The data frame output helps you quickly explore and manipulate your results
 subset(out, st_name == "port" & arg_value == 2)
 
-# If the output doesn't fit in memory, instead write to disk one file per run
-path <- path(tempdir(), "st")
-dir_create(path)
+# If you run out of memory, instead write output sequentially to disk
+path <- file.path(tempdir(), "st")
+dir.create(path)
 suppressWarnings(st_write_bonds(destdir = path, term = c(1, 2)))
+list.files(path)
 
-# You may read all results at once
-runs <- dir_ls(path, recurse = TRUE)
-results <- read_csv(runs, id = "arg_val", show_col_types = FALSE)
-mutate(results, arg_val = path_ext_remove(path_file(arg_val)))
+# Later you may read all results at once
+files <- list.files(path, full.names = TRUE)
+results <- read_csv(files, id = "arg_val", show_col_types = FALSE)
+results
+
+# The column `arg_val` helps you identify each run
+unique(
+  subset(results, grepl("term___2", arg_val), select = 1:3)
+)
 \dontshow{\}) # examplesIf}
 }
 \seealso{
