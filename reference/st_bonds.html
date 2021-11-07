@@ -209,21 +209,21 @@ stress-test project. The easiest way to create this object is with
 
 <span class='co'># You may read all results at once</span>
 <span class='va'>runs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='http://fs.r-lib.org/reference/dir_ls.html'>dir_ls</a></span><span class='op'>(</span><span class='va'>path</span>, recurse <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-<span class='va'>results</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://readr.tidyverse.org/reference/read_delim.html'>read_csv</a></span><span class='op'>(</span><span class='va'>runs</span>, id <span class='op'>=</span> <span class='st'>"arg___val"</span>, show_col_types <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
-<span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span><span class='va'>results</span>, arg___val <span class='op'>=</span> <span class='fu'><a href='http://fs.r-lib.org/reference/path_file.html'>path_ext_remove</a></span><span class='op'>(</span><span class='fu'><a href='http://fs.r-lib.org/reference/path_file.html'>path_file</a></span><span class='op'>(</span><span class='va'>arg___val</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>results</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://readr.tidyverse.org/reference/read_delim.html'>read_csv</a></span><span class='op'>(</span><span class='va'>runs</span>, id <span class='op'>=</span> <span class='st'>"arg_val"</span>, show_col_types <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
+<span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span><span class='va'>results</span>, arg_val <span class='op'>=</span> <span class='fu'><a href='http://fs.r-lib.org/reference/path_file.html'>path_ext_remove</a></span><span class='op'>(</span><span class='fu'><a href='http://fs.r-lib.org/reference/path_file.html'>path_file</a></span><span class='op'>(</span><span class='va'>arg_val</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 1,532 × 52</span>
-#&gt;    arg___val st_type st_name investor_name portfolio_name company_name      
-#&gt;    <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>     <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>         <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>          <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>             
-#&gt; <span style='color: #BCBCBC;'> 1</span> term___1  bonds   comp    Meta Investor Meta Investor  Alabama Power Co  
-#&gt; <span style='color: #BCBCBC;'> 2</span> term___1  bonds   comp    Meta Investor Meta Investor  Alabama Power Co  
-#&gt; <span style='color: #BCBCBC;'> 3</span> term___1  bonds   comp    Meta Investor Meta Investor  Alabama Power Co  
-#&gt; <span style='color: #BCBCBC;'> 4</span> term___1  bonds   comp    Meta Investor Meta Investor  Alabama Power Co  
-#&gt; <span style='color: #BCBCBC;'> 5</span> term___1  bonds   comp    Meta Investor Meta Investor  Alabama Power Co  
-#&gt; <span style='color: #BCBCBC;'> 6</span> term___1  bonds   comp    Meta Investor Meta Investor  Alabama Power Co  
-#&gt; <span style='color: #BCBCBC;'> 7</span> term___1  bonds   comp    Meta Investor Meta Investor  Alpiq Holding Ag  
-#&gt; <span style='color: #BCBCBC;'> 8</span> term___1  bonds   comp    Meta Investor Meta Investor  Alpiq Holding Ag  
-#&gt; <span style='color: #BCBCBC;'> 9</span> term___1  bonds   comp    Meta Investor Meta Investor  Alpiq Holding Ag  
-#&gt; <span style='color: #BCBCBC;'>10</span> term___1  bonds   comp    Meta Investor Meta Investor  Ameren Illinois Co
+#&gt;    arg_val  st_type st_name investor_name portfolio_name company_name      
+#&gt;    <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>         <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>          <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>             
+#&gt; <span style='color: #BCBCBC;'> 1</span> term___1 bonds   comp    Meta Investor Meta Investor  Alabama Power Co  
+#&gt; <span style='color: #BCBCBC;'> 2</span> term___1 bonds   comp    Meta Investor Meta Investor  Alabama Power Co  
+#&gt; <span style='color: #BCBCBC;'> 3</span> term___1 bonds   comp    Meta Investor Meta Investor  Alabama Power Co  
+#&gt; <span style='color: #BCBCBC;'> 4</span> term___1 bonds   comp    Meta Investor Meta Investor  Alabama Power Co  
+#&gt; <span style='color: #BCBCBC;'> 5</span> term___1 bonds   comp    Meta Investor Meta Investor  Alabama Power Co  
+#&gt; <span style='color: #BCBCBC;'> 6</span> term___1 bonds   comp    Meta Investor Meta Investor  Alabama Power Co  
+#&gt; <span style='color: #BCBCBC;'> 7</span> term___1 bonds   comp    Meta Investor Meta Investor  Alpiq Holding Ag  
+#&gt; <span style='color: #BCBCBC;'> 8</span> term___1 bonds   comp    Meta Investor Meta Investor  Alpiq Holding Ag  
+#&gt; <span style='color: #BCBCBC;'> 9</span> term___1 bonds   comp    Meta Investor Meta Investor  Alpiq Holding Ag  
+#&gt; <span style='color: #BCBCBC;'>10</span> term___1 bonds   comp    Meta Investor Meta Investor  Ameren Illinois Co
 #&gt; <span style='color: #949494;'># … with 1,522 more rows, and 46 more variables: scenario_geography &lt;chr&gt;,</span>
 #&gt; <span style='color: #949494;'>#   scenario_name &lt;chr&gt;, year_of_shock &lt;dbl&gt;, duration_of_shock &lt;dbl&gt;,</span>
 #&gt; <span style='color: #949494;'>#   ald_sector &lt;chr&gt;, technology &lt;chr&gt;, production_shock_perc &lt;lgl&gt;,</span>
