@@ -11,11 +11,11 @@ is_registered_dev <- function(my_home = "/home/mauro") {
 }
 
 expect_no_output <- function(object, ...) {
-  expect_output(object, regexp = NA, ...)
+  testthat::expect_output(object, regexp = NA, ...)
 }
 
 expect_no_error <- function(object, ...) {
-  expect_error(object, regexp = NA, ...)
+  testthat::expect_error(object, regexp = NA, ...)
 }
 
 outputs_path <- function() {

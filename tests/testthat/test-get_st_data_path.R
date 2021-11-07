@@ -15,5 +15,5 @@ test_that("works with `var` set as an R option", {
 
 test_that("if `var` is unset errors gracefully", {
   withr::local_envvar(list(ST_DATA_PATH = NULL))
-  expect_error(get_st_data_path(), "var.*unset")
+  testexpect_error(get_st_data_path(), "var.*unset")
 })
