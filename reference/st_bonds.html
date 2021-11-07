@@ -163,10 +163,33 @@ stress-test project. The easiest way to create this object is with
 </div><div class='output co'>#&gt;                          ST_DATA_PATH                     ST_PROJECT_FOLDER 
 #&gt; "/home/mauro/tmp/st/ST_INPUTS_MASTER" "/home/mauro/tmp/st/ST_TESTING_BONDS" </div><div class='input'>
 <span class='va'>out</span> <span class='op'>&lt;-</span> <span class='fu'>st_bonds</span><span class='op'>(</span>term <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span><span class='op'>)</span>, shock_year <span class='op'>=</span> <span class='fl'>2031</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in rerun_st(data, asset_type = "bonds", ..., quiet = quiet): argument "data" is missing, with no default</span></div><div class='input'>
+</div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 21 rows because negative production compensation targets were set in late and sudden.</span>
+#&gt; <span class='warning'>                   Negative absolute production is impossible</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 21 rows because negative production compensation targets were set in late and sudden.</span>
+#&gt; <span class='warning'>                   Negative absolute production is impossible</span></div><div class='output co'>#&gt; <span class='warning'>Warning: One or more parsing issues, see `problems()` for details</span></div><div class='input'>
 <span class='co'># The data frame output helps you quickly explore and manipulate your results</span>
 <span class='fu'><a href='https://rdrr.io/r/base/subset.html'>subset</a></span><span class='op'>(</span><span class='va'>out</span>, <span class='va'>st_name</span> <span class='op'>==</span> <span class='st'>"port"</span> <span class='op'>&amp;</span> <span class='va'>arg_value</span> <span class='op'>==</span> <span class='fl'>2</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in subset(out, st_name == "port" &amp; arg_value == 2): object 'out' not found</span></div></pre>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 12 × 53</span>
+#&gt;    st_type st_name arg_name arg_value investor_name portfolio_name company_name
+#&gt;    <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>     <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>         <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>          <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>       
+#&gt; <span style='color: #BCBCBC;'> 1</span> bonds   port    term     2         Meta Investor Meta Investor  <span style='color: #BB0000;'>NA</span>          
+#&gt; <span style='color: #BCBCBC;'> 2</span> bonds   port    term     2         Meta Investor Meta Investor  <span style='color: #BB0000;'>NA</span>          
+#&gt; <span style='color: #BCBCBC;'> 3</span> bonds   port    term     2         Meta Investor Meta Investor  <span style='color: #BB0000;'>NA</span>          
+#&gt; <span style='color: #BCBCBC;'> 4</span> bonds   port    term     2         Meta Investor Meta Investor  <span style='color: #BB0000;'>NA</span>          
+#&gt; <span style='color: #BCBCBC;'> 5</span> bonds   port    term     2         Meta Investor Meta Investor  <span style='color: #BB0000;'>NA</span>          
+#&gt; <span style='color: #BCBCBC;'> 6</span> bonds   port    term     2         Meta Investor Meta Investor  <span style='color: #BB0000;'>NA</span>          
+#&gt; <span style='color: #BCBCBC;'> 7</span> bonds   port    term     2         Meta Investor Meta Investor  <span style='color: #BB0000;'>NA</span>          
+#&gt; <span style='color: #BCBCBC;'> 8</span> bonds   port    term     2         Meta Investor Meta Investor  <span style='color: #BB0000;'>NA</span>          
+#&gt; <span style='color: #BCBCBC;'> 9</span> bonds   port    term     2         Meta Investor Meta Investor  <span style='color: #BB0000;'>NA</span>          
+#&gt; <span style='color: #BCBCBC;'>10</span> bonds   port    term     2         Meta Investor Meta Investor  <span style='color: #BB0000;'>NA</span>          
+#&gt; <span style='color: #BCBCBC;'>11</span> bonds   port    term     2         Meta Investor Meta Investor  <span style='color: #BB0000;'>NA</span>          
+#&gt; <span style='color: #BCBCBC;'>12</span> bonds   port    term     2         Meta Investor Meta Investor  <span style='color: #BB0000;'>NA</span>          
+#&gt; <span style='color: #949494;'># … with 46 more variables: scenario_geography &lt;chr&gt;, scenario_name &lt;chr&gt;,</span>
+#&gt; <span style='color: #949494;'>#   year_of_shock &lt;dbl&gt;, duration_of_shock &lt;dbl&gt;, ald_sector &lt;chr&gt;,</span>
+#&gt; <span style='color: #949494;'>#   technology &lt;chr&gt;, production_shock_perc &lt;lgl&gt;, asset_portfolio_value &lt;dbl&gt;,</span>
+#&gt; <span style='color: #949494;'>#   tech_company_exposure &lt;dbl&gt;, VaR_tech_company &lt;dbl&gt;,</span>
+#&gt; <span style='color: #949494;'>#   tech_company_value_change &lt;dbl&gt;, company_exposure &lt;dbl&gt;, VaR_company &lt;dbl&gt;,</span>
+#&gt; <span style='color: #949494;'>#   company_value_change &lt;dbl&gt;, technology_exposure &lt;dbl&gt;,</span>
+#&gt; <span style='color: #949494;'>#   VaR_technology &lt;dbl&gt;, technology_value_change &lt;dbl&gt;, …</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
