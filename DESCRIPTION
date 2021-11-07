@@ -35,6 +35,7 @@ Imports:
     rlang,
     stringr,
     tibble,
+    vctrs,
     tidyr,
     withr,
     zoo

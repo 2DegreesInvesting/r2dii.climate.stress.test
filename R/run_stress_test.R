@@ -25,6 +25,8 @@
 #' @param company_exclusion Boolean, indicating if companies provided in dataset
 #'   excluded_companies.csv shall be excluded.
 #' @return NULL
+#'
+#' @family main functions
 #' @export
 run_stress_test <- function(asset_type,
                             lgd_senior_claims = 0.45,

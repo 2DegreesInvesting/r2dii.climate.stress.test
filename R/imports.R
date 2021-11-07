@@ -1,4 +1,14 @@
-#' @importFrom rlang %||% abort warn .data .env
+#' @importFrom vctrs vec_assert vec_set_names
+#' @importFrom glue glue
+#' @importFrom withr local_envvar
+#' @importFrom fs path_home path dir_ls dir_exists dir_create file_copy
+#' @importFrom fs path_file path_ext_remove
+#' @importFrom readr read_csv
+#' @importFrom purrr map keep
+#' @importFrom tibble enframe
+#' @importFrom dplyr mutate rename relocate
+#' @importFrom tidyr extract separate unnest
+#' @importFrom rlang %||% abort warn .data .env exec list2
 #' @importFrom magrittr %>%
 #' @importFrom ggplot2 ggplot aes vars geom_col geom_line geom_point geom_hline
 #'   geom_vline facet_wrap facet_grid theme expand_limits labs
