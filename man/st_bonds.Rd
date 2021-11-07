@@ -59,7 +59,7 @@ out <- suppressWarnings(
 data
 
 # Here we omit `data` and make the console output more verbose
-out <- st_bonds(term = c(1, 2), quiet = FALSE))
+out <- st_bonds(term = c(1, 2), quiet = FALSE)
 
 # The data frame output helps you quickly explore and manipulate your results
 subset(out, st_name == "port" & arg_value == 2)
@@ -67,7 +67,9 @@ subset(out, st_name == "port" & arg_value == 2)
 # If you run out of memory, instead write output sequentially to disk
 path <- file.path(tempdir(), "st")
 dir.create(path)
-suppressWarnings(st_write_bonds(destdir = path, term = c(1, 2)))
+suppressWarnings(
+  st_write_bonds(destdir = path, term = c(1, 2))
+)
 list.files(path)
 
 # Later you may read all results at once
