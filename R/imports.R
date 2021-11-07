@@ -1,3 +1,4 @@
+#' @importFrom testthat expect_error expect_output
 #' @importFrom vctrs vec_assert vec_set_names
 #' @importFrom glue glue
 #' @importFrom withr local_envvar
