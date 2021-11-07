@@ -116,11 +116,11 @@ type in their name. They run <code><a href='run_stress_test.html'>run_stress_tes
 over multiple values of one and only one argument of <code><a href='run_stress_test.html'>run_stress_test()</a></code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>st_bonds</span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>...</span>, quiet <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+    <pre class="usage"><span class='fu'>st_bonds</span><span class='op'>(</span>data <span class='op'>=</span> <span class='fu'><a href='st_data_paths.html'>st_data_paths</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='va'>...</span>, quiet <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 
-<span class='fu'>st_equity</span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>...</span>, quiet <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+<span class='fu'>st_equity</span><span class='op'>(</span>data <span class='op'>=</span> <span class='fu'><a href='st_data_paths.html'>st_data_paths</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='va'>...</span>, quiet <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 
-<span class='fu'>st_loans</span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>...</span>, quiet <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
+<span class='fu'>st_loans</span><span class='op'>(</span>data <span class='op'>=</span> <span class='fu'><a href='st_data_paths.html'>st_data_paths</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='va'>...</span>, quiet <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -153,15 +153,18 @@ stress-test project. The easiest way to create this object is with
 <code><a href='run_stress_test.html'>run_stress_test</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='st_data_paths.html'>st_data_paths</a></span><span class='op'>(</span>
+    <pre class="examples"><div class='input'><span class='co'># Give the paths to your data explicitely</span>
+<span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='st_data_paths.html'>st_data_paths</a></span><span class='op'>(</span>
   data <span class='op'>=</span> <span class='st'>"/home/mauro/tmp/st/ST_INPUTS_MASTER"</span>,
   project <span class='op'>=</span> <span class='st'>"/home/mauro/tmp/st/ST_TESTING_BONDS"</span>
 <span class='op'>)</span>
-
 <span class='va'>out</span> <span class='op'>&lt;-</span> <span class='fu'>st_bonds</span><span class='op'>(</span><span class='va'>data</span>, term <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span><span class='op'>)</span>, shock_year <span class='op'>=</span> <span class='fl'>2031</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 21 rows because negative production compensation targets were set in late and sudden.</span>
 #&gt; <span class='warning'>                   Negative absolute production is impossible</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 21 rows because negative production compensation targets were set in late and sudden.</span>
 #&gt; <span class='warning'>                   Negative absolute production is impossible</span></div><div class='output co'>#&gt; <span class='warning'>Warning: One or more parsing issues, see `problems()` for details</span></div><div class='input'>
+<span class='co'># Or set these environment variables (e.g. in .Renviron), then omit `data`</span>
+<span class='fu'><a href='https://rdrr.io/r/base/readLines.html'>readLines</a></span><span class='op'>(</span><span class='st'>".Renviron"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='warning'>Warning: cannot open file '.Renviron': No such file or directory</span></div><div class='output co'>#&gt; <span class='error'>Error in file(con, "r"): cannot open the connection</span></div><div class='input'>
 <span class='co'># The data frame output helps you quickly explore and manipulate your results</span>
 <span class='fu'><a href='https://rdrr.io/r/base/subset.html'>subset</a></span><span class='op'>(</span><span class='va'>out</span>, <span class='va'>st_name</span> <span class='op'>==</span> <span class='st'>"port"</span> <span class='op'>&amp;</span> <span class='va'>arg_value</span> <span class='op'>==</span> <span class='fl'>2</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 12 × 53</span>
