@@ -144,8 +144,8 @@ run_prep_calculation_loans <- function(credit_type = "outstanding") {
     dplyr::mutate(
       portfolio_loan_size_outstanding = portfolio_size$portfolio_loan_size_outstanding,
       portfolio_loan_size_credit_limit = portfolio_size$portfolio_loan_size_credit_limit,
-      matched_portfolio_loan_size_outstanding = sum(.data$loan_size_outstanding, na.rm = TRUE),
-      matched_portfolio_loan_size_credit_limit = sum(.data$loan_size_credit_limit, na.rm = TRUE)
+      matched_portfolio_loan_size_outstanding = matched_portfolio_size$matched_portfolio_loan_size_outstanding,
+      matched_portfolio_loan_size_credit_limit = matched_portfolio_size$matched_portfolio_loan_size_credit_limit
     ) %>%
     dplyr::group_by(
       # ADO 1933 - we choose `name_ald` as this is an internal name that can be
