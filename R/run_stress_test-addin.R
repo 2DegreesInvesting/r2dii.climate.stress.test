@@ -43,7 +43,7 @@ run_stress_test_addin <- function() { # nocov start
         local({
           path <- c(input$agnostic, input$specific)
           name <- c("ST_DATA_PATH", "ST_PROJECT_FOLDER")
-          vars <- vctrs::vec_set_names(path, name)
+          vars <- rlang::set_names(path, name)
           withr::local_envvar(vars)
 
           run_stress_test(
