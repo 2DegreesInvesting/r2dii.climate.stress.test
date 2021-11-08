@@ -108,6 +108,20 @@ wrangle_and_check_pacta_results <- function(pacta_results, start_year, time_hori
       .data$equity_market == equity_market_filter
     ) %>%
     dplyr::distinct_all()
+
+  all_exposures <- length(unique(wrangled_pacta_results$company_name))
+
+  wrangled_pacta_results <- wrangled_pacta_results %>%
+    dplyr::filter(.data$plan_carsten > 0)
+
+  if (all_exposures > length(unique(wrangled_pacta_results$company_name))) {
+    cat(
+      "      >> When filtering out holdings with exposures of 0 value, dropped rows for",
+      all_exposures - length(unique(wrangled_pacta_results$company_name)), "out of", all_exposures, "companies\n"
+    )
+  }
+
+  return(wrangled_pacta_results)
 }
 
 #' Check financial data
