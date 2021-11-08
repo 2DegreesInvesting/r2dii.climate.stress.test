@@ -49,11 +49,13 @@ run_stress_test  <- function(asset_type,
 
   args_tibble <- tibble::as_tibble(args_list)
 
-  purrr::map(1:nrow(args_tibble), function (n) {
-   args_tibble %>%
+  purrr::map(1:nrow(args_tibble), function(n) {
+   arg_list_row <- args_tibble %>%
       dplyr::slice(n) %>%
-      as.list() %>%
-      do.call(what = run_stress_test_impl, args = .)
+      as.list()
+
+  do.call(args = arg_list_row, what = validate_input_values)
+  do.call(args = arg_list_row, what = run_stress_test_impl)
   })
 
   write_stress_test_results(
@@ -87,21 +89,6 @@ run_stress_test_impl <- function(asset_type,
                                  shock_year,
                                  term,
                                  company_exclusion) {
-
-  cat("-- Validating input arguments. \n")
-
-  validate_input_values(
-    lgd_senior_claims = lgd_senior_claims,
-    lgd_subordinated_claims = lgd_subordinated_claims,
-    terminal_value = terminal_value,
-    risk_free_rate = risk_free_rate,
-    discount_rate = discount_rate,
-    div_netprofit_prop_coef = div_netprofit_prop_coef,
-    shock_year = shock_year,
-    term = term,
-    company_exclusion = company_exclusion,
-    asset_type = asset_type
-  )
 
   cat("-- Configuring analysis settings. \n")
 
