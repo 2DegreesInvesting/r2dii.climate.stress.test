@@ -1,5 +1,11 @@
 #' Run stress testing for provided asset type.
 #'
+#' This function runs the transition risk stress test. It can be desirable to
+#' understand sensitivities of the scenarios, in which case the user may pass a
+#' vector of values to one (and only one) of the detail arguments. This will
+#' result in running the analysis multiple times in a row with the argument
+#' varied.
+#'
 #' @param asset_type String holding asset_type, for allowed value compare
 #'   `asset_types_lookup`.
 #' @param lgd_senior_claims Numeric, holding the loss given default for senior
@@ -26,16 +32,64 @@
 #'   excluded_companies.csv shall be excluded.
 #' @return NULL
 #' @export
-run_stress_test <- function(asset_type,
-                            lgd_senior_claims = 0.45,
-                            lgd_subordinated_claims = 0.75,
-                            terminal_value = 0,
-                            risk_free_rate = 0.02,
-                            discount_rate = 0.02,
-                            div_netprofit_prop_coef = 1,
-                            shock_year = 2030,
-                            term = 2,
-                            company_exclusion = TRUE) {
+run_stress_test  <- function(asset_type,
+                         lgd_senior_claims = 0.45,
+                         lgd_subordinated_claims = 0.75,
+                         terminal_value = 0,
+                         risk_free_rate = 0.02,
+                         discount_rate = 0.02,
+                         div_netprofit_prop_coef = 1,
+                         shock_year = 2030,
+                         term = 2,
+                         company_exclusion = TRUE) {
+
+  cat("Running transition risk stress test \n")
+
+  st_results <- run_stress_test_impl(
+    asset_type = asset_type,
+    lgd_senior_claims = lgd_senior_claims,
+    lgd_subordinated_claims = lgd_subordinated_claims,
+    terminal_value = terminal_value,
+    risk_free_rate = risk_free_rate,
+    discount_rate = discount_rate,
+    div_netprofit_prop_coef = div_netprofit_prop_coef,
+    shock_year = shock_year,
+    term = term,
+    company_exclusion = company_exclusion
+  )
+
+
+  write_stress_test_results(
+    results = st_results$results,
+    expected_loss = st_results$expected_loss,
+    annual_pd_changes = st_results$annual_pd_changes,
+    overall_pd_changes = st_results$overall_pd_changes,
+    asset_type = asset_type,
+    calculation_level = calculation_level_lookup
+  )
+
+  cat("-- Exported results to designated output path. \n")
+
+}
+
+
+
+#' Run stress testing for provided asset type.
+#'
+#' Runs stress test per iteration.
+#'
+#' @inheritParams run_stress_test
+#' @return A list of stress test results.
+run_stress_test_impl <- function(asset_type,
+                                 lgd_senior_claims,
+                                 lgd_subordinated_claims,
+                                 terminal_value,
+                                 risk_free_rate,
+                                 discount_rate,
+                                 div_netprofit_prop_coef,
+                                 shock_year,
+                                 term,
+                                 company_exclusion) {
 
   cat("-- Validating input arguments. \n")
 
@@ -192,16 +246,13 @@ run_stress_test <- function(asset_type,
   # TODO: ADO 879 - note which companies produce missing results due to
   # insufficient input information (e.g. NAs for financials or 0 equity value)
 
-  cat("-- Exporting results to designated output path. \n")
-
-  write_stress_test_results(
-    results = results,
-    expected_loss = expected_loss,
-    annual_pd_changes = annual_pd_changes,
-    overall_pd_changes = overall_pd_changes,
-    asset_type = asset_type,
-    calculation_level = calculation_level
+  return(
+    list(
+      results = results,
+      expected_loss = expected_loss,
+      annual_pd_changes = annual_pd_changes,
+      overall_pd_changes = overall_pd_changes
+    )
   )
 
-  cat("-- Exported results to designated output path. \n")
 }
