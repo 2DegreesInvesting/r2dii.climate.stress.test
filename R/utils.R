@@ -200,6 +200,39 @@ report_duplicates <- function(data, cols, throw_error = TRUE) {
   return(invisible())
 }
 
+#' Report dropped companies
+#'
+#' Wrapper to report companies for which all results, or results for some technologies
+#' are lsot due to a missing match in financial_data or price_data.
+#'
+#' @param data_list A list of imported stress test input data.
+#' @inheritParams run_stress_test
+#'
+#' @return NULL
+report_company_drops <- function(data_list, asset_type) {
+
+  if (asset_type == "bonds") {
+    merge_cols <- c("company_name", "id" = "corporate_bond_ticker")
+  } else {
+    merge_cols <- c("company_name")
+  }
+
+  report_dropped_company_names(
+    data_x = data_list$pacta_result,
+    data_y = data_list$financial_data,
+    name_y = "financial data",
+    merge_cols = merge_cols
+  )
+
+  report_dropped_company_names(
+    data_x = data_list$pacta_result,
+    data_y = data_list$df_price,
+    name_y = "price data",
+    merge_cols = c("technology", "ald_sector" = "sector", "year")
+  )
+
+  invisible()
+}
 
 #' Inner join datasets and report number of dropped rows
 #'
@@ -208,15 +241,12 @@ report_duplicates <- function(data, cols, throw_error = TRUE) {
 #'
 #' @param data_x Tibble with data that is joinable to `data_y`.
 #' @param data_y Tibble with data that is joinable to `data_x`.
-#' @param name_x Name of `data_x`.
 #' @param name_y Name of `data_x`.
 #' @param merge_cols Vector holds columns to join on.
+#' @param name_x Name of `data_x, defults to PACTA results.
 #'
 #' @return The merged dataset.
-inner_join_report_drops <- function(data_x, data_y, name_x, name_y, merge_cols) {
-
-  rows_x <- nrow(data_x)
-  rows_y <- nrow(data_y)
+report_dropped_company_names <- function(data_x, data_y, name_y, merge_cols, name_x = "PACTA results") {
 
   data <- data_x %>%
     dplyr::inner_join(
@@ -224,13 +254,21 @@ inner_join_report_drops <- function(data_x, data_y, name_x, name_y, merge_cols) 
       by = merge_cols
     )
 
-  rows_data <- nrow(data)
+  n_companies_x <- length(unique(data_x$company_name))
+  n_companies <- length(unique(data$company_name))
 
-  if (rows_data < rows_x) {
+  if (n_companies < n_companies_x) {
+    percent_loss <- (n_companies_x - n_companies) * 100/n_companies_x
+    affected_companies <- sort(setdiff(data_x$company_name, data$company_name))
     cat(
-      "      >> When joining", name_x, "on", name_y, "on columns", merge_cols, "dropped",
-      rows_x - rows_data, "rows from", name_x, "\n"
+      "      >> When joining", name_x, "on", name_y, "on column(s)", paste0(merge_cols, collapse = ", "), "dropped rows for",
+      n_companies_x - n_companies, "out of", n_companies_x, "companies\n"
     )
+    cat("        >> percent loss:", percent_loss, "\n")
+    cat("        >> affected companies:\n")
+    purrr::walk(affected_companies, function(company) {
+      cat("          >>", company, "\n")
+    })
   }
   return(data)
 }

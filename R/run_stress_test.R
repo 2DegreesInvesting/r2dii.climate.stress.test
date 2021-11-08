@@ -108,6 +108,11 @@ run_stress_test <- function(asset_type,
       dplyr::mutate(company_name = stringr::str_to_lower(.data$company_name))
   }
 
+  report_company_drops(
+    data_list = input_data_list,
+    asset_type = asset_type
+  )
+
   check_scenario_availability(
     portfolio = input_data_list$pacta_results,
     scen_data = input_data_list$scenario_data,
