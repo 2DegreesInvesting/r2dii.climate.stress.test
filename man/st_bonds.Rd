@@ -81,6 +81,15 @@ results
 unique(
   subset(results, grepl("term.*2", arg_val), select = 1:3)
 )
+
+# Errors
+try(
+  st_bonds(term = c(1, 2), shock_year = c(2030, 2031))
+)
+
+try(
+  st_bonds(term = 1)
+)
 \dontshow{\}) # examplesIf}
 }
 \seealso{

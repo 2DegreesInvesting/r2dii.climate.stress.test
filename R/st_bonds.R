@@ -58,6 +58,15 @@
 #' unique(
 #'   subset(results, grepl("term.*2", arg_val), select = 1:3)
 #' )
+#'
+#' # Errors
+#' try(
+#'   st_bonds(term = c(1, 2), shock_year = c(2030, 2031))
+#' )
+#'
+#' try(
+#'   st_bonds(term = 1)
+#' )
 st_bonds <- function(data = st_data_paths(), ..., quiet = TRUE) {
   st_df(data, asset_type = "bonds", ..., quiet = quiet)
 }
@@ -169,8 +178,6 @@ restructure_st_df <- function(data) {
 }
 
 st <- function(data, asset_type, ..., quiet = TRUE) {
-  check_dots_empty()
-
   vec_assert(data, character(), size = 2L)
   data <- vec_set_names(data, envvar_keys())
   local_envvar(data)

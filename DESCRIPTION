@@ -22,7 +22,6 @@ Depends:
 Imports: 
     config,
     dplyr,
-    ellipsis,
     fs,
     ggplot2,
     glue,
