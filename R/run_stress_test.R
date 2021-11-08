@@ -45,14 +45,16 @@ run_stress_test  <- function(asset_type,
 
   cat("Running transition risk stress test \n")
 
-  args <- mget(names(formals()), sys.frame(sys.nframe()))
-  st_results <- do.call(run_stress_test_impl, args)
+  args_list <- mget(names(formals()), sys.frame(sys.nframe()))
 
-  # %>%
-  #   purrr::map(function(x) {
-  #     dplyr::bind_cols(x, tibble::as_tibble(args))
-  #
-  #   })
+  args_tibble <- tibble::as_tibble(args_list)
+
+  purrr::map(1:nrow(args_tibble), function (n) {
+   args_tibble %>%
+      dplyr::slice(n) %>%
+      as.list() %>%
+      do.call(what = run_stress_test_impl, args = .)
+  })
 
   write_stress_test_results(
     results = st_results$results,
