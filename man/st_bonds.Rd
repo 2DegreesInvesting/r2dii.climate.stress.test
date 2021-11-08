@@ -90,6 +90,11 @@ try(
 try(
   st_bonds(term = 1)
 )
+
+bad_data <- 1
+try(
+  st_bonds(bad_data, term = c(1, 2))
+)
 \dontshow{\}) # examplesIf}
 }
 \seealso{
