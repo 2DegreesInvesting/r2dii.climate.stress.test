@@ -1,0 +1,4 @@
+Name: Run stress test...
+Description: Run `run_stress_test()`.
+Binding: run_stress_test_addin
+Interactive: true
