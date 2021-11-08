@@ -112,6 +112,17 @@ run_prep_calculation_loans <- function(credit_type = "outstanding") {
       dplyr::filter(.data$loan_size_credit_limit >= 0)
   }
 
+  if (nrow(matched_non_negative) < nrow(matched)) {
+    warning(
+      paste0(
+        nrow(matched) - nrow(matched_non_negative),
+        " loans removed from the matched loan book because of negative loan
+        values. Please check the input loan book to address this issue."
+      )
+      , call. = FALSE
+    )
+  }
+
   portfolio_size <- loanbook %>%
     # TODO: why distinct? Is there any way that id_loan is not unique?
     dplyr::distinct(
