@@ -45,19 +45,14 @@ run_stress_test  <- function(asset_type,
 
   cat("Running transition risk stress test \n")
 
-  st_results <- run_stress_test_impl(
-    asset_type = asset_type,
-    lgd_senior_claims = lgd_senior_claims,
-    lgd_subordinated_claims = lgd_subordinated_claims,
-    terminal_value = terminal_value,
-    risk_free_rate = risk_free_rate,
-    discount_rate = discount_rate,
-    div_netprofit_prop_coef = div_netprofit_prop_coef,
-    shock_year = shock_year,
-    term = term,
-    company_exclusion = company_exclusion
-  )
+  args <- mget(names(formals()), sys.frame(sys.nframe()))
+  st_results <- do.call(run_stress_test_impl, args)
 
+  # %>%
+  #   purrr::map(function(x) {
+  #     dplyr::bind_cols(x, tibble::as_tibble(args))
+  #
+  #   })
 
   write_stress_test_results(
     results = st_results$results,
