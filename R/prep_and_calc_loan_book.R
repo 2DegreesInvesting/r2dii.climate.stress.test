@@ -103,6 +103,7 @@ run_prep_calculation_loans <- function(credit_type = "outstanding") {
   )
 
   #### Wrangle and prepare data-------------------------------------------------
+  # ADO 2690 - remove rows with negative loan values (not allowed in P4B)
   if (credit_type == "outstanding") {
     matched_non_negative <- matched %>%
       dplyr::filter(.data$loan_size_outstanding >= 0)
@@ -227,6 +228,7 @@ run_prep_calculation_loans <- function(credit_type = "outstanding") {
     dplyr::group_by(.data$investor_name, .data$portfolio_name, .data$asset_type, .data$valid_input) %>%
     dplyr::mutate(asset_value_usd = sum(.data$valid_value_usd, na.rm = TRUE)) %>%
     dplyr::ungroup() %>%
+    # ADO 2690 - set total loan book value using raw loan book
     dplyr::mutate(
       portfolio_value_usd = dplyr::if_else(
         credit_type == "outstanding",
