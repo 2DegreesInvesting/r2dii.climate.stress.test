@@ -103,17 +103,25 @@ run_prep_calculation_loans <- function(credit_type = "outstanding") {
   )
 
   #### Wrangle and prepare data-------------------------------------------------
+  # ADO 2690 - remove rows with negative loan values (not allowed in P4B)
+  if (credit_type == "outstanding") {
+    matched_non_negative <- matched %>%
+      dplyr::filter(.data$loan_size_outstanding >= 0)
+  } else {
+    matched_non_negative <- matched %>%
+      dplyr::filter(.data$loan_size_credit_limit >= 0)
+  }
 
-  # TODO: what to do with negative credit limits?
-  matched_non_negative <- matched %>%
-    dplyr::mutate(
-      loan_size_outstanding = dplyr::if_else(
-        .data$loan_size_outstanding < 0, 0, .data$loan_size_outstanding
-      ),
-      loan_size_credit_limit = dplyr::if_else(
-        .data$loan_size_credit_limit < 0, 0, .data$loan_size_credit_limit
+  if (nrow(matched_non_negative) < nrow(matched)) {
+    warning(
+      paste0(
+        nrow(matched) - nrow(matched_non_negative),
+        " loans removed from the matched loan book because of negative loan
+        values. Please check the input loan book to address this issue."
       )
+      , call. = FALSE
     )
+  }
 
   portfolio_size <- loanbook %>%
     # TODO: why distinct? Is there any way that id_loan is not unique?
@@ -144,8 +152,8 @@ run_prep_calculation_loans <- function(credit_type = "outstanding") {
     dplyr::mutate(
       portfolio_loan_size_outstanding = portfolio_size$portfolio_loan_size_outstanding,
       portfolio_loan_size_credit_limit = portfolio_size$portfolio_loan_size_credit_limit,
-      matched_portfolio_loan_size_outstanding = sum(.data$loan_size_outstanding, na.rm = TRUE),
-      matched_portfolio_loan_size_credit_limit = sum(.data$loan_size_credit_limit, na.rm = TRUE)
+      matched_portfolio_loan_size_outstanding = matched_portfolio_size$matched_portfolio_loan_size_outstanding,
+      matched_portfolio_loan_size_credit_limit = matched_portfolio_size$matched_portfolio_loan_size_credit_limit
     ) %>%
     dplyr::group_by(
       # ADO 1933 - we choose `name_ald` as this is an internal name that can be
@@ -153,10 +161,13 @@ run_prep_calculation_loans <- function(credit_type = "outstanding") {
       .data$name_ald, .data$sector_ald, .data$loan_size_outstanding_currency,
       .data$loan_size_credit_limit_currency
     ) %>%
+    # ADO 2723 - loan shares calculated against matched loan book, not total loan book
+    # this is to ensure all scaling happens against the same denominator
+    # run_stress_test uses the matched portfolio to scale the overall impact
     dplyr::mutate(
-      comp_loan_share_outstanding = sum(.data$loan_size_outstanding, na.rm = TRUE) / .data$portfolio_loan_size_outstanding,
+      comp_loan_share_outstanding = sum(.data$loan_size_outstanding, na.rm = TRUE) / .data$matched_portfolio_loan_size_outstanding,
       comp_loan_size_outstanding = sum(.data$loan_size_outstanding, na.rm = TRUE),
-      comp_loan_share_credit_limit = sum(.data$loan_size_credit_limit, na.rm = TRUE) / .data$portfolio_loan_size_credit_limit,
+      comp_loan_share_credit_limit = sum(.data$loan_size_credit_limit, na.rm = TRUE) / .data$matched_portfolio_loan_size_credit_limit,
       comp_loan_size_credit_limit = sum(.data$loan_size_credit_limit, na.rm = TRUE)
     ) %>%
     dplyr::ungroup() %>%
@@ -219,7 +230,6 @@ run_prep_calculation_loans <- function(credit_type = "outstanding") {
     dplyr::rename(
       financial_sector = .data$sector_ald,
       valid_value_usd = !!rlang::sym(sector_credit_type),
-      # TODO: convert currencies to USD or at least common currency
       currency = !!rlang::sym(credit_currency)
     ) %>%
     dplyr::mutate(
@@ -232,9 +242,14 @@ run_prep_calculation_loans <- function(credit_type = "outstanding") {
     dplyr::group_by(.data$investor_name, .data$portfolio_name, .data$asset_type, .data$valid_input) %>%
     dplyr::mutate(asset_value_usd = sum(.data$valid_value_usd, na.rm = TRUE)) %>%
     dplyr::ungroup() %>%
-    dplyr::group_by(.data$investor_name, .data$portfolio_name, .data$valid_input) %>%
-    dplyr::mutate(portfolio_value_usd = sum(.data$valid_value_usd, na.rm = TRUE)) %>%
-    dplyr::ungroup() %>%
+    # ADO 2690 - set total loan book value using raw loan book
+    dplyr::mutate(
+      portfolio_value_usd = dplyr::if_else(
+        credit_type == "outstanding",
+        portfolio_size$portfolio_loan_size_outstanding,
+        portfolio_size$portfolio_loan_size_credit_limit
+      )
+    ) %>%
     dplyr::select(
       .data$investor_name, .data$portfolio_name, .data$asset_type,
       .data$financial_sector, .data$valid_input, .data$valid_value_usd,
