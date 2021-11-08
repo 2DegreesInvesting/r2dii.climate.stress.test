@@ -68,13 +68,8 @@ run_stress_test_addin <- function() { # nocov start
 }
 
 st_slider <- function(x = "lgd_senior_claims") {
-  attached <- any("package:r2dii.climate.stress.test" %in% search())
-  if (!attached) {
-    abort(c(
-      "The package r2dii.climate.stress.test must be attached.",
-      i = "Did you forget to run `library(r2dii.climate.stress.test)`?"
-    ))
-  }
+  abort_if_this_package_is_not_attached()
+
   x_range_lookup <- paste0(x, "_range_lookup")
   x_range <- get(x_range_lookup, "package:r2dii.climate.stress.test")
   shiny::sliderInput(
@@ -84,4 +79,16 @@ st_slider <- function(x = "lgd_senior_claims") {
     max = x_range[[2]],
     value = formals(run_stress_test)[[x]]
   )
+}
+
+abort_if_this_package_is_not_attached <- function() {
+  attached <- any("package:r2dii.climate.stress.test" %in% search())
+  if (!attached) {
+    abort(c(
+      "The package r2dii.climate.stress.test must be attached.",
+      i = "Did you forget to run `library(r2dii.climate.stress.test)`?"
+    ))
+  }
+
+  invisible(attached)
 }
