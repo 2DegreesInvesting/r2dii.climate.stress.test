@@ -153,10 +153,13 @@ run_prep_calculation_loans <- function(credit_type = "outstanding") {
       .data$name_ald, .data$sector_ald, .data$loan_size_outstanding_currency,
       .data$loan_size_credit_limit_currency
     ) %>%
+    # ADO 2723 - loan shares calculated against matched loan book, not total loan book
+    # this is to ensure all scaling happens against the same denominator
+    # run_stress_test uses the matched portfolio to scale the overall impact
     dplyr::mutate(
-      comp_loan_share_outstanding = sum(.data$loan_size_outstanding, na.rm = TRUE) / .data$portfolio_loan_size_outstanding,
+      comp_loan_share_outstanding = sum(.data$loan_size_outstanding, na.rm = TRUE) / .data$matched_portfolio_loan_size_outstanding,
       comp_loan_size_outstanding = sum(.data$loan_size_outstanding, na.rm = TRUE),
-      comp_loan_share_credit_limit = sum(.data$loan_size_credit_limit, na.rm = TRUE) / .data$portfolio_loan_size_credit_limit,
+      comp_loan_share_credit_limit = sum(.data$loan_size_credit_limit, na.rm = TRUE) / .data$matched_portfolio_loan_size_credit_limit,
       comp_loan_size_credit_limit = sum(.data$loan_size_credit_limit, na.rm = TRUE)
     ) %>%
     dplyr::ungroup() %>%
