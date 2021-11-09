@@ -65,7 +65,7 @@ write_stress_test_results <- function(results, expected_loss,
     ) %>%
     readr::write_csv(file.path(
       results_path,
-      paste0("stress_test_results_", asset_type, "_comp_el.csv")
+      paste0("stress_test_results_", asset_type, "_comp_el_", iter_var,".csv")
     ))
 
   annual_pd_changes_sector <- annual_pd_changes %>%
@@ -97,7 +97,7 @@ write_stress_test_results <- function(results, expected_loss,
     ) %>%
     readr::write_csv(file.path(
       results_path,
-      paste0("stress_test_results_", asset_type, "_sector_pd_changes_annual.csv")
+      paste0("stress_test_results_", asset_type, "_sector_pd_changes_annual_", iter_var, ".csv")
     ))
 
   overall_pd_changes_sector <- overall_pd_changes %>%
@@ -128,7 +128,7 @@ write_stress_test_results <- function(results, expected_loss,
     ) %>%
     readr::write_csv(file.path(
       results_path,
-      paste0("stress_test_results_", asset_type, "_sector_pd_changes_overall.csv")
+      paste0("stress_test_results_", asset_type, "_sector_pd_changes_overall_", iter_var, ".csv")
     ))
 }
 
@@ -380,12 +380,12 @@ write_results_new <- function(data,
     csv = data %>%
       readr::write_csv(file.path(
         path_to_results,
-        glue::glue("stress_test_results_{asset_type}_comp.csv")
+        glue::glue("stress_test_results_{asset_type}_comp_{iter_var}.csv")
       )),
     rda = data %>%
       saveRDS(file.path(
         path_to_results,
-        glue::glue("stress_test_results_{asset_type}_comp.rda")
+        glue::glue("stress_test_results_{asset_type}_comp_{iter_var}.rda")
       )),
     stop("Invalid file_type provided. Please use csv or rda!")
   )
@@ -424,12 +424,12 @@ write_results_new <- function(data,
     csv = data %>%
       readr::write_csv(file.path(
         path_to_results,
-        glue::glue("stress_test_results_{asset_type}_port.csv")
+        glue::glue("stress_test_results_{asset_type}_port_{iter_var}.csv")
       )),
     rda = data %>%
       saveRDS(file.path(
         path_to_results,
-        glue::glue("stress_test_results_{asset_type}_port.rda")
+        glue::glue("stress_test_results_{asset_type}_port_{iter_var}.rda")
       )),
     stop("Invalid file_type provided. Please use csv or rda!")
   )
