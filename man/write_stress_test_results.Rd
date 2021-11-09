@@ -10,7 +10,9 @@ write_stress_test_results(
   annual_pd_changes,
   overall_pd_changes,
   asset_type,
-  calculation_level
+  calculation_level,
+  sensitivity_analysis_vars,
+  iter_var
 )
 }
 \arguments{
@@ -21,12 +23,17 @@ write_stress_test_results(
 \item{annual_pd_changes}{Tibble holding stress test results on annual changes
 of probability of default.}
 
-\item{overall_pd_changes}{Tibble holding stress test results on overall changes
-of probability of default.}
+\item{overall_pd_changes}{Tibble holding stress test results on overall
+changes of probability of default.}
 
 \item{asset_type}{String holding asset type.}
 
 \item{calculation_level}{String holding calculation level.}
+
+\item{sensitivity_analysis_vars}{String vector holding names of iteration
+arguments.}
+
+\item{iter_var}{String holding name of iteration variable.}
 }
 \description{
 Stress test results are wrangled and exported to the output dir.

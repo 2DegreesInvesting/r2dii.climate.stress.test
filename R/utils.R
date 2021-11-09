@@ -356,3 +356,22 @@ get_iter_var <- function(args_list) {
 
   return(iter_var)
 }
+
+#' Append without duplicat cols
+#'
+#' Function binds `data_x` and `data_y` together. In case of overlapping cols,
+#' cols from `data_y` are used.
+#'
+#' @param data_x A tibble.
+#' @param data_y A tibble.
+#'
+#' @return A tibble
+append_without_duplicate_cols <- function(data_x, data_y) {
+  overlap_cols <- dplyr::intersect(names(data_x), names(data_y))
+  if (length(overlap_cols) > 0) {
+    data_x <- data_x %>%
+      dplyr::select(-overlap_cols)
+  }
+  appened_data_x <- dplyr::bind_cols(data_x, data_y)
+  return(appened_data_x)
+}
