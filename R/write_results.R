@@ -26,14 +26,15 @@ write_stress_test_results <- function(results, expected_loss,
 
   results_path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "outputs")
 
-  results %>% write_results_new(
-    path_to_results = results_path,
-    asset_type = asset_type,
-    level = calculation_level,
-    file_type = "csv",
-    sensitivity_analysis_vars = sensitivity_analysis_vars,
-    iter_var = iter_var
-  )
+  results %>%
+    write_results_new(
+      path_to_results = results_path,
+      asset_type = asset_type,
+      level = calculation_level,
+      file_type = "csv",
+      sensitivity_analysis_vars = sensitivity_analysis_vars,
+      iter_var = iter_var
+    )
 
   expected_loss <- expected_loss %>%
     dplyr::select(
@@ -58,7 +59,8 @@ write_stress_test_results <- function(results, expected_loss,
     report_all_duplicate_kinds(
       composite_unique_cols = c(
         "scenario_name", "scenario_geography", "investor_name", "portfolio_name",
-        "company_name", "id", "ald_sector", "term"
+        "company_name", "id", "ald_sector", "term",
+        sensitivity_analysis_vars
       )
     ) %>%
     readr::write_csv(file.path(
@@ -89,7 +91,7 @@ write_stress_test_results <- function(results, expected_loss,
     report_all_duplicate_kinds(
       composite_unique_cols = c(
         "scenario_name", "scenario_geography", "investor_name", "portfolio_name",
-        "ald_sector", "year"
+        "ald_sector", "year", sensitivity_analysis_vars
       )
     ) %>%
     readr::write_csv(file.path(
@@ -120,7 +122,7 @@ write_stress_test_results <- function(results, expected_loss,
     report_all_duplicate_kinds(
       composite_unique_cols = c(
         "scenario_name", "scenario_geography", "investor_name", "portfolio_name",
-        "ald_sector", "term"
+        "ald_sector", "term", sensitivity_analysis_vars
       )
     ) %>%
     readr::write_csv(file.path(
@@ -368,7 +370,8 @@ write_results_new <- function(data,
     report_all_duplicate_kinds(
       composite_unique_cols = c(
         "investor_name", "portfolio_name", "company_name", "scenario_geography",
-        "scenario_name", "year_of_shock", "duration_of_shock", "ald_sector", "technology"
+        "scenario_name", "year_of_shock", "duration_of_shock", "ald_sector", "technology",
+        sensitivity_analysis_vars
       )
     )
 
@@ -410,7 +413,8 @@ write_results_new <- function(data,
     report_all_duplicate_kinds(
       composite_unique_cols = c(
         "investor_name", "portfolio_name", "scenario_geography", "scenario_name",
-        "year_of_shock", "duration_of_shock", "ald_sector", "technology"
+        "year_of_shock", "duration_of_shock", "ald_sector", "technology",
+        sensitivity_analysis_vars
       )
     )
 
