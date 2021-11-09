@@ -32,30 +32,23 @@
 #'   excluded_companies.csv shall be excluded.
 #' @return NULL
 #' @export
-run_stress_test  <- function(asset_type,
-                         lgd_senior_claims = 0.45,
-                         lgd_subordinated_claims = 0.75,
-                         terminal_value = 0,
-                         risk_free_rate = 0.02,
-                         discount_rate = 0.02,
-                         div_netprofit_prop_coef = 1,
-                         shock_year = 2030,
-                         term = 2,
-                         company_exclusion = TRUE) {
-
+run_stress_test <- function(asset_type,
+                            lgd_senior_claims = 0.45,
+                            lgd_subordinated_claims = 0.75,
+                            terminal_value = 0,
+                            risk_free_rate = 0.02,
+                            discount_rate = 0.02,
+                            div_netprofit_prop_coef = 1,
+                            shock_year = 2030,
+                            term = 2,
+                            company_exclusion = TRUE) {
   cat("Running transition risk stress test \n")
 
   args_list <- mget(names(formals()), sys.frame(sys.nframe()))
   iter_var <- get_iter_var(args_list)
   args_tibble <- tibble::as_tibble(args_list)
 
-  purrr::map(1:nrow(args_tibble), function(n) {
-   arg_list_row <- args_tibble %>%
-      dplyr::slice(n) %>%
-      as.list()
-
-  do.call(args = arg_list_row, what = run_stress_test_impl)
-  })
+  st_results_list <- purrr::map(1:nrow(args_tibble), run_stress_test_iteration, args_tibble = args_tibble)
 
   write_stress_test_results(
     results = st_results$results,
@@ -69,9 +62,15 @@ run_stress_test  <- function(asset_type,
   )
 
   cat("-- Exported results to designated output path. \n")
-
 }
 
+run_stress_test_iteration <- function(n, args_tibble) {
+  arg_list_row <- args_tibble %>%
+    dplyr::slice(n) %>%
+    as.list()
+
+  st_result <- do.call(args = arg_list_row, what = run_stress_test_impl)
+}
 
 
 #' Run stress testing for provided asset type.
@@ -90,7 +89,6 @@ run_stress_test_impl <- function(asset_type,
                                  shock_year,
                                  term,
                                  company_exclusion) {
-
   cat("Validating input arguments. \n")
 
   do.call(args = mget(names(formals()), sys.frame(sys.nframe())), what = validate_input_values)
@@ -243,5 +241,4 @@ run_stress_test_impl <- function(asset_type,
       overall_pd_changes = overall_pd_changes
     )
   )
-
 }
