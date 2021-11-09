@@ -121,5 +121,29 @@ calculate_exposure_by_technology_and_company <- function(asset_type,
      composite_unique_cols = names(.)
    )
 
-  return(exposure_by_technology_and_company)
+  n_companies_pre <- length(unique(exposure_by_technology_and_company$company_name))
+
+  exposure_by_technology_and_company_filtered <- exposure_by_technology_and_company %>%
+    dplyr::filter(.data$plan_carsten > 0)
+
+  n_companies_post <- length(unique(exposure_by_technology_and_company_filtered$company_name))
+
+  if (n_companies_pre > n_companies_post) {
+    percent_loss <- (n_companies_pre - n_companies_post) * 100/n_companies_pre
+    affected_companies <- sort(
+      setdiff(exposure_by_technology_and_company$company_name,
+              exposure_by_technology_and_company_filtered$company_name)
+      )
+    cat(
+      "      >> When filtering out holdings with exposures of 0 value, dropped rows for",
+      n_companies_pre - n_companies_post, "out of", n_companies_pre, "companies\n"
+    )
+    cat("        >> percent loss:", percent_loss, "\n")
+    cat("        >> affected companies:\n")
+    purrr::walk(affected_companies, function(company) {
+      cat("          >>", company, "\n")
+    })
+  }
+
+  return(exposure_by_technology_and_company_filtered)
 }
