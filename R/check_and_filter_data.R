@@ -26,8 +26,12 @@ check_and_filter_data <- function(st_data_list, start_year, end_year,
     dplyr::filter(.data$technology %in% .env$technologies_lookup) %>%
     dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year))
 
-  excluded_companies_filtered <- st_data_list$excluded_companies %>%
-    dplyr::filter(.data$technology %in% .env$technologies_lookup)
+  if (is.null(st_data_list$excluded_companies)) {
+    excluded_companies_filtered <- NULL
+  } else {
+    excluded_companies_filtered <- st_data_list$excluded_companies %>%
+      dplyr::filter(.data$technology %in% .env$technologies_lookup)
+  }
 
   df_price_filtered <- st_data_list$df_price %>%
     dplyr::filter(.data$sector %in% .env$sectors_lookup) %>%
@@ -69,10 +73,14 @@ check_and_filter_data <- function(st_data_list, start_year, end_year,
     c("financial_sector", "investor_name", "portfolio_name")
   )
 
-  mapply(function(data, cuc_cols) {
-    report_all_duplicate_kinds(data = data, composite_unique_cols = cuc_cols)
-  },
-  data_list, cuc_list)
+  mapply(
+    function(data, cuc_cols) {
+      if (!is.null(data)) {
+        report_all_duplicate_kinds(data = data, composite_unique_cols = cuc_cols)
+      }
+    },
+    data_list, cuc_list
+  )
 
   return(data_list)
 }

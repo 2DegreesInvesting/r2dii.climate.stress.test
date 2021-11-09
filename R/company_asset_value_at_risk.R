@@ -120,6 +120,9 @@ company_asset_value_at_risk <- function(data,
           .data$VaR_tech_company
         )
       )
+  } else {
+    data <- data %>%
+      dplyr::mutate(exclude = FALSE)
   }
 
   data <- data %>%
