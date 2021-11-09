@@ -60,3 +60,27 @@ result in running the analysis multiple times in a row with the argument
 varied.
 NOTE: argument \code{asset_type_arg} is not iterateable.
 }
+\examples{
+\dontshow{if (r2dii.climate.stress.test:::run_example()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+library(fs)
+
+(project_agnostic_path <- Sys.getenv("ST_DATA_PATH"))
+(project_specific_path <- Sys.getenv("ST_PROJECT_FOLDER"))
+
+outputs_path <- fs::path(project_specific_path, "outputs")
+if (fs::dir_exists(outputs_path)) fs::dir_delete(outputs_path)
+# No outputs/
+fs::dir_tree(project_specific_path)
+
+# Run stress-test with `term_arg = 1` and `term_arg = 2`
+run_stress_test(asset_type_arg = "bonds", term_arg = 1:2)
+
+# outputs/ is now populated
+fs::dir_tree(project_specific_path)
+
+# Fails: `asset_type_arg` is not iterable
+try(
+  run_stress_test(asset_type_arg = c("bonds", "loans"))
+)
+\dontshow{\}) # examplesIf}
+}
