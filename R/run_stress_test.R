@@ -50,6 +50,13 @@ run_stress_test <- function(asset_type,
 
   st_results_list <- purrr::map(1:nrow(args_tibble), run_stress_test_iteration, args_tibble = args_tibble)
 
+  result_names <- names(st_results_list[[1]])
+  st_results <- result_names %>%
+    purrr::map(function(tib) {
+      purrr::map_dfr(st_results_list, `[[`, tib)
+    }) %>%
+    purrr::set_names(result_names)
+
   write_stress_test_results(
     results = st_results$results,
     expected_loss = st_results$expected_loss,
@@ -78,10 +85,8 @@ run_stress_test_iteration <- function(n, args_tibble) {
 append_without_duplicate_cols <- function(result, arg_tibble_row) {
   overlap_cols <- dplyr::intersect(names(result), names(arg_tibble_row))
   if (length(overlap_cols) > 0) {
-
     result <- result %>%
       dplyr::select(-overlap_cols)
-
   }
   appened_results <- dplyr::bind_cols(result, arg_tibble_row)
   return(appened_results)

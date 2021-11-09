@@ -342,7 +342,7 @@ get_iter_var <- function(args_list) {
     dplyr::filter(value > 1)
 
   if (nrow(iterate_arg) == 0) {
-    iter_var <- "STANDARD"
+    iter_var <- "standard"
   } else if (nrow(iterate_arg) == 1) {
     iter_var <- iterate_arg$name
   } else {

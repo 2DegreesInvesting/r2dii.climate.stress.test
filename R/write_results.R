@@ -6,15 +6,19 @@
 #' @param expected_loss Tibble holding stress test results on expected loss.
 #' @param annual_pd_changes Tibble holding stress test results on annual changes
 #'   of probability of default.
-#' @param overall_pd_changes Tibble holding stress test results on overall changes
-#'   of probability of default.
+#' @param overall_pd_changes Tibble holding stress test results on overall
+#'   changes of probability of default.
 #' @param asset_type String holding asset type.
 #' @param calculation_level String holding calculation level.
+#' @param sensitivity_analysis_vars String vector holding names of iteration
+#'   arguments.
+#' @param iter_var String holding name of iteration variable.
 #'
 #' @return NULL
 write_stress_test_results <- function(results, expected_loss,
                                       annual_pd_changes, overall_pd_changes,
-                                      asset_type, calculation_level) {
+                                      asset_type, calculation_level,
+                                      sensitivity_analysis_vars, iter_var) {
 
   if (!dir.exists(file.path(get_st_data_path("ST_PROJECT_FOLDER"), "outputs"))) {
     dir.create(file.path(get_st_data_path("ST_PROJECT_FOLDER"), "outputs"))
@@ -26,7 +30,9 @@ write_stress_test_results <- function(results, expected_loss,
     path_to_results = results_path,
     asset_type = asset_type,
     level = calculation_level,
-    file_type = "csv"
+    file_type = "csv",
+    sensitivity_analysis_vars = sensitivity_analysis_vars,
+    iter_var = iter_var
   )
 
   expected_loss <- expected_loss %>%
@@ -298,6 +304,7 @@ write_results <- function(data,
 #'   in the work flow. Supports "company" and "portfolio".
 #' @param file_type Character. A string containing the type of file that should
 #'   be written to the result path. Currently supports "csv" and "rda".
+#' @inheritParams write_stress_test_results
 #'
 #' @family output functions
 #' @return NULL
@@ -305,7 +312,10 @@ write_results_new <- function(data,
                               path_to_results = NULL,
                               asset_type = NULL,
                               level = NULL,
-                              file_type = NULL) {
+                              file_type = NULL,
+                              sensitivity_analysis_vars,
+                              iter_var) {
+
   path_to_results %||% stop("Must provide 'path_to_results'")
   level %||% stop("Must provide 'level'")
 
