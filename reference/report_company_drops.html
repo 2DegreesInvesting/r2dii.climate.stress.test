@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Run stress testing for provided asset type. — run_stress_test • r2dii.climate.stress.test</title>
+<title>Report dropped companies — report_company_drops • r2dii.climate.stress.test</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,9 @@
 
 
 
-<meta property="og:title" content="Run stress testing for provided asset type. — run_stress_test" />
-<meta property="og:description" content="Run stress testing for provided asset type." />
+<meta property="og:title" content="Report dropped companies — report_company_drops" />
+<meta property="og:description" content="Wrapper to report companies for which all results, or results for some technologies
+are lsot due to a missing match in financial_data or price_data." />
 
 
 
@@ -103,90 +104,33 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Run stress testing for provided asset type.</h1>
+    <h1>Report dropped companies</h1>
     
-    <div class="hidden name"><code>run_stress_test.Rd</code></div>
+    <div class="hidden name"><code>report_company_drops.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Run stress testing for provided asset type.</p>
+    <p>Wrapper to report companies for which all results, or results for some technologies
+are lsot due to a missing match in financial_data or price_data.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>run_stress_test</span><span class='op'>(</span>
-  <span class='va'>asset_type</span>,
-  lgd_senior_claims <span class='op'>=</span> <span class='fl'>0.45</span>,
-  lgd_subordinated_claims <span class='op'>=</span> <span class='fl'>0.75</span>,
-  terminal_value <span class='op'>=</span> <span class='fl'>0</span>,
-  risk_free_rate <span class='op'>=</span> <span class='fl'>0.02</span>,
-  discount_rate <span class='op'>=</span> <span class='fl'>0.02</span>,
-  div_netprofit_prop_coef <span class='op'>=</span> <span class='fl'>1</span>,
-  shock_year <span class='op'>=</span> <span class='fl'>2030</span>,
-  term <span class='op'>=</span> <span class='fl'>2</span>,
-  company_exclusion <span class='op'>=</span> <span class='cn'>TRUE</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>report_company_drops</span><span class='op'>(</span><span class='va'>data_list</span>, <span class='va'>asset_type</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
+      <th>data_list</th>
+      <td><p>A list of imported stress test input data.</p></td>
+    </tr>
+    <tr>
       <th>asset_type</th>
       <td><p>String holding asset_type, for allowed value compare
 <code>asset_types_lookup</code>.</p></td>
     </tr>
-    <tr>
-      <th>lgd_senior_claims</th>
-      <td><p>Numeric, holding the loss given default for senior
-claims, for accepted value range check <code>lgd_senior_claims_range_lookup</code>.</p></td>
-    </tr>
-    <tr>
-      <th>lgd_subordinated_claims</th>
-      <td><p>Numeric, holding the loss given default for
-subordinated claims, for accepted value range check
-<code>lgd_subordinated_claims_range_lookup</code>.</p></td>
-    </tr>
-    <tr>
-      <th>terminal_value</th>
-      <td><p>Numeric. A ratio to determine the share of the
-discounted value used in the terminal value calculation beyond the
-projected time frame. For accepted range compare <code>terminal_value_range_lookup</code>.</p></td>
-    </tr>
-    <tr>
-      <th>risk_free_rate</th>
-      <td><p>Numeric that indicates the risk free rate of interest.
-For accepted range compare <code>risk_free_rate_range_lookup</code>.</p></td>
-    </tr>
-    <tr>
-      <th>discount_rate</th>
-      <td><p>Numeric, that holds the discount rate of dividends per
-year in the DCF. For accepted range compare <code>discount_rate_range_lookup</code>.</p></td>
-    </tr>
-    <tr>
-      <th>div_netprofit_prop_coef</th>
-      <td><p>Numeric. A coefficient that determines how
-strongly the future dividends propagate to the company value. For accepted
-range compare <code>div_netprofit_prop_coef_range_lookup</code>.</p></td>
-    </tr>
-    <tr>
-      <th>shock_year</th>
-      <td><p>Numeric, holding year the shock is applied. For accepted
-range compare <code>shock_year_range_lookup</code>.</p></td>
-    </tr>
-    <tr>
-      <th>term</th>
-      <td><p>Numeric. A coefficient that determines for which maturity the
-expected loss should be calculated in the credit risk section. For accepted
-range compare <code>term_range_lookup</code>.</p></td>
-    </tr>
-    <tr>
-      <th>company_exclusion</th>
-      <td><p>Boolean, indicating if companies provided in dataset
-excluded_companies.csv shall be excluded.</p></td>
-    </tr>
     </table>
 
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
