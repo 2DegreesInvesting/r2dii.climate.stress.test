@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Does this computer have a local copy of 2dii's dropbox folder? — dropbox_exists • r2dii.climate.stress.test</title>
+<title>Run stress testing for provided asset type. — run_stress_test_impl • r2dii.climate.stress.test</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Does this computer have a local copy of 2dii's dropbox folder? — dropbox_exists" />
-<meta property="og:description" content="Does this computer have a local copy of 2dii's dropbox folder?" />
+<meta property="og:title" content="Run stress testing for provided asset type. — run_stress_test_impl" />
+<meta property="og:description" content="Runs stress test per iteration." />
 
 
 
@@ -103,33 +103,91 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Does this computer have a local copy of 2dii's dropbox folder?</h1>
+    <h1>Run stress testing for provided asset type.</h1>
     
-    <div class="hidden name"><code>dropbox_exists.Rd</code></div>
+    <div class="hidden name"><code>run_stress_test_impl.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Does this computer have a local copy of 2dii's dropbox folder?</p>
+    <p>Runs stress test per iteration.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>dropbox_exists</span><span class='op'>(</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>run_stress_test_impl</span><span class='op'>(</span>
+  <span class='va'>asset_type_arg</span>,
+  <span class='va'>lgd_senior_claims_arg</span>,
+  <span class='va'>lgd_subordinated_claims_arg</span>,
+  <span class='va'>terminal_value_arg</span>,
+  <span class='va'>risk_free_rate_arg</span>,
+  <span class='va'>discount_rate_arg</span>,
+  <span class='va'>div_netprofit_prop_coef_arg</span>,
+  <span class='va'>shock_year_arg</span>,
+  <span class='va'>term_arg</span>,
+  <span class='va'>company_exclusion_arg</span>
+<span class='op'>)</span></pre>
 
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>asset_type_arg</th>
+      <td><p>String holding asset_type, for allowed value compare
+<code>asset_types_lookup</code>.</p></td>
+    </tr>
+    <tr>
+      <th>lgd_senior_claims_arg</th>
+      <td><p>Numeric, holding the loss given default for senior
+claims, for accepted value range check <code>lgd_senior_claims_range_lookup</code>.</p></td>
+    </tr>
+    <tr>
+      <th>lgd_subordinated_claims_arg</th>
+      <td><p>Numeric, holding the loss given default for
+subordinated claims, for accepted value range check
+<code>lgd_subordinated_claims_range_lookup</code>.</p></td>
+    </tr>
+    <tr>
+      <th>terminal_value_arg</th>
+      <td><p>Numeric. A ratio to determine the share of the
+discounted value used in the terminal value calculation beyond the
+projected time frame. For accepted range compare <code>terminal_value_range_lookup</code>.</p></td>
+    </tr>
+    <tr>
+      <th>risk_free_rate_arg</th>
+      <td><p>Numeric that indicates the risk free rate of interest.
+For accepted range compare <code>risk_free_rate_range_lookup</code>.</p></td>
+    </tr>
+    <tr>
+      <th>discount_rate_arg</th>
+      <td><p>Numeric, that holds the discount rate of dividends per
+year in the DCF. For accepted range compare <code>discount_rate_range_lookup</code>.</p></td>
+    </tr>
+    <tr>
+      <th>div_netprofit_prop_coef_arg</th>
+      <td><p>Numeric. A coefficient that determines how
+strongly the future dividends propagate to the company value. For accepted
+range compare <code>div_netprofit_prop_coef_range_lookup</code>.</p></td>
+    </tr>
+    <tr>
+      <th>shock_year_arg</th>
+      <td><p>Numeric, holding year the shock is applied. For accepted
+range compare <code>shock_year_range_lookup</code>.</p></td>
+    </tr>
+    <tr>
+      <th>term_arg</th>
+      <td><p>Numeric. A coefficient that determines for which maturity the
+expected loss should be calculated in the credit risk section. For accepted
+range compare <code>term_range_lookup</code>.</p></td>
+    </tr>
+    <tr>
+      <th>company_exclusion_arg</th>
+      <td><p>Boolean, indicating if companies provided in dataset
+excluded_companies.csv shall be excluded.</p></td>
+    </tr>
+    </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Logical.</p>
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+    <p>A list of stress test results.</p>
 
-    <div class='dont-index'><p>Other miscellaneous utility functions: 
-<code><a href='data_path.html'>data_path</a>()</code>,
-<code><a href='degrees.html'>degrees</a>()</code>,
-<code><a href='get_st_data_path.html'>get_st_data_path</a>()</code></p></div>
-
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='r-in'><span class='fu'>dropbox_exists</span><span class='op'>(</span><span class='op'>)</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> /home/runner/Dropbox (2° Investing) </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>                               FALSE </span>
-</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

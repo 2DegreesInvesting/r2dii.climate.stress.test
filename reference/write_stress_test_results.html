@@ -118,7 +118,9 @@
   <span class='va'>annual_pd_changes</span>,
   <span class='va'>overall_pd_changes</span>,
   <span class='va'>asset_type</span>,
-  <span class='va'>calculation_level</span>
+  <span class='va'>calculation_level</span>,
+  <span class='va'>sensitivity_analysis_vars</span>,
+  <span class='va'>iter_var</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -139,8 +141,8 @@ of probability of default.</p></td>
     </tr>
     <tr>
       <th>overall_pd_changes</th>
-      <td><p>Tibble holding stress test results on overall changes
-of probability of default.</p></td>
+      <td><p>Tibble holding stress test results on overall
+changes of probability of default.</p></td>
     </tr>
     <tr>
       <th>asset_type</th>
@@ -149,6 +151,15 @@ of probability of default.</p></td>
     <tr>
       <th>calculation_level</th>
       <td><p>String holding calculation level.</p></td>
+    </tr>
+    <tr>
+      <th>sensitivity_analysis_vars</th>
+      <td><p>String vector holding names of iteration
+arguments.</p></td>
+    </tr>
+    <tr>
+      <th>iter_var</th>
+      <td><p>String holding name of iteration variable.</p></td>
     </tr>
     </table>
 

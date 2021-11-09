@@ -1,6 +1,9 @@
-pandoc: 2.11.4
+pandoc: 2.7.3
 pkgdown: 1.6.1
 pkgdown_sha: ~
 articles: {}
-last_built: 2021-11-09T17:35Z
+last_built: 2021-11-09T17:44Z
+urls:
+  reference: https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference
+  article: https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles
 

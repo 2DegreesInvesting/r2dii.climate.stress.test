@@ -83,18 +83,18 @@
 <p>You can install development version from <a href="https://github.com/">GitHub</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># install.packages("devtools")</span>
-<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"2DegreesInvesting/r2dii.climate.stress.test"</span><span class="op">)</span></code></pre></div>
+<span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"2DegreesInvesting/r2dii.climate.stress.test"</span><span class="op">)</span></code></pre></div>
 <p>Tu run most of the analyses, you will need additional auxiliary data, such as scenario data. The specific requirements are outlined below. <strong>TODO</strong></p>
 <p>Before running the code on a local machine, set the path to the data files either as an Environment Variable or an R option using:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># shell</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>export ST_DATA_PATH<span class="ot">=</span><span class="st">"&lt;path to data&gt;"</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># shell</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a>export ST_DATA_PATH=<span class="st">"&lt;path to data&gt;"</span></span></code></pre></div>
 <p>or in R:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span><span class="op">(</span><span class="st">"ST_DATA_PATH"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"path to data"</span></code></pre></div>
 <p>Additionally, for running the litigation risk section, you will need access to the pacta-data repository or a similar directory and need to point the analysis to that directory by setting the path to the pacta-data files as an Environment Variable, using:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># shell</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>export PACTA_DATA_PATH<span class="ot">=</span><span class="st">"&lt;path to data&gt;"</span></span></code></pre></div>
-<p>Alternatively, setup environmental variables in a user- or project-specific .Renviron file (see <code><a href="https://usethis.r-lib.org/reference/edit.html">usethis::edit_r_environ()</a></code>).</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="co"># shell</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a>export PACTA_DATA_PATH=<span class="st">"&lt;path to data&gt;"</span></span></code></pre></div>
+<p>Alternatively, setup environmental variables in a user- or project-specific .Renviron file (see <code>usethis::edit_r_environ()</code>).</p>
 <p><strong>NOTE:</strong></p>
 <p>The path passed via the environment variable or option is expected to be an absolute path that points to the top level of the directory that contains the required data. This data directory is, by default, assumed to be an R package or a directory which resembles that structure. If in your case the data is not stored in a directory that resembles an R package with a <code>data-raw</code> folder, you should consider structuring your data directory that way or otherwise you will need to adjust the input to the <code>data_location()</code> function throughout the scripts.</p>
 </div>

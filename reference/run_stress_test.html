@@ -40,7 +40,12 @@
 
 
 <meta property="og:title" content="Run stress testing for provided asset type. — run_stress_test" />
-<meta property="og:description" content="Run stress testing for provided asset type." />
+<meta property="og:description" content="This function runs the transition risk stress test. It can be desirable to
+understand sensitivities of the scenarios, in which case the user may pass a
+vector of values to one (and only one) of the detail arguments. This will
+result in running the analysis multiple times in a row with the argument
+varied.
+NOTE: argument asset_type_arg is not iterateable." />
 
 
 
@@ -109,84 +114,87 @@
     </div>
 
     <div class="ref-description">
-    <p>Run stress testing for provided asset type.</p>
+    <p>This function runs the transition risk stress test. It can be desirable to
+understand sensitivities of the scenarios, in which case the user may pass a
+vector of values to one (and only one) of the detail arguments. This will
+result in running the analysis multiple times in a row with the argument
+varied.
+NOTE: argument <code>asset_type_arg</code> is not iterateable.</p>
     </div>
 
     <pre class="usage"><span class='fu'>run_stress_test</span><span class='op'>(</span>
-  <span class='va'>asset_type</span>,
-  lgd_senior_claims <span class='op'>=</span> <span class='fl'>0.45</span>,
-  lgd_subordinated_claims <span class='op'>=</span> <span class='fl'>0.75</span>,
-  terminal_value <span class='op'>=</span> <span class='fl'>0</span>,
-  risk_free_rate <span class='op'>=</span> <span class='fl'>0.02</span>,
-  discount_rate <span class='op'>=</span> <span class='fl'>0.02</span>,
-  div_netprofit_prop_coef <span class='op'>=</span> <span class='fl'>1</span>,
-  shock_year <span class='op'>=</span> <span class='fl'>2030</span>,
-  term <span class='op'>=</span> <span class='fl'>2</span>,
-  company_exclusion <span class='op'>=</span> <span class='cn'>TRUE</span>
+  <span class='va'>asset_type_arg</span>,
+  lgd_senior_claims_arg <span class='op'>=</span> <span class='fl'>0.45</span>,
+  lgd_subordinated_claims_arg <span class='op'>=</span> <span class='fl'>0.75</span>,
+  terminal_value_arg <span class='op'>=</span> <span class='fl'>0</span>,
+  risk_free_rate_arg <span class='op'>=</span> <span class='fl'>0.02</span>,
+  discount_rate_arg <span class='op'>=</span> <span class='fl'>0.02</span>,
+  div_netprofit_prop_coef_arg <span class='op'>=</span> <span class='fl'>1</span>,
+  shock_year_arg <span class='op'>=</span> <span class='fl'>2030</span>,
+  term_arg <span class='op'>=</span> <span class='fl'>2</span>,
+  company_exclusion_arg <span class='op'>=</span> <span class='cn'>TRUE</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>asset_type</th>
+      <th>asset_type_arg</th>
       <td><p>String holding asset_type, for allowed value compare
 <code>asset_types_lookup</code>.</p></td>
     </tr>
     <tr>
-      <th>lgd_senior_claims</th>
+      <th>lgd_senior_claims_arg</th>
       <td><p>Numeric, holding the loss given default for senior
 claims, for accepted value range check <code>lgd_senior_claims_range_lookup</code>.</p></td>
     </tr>
     <tr>
-      <th>lgd_subordinated_claims</th>
+      <th>lgd_subordinated_claims_arg</th>
       <td><p>Numeric, holding the loss given default for
 subordinated claims, for accepted value range check
 <code>lgd_subordinated_claims_range_lookup</code>.</p></td>
     </tr>
     <tr>
-      <th>terminal_value</th>
+      <th>terminal_value_arg</th>
       <td><p>Numeric. A ratio to determine the share of the
 discounted value used in the terminal value calculation beyond the
 projected time frame. For accepted range compare <code>terminal_value_range_lookup</code>.</p></td>
     </tr>
     <tr>
-      <th>risk_free_rate</th>
+      <th>risk_free_rate_arg</th>
       <td><p>Numeric that indicates the risk free rate of interest.
 For accepted range compare <code>risk_free_rate_range_lookup</code>.</p></td>
     </tr>
     <tr>
-      <th>discount_rate</th>
+      <th>discount_rate_arg</th>
       <td><p>Numeric, that holds the discount rate of dividends per
 year in the DCF. For accepted range compare <code>discount_rate_range_lookup</code>.</p></td>
     </tr>
     <tr>
-      <th>div_netprofit_prop_coef</th>
+      <th>div_netprofit_prop_coef_arg</th>
       <td><p>Numeric. A coefficient that determines how
 strongly the future dividends propagate to the company value. For accepted
 range compare <code>div_netprofit_prop_coef_range_lookup</code>.</p></td>
     </tr>
     <tr>
-      <th>shock_year</th>
+      <th>shock_year_arg</th>
       <td><p>Numeric, holding year the shock is applied. For accepted
 range compare <code>shock_year_range_lookup</code>.</p></td>
     </tr>
     <tr>
-      <th>term</th>
+      <th>term_arg</th>
       <td><p>Numeric. A coefficient that determines for which maturity the
 expected loss should be calculated in the credit risk section. For accepted
 range compare <code>term_range_lookup</code>.</p></td>
     </tr>
     <tr>
-      <th>company_exclusion</th>
+      <th>company_exclusion_arg</th>
       <td><p>Boolean, indicating if companies provided in dataset
 excluded_companies.csv shall be excluded.</p></td>
     </tr>
     </table>
 
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

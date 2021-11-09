@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Does this computer have a local copy of 2dii's dropbox folder? — dropbox_exists • r2dii.climate.stress.test</title>
+<title>Get name of iterator variable — get_iter_var • r2dii.climate.stress.test</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Does this computer have a local copy of 2dii's dropbox folder? — dropbox_exists" />
-<meta property="og:description" content="Does this computer have a local copy of 2dii's dropbox folder?" />
+<meta property="og:title" content="Get name of iterator variable — get_iter_var" />
+<meta property="og:description" content="Uses fallback if no iterator is used. Aborts if &amp;gt; 1 iterator is given." />
 
 
 
@@ -103,33 +103,31 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Does this computer have a local copy of 2dii's dropbox folder?</h1>
+    <h1>Get name of iterator variable</h1>
     
-    <div class="hidden name"><code>dropbox_exists.Rd</code></div>
+    <div class="hidden name"><code>get_iter_var.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Does this computer have a local copy of 2dii's dropbox folder?</p>
+    <p>Uses fallback if no iterator is used. Aborts if &gt; 1 iterator is given.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>dropbox_exists</span><span class='op'>(</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>get_iter_var</span><span class='op'>(</span><span class='va'>args_list</span><span class='op'>)</span></pre>
 
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>args_list</th>
+      <td><p>Named list of default and provided arguments in function
+call to <code><a href='run_stress_test.html'>run_stress_test()</a></code>.</p></td>
+    </tr>
+    </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Logical.</p>
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+    <p>String holding name of iterator variable.</p>
 
-    <div class='dont-index'><p>Other miscellaneous utility functions: 
-<code><a href='data_path.html'>data_path</a>()</code>,
-<code><a href='degrees.html'>degrees</a>()</code>,
-<code><a href='get_st_data_path.html'>get_st_data_path</a>()</code></p></div>
-
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='r-in'><span class='fu'>dropbox_exists</span><span class='op'>(</span><span class='op'>)</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> /home/runner/Dropbox (2° Investing) </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>                               FALSE </span>
-</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Does this computer have a local copy of 2dii's dropbox folder? — dropbox_exists • r2dii.climate.stress.test</title>
+<title>Iterate over stress test runs — run_stress_test_iteration • r2dii.climate.stress.test</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Does this computer have a local copy of 2dii's dropbox folder? — dropbox_exists" />
-<meta property="og:description" content="Does this computer have a local copy of 2dii's dropbox folder?" />
+<meta property="og:title" content="Iterate over stress test runs — run_stress_test_iteration" />
+<meta property="og:description" content="Iterate over stress test runs" />
 
 
 
@@ -103,33 +103,35 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Does this computer have a local copy of 2dii's dropbox folder?</h1>
+    <h1>Iterate over stress test runs</h1>
     
-    <div class="hidden name"><code>dropbox_exists.Rd</code></div>
+    <div class="hidden name"><code>run_stress_test_iteration.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Does this computer have a local copy of 2dii's dropbox folder?</p>
+    <p>Iterate over stress test runs</p>
     </div>
 
-    <pre class="usage"><span class='fu'>dropbox_exists</span><span class='op'>(</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>run_stress_test_iteration</span><span class='op'>(</span><span class='va'>n</span>, <span class='va'>args_tibble</span><span class='op'>)</span></pre>
 
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>n</th>
+      <td><p>Numeric.</p></td>
+    </tr>
+    <tr>
+      <th>args_tibble</th>
+      <td><p>A tibble holding a set of params for
+<code>run_stress_test_imp</code> per row.</p></td>
+    </tr>
+    </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Logical.</p>
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+    <p>List of stress test results.</p>
 
-    <div class='dont-index'><p>Other miscellaneous utility functions: 
-<code><a href='data_path.html'>data_path</a>()</code>,
-<code><a href='degrees.html'>degrees</a>()</code>,
-<code><a href='get_st_data_path.html'>get_st_data_path</a>()</code></p></div>
-
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='r-in'><span class='fu'>dropbox_exists</span><span class='op'>(</span><span class='op'>)</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> /home/runner/Dropbox (2° Investing) </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>                               FALSE </span>
-</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
