@@ -82,10 +82,10 @@ import_asset_results <- function() {
   results_path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "outputs")
 
   bonds_results_company <- readr::read_csv(file.path(results_path, "stress_test_results_bonds_comp_shock_year.csv"))
-  bonds_results_port <- readr::read_csv(file.path(results_path, "stress_test_results_bonds_port_term_shock_year.csv"))
-  bonds_expected_loss <- readr::read_csv(file.path(results_path, "stress_test_results_bonds_comp_el_standard_shock_year.csv"))
-  bonds_annual_pd_changes_sector <- readr::read_csv(file.path(results_path, "stress_test_results_bonds_sector_pd_changes_annual_standard_shock_year.csv"))
-  bonds_overall_pd_changes_sector <- readr::read_csv(file.path(results_path, "stress_test_results_bonds_sector_pd_changes_overall_standard_shock_year.csv"))
+  bonds_results_port <- readr::read_csv(file.path(results_path, "stress_test_results_bonds_port_shock_year.csv"))
+  bonds_expected_loss <- readr::read_csv(file.path(results_path, "stress_test_results_bonds_comp_el_shock_year.csv"))
+  bonds_annual_pd_changes_sector <- readr::read_csv(file.path(results_path, "stress_test_results_bonds_sector_pd_changes_annual_shock_year.csv"))
+  bonds_overall_pd_changes_sector <- readr::read_csv(file.path(results_path, "stress_test_results_bonds_sector_pd_changes_overall_shock_year.csv"))
 
   asset_results <- list(
     bonds_results_company = bonds_results_company,
