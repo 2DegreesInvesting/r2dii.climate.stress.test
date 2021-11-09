@@ -121,5 +121,18 @@ calculate_exposure_by_technology_and_company <- function(asset_type,
      composite_unique_cols = names(.)
    )
 
+  all_exposures <- length(unique(exposure_by_technology_and_company$company_name))
+
+  wrangled_pacta_results <- exposure_by_technology_and_company %>%
+    dplyr::filter(.data$plan_carsten > 0)
+
+  if (all_exposures > length(unique(exposure_by_technology_and_company$company_name))) {
+    cat(
+      "      >> When filtering out holdings with exposures of 0 value, dropped rows for",
+      all_exposures - length(unique(exposure_by_technology_and_company$company_name)),
+      "out of", all_exposures, "companies\n"
+    )
+  }
+
   return(exposure_by_technology_and_company)
 }
