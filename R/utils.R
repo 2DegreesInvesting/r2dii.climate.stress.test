@@ -121,6 +121,7 @@ validate_data_has_expected_cols <- function(data,
 #' @return input `data`.
 #' @export
 report_all_duplicate_kinds <- function(data, composite_unique_cols, throw_error = TRUE) {
+
   validate_data_has_expected_cols(
     data = data,
     expected_columns = composite_unique_cols

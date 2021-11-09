@@ -41,11 +41,11 @@ write_stress_test_results <- function(results, expected_loss,
       .data$scenario_name, .data$scenario_geography, .data$investor_name,
       .data$portfolio_name, .data$company_name, .data$id, .data$ald_sector,
       .data$equity_0_baseline, .data$equity_0_late_sudden, .data$debt,
-      .data$volatility, .data$risk_free_rate, .data$term, .data$Survival_baseline,
+      .data$volatility, .data$Survival_baseline,
       .data$Survival_late_sudden, .data$PD_baseline, .data$PD_late_sudden,
       .data$PD_change, .data$pd, .data$lgd, .data$percent_exposure, # TODO: keep all tehse PDs??
       .data$exposure_at_default, .data$expected_loss_baseline,
-      .data$expected_loss_late_sudden
+      .data$expected_loss_late_sudden, !!!rlang::syms(sensitivity_analysis_vars)
     ) %>%
     dplyr::arrange(
       .data$scenario_geography, .data$scenario_name, .data$investor_name,
@@ -59,7 +59,7 @@ write_stress_test_results <- function(results, expected_loss,
     report_all_duplicate_kinds(
       composite_unique_cols = c(
         "scenario_name", "scenario_geography", "investor_name", "portfolio_name",
-        "company_name", "id", "ald_sector", "term",
+        "company_name", "id", "ald_sector",
         sensitivity_analysis_vars
       )
     ) %>%
@@ -71,7 +71,8 @@ write_stress_test_results <- function(results, expected_loss,
   annual_pd_changes_sector <- annual_pd_changes %>%
     dplyr::group_by(
       .data$scenario_name, .data$scenario_geography, .data$investor_name,
-      .data$portfolio_name, .data$ald_sector, .data$year
+      .data$portfolio_name, .data$ald_sector, .data$year,
+      !!!rlang::syms(sensitivity_analysis_vars)
     ) %>%
     dplyr::summarise(
       # ADO 2312 - weight the PD change by baseline equity because this represents the original exposure better
@@ -102,7 +103,7 @@ write_stress_test_results <- function(results, expected_loss,
   overall_pd_changes_sector <- overall_pd_changes %>%
     dplyr::group_by(
       .data$scenario_name, .data$scenario_geography, .data$investor_name,
-      .data$portfolio_name, .data$ald_sector, .data$term
+      .data$portfolio_name, .data$ald_sector, !!!rlang::syms(sensitivity_analysis_vars)
     ) %>%
     dplyr::summarise(
       # ADO 2312 - weight the PD change by baseline equity because this represents the original exposure better
@@ -122,7 +123,7 @@ write_stress_test_results <- function(results, expected_loss,
     report_all_duplicate_kinds(
       composite_unique_cols = c(
         "scenario_name", "scenario_geography", "investor_name", "portfolio_name",
-        "ald_sector", "term", sensitivity_analysis_vars
+        "ald_sector", sensitivity_analysis_vars
       )
     ) %>%
     readr::write_csv(file.path(
@@ -362,7 +363,7 @@ write_results_new <- function(data,
       .data$analysed_sectors_exposure, .data$VaR_analysed_sectors,
       .data$analysed_sectors_value_change, .data$portfolio_aum,
       .data$portfolio_value_change_perc, .data$portfolio_value_change,
-      .data$exclude
+      .data$exclude, !!!rlang::syms(sensitivity_analysis_vars)
     ) %>%
     report_missings(
       name_data = "Stress test results - Company level"
@@ -401,7 +402,8 @@ write_results_new <- function(data,
       .data$sector_exposure, .data$VaR_sector, .data$sector_value_change,
       .data$analysed_sectors_exposure, .data$VaR_analysed_sectors,
       .data$analysed_sectors_value_change, .data$portfolio_aum,
-      .data$portfolio_value_change_perc, .data$portfolio_value_change
+      .data$portfolio_value_change_perc, .data$portfolio_value_change,
+      !!!rlang::syms(sensitivity_analysis_vars)
     ) %>%
     # ADO 2549 - all numeric variables should be unique across the CUC variables
     # running distinct all and the check afterwards ensures this is the case
