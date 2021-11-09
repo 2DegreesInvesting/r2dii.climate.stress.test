@@ -65,13 +65,27 @@ run_stress_test <- function(asset_type,
 }
 
 run_stress_test_iteration <- function(n, args_tibble) {
-  arg_list_row <- args_tibble %>%
-    dplyr::slice(n) %>%
+  arg_tibble_row <- args_tibble %>%
+    dplyr::slice(n)
+
+  arg_list_row <- arg_tibble_row %>%
     as.list()
 
-  st_result <- do.call(args = arg_list_row, what = run_stress_test_impl)
+  st_result <- do.call(args = arg_list_row, what = run_stress_test_impl) %>%
+    purrr::map(append_without_duplicate_cols, arg_tibble_row = arg_tibble_row)
 }
 
+append_without_duplicate_cols <- function(result, arg_tibble_row) {
+  overlap_cols <- dplyr::intersect(names(result), names(arg_tibble_row))
+  if (length(overlap_cols) > 0) {
+
+    result <- result %>%
+      dplyr::select(-overlap_cols)
+
+  }
+  appened_results <- dplyr::bind_cols(result, arg_tibble_row)
+  return(appened_results)
+}
 
 #' Run stress testing for provided asset type.
 #'
