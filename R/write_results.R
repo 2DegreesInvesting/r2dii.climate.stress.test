@@ -187,7 +187,7 @@ write_results <- function(data,
      "VaR_sector", "scenario_name", "technology_exposure", "sector_exposure",
      "sector_loss", "climate_relevant_var", "portfolio_aum",
      "portfolio_loss_perc", "year_of_shock", "duration_of_shock",
-     "production_shock_perc"
+     "production_shock_perc", sensitivity_analysis_vars
    )
   }
   validate_data_has_expected_cols(
@@ -343,7 +343,7 @@ write_results_new <- function(data,
       "sector_exposure", "VaR_sector", "sector_value_change",
       "analysed_sectors_exposure", "VaR_analysed_sectors",
       "analysed_sectors_value_change", "portfolio_aum",
-      "portfolio_value_change_perc", "portfolio_value_change"
+      "portfolio_value_change_perc", "portfolio_value_change", sensitivity_analysis_vars
     )
   )
 
