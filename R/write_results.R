@@ -189,7 +189,7 @@ write_results <- function(data,
      "VaR_sector", "scenario_name", "technology_exposure", "sector_exposure",
      "sector_loss", "climate_relevant_var", "portfolio_aum",
      "portfolio_loss_perc", "year_of_shock", "duration_of_shock",
-     "production_shock_perc", sensitivity_analysis_vars
+     "production_shock_perc"
    )
   }
   validate_data_has_expected_cols(
