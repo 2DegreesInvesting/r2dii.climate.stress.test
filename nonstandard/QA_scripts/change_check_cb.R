@@ -57,14 +57,14 @@ check_all_equal <- function(old_results, new_results) {
 
 ### 1. check out master branch of repo (or whichever branch you want to use as reference)
 devtools::load_all()
-run_stress_test(asset_type_arg = "bonds")
+run_stress_test(asset_type = "bonds")
 
 ### 2. run the following lines to obtain results
 old_results <- import_asset_results()
 
 ### 3. check out dev branch of repo (or whichever branch you want to use as comparison)
 devtools::load_all()
-run_stress_test(asset_type_arg = "bonds")
+run_stress_test(asset_type = "bonds")
 
 ### 4. run the following lines to run script or equity and bonds and obtain results
 new_results <- import_asset_results()
@@ -81,11 +81,11 @@ check
 import_asset_results <- function() {
   results_path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "outputs")
 
-  bonds_results_company <- readr::read_csv(file.path(results_path, "stress_test_results_bonds_comp_shock_year_arg.csv"))
-  bonds_results_port <- readr::read_csv(file.path(results_path, "stress_test_results_bonds_port_shock_year_arg.csv"))
-  bonds_expected_loss <- readr::read_csv(file.path(results_path, "stress_test_results_bonds_comp_el_shock_year_arg.csv"))
-  bonds_annual_pd_changes_sector <- readr::read_csv(file.path(results_path, "stress_test_results_bonds_sector_pd_changes_annual_shock_year_arg.csv"))
-  bonds_overall_pd_changes_sector <- readr::read_csv(file.path(results_path, "stress_test_results_bonds_sector_pd_changes_overall_shock_year_arg.csv"))
+  bonds_results_company <- readr::read_csv(file.path(results_path, "stress_test_results_bonds_comp_shock_year.csv"))
+  bonds_results_port <- readr::read_csv(file.path(results_path, "stress_test_results_bonds_port_shock_year.csv"))
+  bonds_expected_loss <- readr::read_csv(file.path(results_path, "stress_test_results_bonds_comp_el_shock_year.csv"))
+  bonds_annual_pd_changes_sector <- readr::read_csv(file.path(results_path, "stress_test_results_bonds_sector_pd_changes_annual_shock_year.csv"))
+  bonds_overall_pd_changes_sector <- readr::read_csv(file.path(results_path, "stress_test_results_bonds_sector_pd_changes_overall_shock_year.csv"))
 
   asset_results <- list(
     bonds_results_company = bonds_results_company,
@@ -107,14 +107,14 @@ import_asset_results <- function() {
 
 ### 1. check out master branch of repo (or whichever branch you want to use as reference)
 devtools::load_all()
-run_stress_test(asset_type_arg = "bonds", shock_year_arg = c(2025, 2030, 2033))
+run_stress_test(asset_type = "bonds", shock_year = c(2025, 2030, 2033))
 
 ### 2. run the following lines to obtain results
 old_results <- import_asset_results()
 
 ### 3. check out dev branch of repo (or whichever branch you want to use as comparison)
 devtools::load_all()
-run_stress_test(asset_type_arg = "bonds", shock_year_arg = c(2025, 2030, 2033))
+run_stress_test(asset_type = "bonds", shock_year = c(2025, 2030, 2033))
 
 ### 4. run the following lines to run script or equity and bonds and obtain results
 new_results <- import_asset_results()

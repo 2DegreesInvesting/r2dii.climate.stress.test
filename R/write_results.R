@@ -26,6 +26,7 @@ write_stress_test_results <- function(results, expected_loss,
 
   results_path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "outputs")
 
+  sensitivity_analysis_vars <- paste0(sensitivity_analysis_vars, "_arg")
   results %>%
     write_results_new(
       path_to_results = results_path,

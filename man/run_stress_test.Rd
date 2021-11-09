@@ -5,51 +5,51 @@
 \title{Run stress testing for provided asset type.}
 \usage{
 run_stress_test(
-  asset_type_arg,
-  lgd_senior_claims_arg = 0.45,
-  lgd_subordinated_claims_arg = 0.75,
-  terminal_value_arg = 0,
-  risk_free_rate_arg = 0.02,
-  discount_rate_arg = 0.02,
-  div_netprofit_prop_coef_arg = 1,
-  shock_year_arg = 2030,
-  term_arg = 2,
-  company_exclusion_arg = TRUE
+  asset_type,
+  lgd_senior_claims = 0.45,
+  lgd_subordinated_claims = 0.75,
+  terminal_value = 0,
+  risk_free_rate = 0.02,
+  discount_rate = 0.02,
+  div_netprofit_prop_coef = 1,
+  shock_year = 2030,
+  term = 2,
+  company_exclusion = TRUE
 )
 }
 \arguments{
-\item{asset_type_arg}{String holding asset_type, for allowed value compare
+\item{asset_type}{String holding asset_type, for allowed value compare
 \code{asset_types_lookup}.}
 
-\item{lgd_senior_claims_arg}{Numeric, holding the loss given default for senior
+\item{lgd_senior_claims}{Numeric, holding the loss given default for senior
 claims, for accepted value range check \code{lgd_senior_claims_range_lookup}.}
 
-\item{lgd_subordinated_claims_arg}{Numeric, holding the loss given default for
+\item{lgd_subordinated_claims}{Numeric, holding the loss given default for
 subordinated claims, for accepted value range check
 \code{lgd_subordinated_claims_range_lookup}.}
 
-\item{terminal_value_arg}{Numeric. A ratio to determine the share of the
+\item{terminal_value}{Numeric. A ratio to determine the share of the
 discounted value used in the terminal value calculation beyond the
 projected time frame. For accepted range compare \code{terminal_value_range_lookup}.}
 
-\item{risk_free_rate_arg}{Numeric that indicates the risk free rate of interest.
+\item{risk_free_rate}{Numeric that indicates the risk free rate of interest.
 For accepted range compare \code{risk_free_rate_range_lookup}.}
 
-\item{discount_rate_arg}{Numeric, that holds the discount rate of dividends per
+\item{discount_rate}{Numeric, that holds the discount rate of dividends per
 year in the DCF. For accepted range compare \code{discount_rate_range_lookup}.}
 
-\item{div_netprofit_prop_coef_arg}{Numeric. A coefficient that determines how
+\item{div_netprofit_prop_coef}{Numeric. A coefficient that determines how
 strongly the future dividends propagate to the company value. For accepted
 range compare \code{div_netprofit_prop_coef_range_lookup}.}
 
-\item{shock_year_arg}{Numeric, holding year the shock is applied. For accepted
+\item{shock_year}{Numeric, holding year the shock is applied. For accepted
 range compare \code{shock_year_range_lookup}.}
 
-\item{term_arg}{Numeric. A coefficient that determines for which maturity the
+\item{term}{Numeric. A coefficient that determines for which maturity the
 expected loss should be calculated in the credit risk section. For accepted
 range compare \code{term_range_lookup}.}
 
-\item{company_exclusion_arg}{Boolean, indicating if companies provided in dataset
+\item{company_exclusion}{Boolean, indicating if companies provided in dataset
 excluded_companies.csv shall be excluded.}
 }
 \description{
@@ -58,5 +58,5 @@ understand sensitivities of the scenarios, in which case the user may pass a
 vector of values to one (and only one) of the detail arguments. This will
 result in running the analysis multiple times in a row with the argument
 varied.
-NOTE: argument \code{asset_type_arg} is not iterateable.
+NOTE: argument \code{asset_type} is not iterateable.
 }
