@@ -58,4 +58,5 @@ understand sensitivities of the scenarios, in which case the user may pass a
 vector of values to one (and only one) of the detail arguments. This will
 result in running the analysis multiple times in a row with the argument
 varied.
+NOTE: argument \code{asset_type} is not iterateable.
 }

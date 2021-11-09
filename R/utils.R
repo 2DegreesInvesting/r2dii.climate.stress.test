@@ -346,6 +346,11 @@ get_iter_var <- function(args_list) {
     iter_var <- "standard"
   } else if (nrow(iterate_arg) == 1) {
     iter_var <- iterate_arg$name
+
+    if (iter_var == "asset_type") {
+      rlang::abort(
+        "Cannot iterate over argument asset_type")
+    }
   } else {
     rlang::abort(c(
       "Must provide no more than one argument with multiple values.",
