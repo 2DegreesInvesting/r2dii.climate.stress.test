@@ -5,6 +5,7 @@
 #' vector of values to one (and only one) of the detail arguments. This will
 #' result in running the analysis multiple times in a row with the argument
 #' varied.
+#' NOTE: argument `asset_type` is not iterateable.
 #'
 #' @param asset_type String holding asset_type, for allowed value compare
 #'   `asset_types_lookup`.
