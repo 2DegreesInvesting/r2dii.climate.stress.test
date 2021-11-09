@@ -69,3 +69,29 @@ validate_input_values <- function(lgd_senior_claims, lgd_subordinated_claims,
     stop("Invalid value for argument asset_type")
   }
 }
+
+#' Validate that only one argument is long
+#'
+#' Throws error if more than one argument has length > 1.
+#'
+#' @param args_list Named list of default and provided arguments in function
+#'   call to [run_stress_test()].
+#'
+#' @return Input `args_list`
+validate_only_one_iterator <- function(args_list) {
+
+  iterate_arg <- purrr::map_int(args_list, length) %>%
+    tibble::enframe() %>%
+    dplyr::filter(value > 1)
+
+  if (nrow(iterate_arg) > 1) {
+    rlang::abort(c(
+      "Must provide no more than one argument with multiple values.",
+      x = glue::glue("Arguments with multiple values: {toString(names(data))}."),
+      i = "Did you forget to pick only one?"
+    ))
+  }
+
+  return(invisible(args_list))
+
+}

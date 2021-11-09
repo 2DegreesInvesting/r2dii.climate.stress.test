@@ -45,7 +45,8 @@ run_stress_test  <- function(asset_type,
 
   cat("Running transition risk stress test \n")
 
-  args_list <- mget(names(formals()), sys.frame(sys.nframe()))
+  args_list <- mget(names(formals()), sys.frame(sys.nframe())) %>%
+    validate_only_one_iterator()
 
   args_tibble <- tibble::as_tibble(args_list)
 
@@ -54,7 +55,6 @@ run_stress_test  <- function(asset_type,
       dplyr::slice(n) %>%
       as.list()
 
-  do.call(args = arg_list_row, what = validate_input_values)
   do.call(args = arg_list_row, what = run_stress_test_impl)
   })
 
@@ -89,6 +89,10 @@ run_stress_test_impl <- function(asset_type,
                                  shock_year,
                                  term,
                                  company_exclusion) {
+
+  cat("Validating input arguments. \n")
+
+  do.call(args = mget(names(formals()), sys.frame(sys.nframe())), what = validate_input_values)
 
   cat("-- Configuring analysis settings. \n")
 
