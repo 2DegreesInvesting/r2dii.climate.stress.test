@@ -326,3 +326,32 @@ assign_lgd <- function(asset_type, lgd_senior_claims,
   lgd <- ifelse(asset_type %in% c("equity", "bonds"), lgd_subordinated_claims, lgd_senior_claims)
   return(lgd)
 }
+
+#' Get name of iterator variable
+#'
+#' Uses fallback if no iterator is used. Aborts if > 1 iterator is given.
+#'
+#' @param args_list Named list of default and provided arguments in function
+#'   call to [run_stress_test()].
+#'
+#' @return String holding name of iterator variable.
+get_iter_var <- function(args_list) {
+
+  iterate_arg <- purrr::map_int(args_list, length) %>%
+    tibble::enframe() %>%
+    dplyr::filter(value > 1)
+
+  if (nrow(iterate_arg) == 0) {
+    iter_var <- "STANDARD"
+  } else if (nrow(iterate_arg) == 1) {
+    iter_var <- iterate_arg$name
+  } else {
+    rlang::abort(c(
+      "Must provide no more than one argument with multiple values.",
+      x = glue::glue("Arguments with multiple values: {toString(iterate_arg$name)}."),
+      i = "Did you forget to pick only one?"
+    ))
+  }
+
+  return(iter_var)
+}

@@ -45,9 +45,8 @@ run_stress_test  <- function(asset_type,
 
   cat("Running transition risk stress test \n")
 
-  args_list <- mget(names(formals()), sys.frame(sys.nframe())) %>%
-    validate_only_one_iterator()
-
+  args_list <- mget(names(formals()), sys.frame(sys.nframe()))
+  iter_var <- get_iter_var(args_list)
   args_tibble <- tibble::as_tibble(args_list)
 
   purrr::map(1:nrow(args_tibble), function(n) {
@@ -64,7 +63,9 @@ run_stress_test  <- function(asset_type,
     annual_pd_changes = st_results$annual_pd_changes,
     overall_pd_changes = st_results$overall_pd_changes,
     asset_type = asset_type,
-    calculation_level = calculation_level_lookup
+    calculation_level = calculation_level_lookup,
+    sensitivity_analysis_vars = names(args_list),
+    iter_var = iter_var
   )
 
   cat("-- Exported results to designated output path. \n")
