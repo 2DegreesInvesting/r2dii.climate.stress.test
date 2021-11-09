@@ -18,7 +18,7 @@ subordinated claims, for accepted value range check
 \code{lgd_subordinated_claims_range_lookup}.}
 }
 \value{
-A numerix holding value of lgd.
+A numeric holding value of lgd.
 }
 \description{
 Assigns value of lgd based on \code{asset_type}. Can be from \code{lgd_senior_claims}

@@ -5,11 +5,11 @@ import_asset_results <- function() {
 
   results_path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "outputs")
 
-  equity_results_company <- readr::read_csv(file.path(results_path, "stress_test_results_equity_comp.csv"))
-  equity_results_port <- readr::read_csv(file.path(results_path, "stress_test_results_equity_port.csv"))
-  equity_expected_loss <- readr::read_csv(file.path(results_path, "stress_test_results_equity_comp_el.csv"))
-  equity_annual_pd_changes_sector <- readr::read_csv(file.path(results_path, "stress_test_results_equity_sector_pd_changes_annual.csv"))
-  equity_overall_pd_changes_sector <- readr::read_csv(file.path(results_path, "stress_test_results_equity_sector_pd_changes_overall.csv"))
+  equity_results_company <- readr::read_csv(file.path(results_path, "stress_test_results_equity_comp_standard.csv"))
+  equity_results_port <- readr::read_csv(file.path(results_path, "stress_test_results_equity_port_standard.csv"))
+  equity_expected_loss <- readr::read_csv(file.path(results_path, "stress_test_results_equity_comp_el_standard.csv"))
+  equity_annual_pd_changes_sector <- readr::read_csv(file.path(results_path, "stress_test_results_equity_sector_pd_changes_annual_standard.csv"))
+  equity_overall_pd_changes_sector <- readr::read_csv(file.path(results_path, "stress_test_results_equity_sector_pd_changes_overall_standard.csv"))
 
 
   asset_results <- list(
@@ -57,14 +57,14 @@ check_all_equal <- function(old_results, new_results) {
 
 ### 1. check out master branch of repo (or whichever branch you want to use as reference)
 devtools::load_all()
-run_stress_test(asset_type = "equity")
+run_stress_test(asset_type_arg = "equity")
 
 ### 2. run the following lines to obtain results
 old_results <- import_asset_results()
 
 ### 3. check out dev branch of repo (or whichever branch you want to use as comparison)
 devtools::load_all()
-run_stress_test(asset_type = "equity")
+run_stress_test(asset_type_arg = "equity")
 
 
 ### 4. run the following lines to run script or equity and bonds and obtain results

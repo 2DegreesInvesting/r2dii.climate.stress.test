@@ -121,6 +121,7 @@ validate_data_has_expected_cols <- function(data,
 #' @return input `data`.
 #' @export
 report_all_duplicate_kinds <- function(data, composite_unique_cols, throw_error = TRUE) {
+
   validate_data_has_expected_cols(
     data = data,
     expected_columns = composite_unique_cols
@@ -206,7 +207,7 @@ report_duplicates <- function(data, cols, throw_error = TRUE) {
 #' are lsot due to a missing match in financial_data or price_data.
 #'
 #' @param data_list A list of imported stress test input data.
-#' @inheritParams run_stress_test
+#' @inheritParams validate_input_values
 #'
 #' @return NULL
 report_company_drops <- function(data_list, asset_type) {
@@ -305,7 +306,7 @@ report_missings <- function(data, name_data, throw_error = FALSE) {
 #'
 #' Assign value of flat multiplier based on `asset_type`.
 #'
-#' @inheritParams run_stress_test
+#' @inheritParams validate_input_values
 #'
 #' @return A double holding value of the flat multiplier.
 assign_flat_multiplier <- function(asset_type) {
@@ -318,11 +319,45 @@ assign_flat_multiplier <- function(asset_type) {
 #' Assigns value of lgd based on `asset_type`. Can be from `lgd_senior_claims`
 #' or `lgd_subordinated_claims`.
 #'
-#' @inheritParams run_stress_test
+#' @inheritParams validate_input_values
 #'
-#' @return A numerix holding value of lgd.
+#' @return A numeric holding value of lgd.
 assign_lgd <- function(asset_type, lgd_senior_claims,
                        lgd_subordinated_claims) {
   lgd <- ifelse(asset_type %in% c("equity", "bonds"), lgd_subordinated_claims, lgd_senior_claims)
   return(lgd)
+}
+
+#' Get name of iterator variable
+#'
+#' Uses fallback if no iterator is used. Aborts if > 1 iterator is given.
+#'
+#' @param args_list Named list of default and provided arguments in function
+#'   call to [run_stress_test()].
+#'
+#' @return String holding name of iterator variable.
+get_iter_var <- function(args_list) {
+
+  iterate_arg <- purrr::map_int(args_list, length) %>%
+    tibble::enframe() %>%
+    dplyr::filter(.data$value > 1)
+
+  if (nrow(iterate_arg) == 0) {
+    iter_var <- "standard"
+  } else if (nrow(iterate_arg) == 1) {
+    iter_var <- iterate_arg$name
+
+    if (iter_var == "asset_type_arg") {
+      rlang::abort(
+        "Cannot iterate over argument asset_type")
+    }
+  } else {
+    rlang::abort(c(
+      "Must provide no more than one argument with multiple values.",
+      x = glue::glue("Arguments with multiple values: {toString(iterate_arg$name)}."),
+      i = "Did you forget to pick only one?"
+    ))
+  }
+
+  return(iter_var)
 }
