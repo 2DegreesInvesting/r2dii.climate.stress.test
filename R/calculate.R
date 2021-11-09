@@ -123,7 +123,7 @@ calculate_exposure_by_technology_and_company <- function(asset_type,
 
   all_exposures <- length(unique(exposure_by_technology_and_company$company_name))
 
-  wrangled_pacta_results <- exposure_by_technology_and_company %>%
+  exposure_by_technology_and_company <- exposure_by_technology_and_company %>%
     dplyr::filter(.data$plan_carsten > 0)
 
   if (all_exposures > length(unique(exposure_by_technology_and_company$company_name))) {
