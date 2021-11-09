@@ -207,7 +207,7 @@ report_duplicates <- function(data, cols, throw_error = TRUE) {
 #' are lsot due to a missing match in financial_data or price_data.
 #'
 #' @param data_list A list of imported stress test input data.
-#' @inheritParams run_stress_test
+#' @inheritParams validate_input_values
 #'
 #' @return NULL
 report_company_drops <- function(data_list, asset_type) {
@@ -306,7 +306,7 @@ report_missings <- function(data, name_data, throw_error = FALSE) {
 #'
 #' Assign value of flat multiplier based on `asset_type`.
 #'
-#' @inheritParams run_stress_test
+#' @inheritParams validate_input_values
 #'
 #' @return A double holding value of the flat multiplier.
 assign_flat_multiplier <- function(asset_type) {
@@ -319,9 +319,9 @@ assign_flat_multiplier <- function(asset_type) {
 #' Assigns value of lgd based on `asset_type`. Can be from `lgd_senior_claims`
 #' or `lgd_subordinated_claims`.
 #'
-#' @inheritParams run_stress_test
+#' @inheritParams validate_input_values
 #'
-#' @return A numerix holding value of lgd.
+#' @return A numeric holding value of lgd.
 assign_lgd <- function(asset_type, lgd_senior_claims,
                        lgd_subordinated_claims) {
   lgd <- ifelse(asset_type %in% c("equity", "bonds"), lgd_subordinated_claims, lgd_senior_claims)
@@ -340,7 +340,7 @@ get_iter_var <- function(args_list) {
 
   iterate_arg <- purrr::map_int(args_list, length) %>%
     tibble::enframe() %>%
-    dplyr::filter(value > 1)
+    dplyr::filter(.data$value > 1)
 
   if (nrow(iterate_arg) == 0) {
     iter_var <- "standard"
@@ -360,23 +360,4 @@ get_iter_var <- function(args_list) {
   }
 
   return(iter_var)
-}
-
-#' Append without duplicat cols
-#'
-#' Function binds `data_x` and `data_y` together. In case of overlapping cols,
-#' cols from `data_y` are used.
-#'
-#' @param data_x A tibble.
-#' @param data_y A tibble.
-#'
-#' @return A tibble
-append_without_duplicate_cols <- function(data_x, data_y) {
-  overlap_cols <- dplyr::intersect(names(data_x), names(data_y))
-  if (length(overlap_cols) > 0) {
-    data_x <- data_x %>%
-      dplyr::select(-overlap_cols)
-  }
-  appened_data_x <- dplyr::bind_cols(data_x, data_y)
-  return(appened_data_x)
 }
