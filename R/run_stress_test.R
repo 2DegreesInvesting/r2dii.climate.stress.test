@@ -87,7 +87,7 @@ run_stress_test_iteration <- function(n, args_tibble) {
     as.list()
 
   st_result <- do.call(args = arg_list_row, what = run_stress_test_impl) %>%
-    purrr::map(append_without_duplicate_cols, data_y = arg_tibble_row)
+    purrr::map(dplyr::bind_cols, data_y = arg_tibble_row)
 }
 
 
@@ -96,6 +96,7 @@ run_stress_test_iteration <- function(n, args_tibble) {
 #' Runs stress test per iteration.
 #'
 #' @inheritParams run_stress_test
+#'
 #' @return A list of stress test results.
 run_stress_test_impl <- function(asset_type_arg,
                                  lgd_senior_claims_arg,

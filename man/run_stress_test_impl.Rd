@@ -5,51 +5,51 @@
 \title{Run stress testing for provided asset type.}
 \usage{
 run_stress_test_impl(
-  asset_type,
-  lgd_senior_claims,
-  lgd_subordinated_claims,
-  terminal_value,
-  risk_free_rate,
-  discount_rate,
-  div_netprofit_prop_coef,
-  shock_year,
-  term,
-  company_exclusion
+  asset_type_arg,
+  lgd_senior_claims_arg,
+  lgd_subordinated_claims_arg,
+  terminal_value_arg,
+  risk_free_rate_arg,
+  discount_rate_arg,
+  div_netprofit_prop_coef_arg,
+  shock_year_arg,
+  term_arg,
+  company_exclusion_arg
 )
 }
 \arguments{
-\item{asset_type}{String holding asset_type, for allowed value compare
+\item{asset_type_arg}{String holding asset_type, for allowed value compare
 \code{asset_types_lookup}.}
 
-\item{lgd_senior_claims}{Numeric, holding the loss given default for senior
+\item{lgd_senior_claims_arg}{Numeric, holding the loss given default for senior
 claims, for accepted value range check \code{lgd_senior_claims_range_lookup}.}
 
-\item{lgd_subordinated_claims}{Numeric, holding the loss given default for
+\item{lgd_subordinated_claims_arg}{Numeric, holding the loss given default for
 subordinated claims, for accepted value range check
 \code{lgd_subordinated_claims_range_lookup}.}
 
-\item{terminal_value}{Numeric. A ratio to determine the share of the
+\item{terminal_value_arg}{Numeric. A ratio to determine the share of the
 discounted value used in the terminal value calculation beyond the
 projected time frame. For accepted range compare \code{terminal_value_range_lookup}.}
 
-\item{risk_free_rate}{Numeric that indicates the risk free rate of interest.
+\item{risk_free_rate_arg}{Numeric that indicates the risk free rate of interest.
 For accepted range compare \code{risk_free_rate_range_lookup}.}
 
-\item{discount_rate}{Numeric, that holds the discount rate of dividends per
+\item{discount_rate_arg}{Numeric, that holds the discount rate of dividends per
 year in the DCF. For accepted range compare \code{discount_rate_range_lookup}.}
 
-\item{div_netprofit_prop_coef}{Numeric. A coefficient that determines how
+\item{div_netprofit_prop_coef_arg}{Numeric. A coefficient that determines how
 strongly the future dividends propagate to the company value. For accepted
 range compare \code{div_netprofit_prop_coef_range_lookup}.}
 
-\item{shock_year}{Numeric, holding year the shock is applied. For accepted
+\item{shock_year_arg}{Numeric, holding year the shock is applied. For accepted
 range compare \code{shock_year_range_lookup}.}
 
-\item{term}{Numeric. A coefficient that determines for which maturity the
+\item{term_arg}{Numeric. A coefficient that determines for which maturity the
 expected loss should be calculated in the credit risk section. For accepted
 range compare \code{term_range_lookup}.}
 
-\item{company_exclusion}{Boolean, indicating if companies provided in dataset
+\item{company_exclusion_arg}{Boolean, indicating if companies provided in dataset
 excluded_companies.csv shall be excluded.}
 }
 \value{

@@ -2,7 +2,7 @@
 #'
 #' Wrapper function to calculate annual profits.
 #'
-#' @inheritParams run_stress_test
+#' @inheritParams validate_input_values
 #' @param asset_type String holding type of asset.
 #' @param input_data_list List with project agnostic and project specific input data
 #' @param scenario_to_follow_baseline Character. A string that indicates which
