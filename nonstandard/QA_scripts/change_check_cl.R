@@ -4,11 +4,11 @@
 import_asset_results <- function() {
   results_path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "outputs")
 
-  loanbook_results_company <- readr::read_csv(file.path(results_path, "stress_test_results_loans_comp.csv"))
-  loanbook_results_port <- readr::read_csv(file.path(results_path, "stress_test_results_loans_port.csv"))
-  loanbook_expected_loss <- readr::read_csv(file.path(results_path, "stress_test_results_loans_comp_el.csv"))
-  loanbook_annual_pd_changes_sector <- readr::read_csv(file.path(results_path, "stress_test_results_loans_sector_pd_changes_annual.csv"))
-  loanbook_overall_pd_changes_sector <- readr::read_csv(file.path(results_path, "stress_test_results_loans_sector_pd_changes_overall.csv"))
+  loanbook_results_company <- readr::read_csv(file.path(results_path, "stress_test_results_loans_comp_standard.csv"))
+  loanbook_results_port <- readr::read_csv(file.path(results_path, "stress_test_results_loans_port_standard.csv"))
+  loanbook_expected_loss <- readr::read_csv(file.path(results_path, "stress_test_results_loans_comp_el_standard.csv"))
+  loanbook_annual_pd_changes_sector <- readr::read_csv(file.path(results_path, "stress_test_results_loans_sector_pd_changes_annual_standard.csv"))
+  loanbook_overall_pd_changes_sector <- readr::read_csv(file.path(results_path, "stress_test_results_loans_sector_pd_changes_overall_standard.csv"))
 
   asset_results <- list(
     loanbook_results_company = loanbook_results_company,
