@@ -5,7 +5,7 @@
 #' vector of values to one (and only one) of the detail arguments. This will
 #' result in running the analysis multiple times in a row with the argument
 #' varied.
-#' NOTE: argument `asset_type` is not iterateable.
+#' NOTE: argument `asset_type_arg` is not iterateable.
 #'
 #' @param asset_type_arg String holding asset_type, for allowed value compare
 #'   `asset_types_lookup`.
@@ -63,7 +63,7 @@ run_stress_test <- function(asset_type_arg,
     expected_loss = st_results$expected_loss,
     annual_pd_changes = st_results$annual_pd_changes,
     overall_pd_changes = st_results$overall_pd_changes,
-    asset_type = asset_type,
+    asset_type = asset_type_arg,
     calculation_level = calculation_level_lookup,
     sensitivity_analysis_vars = names(args_list),
     iter_var = iter_var

@@ -107,14 +107,14 @@ import_asset_results <- function() {
 
 ### 1. check out master branch of repo (or whichever branch you want to use as reference)
 devtools::load_all()
-run_stress_test(asset_type = "bonds", shock_year = c(2025, 2030, 2033))
+run_stress_test(asset_type = "bonds", shock_year_arg = c(2025, 2030, 2033))
 
 ### 2. run the following lines to obtain results
 old_results <- import_asset_results()
 
 ### 3. check out dev branch of repo (or whichever branch you want to use as comparison)
 devtools::load_all()
-run_stress_test(asset_type = "bonds", shock_year = c(2025, 2030, 2033))
+run_stress_test(asset_type = "bonds", shock_year_arg = c(2025, 2030, 2033))
 
 ### 4. run the following lines to run script or equity and bonds and obtain results
 new_results <- import_asset_results()
