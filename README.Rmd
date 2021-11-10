@@ -58,7 +58,7 @@ run_prep_calculation_loans()
 
 ```
 
-* Lookup valid ranges of model parameters
+* Look up valid ranges of model parameters
 You can look up allowed values of model parameters  as such:
 ```{r example}
 # looking up allowed range for risk_free_rate
