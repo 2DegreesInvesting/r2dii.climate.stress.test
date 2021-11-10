@@ -9,7 +9,9 @@ write_results_new(
   path_to_results = NULL,
   asset_type = NULL,
   level = NULL,
-  file_type = NULL
+  file_type = NULL,
+  sensitivity_analysis_vars,
+  iter_var
 )
 }
 \arguments{
@@ -28,6 +30,11 @@ in the work flow. Supports "company" and "portfolio".}
 
 \item{file_type}{Character. A string containing the type of file that should
 be written to the result path. Currently supports "csv" and "rda".}
+
+\item{sensitivity_analysis_vars}{String vector holding names of iteration
+arguments.}
+
+\item{iter_var}{String holding name of iteration variable.}
 }
 \description{
 Unlike \code{\link[=write_results]{write_results()}} as used in webscript function only allows level

@@ -5,11 +5,11 @@ import_asset_results <- function() {
 
   results_path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "outputs")
 
-  equity_results_company <- readr::read_csv(file.path(results_path, "stress_test_results_equity_comp.csv"))
-  equity_results_port <- readr::read_csv(file.path(results_path, "stress_test_results_equity_port.csv"))
-  equity_expected_loss <- readr::read_csv(file.path(results_path, "stress_test_results_equity_comp_el.csv"))
-  equity_annual_pd_changes_sector <- readr::read_csv(file.path(results_path, "stress_test_results_equity_sector_pd_changes_annual.csv"))
-  equity_overall_pd_changes_sector <- readr::read_csv(file.path(results_path, "stress_test_results_equity_sector_pd_changes_overall.csv"))
+  equity_results_company <- readr::read_csv(file.path(results_path, "stress_test_results_equity_comp_standard.csv"))
+  equity_results_port <- readr::read_csv(file.path(results_path, "stress_test_results_equity_port_standard.csv"))
+  equity_expected_loss <- readr::read_csv(file.path(results_path, "stress_test_results_equity_comp_el_standard.csv"))
+  equity_annual_pd_changes_sector <- readr::read_csv(file.path(results_path, "stress_test_results_equity_sector_pd_changes_annual_standard.csv"))
+  equity_overall_pd_changes_sector <- readr::read_csv(file.path(results_path, "stress_test_results_equity_sector_pd_changes_overall_standard.csv"))
 
 
   asset_results <- list(

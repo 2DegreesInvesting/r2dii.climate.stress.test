@@ -1,5 +1,12 @@
 #' Run stress testing for provided asset type.
 #'
+#' This function runs the transition risk stress test. It can be desirable to
+#' understand sensitivities of the scenarios, in which case the user may pass a
+#' vector of values to one (and only one) of the detail arguments. This will
+#' result in running the analysis multiple times in a row with the argument
+#' varied.
+#' NOTE: argument `asset_type` is not iterateable.
+#'
 #' @param asset_type String holding asset_type, for allowed value compare
 #'   `asset_types_lookup`.
 #' @param lgd_senior_claims Numeric, holding the loss given default for senior
@@ -36,8 +43,73 @@ run_stress_test <- function(asset_type,
                             shock_year = 2030,
                             term = 2,
                             company_exclusion = TRUE) {
+  cat("Running transition risk stress test \n")
 
-  cat("-- Validating input arguments. \n")
+  args_list <- mget(names(formals()), sys.frame(sys.nframe()))
+  iter_var <- get_iter_var(args_list)
+  args_tibble <- tibble::as_tibble(args_list)
+
+  st_results_list <- purrr::map(1:nrow(args_tibble), run_stress_test_iteration, args_tibble = args_tibble)
+
+  result_names <- names(st_results_list[[1]])
+  st_results <- result_names %>%
+    purrr::map(function(tib) {
+      purrr::map_dfr(st_results_list, `[[`, tib)
+    }) %>%
+    purrr::set_names(result_names)
+
+  write_stress_test_results(
+    results = st_results$results,
+    expected_loss = st_results$expected_loss,
+    annual_pd_changes = st_results$annual_pd_changes,
+    overall_pd_changes = st_results$overall_pd_changes,
+    asset_type = asset_type,
+    calculation_level = calculation_level_lookup,
+    sensitivity_analysis_vars = names(args_list),
+    iter_var = iter_var
+  )
+
+  cat("-- Exported results to designated output path. \n")
+}
+
+#' Iterate over stress test runs
+#'
+#' @param n Numeric.
+#' @param args_tibble  A tibble holding a set of params for
+#'   `run_stress_test_imp` per row.
+#'
+#' @return List of stress test results.
+run_stress_test_iteration <- function(n, args_tibble) {
+  arg_tibble_row <- args_tibble %>%
+    dplyr::slice(n)
+
+  arg_list_row <- arg_tibble_row %>%
+    as.list()
+
+  arg_tibble_row <- dplyr::rename_with(arg_tibble_row, ~paste0(.x, "_arg"))
+  st_result <- do.call(args = arg_list_row, what = run_stress_test_impl) %>%
+    purrr::map(dplyr::bind_cols, data_y = arg_tibble_row)
+}
+
+
+#' Run stress testing for provided asset type.
+#'
+#' Runs stress test per iteration.
+#'
+#' @inheritParams run_stress_test
+#'
+#' @return A list of stress test results.
+run_stress_test_impl <- function(asset_type,
+                                 lgd_senior_claims,
+                                 lgd_subordinated_claims,
+                                 terminal_value,
+                                 risk_free_rate,
+                                 discount_rate,
+                                 div_netprofit_prop_coef,
+                                 shock_year,
+                                 term,
+                                 company_exclusion) {
+  cat("Validating input arguments. \n")
 
   validate_input_values(
     lgd_senior_claims = lgd_senior_claims,
@@ -192,16 +264,12 @@ run_stress_test <- function(asset_type,
   # TODO: ADO 879 - note which companies produce missing results due to
   # insufficient input information (e.g. NAs for financials or 0 equity value)
 
-  cat("-- Exporting results to designated output path. \n")
-
-  write_stress_test_results(
-    results = results,
-    expected_loss = expected_loss,
-    annual_pd_changes = annual_pd_changes,
-    overall_pd_changes = overall_pd_changes,
-    asset_type = asset_type,
-    calculation_level = calculation_level
+  return(
+    list(
+      results = results,
+      expected_loss = expected_loss,
+      annual_pd_changes = annual_pd_changes,
+      overall_pd_changes = overall_pd_changes
+    )
   )
-
-  cat("-- Exported results to designated output path. \n")
 }
