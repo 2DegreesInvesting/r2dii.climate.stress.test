@@ -4,6 +4,7 @@ title: "Run standard transition risk stress test"
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
+  eval = FALSE,
   collapse = TRUE,
   comment = "#>"
 )
@@ -52,7 +53,7 @@ case, we want to run the stress test for loans, so the easiest way to obtain
 results is by running:
 
 ```{r}
-# run_stress_test("loans")
+run_stress_test("loans")
 ```
 
 This will calculate the stress test for loans and write the results into the
@@ -108,7 +109,7 @@ set a lower `risk_free_rate` and shock the companies earlier than by default,
 using:
 
 ```{r}
-# run_stress_test("loans", risk_free_rate = 0.01, shock_year = 2028)
+run_stress_test("loans", risk_free_rate = 0.01, shock_year = 2028)
 ```
 
 The output files are automatically written to the `outputs` sub directory of the
@@ -137,7 +138,7 @@ If the user wishes to understand the impact of the `shock_year` on the results
 for example, they can run the following:
 
 ```{r}
-# run_stress_test("loans", shock_year = c(2025, 2028, 2032, 2035))
+run_stress_test("loans", shock_year = c(2025, 2028, 2032, 2035))
 ```
 
 This will yield outputs with four versions of the stress test, one for each of
@@ -156,7 +157,7 @@ when iterating over the `shock_year`, e.g. if the risk_free_rate should be
 lower than the default, the following will work:
 
 ```{r}
-# run_stress_test("loans", risk_free_rate = 0.01, shock_year = c(2025, 2028, 2032, 2035))
+run_stress_test("loans", risk_free_rate = 0.01, shock_year = c(2025, 2028, 2032, 2035))
 ```
 
 Note that the selected detail arguments will be written to the result files so
