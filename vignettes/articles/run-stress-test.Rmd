@@ -9,8 +9,6 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Running a standard climate transition risk stress test
-
 This vignette describes in detail, how to run a climate transition risk stress
 test for loans, using the function `run_stress_test` to calculate the credit risk
 of a loan book.
