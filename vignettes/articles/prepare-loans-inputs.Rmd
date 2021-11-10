@@ -1,0 +1,77 @@
+---
+title: "Prepare inputs for stress testing loans"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  eval = FALSE,
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This vignette describes in detail, how to prepare the required input files
+needed to run the climate transition risk stress test to calculate the credit
+risk of a loan book.
+
+## Assumptions
+
+In order to keep this vignette concise, we assume the following has been set up:
+
+1. R and RStudio are installed
+2. All required R packages are installed, this specifically includes
+`r2dii.data`, `r2dii.match`, `r2dii.analysis` and `r2dii.climate.stress.test`
+1. The user has obtained all relevant input files as described in the pdf manual
+1. The input files are organized in a folder structure consistent with the manual
+1. This notably implies the user has successfully run at least the matching
+part of PACTA for banks to produce the relevant project-specific input files
+1. The user has set up objects that point to the input directories for
+project-specific and project-agnostic input files.
+
+Once all these requirements are met, we can produce the intermediate input files
+required for a climate transition risk stress test of corporate loans.
+
+## Running the Loan Book Preparation
+
+```{r setup}
+library(r2dii.climate.stress.test)
+```
+
+The raw and matched loan book files need to be run through PACTA for banks and
+wrangled into the specific input format required by `r2dii.climate.stress.test`.
+To make this process as easy as possible for the user, we provide a function,
+`run_prep_calculation_loans()`, which takes care of all relevant steps with
+minimal input from the user.
+
+The only argument that can be set is `credit_type`, which defaults to
+`"outstanding"` if the user passes no argument. View other options by running:
+
+```{r}
+credit_type_lookup
+```
+
+If everything has been set up correctly, simply running the following command in
+R will read the raw and matched loan books from the indicated project-specific
+inputs directory, perform all calcualtions and wrangling required and write the
+intermediate input files `Loans_results_company.rda` and `overview_portfolio.rda`
+to the same input file directory.
+
+```{r}
+run_prep_calculation_loans()
+```
+
+Since the argument credit_type has a default value, it is not required to set it,
+in case the user wants to run the stress test on the outstanding credit values
+in the loan book.
+
+However, it is also possible to run the analysis on the credit limits of the
+loans, in case these have been provided in the raw and matched loan books. To
+achieve this, instead of the previous command, simply run:
+
+```{r}
+run_prep_calculation_loans(credit_type = "credit_limit")
+```
+
+Regardless of which case is chosen, the intermediate input files are generated
+in the correct format and directory to directly continue with the main stress
+test calculation as described in vignette **LINK**

@@ -38,6 +38,7 @@ Imports:
     withr,
     zoo
 Suggests: 
+    rmarkdown,
     r2dii.plot,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
