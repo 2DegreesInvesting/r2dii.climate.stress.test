@@ -166,4 +166,4 @@ calculation.
 
 ### Interpretation of the output files
 
-See vignette **LINK**.
+See vignette ["Read and understand the outputs"](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/read-the-outputs.html).
