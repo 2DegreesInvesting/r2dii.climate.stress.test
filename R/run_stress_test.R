@@ -94,7 +94,7 @@ run_stress_test_iteration <- function(n, args_tibble) {
     as.list()
 
   arg_tibble_row <- arg_tibble_row %>%
-    dplyr::select(-data_path_project_agnostic, -data_path_project_specific) %>%
+    dplyr::select(-.data$data_path_project_agnostic, -.data$data_path_project_specific) %>%
     dplyr::rename_with(~paste0(.x, "_arg"))
 
   st_result <- do.call(args = arg_list_row, what = run_stress_test_impl) %>%
