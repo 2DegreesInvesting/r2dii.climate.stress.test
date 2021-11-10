@@ -4,6 +4,7 @@ title: "Prepare inputs for stress testing loans"
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
+  eval = FALSE,
   collapse = TRUE,
   comment = "#>"
 )
@@ -56,7 +57,7 @@ intermediate input files `Loans_results_company.rda` and `overview_portfolio.rda
 to the same input file directory.
 
 ```{r}
-# run_prep_calculation_loans()
+run_prep_calculation_loans()
 ```
 
 Since the argument credit_type has a default value, it is not required to set it,
@@ -68,7 +69,7 @@ loans, in case these have been provided in the raw and matched loan books. To
 achieve this, instead of the previous command, simply run:
 
 ```{r}
-# run_prep_calculation_loans(credit_type = "credit_limit")
+run_prep_calculation_loans(credit_type = "credit_limit")
 ```
 
 Regardless of which case is chosen, the intermediate input files are generated
