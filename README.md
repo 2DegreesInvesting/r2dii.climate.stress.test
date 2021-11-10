@@ -34,19 +34,23 @@ devtools::install_github("2DegreesInvesting/r2dii.climate.stress.test")
 
 ## Setting environment variables
 
--   Use `Sys.setenv(ST_DATA_PATH="/path/to/agnostic/data")` and
+  - Use `Sys.setenv(ST_DATA_PATH="/path/to/agnostic/data")` and
     `Sys.setenv(ST_PROJECT_FOLDER="/path/to/specific/data")` to
     configure paths to data folders.
 
 ## Example
 
--   Use `library()` to attach the package
+  - Use `library()` to attach the package
+
+<!-- end list -->
 
 ``` r
 library(r2dii.climate.stress.test)
 ```
 
--   Run climate stress tests
+  - Run climate stress tests
+
+<!-- end list -->
 
 ``` r
 ## run stress testing for assets of type corporate loans using default parameters
