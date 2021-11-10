@@ -9,8 +9,6 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Setting up the required folder structure for the climate transition risk stress test
-
 This vignette describes in detail, how to set up the directories that point to
 the input files and will contain the output files of running a climate
 transition risk stress test for loans, using `r2dii.cliamte.stress.test`.
