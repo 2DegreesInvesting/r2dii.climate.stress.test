@@ -34,12 +34,12 @@ devtools::install_github("2DegreesInvesting/r2dii.climate.stress.test")
 
 ## Example
 * Use `library()` to attach the packages you need.
-```{r example}
+```{r}
 library(r2dii.climate.stress.test)
 ```
 
 * Run climate stress tests
-```{r example, results = 'hide'}
+```{r, results = 'hide'}
 ## run stress testing for assets of type corporate loans using default parameters
 run_stress_test(asset_type = "loans")
 
@@ -50,14 +50,14 @@ run_stress_test(asset_type = "loans", shock_year = 2025:2035)
 ## Details
 * Prepare input data
 Stress tests for corporate loans require an additional step for input data preparation for initial use on a loanbook.
-```{r example, results = 'hide'}
+```{r, results = 'hide'}
 run_prep_calculation_loans()
 
 ```
 
 * Look up valid ranges of model parameters
 You can look up allowed values of model parameters  as such:
-```{r example}
+```{r}
 # looking up allowed range for risk_free_rate
 risk_free_rate_range_lookup
 
