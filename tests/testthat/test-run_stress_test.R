@@ -6,9 +6,13 @@ test_that("output includes argument names with suffix '_arg'", {
   out_path <- fs::path(Sys.getenv("ST_PROJECT_FOLDER"), "outputs")
   if (fs::dir_exists(out_path)) fs::dir_delete(out_path)
 
-  x <- suppressWarnings(capture.output(
-    run_stress_test("bonds", term = 1:2)
-  ))
+x <- suppressWarnings(capture.output(
+  run_stress_test("bonds",
+    data_path_project_agnostic = get_st_data_path(),
+    data_path_project_specific = get_st_data_path("ST_PROJECT_FOLDER"),
+    term = 1:2
+  )
+))
 
   data <- purrr::map(fs::dir_ls(out_path), readr::read_csv, col_types = list())
   expect_true(all(purrr::map_lgl(data, ~rlang::has_name(.x, "term_arg"))))
