@@ -71,7 +71,7 @@ run_stress_test <- function(asset_type,
     overall_pd_changes = st_results$overall_pd_changes,
     asset_type = asset_type,
     calculation_level = calculation_level_lookup,
-    sensitivity_analysis_vars = names(args_list),
+    sensitivity_analysis_vars = names(args_list)[!names(args_list) %in% path_vars_lookup],
     iter_var = iter_var,
     results_path = file.path(data_path_project_specific, "outputs")
   )
@@ -94,7 +94,7 @@ run_stress_test_iteration <- function(n, args_tibble) {
     as.list()
 
   arg_tibble_row <- arg_tibble_row %>%
-    dplyr::select(-.data$data_path_project_agnostic, -.data$data_path_project_specific) %>%
+    dplyr::select(-path_vars_lookup) %>%
     dplyr::rename_with(~paste0(.x, "_arg"))
 
   st_result <- do.call(args = arg_list_row, what = run_stress_test_impl) %>%
