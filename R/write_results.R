@@ -6,24 +6,36 @@
 #' @param expected_loss Tibble holding stress test results on expected loss.
 #' @param annual_pd_changes Tibble holding stress test results on annual changes
 #'   of probability of default.
-#' @param overall_pd_changes Tibble holding stress test results on overall changes
-#'   of probability of default.
+#' @param overall_pd_changes Tibble holding stress test results on overall
+#'   changes of probability of default.
 #' @param asset_type String holding asset type.
 #' @param calculation_level String holding calculation level.
+#' @param sensitivity_analysis_vars String vector holding names of iteration
+#'   arguments.
+#' @param iter_var String holding name of iteration variable.
 #'
 #' @return NULL
 write_stress_test_results <- function(results, expected_loss,
                                       annual_pd_changes, overall_pd_changes,
-                                      asset_type, calculation_level) {
+                                      asset_type, calculation_level,
+                                      sensitivity_analysis_vars, iter_var) {
+
+  if (!dir.exists(file.path(get_st_data_path("ST_PROJECT_FOLDER"), "outputs"))) {
+    dir.create(file.path(get_st_data_path("ST_PROJECT_FOLDER"), "outputs"))
+  }
 
   results_path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "outputs")
 
-  results %>% write_results_new(
-    path_to_results = results_path,
-    asset_type = asset_type,
-    level = calculation_level,
-    file_type = "csv"
-  )
+  sensitivity_analysis_vars <- paste0(sensitivity_analysis_vars, "_arg")
+  results %>%
+    write_results_new(
+      path_to_results = results_path,
+      asset_type = asset_type,
+      level = calculation_level,
+      file_type = "csv",
+      sensitivity_analysis_vars = sensitivity_analysis_vars,
+      iter_var = iter_var
+    )
 
   expected_loss <- expected_loss %>%
     dplyr::select(
@@ -34,7 +46,7 @@ write_stress_test_results <- function(results, expected_loss,
       .data$Survival_late_sudden, .data$PD_baseline, .data$PD_late_sudden,
       .data$PD_change, .data$pd, .data$lgd, .data$percent_exposure, # TODO: keep all tehse PDs??
       .data$exposure_at_default, .data$expected_loss_baseline,
-      .data$expected_loss_late_sudden
+      .data$expected_loss_late_sudden, !!!rlang::syms(sensitivity_analysis_vars)
     ) %>%
     dplyr::arrange(
       .data$scenario_geography, .data$scenario_name, .data$investor_name,
@@ -42,20 +54,26 @@ write_stress_test_results <- function(results, expected_loss,
     )
 
   expected_loss %>%
-    check_results_structure(
-      name_data = "Expected loss",
-      cuc_cols = c("scenario_name", "scenario_geography", "investor_name",
-                   "portfolio_name", "company_name", "id", "ald_sector", "term")
+    report_missings(
+      name_data = "Expected loss"
+    ) %>%
+    report_all_duplicate_kinds(
+      composite_unique_cols = c(
+        "scenario_name", "scenario_geography", "investor_name", "portfolio_name",
+        "company_name", "id", "ald_sector", "term",
+        sensitivity_analysis_vars
+      )
     ) %>%
     readr::write_csv(file.path(
       results_path,
-      paste0("stress_test_results_", asset_type, "_comp_el.csv")
+      paste0("stress_test_results_", asset_type, "_comp_el_", iter_var,".csv")
     ))
 
   annual_pd_changes_sector <- annual_pd_changes %>%
     dplyr::group_by(
       .data$scenario_name, .data$scenario_geography, .data$investor_name,
-      .data$portfolio_name, .data$ald_sector, .data$year
+      .data$portfolio_name, .data$ald_sector, .data$year,
+      !!!rlang::syms(sensitivity_analysis_vars)
     ) %>%
     dplyr::summarise(
       # ADO 2312 - weight the PD change by baseline equity because this represents the original exposure better
@@ -69,19 +87,25 @@ write_stress_test_results <- function(results, expected_loss,
     )
 
   annual_pd_changes_sector %>%
-    check_results_structure(
-      name_data = "Annual PD changes sector",
-      cuc_cols = c("scenario_name", "scenario_geography", "investor_name", "portfolio_name", "ald_sector", "year")
+    report_missings(
+      name_data = "Annual PD changes sector"
+    ) %>%
+    report_all_duplicate_kinds(
+      composite_unique_cols = c(
+        "scenario_name", "scenario_geography", "investor_name", "portfolio_name",
+        "ald_sector", "year", sensitivity_analysis_vars
+      )
     ) %>%
     readr::write_csv(file.path(
       results_path,
-      paste0("stress_test_results_", asset_type, "_sector_pd_changes_annual.csv")
+      paste0("stress_test_results_", asset_type, "_sector_pd_changes_annual_", iter_var, ".csv")
     ))
 
   overall_pd_changes_sector <- overall_pd_changes %>%
     dplyr::group_by(
       .data$scenario_name, .data$scenario_geography, .data$investor_name,
-      .data$portfolio_name, .data$ald_sector, .data$term
+      .data$portfolio_name, .data$ald_sector, .data$term,
+      !!!rlang::syms(sensitivity_analysis_vars)
     ) %>%
     dplyr::summarise(
       # ADO 2312 - weight the PD change by baseline equity because this represents the original exposure better
@@ -95,13 +119,18 @@ write_stress_test_results <- function(results, expected_loss,
     )
 
   overall_pd_changes_sector %>%
-    check_results_structure(
-      name_data = "Overall PD changes sector",
-      cuc_cols = c("scenario_name", "scenario_geography", "investor_name", "portfolio_name", "ald_sector", "term")
+    report_missings(
+      name_data = "Overall PD changes sector"
+    ) %>%
+    report_all_duplicate_kinds(
+      composite_unique_cols = c(
+        "scenario_name", "scenario_geography", "investor_name", "portfolio_name",
+        "ald_sector", "term", sensitivity_analysis_vars
+      )
     ) %>%
     readr::write_csv(file.path(
       results_path,
-      paste0("stress_test_results_",asset_type,"_sector_pd_changes_overall.csv")
+      paste0("stress_test_results_", asset_type, "_sector_pd_changes_overall_", iter_var, ".csv")
     ))
 }
 
@@ -142,33 +171,32 @@ write_results <- function(data,
   stopifnot(valid_file_type)
 
   if (level == "company") {
-    data_has_expected_columns <- all(
-      c(
-        "investor_name", "portfolio_name", "company_name", "scenario_geography",
-        "scenario_name", "year_of_shock", "duration_of_shock", "ald_sector",
-        "technology", "production_shock_perc", "asset_portfolio_value",
-        "tech_company_exposure", "VaR_tech_company", "tech_company_value_change",
-        "company_exposure", "VaR_company", "company_value_change",
-        "technology_exposure", "VaR_technology", "technology_value_change",
-        "sector_exposure", "VaR_sector", "sector_value_change",
-        "analysed_sectors_exposure", "VaR_analysed_sectors",
-        "analysed_sectors_value_change", "portfolio_aum",
-        "portfolio_value_change_perc", "portfolio_value_change"
-      ) %in% colnames(data)
+    expected_columns <-  c(
+      "investor_name", "portfolio_name", "company_name", "scenario_geography",
+      "scenario_name", "year_of_shock", "duration_of_shock", "ald_sector",
+      "technology", "production_shock_perc", "asset_portfolio_value",
+      "tech_company_exposure", "VaR_tech_company", "tech_company_value_change",
+      "company_exposure", "VaR_company", "company_value_change",
+      "technology_exposure", "VaR_technology", "technology_value_change",
+      "sector_exposure", "VaR_sector", "sector_value_change",
+      "analysed_sectors_exposure", "VaR_analysed_sectors",
+      "analysed_sectors_value_change", "portfolio_aum",
+      "portfolio_value_change_perc", "portfolio_value_change"
     )
   } else {
-    data_has_expected_columns <- all(
-      c(
-        "investor_name", "portfolio_name", "ald_sector", "technology",
-        "scenario_geography", "VaR_technology", "asset_portfolio_value",
-        "VaR_sector", "scenario_name", "technology_exposure", "sector_exposure",
-        "sector_loss", "climate_relevant_var", "portfolio_aum",
-        "portfolio_loss_perc", "year_of_shock", "duration_of_shock",
-        "production_shock_perc"
-      ) %in% colnames(data)
-    )
+   expected_columns <- c(
+     "investor_name", "portfolio_name", "ald_sector", "technology",
+     "scenario_geography", "VaR_technology", "asset_portfolio_value",
+     "VaR_sector", "scenario_name", "technology_exposure", "sector_exposure",
+     "sector_loss", "climate_relevant_var", "portfolio_aum",
+     "portfolio_loss_perc", "year_of_shock", "duration_of_shock",
+     "production_shock_perc"
+   )
   }
-  stopifnot(data_has_expected_columns)
+  validate_data_has_expected_cols(
+    data = data,
+    expected_columns = expected_columns
+  )
 
   if (level == "portfolio") {
     switch(file_type,
@@ -281,6 +309,7 @@ write_results <- function(data,
 #'   in the work flow. Supports "company" and "portfolio".
 #' @param file_type Character. A string containing the type of file that should
 #'   be written to the result path. Currently supports "csv" and "rda".
+#' @inheritParams write_stress_test_results
 #'
 #' @family output functions
 #' @return NULL
@@ -288,7 +317,10 @@ write_results_new <- function(data,
                               path_to_results = NULL,
                               asset_type = NULL,
                               level = NULL,
-                              file_type = NULL) {
+                              file_type = NULL,
+                              sensitivity_analysis_vars,
+                              iter_var) {
+
   path_to_results %||% stop("Must provide 'path_to_results'")
   level %||% stop("Must provide 'level'")
 
@@ -302,8 +334,9 @@ write_results_new <- function(data,
     stop("Only calculation level company is supported.")
   }
 
-  data_has_expected_columns <- all(
-    c(
+  validate_data_has_expected_cols(
+    data = data,
+    expected_columns = c(
       "investor_name", "portfolio_name", "company_name", "scenario_geography",
       "scenario_name", "year_of_shock", "duration_of_shock", "ald_sector",
       "technology", "production_shock_perc", "asset_portfolio_value",
@@ -313,11 +346,9 @@ write_results_new <- function(data,
       "sector_exposure", "VaR_sector", "sector_value_change",
       "analysed_sectors_exposure", "VaR_analysed_sectors",
       "analysed_sectors_value_change", "portfolio_aum",
-      "portfolio_value_change_perc", "portfolio_value_change"
-    ) %in% colnames(data)
+      "portfolio_value_change_perc", "portfolio_value_change", sensitivity_analysis_vars
+    )
   )
-
-  stopifnot(data_has_expected_columns)
 
   data <- data %>%
     # ADO 2549 - select instead of relocate so that no surplus columns can sneak in
@@ -334,25 +365,29 @@ write_results_new <- function(data,
       .data$analysed_sectors_exposure, .data$VaR_analysed_sectors,
       .data$analysed_sectors_value_change, .data$portfolio_aum,
       .data$portfolio_value_change_perc, .data$portfolio_value_change,
-      .data$exclude
+      .data$exclude, !!!rlang::syms(sensitivity_analysis_vars)
     ) %>%
-    check_results_structure(
-      name_data = "Stress test results - Company level",
-      cuc_cols = c(
+    report_missings(
+      name_data = "Stress test results - Company level"
+    ) %>%
+    report_all_duplicate_kinds(
+      composite_unique_cols = c(
         "investor_name", "portfolio_name", "company_name", "scenario_geography",
-        "scenario_name", "year_of_shock", "duration_of_shock", "ald_sector", "technology"
-      ))
+        "scenario_name", "year_of_shock", "duration_of_shock", "ald_sector", "technology",
+        sensitivity_analysis_vars
+      )
+    )
 
   switch(file_type,
     csv = data %>%
       readr::write_csv(file.path(
         path_to_results,
-        glue::glue("stress_test_results_{asset_type}_comp.csv")
+        glue::glue("stress_test_results_{asset_type}_comp_{iter_var}.csv")
       )),
     rda = data %>%
       saveRDS(file.path(
         path_to_results,
-        glue::glue("stress_test_results_{asset_type}_comp.rda")
+        glue::glue("stress_test_results_{asset_type}_comp_{iter_var}.rda")
       )),
     stop("Invalid file_type provided. Please use csv or rda!")
   )
@@ -369,29 +404,34 @@ write_results_new <- function(data,
       .data$sector_exposure, .data$VaR_sector, .data$sector_value_change,
       .data$analysed_sectors_exposure, .data$VaR_analysed_sectors,
       .data$analysed_sectors_value_change, .data$portfolio_aum,
-      .data$portfolio_value_change_perc, .data$portfolio_value_change
+      .data$portfolio_value_change_perc, .data$portfolio_value_change,
+      !!!rlang::syms(sensitivity_analysis_vars)
     ) %>%
     # ADO 2549 - all numeric variables should be unique across the CUC variables
     # running distinct all and the check afterwards ensures this is the case
     dplyr::distinct_all() %>%
     dplyr::arrange(.data$year_of_shock, .data$ald_sector, .data$technology) %>%
-    check_results_structure(
-      name_data = "Stress test results - Portfolio level",
-      cuc_cols = c(
+    report_missings(
+      name_data = "Stress test results - Portfolios level"
+    ) %>%
+    report_all_duplicate_kinds(
+      composite_unique_cols = c(
         "investor_name", "portfolio_name", "scenario_geography", "scenario_name",
-        "year_of_shock", "duration_of_shock", "ald_sector", "technology"
-      ))
+        "year_of_shock", "duration_of_shock", "ald_sector", "technology",
+        sensitivity_analysis_vars
+      )
+    )
 
   switch(file_type,
     csv = data %>%
       readr::write_csv(file.path(
         path_to_results,
-        glue::glue("stress_test_results_{asset_type}_port.csv")
+        glue::glue("stress_test_results_{asset_type}_port_{iter_var}.csv")
       )),
     rda = data %>%
       saveRDS(file.path(
         path_to_results,
-        glue::glue("stress_test_results_{asset_type}_port.rda")
+        glue::glue("stress_test_results_{asset_type}_port_{iter_var}.rda")
       )),
     stop("Invalid file_type provided. Please use csv or rda!")
   )

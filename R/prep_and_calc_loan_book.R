@@ -12,26 +12,9 @@ run_prep_calculation_loans <- function(credit_type = "outstanding") {
     stop("Argument credit_type does not hold an accepted value.")
   }
 
-  #### Load and validate input parameters---------------------------------------
-
-  cfg <- config::get(file = file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", "AnalysisParameters.yml"))
-
-  start_year <- cfg$AnalysisPeriod$Years.Startyear
-  if (!dplyr::between(start_year, min(p4b_production_data_years_lookup), max(p4b_production_data_years_lookup))) {
-    stop("start_year is outside accepted range for production data inputs.")
-  }
-  if (!dplyr::between(start_year, min(p4b_scenario_data_years_lookup), max(p4b_scenario_data_years_lookup))) {
-    stop("start_year is outside accepted range for scenario data inputs.")
-  }
-
-  equity_market <- cfg$Lists$Equity.Market.List
-  if (length(equity_market) != 1) {
-    stop("Input argument equity_market must be of length 1")
-  }
-
   #### Load input data sets-----------------------------------------------------
-
   # raw loan book
+  validate_file_exists(file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", paste0("raw_loanbook.csv")))
   loanbook <- readr::read_csv(
     file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", paste0("raw_loanbook.csv")),
     col_types = readr::cols(
@@ -58,6 +41,7 @@ run_prep_calculation_loans <- function(credit_type = "outstanding") {
   )
 
   # matched loan book
+  validate_file_exists(file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", "matched_loan_book.csv"))
   matched  <- readr::read_csv(
     file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", "matched_loan_book.csv"),
     col_types = readr::cols_only(
@@ -96,33 +80,16 @@ run_prep_calculation_loans <- function(credit_type = "outstanding") {
   regions <- r2dii.data::region_isos
 
   # Production forecast data
-  if (start_year == 2020) {
-    production_forecast_data <- readr::read_csv(
-      file.path(get_st_data_path(), "ald_15092020.csv"),
-      col_types = readr::cols(
-        name_company = "c",
-        sector = "c",
-        technology = "c",
-        year = "d",
-        production = "d",
-        production_unit = "c",
-        emission_factor = "d",
-        ald_emission_factor_unit = "c",
-        plant_location = "c",
-        is_ultimate_owner = "l",
-        ald_timestamp = "c"
-      )
-    )
-  } else if (start_year == 2021) {
-    production_forecast_data <- readxl::read_xlsx(
-      file.path(get_st_data_path(), "2021-07-15_AR_2020Q4_PACTA-Data (3).xlsx"),
-      sheet = "Company Indicators - PACTA"
-    )
-  }
+  validate_file_exists(file.path(get_st_data_path(), "2021-07-15_AR_2020Q4_PACTA-Data (3).xlsx"))
+  production_forecast_data <- readxl::read_xlsx(
+    file.path(get_st_data_path(), "2021-07-15_AR_2020Q4_PACTA-Data (3).xlsx"),
+    sheet = "Company Indicators - PACTA"
+  )
 
   # Scenario data - market share
+  validate_file_exists(file.path(get_st_data_path(), "scenario_2020.csv"))
   scenario_data_market_share <- readr::read_csv(
-    file.path(get_st_data_path(), glue::glue("scenario_{start_year}.csv")),
+    file.path(get_st_data_path(), glue::glue("scenario_2020.csv")),
     col_types = readr::cols(
       scenario_source = "c",
       scenario = "c",
@@ -135,32 +102,26 @@ run_prep_calculation_loans <- function(credit_type = "outstanding") {
     )
   )
 
-  # Scenario data - emission intensity
-  scenario_data_emissions_intensity <- readr::read_csv(
-    file.path(get_st_data_path(), glue::glue("co2_intensity_scenario_{start_year}.csv")),
-    col_types = readr::cols(
-      scenario_source = "c",
-      scenario = "c",
-      sector = "c",
-      region = "c",
-      year = "d",
-      emission_factor = "d",
-      emission_factor_unit = "c"
-    )
-  )
-
   #### Wrangle and prepare data-------------------------------------------------
+  # ADO 2690 - remove rows with negative loan values (not allowed in P4B)
+  if (credit_type == "outstanding") {
+    matched_non_negative <- matched %>%
+      dplyr::filter(.data$loan_size_outstanding >= 0)
+  } else {
+    matched_non_negative <- matched %>%
+      dplyr::filter(.data$loan_size_credit_limit >= 0)
+  }
 
-  # TODO: what to do with negative credit limits?
-  matched_non_negative <- matched %>%
-    dplyr::mutate(
-      loan_size_outstanding = dplyr::if_else(
-        .data$loan_size_outstanding < 0, 0, .data$loan_size_outstanding
-      ),
-      loan_size_credit_limit = dplyr::if_else(
-        .data$loan_size_credit_limit < 0, 0, .data$loan_size_credit_limit
+  if (nrow(matched_non_negative) < nrow(matched)) {
+    warning(
+      paste0(
+        nrow(matched) - nrow(matched_non_negative),
+        " loans removed from the matched loan book because of negative loan
+        values. Please check the input loan book to address this issue."
       )
+      , call. = FALSE
     )
+  }
 
   portfolio_size <- loanbook %>%
     # TODO: why distinct? Is there any way that id_loan is not unique?
@@ -191,8 +152,8 @@ run_prep_calculation_loans <- function(credit_type = "outstanding") {
     dplyr::mutate(
       portfolio_loan_size_outstanding = portfolio_size$portfolio_loan_size_outstanding,
       portfolio_loan_size_credit_limit = portfolio_size$portfolio_loan_size_credit_limit,
-      matched_portfolio_loan_size_outstanding = sum(.data$loan_size_outstanding, na.rm = TRUE),
-      matched_portfolio_loan_size_credit_limit = sum(.data$loan_size_credit_limit, na.rm = TRUE)
+      matched_portfolio_loan_size_outstanding = matched_portfolio_size$matched_portfolio_loan_size_outstanding,
+      matched_portfolio_loan_size_credit_limit = matched_portfolio_size$matched_portfolio_loan_size_credit_limit
     ) %>%
     dplyr::group_by(
       # ADO 1933 - we choose `name_ald` as this is an internal name that can be
@@ -200,10 +161,13 @@ run_prep_calculation_loans <- function(credit_type = "outstanding") {
       .data$name_ald, .data$sector_ald, .data$loan_size_outstanding_currency,
       .data$loan_size_credit_limit_currency
     ) %>%
+    # ADO 2723 - loan shares calculated against matched loan book, not total loan book
+    # this is to ensure all scaling happens against the same denominator
+    # run_stress_test uses the matched portfolio to scale the overall impact
     dplyr::mutate(
-      comp_loan_share_outstanding = sum(.data$loan_size_outstanding, na.rm = TRUE) / .data$portfolio_loan_size_outstanding,
+      comp_loan_share_outstanding = sum(.data$loan_size_outstanding, na.rm = TRUE) / .data$matched_portfolio_loan_size_outstanding,
       comp_loan_size_outstanding = sum(.data$loan_size_outstanding, na.rm = TRUE),
-      comp_loan_share_credit_limit = sum(.data$loan_size_credit_limit, na.rm = TRUE) / .data$portfolio_loan_size_credit_limit,
+      comp_loan_share_credit_limit = sum(.data$loan_size_credit_limit, na.rm = TRUE) / .data$matched_portfolio_loan_size_credit_limit,
       comp_loan_size_credit_limit = sum(.data$loan_size_credit_limit, na.rm = TRUE)
     ) %>%
     dplyr::ungroup() %>%
@@ -266,7 +230,6 @@ run_prep_calculation_loans <- function(credit_type = "outstanding") {
     dplyr::rename(
       financial_sector = .data$sector_ald,
       valid_value_usd = !!rlang::sym(sector_credit_type),
-      # TODO: convert currencies to USD or at least common currency
       currency = !!rlang::sym(credit_currency)
     ) %>%
     dplyr::mutate(
@@ -279,9 +242,14 @@ run_prep_calculation_loans <- function(credit_type = "outstanding") {
     dplyr::group_by(.data$investor_name, .data$portfolio_name, .data$asset_type, .data$valid_input) %>%
     dplyr::mutate(asset_value_usd = sum(.data$valid_value_usd, na.rm = TRUE)) %>%
     dplyr::ungroup() %>%
-    dplyr::group_by(.data$investor_name, .data$portfolio_name, .data$valid_input) %>%
-    dplyr::mutate(portfolio_value_usd = sum(.data$valid_value_usd, na.rm = TRUE)) %>%
-    dplyr::ungroup() %>%
+    # ADO 2690 - set total loan book value using raw loan book
+    dplyr::mutate(
+      portfolio_value_usd = dplyr::if_else(
+        credit_type == "outstanding",
+        portfolio_size$portfolio_loan_size_outstanding,
+        portfolio_size$portfolio_loan_size_credit_limit
+      )
+    ) %>%
     dplyr::select(
       .data$investor_name, .data$portfolio_name, .data$asset_type,
       .data$financial_sector, .data$valid_input, .data$valid_value_usd,
@@ -344,7 +312,7 @@ run_prep_calculation_loans <- function(credit_type = "outstanding") {
     format_loanbook_st(
       investor_name = investor_name_placeholder,
       portfolio_name = investor_name_placeholder,
-      equity_market = equity_market,
+      equity_market = equity_market_filter_lookup,
       credit = credit_type
     )
 

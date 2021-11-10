@@ -76,7 +76,7 @@ test_that("No warning is thrown if no duplicates are in data on composite unique
   ))
 })
 
-test_that("Warning is thrown if there are duplicates on composite unique cols", {
+test_that("Warning is thrown if there are duplicates on composite unique cols and throw_error is FALSE", {
   data <- tibble::tibble(
     a = c("A1", "A1", "A2", "A2", "A2"),
     b = c("B1", "B2", "B1", "B2", "B1"),
@@ -86,13 +86,14 @@ test_that("Warning is thrown if there are duplicates on composite unique cols", 
   expect_warning(
     checked_data <- report_duplicates(
       data = data,
-      cols = c("a", "b")
+      cols = c("a", "b"),
+      throw_error = FALSE
     ),
     "Identified 1 duplicates"
   )
 })
 
-test_that("Error is thrown if there are duplicates on composite unique cols and throw_error is TRUE", {
+test_that("Error is thrown if there are duplicates on composite unique cols", {
   data <- tibble::tibble(
     a = c("A1", "A1", "A2", "A2", "A2"),
     b = c("B1", "B2", "B1", "B2", "B1"),
@@ -103,12 +104,12 @@ test_that("Error is thrown if there are duplicates on composite unique cols and 
     checked_data <- report_duplicates(
       data = data,
       cols = c("a", "b"),
-      throw_error = TRUE
     ),
     "Identified 1 duplicates"
   )
 })
-test_that("Warning is thrown if there are duplciates on all cols", {
+
+test_that("Warning is thrown if there are duplciates on all cols and throw_error is FALSE", {
   data <- tibble::tibble(
     a = c("A1", "A1", "A2", "A2", "A2"),
     b = c("B1", "B2", "B1", "B2", "B1")
@@ -117,7 +118,8 @@ test_that("Warning is thrown if there are duplciates on all cols", {
   expect_warning(
     report_duplicates(
       data = data,
-      cols = names(data)
+      cols = names(data),
+      throw_error = FALSE
     ),
     "Identified 1 duplicates"
   )
@@ -137,8 +139,26 @@ test_that("Warnings are thrown for dataset with full and partial duplicates", {
   )))
 })
 
+test_that("function returns input", {
+  data <- tibble::tibble(
+    a = c("A1", "A2"),
+    b = c("B1", "B1"),
+    c = c(1, 1)
+  )
+
+  expect_equal(
+    report_all_duplicate_kinds(
+      data = data,
+      composite_unique_cols = c("a", "b")
+    ),
+    data
+  )
+})
+
 # report_missings --------------------------------------------------------
-test_that("Missings are reported correctly", {
+test_that("Missings are reported correctly in verbose_log_env ", {
+
+  verbose_log_env()
   data <- tibble::tibble(
     a = c("A1", "A1", "A1", NA),
     b = c("B1", NA, NA, "B1"),
@@ -146,5 +166,37 @@ test_that("Missings are reported correctly", {
   )
 
   expect_output(report_missings(data, name_data = "some"), "Counted 1 missings on column a")
+
+})
+
+test_that("Error is thrown if throw_error is TRUE", {
+  data <- tibble::tibble(
+    a = c("A1", "A1", "A1", NA),
+    b = c("B1", NA, NA, "B1"),
+    c = c(1, 1, 2, NaN)
+  )
+
+   expect_error(
+     report_missings(data, name_data = "some", throw_error = TRUE),
+     "Missings detected on some"
+   )
+})
+
+# validate_data_has_expected_cols -----------------------------------------
+test_that("No error is thrown if not colnames are missing", {
+  expect_silent(validate_data_has_expected_cols(
+    data = tibble::tibble(A = 1, B = 2),
+    expected_columns = c("A")
+  ))
+})
+
+test_that("Error is thrown if colnames are missing", {
+  expect_error(
+    validate_data_has_expected_cols(
+      data = tibble::tibble(A = 1, B = 2),
+      expected_columns = c("D", "E")
+    ),
+    "columns: D, E."
+  )
 
 })

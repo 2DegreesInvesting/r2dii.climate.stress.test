@@ -9,7 +9,8 @@ test_that("Error is thrown if an input value is out of bounds", {
     div_netprofit_prop_coef = 1,
     shock_year = 2030,
     term = 4,
-    company_exclusion = TRUE
+    company_exclusion = TRUE,
+    asset_type = "loans"
   ), "risk_free_rate")
 })
 
@@ -23,7 +24,8 @@ test_that("Error is thrown if term is not an integer", {
     div_netprofit_prop_coef = 1,
     shock_year = 2030,
     term = 4.5,
-    company_exclusion = TRUE
+    company_exclusion = TRUE,
+    asset_type = "loans"
   ), "whole number")
 })
 
@@ -37,7 +39,8 @@ test_that("No error is thrown if an input value equals a bound", {
     div_netprofit_prop_coef = 1,
     shock_year = 2030,
     term = 4,
-    company_exclusion = TRUE
+    company_exclusion = TRUE,
+    asset_type = "loans"
   ))
 })
 
@@ -53,7 +56,8 @@ test_that("Error is thrown if an input value is of length other than 1", {
     div_netprofit_prop_coef = 1,
     shock_year = 2030,
     term = 4,
-    company_exclusion = TRUE
+    company_exclusion = TRUE,
+    asset_type = "loans"
   ), "length 1")
 
   # length > 1
@@ -66,6 +70,7 @@ test_that("Error is thrown if an input value is of length other than 1", {
     div_netprofit_prop_coef = 1,
     shock_year = 2030,
     term = 4,
-    company_exclusion = TRUE
+    company_exclusion = TRUE,
+    asset_type = "loans"
   ), "length 1")
 })

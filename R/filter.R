@@ -33,7 +33,7 @@ keep_merton_compatible_rows <- function(data, stage) {
     dplyr::select(-.data$V0_base, -.data$V0_late_sudden)
 
   if (nrow(data_filtered) < nrow(data)) {
-    message(paste0("Removed ", nrow(data) - nrow(data_filtered)," rows when checking for compatibility with merton model."))
+    cat(paste0("Removed ", nrow(data) - nrow(data_filtered)," rows when checking for compatibility with merton model."))
 
     if (nrow(data_filtered) == 0) {
       stop("No data remain after removing rows that are not compatible with merton model.")

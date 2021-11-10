@@ -2,7 +2,7 @@
 #'
 #' Wrapper function to calculate annual profits.
 #'
-#' @inheritParams run_stress_test_equity
+#' @inheritParams validate_input_values
 #' @param asset_type String holding type of asset.
 #' @param input_data_list List with project agnostic and project specific input data
 #' @param scenario_to_follow_baseline Character. A string that indicates which
@@ -57,21 +57,19 @@ calculate_annual_profits <- function(asset_type, input_data_list, scenario_to_fo
     )
 
   if (asset_type == "bonds") {
-    merge_cols <- c("company_name", "id" = "corporate_bond_ticker", "ald_sector", "technology")
+    merge_cols <- c("company_name", "id" = "corporate_bond_ticker")
   } else {
-    merge_cols <- c("company_name", "ald_sector", "technology")
+    merge_cols <- c("company_name")
   }
 
   extended_pacta_results_with_financials <- extended_pacta_results %>%
-    inner_join_report_drops(
-      data_y = input_data_list$financial_data,
-      name_x = "annual profits", name_y = "financial data",
-      merge_cols = merge_cols
+    dplyr::inner_join(
+      y = input_data_list$financial_data,
+      by = merge_cols
     ) %>%
     fill_annual_profit_cols()
 
   annual_profits <- extended_pacta_results_with_financials %>%
-    # TODO: ADO 879 - note which companies are removed here
     join_price_data(df_prices = price_data) %>%
     calculate_net_profits() %>%
     dcf_model_techlevel(discount_rate = discount_rate) %>%
@@ -92,40 +90,60 @@ calculate_exposure_by_technology_and_company <- function(asset_type,
                                                          input_data_list, start_year,
                                                          scenario_to_follow_ls) {
   if (asset_type == "bonds") {
-    subset_cols <- c("company_name", "corporate_bond_ticker", "ald_sector", "technology", "pd")
-    merge_cols <- c("company_name", "id" = "corporate_bond_ticker", "ald_sector", "technology")
+    subset_cols <- c("company_name", "corporate_bond_ticker", "pd")
+    merge_cols <- c("company_name", "id" = "corporate_bond_ticker")
   } else {
-    subset_cols <- c("company_name", "ald_sector", "technology", "pd")
-    merge_cols <- c("company_name", "ald_sector", "technology")
+    subset_cols <- c("company_name", "pd")
+    merge_cols <- c("company_name")
   }
 
   financial_data_subset <- input_data_list$financial_data %>%
-    dplyr::select(!!!rlang::syms(subset_cols))
-
-  report_duplicates(
-    data = financial_data_subset,
-    cols = names(financial_data_subset)
-  )
-
-  exposure_by_technology_and_company <- input_data_list$pacta_results %>%
-    dplyr::filter(
-      .data$year == .env$start_year,
-      .data$scenario %in% .env$scenario_to_follow_ls
-    ) %>%
-    inner_join_report_drops(
-      data_y = financial_data_subset,
-      name_x = "plan carsten", name_y = "financial data",
-      merge_cols = merge_cols
-    ) %>% # TODO: ADO 879 - note which companies are removed here, what to do with entries that have NAs for pd?
-    dplyr::select(
-      investor_name, portfolio_name, company_name, ald_sector, technology,
-      scenario_geography, year, plan_carsten, plan_sec_carsten, term, pd
+    dplyr::select(!!!rlang::syms(subset_cols)) %>%
+    report_all_duplicate_kinds(
+      composite_unique_cols = names(.)
     )
 
-  report_duplicates(
-    data = exposure_by_technology_and_company,
-    cols = names(exposure_by_technology_and_company)
-  )
+  exposure_by_technology_and_company <- input_data_list$pacta_results %>%
+   dplyr::filter(
+     .data$year == .env$start_year,
+     .data$scenario %in% .env$scenario_to_follow_ls
+   ) %>%
+   dplyr::inner_join(
+     y = financial_data_subset,
+     by = merge_cols
+   ) %>%
+   # TODO:  what to do with entries that have NAs for pd?
+   dplyr::select(
+     investor_name, portfolio_name, company_name, ald_sector, technology,
+     scenario_geography, year, plan_carsten, plan_sec_carsten, term, pd
+   ) %>%
+   report_all_duplicate_kinds(
+     composite_unique_cols = names(.)
+   )
 
-  return(exposure_by_technology_and_company)
+  n_companies_pre <- length(unique(exposure_by_technology_and_company$company_name))
+
+  exposure_by_technology_and_company_filtered <- exposure_by_technology_and_company %>%
+    dplyr::filter(.data$plan_carsten > 0)
+
+  n_companies_post <- length(unique(exposure_by_technology_and_company_filtered$company_name))
+
+  if (n_companies_pre > n_companies_post) {
+    percent_loss <- (n_companies_pre - n_companies_post) * 100/n_companies_pre
+    affected_companies <- sort(
+      setdiff(exposure_by_technology_and_company$company_name,
+              exposure_by_technology_and_company_filtered$company_name)
+      )
+    cat(
+      "      >> When filtering out holdings with exposures of 0 value, dropped rows for",
+      n_companies_pre - n_companies_post, "out of", n_companies_pre, "companies\n"
+    )
+    cat("        >> percent loss:", percent_loss, "\n")
+    cat("        >> affected companies:\n")
+    purrr::walk(affected_companies, function(company) {
+      cat("          >>", company, "\n")
+    })
+  }
+
+  return(exposure_by_technology_and_company_filtered)
 }

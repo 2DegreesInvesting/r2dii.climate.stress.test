@@ -1,5 +1,14 @@
-#' Run stress testing for loans
+#' Run stress testing for provided asset type.
 #'
+#' This function runs the transition risk stress test. It can be desirable to
+#' understand sensitivities of the scenarios, in which case the user may pass a
+#' vector of values to one (and only one) of the detail arguments. This will
+#' result in running the analysis multiple times in a row with the argument
+#' varied.
+#' NOTE: argument `asset_type` is not iterateable.
+#'
+#' @param asset_type String holding asset_type, for allowed value compare
+#'   `asset_types_lookup`.
 #' @param lgd_senior_claims Numeric, holding the loss given default for senior
 #'   claims, for accepted value range check `lgd_senior_claims_range_lookup`.
 #' @param lgd_subordinated_claims Numeric, holding the loss given default for
@@ -24,15 +33,84 @@
 #'   excluded_companies.csv shall be excluded.
 #' @return NULL
 #' @export
-run_stress_test_loans <- function(lgd_senior_claims = 0.45,
-                                  lgd_subordinated_claims = 0.75,
-                                  terminal_value = 0,
-                                  risk_free_rate = 0.02,
-                                  discount_rate = 0.02,
-                                  div_netprofit_prop_coef = 1,
-                                  shock_year = 2030,
-                                  term = 2,
-                                  company_exclusion = TRUE) {
+run_stress_test <- function(asset_type,
+                            lgd_senior_claims = 0.45,
+                            lgd_subordinated_claims = 0.75,
+                            terminal_value = 0,
+                            risk_free_rate = 0.02,
+                            discount_rate = 0.02,
+                            div_netprofit_prop_coef = 1,
+                            shock_year = 2030,
+                            term = 2,
+                            company_exclusion = TRUE) {
+  cat("Running transition risk stress test \n")
+
+  args_list <- mget(names(formals()), sys.frame(sys.nframe()))
+  iter_var <- get_iter_var(args_list)
+  args_tibble <- tibble::as_tibble(args_list)
+
+  st_results_list <- purrr::map(1:nrow(args_tibble), run_stress_test_iteration, args_tibble = args_tibble)
+
+  result_names <- names(st_results_list[[1]])
+  st_results <- result_names %>%
+    purrr::map(function(tib) {
+      purrr::map_dfr(st_results_list, `[[`, tib)
+    }) %>%
+    purrr::set_names(result_names)
+
+  write_stress_test_results(
+    results = st_results$results,
+    expected_loss = st_results$expected_loss,
+    annual_pd_changes = st_results$annual_pd_changes,
+    overall_pd_changes = st_results$overall_pd_changes,
+    asset_type = asset_type,
+    calculation_level = calculation_level_lookup,
+    sensitivity_analysis_vars = names(args_list),
+    iter_var = iter_var
+  )
+
+  cat("-- Exported results to designated output path. \n")
+}
+
+#' Iterate over stress test runs
+#'
+#' @param n Numeric.
+#' @param args_tibble  A tibble holding a set of params for
+#'   `run_stress_test_imp` per row.
+#'
+#' @return List of stress test results.
+run_stress_test_iteration <- function(n, args_tibble) {
+  arg_tibble_row <- args_tibble %>%
+    dplyr::slice(n)
+
+  arg_list_row <- arg_tibble_row %>%
+    as.list()
+
+  arg_tibble_row <- dplyr::rename_with(arg_tibble_row, ~paste0(.x, "_arg"))
+  st_result <- do.call(args = arg_list_row, what = run_stress_test_impl) %>%
+    purrr::map(dplyr::bind_cols, data_y = arg_tibble_row)
+}
+
+
+#' Run stress testing for provided asset type.
+#'
+#' Runs stress test per iteration.
+#'
+#' @inheritParams run_stress_test
+#'
+#' @return A list of stress test results.
+run_stress_test_impl <- function(asset_type,
+                                 lgd_senior_claims,
+                                 lgd_subordinated_claims,
+                                 terminal_value,
+                                 risk_free_rate,
+                                 discount_rate,
+                                 div_netprofit_prop_coef,
+                                 shock_year,
+                                 term,
+                                 company_exclusion) {
+  cat("Validating input arguments. \n")
+
   validate_input_values(
     lgd_senior_claims = lgd_senior_claims,
     lgd_subordinated_claims = lgd_subordinated_claims,
@@ -42,38 +120,23 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
     div_netprofit_prop_coef = div_netprofit_prop_coef,
     shock_year = shock_year,
     term = term,
-    company_exclusion = company_exclusion
+    company_exclusion = company_exclusion,
+    asset_type = asset_type
   )
 
-  asset_type <- "loans"
+  cat("-- Configuring analysis settings. \n")
+
   scenario_to_follow_baseline <- baseline_scenario_lookup
   scenario_to_follow_ls <- shock_scenario_lookup
   calculation_level <- calculation_level_lookup
   end_year <- end_year_lookup
-
-  ###########################################################################
-  # Project Initialisation---------------------------------------------------
-  ###########################################################################
-
-  # FIXME: Very bad solution for temporart use only
-  source_all(c("stress_test_model_functions.R", "0_global_functions_st.R"))
-
-  #### Analysis Parameters----------------------------------------
-  # Get analysis parameters from the projects AnalysisParameters.yml - similar to PACTA_analysis
-
-  # TODO: where to get this parameter
-  cfg <- config::get(file = file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", "AnalysisParameters.yml"))
-  # OPEN: check_valid_cfg() not applicable here
-  start_year <- cfg$AnalysisPeriod$Years.Startyear
-  time_horizon <- cfg$AnalysisPeriod$Years.Horizon
-
-  ##### Filters----------------------------------------
-  # The filter settings should comply with the filters from the parent PACTA project as per default
-  # There may still be cases of certain sectors or geographies that work in PACTA but not yet in stress testing
-  # move to config once mechanism to include/exclude filters from original pacta project exists
-
+  time_horizon <- time_horizon_lookup
+  flat_multiplier <- assign_flat_multiplier(asset_type = asset_type)
+  lgd <- assign_lgd(
+    asset_type = asset_type, lgd_senior_claims = lgd_senior_claims,
+    lgd_subordinated_claims = lgd_subordinated_claims
+  )
   scenario_geography_filter <- "Global"
-
   scenarios_filter <- unique(
     c(
       scenario_to_follow_baseline,
@@ -81,19 +144,20 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
     )
   )
 
-  ###########################################################################
-  # Load input datasets------------------------------------------------------
-  ###########################################################################
-  project_specific_data_list <- read_and_prepare_project_specific_data(
+  cat("-- Importing and preparing input data from designated input path. \n")
+
+  pacta_based_data <- read_and_prepare_project_specific_data(
     asset_type = asset_type,
     calculation_level = calculation_level,
-    start_year = start_year,
     time_horizon = time_horizon,
     scenario_geography_filter = scenario_geography_filter,
     scenarios_filter = scenarios_filter,
-    equity_market_filter = cfg$Lists$Equity.Market.List,
+    equity_market_filter = equity_market_filter_lookup,
     term = term
   )
+
+  project_specific_data_list <- pacta_based_data$data_list
+  start_year <- pacta_based_data$start_year
 
   project_agnostic_data_list <- read_and_prepare_project_agnostic_data(
     start_year = start_year,
@@ -111,37 +175,31 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
       scenario_geography_filter = scenario_geography_filter
     )
 
-  input_data_list$financial_data <- input_data_list$financial_data %>%
-    dplyr::mutate(company_name = stringr::str_to_lower(.data$company_name))
+  if (asset_type == "loans") {
+    input_data_list$financial_data <- input_data_list$financial_data %>%
+      dplyr::mutate(company_name = stringr::str_to_lower(.data$company_name))
+  }
 
-  # check scenario availability across data inputs for bonds
+  report_company_drops(
+    data_list = input_data_list,
+    asset_type = asset_type
+  )
+
   check_scenario_availability(
     portfolio = input_data_list$pacta_results,
     scen_data = input_data_list$scenario_data,
     scenarios = scenarios_filter
   )
 
-  # Prepare sector exposure data-------------------------------------------------
   # TODO: validate
   port_aum <- calculate_aum(input_data_list$sector_exposures)
-
-  ## if we use the integral/overshoot late&sudden method, and we use company production plans the first 5 years
-  ## the integral method works on company level, however,
-  ## when we aggregate the company LS trajectories to port-technology level, the integrals of SDS and LS are not the same, due to 2 reasons:
-  ## 1) for companies that outperform SDS, capacity shhould not be compensated for, hence we take a LS trajecorty that equal SDS
-  ## 2) there are cases for which the linear compensation is so strong, that the LS production falls below zero, which is then set to zero (as negative production is not possible), hence we have an underestimation in overshoot
-  ## For these two reasons, if we use company production plans, we perform the integral method on technology level (and not on company level), until we had a proper session on how to deal with these issues
-
-  ###########################################################################
-  # Calculation of results---------------------------------------------------
-  ###########################################################################
-
-  # Load transition scenarios that will be run by the model
   transition_scenario <- generate_transition_shocks(
     start_of_analysis = start_year,
     end_of_analysis = end_year,
     shock_years = shock_year
   )
+
+  cat("-- Calculating market risk. \n")
 
   annual_profits <- calculate_annual_profits(
     asset_type = asset_type,
@@ -169,9 +227,11 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
     div_netprofit_prop_coef = div_netprofit_prop_coef,
     plan_carsten = exposure_by_technology_and_company,
     port_aum = port_aum,
-    flat_multiplier = 0.15,
+    flat_multiplier = flat_multiplier,
     exclusion = input_data_list$excluded_companies
   )
+
+  cat("-- Calculating credit risk. \n")
 
   overall_pd_changes <- annual_profits %>%
     calculate_pd_change_overall(
@@ -185,7 +245,7 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
 
   expected_loss <- company_expected_loss(
     data = overall_pd_changes,
-    loss_given_default = lgd_senior_claims,
+    loss_given_default = lgd,
     exposure_at_default = exposure_by_technology_and_company,
     # TODO: what to do with this? some sector level exposure for loanbook?
     port_aum = port_aum
@@ -204,12 +264,12 @@ run_stress_test_loans <- function(lgd_senior_claims = 0.45,
   # TODO: ADO 879 - note which companies produce missing results due to
   # insufficient input information (e.g. NAs for financials or 0 equity value)
 
-  write_stress_test_results(
-    results = results,
-    expected_loss = expected_loss,
-    annual_pd_changes = annual_pd_changes,
-    overall_pd_changes = overall_pd_changes,
-    asset_type = asset_type,
-    calculation_level = calculation_level
+  return(
+    list(
+      results = results,
+      expected_loss = expected_loss,
+      annual_pd_changes = annual_pd_changes,
+      overall_pd_changes = overall_pd_changes
+    )
   )
 }

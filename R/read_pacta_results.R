@@ -22,7 +22,7 @@ read_pacta_results <- function(path = NULL,
   stopifnot(valid_input_file_path)
 
 
-  data <- readRDS(path)
+  data <- readr::read_rds(path)
 
   expected_columns <- c(
     "investor_name", "portfolio_name", "scenario", "allocation",
@@ -35,14 +35,18 @@ read_pacta_results <- function(path = NULL,
     expected_columns <- c(expected_columns, "id", "company_name")
   }
 
-  data_has_expected_columns <- all(expected_columns %in% colnames(data))
-  stopifnot(data_has_expected_columns)
+  validate_data_has_expected_cols(
+    data = data,
+    expected_columns = expected_columns
+  )
 
   data <- data %>%
     dplyr::select(.env$expected_columns)
 
-  output_has_expected_columns <- all(expected_columns %in% colnames(data))
-  stopifnot(output_has_expected_columns)
+  validate_data_has_expected_cols(
+    data = data,
+    expected_columns = expected_columns
+  )
 
   return(data)
 }

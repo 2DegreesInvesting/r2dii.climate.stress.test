@@ -15,6 +15,9 @@ unique in their combination.}
 \item{throw_error}{Boolean, if TRUE error is thrown on failures, otherwise a
 warning.}
 }
+\value{
+input \code{data}.
+}
 \description{
 Applies consistency checks to data concerning the combinations of columns
 that should be unique in combination. In concrete:

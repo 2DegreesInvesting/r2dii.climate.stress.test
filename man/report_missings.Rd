@@ -4,12 +4,18 @@
 \alias{report_missings}
 \title{Report missing}
 \usage{
-report_missings(data, name_data)
+report_missings(data, name_data, throw_error = FALSE)
 }
 \arguments{
 \item{data}{Tibble holding a result data set.}
 
 \item{name_data}{Name of the data file.}
+
+\item{throw_error}{Boolean, if TRUE error is thrown on failures, otherwise a
+warning.}
+}
+\value{
+input \code{data}.
 }
 \description{
 Function reports number of missing values per variable.

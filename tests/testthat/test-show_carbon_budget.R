@@ -1,9 +1,9 @@
 test_that("production trajectories function returns a ggplot object", {
-  test_data_annual_profits <- readRDS(
+  test_data_annual_profits <- readr::read_rds(
     testthat::test_path("test_data", "test_show_carbon_budgets.rds")
   )
 
-  test_scenario_data <- readRDS(
+  test_scenario_data <- readr::read_rds(
     testthat::test_path("test_data", "test_show_carbon_budgets_scenarios.rds")
   )
 

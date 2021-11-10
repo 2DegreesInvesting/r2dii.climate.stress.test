@@ -1,5 +1,5 @@
 test_that("format_loanbook_st returns a data frame", {
-  test_data_lbk_results <- readRDS(testthat::test_path("test_data", "test_data_format_loanbook_st.rds"))
+  test_data_lbk_results <- readr::read_rds(testthat::test_path("test_data", "test_data_format_loanbook_st.rds"))
 
   test_investor_name <- "Meta Investor"
   test_portfolio_name <- "Meta Portfolio"

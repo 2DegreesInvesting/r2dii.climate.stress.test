@@ -25,23 +25,23 @@ company_expected_loss <- function(data,
   exposure_at_default %||% stop("Must provide input for 'exposure_at_default'", call. = FALSE)
   port_aum %||% stop("Must provide input for 'port_aum'", call. = FALSE)
 
-  data_has_expected_columns <- all(
-    c(
+  validate_data_has_expected_cols(
+    data = data,
+    expected_columns = c(
       "investor_name", "portfolio_name", "company_name", "scenario_geography",
       "ald_sector", "scenario_name", "PD_baseline", "PD_late_sudden",
       "PD_change"
-    ) %in% colnames(data)
+    )
   )
-  stopifnot(data_has_expected_columns)
 
-  exposure_at_default_has_expected_columns <- all(
-    c(
+  validate_data_has_expected_cols(
+    data = exposure_at_default,
+    expected_columns = c(
       "investor_name", "portfolio_name", "company_name", "year",
       "scenario_geography", "ald_sector", "technology",
       "plan_carsten", "plan_sec_carsten", "term", "pd"
-    ) %in% colnames(exposure_at_default)
+    )
   )
-  stopifnot(exposure_at_default_has_expected_columns)
 
   company_exposure <- exposure_at_default %>%
     dplyr::group_by(
@@ -62,7 +62,7 @@ company_expected_loss <- function(data,
     dplyr::mutate(
       exposure_at_default = .data$asset_portfolio_value * .data$percent_exposure
     ) %>%
-    dplyr::mutate(term = dplyr::if_else(.data$term > 5, 5, .data$term))
+    dplyr::mutate(term = dplyr::if_else(.data$term > 5, 5, as.double(.data$term)))
 
   data <- data %>%
     dplyr::mutate(lgd = loss_given_default)

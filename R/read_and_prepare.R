@@ -26,6 +26,7 @@ read_and_prepare_project_agnostic_data <- function(start_year, end_year, company
   )
 
   if (company_exclusion) {
+    validate_file_exists(file.path(data_location, "exclude-companies.csv"))
     excluded_companies <- readr::read_csv(
       file.path(data_location, "exclude-companies.csv"),
       col_types = readr::cols(
@@ -38,7 +39,7 @@ read_and_prepare_project_agnostic_data <- function(start_year, end_year, company
   }
 
   df_price <- read_price_data(
-    path = file.path(data_location, paste0("prices_data_", config::get(file = "st_project_settings.yml")$price_data_version, ".csv")),
+    path = file.path(data_location, paste0("prices_data_", price_data_version_lookup, ".csv")),
     version = "old",
     expected_technologies = technologies_lookup
   ) %>%
@@ -55,11 +56,10 @@ read_and_prepare_project_agnostic_data <- function(start_year, end_year, company
         .data$scenario_geography == scenario_geography_filter
     )
 
-  financial_data <- read_company_data(
-    path = get(asset_type, create_stressdata_masterdata_file_paths()),
-    asset_type = asset_type
+  financial_data <- read_financial_data(
+    path = file.path(get_st_data_path(), "prewrangled_financial_data_stress_test.csv")
   ) %>%
-    wrangle_financial_data(start_year = start_year)
+  check_financial_data(asset_type = asset_type)
 
   return(list(
     capacity_factors_power = capacity_factors_power,
@@ -73,17 +73,16 @@ read_and_prepare_project_agnostic_data <- function(start_year, end_year, company
 #' Read and prepare project specific data
 #'
 #' Function reads in data that are specific the project and conducts some
-#' checking and wrangling.
+#' checking and wrangling. Also infers start_year of analysis.
 #'
-#' @inheritParams run_stress_test_equity
+#' @inheritParams validate_input_values
 #' @inheritParams read_and_prepare_project_agnostic_data
 #' @inheritParams wrangle_and_check_pacta_results
 #' @param calculation_level String holding level of calculation.
 #'
-#' @return  A list holding prepared project agnostic data.
+#' @return A list of lists holding prepared project specific data.
 read_and_prepare_project_specific_data <- function(asset_type, calculation_level,
-                                                   start_year, time_horizon,
-                                                   scenario_geography_filter,
+                                                   time_horizon, scenario_geography_filter,
                                                    scenarios_filter, equity_market_filter,
                                                    term) {
   path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", paste0(stringr::str_to_title(asset_type), "_results_", calculation_level, ".rda"))
@@ -91,7 +90,11 @@ read_and_prepare_project_specific_data <- function(asset_type, calculation_level
   pacta_results <- read_pacta_results(
     path = path,
     level = calculation_level
-  ) %>%
+  )
+
+  start_year <- min(pacta_results$year, na.rm = TRUE)
+
+  wrangled_pacta_results <- pacta_results %>%
     wrangle_and_check_pacta_results(
       start_year = start_year,
       time_horizon = time_horizon,
@@ -103,12 +106,41 @@ read_and_prepare_project_specific_data <- function(asset_type, calculation_level
     # TODO: next version to allow term input on holding/company level
     dplyr::mutate(term = term)
 
-  sector_exposures <- readRDS(file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", "overview_portfolio.rda")) %>%
+  sector_exposures <- read_sector_exposures(file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", "overview_portfolio.rda")) %>%
     wrangle_and_check_sector_exposures(asset_type = asset_type)
   # TODO: potentially convert currencies to USD or at least common currency
 
-  return(list(
-    pacta_results = pacta_results,
-    sector_exposures = sector_exposures
-  ))
+  return(
+    list(
+      data_list = list(
+        pacta_results = wrangled_pacta_results,
+        sector_exposures = sector_exposures
+      ),
+      start_year = start_year
+    )
+  )
+}
+
+
+#' Read sector exposures
+#'
+#' Read file holding sector exposure results.
+#'
+#' @param path Path to file holding sector exposures.
+#'
+#' @return A tibble holding sector exposure data
+read_sector_exposures <- function(path) {
+  validate_file_exists(path)
+
+  sector_exposures <- readr::read_rds(path)
+
+  validate_data_has_expected_cols(
+    data = sector_exposures,
+    expected_columns = c(
+      "investor_name", "portfolio_name", "valid_value_usd", "valid_input",
+      "asset_type", "financial_sector"
+    )
+  )
+
+  return(sector_exposures)
 }

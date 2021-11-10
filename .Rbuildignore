@@ -1,27 +1,28 @@
+# FIXME: Avoid NOTE: no visible binding for '<<-' assignment
+# These files are not used by the package but they are by legacy code that
+# uses the repository that hosts the package.
+^R/set_params_st\.R$
+^tests/testthat/test-set_params_st\.R$
+
 ^r2dii\.climate\.stress\.test\.Rproj$
 ^\.Rproj\.user$
 ^README\.Rmd$
 ^LICENSE\.md$
 ^\.pacta$
 ^model_parameters$
-^0_global_functions\.R$
+^nonstandard$
 ^0_global_functions_st\.R$
 ^0_portfolio_input_check_functions\.R$
-^0_portfolio_test\.R$
-^calc_loan_book\.R$
 ^external_stress_test_application_code\.R$
 ^external_stress_test_on_existing_results\.R$
-^model_parameters\.yml$
-^plot_production_trajectories\.R$
-^params_litigation_risk\.yml$
-^QA_scripts$
 ^st_project_settings\.yml$
 ^stress_test_litigation_risk\.R$
 ^stress_test_model_functions\.R$
-^utils\.R$
 ^web_tool_external_stress_test\.R$
 ^web_tool_stress_test\.R$
-^wip_data_qa\.R$
 ^\.github$
 ^\.Renviron$
 ^vignettes/articles$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$

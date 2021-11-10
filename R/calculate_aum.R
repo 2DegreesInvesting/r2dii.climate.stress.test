@@ -15,5 +15,10 @@ calculate_aum <- function(sector_exposures) {
       asset_portfolio_value = sum(valid_value_usd),
       .groups = "drop"
     )
+
+  if (aum$asset_portfolio_value <= 0) {
+    stop("Asset under management has negative or 0 value. This is not supported by the analysis.", call. = FALSE)
+  }
+
   return(aum)
 }

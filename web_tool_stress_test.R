@@ -22,7 +22,6 @@ function_paths <- c(
   file.path(
     stress_test_path,
     c(
-      "stress_test_model_functions.R",
       "0_global_functions_st.R"
     )
   ),
@@ -44,6 +43,7 @@ function_paths <- c(
       "set_params_st.R",
       "set_paths.R",
       "set_tech_trajectories.R",
+      "stress_test_model_functions.R",
       "utils.R",
       "write_results.R"
     )

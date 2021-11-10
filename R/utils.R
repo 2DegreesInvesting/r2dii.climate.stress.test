@@ -61,33 +61,6 @@ path_dropbox_2dii <- function(...) {
   fs::path_home(custom %||% default, ...)
 }
 
-#' Get path for stress test masterdata files
-#'
-#' Return list of paths for stress test masterdata files.
-#'
-#' @return A list with 3 file paths.
-#' @export
-create_stressdata_masterdata_file_paths <- function() {
-
-  path_parent <- get_st_data_path()
-
-  paths <- list(
-    "prewrangled_financial_data_bonds.rds",
-    "prewrangled_financial_data_equity.rds",
-    "prewrangled_financial_data_loans.rds"
-  ) %>%
-    purrr::map(function(file) {
-      file_path <- file.path(path_parent, file)
-      if (!file.exists(file.path(file_path))) {
-        stop("Stresstest master data file does not exist.")
-      }
-      return(file_path)
-    }) %>%
-    purrr::set_names(c("bonds", "equity", "loans"))
-
-  return(paths)
-}
-
 #' Validate that a file exists in a given directory
 #'
 #' Before performing an operation on a file assumed to be found in a given
@@ -115,9 +88,20 @@ validate_file_exists <- function(path) {
 #' @export
 validate_data_has_expected_cols <- function(data,
                                             expected_columns) {
-  data_has_expected_columns <- all(expected_columns %in% colnames(data))
-  stopifnot(data_has_expected_columns)
+  stopifnot(rlang::is_named(data))
+  stopifnot(is.character(expected_columns))
+
+  data_has_expected_columns <-
+    all(expected_columns %in% colnames(data))
+
+  if (!data_has_expected_columns) {
+    stop(paste0("Detected missing columns: ", paste0(sort(setdiff(
+      expected_columns, names(data))
+    ), collapse = ", "), "."), call. = FALSE)
+  }
+  invisible()
 }
+
 
 #' Checks data for missings and duplicates
 #'
@@ -134,9 +118,10 @@ validate_data_has_expected_cols <- function(data,
 #' @param throw_error Boolean, if TRUE error is thrown on failures, otherwise a
 #'   warning.
 #'
-#' @return NULL
+#' @return input `data`.
 #' @export
 report_all_duplicate_kinds <- function(data, composite_unique_cols, throw_error = TRUE) {
+
   validate_data_has_expected_cols(
     data = data,
     expected_columns = composite_unique_cols
@@ -154,7 +139,7 @@ report_all_duplicate_kinds <- function(data, composite_unique_cols, throw_error 
     throw_error = throw_error
   )
 
-  return(invisible())
+  return(invisible(data))
 }
 
 #' Identify and report missing value combinations
@@ -182,7 +167,7 @@ report_missing_col_combinations <- function(data, composite_unique_cols, throw_e
     if (throw_error) {
       stop(paste0("Identified ", nrow(missing_rows), " missing combinations on columns ", paste(composite_unique_cols, collapse = ", "), "."))
     } else {
-      warning(paste0("Identified ", nrow(missing_rows), " missing combinations on columns ", paste(composite_unique_cols, collapse = ", "), "."))
+      warning(paste0("Identified ", nrow(missing_rows), " missing combinations on columns ", paste(composite_unique_cols, collapse = ", "), "."), call. = FALSE)
     }
   }
 
@@ -198,7 +183,7 @@ report_missing_col_combinations <- function(data, composite_unique_cols, throw_e
 #' @param cols Cols to check for duplicate combinations on.
 #'
 #' @return NULL
-report_duplicates <- function(data, cols, throw_error = FALSE) {
+report_duplicates <- function(data, cols, throw_error = TRUE) {
   duplicates <- data %>%
     dplyr::group_by(!!!rlang::syms(cols)) %>%
     dplyr::filter(dplyr::n() > 1) %>%
@@ -209,13 +194,46 @@ report_duplicates <- function(data, cols, throw_error = FALSE) {
     if (throw_error) {
       stop(paste0("Identified ", nrow(duplicates), " duplicates on columns ", paste(cols, collapse = ", "), "."))
     } else {
-      warning(paste0("Identified ", nrow(duplicates), " duplicates on columns ", paste(cols, collapse = ", "), "."))
+      warning(paste0("Identified ", nrow(duplicates), " duplicates on columns ", paste(cols, collapse = ", "), "."), call. = FALSE)
     }
   }
 
   return(invisible())
 }
 
+#' Report dropped companies
+#'
+#' Wrapper to report companies for which all results, or results for some technologies
+#' are lsot due to a missing match in financial_data or price_data.
+#'
+#' @param data_list A list of imported stress test input data.
+#' @inheritParams validate_input_values
+#'
+#' @return NULL
+report_company_drops <- function(data_list, asset_type) {
+
+  if (asset_type == "bonds") {
+    merge_cols <- c("company_name", "id" = "corporate_bond_ticker")
+  } else {
+    merge_cols <- c("company_name")
+  }
+
+  report_dropped_company_names(
+    data_x = data_list$pacta_result,
+    data_y = data_list$financial_data,
+    name_y = "financial data",
+    merge_cols = merge_cols
+  )
+
+  report_dropped_company_names(
+    data_x = data_list$pacta_result,
+    data_y = data_list$df_price,
+    name_y = "price data",
+    merge_cols = c("technology", "ald_sector" = "sector", "year")
+  )
+
+  invisible()
+}
 
 #' Inner join datasets and report number of dropped rows
 #'
@@ -224,15 +242,12 @@ report_duplicates <- function(data, cols, throw_error = FALSE) {
 #'
 #' @param data_x Tibble with data that is joinable to `data_y`.
 #' @param data_y Tibble with data that is joinable to `data_x`.
-#' @param name_x Name of `data_x`.
 #' @param name_y Name of `data_x`.
 #' @param merge_cols Vector holds columns to join on.
+#' @param name_x Name of `data_x, defults to PACTA results.
 #'
 #' @return The merged dataset.
-inner_join_report_drops <- function(data_x, data_y, name_x, name_y, merge_cols) {
-
-  rows_x <- nrow(data_x)
-  rows_y <- nrow(data_y)
+report_dropped_company_names <- function(data_x, data_y, name_y, merge_cols, name_x = "PACTA results") {
 
   data <- data_x %>%
     dplyr::inner_join(
@@ -240,13 +255,21 @@ inner_join_report_drops <- function(data_x, data_y, name_x, name_y, merge_cols) 
       by = merge_cols
     )
 
-  rows_data <- nrow(data)
+  n_companies_x <- length(unique(data_x$company_name))
+  n_companies <- length(unique(data$company_name))
 
-  if (rows_data < rows_x) {
+  if (n_companies < n_companies_x) {
+    percent_loss <- (n_companies_x - n_companies) * 100/n_companies_x
+    affected_companies <- sort(setdiff(data_x$company_name, data$company_name))
     cat(
-      "When joining", name_x, "on", name_y, "on columns", merge_cols, "dropped",
-      rows_x - rows_data, "rows from", name_x, ".\n"
+      "      >> When joining", name_x, "on", name_y, "on column(s)", paste0(merge_cols, collapse = ", "), "dropped rows for",
+      n_companies_x - n_companies, "out of", n_companies_x, "companies\n"
     )
+    cat("        >> percent loss:", percent_loss, "\n")
+    cat("        >> affected companies:\n")
+    purrr::walk(affected_companies, function(company) {
+      cat("          >>", company, "\n")
+    })
   }
   return(data)
 }
@@ -255,34 +278,86 @@ inner_join_report_drops <- function(data_x, data_y, name_x, name_y, merge_cols) 
 #'
 #' Function reports number of missing values per variable.
 #'
+#' @inheritParams report_all_duplicate_kinds
 #' @param data Tibble holding a result data set.
 #' @param name_data Name of the data file.
 #'
-#' @return NULL
-report_missings <- function(data, name_data) {
+#' @return input `data`.
+report_missings <- function(data, name_data, throw_error = FALSE) {
   missings <- purrr::map_df(data, function(x) sum(is.na(x)))
 
-  cat("Reporting missings on dataset:", name_data, "\n")
-  purrr::iwalk(missings, function(n_na, name) {
-    cat("Counted", n_na, "missings on column", name, "\n")
-  })
-  cat("\n\n")
+  if (is_verbose_log_env()) {
+    cat("Reporting missings on dataset:", name_data, "\n")
+    purrr::iwalk(missings, function(n_na, name) {
+      cat("Counted", n_na, "missings on column", name, "\n")
+    })
+    cat("\n\n")
+  }
+
+  if (throw_error && rowSums(missings) > 0) {
+    stop(paste0("Missings detected on ", name_data, ", please check dataset."), call. = FALSE)
+  }
+
+  invisible(data)
 }
 
-#' Checks structure of results
-#'
-#' Wrapper to call [report_all_duplicate_kinds()] and [report_missings()] on
-#' results.
-#'
-#' @param data Tibble holding results.
-#' @param name_data Name of results data.
-#' @param cuc_cols Vector of cols the combination of which needs to be unique.
-#'
-#' @return Tibble `data`.
-check_results_structure <- function(data, name_data, cuc_cols) {
 
-  report_all_duplicate_kinds(data = data, composite_unique_cols = cuc_cols, throw_error = FALSE)
-  report_missings(data = data, name_data = name_data)
+#' Assign value of flat multiplier
+#'
+#' Assign value of flat multiplier based on `asset_type`.
+#'
+#' @inheritParams validate_input_values
+#'
+#' @return A double holding value of the flat multiplier.
+assign_flat_multiplier <- function(asset_type) {
+  flat_multiplier <- ifelse(asset_type %in% c("loans", "bonds"),  0.15, 1.0)
+  return(flat_multiplier)
+}
 
-  return(data)
+#' Assign value of lgd
+#'
+#' Assigns value of lgd based on `asset_type`. Can be from `lgd_senior_claims`
+#' or `lgd_subordinated_claims`.
+#'
+#' @inheritParams validate_input_values
+#'
+#' @return A numeric holding value of lgd.
+assign_lgd <- function(asset_type, lgd_senior_claims,
+                       lgd_subordinated_claims) {
+  lgd <- ifelse(asset_type %in% c("equity", "bonds"), lgd_subordinated_claims, lgd_senior_claims)
+  return(lgd)
+}
+
+#' Get name of iterator variable
+#'
+#' Uses fallback if no iterator is used. Aborts if > 1 iterator is given.
+#'
+#' @param args_list Named list of default and provided arguments in function
+#'   call to [run_stress_test()].
+#'
+#' @return String holding name of iterator variable.
+get_iter_var <- function(args_list) {
+
+  iterate_arg <- purrr::map_int(args_list, length) %>%
+    tibble::enframe() %>%
+    dplyr::filter(.data$value > 1)
+
+  if (nrow(iterate_arg) == 0) {
+    iter_var <- "standard"
+  } else if (nrow(iterate_arg) == 1) {
+    iter_var <- iterate_arg$name
+
+    if (iter_var == "asset_type") {
+      rlang::abort(
+        "Cannot iterate over argument asset_type")
+    }
+  } else {
+    rlang::abort(c(
+      "Must provide no more than one argument with multiple values.",
+      x = glue::glue("Arguments with multiple values: {toString(iterate_arg$name)}."),
+      i = "Did you forget to pick only one?"
+    ))
+  }
+
+  return(iter_var)
 }

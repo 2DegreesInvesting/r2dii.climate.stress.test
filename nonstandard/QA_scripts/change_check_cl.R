@@ -2,22 +2,20 @@
 
 # defining some functions
 import_asset_results <- function() {
-
   results_path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "outputs")
 
-  equity_results_company <- readr::read_csv(file.path(results_path, "stress_test_results_equity_comp.csv"))
-  equity_results_port <- readr::read_csv(file.path(results_path, "stress_test_results_equity_port.csv"))
-  equity_expected_loss <- readr::read_csv(file.path(results_path, "stress_test_results_equity_comp_el.csv"))
-  equity_annual_pd_changes_sector <- readr::read_csv(file.path(results_path, "stress_test_results_equity_sector_pd_changes_annual.csv"))
-  equity_overall_pd_changes_sector <- readr::read_csv(file.path(results_path, "stress_test_results_equity_sector_pd_changes_overall.csv"))
-
+  loanbook_results_company <- readr::read_csv(file.path(results_path, "stress_test_results_loans_comp_standard.csv"))
+  loanbook_results_port <- readr::read_csv(file.path(results_path, "stress_test_results_loans_port_standard.csv"))
+  loanbook_expected_loss <- readr::read_csv(file.path(results_path, "stress_test_results_loans_comp_el_standard.csv"))
+  loanbook_annual_pd_changes_sector <- readr::read_csv(file.path(results_path, "stress_test_results_loans_sector_pd_changes_annual_standard.csv"))
+  loanbook_overall_pd_changes_sector <- readr::read_csv(file.path(results_path, "stress_test_results_loans_sector_pd_changes_overall_standard.csv"))
 
   asset_results <- list(
-    equity_results_company = equity_results_company,
-    equity_results_port = equity_results_port,
-    equity_expected_loss = equity_expected_loss,
-    equity_annual_pd_changes_sector = equity_annual_pd_changes_sector,
-    equity_overall_pd_changes_sector = equity_overall_pd_changes_sector
+    loanbook_results_company = loanbook_results_company,
+    loanbook_results_port = loanbook_results_port,
+    loanbook_expected_loss = loanbook_expected_loss,
+    loanbook_annual_pd_changes_sector = loanbook_annual_pd_changes_sector,
+    loanbook_overall_pd_changes_sector = loanbook_overall_pd_changes_sector
   )
 
   return(asset_results)
@@ -37,7 +35,7 @@ check_all_equal <- function(old_results, new_results) {
     new_result <- get(n, new_results)
 
     if (!dplyr::setequal(old_result, new_result)) {
-      warning(paste0("Data for ", n, " are not equal."))
+      warning(paste0("Data for ", n, " are not equal."), call. = FALSE)
       list(FALSE) %>%
         purrr::set_names(n)
     } else {
@@ -50,21 +48,21 @@ check_all_equal <- function(old_results, new_results) {
 
 
 ## The following script shall serve as a quick alternative to the implementation
-## of snapshot tests for equity results.
+## of snapshot tests for loanbook results.
 ## It makes sense to use whenever you expect all or some results to be unchanged
 ## by a release as it checks for equality of old and new data.
 ## If not you will have to change the expectations to use it.
 
 ### 1. check out master branch of repo (or whichever branch you want to use as reference)
 devtools::load_all()
-run_stress_test_equity()
+run_stress_test(asset_type = "loans")
 
 ### 2. run the following lines to obtain results
 old_results <- import_asset_results()
 
 ### 3. check out dev branch of repo (or whichever branch you want to use as comparison)
 devtools::load_all()
-run_stress_test_equity()
+run_stress_test(asset_type = "loans")
 
 
 ### 4. run the following lines to run script or equity and bonds and obtain results

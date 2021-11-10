@@ -39,15 +39,15 @@ apply_filters <- function(data,
   allocation_method %||% stop("Must provide input for 'allocation_method'", call. = FALSE)
   start_analysis %||% stop("Must provide input for 'start_analysis'", call. = FALSE)
 
-  data_has_expected_columns <- all(
-    c(
+  validate_data_has_expected_cols(
+    data = data,
+    expected_columns = c(
       "year", "investor_name", "portfolio_name", "equity_market", "ald_sector",
       "technology", "scenario", "allocation", "scenario_geography",
       "plan_tech_prod", "plan_carsten", "scen_tech_prod", "plan_sec_prod",
       "plan_sec_carsten"
-    ) %in% colnames(data)
+    )
   )
-  stopifnot(data_has_expected_columns)
 
   if (!"id" %in% names(data)) {
     data$id <- "PortfolioLevel"

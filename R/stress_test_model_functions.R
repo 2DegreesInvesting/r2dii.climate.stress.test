@@ -1,4 +1,6 @@
-# STILL TO FIX: five year moving average
+# FIXME: Add tests and documentation
+
+
 # FIXME: can probably be removed
 f <- function(shock_strength_calc) {
   sum(scen_to_follow[1:(position_shock_year + duration_of_shock - 1)]) -
@@ -49,7 +51,7 @@ net_profit_margin_setup <- function(net_profit_margin_coal,
                                     net_profit_margin_renewablescap,
                                     net_profit_margin_hydrocap,
                                     net_profit_margin_oilcap) {
-  tibble(
+  tibble::tibble(
     "technology" = c("Coal", "CoalCap", "Electric", "Gas", "GasCap", "Hybrid", "ICE", "NuclearCap", "Oil", "RenewablesCap", "HydroCap", "OilCap"),
     "net_profit_margin" = c(
       net_profit_margin_coal,

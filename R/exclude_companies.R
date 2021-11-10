@@ -30,21 +30,23 @@ exclude_companies <- function(data,
   scenario_baseline %||% stop("Must provide input for 'scenario_baseline'", call. = FALSE)
   scenario_ls %||% stop("Must provide input for 'scenario_ls'", call. = FALSE)
 
-  data_has_expected_columns <- all(
-    c(
+  validate_data_has_expected_cols(
+    data = data,
+    expected_columns = c(
       "investor_name", "portfolio_name", "id", "company_name", "year",
       "scenario_geography", "ald_sector", "technology",
       "plan_tech_prod", scenario_baseline,
       scenario_ls, "baseline", "scenario_name",
       "scen_to_follow_aligned", "late_sudden", "scenario_change_aligned"
-    ) %in% colnames(data)
+    )
   )
-  stopifnot(data_has_expected_columns)
 
-  exclusion_has_expected_columns <- all(
-    c("company_name", "technology") %in% colnames(exclusion)
+  validate_data_has_expected_cols(
+    data = exclusion,
+    expected_columns = c(
+      "company_name", "technology"
+    )
   )
-  stopifnot(exclusion_has_expected_columns)
 
   exclusion <- exclusion %>%
     dplyr::mutate(exclude = TRUE)

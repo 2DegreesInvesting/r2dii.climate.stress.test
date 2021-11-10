@@ -37,12 +37,14 @@ set_baseline_trajectory <- function(data,
     data$company_name <- "PortfolioLevel"
   }
 
-  data_has_expected_columns <- all(c(
-    "investor_name", "portfolio_name", "id", "company_name",
-    "ald_sector", "technology", "scenario_geography",
-    "plan_tech_prod", scenario_to_follow_baseline
-  ) %in% colnames(data))
-  stopifnot(data_has_expected_columns)
+  validate_data_has_expected_cols(
+    data = data,
+    expected_columns = c(
+      "investor_name", "portfolio_name", "id", "company_name",
+      "ald_sector", "technology", "scenario_geography",
+      "plan_tech_prod", scenario_to_follow_baseline
+    )
+  )
 
   data <- data %>%
     dplyr::group_by(
@@ -167,18 +169,22 @@ set_ls_trajectory <- function(data,
     data$company_name <- "PortfolioLevel"
   }
 
-  data_has_expected_columns <- all(c(
-    "investor_name", "portfolio_name", "id", "company_name",
-    "ald_sector", "technology", "scenario_geography",
-    "plan_tech_prod", "baseline",
-    scenario_to_follow_ls, scenario_to_follow_ls_aligned
-  ) %in% colnames(data))
-  stopifnot(data_has_expected_columns)
+  validate_data_has_expected_cols(
+    data = data,
+    expected_columns = c(
+      "investor_name", "portfolio_name", "id", "company_name",
+      "ald_sector", "technology", "scenario_geography",
+      "plan_tech_prod", "baseline",
+      scenario_to_follow_ls, scenario_to_follow_ls_aligned
+    )
+  )
 
-  shock_scenario_has_expected_columns <- all(c(
-    "year_of_shock", "duration_of_shock", "scenario_name"
-  ) %in% colnames(shock_scenario))
-  stopifnot(shock_scenario_has_expected_columns)
+  validate_data_has_expected_cols(
+    data = shock_scenario,
+    expected_columns = c(
+      "year_of_shock", "duration_of_shock", "scenario_name"
+    )
+  )
 
   scenario_name <- shock_scenario$scenario_name
   year_of_shock <- shock_scenario$year_of_shock
@@ -414,11 +420,14 @@ filter_negative_late_and_sudden <- function(data_with_late_and_sudden) {
       data_with_late_and_sudden %>%
       dplyr::anti_join(negative_late_and_sudden, by = c("company_name", "technology"))
 
-    warning(paste0(
-      "Removed ", n_rows_before_removal - nrow(data_with_late_and_sudden),
-      " rows because negative production compensation targets were set in late and sudden.
+    warning(
+      paste0(
+        "Removed ", n_rows_before_removal - nrow(data_with_late_and_sudden),
+        " rows because negative production compensation targets were set in late and sudden.
                    Negative absolute production is impossible"
-    ))
+      ),
+      call. = FALSE
+    )
 
     if (nrow(data_with_late_and_sudden) == 0) {
       stop("No rows remain after removing negative late and sudden trajectories.")
