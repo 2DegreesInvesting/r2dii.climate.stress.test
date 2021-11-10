@@ -14,13 +14,13 @@ used to conduct what-if climate stress test analyses for financial
 institutions, supervisors, regulators and other stakeholders. The tool
 aims at highlighting potential financial risk in especially climate
 relevant sectors, split by production technology where required. The
-sectors covered by the 2Dii climate stress test and therefore by this
+sectors covered by the 2DII climate stress test and therefore by this
 package, follow mostly the logic of the Paris Agreement Capital
 Transition Assessment (PACTA) tool, but can in principle be adapted to
 other settings. Application of the code requires availability of custom
-data. In order to participate in a climate stress testing project with 2
-degrees investing initiative please contact
-<jacob@2degrees-investing.org>.
+data. For more information about the methodology and inquiries on
+running a pilot of the stress test in cooperation with 2DII, please
+contact <jacob@2degrees-investing.org>.
 
 ## Installation
 
@@ -34,23 +34,19 @@ devtools::install_github("2DegreesInvesting/r2dii.climate.stress.test")
 
 ## Example
 
-  - Use `library()` to attach the package
-
-<!-- end list -->
+-   Use `library()` to attach the package
 
 ``` r
 library(r2dii.climate.stress.test)
 ```
 
-  - Run climate stress tests
-
-<!-- end list -->
+-   Run climate stress tests
 
 ``` r
 ## run stress testing for assets of type corporate loans using default parameters
 run_stress_test(asset_type = "loans")
 
-## run stress testing for asset of type corporate bond using various risk_free_rates to analyse sensitivities
+## run stress testing for asset of type corporate loans using various risk_free_rates to analyse sensitivities
 run_stress_test(asset_type = "loans", risk_free_rate = c(0.01, 0.03))
 ```
 
@@ -71,26 +67,32 @@ run_prep_calculation_loans()
 You can look up allowed values of model parameters as such:
 
 ``` r
-# looking up allowed range for risk_free_rate
+lgd_senior_claims_range_lookup
+#> [1] 0.3 0.6
+
+lgd_subordinated_claims_range_lookup
+#> [1] 0.6 0.9
+
+terminal_value_range_lookup
+#> [1] 0.0 0.1
+
 risk_free_rate_range_lookup
 #> [1] 0.00 0.05
 
-# looking up allowed values for credit_type
+discount_rate_range_lookup
+#> [1] -0.01  0.05
+
+div_netprofit_prop_coef_range_lookup
+#> [1] 0.8 1.0
+
+shock_year_range_lookup
+#> [1] 2025 2040
+
+term_range_lookup
+#> [1]  1 10
+
 credit_type_lookup
 #> [1] "outstanding"  "credit_limit"
 ```
 
 \[Get started\] \#\# tbc: add link to vignette
-
-## Funding
-
-This project has received funding from the [European Union LIFE
-program](https://wayback.archive-it.org/12090/20210412123959/https://ec.europa.eu/easme/en/)
-and the [International Climate Initiative
-(IKI)](https://www.international-climate-initiative.com/en/details/project/measuring-paris-agreement-alignment-and-financial-risk-in-financial-markets-18_I_351-2982).
-The Federal Ministry for the Environment, Nature Conservation and
-Nuclear Safety (BMU) supports this initiative on the basis of a decision
-adopted by the German Bundestag. The views expressed are the sole
-responsibility of the authors and do not necessarily reflect the views
-of the funders. The funders are not responsible for any use that may be
-made of the information it contains.
