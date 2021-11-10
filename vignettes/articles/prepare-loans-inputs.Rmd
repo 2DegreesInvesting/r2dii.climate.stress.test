@@ -9,8 +9,6 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Preparing the inputs for stress testing loan books
-
 This vignette describes in detail, how to prepare the required input files
 needed to run the climate transition risk stress test to calculate the credit
 risk of a loan book.
