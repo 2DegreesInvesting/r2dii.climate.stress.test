@@ -17,10 +17,10 @@ relevant sectors, split by production technology where required. The
 sectors covered by the 2Dii climate stress test and therefore by this
 package, follow mostly the logic of the Paris Agreement Capital
 Transition Assessment (PACTA) tool, but can in principle be adapted to
-other settings. Note: Application of the code requires availability of
-custom data. In order to participate in a climate stress testing project
-with 2 degrees investing initiative please contact
-<jacob@2degrees-investing.org>
+other settings. Application of the code requires availability of custom
+data. In order to participate in a climate stress testing project with 2
+degrees investing initiative please contact
+<jacob@2degrees-investing.org>.
 
 ## Installation
 
@@ -34,7 +34,7 @@ devtools::install_github("2DegreesInvesting/r2dii.climate.stress.test")
 
 ## Example
 
--   Use `library()` to attach the packages you need.
+-   Use `library()` to attach the package
 
 ``` r
 library(r2dii.climate.stress.test)
@@ -52,16 +52,19 @@ run_stress_test(asset_type = "loans", risk_free_rate = c(0.01, 0.03))
 
 ## Details
 
--   Prepare input data Stress tests for corporate loans require an
-    additional step for input data preparation for initial use on a
-    loanbook.
+### Prepare input data
+
+Stress tests for corporate loans require an additional step for input
+data preparation for initial application of stress testing on a
+loanbook.
 
 ``` r
 run_prep_calculation_loans()
 ```
 
--   Look up valid ranges of model parameters You can look up allowed
-    values of model parameters as such:
+### Look up valid ranges of model parameters
+
+You can look up allowed values of model parameters as such:
 
 ``` r
 # looking up allowed range for risk_free_rate
