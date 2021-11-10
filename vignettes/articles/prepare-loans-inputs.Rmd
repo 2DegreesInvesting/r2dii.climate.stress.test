@@ -38,12 +38,12 @@ library(r2dii.climate.stress.test)
 ```
 
 The raw and matched loan book files need to be run through PACTA for banks and
-wrangled into the specific inout format required by `r2dii.climate.stress.test`.
+wrangled into the specific input format required by `r2dii.climate.stress.test`.
 To make this process as easy as possible for the user, we provide a function,
 `run_prep_calculation_loans()`, which takes care of all relevant steps with
 minimal input from the user.
 
-The only orgument that can be set is `credit_type`, which defaults to
+The only argument that can be set is `credit_type`, which defaults to
 `"outstanding"` if the user passes no argument. View other options by running:
 
 ```{r}
@@ -61,10 +61,10 @@ run_prep_calculation_loans()
 ```
 
 Since the argument credit_type has a default value, it is not required to set it,
-in case the user wants to run the stress test on the outsatnding credit values
+in case the user wants to run the stress test on the outstanding credit values
 in the loan book.
 
-However, it is also possible to run the analysis on the credit limits og the
+However, it is also possible to run the analysis on the credit limits of the
 loans, in case these have been provided in the raw and matched loan books. To
 achieve this, instead of the previous command, simply run:
 

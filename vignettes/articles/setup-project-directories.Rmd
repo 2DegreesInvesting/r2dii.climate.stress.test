@@ -28,7 +28,7 @@ project-specific and project-agnostic input files.
 
 ## Project-Specific files
 
-The user needs to creat a directory that will contain all project specific files.
+The user needs to create a directory that will contain all project specific files.
 This directory will usually be a directory on the machine that runs the analysis.
 The software will read from this directory and write to it.
 The user is free to choose the name of the directory, but it ius generally

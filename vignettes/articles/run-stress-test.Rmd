@@ -47,7 +47,7 @@ library(r2dii.climate.stress.test)
 
 In order to run a stress test for loans on one set of parameters, the user needs
 to pass exactly one value per input argument to the function
-`run_prep_calculation_loans()`. The only argument that doesnot have a default
+`run_prep_calculation_loans()`. The only argument that does not have a default
 value and is absolutely required to be set by the user is `asset_type`. In our
 case, we want to run the stress test for loans, so the easiest way to obtain
 results is by running:
