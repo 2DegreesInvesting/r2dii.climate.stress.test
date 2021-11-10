@@ -98,6 +98,9 @@
       <a href="../articles/articles/prepare-loans-inputs.html">Prepare inputs for stress testing loans</a>
     </li>
     <li>
+      <a href="../articles/articles/read-the-outputs.html">Read and understand the output files of the stress test</a>
+    </li>
+    <li>
       <a href="../articles/articles/run-stress-test.html">Run standard transition risk stress test</a>
     </li>
     <li>
@@ -162,24 +165,33 @@
 <p>An object of class <code>character</code> of length 2.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>lgd_senior_claims_range_lookup</span>
-</div><div class='output co'>#&gt; [1] 0.3 0.6</div><div class='input'>
-<span class='va'>lgd_subordinated_claims_range_lookup</span>
-</div><div class='output co'>#&gt; [1] 0.6 0.9</div><div class='input'>
-<span class='va'>terminal_value_range_lookup</span>
-</div><div class='output co'>#&gt; [1] 0.0 0.1</div><div class='input'>
-<span class='va'>risk_free_rate_range_lookup</span>
-</div><div class='output co'>#&gt; [1] 0.00 0.05</div><div class='input'>
-<span class='va'>discount_rate_range_lookup</span>
-</div><div class='output co'>#&gt; [1] -0.01  0.05</div><div class='input'>
-<span class='va'>div_netprofit_prop_coef_range_lookup</span>
-</div><div class='output co'>#&gt; [1] 0.8 1.0</div><div class='input'>
-<span class='va'>shock_year_range_lookup</span>
-</div><div class='output co'>#&gt; [1] 2025 2040</div><div class='input'>
-<span class='va'>term_range_lookup</span>
-</div><div class='output co'>#&gt; [1]  1 10</div><div class='input'>
-<span class='va'>credit_type_lookup</span>
-</div><div class='output co'>#&gt; [1] "outstanding"  "credit_limit"</div></pre>
+    <pre class="examples"><span class='r-in'><span class='va'>lgd_senior_claims_range_lookup</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 0.3 0.6</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>lgd_subordinated_claims_range_lookup</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 0.6 0.9</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>terminal_value_range_lookup</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 0.0 0.1</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>risk_free_rate_range_lookup</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 0.00 0.05</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>discount_rate_range_lookup</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] -0.01  0.05</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>div_netprofit_prop_coef_range_lookup</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 0.8 1.0</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>shock_year_range_lookup</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 2025 2040</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>term_range_lookup</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1]  1 10</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>credit_type_lookup</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "outstanding"  "credit_limit"</span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
