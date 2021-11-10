@@ -57,6 +57,24 @@
 <li>
   <a href="reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="articles/articles/prepare-loans-inputs.html">Prepare inputs for stress testing loans</a>
+    </li>
+    <li>
+      <a href="articles/articles/run-stress-test.html">Run standard transition risk stress test</a>
+    </li>
+    <li>
+      <a href="articles/articles/setup-project-directories.html">Set up the directories for running a climate transition risk stress test</a>
+    </li>
+  </ul>
+</li>
       </ul>
 <ul class="nav navbar-nav navbar-right"></ul>
 </div>
@@ -83,13 +101,13 @@
 <p>Install the development version of r2dii.climate.stress.test from GitHub with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># install.packages("devtools")</span>
-<span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"2DegreesInvesting/r2dii.climate.stress.test"</span><span class="op">)</span></code></pre></div>
+<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"2DegreesInvesting/r2dii.climate.stress.test"</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="setting-environment-variables" class="section level2">
 <h2 class="hasAnchor">
 <a href="#setting-environment-variables" class="anchor"></a>Setting environment variables</h2>
 <ul>
-<li>Use <code>Sys.setenv(ST_DATA_PATH="/path/to/agnostic/data")</code> and <code>Sys.setenv(ST_PROJECT_FOLDER="/path/to/specific/data")</code> to configure paths to data folders.</li>
+<li>Use <code><a href="https://rdrr.io/r/base/Sys.setenv.html">Sys.setenv(ST_DATA_PATH="/path/to/agnostic/data")</a></code> and <code><a href="https://rdrr.io/r/base/Sys.setenv.html">Sys.setenv(ST_PROJECT_FOLDER="/path/to/specific/data")</a></code> to configure paths to data folders.</li>
 </ul>
 </div>
 <div id="example" class="section level2">
@@ -151,7 +169,7 @@
 
 <span class="va">credit_type_lookup</span>
 <span class="co">#&gt; [1] "outstanding"  "credit_limit"</span></code></pre></div>
-<p><br><span class="math display"><em>G</em><em>e</em><em>t</em><em>s</em><em>t</em><em>a</em><em>r</em><em>t</em><em>e</em><em>d</em></span><br> ## tbc: add link to vignette</p>
+<p><span class="math display"><em>G</em><em>e</em><em>t</em><em>s</em><em>t</em><em>a</em><em>r</em><em>t</em><em>e</em><em>d</em></span> ## tbc: add link to vignette</p>
 </div>
 </div>
 </div>
