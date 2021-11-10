@@ -57,14 +57,14 @@ check_all_equal <- function(old_results, new_results) {
 
 ### 1. check out master branch of repo (or whichever branch you want to use as reference)
 devtools::load_all()
-run_stress_test(asset_type_arg = "equity")
+run_stress_test(asset_type = "equity")
 
 ### 2. run the following lines to obtain results
 old_results <- import_asset_results()
 
 ### 3. check out dev branch of repo (or whichever branch you want to use as comparison)
 devtools::load_all()
-run_stress_test(asset_type_arg = "equity")
+run_stress_test(asset_type = "equity")
 
 
 ### 4. run the following lines to run script or equity and bonds and obtain results

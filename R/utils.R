@@ -347,7 +347,7 @@ get_iter_var <- function(args_list) {
   } else if (nrow(iterate_arg) == 1) {
     iter_var <- iterate_arg$name
 
-    if (iter_var == "asset_type_arg") {
+    if (iter_var == "asset_type") {
       rlang::abort(
         "Cannot iterate over argument asset_type")
     }

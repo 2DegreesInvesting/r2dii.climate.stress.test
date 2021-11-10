@@ -5,44 +5,44 @@
 #' vector of values to one (and only one) of the detail arguments. This will
 #' result in running the analysis multiple times in a row with the argument
 #' varied.
-#' NOTE: argument `asset_type_arg` is not iterateable.
+#' NOTE: argument `asset_type` is not iterateable.
 #'
-#' @param asset_type_arg String holding asset_type, for allowed value compare
+#' @param asset_type String holding asset_type, for allowed value compare
 #'   `asset_types_lookup`.
-#' @param lgd_senior_claims_arg Numeric, holding the loss given default for senior
+#' @param lgd_senior_claims Numeric, holding the loss given default for senior
 #'   claims, for accepted value range check `lgd_senior_claims_range_lookup`.
-#' @param lgd_subordinated_claims_arg Numeric, holding the loss given default for
+#' @param lgd_subordinated_claims Numeric, holding the loss given default for
 #'   subordinated claims, for accepted value range check
 #'   `lgd_subordinated_claims_range_lookup`.
-#' @param terminal_value_arg Numeric. A ratio to determine the share of the
+#' @param terminal_value Numeric. A ratio to determine the share of the
 #'   discounted value used in the terminal value calculation beyond the
 #'   projected time frame. For accepted range compare `terminal_value_range_lookup`.
-#' @param risk_free_rate_arg Numeric that indicates the risk free rate of interest.
+#' @param risk_free_rate Numeric that indicates the risk free rate of interest.
 #'   For accepted range compare `risk_free_rate_range_lookup`.
-#' @param discount_rate_arg Numeric, that holds the discount rate of dividends per
+#' @param discount_rate Numeric, that holds the discount rate of dividends per
 #'   year in the DCF. For accepted range compare `discount_rate_range_lookup`.
-#' @param div_netprofit_prop_coef_arg Numeric. A coefficient that determines how
+#' @param div_netprofit_prop_coef Numeric. A coefficient that determines how
 #'   strongly the future dividends propagate to the company value. For accepted
 #'   range compare `div_netprofit_prop_coef_range_lookup`.
-#' @param shock_year_arg Numeric, holding year the shock is applied. For accepted
+#' @param shock_year Numeric, holding year the shock is applied. For accepted
 #'   range compare `shock_year_range_lookup`.
-#' @param term_arg Numeric. A coefficient that determines for which maturity the
+#' @param term Numeric. A coefficient that determines for which maturity the
 #'   expected loss should be calculated in the credit risk section. For accepted
 #'   range compare `term_range_lookup`.
-#' @param company_exclusion_arg Boolean, indicating if companies provided in dataset
+#' @param company_exclusion Boolean, indicating if companies provided in dataset
 #'   excluded_companies.csv shall be excluded.
 #' @return NULL
 #' @export
-run_stress_test <- function(asset_type_arg,
-                            lgd_senior_claims_arg = 0.45,
-                            lgd_subordinated_claims_arg = 0.75,
-                            terminal_value_arg = 0,
-                            risk_free_rate_arg = 0.02,
-                            discount_rate_arg = 0.02,
-                            div_netprofit_prop_coef_arg = 1,
-                            shock_year_arg = 2030,
-                            term_arg = 2,
-                            company_exclusion_arg = TRUE) {
+run_stress_test <- function(asset_type,
+                            lgd_senior_claims = 0.45,
+                            lgd_subordinated_claims = 0.75,
+                            terminal_value = 0,
+                            risk_free_rate = 0.02,
+                            discount_rate = 0.02,
+                            div_netprofit_prop_coef = 1,
+                            shock_year = 2030,
+                            term = 2,
+                            company_exclusion = TRUE) {
   cat("Running transition risk stress test \n")
 
   args_list <- mget(names(formals()), sys.frame(sys.nframe()))
@@ -63,7 +63,7 @@ run_stress_test <- function(asset_type_arg,
     expected_loss = st_results$expected_loss,
     annual_pd_changes = st_results$annual_pd_changes,
     overall_pd_changes = st_results$overall_pd_changes,
-    asset_type = asset_type_arg,
+    asset_type = asset_type,
     calculation_level = calculation_level_lookup,
     sensitivity_analysis_vars = names(args_list),
     iter_var = iter_var
@@ -86,6 +86,7 @@ run_stress_test_iteration <- function(n, args_tibble) {
   arg_list_row <- arg_tibble_row %>%
     as.list()
 
+  arg_tibble_row <- dplyr::rename_with(arg_tibble_row, ~paste0(.x, "_arg"))
   st_result <- do.call(args = arg_list_row, what = run_stress_test_impl) %>%
     purrr::map(dplyr::bind_cols, data_y = arg_tibble_row)
 }
@@ -98,29 +99,29 @@ run_stress_test_iteration <- function(n, args_tibble) {
 #' @inheritParams run_stress_test
 #'
 #' @return A list of stress test results.
-run_stress_test_impl <- function(asset_type_arg,
-                                 lgd_senior_claims_arg,
-                                 lgd_subordinated_claims_arg,
-                                 terminal_value_arg,
-                                 risk_free_rate_arg,
-                                 discount_rate_arg,
-                                 div_netprofit_prop_coef_arg,
-                                 shock_year_arg,
-                                 term_arg,
-                                 company_exclusion_arg) {
+run_stress_test_impl <- function(asset_type,
+                                 lgd_senior_claims,
+                                 lgd_subordinated_claims,
+                                 terminal_value,
+                                 risk_free_rate,
+                                 discount_rate,
+                                 div_netprofit_prop_coef,
+                                 shock_year,
+                                 term,
+                                 company_exclusion) {
   cat("Validating input arguments. \n")
 
   validate_input_values(
-    lgd_senior_claims = lgd_senior_claims_arg,
-    lgd_subordinated_claims = lgd_subordinated_claims_arg,
-    terminal_value = terminal_value_arg,
-    risk_free_rate = risk_free_rate_arg,
-    discount_rate = discount_rate_arg,
-    div_netprofit_prop_coef = div_netprofit_prop_coef_arg,
-    shock_year = shock_year_arg,
-    term = term_arg,
-    company_exclusion = company_exclusion_arg,
-    asset_type = asset_type_arg
+    lgd_senior_claims = lgd_senior_claims,
+    lgd_subordinated_claims = lgd_subordinated_claims,
+    terminal_value = terminal_value,
+    risk_free_rate = risk_free_rate,
+    discount_rate = discount_rate,
+    div_netprofit_prop_coef = div_netprofit_prop_coef,
+    shock_year = shock_year,
+    term = term,
+    company_exclusion = company_exclusion,
+    asset_type = asset_type
   )
 
   cat("-- Configuring analysis settings. \n")
@@ -130,10 +131,10 @@ run_stress_test_impl <- function(asset_type_arg,
   calculation_level <- calculation_level_lookup
   end_year <- end_year_lookup
   time_horizon <- time_horizon_lookup
-  flat_multiplier <- assign_flat_multiplier(asset_type = asset_type_arg)
+  flat_multiplier <- assign_flat_multiplier(asset_type = asset_type)
   lgd <- assign_lgd(
-    asset_type = asset_type_arg, lgd_senior_claims = lgd_senior_claims_arg,
-    lgd_subordinated_claims = lgd_subordinated_claims_arg
+    asset_type = asset_type, lgd_senior_claims = lgd_senior_claims,
+    lgd_subordinated_claims = lgd_subordinated_claims
   )
   scenario_geography_filter <- "Global"
   scenarios_filter <- unique(
@@ -146,13 +147,13 @@ run_stress_test_impl <- function(asset_type_arg,
   cat("-- Importing and preparing input data from designated input path. \n")
 
   pacta_based_data <- read_and_prepare_project_specific_data(
-    asset_type = asset_type_arg,
+    asset_type = asset_type,
     calculation_level = calculation_level,
     time_horizon = time_horizon,
     scenario_geography_filter = scenario_geography_filter,
     scenarios_filter = scenarios_filter,
     equity_market_filter = equity_market_filter_lookup,
-    term = term_arg
+    term = term
   )
 
   project_specific_data_list <- pacta_based_data$data_list
@@ -161,9 +162,9 @@ run_stress_test_impl <- function(asset_type_arg,
   project_agnostic_data_list <- read_and_prepare_project_agnostic_data(
     start_year = start_year,
     end_year = end_year,
-    company_exclusion = company_exclusion_arg,
+    company_exclusion = company_exclusion,
     scenario_geography_filter = scenario_geography_filter,
-    asset_type = asset_type_arg
+    asset_type = asset_type
   )
 
   input_data_list <- c(project_specific_data_list, project_agnostic_data_list) %>%
@@ -174,14 +175,14 @@ run_stress_test_impl <- function(asset_type_arg,
       scenario_geography_filter = scenario_geography_filter
     )
 
-  if (asset_type_arg == "loans") {
+  if (asset_type == "loans") {
     input_data_list$financial_data <- input_data_list$financial_data %>%
       dplyr::mutate(company_name = stringr::str_to_lower(.data$company_name))
   }
 
   report_company_drops(
     data_list = input_data_list,
-    asset_type = asset_type_arg
+    asset_type = asset_type
   )
 
   check_scenario_availability(
@@ -195,13 +196,13 @@ run_stress_test_impl <- function(asset_type_arg,
   transition_scenario <- generate_transition_shocks(
     start_of_analysis = start_year,
     end_of_analysis = end_year,
-    shock_years = shock_year_arg
+    shock_years = shock_year
   )
 
   cat("-- Calculating market risk. \n")
 
   annual_profits <- calculate_annual_profits(
-    asset_type = asset_type_arg,
+    asset_type = asset_type,
     input_data_list = input_data_list,
     scenario_to_follow_baseline = scenario_to_follow_baseline,
     scenario_to_follow_ls = scenario_to_follow_ls,
@@ -209,11 +210,11 @@ run_stress_test_impl <- function(asset_type_arg,
     start_year = start_year,
     end_year = end_year,
     time_horizon = time_horizon,
-    discount_rate = discount_rate_arg
+    discount_rate = discount_rate
   )
 
   exposure_by_technology_and_company <- calculate_exposure_by_technology_and_company(
-    asset_type = asset_type_arg,
+    asset_type = asset_type,
     input_data_list = input_data_list,
     start_year = start_year,
     scenario_to_follow_ls = scenario_to_follow_ls
@@ -221,9 +222,9 @@ run_stress_test_impl <- function(asset_type_arg,
 
   results <- company_asset_value_at_risk(
     data = annual_profits,
-    terminal_value = terminal_value_arg,
+    terminal_value = terminal_value,
     shock_scenario = transition_scenario,
-    div_netprofit_prop_coef = div_netprofit_prop_coef_arg,
+    div_netprofit_prop_coef = div_netprofit_prop_coef,
     plan_carsten = exposure_by_technology_and_company,
     port_aum = port_aum,
     flat_multiplier = flat_multiplier,
@@ -236,7 +237,7 @@ run_stress_test_impl <- function(asset_type_arg,
     calculate_pd_change_overall(
       shock_year = transition_scenario$year_of_shock,
       end_of_analysis = end_year,
-      risk_free_interest_rate = risk_free_rate_arg
+      risk_free_interest_rate = risk_free_rate
     )
 
   # TODO: ADO 879 - note which companies produce missing results due to
@@ -257,7 +258,7 @@ run_stress_test_impl <- function(asset_type_arg,
     data = annual_profits,
     shock_year = transition_scenario$year_of_shock,
     end_of_analysis = end_year,
-    risk_free_interest_rate = risk_free_rate_arg
+    risk_free_interest_rate = risk_free_rate
   )
 
   # TODO: ADO 879 - note which companies produce missing results due to
