@@ -105,4 +105,5 @@ credit_type_lookup
 #> [1] "outstanding"  "credit_limit"
 ```
 
-\[Get started\] \#\# tbc: add link to vignette
+[Get
+started](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/).
