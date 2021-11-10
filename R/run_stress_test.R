@@ -72,6 +72,12 @@ run_stress_test <- function(asset_type,
   cat("-- Exported results to designated output path. \n")
 }
 
+#' @rdname run_stress_test
+#' @examples
+#'
+#' st_arguments
+"st_arguments"
+
 #' Iterate over stress test runs
 #'
 #' @param n Numeric.
