@@ -29,7 +29,6 @@ Imports:
     purrr,
     r2dii.analysis,
     r2dii.data,
-    r2dii.plot,
     readr,
     readxl,
     rlang,
@@ -39,6 +38,7 @@ Imports:
     withr,
     zoo
 Suggests: 
+    r2dii.plot,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Encoding: UTF-8
