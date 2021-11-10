@@ -39,18 +39,18 @@ library(r2dii.climate.stress.test)
 ```
 
 * Run climate stress tests
-```{r, results = 'hide'}
+```{r, results='hide', message=FALSE, warning=FALSE}
 ## run stress testing for assets of type corporate loans using default parameters
 run_stress_test(asset_type = "loans")
 
-## run stress testing for asset of type corporate bond using various shock years to analyse sensitivities
-run_stress_test(asset_type = "loans", shock_year = 2025:2035)
+## run stress testing for asset of type corporate bond using various risk_free_rates to analyse sensitivities
+run_stress_test(asset_type = "loans", risk_free_rate = c(0.01, 0.03))
 ```
 
 ## Details
 * Prepare input data
 Stress tests for corporate loans require an additional step for input data preparation for initial use on a loanbook.
-```{r, results = 'hide'}
+```{r, results='hide', message=FALSE, warning=FALSE}
 run_prep_calculation_loans()
 
 ```
