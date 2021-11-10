@@ -4,7 +4,6 @@ title: "Run standard transition risk stress test"
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
-  eval = FALSE,
   collapse = TRUE,
   comment = "#>"
 )
@@ -52,7 +51,7 @@ value and is absolutely required to be set by the user is `asset_type`. In our
 case, we want to run the stress test for loans, so the easiest way to obtain
 results is by running:
 
-```{r}
+```{r, eval = FALSE}
 run_stress_test("loans")
 ```
 
@@ -65,15 +64,15 @@ README.
 
 The detail arguments are the following (defaults in brackets):
 
-* lgd_senior_claims (0.45)
-* lgd_subordinated_claims (0.75)
-* terminal_value (0)
-* risk_free_rate (0.02)
-* discount_rate (0.02)
-* div_netprofit_prop_coef (1)
-* shock_year (2030)
-* term (2)
-* company_exclusion (TRUE)
+* lgd_senior_claims (`r formals(run_stress_test)$lgd_senior_claims`)
+* lgd_subordinated_claims (`r formals(run_stress_test)$lgd_subordinated_claims`)
+* terminal_value (`r formals(run_stress_test)$terminal_value`)
+* risk_free_rate (`r formals(run_stress_test)$risk_free_rate`)
+* discount_rate (`r formals(run_stress_test)$discount_rate`)
+* div_netprofit_prop_coef (`r formals(run_stress_test)$div_netprofit_prop_coef`)
+* shock_year (`r formals(run_stress_test)$shock_year`)
+* term (`r formals(run_stress_test)$term`)
+* company_exclusion (`r formals(run_stress_test)$company_exclusion`)
 
 The meaning of each of the detail arguments is as follows:
 
@@ -108,7 +107,7 @@ assumptions of a plausible shock scenario. For example, the user could decide to
 set a lower `risk_free_rate` and shock the companies earlier than by default,
 using:
 
-```{r}
+```{r, eval = FALSE}
 run_stress_test("loans", risk_free_rate = 0.01, shock_year = 2028)
 ```
 
@@ -137,7 +136,7 @@ argument, while keeping all other input arguments constant.
 If the user wishes to understand the impact of the `shock_year` on the results
 for example, they can run the following:
 
-```{r}
+```{r, eval = FALSE}
 run_stress_test("loans", shock_year = c(2025, 2028, 2032, 2035))
 ```
 
@@ -156,7 +155,7 @@ The user can still alternate the default parameters of other input arguments,
 when iterating over the `shock_year`, e.g. if the risk_free_rate should be
 lower than the default, the following will work:
 
-```{r}
+```{r, eval = FALSE}
 run_stress_test("loans", risk_free_rate = 0.01, shock_year = c(2025, 2028, 2032, 2035))
 ```
 
