@@ -9,12 +9,17 @@
 [![R-CMD-check](https://github.com/2DegreesInvesting/r2dii.climate.stress.test/workflows/R-CMD-check/badge.svg)](https://github.com/2DegreesInvesting/r2dii.climate.stress.test/actions)
 <!-- badges: end -->
 
-The goal of r2dii.climate.stress.test is to calculate climate change
-related market and credit risk for listed equity, corporate bonds and
-corporate loans. In order to analyse sensitivities the several model
-parameters can be altered. Note: Application of the code requires
-availability of custom data. In order to participate in a climate stress
-testing project with 2 degrees investing initiative please contact
+The goal of r2dii.climate.stress.test is to provide a tool that can be
+used to conduct what-if climate stress test analyses for financial
+institutions, supervisors, regulators and other stakeholders. The tool
+aims at highlighting potential financial risk in especially climate
+relevant sectors, split by production technology where required. The
+sectors covered by the 2Dii climate stress test and therefore by this
+package, follow mostly the logic of the Paris Agreement Capital
+Transition Assessment (PACTA) tool, but can in principle be adapted to
+other settings. Note: Application of the code requires availability of
+custom data. In order to participate in a climate stress testing project
+with 2 degrees investing initiative please contact
 <jacob@2degrees-investing.org>
 
 ## Installation
