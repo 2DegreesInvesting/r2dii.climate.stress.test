@@ -1,0 +1,170 @@
+---
+title: "Run standard transition risk stress test"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Running a standard climate transition risk stress test
+
+This vignette describes in detail, how to run a climate transition risk stress
+test for loans, using the function `run_stress_test` to calculate the credit risk
+of a loan book.
+
+## Assumptions
+
+In order to keep this vignette concise, we assume the following has been set up:
+
+1. R and RStudio are installed
+2. All required R packages are installed, this specifically includes
+`r2dii.data`, `r2dii.match`, `r2dii.analysis` and `r2dii.climate.stress.test`
+1. The user has obtained all relevant input files as described in the pdf manual
+1. The input files are organized in a folder structure consistent with the manual
+1. This notably implies the user has successfully run at least the matching
+part of PACTA for banks to produce the relevant project-specific input files
+1. The user has set up objects that point to the input directories for
+project-specific and project-agnostic input files.
+1. The user has successfully run the function `run_prep_calculation_loans()` to
+generate the input files ´for the main stress test function in the required
+format. Refer to the vignette **LINK** for details on how to do this.
+
+## Running the Analysis
+
+The climate transition risk stress test can be run for a single set of parameters
+or as a sensitivity analysis for a set of parameters that iterates over one of
+the input arguments. We will look at both cases.
+
+Use `library()` to attach the package
+
+```{r setup}
+library(r2dii.climate.stress.test)
+```
+
+## Running the Stress Test for one scenario
+
+In order to run a stress test for loans on one set of parameters, the user needs
+to pass exactly one value per input argument to the function
+`run_prep_calculation_loans()`. The only argument that doesnot have a default
+value and is absolutely required to be set by the user is `asset_type`. In our
+case, we want to run the stress test for loans, so the easiest way to obtain
+results is by running:
+
+```{r}
+# run_stress_test("loans")
+```
+
+This will calculate the stress test for loans and write the results into the
+designated output directory, using the default values for all detail arguments.
+
+The user may change any detail argument by explicitly passing it to the function.
+Note that there are allowed ranges for each of the inputs as described in the
+README.
+
+The detail arguments are the following (defaults in brackets):
+
+* lgd_senior_claims (0.45)
+* lgd_subordinated_claims (0.75)
+* terminal_value (0)
+* risk_free_rate (0.02)
+* discount_rate (0.02)
+* div_netprofit_prop_coef (1)
+* shock_year (2030)
+* term (2)
+* company_exclusion (TRUE)
+
+The meaning of each of the detail arguments is as follows:
+
+* `lgd_senior_claims` is the loss given default used in the expected loss
+calculation of loans for senior claims (notably for corporate loans, so this is
+a potentially important parameter in this calculation)
+* `lgd_subordinated_claims` is the loss given default used in the expected loss
+calculation of loans for subordinated claims (notably for corporate bonds. Not
+of relevance in the loans calculation)
+* `terminal_value` the percentage of the net present value that should be used
+to approximate further cash flows beyond the timeframe of the model.
+* `risk_free_rate` the risk free interest rate. Input parameter to the Merton
+credit risk model.
+* `discount_rate` the annual rate at which future cash flows are discounted when
+calculating the net present value of companies in the loan book. Since the net
+present values are indirect inputs into the Merton credit risk model, this
+paramter my be relevant.
+* `div_netprofit_prop_coef` Coefficient that indicates what share of the net
+present value should be considered to derive the equity value of a company.
+* `shock_year` year in which the policy is introduced, that adjusts the
+production values of companies to stay in line with carbon budgets.
+* `term` indicates which maturity the loans in the loan book are assumed to have.
+At this point we assume these are rolled over every year.
+* `company_exclusion` Logical paramter that indicates if certain combonations of
+company and technology should be excluded from the analysis. At this point, it
+is stringly recommended to set this ti TRUE (default) because there is not yet a
+dedicated mechanism in place that handles companies which are phasing out
+certain technologies within the time frame of the production forecast.
+
+This means that the user may want to run a stress test that is tailored to their
+assumptions of a plausible shock scenario. For example, the user could decide to
+set a lower `risk_free_rate` and shock the companies earlier than by default,
+using:
+
+```{r}
+# run_stress_test("loans", risk_free_rate = 0.01, shock_year = 2028)
+```
+
+The output files are automatically written to the `outputs` sub directory of the
+project folder and are named:
+
+* `stress_test_results_loans_port_standard.csv`
+* `stress_test_results_loans_comp_standard.csv`
+* `stress_test_results_loans_comp_el_standard.csv`
+* `stress_test_results_loans_sector_pd_changes_annual_standard.csv`
+* `stress_test_results_loans_sector_pd_changes_overall_standard.csv`
+
+## Running a Sensitivity Analysis for the Stress Test
+
+In case the user wants to understand the sensitivities of the model to the input
+parameters mentioned above, it is straight forward to run a sensitivity analysis
+that does exactly that.
+
+In order to do that, one simply passes a vector of allowed values for one (and
+only one) of the detail arguments when running the stress test function. This
+will lead to the model iterating over the set of values passed for the chosen
+argument, while keeping all other input arguments constant.
+
+**NOTE:** It is not possible to iterate over `asset_type`.
+
+If the user wishes to understand the impact of the `shock_year` on the results
+for example, they can run the following:
+
+```{r}
+# run_stress_test("loans", shock_year = c(2025, 2028, 2032, 2035))
+```
+
+This will yield outputs with four versions of the stress test, one for each of
+the shock years indicated. All the results will be written into one file per
+output type for ease of use, e.g.:
+
+* `stress_test_results_loans_port_shock_year.csv`
+* `stress_test_results_loans_comp_shock_year.csv`
+* `stress_test_results_loans_comp_el_shock_year.csv`
+* `stress_test_results_loans_sector_pd_changes_annual_shock_year.csv`
+* `stress_test_results_loans_sector_pd_changes_overall_shock_year.csv`
+
+
+The user can still alternate the default parameters of other input arguments,
+when iterating over the `shock_year`, e.g. if the risk_free_rate should be
+lower than the default, the following will work:
+
+```{r}
+# run_stress_test("loans", risk_free_rate = 0.01, shock_year = c(2025, 2028, 2032, 2035))
+```
+
+Note that the selected detail arguments will be written to the result files so
+that it is always easy to understand which parameters were used in a given
+calculation.
+
+### Interpretation of the output files
+
+See vignette **LINK**.
