@@ -1,6 +1,8 @@
 #' Run stress testing data preparation for loans
 #'
 #' @inheritParams run_stress_test
+#' @param credit_type Type of credit. For accepted values please compare
+#'   `credit_type_lookup`.
 #'
 #' @return NULL
 #' @export
