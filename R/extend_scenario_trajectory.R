@@ -73,8 +73,7 @@ extend_scenario_trajectory <- function(data,
     dplyr::inner_join(
       scenario_data,
       by = c("ald_sector", "technology", "scenario_geography", "scenario", "year")
-    ) %>%
-    dplyr::distinct_all()
+    )
 
   data <- data %>%
     dplyr::group_by(
