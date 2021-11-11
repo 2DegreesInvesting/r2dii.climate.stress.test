@@ -18,9 +18,7 @@ read_pacta_results <- function(path = NULL,
   level_allowed <- level %in% c("company", "portfolio")
   stopifnot(level_allowed)
 
-  valid_input_file_path <- file.exists(file.path(path))
-  stopifnot(valid_input_file_path)
-
+  validate_file_exists(file.path(path))
 
   data <- readr::read_rds(path)
 

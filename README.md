@@ -96,7 +96,7 @@ div_netprofit_prop_coef_range_lookup
 #> [1] 0.8 1.0
 
 shock_year_range_lookup
-#> [1] 2025 2040
+#> [1] 2025 2035
 
 term_range_lookup
 #> [1]  1 10

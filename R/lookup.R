@@ -66,7 +66,7 @@ discount_rate_range_lookup <- c(-0.01, 0.05)
 div_netprofit_prop_coef_range_lookup <- c(0.8, 1.0)
 #' @rdname lookup
 #' @export
-shock_year_range_lookup <- c(2025, 2040)
+shock_year_range_lookup <- c(2025, 2035)
 #' @rdname lookup
 #' @export
 term_range_lookup <- c(1, 10)
