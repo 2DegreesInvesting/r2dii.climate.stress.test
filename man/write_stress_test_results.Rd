@@ -12,7 +12,8 @@ write_stress_test_results(
   asset_type,
   calculation_level,
   sensitivity_analysis_vars,
-  iter_var
+  iter_var,
+  results_path
 )
 }
 \arguments{
@@ -34,6 +35,8 @@ changes of probability of default.}
 arguments.}
 
 \item{iter_var}{String holding name of iteration variable.}
+
+\item{results_path}{String holding path to output dir.}
 }
 \description{
 Stress test results are wrangled and exported to the output dir.

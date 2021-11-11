@@ -10,25 +10,25 @@
 #' @param scenario_geography_filter String holding geographic asset locations to
 #'   be considered in analysis.
 #' @param asset_type Type of asset, can be bonds, loans or equity.
+#' @param path String holding path to data.
 #'
 #' @return A list holding prepared project agnostic data.
 read_and_prepare_project_agnostic_data <- function(start_year, end_year, company_exclusion,
-                                                   scenario_geography_filter, asset_type) {
+                                                   scenario_geography_filter, asset_type,
+                                                   path) {
   if (!asset_type %in% asset_types_lookup) {
     stop("Invalid asset type provided.")
   }
 
-  data_location <- get_st_data_path()
-
   capacity_factors_power <- read_capacity_factors(
-    path = file.path(data_location, "capacity_factors_WEO_2020.csv"),
+    path = file.path(path, "capacity_factors_WEO_2020.csv"),
     version = "new"
   )
 
   if (company_exclusion) {
-    validate_file_exists(file.path(data_location, "exclude-companies.csv"))
+    validate_file_exists(file.path(path, "exclude-companies.csv"))
     excluded_companies <- readr::read_csv(
-      file.path(data_location, "exclude-companies.csv"),
+      file.path(path, "exclude-companies.csv"),
       col_types = readr::cols(
         company_name = "c",
         technology = "c"
@@ -39,7 +39,7 @@ read_and_prepare_project_agnostic_data <- function(start_year, end_year, company
   }
 
   df_price <- read_price_data(
-    path = file.path(data_location, paste0("prices_data_", price_data_version_lookup, ".csv")),
+    path = file.path(path, paste0("prices_data_", price_data_version_lookup, ".csv")),
     version = "old",
     expected_technologies = technologies_lookup
   ) %>%
@@ -47,7 +47,7 @@ read_and_prepare_project_agnostic_data <- function(start_year, end_year, company
     check_price_consistency(start_year = start_year)
 
   scenario_data <- read_scenario_data(
-    path = file.path(data_location, paste0("Scenarios_AnalysisInput_", start_year, ".csv"))
+    path = file.path(path, paste0("Scenarios_AnalysisInput_", start_year, ".csv"))
   ) %>%
     wrangle_scenario_data(start_year = start_year, end_year = end_year) %>%
     dplyr::filter(
@@ -79,16 +79,16 @@ read_and_prepare_project_agnostic_data <- function(start_year, end_year, company
 #' @inheritParams read_and_prepare_project_agnostic_data
 #' @inheritParams wrangle_and_check_pacta_results
 #' @param calculation_level String holding level of calculation.
+#' @param path String holding path to data.
 #'
 #' @return A list of lists holding prepared project specific data.
 read_and_prepare_project_specific_data <- function(asset_type, calculation_level,
                                                    time_horizon, scenario_geography_filter,
                                                    scenarios_filter, equity_market_filter,
-                                                   term) {
-  path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", paste0(stringr::str_to_title(asset_type), "_results_", calculation_level, ".rda"))
+                                                   term, path) {
 
   pacta_results <- read_pacta_results(
-    path = path,
+    path = file.path(path, "inputs", paste0(stringr::str_to_title(asset_type), "_results_", calculation_level, ".rda")),
     level = calculation_level
   )
 
@@ -106,7 +106,7 @@ read_and_prepare_project_specific_data <- function(asset_type, calculation_level
     # TODO: next version to allow term input on holding/company level
     dplyr::mutate(term = term)
 
-  sector_exposures <- read_sector_exposures(file.path(get_st_data_path("ST_PROJECT_FOLDER"), "inputs", "overview_portfolio.rda")) %>%
+  sector_exposures <- read_sector_exposures(file.path(path, "inputs", "overview_portfolio.rda")) %>%
     wrangle_and_check_sector_exposures(asset_type = asset_type)
   # TODO: potentially convert currencies to USD or at least common currency
 

@@ -9,7 +9,8 @@ read_and_prepare_project_agnostic_data(
   end_year,
   company_exclusion,
   scenario_geography_filter,
-  asset_type
+  asset_type,
+  path
 )
 }
 \arguments{
@@ -24,6 +25,8 @@ excluded_companies.csv shall be excluded.}
 be considered in analysis.}
 
 \item{asset_type}{Type of asset, can be bonds, loans or equity.}
+
+\item{path}{String holding path to data.}
 }
 \value{
 A list holding prepared project agnostic data.

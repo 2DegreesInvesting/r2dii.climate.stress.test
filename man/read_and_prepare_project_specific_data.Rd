@@ -11,7 +11,8 @@ read_and_prepare_project_specific_data(
   scenario_geography_filter,
   scenarios_filter,
   equity_market_filter,
-  term
+  term,
+  path
 )
 }
 \arguments{
@@ -33,6 +34,8 @@ indicates which equity market to apply in the analysis.}
 \item{term}{Numeric. A coefficient that determines for which maturity the
 expected loss should be calculated in the credit risk section. For accepted
 range compare \code{term_range_lookup}.}
+
+\item{path}{String holding path to data.}
 }
 \value{
 A list of lists holding prepared project specific data.
