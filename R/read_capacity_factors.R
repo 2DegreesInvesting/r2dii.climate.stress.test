@@ -51,6 +51,7 @@ read_capacity_factors <- function(path = NULL,
           (.data$technology %in% c("HydroCap", "NuclearCap", "RenewablesCap") &
             .data$Region == "OECD")
       ) %>%
+      # ADO 2393 - legacy web tool version
       dplyr::distinct(.data$technology, .data$capacityfactor_WEO_2016) %>%
       dplyr::rename(capacity_factor = .data$capacityfactor_WEO_2016) %>%
       dplyr::mutate(scenario_geography = "Global")

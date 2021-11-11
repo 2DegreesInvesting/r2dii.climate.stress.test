@@ -128,27 +128,18 @@ run_prep_calculation_loans <- function(data_path_project_specific,
   }
 
   portfolio_size <- loanbook %>%
-    # TODO: why distinct? Is there any way that id_loan is not unique?
-    dplyr::distinct(
-      .data$id_loan, .data$loan_size_outstanding, .data$loan_size_credit_limit
-    ) %>%
     dplyr::summarise(
       portfolio_loan_size_outstanding = sum(.data$loan_size_outstanding, na.rm = TRUE),
       portfolio_loan_size_credit_limit = sum(.data$loan_size_credit_limit, na.rm = TRUE),
       .groups = "drop"
     )
 
-  matched_portfolio_size <- matched_non_negative %>%
-    # TODO: why distinct? Is there any way that id_loan is not unique?
-    dplyr::distinct(
-      .data$id_loan, .data$loan_size_outstanding, .data$loan_size_credit_limit
-    ) %>%
+  matched_portfolio_size1 <- matched_non_negative %>%
     dplyr::summarise(
       matched_portfolio_loan_size_outstanding = sum(.data$loan_size_outstanding, na.rm = TRUE),
       matched_portfolio_loan_size_credit_limit = sum(.data$loan_size_credit_limit, na.rm = TRUE),
       .groups = "drop"
     )
-
 
   #### Calculate loan-tech level loan book size and value share-----------------
   loan_share <- matched_non_negative %>%
@@ -224,6 +215,7 @@ run_prep_calculation_loans <- function(data_path_project_specific,
 
   portfolio_overview <- sector_share %>%
     dplyr::inner_join(
+      # ADO 2393 - use distinct to only map sectors, not technlogies
       p4i_p4b_sector_technology_lookup %>% dplyr::distinct(.data$sector_p4b, .data$sector_p4i),
       by = c("sector_ald" = "sector_p4b")) %>%
     dplyr::mutate(sector_ald = .data$sector_p4i) %>%

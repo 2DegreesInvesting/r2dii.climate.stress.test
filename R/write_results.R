@@ -261,6 +261,9 @@ write_results <- function(data,
           .data$company_value_change
         )
       ) %>%
+      # ADO 2393 - after removing the tech_company & company level columns,
+      # we run distinct_all to get unique values on the previously duplicated
+      # technology and sector levels
       dplyr::distinct_all() %>%
       dplyr::relocate(
         .data$investor_name, .data$portfolio_name, .data$scenario_geography,
@@ -273,7 +276,13 @@ write_results <- function(data,
         .data$analysed_sectors_value_change, .data$portfolio_aum,
         .data$portfolio_value_change_perc, .data$portfolio_value_change
       ) %>%
-      dplyr::arrange(.data$year_of_shock, .data$ald_sector, .data$technology)
+      dplyr::arrange(.data$year_of_shock, .data$ald_sector, .data$technology) %>%
+      report_all_duplicate_kinds(
+        composite_unique_cols = c(
+          "investor_name", "portfolio_name", "scenario_geography", "scenario_name",
+          "year_of_shock", "duration_of_shock", "ald_sector", "technology"
+        )
+      )
 
     switch(file_type,
       csv = data %>%
