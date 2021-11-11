@@ -63,12 +63,13 @@ read_capacity_factors <- function(path = NULL,
     )
 
   } else {
+    # ADO 2393 - this should keep the source and filter based on global settings
+    # not in this hard coded manner
     data <- data %>%
       dplyr::select(
         .data$scenario, .data$scenario_geography, .data$technology,
         .data$year, .data$capacity_factor
       ) %>%
-      dplyr::distinct_all() %>%
       dplyr::mutate(
         scenario = dplyr::if_else(.data$scenario == "SPS", "NPS", .data$scenario)
       )
