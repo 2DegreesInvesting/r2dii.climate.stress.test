@@ -52,12 +52,12 @@ credit_type_lookup
 
 If everything has been set up correctly, simply running the following command in
 R will read the raw and matched loan books from the indicated project-specific
-inputs directory, perform all calcualtions and wrangling required and write the
+inputs directory, perform all calculations and wrangling required and write the
 intermediate input files `Loans_results_company.rda` and `overview_portfolio.rda`
 to the same input file directory.
 
 ```{r}
-run_prep_calculation_loans()
+run_prep_calculation_loans(data_path_project_specific = "/path/to/specific/data")
 ```
 
 Since the argument credit_type has a default value, it is not required to set it,
@@ -69,7 +69,10 @@ loans, in case these have been provided in the raw and matched loan books. To
 achieve this, instead of the previous command, simply run:
 
 ```{r}
-run_prep_calculation_loans(credit_type = "credit_limit")
+run_prep_calculation_loans(
+  data_path_project_specific = "/path/to/specific/data",
+  credit_type = "credit_limit"
+)
 ```
 
 Regardless of which case is chosen, the intermediate input files are generated
