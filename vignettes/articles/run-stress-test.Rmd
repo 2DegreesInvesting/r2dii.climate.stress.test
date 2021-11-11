@@ -4,7 +4,6 @@ title: "Run standard transition risk stress test"
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
-  eval = FALSE,
   collapse = TRUE,
   comment = "#>"
 )
@@ -19,17 +18,16 @@ of a loan book.
 In order to keep this vignette concise, we assume the following has been set up:
 
 1. R and RStudio are installed
-2. All required R packages are installed, this specifically includes
+1. All required R packages are installed, this specifically includes
 `r2dii.data`, `r2dii.match`, `r2dii.analysis` and `r2dii.climate.stress.test`
 1. The user has obtained all relevant input files as described in the pdf manual
 1. The input files are organized in a folder structure consistent with the manual
 1. This notably implies the user has successfully run at least the matching
 part of PACTA for banks to produce the relevant project-specific input files
-1. The user has set up objects that point to the input directories for
-project-specific and project-agnostic input files.
 1. The user has successfully run the function `run_prep_calculation_loans()` to
-generate the input files ´for the main stress test function in the required
-format. Refer to the vignette **LINK** for details on how to do this.
+generate the input files for the main stress test function in the required
+format. Refer to the [corresponding vignette](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/prepare-loans-inputs.html)
+for details on how to do this.
 
 ## Running the Analysis
 
@@ -47,13 +45,17 @@ library(r2dii.climate.stress.test)
 
 In order to run a stress test for loans on one set of parameters, the user needs
 to pass exactly one value per input argument to the function
-`run_prep_calculation_loans()`. The only argument that does not have a default
-value and is absolutely required to be set by the user is `asset_type`. In our
-case, we want to run the stress test for loans, so the easiest way to obtain
-results is by running:
+`run_prep_calculation_loans()`. The only arguments that do not have a default
+value and must be set by the user are `asset_type`, `data_path_project_specific`
+and `data_path_project_agnostic`. In our case, we want to run the stress test
+for loans, so the easiest way to obtain results is by running:
 
-```{r}
-run_stress_test("loans")
+```{r, eval = FALSE}
+run_stress_test(
+  "loans",
+  data_path_project_specific = "/path/to/specific/data",
+  data_path_project_agnostic = "/path/to/agnostic/data"
+)
 ```
 
 This will calculate the stress test for loans and write the results into the
@@ -65,15 +67,15 @@ README.
 
 The detail arguments are the following (defaults in brackets):
 
-* lgd_senior_claims (0.45)
-* lgd_subordinated_claims (0.75)
-* terminal_value (0)
-* risk_free_rate (0.02)
-* discount_rate (0.02)
-* div_netprofit_prop_coef (1)
-* shock_year (2030)
-* term (2)
-* company_exclusion (TRUE)
+* lgd_senior_claims (`r formals(run_stress_test)$lgd_senior_claims`)
+* lgd_subordinated_claims (`r formals(run_stress_test)$lgd_subordinated_claims`)
+* terminal_value (`r formals(run_stress_test)$terminal_value`)
+* risk_free_rate (`r formals(run_stress_test)$risk_free_rate`)
+* discount_rate (`r formals(run_stress_test)$discount_rate`)
+* div_netprofit_prop_coef (`r formals(run_stress_test)$div_netprofit_prop_coef`)
+* shock_year (`r formals(run_stress_test)$shock_year`)
+* term (`r formals(run_stress_test)$term`)
+* company_exclusion (`r formals(run_stress_test)$company_exclusion`)
 
 The meaning of each of the detail arguments is as follows:
 
@@ -108,8 +110,14 @@ assumptions of a plausible shock scenario. For example, the user could decide to
 set a lower `risk_free_rate` and shock the companies earlier than by default,
 using:
 
-```{r}
-run_stress_test("loans", risk_free_rate = 0.01, shock_year = 2028)
+```{r, eval = FALSE}
+run_stress_test(
+  "loans",
+  data_path_project_specific = "/path/to/specific/data",
+  data_path_project_agnostic = "/path/to/agnostic/data",
+  risk_free_rate = 0.01,
+  shock_year = 2028
+)
 ```
 
 The output files are automatically written to the `outputs` sub directory of the
@@ -137,8 +145,13 @@ argument, while keeping all other input arguments constant.
 If the user wishes to understand the impact of the `shock_year` on the results
 for example, they can run the following:
 
-```{r}
-run_stress_test("loans", shock_year = c(2025, 2028, 2032, 2035))
+```{r, eval = FALSE}
+run_stress_test(
+  "loans",
+  data_path_project_specific = "/path/to/specific/data",
+  data_path_project_agnostic = "/path/to/agnostic/data",
+  shock_year = c(2025, 2028, 2032, 2035)
+)
 ```
 
 This will yield outputs with four versions of the stress test, one for each of
@@ -156,8 +169,14 @@ The user can still alternate the default parameters of other input arguments,
 when iterating over the `shock_year`, e.g. if the risk_free_rate should be
 lower than the default, the following will work:
 
-```{r}
-run_stress_test("loans", risk_free_rate = 0.01, shock_year = c(2025, 2028, 2032, 2035))
+```{r, eval = FALSE}
+run_stress_test(
+  "loans",
+  data_path_project_specific = "/path/to/specific/data",
+  data_path_project_agnostic = "/path/to/agnostic/data",
+  risk_free_rate = 0.01,
+  shock_year = c(2025, 2028, 2032, 2035)
+)
 ```
 
 Note that the selected detail arguments will be written to the result files so
@@ -166,4 +185,4 @@ calculation.
 
 ### Interpretation of the output files
 
-See vignette **LINK**.
+See vignette ["Read and understand the outputs"](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/read-the-outputs.html).

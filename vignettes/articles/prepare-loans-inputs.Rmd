@@ -25,8 +25,8 @@ In order to keep this vignette concise, we assume the following has been set up:
 1. The input files are organized in a folder structure consistent with the manual
 1. This notably implies the user has successfully run at least the matching
 part of PACTA for banks to produce the relevant project-specific input files
-1. The user has set up objects that point to the input directories for
-project-specific and project-agnostic input files.
+1. The user has set up environment variables that point to the input directories
+for project-specific and project-agnostic input files.
 
 Once all these requirements are met, we can produce the intermediate input files
 required for a climate transition risk stress test of corporate loans.
@@ -52,12 +52,12 @@ credit_type_lookup
 
 If everything has been set up correctly, simply running the following command in
 R will read the raw and matched loan books from the indicated project-specific
-inputs directory, perform all calcualtions and wrangling required and write the
+inputs directory, perform all calculations and wrangling required and write the
 intermediate input files `Loans_results_company.rda` and `overview_portfolio.rda`
 to the same input file directory.
 
 ```{r}
-run_prep_calculation_loans()
+run_prep_calculation_loans(data_path_project_specific = "/path/to/specific/data")
 ```
 
 Since the argument credit_type has a default value, it is not required to set it,
@@ -69,9 +69,12 @@ loans, in case these have been provided in the raw and matched loan books. To
 achieve this, instead of the previous command, simply run:
 
 ```{r}
-run_prep_calculation_loans(credit_type = "credit_limit")
+run_prep_calculation_loans(
+  data_path_project_specific = "/path/to/specific/data",
+  credit_type = "credit_limit"
+)
 ```
 
 Regardless of which case is chosen, the intermediate input files are generated
 in the correct format and directory to directly continue with the main stress
-test calculation as described in vignette **LINK**
+test calculation as described in vignette ["Run stress test"](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/run-stress-test.html).
