@@ -118,12 +118,14 @@
 <code class="sourceCode R"><span class="va">credit_type_lookup</span></code></pre></div>
 <p>If everything has been set up correctly, simply running the following command in R will read the raw and matched loan books from the indicated project-specific inputs directory, perform all calculations and wrangling required and write the intermediate input files <code>Loans_results_company.rda</code> and <code>overview_portfolio.rda</code> to the same input file directory.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../../reference/run_prep_calculation_loans.html">run_prep_calculation_loans</a></span><span class="op">(</span>data_path_project_specific <span class="op">=</span> <span class="st">"/path/to/specific/data"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../../reference/run_prep_calculation_loans.html">run_prep_calculation_loans</a></span><span class="op">(</span>data_path_project_specific <span class="op">=</span> <span class="st">"/path/to/specific/data"</span>,
+                           data_path_project_agnostic <span class="op">=</span> <span class="st">"/path/to/agnostic/data"</span><span class="op">)</span></code></pre></div>
 <p>Since the argument credit_type has a default value, it is not required to set it, in case the user wants to run the stress test on the outstanding credit values in the loan book.</p>
 <p>However, it is also possible to run the analysis on the credit limits of the loans, in case these have been provided in the raw and matched loan books. To achieve this, instead of the previous command, simply run:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/run_prep_calculation_loans.html">run_prep_calculation_loans</a></span><span class="op">(</span>
   data_path_project_specific <span class="op">=</span> <span class="st">"/path/to/specific/data"</span>,
+  data_path_project_agnostic <span class="op">=</span> <span class="st">"/path/to/agnostic/data"</span>,
   credit_type <span class="op">=</span> <span class="st">"credit_limit"</span>
 <span class="op">)</span></code></pre></div>
 <p>Regardless of which case is chosen, the intermediate input files are generated in the correct format and directory to directly continue with the main stress test calculation as described in vignette <a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/run-stress-test.html">“Run stress test”</a>.</p>
