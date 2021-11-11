@@ -34,17 +34,24 @@ devtools::install_github("2DegreesInvesting/r2dii.climate.stress.test")
 
 ## Example
 
-  - Use `library()` to attach the package
-
-<!-- end list -->
+-   Use `library()` to attach the package
 
 ``` r
 library(r2dii.climate.stress.test)
 ```
 
-  - Run climate stress tests
+-   Stress tests for corporate loans require a preparatory step for
+    input data preparation for initial application of stress testing on
+    a loan book
 
-<!-- end list -->
+``` r
+run_prep_calculation_loans(
+  data_path_project_specific = "/path/to/specific/data",
+  data_path_project_agnostic = "/path/to/agnostic/data"
+)
+```
+
+-   Run climate stress tests
 
 ``` r
 ## run stress testing for assets of type corporate loans using default parameters
@@ -65,22 +72,9 @@ run_stress_test(
 
 ## Details
 
-### Prepare input data
+### Look up valid ranges of input arguments
 
-Stress tests for corporate loans require an additional step for input
-data preparation for initial application of stress testing on a
-loanbook.
-
-``` r
-run_prep_calculation_loans(
-  data_path_project_specific = "/path/to/specific/data",
-  data_path_project_agnostic = "/path/to/agnostic/data"
-)
-```
-
-### Look up valid ranges of model parameters
-
-You can look up allowed values of model parameters as such:
+You can look up allowed values of input arguments as such:
 
 ``` r
 lgd_senior_claims_range_lookup
@@ -111,5 +105,5 @@ credit_type_lookup
 #> [1] "outstanding"  "credit_limit"
 ```
 
-[Get
-started](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/).
+[Further
+Information](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/).
