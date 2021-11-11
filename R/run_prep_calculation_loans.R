@@ -134,7 +134,7 @@ run_prep_calculation_loans <- function(data_path_project_specific,
       .groups = "drop"
     )
 
-  matched_portfolio_size1 <- matched_non_negative %>%
+  matched_portfolio_size <- matched_non_negative %>%
     dplyr::summarise(
       matched_portfolio_loan_size_outstanding = sum(.data$loan_size_outstanding, na.rm = TRUE),
       matched_portfolio_loan_size_credit_limit = sum(.data$loan_size_credit_limit, na.rm = TRUE),
