@@ -4,11 +4,14 @@
 #' understand sensitivities of the scenarios, in which case the user may pass a
 #' vector of values to one (and only one) of the detail arguments. This will
 #' result in running the analysis multiple times in a row with the argument
-#' varied.
-#' NOTE: argument `asset_type` is not iterateable.
+#' varied. NOTE: argument `asset_type` is not iterateable.
 #'
 #' @param asset_type String holding asset_type, for allowed value compare
 #'   `asset_types_lookup`.
+#' @param data_path_project_specific String holding path to project specific
+#'   data.
+#' @param data_path_project_agnostic String holding path to project agnostic
+#'   data.
 #' @param lgd_senior_claims Numeric, holding the loss given default for senior
 #'   claims, for accepted value range check `lgd_senior_claims_range_lookup`.
 #' @param lgd_subordinated_claims Numeric, holding the loss given default for
@@ -16,7 +19,8 @@
 #'   `lgd_subordinated_claims_range_lookup`.
 #' @param terminal_value Numeric. A ratio to determine the share of the
 #'   discounted value used in the terminal value calculation beyond the
-#'   projected time frame. For accepted range compare `terminal_value_range_lookup`.
+#'   projected time frame. For accepted range compare
+#'   `terminal_value_range_lookup`.
 #' @param risk_free_rate Numeric that indicates the risk free rate of interest.
 #'   For accepted range compare `risk_free_rate_range_lookup`.
 #' @param discount_rate Numeric, that holds the discount rate of dividends per
@@ -34,6 +38,8 @@
 #' @return NULL
 #' @export
 run_stress_test <- function(asset_type,
+                            data_path_project_specific,
+                            data_path_project_agnostic,
                             lgd_senior_claims = 0.45,
                             lgd_subordinated_claims = 0.75,
                             terminal_value = 0,
@@ -65,8 +71,9 @@ run_stress_test <- function(asset_type,
     overall_pd_changes = st_results$overall_pd_changes,
     asset_type = asset_type,
     calculation_level = calculation_level_lookup,
-    sensitivity_analysis_vars = names(args_list),
-    iter_var = iter_var
+    sensitivity_analysis_vars = names(args_list)[!names(args_list) %in% path_vars_lookup],
+    iter_var = iter_var,
+    results_path = file.path(data_path_project_specific, "outputs")
   )
 
   cat("-- Exported results to designated output path. \n")
@@ -86,7 +93,10 @@ run_stress_test_iteration <- function(n, args_tibble) {
   arg_list_row <- arg_tibble_row %>%
     as.list()
 
-  arg_tibble_row <- dplyr::rename_with(arg_tibble_row, ~paste0(.x, "_arg"))
+  arg_tibble_row <- arg_tibble_row %>%
+    dplyr::select(-path_vars_lookup) %>%
+    dplyr::rename_with(~paste0(.x, "_arg"))
+
   st_result <- do.call(args = arg_list_row, what = run_stress_test_impl) %>%
     purrr::map(dplyr::bind_cols, data_y = arg_tibble_row)
 }
@@ -100,6 +110,8 @@ run_stress_test_iteration <- function(n, args_tibble) {
 #'
 #' @return A list of stress test results.
 run_stress_test_impl <- function(asset_type,
+                                 data_path_project_specific,
+                                 data_path_project_agnostic,
                                  lgd_senior_claims,
                                  lgd_subordinated_claims,
                                  terminal_value,
@@ -153,7 +165,8 @@ run_stress_test_impl <- function(asset_type,
     scenario_geography_filter = scenario_geography_filter,
     scenarios_filter = scenarios_filter,
     equity_market_filter = equity_market_filter_lookup,
-    term = term
+    term = term,
+    path = data_path_project_specific
   )
 
   project_specific_data_list <- pacta_based_data$data_list
@@ -164,7 +177,8 @@ run_stress_test_impl <- function(asset_type,
     end_year = end_year,
     company_exclusion = company_exclusion,
     scenario_geography_filter = scenario_geography_filter,
-    asset_type = asset_type
+    asset_type = asset_type,
+    path = data_path_project_agnostic
   )
 
   input_data_list <- c(project_specific_data_list, project_agnostic_data_list) %>%

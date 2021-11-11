@@ -6,6 +6,8 @@
 \usage{
 run_stress_test_impl(
   asset_type,
+  data_path_project_specific,
+  data_path_project_agnostic,
   lgd_senior_claims,
   lgd_subordinated_claims,
   terminal_value,
@@ -21,6 +23,12 @@ run_stress_test_impl(
 \item{asset_type}{String holding asset_type, for allowed value compare
 \code{asset_types_lookup}.}
 
+\item{data_path_project_specific}{String holding path to project specific
+data.}
+
+\item{data_path_project_agnostic}{String holding path to project agnostic
+data.}
+
 \item{lgd_senior_claims}{Numeric, holding the loss given default for senior
 claims, for accepted value range check \code{lgd_senior_claims_range_lookup}.}
 
@@ -30,7 +38,8 @@ subordinated claims, for accepted value range check
 
 \item{terminal_value}{Numeric. A ratio to determine the share of the
 discounted value used in the terminal value calculation beyond the
-projected time frame. For accepted range compare \code{terminal_value_range_lookup}.}
+projected time frame. For accepted range compare
+\code{terminal_value_range_lookup}.}
 
 \item{risk_free_rate}{Numeric that indicates the risk free rate of interest.
 For accepted range compare \code{risk_free_rate_range_lookup}.}

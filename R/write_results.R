@@ -13,18 +13,18 @@
 #' @param sensitivity_analysis_vars String vector holding names of iteration
 #'   arguments.
 #' @param iter_var String holding name of iteration variable.
+#' @param results_path String holding path to output dir.
 #'
 #' @return NULL
 write_stress_test_results <- function(results, expected_loss,
                                       annual_pd_changes, overall_pd_changes,
                                       asset_type, calculation_level,
-                                      sensitivity_analysis_vars, iter_var) {
+                                      sensitivity_analysis_vars, iter_var,
+                                      results_path) {
 
-  if (!dir.exists(file.path(get_st_data_path("ST_PROJECT_FOLDER"), "outputs"))) {
-    dir.create(file.path(get_st_data_path("ST_PROJECT_FOLDER"), "outputs"))
+  if (!dir.exists(results_path)) {
+    dir.create(results_path)
   }
-
-  results_path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "outputs")
 
   sensitivity_analysis_vars <- paste0(sensitivity_analysis_vars, "_arg")
   results %>%

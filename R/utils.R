@@ -347,9 +347,12 @@ get_iter_var <- function(args_list) {
   } else if (nrow(iterate_arg) == 1) {
     iter_var <- iterate_arg$name
 
-    if (iter_var == "asset_type") {
-      rlang::abort(
-        "Cannot iterate over argument asset_type")
+    if (iter_var %in% c("asset_type", path_vars_lookup)) {
+      rlang::abort(c(
+        "Must not provide more than one value for not iterateable argument",
+        x = glue::glue("Arguments with multiple values: {toString(iter_var)}."),
+        i = "Please coorect your function call"
+        ))
     }
   } else {
     rlang::abort(c(
