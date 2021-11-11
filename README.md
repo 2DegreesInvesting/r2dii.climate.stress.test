@@ -34,17 +34,13 @@ devtools::install_github("2DegreesInvesting/r2dii.climate.stress.test")
 
 ## Example
 
-  - Use `library()` to attach the package
-
-<!-- end list -->
+-   Use `library()` to attach the package
 
 ``` r
 library(r2dii.climate.stress.test)
 ```
 
-  - Run climate stress tests
-
-<!-- end list -->
+-   Run climate stress tests
 
 ``` r
 ## run stress testing for assets of type corporate loans using default parameters
@@ -102,7 +98,7 @@ div_netprofit_prop_coef_range_lookup
 #> [1] 0.8 1.0
 
 shock_year_range_lookup
-#> [1] 2025 2040
+#> [1] 2025 2035
 
 term_range_lookup
 #> [1]  1 10
