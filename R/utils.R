@@ -68,11 +68,11 @@ path_dropbox_2dii <- function(...) {
 #'
 #' @param path Character vector indicating the directory of a file.
 #'
-#' @return NULL
+#' @return String holding provided `path`.
 #'
 #' @export
 validate_file_exists <- function(path) {
-  valid_file_path <- file.exists(file.path(path))
+  valid_file_path <- file.exists(path)
 
   if (!valid_file_path) {
     rlang::abort(c(
@@ -81,7 +81,7 @@ validate_file_exists <- function(path) {
       i = "Did you set path to data correctly?."
     ))
   }
-  invisible()
+  invisible(path)
 }
 
 #' Validate that a data frame contains expected columns
