@@ -7,10 +7,7 @@
 validate_file_exists(path)
 }
 \arguments{
-\item{path}{Character vector indicating the directory of a file}
-}
-\value{
-A boolean.
+\item{path}{Character vector indicating the directory of a file.}
 }
 \description{
 Before performing an operation on a file assumed to be found in a given

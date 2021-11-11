@@ -10,8 +10,7 @@
 read_financial_data <- function(path = NULL) {
   path %||% stop("Must provide 'path'")
 
-  valid_input_file_path <- file.exists(file.path(path))
-  stopifnot(valid_input_file_path)
+  validate_file_exists(file.path(path))
 
   data <- readr::read_csv(
     path,

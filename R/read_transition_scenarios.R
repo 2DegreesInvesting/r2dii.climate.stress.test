@@ -18,8 +18,7 @@ read_transition_scenarios <- function(path = NULL,
   start_of_analysis %||% stop("Must provide 'start_of_analysis'")
   end_of_analysis %||% stop("Must provide 'end_of_analysis'")
 
-  valid_input_file_path <- file.exists(file.path(path))
-  stopifnot(valid_input_file_path)
+  validate_file_exists(file.path(path))
 
   data <- readr::read_csv(
     path,
