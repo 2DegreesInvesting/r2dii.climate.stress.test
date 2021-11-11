@@ -66,14 +66,22 @@ path_dropbox_2dii <- function(...) {
 #' Before performing an operation on a file assumed to be found in a given
 #' directory, validate this file exists and give indicative error if not.
 #'
-#' @param path Character vector indicating the directory of a file
+#' @param path Character vector indicating the directory of a file.
 #'
-#' @return A boolean.
+#' @return NULL
 #'
 #' @export
 validate_file_exists <- function(path) {
   valid_file_path <- file.exists(file.path(path))
-  stopifnot(valid_file_path)
+
+  if (!valid_file_path) {
+    rlang::abort(c(
+      "Detected invalid file path.",
+      x = glue::glue("Invalid file path: {file.path(path)}."),
+      i = "Did you set path to data correctly?."
+    ))
+  }
+  invisible()
 }
 
 #' Validate that a data frame contains expected columns
