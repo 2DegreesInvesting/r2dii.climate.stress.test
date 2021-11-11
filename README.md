@@ -72,7 +72,10 @@ data preparation for initial application of stress testing on a
 loanbook.
 
 ``` r
-run_prep_calculation_loans()
+run_prep_calculation_loans(
+  data_path_project_specific = "/path/to/specific/data",
+  data_path_project_agnostic = "/path/to/agnostic/data"
+)
 ```
 
 ### Look up valid ranges of model parameters
