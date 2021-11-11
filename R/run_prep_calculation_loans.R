@@ -151,7 +151,6 @@ run_prep_calculation_loans <- function(data_path_project_specific,
 
 
   #### Calculate loan-tech level loan book size and value share-----------------
-
   loan_share <- matched_non_negative %>%
     dplyr::mutate(
       portfolio_loan_size_outstanding = portfolio_size$portfolio_loan_size_outstanding,
@@ -168,11 +167,12 @@ run_prep_calculation_loans <- function(data_path_project_specific,
     # ADO 2723 - loan shares calculated against matched loan book, not total loan book
     # this is to ensure all scaling happens against the same denominator
     # run_stress_test uses the matched portfolio to scale the overall impact
-    dplyr::mutate(
+    dplyr::summarise(
       comp_loan_share_outstanding = sum(.data$loan_size_outstanding, na.rm = TRUE) / .data$matched_portfolio_loan_size_outstanding,
       comp_loan_size_outstanding = sum(.data$loan_size_outstanding, na.rm = TRUE),
       comp_loan_share_credit_limit = sum(.data$loan_size_credit_limit, na.rm = TRUE) / .data$matched_portfolio_loan_size_credit_limit,
-      comp_loan_size_credit_limit = sum(.data$loan_size_credit_limit, na.rm = TRUE)
+      comp_loan_size_credit_limit = sum(.data$loan_size_credit_limit, na.rm = TRUE),
+      .groups = "drop"
     ) %>%
     dplyr::ungroup() %>%
     dplyr::select(
@@ -185,7 +185,8 @@ run_prep_calculation_loans <- function(data_path_project_specific,
       .data$comp_loan_size_credit_limit,
       .data$loan_size_credit_limit_currency
     ) %>%
-    # TODO why distinct_all?
+    # ADO 2393 - somehow the summarise call does not reduce the number of rows.
+    # since it creates duplicates, we use distinct_all() to ensure uniqueness
     dplyr::distinct_all()
 
   #### Calculate tech level loan book size and value share----------------------
@@ -288,8 +289,6 @@ run_prep_calculation_loans <- function(data_path_project_specific,
       production_unweighted = .data$production
     )  %>%
     dplyr::mutate(technology_share = round(.data$technology_share, 8)) %>% # rounding errors can lead to duplicates
-    # TODO: why distinct_all?
-    dplyr::distinct_all()
 
   #### Add loan share information to PACTA results------------------------------
 
