@@ -18,9 +18,8 @@ read_pacta_results <- function(path = NULL,
   level_allowed <- level %in% c("company", "portfolio")
   stopifnot(level_allowed)
 
-  validate_file_exists(file.path(path))
-
-  data <- readr::read_rds(path)
+  data <- validate_file_exists(path) %>%
+    readr::read_rds()
 
   expected_columns <- c(
     "investor_name", "portfolio_name", "scenario", "allocation",

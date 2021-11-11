@@ -18,10 +18,8 @@ read_transition_scenarios <- function(path = NULL,
   start_of_analysis %||% stop("Must provide 'start_of_analysis'")
   end_of_analysis %||% stop("Must provide 'end_of_analysis'")
 
-  validate_file_exists(file.path(path))
-
-  data <- readr::read_csv(
-    path,
+  data <- validate_file_exists(path) %>%
+    readr::read_csv(
     col_types = readr::cols(
       scenario_name = "c",
       year_of_shock = "d",

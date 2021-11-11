@@ -26,14 +26,13 @@ read_and_prepare_project_agnostic_data <- function(start_year, end_year, company
   )
 
   if (company_exclusion) {
-    validate_file_exists(file.path(path, "exclude-companies.csv"))
-    excluded_companies <- readr::read_csv(
-      file.path(path, "exclude-companies.csv"),
-      col_types = readr::cols(
-        company_name = "c",
-        technology = "c"
+    excluded_companies <- validate_file_exists(file.path(path, "exclude-companies.csv")) %>%
+      readr::read_csv(
+        col_types = readr::cols(
+          company_name = "c",
+          technology = "c"
+        )
       )
-    )
   } else {
     excluded_companies <- NULL
   }
@@ -59,7 +58,7 @@ read_and_prepare_project_agnostic_data <- function(start_year, end_year, company
   financial_data <- read_financial_data(
     path = file.path(get_st_data_path(), "prewrangled_financial_data_stress_test.csv")
   ) %>%
-  check_financial_data(asset_type = asset_type)
+    check_financial_data(asset_type = asset_type)
 
   return(list(
     capacity_factors_power = capacity_factors_power,
@@ -86,7 +85,6 @@ read_and_prepare_project_specific_data <- function(asset_type, calculation_level
                                                    time_horizon, scenario_geography_filter,
                                                    scenarios_filter, equity_market_filter,
                                                    term, path) {
-
   pacta_results <- read_pacta_results(
     path = file.path(path, "inputs", paste0(stringr::str_to_title(asset_type), "_results_", calculation_level, ".rda")),
     level = calculation_level
@@ -130,9 +128,8 @@ read_and_prepare_project_specific_data <- function(asset_type, calculation_level
 #'
 #' @return A tibble holding sector exposure data
 read_sector_exposures <- function(path) {
-  validate_file_exists(path)
-
-  sector_exposures <- readr::read_rds(path)
+  sector_exposures <- validate_file_exists(path) %>%
+    readr::read_rds()
 
   validate_data_has_expected_cols(
     data = sector_exposures,
