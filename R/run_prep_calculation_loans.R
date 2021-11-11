@@ -288,7 +288,7 @@ run_prep_calculation_loans <- function(data_path_project_specific,
     dplyr::rename(
       production_unweighted = .data$production
     )  %>%
-    dplyr::mutate(technology_share = round(.data$technology_share, 8)) %>% # rounding errors can lead to duplicates
+    dplyr::mutate(technology_share = round(.data$technology_share, 8))# rounding errors can lead to duplicates
 
   #### Add loan share information to PACTA results------------------------------
 
