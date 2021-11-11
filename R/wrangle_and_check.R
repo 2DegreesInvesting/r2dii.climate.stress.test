@@ -106,8 +106,7 @@ wrangle_and_check_pacta_results <- function(pacta_results, start_year, time_hori
     dplyr::filter(
       .data$allocation == allocation_method_lookup,
       .data$equity_market == equity_market_filter
-    ) %>%
-    dplyr::distinct_all()
+    )
 }
 
 #' Check financial data
