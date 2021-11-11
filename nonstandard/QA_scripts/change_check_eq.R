@@ -59,8 +59,8 @@ check_all_equal <- function(old_results, new_results) {
 devtools::load_all()
 run_stress_test(
   asset_type = "equity",
-  data_path_project_agnostic = get_st_data_path(),
-  data_path_project_specific = get_st_data_path("ST_PROJECT_FOLDER")
+  input_path_project_agnostic = get_st_data_path(),
+  input_path_project_specific = get_st_data_path("ST_PROJECT_FOLDER")
 )
 
 ### 2. run the following lines to obtain results
@@ -70,8 +70,8 @@ old_results <- import_asset_results()
 devtools::load_all()
 run_stress_test(
   asset_type = "equity",
-  data_path_project_agnostic = get_st_data_path(),
-  data_path_project_specific = get_st_data_path("ST_PROJECT_FOLDER")
+  input_path_project_agnostic = get_st_data_path(),
+  input_path_project_specific = get_st_data_path("ST_PROJECT_FOLDER")
 )
 
 ### 4. run the following lines to run script or equity and bonds and obtain results

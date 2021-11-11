@@ -6,8 +6,8 @@
 #'
 #' @return NULL
 #' @export
-run_prep_calculation_loans <- function(data_path_project_specific,
-                                       data_path_project_agnostic,
+run_prep_calculation_loans <- function(input_path_project_specific,
+                                       input_path_project_agnostic,
                                        credit_type = "outstanding") {
 
   #### Validate input-----------------------------------------------------------
@@ -18,9 +18,9 @@ run_prep_calculation_loans <- function(data_path_project_specific,
 
   #### Load input data sets-----------------------------------------------------
   # raw loan book
-  validate_file_exists(file.path(data_path_project_specific, "inputs", paste0("raw_loanbook.csv")))
+  validate_file_exists(file.path(input_path_project_specific, "inputs", paste0("raw_loanbook.csv")))
   loanbook <- readr::read_csv(
-    file.path(data_path_project_specific, "inputs", paste0("raw_loanbook.csv")),
+    file.path(input_path_project_specific, "inputs", paste0("raw_loanbook.csv")),
     col_types = readr::cols(
       id_loan = "c",
       id_direct_loantaker = "c",
@@ -45,9 +45,9 @@ run_prep_calculation_loans <- function(data_path_project_specific,
   )
 
   # matched loan book
-  validate_file_exists(file.path(data_path_project_specific, "inputs", "matched_loan_book.csv"))
+  validate_file_exists(file.path(input_path_project_specific, "inputs", "matched_loan_book.csv"))
   matched  <- readr::read_csv(
-    file.path(data_path_project_specific, "inputs", "matched_loan_book.csv"),
+    file.path(input_path_project_specific, "inputs", "matched_loan_book.csv"),
     col_types = readr::cols_only(
       id_loan = "c",
       id_direct_loantaker = "c",
@@ -84,16 +84,16 @@ run_prep_calculation_loans <- function(data_path_project_specific,
   regions <- r2dii.data::region_isos
 
   # Production forecast data
-  validate_file_exists(file.path(data_path_project_agnostic, "2021-07-15_AR_2020Q4_PACTA-Data (3).xlsx"))
+  validate_file_exists(file.path(input_path_project_agnostic, "2021-07-15_AR_2020Q4_PACTA-Data (3).xlsx"))
   production_forecast_data <- readxl::read_xlsx(
-    file.path(data_path_project_agnostic, "2021-07-15_AR_2020Q4_PACTA-Data (3).xlsx"),
+    file.path(input_path_project_agnostic, "2021-07-15_AR_2020Q4_PACTA-Data (3).xlsx"),
     sheet = "Company Indicators - PACTA"
   )
 
   # Scenario data - market share
-  validate_file_exists(file.path(data_path_project_agnostic, "scenario_2020.csv"))
+  validate_file_exists(file.path(input_path_project_agnostic, "scenario_2020.csv"))
   scenario_data_market_share <- readr::read_csv(
-    file.path(data_path_project_agnostic, glue::glue("scenario_2020.csv")),
+    file.path(input_path_project_agnostic, glue::glue("scenario_2020.csv")),
     col_types = readr::cols(
       scenario_source = "c",
       scenario = "c",
@@ -262,7 +262,7 @@ run_prep_calculation_loans <- function(data_path_project_specific,
 
   portfolio_overview %>%
     saveRDS(
-      file.path(data_path_project_specific, "inputs", "overview_portfolio.rda")
+      file.path(input_path_project_specific, "inputs", "overview_portfolio.rda")
     )
 
   #### Calculate unweighted company level PACTA results-------------------------
@@ -322,7 +322,7 @@ run_prep_calculation_loans <- function(data_path_project_specific,
 
   loans_results_company %>%
     saveRDS(
-      file.path(data_path_project_specific, "inputs", "Loans_results_company.rda")
+      file.path(input_path_project_specific, "inputs", "Loans_results_company.rda")
     )
 
 }

@@ -6,8 +6,8 @@
 \usage{
 run_stress_test_impl(
   asset_type,
-  data_path_project_specific,
-  data_path_project_agnostic,
+  input_path_project_specific,
+  input_path_project_agnostic,
   lgd_senior_claims,
   lgd_subordinated_claims,
   terminal_value,
@@ -23,10 +23,10 @@ run_stress_test_impl(
 \item{asset_type}{String holding asset_type, for allowed value compare
 \code{asset_types_lookup}.}
 
-\item{data_path_project_specific}{String holding path to project specific
+\item{input_path_project_specific}{String holding path to project specific
 data.}
 
-\item{data_path_project_agnostic}{String holding path to project agnostic
+\item{input_path_project_agnostic}{String holding path to project agnostic
 data.}
 
 \item{lgd_senior_claims}{Numeric, holding the loss given default for senior

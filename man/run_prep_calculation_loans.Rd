@@ -5,16 +5,16 @@
 \title{Run stress testing data preparation for loans}
 \usage{
 run_prep_calculation_loans(
-  data_path_project_specific,
-  data_path_project_agnostic,
+  input_path_project_specific,
+  input_path_project_agnostic,
   credit_type = "outstanding"
 )
 }
 \arguments{
-\item{data_path_project_specific}{String holding path to project specific
+\item{input_path_project_specific}{String holding path to project specific
 data.}
 
-\item{data_path_project_agnostic}{String holding path to project agnostic
+\item{input_path_project_agnostic}{String holding path to project agnostic
 data.}
 
 \item{credit_type}{Type of credit. For accepted values please compare
