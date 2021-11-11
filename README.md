@@ -34,15 +34,19 @@ devtools::install_github("2DegreesInvesting/r2dii.climate.stress.test")
 
 ## Example
 
--   Use `library()` to attach the package
+  - Use `library()` to attach the package
+
+<!-- end list -->
 
 ``` r
 library(r2dii.climate.stress.test)
 ```
 
--   Stress tests for corporate loans require a preparatory step for
+  - Stress tests for corporate loans require a preparatory step for
     input data preparation for initial application of stress testing on
     a loan book
+
+<!-- end list -->
 
 ``` r
 run_prep_calculation_loans(
@@ -51,7 +55,9 @@ run_prep_calculation_loans(
 )
 ```
 
--   Run climate stress tests
+  - Run climate stress tests
+
+<!-- end list -->
 
 ``` r
 ## run stress testing for assets of type corporate loans using default parameters
