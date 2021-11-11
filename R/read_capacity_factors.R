@@ -18,8 +18,7 @@ read_capacity_factors <- function(path = NULL,
   version_allowed <- version %in% c("old", "new")
   stopifnot(version_allowed)
 
-  valid_input_file_path <- file.exists(file.path(path))
-  stopifnot(valid_input_file_path)
+  validate_file_exists(file.path(path))
 
   # TODO: once the input is in long format the expected col types can be set
   data <- readr::read_csv(path, col_types = readr::cols())
