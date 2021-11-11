@@ -59,7 +59,10 @@ run_stress_test(
 ### Prepare input data
 Stress tests for corporate loans require an additional step for input data preparation for initial application of stress testing on a loanbook.
 ```{r, results='hide', message=FALSE, warning=FALSE, eval=FALSE}
-run_prep_calculation_loans()
+run_prep_calculation_loans(
+  data_path_project_specific = "/path/to/specific/data",
+  data_path_project_agnostic = "/path/to/agnostic/data"
+)
 
 ```
 
