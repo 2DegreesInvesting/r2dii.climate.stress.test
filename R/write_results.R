@@ -57,7 +57,7 @@ write_stress_test_results <- function(results, expected_loss,
     report_all_duplicate_kinds(
       composite_unique_cols = c(
         "scenario_name", "scenario_geography", "investor_name", "portfolio_name",
-        "company_name", "id", "ald_sector", "term",
+        "company_name", "ald_sector",
         sensitivity_analysis_vars
       )
     ) %>%
