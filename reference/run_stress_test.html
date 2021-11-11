@@ -44,8 +44,7 @@
 understand sensitivities of the scenarios, in which case the user may pass a
 vector of values to one (and only one) of the detail arguments. This will
 result in running the analysis multiple times in a row with the argument
-varied.
-NOTE: argument asset_type is not iterateable." />
+varied. NOTE: argument asset_type is not iterateable." />
 
 
 
@@ -139,12 +138,13 @@ NOTE: argument asset_type is not iterateable." />
 understand sensitivities of the scenarios, in which case the user may pass a
 vector of values to one (and only one) of the detail arguments. This will
 result in running the analysis multiple times in a row with the argument
-varied.
-NOTE: argument <code>asset_type</code> is not iterateable.</p>
+varied. NOTE: argument <code>asset_type</code> is not iterateable.</p>
     </div>
 
     <pre class="usage"><span class='fu'>run_stress_test</span><span class='op'>(</span>
   <span class='va'>asset_type</span>,
+  <span class='va'>data_path_project_specific</span>,
+  <span class='va'>data_path_project_agnostic</span>,
   lgd_senior_claims <span class='op'>=</span> <span class='fl'>0.45</span>,
   lgd_subordinated_claims <span class='op'>=</span> <span class='fl'>0.75</span>,
   terminal_value <span class='op'>=</span> <span class='fl'>0</span>,
@@ -165,6 +165,16 @@ NOTE: argument <code>asset_type</code> is not iterateable.</p>
 <code>asset_types_lookup</code>.</p></td>
     </tr>
     <tr>
+      <th>data_path_project_specific</th>
+      <td><p>String holding path to project specific
+data.</p></td>
+    </tr>
+    <tr>
+      <th>data_path_project_agnostic</th>
+      <td><p>String holding path to project agnostic
+data.</p></td>
+    </tr>
+    <tr>
       <th>lgd_senior_claims</th>
       <td><p>Numeric, holding the loss given default for senior
 claims, for accepted value range check <code>lgd_senior_claims_range_lookup</code>.</p></td>
@@ -179,7 +189,8 @@ subordinated claims, for accepted value range check
       <th>terminal_value</th>
       <td><p>Numeric. A ratio to determine the share of the
 discounted value used in the terminal value calculation beyond the
-projected time frame. For accepted range compare <code>terminal_value_range_lookup</code>.</p></td>
+projected time frame. For accepted range compare
+<code>terminal_value_range_lookup</code>.</p></td>
     </tr>
     <tr>
       <th>risk_free_rate</th>
