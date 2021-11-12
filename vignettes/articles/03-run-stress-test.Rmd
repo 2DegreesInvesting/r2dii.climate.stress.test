@@ -1,5 +1,5 @@
 ---
-title: "Run standard transition risk stress test"
+title: "03 - Run transition risk stress test on corporate loan books"
 ---
 
 ```{r, include = FALSE}
@@ -17,23 +17,25 @@ of a loan book.
 
 In order to keep this vignette concise, we assume the following has been set up:
 
-1. R and RStudio are installed
-1. All required R packages are installed, this specifically includes
-`r2dii.data`, `r2dii.match`, `r2dii.analysis` and `r2dii.climate.stress.test`
-1. The user has obtained all relevant input files as described in the pdf manual
-1. The input files are organized in a folder structure consistent with the manual
-1. This notably implies the user has successfully run at least the matching
-part of PACTA for banks to produce the relevant project-specific input files
+1. R and RStudio are installed.
+2. All required R packages are installed, specifically.
+`r2dii.climate.stress.test`. Note that this may require installing additional
+packages. You will be prompted to install these in case any are missing.
+1. The user has obtained all relevant input files as described in the pdf manual.
+1. The user has successfully run at least the matching part of PACTA for Banks
+to produce the relevant project-specific raw input files.
+1. The input files are organized in a folder structure consistent with the one
+described in the vignette ["Set up project directories"](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/01-setup-project-directories.html).
 1. The user has successfully run the function `run_prep_calculation_loans()` to
-generate the input files for the main stress test function in the required
-format. Refer to the [corresponding vignette](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/prepare-loans-inputs.html)
+generate the intermediate input files for the main stress test function in the
+required format. Refer to the [corresponding vignette](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-prepare-loans-inputs.html)
 for details on how to do this.
 
 ## Running the Analysis
 
-The climate transition risk stress test can be run for a single set of parameters
-or as a sensitivity analysis for a set of parameters that iterates over one of
-the input arguments. We will look at both cases.
+The climate transition risk stress test can be run for a single set of
+parameters or as a sensitivity analysis for a set of parameters that iterates
+over one of the input arguments. We will look at both cases.
 
 Use `library()` to attach the package
 
@@ -44,16 +46,16 @@ library(r2dii.climate.stress.test)
 ## Running the Stress Test for one scenario
 
 In order to run a stress test for loans on one set of parameters, the user needs
-to pass exactly one value per input argument to the function
-`run_prep_calculation_loans()`. The only arguments that do not have a default
-value and must be set by the user are `asset_type`, `input_path_project_specific`
-and `input_path_project_agnostic`. In our case, we want to run the stress test
-for loans, so the easiest way to obtain results is by running:
+to pass exactly one value per input argument to the function `run_stress_test()`.
+The only arguments that do not have a default
+value and must be set by the user are `asset_type` and the file paths. In this
+case, we want to run the stress test for loans, so the easiest way to obtain
+results is by running:
 
 ```{r, eval = FALSE}
 run_stress_test(
   "loans",
-  input_path_project_specific = "/path/to/specific/data",
+  input_path_project_specific = "/path/to/specific/data/inputs",
   input_path_project_agnostic = "/path/to/agnostic/data",
   output_path = "/path/to/output/directory"
 )
@@ -62,10 +64,7 @@ run_stress_test(
 This will calculate the stress test for loans and write the results into the
 designated output directory, using the default values for all detail arguments.
 
-The user may change any detail argument by explicitly passing it to the function.
-Note that there are allowed ranges for each of the inputs as described in the
-README.
-
+### Default values of the input arguments
 The detail arguments are the following (defaults in brackets):
 
 * lgd_senior_claims (`r formals(run_stress_test)$lgd_senior_claims`)
@@ -78,6 +77,33 @@ The detail arguments are the following (defaults in brackets):
 * term (`r formals(run_stress_test)$term`)
 * company_exclusion (`r formals(run_stress_test)$company_exclusion`)
 
+### Look up valid ranges of input arguments
+The user may change any detail arguments by explicitly passing it to the
+function. Note that there are allowed ranges for each of the inputs. The passed
+argument must be within these ranges.
+
+You can look up allowed values of input arguments by running:
+```{r}
+lgd_senior_claims_range_lookup
+
+lgd_subordinated_claims_range_lookup
+
+terminal_value_range_lookup
+
+risk_free_rate_range_lookup
+
+discount_rate_range_lookup
+
+div_netprofit_prop_coef_range_lookup
+
+shock_year_range_lookup
+
+term_range_lookup
+
+credit_type_lookup
+```
+
+### Understanding the input arguments
 The meaning of each of the detail arguments is as follows:
 
 * `lgd_senior_claims` is the loss given default used in the expected loss
@@ -87,7 +113,7 @@ a potentially important parameter in this calculation)
 calculation of loans for subordinated claims (notably for corporate bonds. Not
 of relevance in the loans calculation)
 * `terminal_value` the percentage of the net present value that should be used
-to approximate further cash flows beyond the timeframe of the model.
+to approximate further cash flows beyond the time frame of the model.
 * `risk_free_rate` the risk free interest rate. Input parameter to the Merton
 credit risk model.
 * `discount_rate` the annual rate at which future cash flows are discounted when
@@ -100,21 +126,22 @@ present value should be considered to derive the equity value of a company.
 production values of companies to stay in line with carbon budgets.
 * `term` indicates which maturity the loans in the loan book are assumed to have.
 At this point we assume these are rolled over every year.
-* `company_exclusion` Logical paramter that indicates if certain combonations of
+* `company_exclusion` Logical parameter that indicates if certain combinations of
 company and technology should be excluded from the analysis. At this point, it
-is stringly recommended to set this ti TRUE (default) because there is not yet a
+is strictly recommended to set this to TRUE (default) because there is not yet a
 dedicated mechanism in place that handles companies which are phasing out
 certain technologies within the time frame of the production forecast.
 
-This means that the user may want to run a stress test that is tailored to their
-assumptions of a plausible shock scenario. For example, the user could decide to
-set a lower `risk_free_rate` and shock the companies earlier than by default,
-using:
+### Adjusting the input arguments
+The user may want to run a stress test that is tailored to their assumptions
+about a plausible transition risk shock scenario. For example, the user could
+decide to set a lower `risk_free_rate` and shock the companies earlier than by
+default, using:
 
 ```{r, eval = FALSE}
 run_stress_test(
   "loans",
-  input_path_project_specific = "/path/to/specific/data",
+  input_path_project_specific = "/path/to/specific/data/inputs",
   input_path_project_agnostic = "/path/to/agnostic/data",
   output_path = "/path/to/output/directory",
   risk_free_rate = 0.01,
@@ -122,14 +149,18 @@ run_stress_test(
 )
 ```
 
-The output files are automatically written to the `outputs` sub directory of the
-project folder and are named:
+### Output files
+The output files are written to the path indicated as `output_path` in the
+function and are named:
 
 * `stress_test_results_loans_port_standard.csv`
 * `stress_test_results_loans_comp_standard.csv`
 * `stress_test_results_loans_comp_el_standard.csv`
 * `stress_test_results_loans_sector_pd_changes_annual_standard.csv`
 * `stress_test_results_loans_sector_pd_changes_overall_standard.csv`
+
+**NOTE:** The suffix `_standard` indicates that the stress test was run for a
+single set of parameters.
 
 ## Running a Sensitivity Analysis for the Stress Test
 
@@ -150,7 +181,7 @@ for example, they can run the following:
 ```{r, eval = FALSE}
 run_stress_test(
   "loans",
-  input_path_project_specific = "/path/to/specific/data",
+  input_path_project_specific = "/path/to/specific/data/inputs",
   input_path_project_agnostic = "/path/to/agnostic/data",
   output_path = "/path/to/output/directory",
   shock_year = c(2025, 2028, 2032, 2035)
@@ -167,15 +198,20 @@ output type for ease of use, e.g.:
 * `stress_test_results_loans_sector_pd_changes_annual_shock_year.csv`
 * `stress_test_results_loans_sector_pd_changes_overall_shock_year.csv`
 
+**NOTE:** The suffix of the files is now changed to mirror which variable was
+iterated over. This enables the user to run multiple different sensitivity
+analyses for a project and easily navigate these.
 
-The user can still alternate the default parameters of other input arguments,
-when iterating over the `shock_year`, e.g. if the risk_free_rate should be
-lower than the default, the following will work:
+When running a sensitivity analysis one one input, the user can still use other
+values than the default parameters for the other input arguments.
+
+For example, when iterating over the `shock_year`, it is still possible to use a
+`risk_free_rate` lower than the default like so:
 
 ```{r, eval = FALSE}
 run_stress_test(
   "loans",
-  input_path_project_specific = "/path/to/specific/data",
+  input_path_project_specific = "/path/to/specific/data/inputs",
   input_path_project_agnostic = "/path/to/agnostic/data",
   output_path = "/path/to/output/directory",
   risk_free_rate = 0.01,
@@ -183,10 +219,11 @@ run_stress_test(
 )
 ```
 
-Note that the selected detail arguments will be written to the result files so
-that it is always easy to understand which parameters were used in a given
-calculation.
+**NOTE** that the selected detail arguments will be written to the result files
+so that it is always possible to understand which parameters were used in any
+given calculation.
 
-### Interpretation of the output files
+## Interpretation of the output files
 
-See vignette ["Read and understand the outputs"](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/read-the-outputs.html).
+Detailed explanations of the result files can be found in the vignette:
+["Understand the output files of the transition risk stress test"](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/04-read-the-outputs.html).
