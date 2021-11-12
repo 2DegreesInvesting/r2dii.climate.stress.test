@@ -51,7 +51,7 @@ run_stress_test <- function(asset_type,
                             shock_year = 2030,
                             term = 2,
                             company_exclusion = TRUE) {
-  cat("Running transition risk stress test \n")
+  cat("-- Running transition risk stress test \n")
 
   args_list <- mget(names(formals()), sys.frame(sys.nframe()))
   iter_var <- get_iter_var(args_list)
@@ -129,7 +129,7 @@ run_stress_test_impl <- function(asset_type,
 
   log_path <- file.path(output_path, paste0("log_file_", iter_var, ".txt"))
 
-  cat("Validating input arguments. \n")
+  cat("-- Validating input arguments. \n")
 
   validate_input_values(
     lgd_senior_claims = lgd_senior_claims,
@@ -240,7 +240,8 @@ run_stress_test_impl <- function(asset_type,
     asset_type = asset_type,
     input_data_list = input_data_list,
     start_year = start_year,
-    scenario_to_follow_ls = scenario_to_follow_ls
+    scenario_to_follow_ls = scenario_to_follow_ls,
+    log_path = log_path
   )
 
   results <- company_asset_value_at_risk(

@@ -286,6 +286,7 @@ report_dropped_company_names <- function(data_x, data_y, name_y, merge_cols, nam
     purrr::walk(affected_companies, function(company) {
       paste_write("          >>", company, log_path = log_path)
     })
+    paste_write("\n", log_path = log_path)
   }
   return(data)
 }
