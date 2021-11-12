@@ -1,6 +1,12 @@
 #' Run stress testing data preparation for loans
 #'
+#'
 #' @inheritParams run_stress_test
+#' @param data_prep_output_path Path where results are written.
+#'   NOTE: This is a workflow that is needed exclusively in preparation of
+#'   [run_stress_test()] for loan books. It creates input data for the stress
+#'   test. A recommended setting is to set data_prep_output_path to to the same
+#'   path as `input_path_project_specific`.
 #' @param credit_type Type of credit. For accepted values please compare
 #'   `credit_type_lookup`.
 #'
@@ -8,7 +14,7 @@
 #' @export
 run_prep_calculation_loans <- function(input_path_project_specific,
                                        input_path_project_agnostic,
-                                       output_path,
+                                       data_prep_output_path,
                                        credit_type = "outstanding") {
 
   #### Validate input-----------------------------------------------------------
@@ -259,7 +265,7 @@ run_prep_calculation_loans <- function(input_path_project_specific,
 
   portfolio_overview %>%
     saveRDS(
-      file.path(output_path, "overview_portfolio.rda")
+      file.path(data_prep_output_path, "overview_portfolio.rda")
     )
 
   #### Calculate unweighted company level PACTA results-------------------------
@@ -319,7 +325,7 @@ run_prep_calculation_loans <- function(input_path_project_specific,
 
   loans_results_company %>%
     saveRDS(
-      file.path(output_path, "Loans_results_company.rda")
+      file.path(data_prep_output_path, "Loans_results_company.rda")
     )
 
 }

@@ -8,6 +8,7 @@ run_stress_test(
   asset_type,
   input_path_project_specific,
   input_path_project_agnostic,
+  output_path,
   lgd_senior_claims = 0.45,
   lgd_subordinated_claims = 0.75,
   terminal_value = 0,
@@ -28,6 +29,8 @@ data.}
 
 \item{input_path_project_agnostic}{String holding path to project agnostic
 data.}
+
+\item{output_path}{String holding path to which output files are written.}
 
 \item{lgd_senior_claims}{Numeric, holding the loss given default for senior
 claims, for accepted value range check \code{lgd_senior_claims_range_lookup}.}
