@@ -47,7 +47,8 @@ library(r2dii.climate.stress.test)
 ``` r
 run_prep_calculation_loans(
   input_path_project_specific = "/path/to/specific/data",
-  input_path_project_agnostic = "/path/to/agnostic/data"
+  input_path_project_agnostic = "/path/to/agnostic/data",
+  data_prep_output_path = "/path/to/specific/data"
 )
 ```
 
