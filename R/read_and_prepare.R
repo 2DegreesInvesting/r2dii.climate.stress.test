@@ -86,7 +86,7 @@ read_and_prepare_project_specific_data <- function(asset_type, calculation_level
                                                    scenarios_filter, equity_market_filter,
                                                    term, path) {
   pacta_results <- read_pacta_results(
-    path = file.path(path, "inputs", paste0(stringr::str_to_title(asset_type), "_results_", calculation_level, ".rda")),
+    path = file.path(path, paste0(stringr::str_to_title(asset_type), "_results_", calculation_level, ".rda")),
     level = calculation_level
   )
 
@@ -104,7 +104,7 @@ read_and_prepare_project_specific_data <- function(asset_type, calculation_level
     # TODO: next version to allow term input on holding/company level
     dplyr::mutate(term = term)
 
-  sector_exposures <- read_sector_exposures(file.path(path, "inputs", "overview_portfolio.rda")) %>%
+  sector_exposures <- read_sector_exposures(file.path(path, "overview_portfolio.rda")) %>%
     wrangle_and_check_sector_exposures(asset_type = asset_type)
   # TODO: potentially convert currencies to USD or at least common currency
 

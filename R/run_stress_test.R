@@ -12,6 +12,7 @@
 #'   data.
 #' @param input_path_project_agnostic String holding path to project agnostic
 #'   data.
+#' @param output_path String holding path to which output files are written.
 #' @param lgd_senior_claims Numeric, holding the loss given default for senior
 #'   claims, for accepted value range check `lgd_senior_claims_range_lookup`.
 #' @param lgd_subordinated_claims Numeric, holding the loss given default for
@@ -40,6 +41,7 @@
 run_stress_test <- function(asset_type,
                             input_path_project_specific,
                             input_path_project_agnostic,
+                            output_path,
                             lgd_senior_claims = 0.45,
                             lgd_subordinated_claims = 0.75,
                             terminal_value = 0,
@@ -73,7 +75,7 @@ run_stress_test <- function(asset_type,
     calculation_level = calculation_level_lookup,
     sensitivity_analysis_vars = names(args_list)[!names(args_list) %in% path_vars_lookup],
     iter_var = iter_var,
-    results_path = file.path(input_path_project_specific, "outputs")
+    output_path = output_path
   )
 
   cat("-- Exported results to designated output path. \n")
@@ -91,6 +93,7 @@ run_stress_test_iteration <- function(n, args_tibble) {
     dplyr::slice(n)
 
   arg_list_row <- arg_tibble_row %>%
+    dplyr::select(-output_path) %>%
     as.list()
 
   arg_tibble_row <- arg_tibble_row %>%

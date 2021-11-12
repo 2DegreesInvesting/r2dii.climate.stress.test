@@ -143,4 +143,4 @@ p4b_scenarios_lookup <- c("target_b2ds", "target_cps", "target_rts",
                           "target_sds")
 
 
-path_vars_lookup <- c("input_path_project_agnostic", "input_path_project_specific")
+path_vars_lookup <- c("input_path_project_agnostic", "input_path_project_specific", "output_path")
