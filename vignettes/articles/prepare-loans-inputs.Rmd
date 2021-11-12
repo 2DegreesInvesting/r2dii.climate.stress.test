@@ -46,7 +46,7 @@ minimal input from the user.
 The only argument that can be set is `credit_type`, which defaults to
 `"outstanding"` if the user passes no argument. View other options by running:
 
-```{r, eval=TRUE}
+```{r}
 credit_type_lookup
 ```
 
