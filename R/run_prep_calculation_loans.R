@@ -128,10 +128,6 @@ run_prep_calculation_loans <- function(data_path_project_specific,
   }
 
   portfolio_size <- loanbook %>%
-    # TODO: why distinct? Is there any way that id_loan is not unique?
-    dplyr::distinct(
-      .data$id_loan, .data$loan_size_outstanding, .data$loan_size_credit_limit
-    ) %>%
     dplyr::summarise(
       portfolio_loan_size_outstanding = sum(.data$loan_size_outstanding, na.rm = TRUE),
       portfolio_loan_size_credit_limit = sum(.data$loan_size_credit_limit, na.rm = TRUE),
@@ -139,26 +135,14 @@ run_prep_calculation_loans <- function(data_path_project_specific,
     )
 
   matched_portfolio_size <- matched_non_negative %>%
-    # TODO: why distinct? Is there any way that id_loan is not unique?
-    dplyr::distinct(
-      .data$id_loan, .data$loan_size_outstanding, .data$loan_size_credit_limit
-    ) %>%
     dplyr::summarise(
       matched_portfolio_loan_size_outstanding = sum(.data$loan_size_outstanding, na.rm = TRUE),
       matched_portfolio_loan_size_credit_limit = sum(.data$loan_size_credit_limit, na.rm = TRUE),
       .groups = "drop"
     )
 
-
   #### Calculate loan-tech level loan book size and value share-----------------
-
   loan_share <- matched_non_negative %>%
-    dplyr::mutate(
-      portfolio_loan_size_outstanding = portfolio_size$portfolio_loan_size_outstanding,
-      portfolio_loan_size_credit_limit = portfolio_size$portfolio_loan_size_credit_limit,
-      matched_portfolio_loan_size_outstanding = matched_portfolio_size$matched_portfolio_loan_size_outstanding,
-      matched_portfolio_loan_size_credit_limit = matched_portfolio_size$matched_portfolio_loan_size_credit_limit
-    ) %>%
     dplyr::group_by(
       # ADO 1933 - we choose `name_ald` as this is an internal name that can be
       # joined with other 2dii data later on. This is not the case for `name`.
@@ -168,11 +152,12 @@ run_prep_calculation_loans <- function(data_path_project_specific,
     # ADO 2723 - loan shares calculated against matched loan book, not total loan book
     # this is to ensure all scaling happens against the same denominator
     # run_stress_test uses the matched portfolio to scale the overall impact
-    dplyr::mutate(
-      comp_loan_share_outstanding = sum(.data$loan_size_outstanding, na.rm = TRUE) / .data$matched_portfolio_loan_size_outstanding,
+    dplyr::summarise(
+      comp_loan_share_outstanding = sum(.data$loan_size_outstanding, na.rm = TRUE) / matched_portfolio_size$matched_portfolio_loan_size_outstanding,
       comp_loan_size_outstanding = sum(.data$loan_size_outstanding, na.rm = TRUE),
-      comp_loan_share_credit_limit = sum(.data$loan_size_credit_limit, na.rm = TRUE) / .data$matched_portfolio_loan_size_credit_limit,
-      comp_loan_size_credit_limit = sum(.data$loan_size_credit_limit, na.rm = TRUE)
+      comp_loan_share_credit_limit = sum(.data$loan_size_credit_limit, na.rm = TRUE) / matched_portfolio_size$matched_portfolio_loan_size_credit_limit,
+      comp_loan_size_credit_limit = sum(.data$loan_size_credit_limit, na.rm = TRUE),
+      .groups = "drop"
     ) %>%
     dplyr::ungroup() %>%
     dplyr::select(
@@ -184,9 +169,7 @@ run_prep_calculation_loans <- function(data_path_project_specific,
       .data$comp_loan_share_credit_limit,
       .data$comp_loan_size_credit_limit,
       .data$loan_size_credit_limit_currency
-    ) %>%
-    # TODO why distinct_all?
-    dplyr::distinct_all()
+    )
 
   #### Calculate tech level loan book size and value share----------------------
   # TODO: figure out a way to get tech share. Is this still relevant?
@@ -223,6 +206,7 @@ run_prep_calculation_loans <- function(data_path_project_specific,
 
   portfolio_overview <- sector_share %>%
     dplyr::inner_join(
+      # ADO 2393 - use distinct to only map sectors, not technlogies
       p4i_p4b_sector_technology_lookup %>% dplyr::distinct(.data$sector_p4b, .data$sector_p4i),
       by = c("sector_ald" = "sector_p4b")) %>%
     dplyr::mutate(sector_ald = .data$sector_p4i) %>%
@@ -266,8 +250,11 @@ run_prep_calculation_loans <- function(data_path_project_specific,
     )
 
   #### Calculate unweighted company level PACTA results-------------------------
-
-  use_credit_limit <- if (credit_type == "credit_limit") {TRUE} else {FALSE}
+  if (credit_type == "credit_limit") {
+    use_credit_limit <- TRUE
+  } else {
+    use_credit_limit <- FALSE
+  }
   p4b_tms_results <- matched_non_negative %>%
     r2dii.analysis::target_market_share(
       ald = production_forecast_data,
@@ -287,9 +274,13 @@ run_prep_calculation_loans <- function(data_path_project_specific,
     dplyr::rename(
       production_unweighted = .data$production
     )  %>%
-    dplyr::mutate(technology_share = round(.data$technology_share, 8)) %>% # rounding errors can lead to duplicates
-    # TODO: why distinct_all?
-    dplyr::distinct_all()
+    dplyr::mutate(technology_share = round(.data$technology_share, 8)) %>%
+    report_all_duplicate_kinds(
+      composite_unique_cols = c(
+        "sector", "technology", "year", "region", "scenario_source", "name_ald",
+        "metric"
+      )
+    )
 
   #### Add loan share information to PACTA results------------------------------
 

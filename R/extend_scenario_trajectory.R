@@ -55,7 +55,6 @@ extend_scenario_trajectory <- function(data,
       .data$allocation, .data$year, .data$scenario, .data$plan_tech_prod,
       .data$scen_tech_prod
     ) %>%
-    # TODO: explain magic number
     dplyr::filter(.data$year <= .env$start_analysis + .env$time_frame) %>%
     tidyr::complete(
       year = seq(.env$start_analysis, .env$end_analysis),
@@ -70,11 +69,18 @@ extend_scenario_trajectory <- function(data,
     )
 
   data <- data %>%
+    # ADO 2393 - The join cols should be extended to cover the source
     dplyr::inner_join(
       scenario_data,
       by = c("ald_sector", "technology", "scenario_geography", "scenario", "year")
     ) %>%
-    dplyr::distinct_all()
+    report_all_duplicate_kinds(
+      composite_unique_cols = c(
+        "year", "investor_name", "portfolio_name", "id", "company_name",
+        "ald_sector", "technology", "scenario", "allocation",
+        "scenario_geography", "source", "units"
+      )
+    )
 
   data <- data %>%
     dplyr::group_by(

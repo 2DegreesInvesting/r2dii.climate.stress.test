@@ -76,6 +76,8 @@ apply_filters <- function(data,
     dplyr::mutate(
       key = paste(.data$company_name, .data$id, .data$ald_sector, .data$technology, .data$scenario_geography)
     ) %>%
+    # ADO 2393 - running distinct extracts the key as a variable with unique
+    # values to be used for removal of invalid entries below
     dplyr::distinct(.data$key)
 
   data <- data %>%
