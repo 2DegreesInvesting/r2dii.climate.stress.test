@@ -55,7 +55,8 @@ run_stress_test <- function(asset_type,
 
   args_list <- mget(names(formals()), sys.frame(sys.nframe()))
   iter_var <- get_iter_var(args_list)
-  args_tibble <- tibble::as_tibble(args_list)
+  args_tibble <- tibble::as_tibble(args_list) %>%
+    dplyr::mutate(iter_var = .env$iter_var)
 
   st_results_list <- purrr::map(1:nrow(args_tibble), run_stress_test_iteration, args_tibble = args_tibble)
 
@@ -73,7 +74,7 @@ run_stress_test <- function(asset_type,
     overall_pd_changes = st_results$overall_pd_changes,
     asset_type = asset_type,
     calculation_level = calculation_level_lookup,
-    sensitivity_analysis_vars = names(args_list)[!names(args_list) %in% path_vars_lookup],
+    sensitivity_analysis_vars = names(args_list)[!names(args_list) %in% setup_vars_lookup],
     iter_var = iter_var,
     output_path = output_path
   )
@@ -93,11 +94,10 @@ run_stress_test_iteration <- function(n, args_tibble) {
     dplyr::slice(n)
 
   arg_list_row <- arg_tibble_row %>%
-    dplyr::select(-output_path) %>%
     as.list()
 
   arg_tibble_row <- arg_tibble_row %>%
-    dplyr::select(-path_vars_lookup) %>%
+    dplyr::select(-setup_vars_lookup) %>%
     dplyr::rename_with(~paste0(.x, "_arg"))
 
   st_result <- do.call(args = arg_list_row, what = run_stress_test_impl) %>%
@@ -115,6 +115,7 @@ run_stress_test_iteration <- function(n, args_tibble) {
 run_stress_test_impl <- function(asset_type,
                                  input_path_project_specific,
                                  input_path_project_agnostic,
+                                 output_path,
                                  lgd_senior_claims,
                                  lgd_subordinated_claims,
                                  terminal_value,
@@ -123,7 +124,11 @@ run_stress_test_impl <- function(asset_type,
                                  div_netprofit_prop_coef,
                                  shock_year,
                                  term,
-                                 company_exclusion) {
+                                 company_exclusion,
+                                 iter_var) {
+
+  log_path <- file.path(output_path, paste0("log_file", iter_var, ".txt"))
+
   cat("Validating input arguments. \n")
 
   validate_input_values(
