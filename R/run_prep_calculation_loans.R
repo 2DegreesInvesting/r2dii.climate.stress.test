@@ -143,12 +143,6 @@ run_prep_calculation_loans <- function(data_path_project_specific,
 
   #### Calculate loan-tech level loan book size and value share-----------------
   loan_share <- matched_non_negative %>%
-    dplyr::mutate(
-      portfolio_loan_size_outstanding = portfolio_size$portfolio_loan_size_outstanding,
-      portfolio_loan_size_credit_limit = portfolio_size$portfolio_loan_size_credit_limit,
-      matched_portfolio_loan_size_outstanding = matched_portfolio_size$matched_portfolio_loan_size_outstanding,
-      matched_portfolio_loan_size_credit_limit = matched_portfolio_size$matched_portfolio_loan_size_credit_limit
-    ) %>%
     dplyr::group_by(
       # ADO 1933 - we choose `name_ald` as this is an internal name that can be
       # joined with other 2dii data later on. This is not the case for `name`.
@@ -159,9 +153,9 @@ run_prep_calculation_loans <- function(data_path_project_specific,
     # this is to ensure all scaling happens against the same denominator
     # run_stress_test uses the matched portfolio to scale the overall impact
     dplyr::summarise(
-      comp_loan_share_outstanding = sum(.data$loan_size_outstanding, na.rm = TRUE) / .data$matched_portfolio_loan_size_outstanding,
+      comp_loan_share_outstanding = sum(.data$loan_size_outstanding, na.rm = TRUE) / matched_portfolio_size$matched_portfolio_loan_size_outstanding,
       comp_loan_size_outstanding = sum(.data$loan_size_outstanding, na.rm = TRUE),
-      comp_loan_share_credit_limit = sum(.data$loan_size_credit_limit, na.rm = TRUE) / .data$matched_portfolio_loan_size_credit_limit,
+      comp_loan_share_credit_limit = sum(.data$loan_size_credit_limit, na.rm = TRUE) / matched_portfolio_size$matched_portfolio_loan_size_credit_limit,
       comp_loan_size_credit_limit = sum(.data$loan_size_credit_limit, na.rm = TRUE),
       .groups = "drop"
     ) %>%
@@ -175,10 +169,7 @@ run_prep_calculation_loans <- function(data_path_project_specific,
       .data$comp_loan_share_credit_limit,
       .data$comp_loan_size_credit_limit,
       .data$loan_size_credit_limit_currency
-    ) %>%
-    # ADO 2393 - somehow the summarise call does not reduce the number of rows.
-    # since it creates duplicates, we use distinct_all() to ensure uniqueness
-    dplyr::distinct_all()
+    )
 
   #### Calculate tech level loan book size and value share----------------------
   # TODO: figure out a way to get tech share. Is this still relevant?
