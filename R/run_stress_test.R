@@ -51,7 +51,7 @@ run_stress_test <- function(asset_type,
                             shock_year = 2030,
                             term = 2,
                             company_exclusion = TRUE) {
-  cat("-- Running transition risk stress test \n")
+  cat("-- Running transition risk stress test \n\n\n")
 
   args_list <- mget(names(formals()), sys.frame(sys.nframe()))
   iter_var <- get_iter_var(args_list)
@@ -127,8 +127,6 @@ run_stress_test_impl <- function(asset_type,
                                  company_exclusion,
                                  iter_var) {
 
-  log_path <- file.path(output_path, paste0("log_file_", iter_var, ".txt"))
-
   cat("-- Validating input arguments. \n")
 
   validate_input_values(
@@ -143,6 +141,14 @@ run_stress_test_impl <- function(asset_type,
     company_exclusion = company_exclusion,
     asset_type = asset_type
   )
+
+  log_path <- file.path(output_path, paste0("log_file_", iter_var, ".txt"))
+  args_list <- mget(names(formals()), sys.frame(sys.nframe()))
+
+  purrr::walk(names(args_list), function(name) {
+    paste(name, magrittr::extract2(args_list, name), sep = ": ") %>%
+      paste_write(log_path = log_path)
+  })
 
   cat("-- Configuring analysis settings. \n")
 
@@ -256,7 +262,7 @@ run_stress_test_impl <- function(asset_type,
     exclusion = input_data_list$excluded_companies
   )
 
-  cat("-- Calculating credit risk. \n")
+  cat("-- Calculating credit risk. \n\n\n")
 
   overall_pd_changes <- annual_profits %>%
     calculate_pd_change_overall(
