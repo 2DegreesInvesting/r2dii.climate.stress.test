@@ -259,7 +259,7 @@ run_prep_calculation_loans <- function(input_path_project_specific,
 
   portfolio_overview %>%
     saveRDS(
-      file.path(output, "overview_portfolio.rda")
+      file.path(output_path, "overview_portfolio.rda")
     )
 
   #### Calculate unweighted company level PACTA results-------------------------
