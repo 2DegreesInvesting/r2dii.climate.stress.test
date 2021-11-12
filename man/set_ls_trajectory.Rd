@@ -12,7 +12,8 @@ set_ls_trajectory(
   scenario_to_follow_ls_aligned = "SDS",
   start_year = 2020,
   end_year = 2040,
-  analysis_time_frame = NULL
+  analysis_time_frame = NULL,
+  log_path = NULL
 )
 }
 \arguments{
@@ -40,6 +41,8 @@ end year of the analysis.}
 
 \item{analysis_time_frame}{Numeric. A vector of length 1 indicating the number
 of years for which forward looking production data is considered.}
+
+\item{log_path}{String holding path to log file.}
 }
 \value{
 data frame

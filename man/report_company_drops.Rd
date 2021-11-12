@@ -4,13 +4,15 @@
 \alias{report_company_drops}
 \title{Report dropped companies}
 \usage{
-report_company_drops(data_list, asset_type)
+report_company_drops(data_list, asset_type, log_path)
 }
 \arguments{
 \item{data_list}{A list of imported stress test input data.}
 
 \item{asset_type}{String holding asset_type, for allowed value compare
 \code{asset_types_lookup}.}
+
+\item{log_path}{String holding path to log file.}
 }
 \description{
 Wrapper to report companies for which all results, or results for some technologies

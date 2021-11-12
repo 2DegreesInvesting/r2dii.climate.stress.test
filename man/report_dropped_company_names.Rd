@@ -9,7 +9,8 @@ report_dropped_company_names(
   data_y,
   name_y,
   merge_cols,
-  name_x = "PACTA results"
+  name_x = "PACTA results",
+  log_path
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ report_dropped_company_names(
 \item{merge_cols}{Vector holds columns to join on.}
 
 \item{name_x}{Name of `data_x, defults to PACTA results.}
+
+\item{log_path}{String holding path to log file.}
 }
 \value{
 The merged dataset.

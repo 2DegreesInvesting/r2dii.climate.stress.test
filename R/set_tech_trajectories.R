@@ -128,7 +128,7 @@ calc_future_prod_follows_scen <- function(planned_prod = .data$plan_tech_prod,
 #' technology, year.
 #' If no "id" or "company_name" are provided, the calculation switches to
 #' portfolio/technology level.
-#'
+#' @inheritParams report_company_drops
 #' @param data A dataframe that contains the scenario data prepared until the
 #'   step after the baseline trajectories are calculated.
 #' @param scenario_to_follow_ls Character. A string that indicates which
@@ -404,6 +404,7 @@ calc_late_sudden_traj <- function(start_year, end_year, year_of_shock, duration_
 #' technology x company_name combinations holding >= 1 negative value are
 #' removed.
 #'
+#' @inheritParams report_company_drops
 #' @param data_with_late_and_sudden A tibble containing scenario data with
 #'   projected late and sudden trajectory.
 #'

@@ -110,6 +110,7 @@ run_stress_test_iteration <- function(n, args_tibble) {
 #' Runs stress test per iteration.
 #'
 #' @inheritParams run_stress_test
+#' @inheritParams write_stress_test_results
 #'
 #' @return A list of stress test results.
 run_stress_test_impl <- function(asset_type,
