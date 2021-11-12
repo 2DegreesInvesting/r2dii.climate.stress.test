@@ -233,7 +233,8 @@ run_stress_test_impl <- function(asset_type,
     start_year = start_year,
     end_year = end_year,
     time_horizon = time_horizon,
-    discount_rate = discount_rate
+    discount_rate = discount_rate,
+    log_path = log_path
   )
 
   exposure_by_technology_and_company <- calculate_exposure_by_technology_and_company(

@@ -277,14 +277,14 @@ report_dropped_company_names <- function(data_x, data_y, name_y, merge_cols, nam
     percent_loss <- (n_companies_x - n_companies) * 100/n_companies_x
     affected_companies <- sort(setdiff(data_x$company_name, data$company_name))
     paste_write(
-      "      >> When joining", name_x, "on", name_y, "on column(s)", paste0(merge_cols, collapse = ", "), "could not match entries for",
+      ">> When joining", name_x, "on", name_y, "on column(s)", paste0(merge_cols, collapse = ", "), "could not match entries for",
       n_companies_x - n_companies, "out of", n_companies_x, "companies.",
       log_path = log_path
     )
-    paste_write("        >> percent loss:", percent_loss, log_path = log_path)
-    paste_write("        >> affected companies:", log_path = log_path)
+    paste_write("  >> percent loss:", percent_loss, log_path = log_path)
+    paste_write("  >> affected companies:", log_path = log_path)
     purrr::walk(affected_companies, function(company) {
-      paste_write("          >>", company, log_path = log_path)
+      paste_write("  >>", company, log_path = log_path)
     })
     paste_write("\n", log_path = log_path)
   }

@@ -159,7 +159,8 @@ set_ls_trajectory <- function(data,
                               scenario_to_follow_ls_aligned = "SDS",
                               start_year = 2020,
                               end_year = 2040,
-                              analysis_time_frame = NULL) {
+                              analysis_time_frame = NULL,
+                              log_path = NULL) {
   analysis_time_frame %||% stop("Must provide input for 'time_frame'", call. = FALSE)
 
   if (!"id" %in% names(data)) {
@@ -259,7 +260,7 @@ set_ls_trajectory <- function(data,
       )
     )
 
-  data <- filter_negative_late_and_sudden(data)
+  data <- filter_negative_late_and_sudden(data, log_path = log_path)
 
   return(data)
 }
@@ -407,7 +408,7 @@ calc_late_sudden_traj <- function(start_year, end_year, year_of_shock, duration_
 #'   projected late and sudden trajectory.
 #'
 #' @return Input tibble with potentially removed rows.
-filter_negative_late_and_sudden <- function(data_with_late_and_sudden) {
+filter_negative_late_and_sudden <- function(data_with_late_and_sudden, log_path) {
   negative_late_and_sudden <- data_with_late_and_sudden %>%
     dplyr::filter(.data$late_sudden < 0) %>%
     dplyr::select(.data$company_name, .data$technology) %>%
@@ -420,14 +421,15 @@ filter_negative_late_and_sudden <- function(data_with_late_and_sudden) {
       data_with_late_and_sudden %>%
       dplyr::anti_join(negative_late_and_sudden, by = c("company_name", "technology"))
 
-    warning(
-      paste0(
-        "Removed ", n_rows_before_removal - nrow(data_with_late_and_sudden),
-        " rows because negative production compensation targets were set in late and sudden production paths ways.
-                   Negative absolute production is impossible"
-      ),
-      call. = FALSE
-    )
+    # log_path will be NULL when function is called from webtool
+    if (!is.null(log_path)) {
+      paste_write(
+        paste0(
+          ">> Removed ", n_rows_before_removal - nrow(data_with_late_and_sudden),
+          " rows because negative production compensation targets were set in late and sudden production paths ways. Negative absolute production is impossible \n"
+        ), log_path = log_path
+      )
+    }
 
     if (nrow(data_with_late_and_sudden) == 0) {
       stop("No rows remain after removing negative late and sudden trajectories.")
