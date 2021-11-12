@@ -72,6 +72,9 @@ read_capacity_factors <- function(path = NULL,
       ) %>%
       dplyr::mutate(
         scenario = dplyr::if_else(.data$scenario == "SPS", "NPS", .data$scenario)
+      ) %>%
+      report_all_duplicate_kinds(
+        composite_unique_cols = c("scenario", "scenario_geography", "technology", "year")
       )
 
     validate_data_has_expected_cols(
