@@ -8,6 +8,7 @@
 #' @export
 run_prep_calculation_loans <- function(input_path_project_specific,
                                        input_path_project_agnostic,
+                                       output_path,
                                        credit_type = "outstanding") {
 
   #### Validate input-----------------------------------------------------------
@@ -18,7 +19,7 @@ run_prep_calculation_loans <- function(input_path_project_specific,
 
   #### Load input data sets-----------------------------------------------------
   # raw loan book
-  loanbook <- validate_file_exists(file.path(input_path_project_specific, "inputs", paste0("raw_loanbook.csv"))) %>%
+  loanbook <- validate_file_exists(file.path(input_path_project_specific, "raw_loanbook.csv")) %>%
     readr::read_csv(
       col_types = readr::cols(
         id_loan = "c",
@@ -44,7 +45,7 @@ run_prep_calculation_loans <- function(input_path_project_specific,
     )
 
   # matched loan book
-  matched <- validate_file_exists(file.path(input_path_project_specific, "inputs", "matched_loan_book.csv")) %>%
+  matched <- validate_file_exists(file.path(input_path_project_specific, "matched_loan_book.csv")) %>%
     readr::read_csv(
       col_types = readr::cols_only(
         id_loan = "c",
@@ -258,7 +259,7 @@ run_prep_calculation_loans <- function(input_path_project_specific,
 
   portfolio_overview %>%
     saveRDS(
-      file.path(input_path_project_specific, "inputs", "overview_portfolio.rda")
+      file.path(output, "overview_portfolio.rda")
     )
 
   #### Calculate unweighted company level PACTA results-------------------------
@@ -318,7 +319,7 @@ run_prep_calculation_loans <- function(input_path_project_specific,
 
   loans_results_company %>%
     saveRDS(
-      file.path(input_path_project_specific, "inputs", "Loans_results_company.rda")
+      file.path(output_path, "Loans_results_company.rda")
     )
 
 }
