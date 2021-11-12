@@ -110,7 +110,8 @@ test_that("set_ls_trajectory returns a data frame", {
     scenario_to_follow_ls_aligned = "SDS",
     start_year = 2020,
     end_year = 2040,
-    analysis_time_frame = 5
+    analysis_time_frame = 5,
+    log_path = NULL
   )
 
   testthat::expect_s3_class(ls_trajectory, "data.frame")
@@ -130,7 +131,8 @@ test_that("set_ls_trajectory fully replicates baseline until year before shock,
     scenario_to_follow_ls_aligned = "SDS",
     start_year = 2020,
     end_year = 2040,
-    analysis_time_frame = 5
+    analysis_time_frame = 5,
+    log_path = NULL
   ) %>%
     dplyr::filter(.data$year < year_of_shock & .data$technology == "Coal")
 
@@ -154,7 +156,8 @@ test_that("when technology is aligned, set_ls_trajectory fully replicates
     scenario_to_follow_ls_aligned = "SDS",
     start_year = 2020,
     end_year = 2040,
-    analysis_time_frame = 5
+    analysis_time_frame = 5,
+    log_path = NULL
   ) %>%
     dplyr::filter(.data$technology == "Electric" & .data$year < year_of_shock) %>%
     dplyr::mutate(
@@ -186,7 +189,7 @@ test_that("input remains unchanged if no negative late_and_sudden levels are
     some_col = rep("sth", 4)
   )
 
-  filtered_data <- filter_negative_late_and_sudden(input_data)
+  filtered_data <- filter_negative_late_and_sudden(input_data, log_path = NULL)
 
   expect_equal(input_data, filtered_data)
 })
@@ -200,7 +203,7 @@ test_that("technology x company_name combinations that hold at least 1 negative
     some_col = rep("sth", 5)
   )
 
-  testthat::expect_warning(filtered_data <- filter_negative_late_and_sudden(input_data), "Removed")
+  filtered_data <- filter_negative_late_and_sudden(input_data, log_path = NULL)
 
   expect_equal(input_data %>% dplyr::filter(!(company_name == "firm" & technology == "some")), filtered_data)
 })
@@ -213,7 +216,7 @@ test_that("removal works if several company_name x technology combinations are a
     some_col = rep("sth", 5)
   )
 
-  testthat::expect_warning(filtered_data <- filter_negative_late_and_sudden(input_data), "Removed")
+  filtered_data <- filter_negative_late_and_sudden(input_data, log_path = NULL)
 
   expect_equal(input_data %>% dplyr::filter(company_name == "biz" & technology == "other"), filtered_data)
 })
@@ -226,5 +229,5 @@ test_that("error is thrown if no rows remain", {
     some_col = rep("sth", 5)
   )
 
-  expect_error(testthat::expect_warning(filtered_data <- filter_negative_late_and_sudden(input_data), "Removed"), "No rows remain")
+  expect_error(testthat::expect_warning(filtered_data <- filter_negative_late_and_sudden(input_data, log_path = NULL), "Removed"), "No rows remain")
 })
