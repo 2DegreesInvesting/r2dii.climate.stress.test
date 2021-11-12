@@ -58,7 +58,8 @@ run_prep_calculation_loans(
 run_stress_test(
   asset_type = "loans",
   input_path_project_specific = "/path/to/specific/data",
-  input_path_project_agnostic = "/path/to/agnostic/data"
+  input_path_project_agnostic = "/path/to/agnostic/data",
+  output_path = "/path/to/output/directory"
 )
 
 ## run stress testing for asset of type corporate loans using various risk_free_rates to analyse sensitivities
@@ -66,6 +67,7 @@ run_stress_test(
   asset_type = "loans",
   input_path_project_specific = "/path/to/specific/data",
   input_path_project_agnostic = "/path/to/agnostic/data",
+  output_path = "/path/to/output/directory",
   risk_free_rate = c(0.01, 0.03)
 )
 ```
