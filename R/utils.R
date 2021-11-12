@@ -218,10 +218,11 @@ report_duplicates <- function(data, cols, throw_error = TRUE) {
 #' are lsot due to a missing match in financial_data or price_data.
 #'
 #' @param data_list A list of imported stress test input data.
+#' @param log_path String holding path to log file.
 #' @inheritParams validate_input_values
 #'
 #' @return NULL
-report_company_drops <- function(data_list, asset_type) {
+report_company_drops <- function(data_list, asset_type, log_path) {
 
   if (asset_type == "bonds") {
     merge_cols <- c("company_name", "id" = "corporate_bond_ticker")
@@ -233,14 +234,16 @@ report_company_drops <- function(data_list, asset_type) {
     data_x = data_list$pacta_result,
     data_y = data_list$financial_data,
     name_y = "financial data",
-    merge_cols = merge_cols
+    merge_cols = merge_cols,
+    log_path = log_path
   )
 
   report_dropped_company_names(
     data_x = data_list$pacta_result,
     data_y = data_list$df_price,
     name_y = "price data",
-    merge_cols = c("technology", "ald_sector" = "sector", "year")
+    merge_cols = c("technology", "ald_sector" = "sector", "year"),
+    log_path = log_path
   )
 
   invisible()
@@ -256,9 +259,10 @@ report_company_drops <- function(data_list, asset_type) {
 #' @param name_y Name of `data_x`.
 #' @param merge_cols Vector holds columns to join on.
 #' @param name_x Name of `data_x, defults to PACTA results.
+#' @inheritParams report_company_drops
 #'
 #' @return The merged dataset.
-report_dropped_company_names <- function(data_x, data_y, name_y, merge_cols, name_x = "PACTA results") {
+report_dropped_company_names <- function(data_x, data_y, name_y, merge_cols, name_x = "PACTA results", log_path) {
 
   data <- data_x %>%
     dplyr::inner_join(

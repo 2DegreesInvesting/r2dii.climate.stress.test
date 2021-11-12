@@ -127,7 +127,7 @@ run_stress_test_impl <- function(asset_type,
                                  company_exclusion,
                                  iter_var) {
 
-  log_path <- file.path(output_path, paste0("log_file", iter_var, ".txt"))
+  log_path <- file.path(output_path, paste0("log_file_", iter_var, ".txt"))
 
   cat("Validating input arguments. \n")
 
@@ -204,7 +204,8 @@ run_stress_test_impl <- function(asset_type,
 
   report_company_drops(
     data_list = input_data_list,
-    asset_type = asset_type
+    asset_type = asset_type,
+    log_path = log_path
   )
 
   check_scenario_availability(
