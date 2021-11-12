@@ -65,16 +65,16 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="articles/articles/prepare-loans-inputs.html">Prepare inputs for stress testing loans</a>
+      <a href="articles/articles/01-setup-project-directories.html">01 - Set up project directories for climate transition risk stress test</a>
     </li>
     <li>
-      <a href="articles/articles/read-the-outputs.html">Read and understand the output files of the stress test</a>
+      <a href="articles/articles/02-prepare-loans-inputs.html">02 - Prepare loan input files for stress testing corporate loan books</a>
     </li>
     <li>
-      <a href="articles/articles/run-stress-test.html">Run standard transition risk stress test</a>
+      <a href="articles/articles/03-run-stress-test.html">03 - Run transition risk stress test on corporate loan books</a>
     </li>
     <li>
-      <a href="articles/articles/setup-project-directories.html">Set up the directories for running a climate transition risk stress test</a>
+      <a href="articles/articles/04-read-the-outputs.html">04 - Understand the output files of the transition risk stress test</a>
     </li>
   </ul>
 </li>
@@ -147,39 +147,9 @@
 <div id="details" class="section level2">
 <h2 class="hasAnchor">
 <a href="#details" class="anchor"></a>Details</h2>
-<div id="look-up-valid-ranges-of-input-arguments" class="section level3">
-<h3 class="hasAnchor">
-<a href="#look-up-valid-ranges-of-input-arguments" class="anchor"></a>Look up valid ranges of input arguments</h3>
-<p>You can look up allowed values of input arguments as such:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">lgd_senior_claims_range_lookup</span>
-<span class="co">#&gt; [1] 0.3 0.6</span>
-
-<span class="va">lgd_subordinated_claims_range_lookup</span>
-<span class="co">#&gt; [1] 0.6 0.9</span>
-
-<span class="va">terminal_value_range_lookup</span>
-<span class="co">#&gt; [1] 0.0 0.1</span>
-
-<span class="va">risk_free_rate_range_lookup</span>
-<span class="co">#&gt; [1] 0.00 0.05</span>
-
-<span class="va">discount_rate_range_lookup</span>
-<span class="co">#&gt; [1] -0.01  0.05</span>
-
-<span class="va">div_netprofit_prop_coef_range_lookup</span>
-<span class="co">#&gt; [1] 0.8 1.0</span>
-
-<span class="va">shock_year_range_lookup</span>
-<span class="co">#&gt; [1] 2025 2035</span>
-
-<span class="va">term_range_lookup</span>
-<span class="co">#&gt; [1]  1 10</span>
-
-<span class="va">credit_type_lookup</span>
-<span class="co">#&gt; [1] "outstanding"  "credit_limit"</span></code></pre></div>
+<p>To actually run an analysis, the project directories must be set up, input data must be prepared, and the options of the the functions ought to be understood.</p>
+<p>Detailed information for all these steps and on interpreting the outcomes can be found in the articles linked below.</p>
 <p><a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/">Further Information</a>.</p>
-</div>
 </div>
 </div>
   </div>
