@@ -259,7 +259,6 @@ run_prep_calculation_loans <- function(data_path_project_specific,
     )
 
   #### Calculate unweighted company level PACTA results-------------------------
-
   use_credit_limit <- if (credit_type == "credit_limit") {TRUE} else {FALSE}
   p4b_tms_results <- matched_non_negative %>%
     r2dii.analysis::target_market_share(
@@ -280,7 +279,13 @@ run_prep_calculation_loans <- function(data_path_project_specific,
     dplyr::rename(
       production_unweighted = .data$production
     )  %>%
-    dplyr::mutate(technology_share = round(.data$technology_share, 8))# rounding errors can lead to duplicates
+    dplyr::mutate(technology_share = round(.data$technology_share, 8)) %>%
+    report_all_duplicate_kinds(
+      composite_unique_cols = c(
+        "sector", "technology", "year", "region", "scenario_source", "name_ald",
+        "metric"
+      )
+    )
 
   #### Add loan share information to PACTA results------------------------------
 
