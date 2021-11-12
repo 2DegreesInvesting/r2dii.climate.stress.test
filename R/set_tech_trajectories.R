@@ -423,7 +423,7 @@ filter_negative_late_and_sudden <- function(data_with_late_and_sudden) {
     warning(
       paste0(
         "Removed ", n_rows_before_removal - nrow(data_with_late_and_sudden),
-        " rows because negative production compensation targets were set in late and sudden.
+        " rows because negative production compensation targets were set in late and sudden production paths ways.
                    Negative absolute production is impossible"
       ),
       call. = FALSE
