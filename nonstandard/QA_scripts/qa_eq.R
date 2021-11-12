@@ -19,8 +19,8 @@ function_paths <- c(
 source_all(function_paths)
 
 inputs_path <- get_st_data_path()
-results_path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "outputs")
-graph_path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "outputs", "graphs")
+results_path <- get_st_data_path("ST_PROJECT_FOLDER_OUTPUT")
+graph_path <- file.path(get_st_data_path("ST_PROJECT_FOLDER_OUTPUT"),"graphs")
 if (!fs::dir_exists(graph_path)) {fs::dir_create(graph_path)}
 
 cfg_st <- config::get(file = "st_project_settings.yml")
