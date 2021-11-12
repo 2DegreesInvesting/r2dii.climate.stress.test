@@ -46,15 +46,16 @@ library(r2dii.climate.stress.test)
 In order to run a stress test for loans on one set of parameters, the user needs
 to pass exactly one value per input argument to the function
 `run_prep_calculation_loans()`. The only arguments that do not have a default
-value and must be set by the user are `asset_type`, `data_path_project_specific`
-and `data_path_project_agnostic`. In our case, we want to run the stress test
+value and must be set by the user are `asset_type`, `input_path_project_specific`
+and `input_path_project_agnostic`. In our case, we want to run the stress test
 for loans, so the easiest way to obtain results is by running:
 
 ```{r, eval = FALSE}
 run_stress_test(
   "loans",
-  data_path_project_specific = "/path/to/specific/data",
-  data_path_project_agnostic = "/path/to/agnostic/data"
+  input_path_project_specific = "/path/to/specific/data",
+  input_path_project_agnostic = "/path/to/agnostic/data",
+  output_path = "/path/to/output/directory"
 )
 ```
 
@@ -113,8 +114,9 @@ using:
 ```{r, eval = FALSE}
 run_stress_test(
   "loans",
-  data_path_project_specific = "/path/to/specific/data",
-  data_path_project_agnostic = "/path/to/agnostic/data",
+  input_path_project_specific = "/path/to/specific/data",
+  input_path_project_agnostic = "/path/to/agnostic/data",
+  output_path = "/path/to/output/directory",
   risk_free_rate = 0.01,
   shock_year = 2028
 )
@@ -148,8 +150,9 @@ for example, they can run the following:
 ```{r, eval = FALSE}
 run_stress_test(
   "loans",
-  data_path_project_specific = "/path/to/specific/data",
-  data_path_project_agnostic = "/path/to/agnostic/data",
+  input_path_project_specific = "/path/to/specific/data",
+  input_path_project_agnostic = "/path/to/agnostic/data",
+  output_path = "/path/to/output/directory",
   shock_year = c(2025, 2028, 2032, 2035)
 )
 ```
@@ -172,8 +175,9 @@ lower than the default, the following will work:
 ```{r, eval = FALSE}
 run_stress_test(
   "loans",
-  data_path_project_specific = "/path/to/specific/data",
-  data_path_project_agnostic = "/path/to/agnostic/data",
+  input_path_project_specific = "/path/to/specific/data",
+  input_path_project_agnostic = "/path/to/agnostic/data",
+  output_path = "/path/to/output/directory",
   risk_free_rate = 0.01,
   shock_year = c(2025, 2028, 2032, 2035)
 )

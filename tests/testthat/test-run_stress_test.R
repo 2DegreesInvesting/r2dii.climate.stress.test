@@ -3,13 +3,14 @@ test_that("output includes argument names with suffix '_arg'", {
   skip_if_not(is_me)
 
   # Refresh
-  out_path <- fs::path(Sys.getenv("ST_PROJECT_FOLDER"), "outputs")
+  out_path <- fs::path(Sys.getenv("ST_PROJECT_FOLDER_OUTPUT"))
   if (fs::dir_exists(out_path)) fs::dir_delete(out_path)
 
 x <- suppressWarnings(capture.output(
   run_stress_test("bonds",
-    data_path_project_agnostic = get_st_data_path(),
-    data_path_project_specific = get_st_data_path("ST_PROJECT_FOLDER"),
+    input_path_project_agnostic = get_st_data_path(),
+    input_path_project_specific = get_st_data_path("ST_PROJECT_FOLDER_INPUT"),
+    output_path = get_st_data_path("ST_PROJECT_FOLDER_OUTPUT"),
     term = 1:2
   )
 ))

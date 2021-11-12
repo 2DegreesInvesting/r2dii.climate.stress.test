@@ -5,17 +5,24 @@
 \title{Run stress testing data preparation for loans}
 \usage{
 run_prep_calculation_loans(
-  data_path_project_specific,
-  data_path_project_agnostic,
+  input_path_project_specific,
+  input_path_project_agnostic,
+  data_prep_output_path,
   credit_type = "outstanding"
 )
 }
 \arguments{
-\item{data_path_project_specific}{String holding path to project specific
+\item{input_path_project_specific}{String holding path to project specific
 data.}
 
-\item{data_path_project_agnostic}{String holding path to project agnostic
+\item{input_path_project_agnostic}{String holding path to project agnostic
 data.}
+
+\item{data_prep_output_path}{Path where results are written.
+NOTE: This is a workflow that is needed exclusively in preparation of
+\code{\link[=run_stress_test]{run_stress_test()}} for loan books. It creates input data for the stress
+test. A recommended setting is to set \code{data_prep_output_path} to to the same
+path as \code{input_path_project_specific}.}
 
 \item{credit_type}{Type of credit. For accepted values please compare
 \code{credit_type_lookup}.}

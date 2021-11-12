@@ -68,20 +68,20 @@ path_dropbox_2dii <- function(...) {
 #'
 #' @param path Character vector indicating the directory of a file.
 #'
-#' @return NULL
+#' @return String holding provided `path`.
 #'
 #' @export
 validate_file_exists <- function(path) {
-  valid_file_path <- file.exists(file.path(path))
+  valid_file_path <- file.exists(path)
 
   if (!valid_file_path) {
     rlang::abort(c(
-      "Detected invalid file path.",
+      "Path must point to an existing file.",
       x = glue::glue("Invalid file path: {file.path(path)}."),
       i = "Did you set path to data correctly?."
     ))
   }
-  invisible()
+  invisible(path)
 }
 
 #' Validate that a data frame contains expected columns
@@ -105,7 +105,7 @@ validate_data_has_expected_cols <- function(data,
   if (!data_has_expected_columns) {
     affected_cols <- glue::glue_collapse(sort(setdiff(expected_columns, names(data))), sep = ", ")
     rlang::abort(c(
-      "Detected missing columns on data set.",
+      "Must include expected columns in data set.",
       x = glue::glue("Missing columns: {affected_cols}."),
       i = "Please check that data have expected columns."
     ))

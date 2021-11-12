@@ -10,10 +10,8 @@
 read_financial_data <- function(path = NULL) {
   path %||% stop("Must provide 'path'")
 
-  validate_file_exists(file.path(path))
-
-  data <- readr::read_csv(
-    path,
+  data <- validate_file_exists(file.path(path)) %>%
+  readr::read_csv(
     col_types = readr::cols_only(
       company_name = "c",
       company_id = "d",

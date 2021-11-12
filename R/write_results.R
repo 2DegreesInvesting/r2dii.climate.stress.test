@@ -13,23 +13,30 @@
 #' @param sensitivity_analysis_vars String vector holding names of iteration
 #'   arguments.
 #' @param iter_var String holding name of iteration variable.
-#' @param results_path String holding path to output dir.
+#' @param output_path String holding path to output dir.
 #'
 #' @return NULL
 write_stress_test_results <- function(results, expected_loss,
                                       annual_pd_changes, overall_pd_changes,
                                       asset_type, calculation_level,
                                       sensitivity_analysis_vars, iter_var,
-                                      results_path) {
+                                      output_path) {
 
-  if (!dir.exists(results_path)) {
-    dir.create(results_path)
+  if (!dir.exists(output_path)) {
+    rlang::abort(
+      c(
+        "Argument output_path must point to an existing directory.",
+        x = glue::glue("Invalid file path: {output_path}."),
+        i = "Did you set output_path correctly?."
+      )
+    )
   }
 
   sensitivity_analysis_vars <- paste0(sensitivity_analysis_vars, "_arg")
+
   results %>%
     write_results_new(
-      path_to_results = results_path,
+      path_to_results = output_path,
       asset_type = asset_type,
       level = calculation_level,
       file_type = "csv",
@@ -62,7 +69,7 @@ write_stress_test_results <- function(results, expected_loss,
       )
     ) %>%
     readr::write_csv(file.path(
-      results_path,
+      output_path,
       paste0("stress_test_results_", asset_type, "_comp_el_", iter_var,".csv")
     ))
 
@@ -94,7 +101,7 @@ write_stress_test_results <- function(results, expected_loss,
       )
     ) %>%
     readr::write_csv(file.path(
-      results_path,
+      output_path,
       paste0("stress_test_results_", asset_type, "_sector_pd_changes_annual_", iter_var, ".csv")
     ))
 
@@ -126,7 +133,7 @@ write_stress_test_results <- function(results, expected_loss,
       )
     ) %>%
     readr::write_csv(file.path(
-      results_path,
+      output_path,
       paste0("stress_test_results_", asset_type, "_sector_pd_changes_overall_", iter_var, ".csv")
     ))
 }

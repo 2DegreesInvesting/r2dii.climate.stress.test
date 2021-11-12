@@ -46,19 +46,22 @@ minimal input from the user.
 The only argument that can be set is `credit_type`, which defaults to
 `"outstanding"` if the user passes no argument. View other options by running:
 
-```{r}
+```{r, eval=TRUE}
 credit_type_lookup
 ```
 
 If everything has been set up correctly, simply running the following command in
 R will read the raw and matched loan books from the indicated project-specific
 inputs directory, perform all calculations and wrangling required and write the
-intermediate input files `Loans_results_company.rda` and `overview_portfolio.rda`
-to the same input file directory.
+intermediate input files `Loans_results_company.rda` and
+`overview_portfolio.rda` to the data prep output directory. As these data will
+serve as inputs the the subsequent stresstest it is advisable to set
+`data_prep_output_path` to the same path as `input_path_project_specific`.
 
 ```{r}
-run_prep_calculation_loans(data_path_project_specific = "/path/to/specific/data",
-                           data_path_project_agnostic = "/path/to/agnostic/data")
+run_prep_calculation_loans(input_path_project_specific = "/path/to/specific/data",
+                           input_path_project_agnostic = "/path/to/agnostic/data",
+                           data_prep_output_path = "/path/to/specific/data")
 ```
 
 Since the argument credit_type has a default value, it is not required to set it,
@@ -71,8 +74,9 @@ achieve this, instead of the previous command, simply run:
 
 ```{r}
 run_prep_calculation_loans(
-  data_path_project_specific = "/path/to/specific/data",
-  data_path_project_agnostic = "/path/to/agnostic/data",
+  input_path_project_specific = "/path/to/specific/data",
+  input_path_project_agnostic = "/path/to/agnostic/data",
+  data_prep_output_path = "/path/to/specific/data",
   credit_type = "credit_limit"
 )
 ```

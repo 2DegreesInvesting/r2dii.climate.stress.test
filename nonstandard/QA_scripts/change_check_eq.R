@@ -3,7 +3,7 @@
 # defining some functions
 import_asset_results <- function() {
 
-  results_path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "outputs")
+  results_path <- get_st_data_path("ST_PROJECT_FOLDER_OUTPUT")
 
   equity_results_company <- readr::read_csv(file.path(results_path, "stress_test_results_equity_comp_standard.csv"))
   equity_results_port <- readr::read_csv(file.path(results_path, "stress_test_results_equity_port_standard.csv"))
@@ -59,8 +59,9 @@ check_all_equal <- function(old_results, new_results) {
 devtools::load_all()
 run_stress_test(
   asset_type = "equity",
-  data_path_project_agnostic = get_st_data_path(),
-  data_path_project_specific = get_st_data_path("ST_PROJECT_FOLDER")
+  input_path_project_agnostic = get_st_data_path(),
+  input_path_project_specific = get_st_data_path("ST_PROJECT_FOLDER_INPUT"),
+  output_path = get_st_data_path("ST_PROJECT_FOLDER_OUTPUT")
 )
 
 ### 2. run the following lines to obtain results
@@ -70,8 +71,9 @@ old_results <- import_asset_results()
 devtools::load_all()
 run_stress_test(
   asset_type = "equity",
-  data_path_project_agnostic = get_st_data_path(),
-  data_path_project_specific = get_st_data_path("ST_PROJECT_FOLDER")
+  input_path_project_agnostic = get_st_data_path(),
+  input_path_project_specific = get_st_data_path("ST_PROJECT_FOLDER_INPUT"),
+  output_path = get_st_data_path("ST_PROJECT_FOLDER_OUTPUT")
 )
 
 ### 4. run the following lines to run script or equity and bonds and obtain results

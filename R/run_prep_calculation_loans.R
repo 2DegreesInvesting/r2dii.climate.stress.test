@@ -1,13 +1,20 @@
 #' Run stress testing data preparation for loans
 #'
+#'
 #' @inheritParams run_stress_test
+#' @param data_prep_output_path Path where results are written.
+#'   NOTE: This is a workflow that is needed exclusively in preparation of
+#'   [run_stress_test()] for loan books. It creates input data for the stress
+#'   test. A recommended setting is to set `data_prep_output_path` to to the same
+#'   path as `input_path_project_specific`.
 #' @param credit_type Type of credit. For accepted values please compare
 #'   `credit_type_lookup`.
 #'
 #' @return NULL
 #' @export
-run_prep_calculation_loans <- function(data_path_project_specific,
-                                       data_path_project_agnostic,
+run_prep_calculation_loans <- function(input_path_project_specific,
+                                       input_path_project_agnostic,
+                                       data_prep_output_path,
                                        credit_type = "outstanding") {
 
   #### Validate input-----------------------------------------------------------
@@ -18,93 +25,89 @@ run_prep_calculation_loans <- function(data_path_project_specific,
 
   #### Load input data sets-----------------------------------------------------
   # raw loan book
-  validate_file_exists(file.path(data_path_project_specific, "inputs", paste0("raw_loanbook.csv")))
-  loanbook <- readr::read_csv(
-    file.path(data_path_project_specific, "inputs", paste0("raw_loanbook.csv")),
-    col_types = readr::cols(
-      id_loan = "c",
-      id_direct_loantaker = "c",
-      name_direct_loantaker = "c",
-      id_intermediate_parent_1 = "c",
-      name_intermediate_parent_1 = "c",
-      id_ultimate_parent = "c",
-      name_ultimate_parent = "c",
-      loan_size_outstanding = "d",
-      loan_size_outstanding_currency = "c",
-      loan_size_credit_limit = "d",
-      loan_size_credit_limit_currency = "c",
-      sector_classification_system = "c",
-      sector_classification_input_type = "c",
-      sector_classification_direct_loantaker = "c",
-      fi_type = "c",
-      flag_project_finance_loan = "c",
-      name_project = "c",
-      lei_direct_loantaker = "c",
-      isin_direct_loantaker = "c"
+  loanbook <- validate_file_exists(file.path(input_path_project_specific, "raw_loanbook.csv")) %>%
+    readr::read_csv(
+      col_types = readr::cols(
+        id_loan = "c",
+        id_direct_loantaker = "c",
+        name_direct_loantaker = "c",
+        id_intermediate_parent_1 = "c",
+        name_intermediate_parent_1 = "c",
+        id_ultimate_parent = "c",
+        name_ultimate_parent = "c",
+        loan_size_outstanding = "d",
+        loan_size_outstanding_currency = "c",
+        loan_size_credit_limit = "d",
+        loan_size_credit_limit_currency = "c",
+        sector_classification_system = "c",
+        sector_classification_input_type = "c",
+        sector_classification_direct_loantaker = "c",
+        fi_type = "c",
+        flag_project_finance_loan = "c",
+        name_project = "c",
+        lei_direct_loantaker = "c",
+        isin_direct_loantaker = "c"
+      )
     )
-  )
 
   # matched loan book
-  validate_file_exists(file.path(data_path_project_specific, "inputs", "matched_loan_book.csv"))
-  matched  <- readr::read_csv(
-    file.path(data_path_project_specific, "inputs", "matched_loan_book.csv"),
-    col_types = readr::cols_only(
-      id_loan = "c",
-      id_direct_loantaker = "c",
-      name_direct_loantaker = "c",
-      id_intermediate_parent_1 = "c",
-      name_intermediate_parent_1 = "c",
-      id_ultimate_parent = "c",
-      name_ultimate_parent = "c",
-      loan_size_outstanding = "d",
-      loan_size_outstanding_currency = "c",
-      loan_size_credit_limit = "d",
-      loan_size_credit_limit_currency = "c",
-      sector_classification_system = "c",
-      sector_classification_input_type = "c",
-      sector_classification_direct_loantaker = "c",
-      fi_type = "c",
-      flag_project_finance_loan = "c",
-      name_project = "c",
-      lei_direct_loantaker = "c",
-      isin_direct_loantaker = "c",
-      id_2dii = "c",
-      level = "c",
-      sector = "c",
-      sector_ald = "c",
-      name = "c",
-      name_ald = "c",
-      score = "d",
-      source = "c",
-      borderline = "l"
+  matched <- validate_file_exists(file.path(input_path_project_specific, "matched_loan_book.csv")) %>%
+    readr::read_csv(
+      col_types = readr::cols_only(
+        id_loan = "c",
+        id_direct_loantaker = "c",
+        name_direct_loantaker = "c",
+        id_intermediate_parent_1 = "c",
+        name_intermediate_parent_1 = "c",
+        id_ultimate_parent = "c",
+        name_ultimate_parent = "c",
+        loan_size_outstanding = "d",
+        loan_size_outstanding_currency = "c",
+        loan_size_credit_limit = "d",
+        loan_size_credit_limit_currency = "c",
+        sector_classification_system = "c",
+        sector_classification_input_type = "c",
+        sector_classification_direct_loantaker = "c",
+        fi_type = "c",
+        flag_project_finance_loan = "c",
+        name_project = "c",
+        lei_direct_loantaker = "c",
+        isin_direct_loantaker = "c",
+        id_2dii = "c",
+        level = "c",
+        sector = "c",
+        sector_ald = "c",
+        name = "c",
+        name_ald = "c",
+        score = "d",
+        source = "c",
+        borderline = "l"
+      )
     )
-  )
 
   # region iso mapping
   regions <- r2dii.data::region_isos
 
   # Production forecast data
-  validate_file_exists(file.path(data_path_project_agnostic, "2021-07-15_AR_2020Q4_PACTA-Data (3).xlsx"))
-  production_forecast_data <- readxl::read_xlsx(
-    file.path(data_path_project_agnostic, "2021-07-15_AR_2020Q4_PACTA-Data (3).xlsx"),
+  production_forecast_data <- validate_file_exists(file.path(input_path_project_agnostic, "2021-07-15_AR_2020Q4_PACTA-Data (3).xlsx")) %>%
+    readxl::read_xlsx(
     sheet = "Company Indicators - PACTA"
   )
 
   # Scenario data - market share
-  validate_file_exists(file.path(data_path_project_agnostic, "scenario_2020.csv"))
-  scenario_data_market_share <- readr::read_csv(
-    file.path(data_path_project_agnostic, glue::glue("scenario_2020.csv")),
-    col_types = readr::cols(
-      scenario_source = "c",
-      scenario = "c",
-      sector = "c",
-      technology = "c",
-      region = "c",
-      year = "d",
-      tmsr = "d",
-      smsp = "d"
+  scenario_data_market_share <- validate_file_exists(file.path(input_path_project_agnostic, "scenario_2020.csv")) %>%
+    readr::read_csv(
+      col_types = readr::cols(
+        scenario_source = "c",
+        scenario = "c",
+        sector = "c",
+        technology = "c",
+        region = "c",
+        year = "d",
+        tmsr = "d",
+        smsp = "d"
+      )
     )
-  )
 
   #### Wrangle and prepare data-------------------------------------------------
   # ADO 2690 - remove rows with negative loan values (not allowed in P4B)
@@ -246,7 +249,7 @@ run_prep_calculation_loans <- function(data_path_project_specific,
 
   portfolio_overview %>%
     saveRDS(
-      file.path(data_path_project_specific, "inputs", "overview_portfolio.rda")
+      file.path(data_prep_output_path, "overview_portfolio.rda")
     )
 
   #### Calculate unweighted company level PACTA results-------------------------
@@ -313,7 +316,7 @@ run_prep_calculation_loans <- function(data_path_project_specific,
 
   loans_results_company %>%
     saveRDS(
-      file.path(data_path_project_specific, "inputs", "Loans_results_company.rda")
+      file.path(data_prep_output_path, "Loans_results_company.rda")
     )
 
 }

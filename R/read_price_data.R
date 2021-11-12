@@ -42,10 +42,9 @@ read_price_data <- function(path,
 #'
 #' @export
 read_price_data_internal <- function(path) {
-  validate_file_exists(path)
 
-  data <- readr::read_csv(
-    path,
+  data <- validate_file_exists(path) %>%
+    readr::read_csv(
     col_types = readr::cols(
       year = "d",
       source = "c",
@@ -78,10 +77,10 @@ read_price_data_internal <- function(path) {
 #'
 #' @export
 read_price_data_internal_old <- function(path) {
-  validate_file_exists(path)
 
-  data <- readr::read_csv(
-    path,
+
+  data <- validate_file_exists(path) %>%
+    readr::read_csv(
     col_types = readr::cols(
       year = "d",
       sector = "c",

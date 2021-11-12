@@ -8,10 +8,11 @@
 #'
 #' @param asset_type String holding asset_type, for allowed value compare
 #'   `asset_types_lookup`.
-#' @param data_path_project_specific String holding path to project specific
+#' @param input_path_project_specific String holding path to project specific
 #'   data.
-#' @param data_path_project_agnostic String holding path to project agnostic
+#' @param input_path_project_agnostic String holding path to project agnostic
 #'   data.
+#' @param output_path String holding path to which output files are written.
 #' @param lgd_senior_claims Numeric, holding the loss given default for senior
 #'   claims, for accepted value range check `lgd_senior_claims_range_lookup`.
 #' @param lgd_subordinated_claims Numeric, holding the loss given default for
@@ -38,8 +39,9 @@
 #' @return NULL
 #' @export
 run_stress_test <- function(asset_type,
-                            data_path_project_specific,
-                            data_path_project_agnostic,
+                            input_path_project_specific,
+                            input_path_project_agnostic,
+                            output_path,
                             lgd_senior_claims = 0.45,
                             lgd_subordinated_claims = 0.75,
                             terminal_value = 0,
@@ -73,7 +75,7 @@ run_stress_test <- function(asset_type,
     calculation_level = calculation_level_lookup,
     sensitivity_analysis_vars = names(args_list)[!names(args_list) %in% path_vars_lookup],
     iter_var = iter_var,
-    results_path = file.path(data_path_project_specific, "outputs")
+    output_path = output_path
   )
 
   cat("-- Exported results to designated output path. \n")
@@ -91,6 +93,7 @@ run_stress_test_iteration <- function(n, args_tibble) {
     dplyr::slice(n)
 
   arg_list_row <- arg_tibble_row %>%
+    dplyr::select(-output_path) %>%
     as.list()
 
   arg_tibble_row <- arg_tibble_row %>%
@@ -110,8 +113,8 @@ run_stress_test_iteration <- function(n, args_tibble) {
 #'
 #' @return A list of stress test results.
 run_stress_test_impl <- function(asset_type,
-                                 data_path_project_specific,
-                                 data_path_project_agnostic,
+                                 input_path_project_specific,
+                                 input_path_project_agnostic,
                                  lgd_senior_claims,
                                  lgd_subordinated_claims,
                                  terminal_value,
@@ -166,7 +169,7 @@ run_stress_test_impl <- function(asset_type,
     scenarios_filter = scenarios_filter,
     equity_market_filter = equity_market_filter_lookup,
     term = term,
-    path = data_path_project_specific
+    path = input_path_project_specific
   )
 
   project_specific_data_list <- pacta_based_data$data_list
@@ -178,7 +181,7 @@ run_stress_test_impl <- function(asset_type,
     company_exclusion = company_exclusion,
     scenario_geography_filter = scenario_geography_filter,
     asset_type = asset_type,
-    path = data_path_project_agnostic
+    path = input_path_project_agnostic
   )
 
   input_data_list <- c(project_specific_data_list, project_agnostic_data_list) %>%

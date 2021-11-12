@@ -4,7 +4,7 @@
 
 # defining some functions
 import_asset_results <- function() {
-  results_path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "outputs")
+  results_path <- get_st_data_path("ST_PROJECT_FOLDER_OUTPUT")
 
   bonds_results_company <- readr::read_csv(file.path(results_path, "stress_test_results_bonds_comp_standard.csv"))
   bonds_results_port <- readr::read_csv(file.path(results_path, "stress_test_results_bonds_port_standard.csv"))
@@ -59,8 +59,9 @@ check_all_equal <- function(old_results, new_results) {
 devtools::load_all()
 run_stress_test(
   asset_type = "bonds",
-  data_path_project_agnostic = get_st_data_path(),
-  data_path_project_specific = get_st_data_path("ST_PROJECT_FOLDER")
+  input_path_project_agnostic = get_st_data_path(),
+  input_path_project_specific = get_st_data_path("ST_PROJECT_FOLDER_INPUT"),
+  output_path = get_st_data_path("ST_PROJECT_FOLDER_OUTPUT")
 )
 
 ### 2. run the following lines to obtain results
@@ -70,8 +71,9 @@ old_results <- import_asset_results()
 devtools::load_all()
 run_stress_test(
   asset_type = "bonds",
-  data_path_project_agnostic = get_st_data_path(),
-  data_path_project_specific = get_st_data_path("ST_PROJECT_FOLDER")
+  input_path_project_agnostic = get_st_data_path(),
+  input_path_project_specific = get_st_data_path("ST_PROJECT_FOLDER_INPUT"),
+  output_path = get_st_data_path("ST_PROJECT_FOLDER_OUTPUT")
 )
 
 ### 4. run the following lines to run script or equity and bonds and obtain results
@@ -87,7 +89,7 @@ check
 
 # defining some functions
 import_asset_results <- function() {
-  results_path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "outputs")
+  results_path <- get_st_data_path("ST_PROJECT_FOLDER_OUTPUT")
 
   bonds_results_company <- readr::read_csv(file.path(results_path, "stress_test_results_bonds_comp_shock_year.csv"))
   bonds_results_port <- readr::read_csv(file.path(results_path, "stress_test_results_bonds_port_shock_year.csv"))
@@ -117,8 +119,9 @@ import_asset_results <- function() {
 devtools::load_all()
 run_stress_test(
   asset_type = "bonds",
-  data_path_project_agnostic = get_st_data_path(),
-  data_path_project_specific = get_st_data_path("ST_PROJECT_FOLDER"),
+  input_path_project_agnostic = get_st_data_path(),
+  input_path_project_specific = get_st_data_path("ST_PROJECT_FOLDER_INPUT"),
+  output_path = get_st_data_path("ST_PROJECT_FOLDER_OUTPUT"),
   shock_year = c(2025, 2030, 2033)
 )
 
@@ -129,8 +132,9 @@ old_results <- import_asset_results()
 devtools::load_all()
 run_stress_test(
   asset_type = "bonds",
-  data_path_project_agnostic = get_st_data_path(),
-  data_path_project_specific = get_st_data_path("ST_PROJECT_FOLDER"),
+  input_path_project_agnostic = get_st_data_path(),
+  input_path_project_specific = get_st_data_path("ST_PROJECT_FOLDER_INPUT"),
+  output_path = get_st_data_path("ST_PROJECT_FOLDER_OUTPUT"),
   shock_year = c(2025, 2030, 2033)
 )
 

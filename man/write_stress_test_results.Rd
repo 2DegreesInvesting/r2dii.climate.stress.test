@@ -13,7 +13,7 @@ write_stress_test_results(
   calculation_level,
   sensitivity_analysis_vars,
   iter_var,
-  results_path
+  output_path
 )
 }
 \arguments{
@@ -36,7 +36,7 @@ arguments.}
 
 \item{iter_var}{String holding name of iteration variable.}
 
-\item{results_path}{String holding path to output dir.}
+\item{output_path}{String holding path to output dir.}
 }
 \description{
 Stress test results are wrangled and exported to the output dir.
