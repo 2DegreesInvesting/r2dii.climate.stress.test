@@ -60,7 +60,8 @@ devtools::load_all()
 run_stress_test(
   asset_type = "equity",
   input_path_project_agnostic = get_st_data_path(),
-  input_path_project_specific = get_st_data_path("ST_PROJECT_FOLDER")
+  input_path_project_specific = get_st_data_path("ST_PROJECT_FOLDER_INPUT"),
+  output_path = get_st_data_path("ST_PROJECT_FOLDER_OUTPUT")
 )
 
 ### 2. run the following lines to obtain results
@@ -71,7 +72,8 @@ devtools::load_all()
 run_stress_test(
   asset_type = "equity",
   input_path_project_agnostic = get_st_data_path(),
-  input_path_project_specific = get_st_data_path("ST_PROJECT_FOLDER")
+  input_path_project_specific = get_st_data_path("ST_PROJECT_FOLDER_INPUT"),
+  output_path = get_st_data_path("ST_PROJECT_FOLDER_OUTPUT")
 )
 
 ### 4. run the following lines to run script or equity and bonds and obtain results

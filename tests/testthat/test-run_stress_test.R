@@ -3,7 +3,7 @@ test_that("output includes argument names with suffix '_arg'", {
   skip_if_not(is_me)
 
   # Refresh
-  out_path <- fs::path(Sys.getenv("ST_PROJECT_FOLDER"), "outputs")
+  out_path <- fs::path(Sys.getenv("ST_PROJECT_FOLDER_OUTPUT"))
   if (fs::dir_exists(out_path)) fs::dir_delete(out_path)
 
 x <- suppressWarnings(capture.output(
