@@ -30,8 +30,13 @@ test_that("PD_changes point in expected direction", {
   test_end_of_analysis <- 2040
   test_risk_free_rate <- 0.05
 
+  # Expected direction of PD change depends on direction of expected value change
+  # This can be extracted from NPV columns of the annual profit data, which is
+  # equal for all years
+  filter_year <- min(test_data$year, na.rm = TRUE)
   expected_direction <- test_data %>%
-    dplyr::distinct(
+    dplyr::filter(.data$year == filter_year) %>%
+    dplyr::select(
       .data$scenario_name,
       .data$scenario_geography,
       .data$company_name,

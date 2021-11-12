@@ -49,6 +49,7 @@ read_capacity_factors <- function(path = NULL,
           (.data$technology %in% c("HydroCap", "NuclearCap", "RenewablesCap") &
             .data$Region == "OECD")
       ) %>%
+      # ADO 2393 - legacy web tool version
       dplyr::distinct(.data$technology, .data$capacityfactor_WEO_2016) %>%
       dplyr::rename(capacity_factor = .data$capacityfactor_WEO_2016) %>%
       dplyr::mutate(scenario_geography = "Global")
@@ -61,14 +62,18 @@ read_capacity_factors <- function(path = NULL,
     )
 
   } else {
+    # ADO 2393 - this should keep the source and filter based on global settings
+    # not in this hard coded manner
     data <- data %>%
       dplyr::select(
         .data$scenario, .data$scenario_geography, .data$technology,
         .data$year, .data$capacity_factor
       ) %>%
-      dplyr::distinct_all() %>%
       dplyr::mutate(
         scenario = dplyr::if_else(.data$scenario == "SPS", "NPS", .data$scenario)
+      ) %>%
+      report_all_duplicate_kinds(
+        composite_unique_cols = c("scenario", "scenario_geography", "technology", "year")
       )
 
     validate_data_has_expected_cols(

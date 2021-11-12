@@ -47,13 +47,10 @@ write_stress_test_results <- function(results, expected_loss,
   expected_loss <- expected_loss %>%
     dplyr::select(
       .data$scenario_name, .data$scenario_geography, .data$investor_name,
-      .data$portfolio_name, .data$company_name, .data$id, .data$ald_sector,
-      .data$equity_0_baseline, .data$equity_0_late_sudden, .data$debt,
-      .data$volatility, .data$risk_free_rate, .data$term, .data$Survival_baseline,
-      .data$Survival_late_sudden, .data$PD_baseline, .data$PD_late_sudden,
-      .data$PD_change, .data$pd, .data$lgd, .data$percent_exposure, # TODO: keep all tehse PDs??
-      .data$exposure_at_default, .data$expected_loss_baseline,
-      .data$expected_loss_late_sudden, !!!rlang::syms(sensitivity_analysis_vars)
+      .data$portfolio_name, .data$company_name, .data$ald_sector,
+      .data$pd, .data$PD_change, .data$lgd, .data$exposure_at_default,
+      .data$expected_loss_baseline, .data$expected_loss_late_sudden,
+      !!!rlang::syms(sensitivity_analysis_vars)
     ) %>%
     dplyr::arrange(
       .data$scenario_geography, .data$scenario_name, .data$investor_name,
@@ -67,7 +64,7 @@ write_stress_test_results <- function(results, expected_loss,
     report_all_duplicate_kinds(
       composite_unique_cols = c(
         "scenario_name", "scenario_geography", "investor_name", "portfolio_name",
-        "company_name", "id", "ald_sector", "term",
+        "company_name", "ald_sector",
         sensitivity_analysis_vars
       )
     ) %>%
@@ -268,6 +265,9 @@ write_results <- function(data,
           .data$company_value_change
         )
       ) %>%
+      # ADO 2393 - after removing the tech_company & company level columns,
+      # we run distinct_all to get unique values on the previously duplicated
+      # technology and sector levels
       dplyr::distinct_all() %>%
       dplyr::relocate(
         .data$investor_name, .data$portfolio_name, .data$scenario_geography,
@@ -280,7 +280,13 @@ write_results <- function(data,
         .data$analysed_sectors_value_change, .data$portfolio_aum,
         .data$portfolio_value_change_perc, .data$portfolio_value_change
       ) %>%
-      dplyr::arrange(.data$year_of_shock, .data$ald_sector, .data$technology)
+      dplyr::arrange(.data$year_of_shock, .data$ald_sector, .data$technology) %>%
+      report_all_duplicate_kinds(
+        composite_unique_cols = c(
+          "investor_name", "portfolio_name", "scenario_geography", "scenario_name",
+          "year_of_shock", "duration_of_shock", "ald_sector", "technology"
+        )
+      )
 
     switch(file_type,
       csv = data %>%
