@@ -81,38 +81,12 @@ run_stress_test(
 
 ## Details
 
-### Look up valid ranges of input arguments
+To actually run an analysis, the project directories must be set up,
+input data must be prepared, and the options of the the functions ought
+to be understood.
 
-You can look up allowed values of input arguments as such:
-
-``` r
-lgd_senior_claims_range_lookup
-#> [1] 0.3 0.6
-
-lgd_subordinated_claims_range_lookup
-#> [1] 0.6 0.9
-
-terminal_value_range_lookup
-#> [1] 0.0 0.1
-
-risk_free_rate_range_lookup
-#> [1] 0.00 0.05
-
-discount_rate_range_lookup
-#> [1] -0.01  0.05
-
-div_netprofit_prop_coef_range_lookup
-#> [1] 0.8 1.0
-
-shock_year_range_lookup
-#> [1] 2025 2035
-
-term_range_lookup
-#> [1]  1 10
-
-credit_type_lookup
-#> [1] "outstanding"  "credit_limit"
-```
+Detailed information for all these steps and on interpreting the
+outcomes can be found in the articles linked below.
 
 [Further
 Information](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/).

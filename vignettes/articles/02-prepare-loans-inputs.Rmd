@@ -1,0 +1,87 @@
+---
+title: "02 - Prepare loan input files for stress testing corporate loan books"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This vignette describes in detail, how to prepare the intermediate input files
+needed to run the climate transition risk stress test for a corporate loan book.
+
+## Assumptions
+
+In order to keep this vignette concise, we assume the following has been done:
+
+1. R and RStudio are installed.
+2. All required R packages are installed, specifically.
+`r2dii.climate.stress.test`. Note that this may require installing additional
+packages. You will be prompted to install these in case any are missing.
+1. The user has obtained all relevant input files as described in the pdf manual.
+1. The user has successfully run at least the matching part of PACTA for Banks
+to produce the relevant project-specific raw input files.
+1. The input files are organized in a folder structure consistent with the one
+described in the vignette ["Set up project directories"](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/01-setup-project-directories.html).
+
+## Running the Loan Book Preparation
+
+```{r setup}
+library(r2dii.climate.stress.test)
+```
+
+The raw and matched loan book files need to be run through PACTA for banks and
+wrangled into the specific input format required by `r2dii.climate.stress.test`.
+To make this process as easy as possible for the user, we provide a function,
+`run_prep_calculation_loans()`, which takes care of all relevant steps with
+minimal input from the user.
+
+Beside the file paths, the only argument that can be set is `credit_type`, which
+defaults to `"outstanding"` if the user passes no argument.
+
+View other options by running:
+
+```{r}
+credit_type_lookup
+```
+
+If everything has been set up correctly, simply running the following command in
+R will read the raw and matched loan books from the indicated project-specific
+inputs directory and auxiliary data from the project-agnostic data directory.
+
+It will then perform all calculations and wrangling required and write the
+intermediate input files `Loans_results_company.rda` and
+`overview_portfolio.rda` to the indicated `data_prep_output_path`. As these data
+files will serve as inputs the the subsequent stress test it is advisable to set
+`data_prep_output_path` to the same path as `input_path_project_specific`.
+
+```{r, eval=FALSE}
+run_prep_calculation_loans(
+  input_path_project_specific = "/path/to/specific/data/inputs",
+  input_path_project_agnostic = "/path/to/agnostic/data",
+  data_prep_output_path = "/path/to/specific/data/inputs"
+)
+```
+
+Since the argument credit_type has a default value, it is not required to set it,
+in case the user wants to run the stress test on the outstanding credit values
+in the loan book.
+
+However, it is also possible to run the analysis on the credit limits of the
+loans, in case these have been provided in the raw and matched loan books. To
+achieve this, instead of the previous command, simply run:
+
+```{r, eval=FALSE}
+run_prep_calculation_loans(
+  input_path_project_specific = "/path/to/specific/data/inputs",
+  input_path_project_agnostic = "/path/to/agnostic/data",
+  data_prep_output_path = "/path/to/specific/data/inputs",
+  credit_type = "credit_limit"
+)
+```
+
+Regardless of which case is chosen, the intermediate input files are generated
+in the correct format so that the user can directly continue with the main
+calculation of the stress test, as described in vignette ["Run stress test"](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/03-run-stress-test.html).
