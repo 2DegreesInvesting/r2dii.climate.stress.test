@@ -76,7 +76,7 @@ validate_file_exists <- function(path) {
 
   if (!valid_file_path) {
     rlang::abort(c(
-      "Detected invalid file path.",
+      "Path must point to an existing file.",
       x = glue::glue("Invalid file path: {file.path(path)}."),
       i = "Did you set path to data correctly?."
     ))
@@ -105,7 +105,7 @@ validate_data_has_expected_cols <- function(data,
   if (!data_has_expected_columns) {
     affected_cols <- glue::glue_collapse(sort(setdiff(expected_columns, names(data))), sep = ", ")
     rlang::abort(c(
-      "Detected missing columns on data set.",
+      "Must include expected columns in data set.",
       x = glue::glue("Missing columns: {affected_cols}."),
       i = "Please check that data have expected columns."
     ))
