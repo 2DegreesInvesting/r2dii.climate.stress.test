@@ -1,0 +1,73 @@
+---
+title: "01 - Set up project directories for climate transition risk stress test"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This vignette describes in detail, how to set up the directories that point to
+the input files and will contain the output files of running a climate
+transition risk stress test for loans, using `r2dii.cliamte.stress.test`.
+
+## Assumptions
+
+In order to keep this vignette concise, we assume the following has been done:
+
+1. R and RStudio are installed.
+2. All required R packages are installed, specifically
+`r2dii.climate.stress.test`. Note that this may require installing additional
+packages. You will be prompted to install these in case any are missing.
+1. The user has obtained all relevant input files as described in the pdf manual.
+1. The user has successfully run at least the matching part of PACTA for Banks
+to produce the relevant project-specific raw input files.
+
+## Project-Specific files
+
+The analysis builds on project-specific input files that contain information on
+the loan book to be analyzed and project-agnostic input files that contain
+auxiliary information required for the stress test. Detailed information about
+these files can be obtained from the pdf user manual. In case you need this
+document, please contact <jacob@2degrees-investing.org>.
+
+We recommend setting up one directory that contains project-specific files and
+a separate one that contains project-agnostic files.
+
+The exact names and locations of these directories can be chosen by the user,
+but we recommend choosing directories, from which the software can read and to
+which it is allowed to write data. It is also generally recommended to avoid
+special characters and white spaces in the name.
+
+The user will also have to determine an output directory. We recommend setting
+this up as a sub directory of the project-specific directory.
+
+**NOTE:** It is required to set up an output directory prior to running the
+analysis. If the software cannot find the directory that the user is pointing it
+to, it will fail with an error.
+
+A recommended structure for the project-specific data would look like this:
+
+* `example_project/`
+    * `inputs/`
+        * `raw_loanbook.csv`
+        * `matched_loan_book.csv`
+    * `outputs/`
+
+A recommended structure for the project-agnostic data would look like this:
+
+* `analysis_input_files/`
+    * `Prewrangled_financial_data_stress_test.csv`
+    * `prices_data_2021Q1.csv`
+    * `scenario_2020.csv`
+    * `Scenario_AnalysisInput_2020.csv`
+    * `capacity_factors_WEO_2020.csv`
+    * `exclude-companies.csv`
+    * `2021-07-15_AR2020Q4_PACTA-Data (3).xlsx`
+
+After completing the setup, follow the vignettes on how to run the analysis:
+
+* ["Preparing the intermediate inputs for stress testing loans"](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-prepare-loans-inputs.html)
+* ["Run transition risk stress test"](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/03-run-stress-test.html)
