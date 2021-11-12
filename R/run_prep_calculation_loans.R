@@ -5,7 +5,7 @@
 #' @param data_prep_output_path Path where results are written.
 #'   NOTE: This is a workflow that is needed exclusively in preparation of
 #'   [run_stress_test()] for loan books. It creates input data for the stress
-#'   test. A recommended setting is to set data_prep_output_path to to the same
+#'   test. A recommended setting is to set `data_prep_output_path` to to the same
 #'   path as `input_path_project_specific`.
 #' @param credit_type Type of credit. For accepted values please compare
 #'   `credit_type_lookup`.

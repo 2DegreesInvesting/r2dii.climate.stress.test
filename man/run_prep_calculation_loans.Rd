@@ -21,7 +21,7 @@ data.}
 \item{data_prep_output_path}{Path where results are written.
 NOTE: This is a workflow that is needed exclusively in preparation of
 \code{\link[=run_stress_test]{run_stress_test()}} for loan books. It creates input data for the stress
-test. A recommended setting is to set data_prep_output_path to to the same
+test. A recommended setting is to set \code{data_prep_output_path} to to the same
 path as \code{input_path_project_specific}.}
 
 \item{credit_type}{Type of credit. For accepted values please compare
