@@ -276,14 +276,15 @@ report_dropped_company_names <- function(data_x, data_y, name_y, merge_cols, nam
   if (n_companies < n_companies_x) {
     percent_loss <- (n_companies_x - n_companies) * 100/n_companies_x
     affected_companies <- sort(setdiff(data_x$company_name, data$company_name))
-    cat(
+    paste_write(
       "      >> When joining", name_x, "on", name_y, "on column(s)", paste0(merge_cols, collapse = ", "), "could not match entries for",
-      n_companies_x - n_companies, "out of", n_companies_x, "companies.\n"
+      n_companies_x - n_companies, "out of", n_companies_x, "companies.",
+      log_path = log_path
     )
-    cat("        >> percent loss:", percent_loss, "\n")
-    cat("        >> affected companies:\n")
+    paste_write("        >> percent loss:", percent_loss, log_path = log_path)
+    paste_write("        >> affected companies:", log_path = log_path)
     purrr::walk(affected_companies, function(company) {
-      cat("          >>", company, "\n")
+      paste_write("          >>", company, log_path = log_path)
     })
   }
   return(data)
@@ -378,4 +379,19 @@ get_iter_var <- function(args_list) {
   }
 
   return(iter_var)
+}
+
+#' Helper function for logging
+#'
+#' Concatenates onjects passed in `...` and writes resulting string to
+#' `logfile`.
+#'
+#' @param log_path String holding path to logfile.
+#' @param ... One or more R objects, to be converted to character vectors.
+#'
+#' @return NULL
+paste_write <- function(..., log_path) {
+  text <- paste(...)
+  write(text, file = log_path, append = TRUE)
+  invisible()
 }
