@@ -247,6 +247,18 @@ run_prep_calculation_loans <- function(input_path_project_specific,
       .data$asset_value_usd, .data$portfolio_value_usd, .data$currency
     )
 
+
+  if (!dir.exists(data_prep_output_path)) {
+    rlang::abort(
+      c(
+        "Argument output_path must point to an existing directory.",
+        x = glue::glue("Invalid file path: {data_prep_output_path}."),
+        i = "Did you set data_prep_output_path correctly?."
+      )
+    )
+  }
+
+
   portfolio_overview %>%
     saveRDS(
       file.path(data_prep_output_path, "overview_portfolio.rda")
