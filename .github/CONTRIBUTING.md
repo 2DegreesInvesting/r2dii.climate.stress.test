@@ -10,6 +10,7 @@ ST_DATA_PATH=/a/path
 # Where to save project specific inputs and outputs?
 # For example, for bonds (fastest) see 2DII's Dropbox at 
 # PortCheck_v2/10_Projects/ST_TESTING_BONDS
-ST_PROJECT_FOLDER=/another/path
+ST_PROJECT_FOLDER_INPUT=/another/path/inputs
+ST_PROJECT_FOLDER_OUTPUT=/another/path/outputs
 ```
 
