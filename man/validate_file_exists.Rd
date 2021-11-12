@@ -9,6 +9,9 @@ validate_file_exists(path)
 \arguments{
 \item{path}{Character vector indicating the directory of a file.}
 }
+\value{
+String holding provided \code{path}.
+}
 \description{
 Before performing an operation on a file assumed to be found in a given
 directory, validate this file exists and give indicative error if not.
