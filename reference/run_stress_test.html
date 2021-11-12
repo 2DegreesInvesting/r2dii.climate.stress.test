@@ -143,8 +143,9 @@ varied. NOTE: argument <code>asset_type</code> is not iterateable.</p>
 
     <pre class="usage"><span class='fu'>run_stress_test</span><span class='op'>(</span>
   <span class='va'>asset_type</span>,
-  <span class='va'>data_path_project_specific</span>,
-  <span class='va'>data_path_project_agnostic</span>,
+  <span class='va'>input_path_project_specific</span>,
+  <span class='va'>input_path_project_agnostic</span>,
+  <span class='va'>output_path</span>,
   lgd_senior_claims <span class='op'>=</span> <span class='fl'>0.45</span>,
   lgd_subordinated_claims <span class='op'>=</span> <span class='fl'>0.75</span>,
   terminal_value <span class='op'>=</span> <span class='fl'>0</span>,
@@ -165,14 +166,18 @@ varied. NOTE: argument <code>asset_type</code> is not iterateable.</p>
 <code>asset_types_lookup</code>.</p></td>
     </tr>
     <tr>
-      <th>data_path_project_specific</th>
+      <th>input_path_project_specific</th>
       <td><p>String holding path to project specific
 data.</p></td>
     </tr>
     <tr>
-      <th>data_path_project_agnostic</th>
+      <th>input_path_project_agnostic</th>
       <td><p>String holding path to project agnostic
 data.</p></td>
+    </tr>
+    <tr>
+      <th>output_path</th>
+      <td><p>String holding path to which output files are written.</p></td>
     </tr>
     <tr>
       <th>lgd_senior_claims</th>

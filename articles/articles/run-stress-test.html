@@ -117,12 +117,13 @@
 <div id="running-the-stress-test-for-one-scenario" class="section level2">
 <h2 class="hasAnchor">
 <a href="#running-the-stress-test-for-one-scenario" class="anchor"></a>Running the Stress Test for one scenario</h2>
-<p>In order to run a stress test for loans on one set of parameters, the user needs to pass exactly one value per input argument to the function <code><a href="../../reference/run_prep_calculation_loans.html">run_prep_calculation_loans()</a></code>. The only arguments that do not have a default value and must be set by the user are <code>asset_type</code>, <code>data_path_project_specific</code> and <code>data_path_project_agnostic</code>. In our case, we want to run the stress test for loans, so the easiest way to obtain results is by running:</p>
+<p>In order to run a stress test for loans on one set of parameters, the user needs to pass exactly one value per input argument to the function <code><a href="../../reference/run_prep_calculation_loans.html">run_prep_calculation_loans()</a></code>. The only arguments that do not have a default value and must be set by the user are <code>asset_type</code>, <code>input_path_project_specific</code> and <code>input_path_project_agnostic</code>. In our case, we want to run the stress test for loans, so the easiest way to obtain results is by running:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/run_stress_test.html">run_stress_test</a></span><span class="op">(</span>
   <span class="st">"loans"</span>,
-  data_path_project_specific <span class="op">=</span> <span class="st">"/path/to/specific/data"</span>,
-  data_path_project_agnostic <span class="op">=</span> <span class="st">"/path/to/agnostic/data"</span>
+  input_path_project_specific <span class="op">=</span> <span class="st">"/path/to/specific/data"</span>,
+  input_path_project_agnostic <span class="op">=</span> <span class="st">"/path/to/agnostic/data"</span>,
+  output_path <span class="op">=</span> <span class="st">"/path/to/output/directory"</span>
 <span class="op">)</span></code></pre></div>
 <p>This will calculate the stress test for loans and write the results into the designated output directory, using the default values for all detail arguments.</p>
 <p>The user may change any detail argument by explicitly passing it to the function. Note that there are allowed ranges for each of the inputs as described in the README.</p>
@@ -163,8 +164,9 @@
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/run_stress_test.html">run_stress_test</a></span><span class="op">(</span>
   <span class="st">"loans"</span>,
-  data_path_project_specific <span class="op">=</span> <span class="st">"/path/to/specific/data"</span>,
-  data_path_project_agnostic <span class="op">=</span> <span class="st">"/path/to/agnostic/data"</span>,
+  input_path_project_specific <span class="op">=</span> <span class="st">"/path/to/specific/data"</span>,
+  input_path_project_agnostic <span class="op">=</span> <span class="st">"/path/to/agnostic/data"</span>,
+  output_path <span class="op">=</span> <span class="st">"/path/to/output/directory"</span>,
   risk_free_rate <span class="op">=</span> <span class="fl">0.01</span>,
   shock_year <span class="op">=</span> <span class="fl">2028</span>
 <span class="op">)</span></code></pre></div>
@@ -187,8 +189,9 @@
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/run_stress_test.html">run_stress_test</a></span><span class="op">(</span>
   <span class="st">"loans"</span>,
-  data_path_project_specific <span class="op">=</span> <span class="st">"/path/to/specific/data"</span>,
-  data_path_project_agnostic <span class="op">=</span> <span class="st">"/path/to/agnostic/data"</span>,
+  input_path_project_specific <span class="op">=</span> <span class="st">"/path/to/specific/data"</span>,
+  input_path_project_agnostic <span class="op">=</span> <span class="st">"/path/to/agnostic/data"</span>,
+  output_path <span class="op">=</span> <span class="st">"/path/to/output/directory"</span>,
   shock_year <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2025</span>, <span class="fl">2028</span>, <span class="fl">2032</span>, <span class="fl">2035</span><span class="op">)</span>
 <span class="op">)</span></code></pre></div>
 <p>This will yield outputs with four versions of the stress test, one for each of the shock years indicated. All the results will be written into one file per output type for ease of use, e.g.:</p>
@@ -203,8 +206,9 @@
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/run_stress_test.html">run_stress_test</a></span><span class="op">(</span>
   <span class="st">"loans"</span>,
-  data_path_project_specific <span class="op">=</span> <span class="st">"/path/to/specific/data"</span>,
-  data_path_project_agnostic <span class="op">=</span> <span class="st">"/path/to/agnostic/data"</span>,
+  input_path_project_specific <span class="op">=</span> <span class="st">"/path/to/specific/data"</span>,
+  input_path_project_agnostic <span class="op">=</span> <span class="st">"/path/to/agnostic/data"</span>,
+  output_path <span class="op">=</span> <span class="st">"/path/to/output/directory"</span>,
   risk_free_rate <span class="op">=</span> <span class="fl">0.01</span>,
   shock_year <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2025</span>, <span class="fl">2028</span>, <span class="fl">2032</span>, <span class="fl">2035</span><span class="op">)</span>
 <span class="op">)</span></code></pre></div>

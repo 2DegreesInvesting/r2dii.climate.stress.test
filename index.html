@@ -119,8 +119,9 @@
 </ul>
 <!-- end list --><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/run_prep_calculation_loans.html">run_prep_calculation_loans</a></span><span class="op">(</span>
-  data_path_project_specific <span class="op">=</span> <span class="st">"/path/to/specific/data"</span>,
-  data_path_project_agnostic <span class="op">=</span> <span class="st">"/path/to/agnostic/data"</span>
+  input_path_project_specific <span class="op">=</span> <span class="st">"/path/to/specific/data"</span>,
+  input_path_project_agnostic <span class="op">=</span> <span class="st">"/path/to/agnostic/data"</span>,
+  data_prep_output_path <span class="op">=</span> <span class="st">"/path/to/specific/data"</span>
 <span class="op">)</span></code></pre></div>
 <ul>
 <li>Run climate stress tests</li>
@@ -129,15 +130,17 @@
 <code class="sourceCode R"><span class="co">## run stress testing for assets of type corporate loans using default parameters</span>
 <span class="fu"><a href="reference/run_stress_test.html">run_stress_test</a></span><span class="op">(</span>
   asset_type <span class="op">=</span> <span class="st">"loans"</span>,
-  data_path_project_specific <span class="op">=</span> <span class="st">"/path/to/specific/data"</span>,
-  data_path_project_agnostic <span class="op">=</span> <span class="st">"/path/to/agnostic/data"</span>
+  input_path_project_specific <span class="op">=</span> <span class="st">"/path/to/specific/data"</span>,
+  input_path_project_agnostic <span class="op">=</span> <span class="st">"/path/to/agnostic/data"</span>,
+  output_path <span class="op">=</span> <span class="st">"/path/to/output/directory"</span>
 <span class="op">)</span>
 
 <span class="co">## run stress testing for asset of type corporate loans using various risk_free_rates to analyse sensitivities</span>
 <span class="fu"><a href="reference/run_stress_test.html">run_stress_test</a></span><span class="op">(</span>
   asset_type <span class="op">=</span> <span class="st">"loans"</span>,
-  data_path_project_specific <span class="op">=</span> <span class="st">"/path/to/specific/data"</span>,
-  data_path_project_agnostic <span class="op">=</span> <span class="st">"/path/to/agnostic/data"</span>,
+  input_path_project_specific <span class="op">=</span> <span class="st">"/path/to/specific/data"</span>,
+  input_path_project_agnostic <span class="op">=</span> <span class="st">"/path/to/agnostic/data"</span>,
+  output_path <span class="op">=</span> <span class="st">"/path/to/output/directory"</span>,
   risk_free_rate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.01</span>, <span class="fl">0.03</span><span class="op">)</span>
 <span class="op">)</span></code></pre></div>
 </div>
