@@ -78,7 +78,7 @@ extend_scenario_trajectory <- function(data,
       composite_unique_cols = c(
         "year", "investor_name", "portfolio_name", "id", "company_name",
         "ald_sector", "technology", "scenario", "allocation",
-        "scenario_geography", "source", "units", "direction"
+        "scenario_geography", "source", "units"
       )
     )
 
