@@ -3,7 +3,7 @@
 # defining some functions
 import_asset_results <- function() {
 
-  results_path <- file.path(get_st_data_path("ST_PROJECT_FOLDER"), "outputs")
+  results_path <- get_st_data_path("ST_PROJECT_FOLDER_OUTPUT")
 
   equity_results_company <- readr::read_csv(file.path(results_path, "stress_test_results_equity_comp_standard.csv"))
   equity_results_port <- readr::read_csv(file.path(results_path, "stress_test_results_equity_port_standard.csv"))

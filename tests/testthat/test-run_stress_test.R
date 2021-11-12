@@ -10,7 +10,7 @@ x <- suppressWarnings(capture.output(
   run_stress_test("bonds",
     input_path_project_agnostic = get_st_data_path(),
     input_path_project_specific = get_st_data_path("ST_PROJECT_FOLDER_INPUT"),
-    input_path_project_specific = get_st_data_path("ST_PROJECT_FOLDER_OUTPUT"),
+    output_path = get_st_data_path("ST_PROJECT_FOLDER_OUTPUT"),
     term = 1:2
   )
 ))
