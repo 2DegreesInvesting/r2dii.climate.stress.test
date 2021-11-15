@@ -2,30 +2,7 @@
 #'
 #' Checks that user inputs are of length 1 and within defined ranges.
 #'
-#' @param asset_type String holding asset_type, for allowed value compare
-#'   `asset_types_lookup`.
-#' @param lgd_senior_claims Numeric, holding the loss given default for senior
-#'   claims, for accepted value range check `lgd_senior_claims_range_lookup`.
-#' @param lgd_subordinated_claims Numeric, holding the loss given default for
-#'   subordinated claims, for accepted value range check
-#'   `lgd_subordinated_claims_range_lookup`.
-#' @param terminal_value Numeric. A ratio to determine the share of the
-#'   discounted value used in the terminal value calculation beyond the
-#'   projected time frame. For accepted range compare `terminal_value_range_lookup`.
-#' @param risk_free_rate Numeric that indicates the risk free rate of interest.
-#'   For accepted range compare `risk_free_rate_range_lookup`.
-#' @param discount_rate Numeric, that holds the discount rate of dividends per
-#'   year in the DCF. For accepted range compare `discount_rate_range_lookup`.
-#' @param div_netprofit_prop_coef Numeric. A coefficient that determines how
-#'   strongly the future dividends propagate to the company value. For accepted
-#'   range compare `div_netprofit_prop_coef_range_lookup`.
-#' @param shock_year Numeric, holding year the shock is applied. For accepted
-#'   range compare `shock_year_range_lookup`.
-#' @param term Numeric. A coefficient that determines for which maturity the
-#'   expected loss should be calculated in the credit risk section. For accepted
-#'   range compare `term_range_lookup`.
-#' @param company_exclusion Boolean, indicating if companies provided in dataset
-#'   excluded_companies.csv shall be excluded.
+#' @inheritParams run_stress_test
 #'
 #' @return NULL
 validate_input_values <- function(lgd_senior_claims, lgd_subordinated_claims,

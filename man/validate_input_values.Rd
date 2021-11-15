@@ -27,7 +27,8 @@ subordinated claims, for accepted value range check
 
 \item{terminal_value}{Numeric. A ratio to determine the share of the
 discounted value used in the terminal value calculation beyond the
-projected time frame. For accepted range compare \code{terminal_value_range_lookup}.}
+projected time frame. For accepted range compare
+\code{terminal_value_range_lookup}.}
 
 \item{risk_free_rate}{Numeric that indicates the risk free rate of interest.
 For accepted range compare \code{risk_free_rate_range_lookup}.}
