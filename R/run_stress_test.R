@@ -13,6 +13,9 @@
 #' @param input_path_project_agnostic String holding path to project agnostic
 #'   data.
 #' @param output_path String holding path to which output files are written.
+#'   NOTE: Results and logs per run are stored in subdirectory of output_path
+#'   that will be generated automatically. The name of the subdirectory is the
+#'   timestamp of the run of the analysis.
 #' @param lgd_senior_claims Numeric, holding the loss given default for senior
 #'   claims, for accepted value range check `lgd_senior_claims_range_lookup`.
 #' @param lgd_subordinated_claims Numeric, holding the loss given default for
@@ -54,6 +57,8 @@ run_stress_test <- function(asset_type,
   cat("-- Running transition risk stress test \n\n\n")
 
   args_list <- mget(names(formals()), sys.frame(sys.nframe()))
+  args_list$output_path <- customise_output_path(args_list$output_path)
+
   iter_var <- get_iter_var(args_list)
   args_tibble <- tibble::as_tibble(args_list) %>%
     dplyr::mutate(iter_var = .env$iter_var)
@@ -76,7 +81,7 @@ run_stress_test <- function(asset_type,
     calculation_level = calculation_level_lookup,
     sensitivity_analysis_vars = names(args_list)[!names(args_list) %in% setup_vars_lookup],
     iter_var = iter_var,
-    output_path = output_path
+    output_path = args_list$output_path
   )
 
   cat("-- Exported results to designated output path. \n")

@@ -396,3 +396,21 @@ paste_write <- function(..., log_path, append = TRUE) {
 # helper functions to indent lines in logfile
 format_indent_1 <- function() {">>"}
 format_indent_2 <- function() {"  >>"}
+
+customise_output_path <- function(output_path) {
+  if (!dir.exists(output_path)) {
+    rlang::abort(
+      c(
+        "Argument output_path must point to an existing directory.",
+        x = glue::glue("Invalid file path: {output_path}."),
+        i = "Did you set output_path correctly?."
+      )
+    )
+  }
+
+  output_path_with_ts <- file.path(output_path, Sys.time())
+
+  dir.create(output_path_with_ts)
+
+  return(output_path_with_ts)
+}
