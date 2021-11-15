@@ -99,22 +99,27 @@
 <h2 class="hasAnchor">
 <a href="#overview" class="anchor"></a>Overview</h2>
 <p>There are five output files that the user can expect when running the stress test for a given set of parameters.</p>
-<p>They can loosely be grouped in files that contain estimates of the market risk of companies in the portfolio and of the credit risk of said companies in a corporate loan book. Depending on the use case, one or the other may contain more relevant information.</p>
+<p>They can loosely be grouped in files that contain estimates of the market risk of companies in the portfolio and of the credit risk of said companies in a corporate loan book. Depending on the use case, one or the other may contain more relevant information. In addition, a log file is written to the results directory. It holds an overview on holdings that could not be considered in the analysis.</p>
 <div id="market-risk" class="section level3">
 <h3 class="hasAnchor">
 <a href="#market-risk" class="anchor"></a>Market Risk</h3>
 <ul>
-<li>stress_test_results_loans_port_suffix.csv</li>
-<li>stress_test_results_loans_comp_suffix.csv</li>
+<li>stress_test_results_loans_port_<suffix>.csv</suffix>
+</li>
+<li>stress_test_results_loans_comp_<suffix>.csv</suffix>
+</li>
 </ul>
 </div>
 <div id="credit-risk" class="section level3">
 <h3 class="hasAnchor">
 <a href="#credit-risk" class="anchor"></a>Credit Risk</h3>
 <ul>
-<li>stress_test_results_loans_comp_el_suffix.csv</li>
-<li>stress_test_results_loans_sector_pd_changes_annual_suffix.csv</li>
-<li>stress_test_results_loans_sector_pd_changes_overall_suffix.csv</li>
+<li>stress_test_results_loans_comp_el_<suffix>.csv</suffix>
+</li>
+<li>stress_test_results_loans_sector_pd_changes_annual_<suffix>.csv</suffix>
+</li>
+<li>stress_test_results_loans_sector_pd_changes_overall_<suffix>.csv</suffix>
+</li>
 </ul>
 </div>
 </div>
