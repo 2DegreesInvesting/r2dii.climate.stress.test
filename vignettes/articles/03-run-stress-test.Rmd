@@ -65,43 +65,17 @@ This will calculate the stress test for loans and write the results along with a
 log file into the designated output directory, using the default values for all
 detail arguments.
 
-### Default values of the input arguments
-The detail arguments are the following (defaults in brackets):
+### Input arguments
+Specifications on the detail arguments are summarised in the following overview.
+The defaults that are used if the argument is not adjusted when calling
+`run_stress_test()` can be found in column `default`. The user may change any
+detail argument by explicitly passing it to the function. Note that there are
+allowed values for each of the inputs. For logical or character variables refer
+to column `allowed`, for numeric variables the allowed values are the range from
+`min` (inclusive) to `max` (inclusive).
 
-* lgd_senior_claims (`r formals(run_stress_test)$lgd_senior_claims`)
-* lgd_subordinated_claims (`r formals(run_stress_test)$lgd_subordinated_claims`)
-* terminal_value (`r formals(run_stress_test)$terminal_value`)
-* risk_free_rate (`r formals(run_stress_test)$risk_free_rate`)
-* discount_rate (`r formals(run_stress_test)$discount_rate`)
-* div_netprofit_prop_coef (`r formals(run_stress_test)$div_netprofit_prop_coef`)
-* shock_year (`r formals(run_stress_test)$shock_year`)
-* term (`r formals(run_stress_test)$term`)
-* company_exclusion (`r formals(run_stress_test)$company_exclusion`)
-
-### Look up valid ranges of input arguments
-The user may change any detail arguments by explicitly passing it to the
-function. Note that there are allowed ranges for each of the inputs. The passed
-argument must be within these ranges.
-
-You can look up allowed values of input arguments by running:
 ```{r}
-lgd_senior_claims_range_lookup
-
-lgd_subordinated_claims_range_lookup
-
-terminal_value_range_lookup
-
-risk_free_rate_range_lookup
-
-discount_rate_range_lookup
-
-div_netprofit_prop_coef_range_lookup
-
-shock_year_range_lookup
-
-term_range_lookup
-
-credit_type_lookup
+stress_test_arguments
 ```
 
 ### Understanding the input arguments
