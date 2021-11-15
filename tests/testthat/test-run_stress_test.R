@@ -23,7 +23,13 @@ test_that("output includes argument names with suffix '_arg'", {
 })
 
 test_that("with multiple inputs to non-iterable arguments errors gracefully", {
-  # FIXME: The error message is wrong. See */*/_snaps
   too_long <- 1:2
-  expect_snapshot_error(run_stress_test(asset_type = too_long))
+  expect_snapshot_error(
+    run_stress_test(asset_type = too_long, "a", "b", tempdir())
+  )
+
+  # FIXME: Not the error I expect
+  expect_snapshot_error(
+    run_stress_test(asset_type = too_long)
+  )
 })
