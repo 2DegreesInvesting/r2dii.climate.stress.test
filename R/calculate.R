@@ -138,13 +138,13 @@ calculate_exposure_by_technology_and_company <- function(asset_type,
               exposure_by_technology_and_company_filtered$company_name)
       )
     paste_write(
-      ">> When filtering out holdings with exposures of 0 value, dropped rows for",
+      format_intend_1(), "When filtering out holdings with exposures of 0 value, dropped rows for",
       n_companies_pre - n_companies_post, "out of", n_companies_pre, "companies",
     log_path = log_path)
-    paste_write("  >> percent loss:", percent_loss, log_path = log_path)
-    paste_write("  >> affected companies:", log_path = log_path)
+    paste_write(format_intend_2(), "percent loss:", percent_loss, log_path = log_path)
+    paste_write(format_intend_2(), "affected companies:", log_path = log_path)
     purrr::walk(affected_companies, function(company) {
-      paste_write("  >>", company, log_path = log_path)
+      paste_write(format_intend_2(), company, log_path = log_path)
     })
   }
 

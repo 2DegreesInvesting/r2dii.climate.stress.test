@@ -425,10 +425,9 @@ filter_negative_late_and_sudden <- function(data_with_late_and_sudden, log_path)
     # log_path will be NULL when function is called from webtool
     if (!is.null(log_path)) {
       paste_write(
-        paste0(
-          ">> Removed ", n_rows_before_removal - nrow(data_with_late_and_sudden),
-          " rows because negative production compensation targets were set in late and sudden production paths ways. Negative absolute production is impossible \n"
-        ), log_path = log_path
+          format_intend_1(), "Removed", n_rows_before_removal - nrow(data_with_late_and_sudden),
+          "rows because negative production compensation targets were set in late and sudden production paths ways. Negative absolute production is impossible \n"
+          , log_path = log_path
       )
     }
 
