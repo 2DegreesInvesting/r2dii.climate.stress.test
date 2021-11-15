@@ -277,14 +277,14 @@ report_dropped_company_names <- function(data_x, data_y, name_y, merge_cols, nam
     percent_loss <- (n_companies_x - n_companies) * 100/n_companies_x
     affected_companies <- sort(setdiff(data_x$company_name, data$company_name))
     paste_write(
-      format_intend_1(), "When joining", name_x, "on", name_y, "on column(s)", paste0(merge_cols, collapse = ", "), "could not match entries for",
+      format_indent_1(), "When joining", name_x, "on", name_y, "on column(s)", paste0(merge_cols, collapse = ", "), "could not match entries for",
       n_companies_x - n_companies, "out of", n_companies_x, "companies.",
       log_path = log_path
     )
-    paste_write(format_intend_2(), "percent loss:", percent_loss, log_path = log_path)
-    paste_write(format_intend_2(), "affected companies:", log_path = log_path)
+    paste_write(format_indent_2(), "percent loss:", percent_loss, log_path = log_path)
+    paste_write(format_indent_2(), "affected companies:", log_path = log_path)
     purrr::walk(affected_companies, function(company) {
-      paste_write(format_intend_2(), company, log_path = log_path)
+      paste_write(format_indent_2(), company, log_path = log_path)
     })
     paste_write("\n", log_path = log_path)
   }
@@ -394,5 +394,5 @@ paste_write <- function(..., log_path, append = TRUE) {
 }
 
 # helper functions to indent lines in logfile
-format_intend_1 <- function() {">>"}
-format_intend_2 <- function() {"  >>"}
+format_indent_1 <- function() {">>"}
+format_indent_2 <- function() {"  >>"}
