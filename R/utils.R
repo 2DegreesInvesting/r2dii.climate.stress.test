@@ -396,3 +396,32 @@ paste_write <- function(..., log_path, append = TRUE) {
 # helper functions to indent lines in logfile
 format_indent_1 <- function() {">>"}
 format_indent_2 <- function() {"  >>"}
+
+
+#' Checks if input args are missing
+#'
+#' Checks if any list entries in `args_list` are symbols. Called with
+#' `args_list` as input argument this serves as a proxy for checking is
+#' arguments are missing.
+#'
+#' @param args_list A named list.
+#'
+#' @return returns `args_list` invisibly.
+fail_if_input_args_are_missing <- function(args_list) {
+
+  missings <- purrr::map(args_list, is.symbol) %>%
+    purrr::keep(isTRUE)
+
+  if (length(missings) > 0) {
+    missing_args <- glue::glue_collapse(names(missings), sep = ", ")
+    rlang::abort(
+      c(
+        "All input arguments need to hold values.",
+        x = glue::glue("Missing arguments: {missing_args}."),
+        i = "Did you provide all input arguemnts correctly?."
+      )
+    )
+  }
+
+  invisible(args_list)
+}
