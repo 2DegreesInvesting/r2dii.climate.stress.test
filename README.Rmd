@@ -80,8 +80,11 @@ run_stress_test(
 
 ## Details
 
-To actually run an analysis, the project directories must be set up, input data
-must be prepared, and the options of the the functions ought to be understood.
+To actually run an analysis...
+
+* the project directories must be set up,
+* input data must be prepared and
+* the detailed options available for running the functions ought to be understood.
 
 Detailed information for all these steps and on interpreting the outcomes can be
 found in the articles linked below.
