@@ -22,16 +22,6 @@ write_stress_test_results <- function(results, expected_loss,
                                       sensitivity_analysis_vars, iter_var,
                                       output_path) {
 
-  if (!dir.exists(output_path)) {
-    rlang::abort(
-      c(
-        "Argument output_path must point to an existing directory.",
-        x = glue::glue("Invalid file path: {output_path}."),
-        i = "Did you set output_path correctly?."
-      )
-    )
-  }
-
   sensitivity_analysis_vars <- paste0(sensitivity_analysis_vars, "_arg")
 
   results %>%

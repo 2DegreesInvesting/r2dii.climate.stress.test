@@ -30,7 +30,10 @@ data.}
 \item{input_path_project_agnostic}{String holding path to project agnostic
 data.}
 
-\item{output_path}{String holding path to which output files are written.}
+\item{output_path}{String holding path to which output files are written.
+NOTE: Results and logs per run are saved to a subdirectory of output_path
+that will be generated automatically. The name of the subdirectory is the
+timestamp of the run of the analysis.}
 
 \item{lgd_senior_claims}{Numeric, holding the loss given default for senior
 claims, for accepted value range check \code{stress_test_arguments}.}

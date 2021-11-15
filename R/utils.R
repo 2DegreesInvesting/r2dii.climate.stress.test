@@ -408,7 +408,6 @@ format_indent_2 <- function() {"  >>"}
 #'
 #' @return returns `args_list` invisibly.
 fail_if_input_args_are_missing <- function(args_list) {
-
   missings <- purrr::map(args_list, is.symbol) %>%
     purrr::keep(isTRUE)
 
@@ -424,4 +423,30 @@ fail_if_input_args_are_missing <- function(args_list) {
   }
 
   invisible(args_list)
+}
+
+#' Customise output path
+#'
+#' Checks for existence of provided `output_path` and extends it to hold a
+#' subdirectory names after the timestamp.
+#'
+#' @param output_path String holding path to st output folder.
+#'
+#' @return Path to subdirectory in st output folder.
+customise_output_path <- function(output_path) {
+  if (!dir.exists(output_path)) {
+    rlang::abort(
+      c(
+        "Argument output_path must point to an existing directory.",
+        x = glue::glue("Invalid file path: {output_path}."),
+        i = "Did you set output_path correctly?."
+      )
+    )
+  }
+
+  output_path_with_ts <- file.path(output_path, Sys.time())
+
+  dir.create(output_path_with_ts)
+
+  return(output_path_with_ts)
 }
