@@ -21,3 +21,9 @@ test_that("output includes argument names with suffix '_arg'", {
   cols_from_arguments_have_suffix_arg <- purrr::map_lgl(data, ~rlang::has_name(.x, "term_arg"))
   expect_true(all(cols_from_arguments_have_suffix_arg))
 })
+
+test_that("with multiple inputs to non-iterable arguments errors gracefully", {
+  # FIXME: The error message is wrong. See */*/_snaps
+  too_long <- 1:2
+  expect_snapshot_error(run_stress_test(asset_type = too_long))
+})
