@@ -14,28 +14,29 @@
 #'   data.
 #' @param output_path String holding path to which output files are written.
 #' @param lgd_senior_claims Numeric, holding the loss given default for senior
-#'   claims, for accepted value range check `lgd_senior_claims_range_lookup`.
+#'   claims, for accepted value range check `stress_test_arguments`.
 #' @param lgd_subordinated_claims Numeric, holding the loss given default for
 #'   subordinated claims, for accepted value range check
-#'   `lgd_subordinated_claims_range_lookup`.
+#'   `stress_test_arguments`.
 #' @param terminal_value Numeric. A ratio to determine the share of the
 #'   discounted value used in the terminal value calculation beyond the
 #'   projected time frame. For accepted range compare
-#'   `terminal_value_range_lookup`.
+#'   `stress_test_arguments`.
 #' @param risk_free_rate Numeric that indicates the risk free rate of interest.
-#'   For accepted range compare `risk_free_rate_range_lookup`.
+#'   For accepted range compare `stress_test_arguments`.
 #' @param discount_rate Numeric, that holds the discount rate of dividends per
-#'   year in the DCF. For accepted range compare `discount_rate_range_lookup`.
+#'   year in the DCF. For accepted range compare `stress_test_arguments`.
 #' @param div_netprofit_prop_coef Numeric. A coefficient that determines how
 #'   strongly the future dividends propagate to the company value. For accepted
-#'   range compare `div_netprofit_prop_coef_range_lookup`.
+#'   range compare `stress_test_arguments`.
 #' @param shock_year Numeric, holding year the shock is applied. For accepted
-#'   range compare `shock_year_range_lookup`.
+#'   range compare `stress_test_arguments`.
 #' @param term Numeric. A coefficient that determines for which maturity the
 #'   expected loss should be calculated in the credit risk section. For accepted
-#'   range compare `term_range_lookup`.
+#'   range compare `stress_test_arguments`.
 #' @param company_exclusion Boolean, indicating if companies provided in dataset
-#'   excluded_companies.csv shall be excluded.
+#'   excluded_companies.csv shall be excluded. For accepted values compare
+#'   `stress_test_arguments`.
 #' @return NULL
 #' @export
 run_stress_test <- function(asset_type,

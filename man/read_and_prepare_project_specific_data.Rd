@@ -33,7 +33,7 @@ indicates which equity market to apply in the analysis.}
 
 \item{term}{Numeric. A coefficient that determines for which maturity the
 expected loss should be calculated in the credit risk section. For accepted
-range compare \code{term_range_lookup}.}
+range compare \code{stress_test_arguments}.}
 
 \item{path}{String holding path to data.}
 }

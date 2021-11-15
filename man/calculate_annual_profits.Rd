@@ -40,7 +40,7 @@ late & sudden technology trajectories.}
 \item{time_horizon}{Considered timeframe for PACTA analysis.}
 
 \item{discount_rate}{Numeric, that holds the discount rate of dividends per
-year in the DCF. For accepted range compare \code{discount_rate_range_lookup}.}
+year in the DCF. For accepted range compare \code{stress_test_arguments}.}
 
 \item{log_path}{String holding path to log file.}
 }

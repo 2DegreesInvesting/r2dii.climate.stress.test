@@ -34,36 +34,37 @@ data.}
 \item{output_path}{String holding path to which output files are written.}
 
 \item{lgd_senior_claims}{Numeric, holding the loss given default for senior
-claims, for accepted value range check \code{lgd_senior_claims_range_lookup}.}
+claims, for accepted value range check \code{stress_test_arguments}.}
 
 \item{lgd_subordinated_claims}{Numeric, holding the loss given default for
 subordinated claims, for accepted value range check
-\code{lgd_subordinated_claims_range_lookup}.}
+\code{stress_test_arguments}.}
 
 \item{terminal_value}{Numeric. A ratio to determine the share of the
 discounted value used in the terminal value calculation beyond the
 projected time frame. For accepted range compare
-\code{terminal_value_range_lookup}.}
+\code{stress_test_arguments}.}
 
 \item{risk_free_rate}{Numeric that indicates the risk free rate of interest.
-For accepted range compare \code{risk_free_rate_range_lookup}.}
+For accepted range compare \code{stress_test_arguments}.}
 
 \item{discount_rate}{Numeric, that holds the discount rate of dividends per
-year in the DCF. For accepted range compare \code{discount_rate_range_lookup}.}
+year in the DCF. For accepted range compare \code{stress_test_arguments}.}
 
 \item{div_netprofit_prop_coef}{Numeric. A coefficient that determines how
 strongly the future dividends propagate to the company value. For accepted
-range compare \code{div_netprofit_prop_coef_range_lookup}.}
+range compare \code{stress_test_arguments}.}
 
 \item{shock_year}{Numeric, holding year the shock is applied. For accepted
-range compare \code{shock_year_range_lookup}.}
+range compare \code{stress_test_arguments}.}
 
 \item{term}{Numeric. A coefficient that determines for which maturity the
 expected loss should be calculated in the credit risk section. For accepted
-range compare \code{term_range_lookup}.}
+range compare \code{stress_test_arguments}.}
 
 \item{company_exclusion}{Boolean, indicating if companies provided in dataset
-excluded_companies.csv shall be excluded.}
+excluded_companies.csv shall be excluded. For accepted values compare
+\code{stress_test_arguments}.}
 
 \item{iter_var}{String holding name of iteration variable.}
 }
