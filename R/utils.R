@@ -384,8 +384,9 @@ get_iter_var <- function(args_list) {
 
 #' Helper function for logging
 #'
-#' Wrapper around [write()] that concatenates objects passed in `...` and appends
-#' per default
+#' Wrapper around [write()] that concatenates objects passed in `...` and
+#' appends per default.
+#' @noRd
 paste_write <- function(..., log_path, append = TRUE) {
   text <- paste(...)
   write(text, file = log_path, append = append)
