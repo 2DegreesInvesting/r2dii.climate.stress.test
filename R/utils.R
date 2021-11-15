@@ -384,16 +384,11 @@ get_iter_var <- function(args_list) {
 
 #' Helper function for logging
 #'
-#' Concatenates onjects passed in `...` and writes resulting string to
-#' `logfile`.
-#'
-#' @param log_path String holding path to logfile.
-#' @param ... One or more R objects, to be converted to character vectors.
-#'
-#' @return NULL
-paste_write <- function(..., log_path) {
+#' Wrapper around [write()] that concatenates objects passed in `...` and appends
+#' per default
+paste_write <- function(..., log_path, append = TRUE) {
   text <- paste(...)
-  write(text, file = log_path, append = TRUE)
+  write(text, file = log_path, append = append)
   invisible()
 }
 
