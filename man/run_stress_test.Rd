@@ -74,3 +74,41 @@ vector of values to one (and only one) of the detail arguments. This will
 result in running the analysis multiple times in a row with the argument
 varied. NOTE: argument \code{asset_type} is not iterateable.
 }
+\examples{
+\dontshow{if (r2dii.climate.stress.test:::run_example()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+library(fs)
+
+input_specific <- "/home/mauro/tmp/st/ST_TESTING_BONDS/inputs"
+input_agnostic <- "/home/mauro/tmp/st/ST_INPUTS_MASTER"
+output <- tempdir()
+fs::dir_create(output)
+
+# `run_stress_test()` for bonds with default arguments
+stress_test_arguments[c("name", "default")]
+
+run_stress_test(
+  asset_type = "bonds",
+  input_path_project_specific = input_specific,
+  input_path_project_agnostic = input_agnostic,
+  output_path = output
+)
+
+# Similar, but iterating over the `term` argument with values 1 and 2
+run_stress_test("bonds", input_specific, input_agnostic, output, term = 1:2)
+
+# Inspect the outputs directory
+fs::dir_tree(output)
+
+# Inspect some lines of the log for the first run
+(logs <- fs::dir_ls(output, regexp = "log.*[.]txt$", recurse = TRUE))
+first_run <- 1
+some_lines <- 20
+writeLines(head(readLines(logs[[first_run]]), some_lines))
+
+# Read the one kind of result from the second run
+this_result <- "bonds_comp_el.*[.]csv$"
+second_run <- 2
+path <- fs::dir_ls(output, regexp = this_result, recurse = TRUE)[[second_run]]
+readr::read_csv(path)
+\dontshow{\}) # examplesIf}
+}

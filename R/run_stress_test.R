@@ -41,6 +41,41 @@
 #'   excluded_companies.csv shall be excluded.
 #' @return NULL
 #' @export
+#' @examplesIf r2dii.climate.stress.test:::run_example()
+#' library(fs)
+#'
+#' input_specific <- "/home/mauro/tmp/st/ST_TESTING_BONDS/inputs"
+#' input_agnostic <- "/home/mauro/tmp/st/ST_INPUTS_MASTER"
+#' output <- tempdir()
+#' fs::dir_create(output)
+#'
+#' # `run_stress_test()` for bonds with default arguments
+#' stress_test_arguments[c("name", "default")]
+#'
+#' run_stress_test(
+#'   asset_type = "bonds",
+#'   input_path_project_specific = input_specific,
+#'   input_path_project_agnostic = input_agnostic,
+#'   output_path = output
+#' )
+#'
+#' # Similar, but iterating over the `term` argument with values 1 and 2
+#' run_stress_test("bonds", input_specific, input_agnostic, output, term = 1:2)
+#'
+#' # Inspect the outputs directory
+#' fs::dir_tree(output)
+#'
+#' # Inspect some lines of the log for the first run
+#' (logs <- fs::dir_ls(output, regexp = "log.*[.]txt$", recurse = TRUE))
+#' first_run <- 1
+#' some_lines <- 20
+#' writeLines(head(readLines(logs[[first_run]]), some_lines))
+#'
+#' # Read the one kind of result from the second run
+#' this_result <- "bonds_comp_el.*[.]csv$"
+#' second_run <- 2
+#' path <- fs::dir_ls(output, regexp = this_result, recurse = TRUE)[[second_run]]
+#' readr::read_csv(path)
 run_stress_test <- function(asset_type,
                             input_path_project_specific,
                             input_path_project_agnostic,
@@ -86,6 +121,11 @@ run_stress_test <- function(asset_type,
   )
 
   cat("-- Exported results to designated output path. \n")
+}
+
+run_example <- function() {
+  is_me <- identical(path.expand("~"), "/home/mauro")
+  is_me
 }
 
 #' Iterate over stress test runs
