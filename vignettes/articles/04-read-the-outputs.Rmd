@@ -29,8 +29,8 @@ analysis.
 
 ### Market Risk
 
-* stress_test_results_loans_port_\<suffix\>.csv
 * stress_test_results_loans_comp_\<suffix\>.csv
+* stress_test_results_loans_port_\<suffix\>.csv
 
 ### Credit Risk
 
@@ -40,4 +40,218 @@ analysis.
 
 ## Details
 
-**OPEN**
+In this section, we look at the output files and what each of the variables they
+contain mean.
+
+### Shared Outputs: Model Parameters
+
+All result files discussed below contain information on the settings of the
+stress testing model. This means they all contain the following common variables:
+
+* `asset_type_arg`: Asset type for which the analysis was run.
+* `lgd_senior_claims_arg`: Loss given default of senior claims set in the analysis
+(this is only relevant for expected loss calculations of loan books). 
+* `lgd_subordinated_claims_arg` Loss given default of subordinated claims set in
+the analysis (this is not relevant forexpected loss calculations  on loan books). 
+* `terminal_value_arg`: Terminal value used in the DCF model for which the
+analysis was run.
+* `risk_free_rate_arg`: Risk free interest rate used in the Merton credit risk
+model for which the analysis was run.
+* `discount_rate_arg`: Discount rate used in the DCF model for which the
+analysis was run.
+* `div_netprofit_prop_coef_arg`: Dividends net profit proportionality
+coefficient used in the Market risk model to derive percentage value changes
+based on changes in future company profits.
+* `shock_year_arg`: Shock year for which the analysis was run.
+* `term_arg`: Number of years until maturity used in the expected loss
+calculation of the credit risk model for which the analysis was run.
+* `company_exclusion_arg`: Indicates whether any company exclusion based on
+phasing out of technologies was done in the analysis.
+
+While there is some redundancy to this information, it is the easiest way to
+ensure the results remain reproducible and a straight forward way for the user
+to understand given magnitudes in the model results. In the standard case this
+implies that the argument columns each just contain one value.
+
+#### Sensitivity Analyses
+
+Running a sensitivity analysis produces as many standard results as parameter
+values are passed to the model variable of interest. To make the ensuing
+analysis easy and avoid clutter in the output directory, analysis outputs will
+use the name if the variable that is varied as the suffix and simply contain
+the results of multiple runs in one file. The variation can be seen by looking
+the argument column of the variable that was iterated over. Instead of just one
+value, it will contain values for every iteration of the sensitivity analysis.
+
+### stress_test_results_loans_comp_\<suffix\>
+
+This result file contains relative expected value changes on the
+company-technology level, based on the DCF model to calculate market risk.
+It additionally contains aggregations of these relative value changes to the
+exposures of the companies, technologies and sectors included in the portfolio
+or loan book.
+
+* `investor_name`: Name of the investor or bank for which the analysis was run.
+* `portfolio_name`: Name of the portfolio or loan book managed by the investor
+or bank for which the analysis was run.
+* `company_name`: Name of the company that was analyzed.
+* `scenario_geography`: Region for which the analysis was run. This refers to the
+location of assets considered as well as the regionality of scenario targets used.
+* `scenario_name`: Name that highlights the use of the Carbon budget compensation
+mechanism and the Year of the introduction of a transition policy.
+* `year_of_shock`: Year the transition policy is first introduced.
+* `duration_of_shock`: Number of years the companies have to compensate for any
+previous misalignment of their production plans relative to scenario targets.
+When using a Carbon budget approach, this is the period between the chock year
+and the end year of the analysis.
+* `ald_sector`: Sector of the production assets analyzed.
+* `technology`: The technology can be understood as a sub sector. These must be in
+line with the technologies, for which the scenarios provide production pathways.
+* `production_shock_perc`: Percentage points of annual production change in case
+the shock is set manually, not via the Carbon budget mechanism. This is
+currently not supported and therefore contains NA values.
+* `asset_portfolio_value`: Value of all holdings of the given asset type in the
+analysed portfolio.
+* `tech_company_exposure`: Exposure of the portfolio or loan book to the
+company_technology level. This is approximated by multiplying the company
+production technology share with the overall company exposure.
+* `VaR_tech_company`: Relative potential value change due to the policy shock on
+the company-technology level for the portfolio or loan book at hand. Value in
+percentage points, i.e. a value of -2.5 indicates a potential loss of 2.5%
+points for the given combination.
+* `tech_company_value_change`: Potential absolute value change of the portfolio
+or loan book on the company-technology level indicated. Calculated as
+`tech_company_exposure * VaR_tech_company`.
+* `company_exposure`: Exposure of the portfolio or loan book to the
+company indicated.
+* `VaR_company`: Relative potential value change due to the policy shock on
+the company level for the portfolio or loan book at hand. Value in percentage
+points.
+* `company_value_change`: Potential absolute value change of the portfolio or
+loan book on the company level indicated. Calculated as
+`company_exposure * VaR_company`.
+* `technology_exposure`: Exposure of the portfolio or loan book to the
+technology indicated. This is an aggregate of the technology exposure across all
+companies with production in the given technology.
+* `VaR_technology`: Relative potential value change of the sub sector indicated
+by the technology across all companies with production in the given technology.
+Value in percentage points.
+* `technology_value_change`: Potential absolute value change of the portfolio or
+loan book on the technology level indicated. Calculated as
+`technology_exposure * VaR_technology`.
+* `sector_exposure`: Exposure of the portfolio or loan book to the sector
+indicated. This is an aggregate of the sector exposure across all companies with
+production in the given sector.
+* `VaR_sector`: Relative potential value change of the sector indicated across
+all companies with production in the given sector. Value in percentage points.
+* `sector_value_change`: Potential absolute value change of the portfolio or
+loan book on the sector level indicated. Calculated as
+`sector_exposure * VaR_sector`.
+* `analysed_sectors_exposure`: Exposure of the portfolio or loan book to all
+sectors in scope of the analysis. This is an aggregate of the exposure across
+all companies with production in the sectors that are in scope.
+* `VaR_analysed_sectors`: Relative potential value change of portfolio or loan
+book across all companies with production in the in-scope sectors. Value in
+percentage points.
+* `analysed_sectors_value_change`: Potential absolute value change of the
+portfolio or loan book on the level of in scope sectors. Calculated as
+`analysed_sectors_exposure * VaR_analysed_sectors`.
+* `portfolio_aum`: Total absolute value of the assets under management for the
+given asset type.
+* `portfolio_value_change_perc`: Relative potential value change of portfolio or
+loan book across all companies relative to the total portfolio value. Note that
+this does not cover potential losses for out of scope companies. Value in
+percentage points.
+* `portfolio_value_change`: Potential absolute value change of the portfolio or
+loan book. Calculated as `portfolio_aum * portfolio_value_change_perc`.
+* `exclude`: Logical indicator that shows if the given combination of company
+and technology was excluded from the shock because the production forecast
+indicated a phase out in production.
+
+### stress_test_results_loans_port_\<suffix\>
+
+This result file contains relative expected value changes on the portfolio level,
+based on the DCF model to calculate market risk. It additionally contains
+aggregations on the technology, sector and total levels. The columns and rows in
+this file are a subset of the ones included in the company level output.
+The user can refer to the explanations above for reference.
+
+### stress_test_results_loans_comp_el_\<suffix\>
+
+This result file contains expected changes in the probability of default and in
+expected losses. The company level pd changes are used to derive loan book level
+changes in expected loss.
+
+* `scenario_name`: Name that highlights the use of the Carbon budget.
+compensation mechanism and the Year of the introduction of a transition policy.
+* `scenario_geography`: Region for which the analysis was run. This refers to
+the location of assets considered as well as the regionality of scenario targets
+used.
+* `investor_name`: Name of the investor or bank for which the analysis was run.
+* `portfolio_name`: Name of the portfolio or loan book managed by the investor
+or bank for which the analysis was run.
+* `company_name`: Name of the company that was analyzed.
+* `ald_sector`: Sector of the production assets analyzed.
+* `pd`: Starting point probability of default for loans to the given company in
+the loan book in percentage points.
+* `PD_change`: Change in probability of default of the given company, based on
+the Merton credit risk model and a climate transition policy shock as indicated.
+in `scenario_name`. In percentage points. Notice: A positive number indicates
+the probability of default increases, hence the expected loss also increases.
+* `lgd`: Loss given default applied in the calculation oof the expected loss.
+Depending on which asset type was analyzed, this will reflect the setting of
+either `lgd_senior_claims_arg` or `lgd_subordinated_claims_arg`. For corporate
+loan books, this reflects senior claims.
+* `exposure_at_default`: The absolute amount of exposure to a company in the
+given portfolio or loan book. For loan books, this is the sum of outstanding
+loans (or alternatively of the credit limit) to a company.
+* `expected_loss_baseline`: The expected loss of the holdings of a company in
+the analyzed portfolio or loan book based on the exposure to that company under
+a baseline (commonly business as usual) scenario. This is calculated as:
+`pd * lgd * exposure_at_default`.
+* `expected_loss_late_sudden`: The expected loss of the holdings of a company in
+the analyzed portfolio or loan book based on the exposure to that company under
+a shock scenario (here: a late and sudden climate transition policy). This is
+calculated as: `(pd + PD_change) * lgd * exposure_at_default`.
+
+### stress_test_results_loans_sector_pd_changes_annual_\<suffix\>
+
+This file contains an overview on the sector level of how annual probabilities
+of default change relative to the baseline scenario after the shock year.
+
+* `scenario_name`: Name that highlights the use of the Carbon budget.
+compensation mechanism and the Year of the introduction of a transition policy.
+* `scenario_geography`: Region for which the analysis was run. This refers to
+the location of assets considered as well as the regionality of scenario targets
+used.
+* `investor_name`: Name of the investor or bank for which the analysis was run.
+* `portfolio_name`: Name of the portfolio or loan book managed by the investor
+or bank for which the analysis was run.
+* `ald_sector`: Sector of the production assets analyzed.
+* `year`: Calendar year.
+* `PD_change`: Change in probability of default of the the companies in the
+portfolio or loan book, aggregated to the sector level. This PD change assumes a
+loan of one year maturity at the point in time indicated by `year`.
+Specifically, it shows how the probability of default of such a loan that is
+rolled over every year after the policy shock will change over time.
+
+### stress_test_results_loans_sector_pd_changes_overall_\<suffix\>
+
+This file contains an overview on the sector level of how overall probabilities
+of default change depending on the maturities of the underlying loans.
+
+* `scenario_name`: Name that highlights the use of the Carbon budget
+* `scenario_geography`: Region for which the analysis was run. This refers to
+the location of assets considered as well as the regionality of scenario targets
+used.
+* `investor_name`: Name of the investor or bank for which the analysis was run.
+* `portfolio_name`: Name of the portfolio or loan book managed by the investor
+or bank for which the analysis was run.
+* `ald_sector`: Sector of the production assets analyzed.
+* `term`: Years to maturity of the loans.
+* `PD_change`: Change in probability of default of the the companies in the
+portfolio or loan book, aggregated to the sector level. This PD change shows
+variation of the impact on PDs by different maturities on the sector level.
+
+
+
