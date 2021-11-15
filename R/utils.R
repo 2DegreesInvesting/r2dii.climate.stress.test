@@ -425,6 +425,14 @@ fail_if_input_args_are_missing <- function(args_list) {
   invisible(args_list)
 }
 
+#' Customise output path
+#'
+#' Checks for existence of provided `output_path` and extends it to hold a
+#' subdirectory names after the timestamp.
+#'
+#' @param output_path String holding path to st output folder.
+#'
+#' @return Path to subdirectory in st output folder.
 customise_output_path <- function(output_path) {
   if (!dir.exists(output_path)) {
     rlang::abort(
