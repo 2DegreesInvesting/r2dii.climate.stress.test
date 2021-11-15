@@ -34,19 +34,15 @@ devtools::install_github("2DegreesInvesting/r2dii.climate.stress.test")
 
 ## Example
 
-  - Use `library()` to attach the package
-
-<!-- end list -->
+-   Use `library()` to attach the package
 
 ``` r
 library(r2dii.climate.stress.test)
 ```
 
-  - Stress tests for corporate loans require a preparatory step for
+-   Stress tests for corporate loans require a preparatory step for
     input data preparation for initial application of stress testing on
     a loan book
-
-<!-- end list -->
 
 ``` r
 run_prep_calculation_loans(
@@ -56,9 +52,7 @@ run_prep_calculation_loans(
 )
 ```
 
-  - Run climate stress tests
-
-<!-- end list -->
+-   Run climate stress tests
 
 ``` r
 ## run stress testing for assets of type corporate loans using default parameters
@@ -90,3 +84,12 @@ outcomes can be found in the articles linked below.
 
 [Further
 Information](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/).
+
+## Funding
+
+The development of the stress test methodology and the technical
+software implementation was funded by the EU - LIFE PACTA 2.0 (LIFE19
+GIC/DE/001294). The views expressed are the sole responsibility of the
+authors and do not necessarily reflect the views of the funders. The
+funders are not responsible for any use that may be made of the
+information it contains.
