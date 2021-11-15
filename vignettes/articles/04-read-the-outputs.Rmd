@@ -29,14 +29,14 @@ analysis.
 
 ### Market Risk
 
-* stress_test_results_loans_port_<suffix>.csv
-* stress_test_results_loans_comp_<suffix>.csv
+* stress_test_results_loans_port_\<suffix\>.csv
+* stress_test_results_loans_comp_\<suffix\>.csv
 
 ### Credit Risk
 
-* stress_test_results_loans_comp_el_<suffix>.csv
-* stress_test_results_loans_sector_pd_changes_annual_<suffix>.csv
-* stress_test_results_loans_sector_pd_changes_overall_<suffix>.csv
+* stress_test_results_loans_comp_el_\<suffix\>.csv
+* stress_test_results_loans_sector_pd_changes_annual_\<suffix\>.csv
+* stress_test_results_loans_sector_pd_changes_overall_\<suffix\>.csv
 
 ## Details
 
