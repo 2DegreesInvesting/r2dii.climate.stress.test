@@ -56,7 +56,7 @@ read_and_prepare_project_agnostic_data <- function(start_year, end_year, company
     )
 
   financial_data <- read_financial_data(
-    path = file.path(get_st_data_path(), "prewrangled_financial_data_stress_test.csv")
+    path = file.path(path, "prewrangled_financial_data_stress_test.csv")
   ) %>%
     check_financial_data(asset_type = asset_type)
 
