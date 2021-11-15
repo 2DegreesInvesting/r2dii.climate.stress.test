@@ -1,8 +1,8 @@
 #-------------- Change checking helper
 
 # defining some functions
-import_asset_results <- function() {
-  results_path <- get_st_data_path("ST_PROJECT_FOLDER_OUTPUT")
+import_asset_results <- function(run_ts) {
+  results_path <- file.path(get_st_data_path("ST_PROJECT_FOLDER_OUTPUT"), run_ts)
 
   loanbook_results_company <- readr::read_csv(file.path(results_path, "stress_test_results_loans_comp_standard.csv"))
   loanbook_results_port <- readr::read_csv(file.path(results_path, "stress_test_results_loans_port_standard.csv"))
@@ -63,7 +63,9 @@ run_stress_test(
 )
 
 ### 2. run the following lines to obtain results
-old_results <- import_asset_results()
+## TODO: set run_ts to dir name
+run_ts <- "ADD_ME"
+old_results <- import_asset_results(run_ts = run_ts)
 
 ### 3. check out dev branch of repo (or whichever branch you want to use as comparison)
 devtools::load_all()
@@ -76,7 +78,9 @@ run_stress_test(
 
 
 ### 4. run the following lines to run script or equity and bonds and obtain results
-new_results <- import_asset_results()
+## TODO: set run_ts to dir name
+run_ts <- "ADD_ME"
+new_results <- import_asset_results(run_ts = run_ts)
 
 ### 5. run the following line to check that data remained unchanged.
 check <- check_all_equal(old_results = old_results, new_results = new_results)
