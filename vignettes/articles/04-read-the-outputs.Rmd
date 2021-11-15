@@ -23,18 +23,20 @@ test for a given set of parameters.
 They can loosely be grouped in files that contain estimates of the market risk
 of companies in the portfolio and of the credit risk of said companies in a
 corporate loan book. Depending on the use case, one or the other may contain
-more relevant information.
+more relevant information. In addition, a log file is written to the results
+directory. It holds an overview on holdings that could not be considered in the
+analysis.
 
 ### Market Risk
 
-* stress_test_results_loans_port_suffix.csv
-* stress_test_results_loans_comp_suffix.csv
+* stress_test_results_loans_port_<suffix>.csv
+* stress_test_results_loans_comp_<suffix>.csv
 
 ### Credit Risk
 
-* stress_test_results_loans_comp_el_suffix.csv
-* stress_test_results_loans_sector_pd_changes_annual_suffix.csv
-* stress_test_results_loans_sector_pd_changes_overall_suffix.csv
+* stress_test_results_loans_comp_el_<suffix>.csv
+* stress_test_results_loans_sector_pd_changes_annual_<suffix>.csv
+* stress_test_results_loans_sector_pd_changes_overall_<suffix>.csv
 
 ## Details
 

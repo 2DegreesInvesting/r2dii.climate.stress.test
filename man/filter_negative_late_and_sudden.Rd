@@ -4,11 +4,13 @@
 \alias{filter_negative_late_and_sudden}
 \title{Remove negative late and sudden rows}
 \usage{
-filter_negative_late_and_sudden(data_with_late_and_sudden)
+filter_negative_late_and_sudden(data_with_late_and_sudden, log_path)
 }
 \arguments{
 \item{data_with_late_and_sudden}{A tibble containing scenario data with
 projected late and sudden trajectory.}
+
+\item{log_path}{String holding path to log file.}
 }
 \value{
 Input tibble with potentially removed rows.

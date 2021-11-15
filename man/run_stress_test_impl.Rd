@@ -8,6 +8,7 @@ run_stress_test_impl(
   asset_type,
   input_path_project_specific,
   input_path_project_agnostic,
+  output_path,
   lgd_senior_claims,
   lgd_subordinated_claims,
   terminal_value,
@@ -16,7 +17,8 @@ run_stress_test_impl(
   div_netprofit_prop_coef,
   shock_year,
   term,
-  company_exclusion
+  company_exclusion,
+  iter_var
 )
 }
 \arguments{
@@ -28,6 +30,8 @@ data.}
 
 \item{input_path_project_agnostic}{String holding path to project agnostic
 data.}
+
+\item{output_path}{String holding path to which output files are written.}
 
 \item{lgd_senior_claims}{Numeric, holding the loss given default for senior
 claims, for accepted value range check \code{lgd_senior_claims_range_lookup}.}
@@ -60,6 +64,8 @@ range compare \code{term_range_lookup}.}
 
 \item{company_exclusion}{Boolean, indicating if companies provided in dataset
 excluded_companies.csv shall be excluded.}
+
+\item{iter_var}{String holding name of iteration variable.}
 }
 \value{
 A list of stress test results.

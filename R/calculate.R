@@ -3,6 +3,7 @@
 #' Wrapper function to calculate annual profits.
 #'
 #' @inheritParams validate_input_values
+#' @inheritParams report_company_drops
 #' @param asset_type String holding type of asset.
 #' @param input_data_list List with project agnostic and project specific input data
 #' @param scenario_to_follow_baseline Character. A string that indicates which
@@ -20,7 +21,7 @@
 #' @return A tibble holding annual profits
 calculate_annual_profits <- function(asset_type, input_data_list, scenario_to_follow_baseline,
                                      scenario_to_follow_ls, transition_scenario, start_year,
-                                     end_year, time_horizon, discount_rate) {
+                                     end_year, time_horizon, discount_rate, log_path) {
   price_data <- input_data_list$df_price %>%
     calc_late_sudden_prices(
       baseline_scenario = scenario_to_follow_baseline,
@@ -48,7 +49,8 @@ calculate_annual_profits <- function(asset_type, input_data_list, scenario_to_fo
       scenario_to_follow_ls_aligned = scenario_to_follow_ls,
       start_year = start_year,
       end_year = end_year,
-      analysis_time_frame = time_horizon
+      analysis_time_frame = time_horizon,
+      log_path = log_path
     ) %>%
     exclude_companies(
       exclusion = input_data_list$excluded_companies,
@@ -84,11 +86,12 @@ calculate_annual_profits <- function(asset_type, input_data_list, scenario_to_fo
 #' Wrapper to calculate exposure_by_technology_and_company.
 #'
 #' @inheritParams calculate_annual_profits
+#' @inheritParams report_company_drops
 #'
 #' @return A tibble holding exposure_by_technology_and_company.
 calculate_exposure_by_technology_and_company <- function(asset_type,
                                                          input_data_list, start_year,
-                                                         scenario_to_follow_ls) {
+                                                         scenario_to_follow_ls, log_path) {
   if (asset_type == "bonds") {
     subset_cols <- c("company_name", "corporate_bond_ticker", "pd")
     merge_cols <- c("company_name", "id" = "corporate_bond_ticker")
@@ -134,14 +137,14 @@ calculate_exposure_by_technology_and_company <- function(asset_type,
       setdiff(exposure_by_technology_and_company$company_name,
               exposure_by_technology_and_company_filtered$company_name)
       )
-    cat(
-      "      >> When filtering out holdings with exposures of 0 value, dropped rows for",
-      n_companies_pre - n_companies_post, "out of", n_companies_pre, "companies\n"
-    )
-    cat("        >> percent loss:", percent_loss, "\n")
-    cat("        >> affected companies:\n")
+    paste_write(
+      format_indent_1(), "When filtering out holdings with exposures of 0 value, dropped rows for",
+      n_companies_pre - n_companies_post, "out of", n_companies_pre, "companies",
+    log_path = log_path)
+    paste_write(format_indent_2(), "percent loss:", percent_loss, log_path = log_path)
+    paste_write(format_indent_2(), "affected companies:", log_path = log_path)
     purrr::walk(affected_companies, function(company) {
-      cat("          >>", company, "\n")
+      paste_write(format_indent_2(), company, log_path = log_path)
     })
   }
 

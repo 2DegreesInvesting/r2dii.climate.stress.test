@@ -8,7 +8,8 @@ calculate_exposure_by_technology_and_company(
   asset_type,
   input_data_list,
   start_year,
-  scenario_to_follow_ls
+  scenario_to_follow_ls,
+  log_path
 )
 }
 \arguments{
@@ -21,6 +22,8 @@ calculate_exposure_by_technology_and_company(
 \item{scenario_to_follow_ls}{Character. A string that indicates which
 of the scenarios included in the analysis should be used to set the
 late & sudden technology trajectories.}
+
+\item{log_path}{String holding path to log file.}
 }
 \value{
 A tibble holding exposure_by_technology_and_company.

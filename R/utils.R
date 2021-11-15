@@ -218,10 +218,11 @@ report_duplicates <- function(data, cols, throw_error = TRUE) {
 #' are lsot due to a missing match in financial_data or price_data.
 #'
 #' @param data_list A list of imported stress test input data.
+#' @param log_path String holding path to log file.
 #' @inheritParams validate_input_values
 #'
 #' @return NULL
-report_company_drops <- function(data_list, asset_type) {
+report_company_drops <- function(data_list, asset_type, log_path) {
 
   if (asset_type == "bonds") {
     merge_cols <- c("company_name", "id" = "corporate_bond_ticker")
@@ -233,14 +234,16 @@ report_company_drops <- function(data_list, asset_type) {
     data_x = data_list$pacta_result,
     data_y = data_list$financial_data,
     name_y = "financial data",
-    merge_cols = merge_cols
+    merge_cols = merge_cols,
+    log_path = log_path
   )
 
   report_dropped_company_names(
     data_x = data_list$pacta_result,
     data_y = data_list$df_price,
     name_y = "price data",
-    merge_cols = c("technology", "ald_sector" = "sector", "year")
+    merge_cols = c("technology", "ald_sector" = "sector", "year"),
+    log_path = log_path
   )
 
   invisible()
@@ -256,9 +259,10 @@ report_company_drops <- function(data_list, asset_type) {
 #' @param name_y Name of `data_x`.
 #' @param merge_cols Vector holds columns to join on.
 #' @param name_x Name of `data_x, defults to PACTA results.
+#' @inheritParams report_company_drops
 #'
 #' @return The merged dataset.
-report_dropped_company_names <- function(data_x, data_y, name_y, merge_cols, name_x = "PACTA results") {
+report_dropped_company_names <- function(data_x, data_y, name_y, merge_cols, name_x = "PACTA results", log_path) {
 
   data <- data_x %>%
     dplyr::inner_join(
@@ -272,15 +276,17 @@ report_dropped_company_names <- function(data_x, data_y, name_y, merge_cols, nam
   if (n_companies < n_companies_x) {
     percent_loss <- (n_companies_x - n_companies) * 100/n_companies_x
     affected_companies <- sort(setdiff(data_x$company_name, data$company_name))
-    cat(
-      "      >> When joining", name_x, "on", name_y, "on column(s)", paste0(merge_cols, collapse = ", "), "could not match entries for",
-      n_companies_x - n_companies, "out of", n_companies_x, "companies.\n"
+    paste_write(
+      format_indent_1(), "When joining", name_x, "on", name_y, "on column(s)", paste0(merge_cols, collapse = ", "), "could not match entries for",
+      n_companies_x - n_companies, "out of", n_companies_x, "companies.",
+      log_path = log_path
     )
-    cat("        >> percent loss:", percent_loss, "\n")
-    cat("        >> affected companies:\n")
+    paste_write(format_indent_2(), "percent loss:", percent_loss, log_path = log_path)
+    paste_write(format_indent_2(), "affected companies:", log_path = log_path)
     purrr::walk(affected_companies, function(company) {
-      cat("          >>", company, "\n")
+      paste_write(format_indent_2(), company, log_path = log_path)
     })
+    paste_write("\n", log_path = log_path)
   }
   return(data)
 }
@@ -358,7 +364,7 @@ get_iter_var <- function(args_list) {
   } else if (nrow(iterate_arg) == 1) {
     iter_var <- iterate_arg$name
 
-    if (iter_var %in% c("asset_type", path_vars_lookup)) {
+    if (iter_var %in% c("asset_type", setup_vars_lookup)) {
       rlang::abort(c(
         "Must not provide more than one value for not iterateable argument",
         x = glue::glue("Arguments with multiple values: {toString(iter_var)}."),
@@ -375,3 +381,18 @@ get_iter_var <- function(args_list) {
 
   return(iter_var)
 }
+
+#' Helper function for logging
+#'
+#' Wrapper around [write()] that concatenates objects passed in `...` and
+#' appends per default.
+#' @noRd
+paste_write <- function(..., log_path, append = TRUE) {
+  text <- paste(...)
+  write(text, file = log_path, append = append)
+  invisible()
+}
+
+# helper functions to indent lines in logfile
+format_indent_1 <- function() {">>"}
+format_indent_2 <- function() {"  >>"}

@@ -13,7 +13,8 @@ calculate_annual_profits(
   start_year,
   end_year,
   time_horizon,
-  discount_rate
+  discount_rate,
+  log_path
 )
 }
 \arguments{
@@ -40,6 +41,8 @@ late & sudden technology trajectories.}
 
 \item{discount_rate}{Numeric, that holds the discount rate of dividends per
 year in the DCF. For accepted range compare \code{discount_rate_range_lookup}.}
+
+\item{log_path}{String holding path to log file.}
 }
 \value{
 A tibble holding annual profits

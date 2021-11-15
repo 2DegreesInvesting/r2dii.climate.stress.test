@@ -51,11 +51,12 @@ run_stress_test <- function(asset_type,
                             shock_year = 2030,
                             term = 2,
                             company_exclusion = TRUE) {
-  cat("Running transition risk stress test \n")
+  cat("-- Running transition risk stress test \n\n\n")
 
   args_list <- mget(names(formals()), sys.frame(sys.nframe()))
   iter_var <- get_iter_var(args_list)
-  args_tibble <- tibble::as_tibble(args_list)
+  args_tibble <- tibble::as_tibble(args_list) %>%
+    dplyr::mutate(iter_var = .env$iter_var)
 
   st_results_list <- purrr::map(1:nrow(args_tibble), run_stress_test_iteration, args_tibble = args_tibble)
 
@@ -73,7 +74,7 @@ run_stress_test <- function(asset_type,
     overall_pd_changes = st_results$overall_pd_changes,
     asset_type = asset_type,
     calculation_level = calculation_level_lookup,
-    sensitivity_analysis_vars = names(args_list)[!names(args_list) %in% path_vars_lookup],
+    sensitivity_analysis_vars = names(args_list)[!names(args_list) %in% setup_vars_lookup],
     iter_var = iter_var,
     output_path = output_path
   )
@@ -93,11 +94,10 @@ run_stress_test_iteration <- function(n, args_tibble) {
     dplyr::slice(n)
 
   arg_list_row <- arg_tibble_row %>%
-    dplyr::select(-output_path) %>%
     as.list()
 
   arg_tibble_row <- arg_tibble_row %>%
-    dplyr::select(-path_vars_lookup) %>%
+    dplyr::select(-setup_vars_lookup) %>%
     dplyr::rename_with(~paste0(.x, "_arg"))
 
   st_result <- do.call(args = arg_list_row, what = run_stress_test_impl) %>%
@@ -110,11 +110,13 @@ run_stress_test_iteration <- function(n, args_tibble) {
 #' Runs stress test per iteration.
 #'
 #' @inheritParams run_stress_test
+#' @inheritParams write_stress_test_results
 #'
 #' @return A list of stress test results.
 run_stress_test_impl <- function(asset_type,
                                  input_path_project_specific,
                                  input_path_project_agnostic,
+                                 output_path,
                                  lgd_senior_claims,
                                  lgd_subordinated_claims,
                                  terminal_value,
@@ -123,8 +125,10 @@ run_stress_test_impl <- function(asset_type,
                                  div_netprofit_prop_coef,
                                  shock_year,
                                  term,
-                                 company_exclusion) {
-  cat("Validating input arguments. \n")
+                                 company_exclusion,
+                                 iter_var) {
+
+  cat("-- Validating input arguments. \n")
 
   validate_input_values(
     lgd_senior_claims = lgd_senior_claims,
@@ -138,6 +142,18 @@ run_stress_test_impl <- function(asset_type,
     company_exclusion = company_exclusion,
     asset_type = asset_type
   )
+
+  args_list <- mget(names(formals()), sys.frame(sys.nframe()))
+
+  log_path <- file.path(output_path, paste0("log_file_", iter_var, ".txt"))
+
+  paste_write("\n\nIteration with parameter settings:", log_path = log_path)
+  purrr::walk(names(args_list), function(name) {
+    paste(name, magrittr::extract2(args_list, name), sep = ": ") %>%
+      paste_write(log_path = log_path)
+  })
+  paste_write("\n", log_path = log_path)
+
 
   cat("-- Configuring analysis settings. \n")
 
@@ -199,7 +215,8 @@ run_stress_test_impl <- function(asset_type,
 
   report_company_drops(
     data_list = input_data_list,
-    asset_type = asset_type
+    asset_type = asset_type,
+    log_path = log_path
   )
 
   check_scenario_availability(
@@ -227,14 +244,16 @@ run_stress_test_impl <- function(asset_type,
     start_year = start_year,
     end_year = end_year,
     time_horizon = time_horizon,
-    discount_rate = discount_rate
+    discount_rate = discount_rate,
+    log_path = log_path
   )
 
   exposure_by_technology_and_company <- calculate_exposure_by_technology_and_company(
     asset_type = asset_type,
     input_data_list = input_data_list,
     start_year = start_year,
-    scenario_to_follow_ls = scenario_to_follow_ls
+    scenario_to_follow_ls = scenario_to_follow_ls,
+    log_path = log_path
   )
 
   results <- company_asset_value_at_risk(
@@ -248,7 +267,7 @@ run_stress_test_impl <- function(asset_type,
     exclusion = input_data_list$excluded_companies
   )
 
-  cat("-- Calculating credit risk. \n")
+  cat("-- Calculating credit risk. \n\n\n")
 
   overall_pd_changes <- annual_profits %>%
     calculate_pd_change_overall(
