@@ -112,12 +112,12 @@
 <ul>
 <li>Use <code><a href="https://rdrr.io/r/base/library.html">library()</a></code> to attach the package</li>
 </ul>
-<!-- end list --><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test">r2dii.climate.stress.test</a></span><span class="op">)</span></code></pre></div>
 <ul>
 <li>Stress tests for corporate loans require a preparatory step for input data preparation for initial application of stress testing on a loan book</li>
 </ul>
-<!-- end list --><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/run_prep_calculation_loans.html">run_prep_calculation_loans</a></span><span class="op">(</span>
   input_path_project_specific <span class="op">=</span> <span class="st">"/path/to/specific/data"</span>,
   input_path_project_agnostic <span class="op">=</span> <span class="st">"/path/to/agnostic/data"</span>,
@@ -126,7 +126,7 @@
 <ul>
 <li>Run climate stress tests</li>
 </ul>
-<!-- end list --><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">## run stress testing for assets of type corporate loans using default parameters</span>
 <span class="fu"><a href="reference/run_stress_test.html">run_stress_test</a></span><span class="op">(</span>
   asset_type <span class="op">=</span> <span class="st">"loans"</span>,
@@ -150,6 +150,11 @@
 <p>To actually run an analysis, the project directories must be set up, input data must be prepared, and the options of the the functions ought to be understood.</p>
 <p>Detailed information for all these steps and on interpreting the outcomes can be found in the articles linked below.</p>
 <p><a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/">Further Information</a>.</p>
+</div>
+<div id="funding" class="section level2">
+<h2 class="hasAnchor">
+<a href="#funding" class="anchor"></a>Funding</h2>
+<p>The development of the stress test methodology and the technical software implementation was funded by the EU - LIFE PACTA 2.0 (LIFE19 GIC/DE/001294). The views expressed are the sole responsibility of the authors and do not necessarily reflect the views of the funders. The funders are not responsible for any use that may be made of the information it contains.</p>
 </div>
 </div>
   </div>
