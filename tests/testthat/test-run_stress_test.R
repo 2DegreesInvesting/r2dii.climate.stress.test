@@ -16,6 +16,8 @@ test_that("output includes argument names with suffix '_arg'", {
     )
   ))
 
-  data <- purrr::map(fs::dir_ls(out), readr::read_csv, col_types = list())
-  expect_true(all(purrr::map_lgl(data, ~rlang::has_name(.x, "term_arg"))))
+  csv_files <- fs::dir_ls(out, regexp = "[.]csv$")
+  data <- purrr::map(csv_files, readr::read_csv, col_types = list())
+  cols_from_arguments_have_suffix_arg <- purrr::map_lgl(data, ~rlang::has_name(.x, "term_arg"))
+  expect_true(all(cols_from_arguments_have_suffix_arg))
 })
