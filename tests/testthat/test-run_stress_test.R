@@ -2,19 +2,20 @@ test_that("output includes argument names with suffix '_arg'", {
   is_me <- identical(path.expand("~"), "/home/mauro")
   skip_if_not(is_me)
 
-  # Refresh
-  out_path <- fs::path(Sys.getenv("ST_PROJECT_FOLDER_OUTPUT"))
-  if (fs::dir_exists(out_path)) fs::dir_delete(out_path)
+  in_agnostic <- "/home/mauro/tmp/st/ST_INPUTS_MASTER"
+  in_specific <- "/home/mauro/tmp/st/ST_TESTING_BONDS/inputs"
+  out <- tempfile()
+  fs::dir_create(out)
 
-x <- suppressWarnings(capture.output(
-  run_stress_test("bonds",
-    input_path_project_agnostic = get_st_data_path(),
-    input_path_project_specific = get_st_data_path("ST_PROJECT_FOLDER_INPUT"),
-    output_path = get_st_data_path("ST_PROJECT_FOLDER_OUTPUT"),
-    term = 1:2
-  )
-))
+  x <- suppressWarnings(capture.output(
+    run_stress_test("bonds",
+      input_path_project_agnostic = in_agnostic,
+      input_path_project_specific = in_specific,
+      output_path = out,
+      term = 1:2
+    )
+  ))
 
-  data <- purrr::map(fs::dir_ls(out_path), readr::read_csv, col_types = list())
+  data <- purrr::map(fs::dir_ls(out), readr::read_csv, col_types = list())
   expect_true(all(purrr::map_lgl(data, ~rlang::has_name(.x, "term_arg"))))
 })
