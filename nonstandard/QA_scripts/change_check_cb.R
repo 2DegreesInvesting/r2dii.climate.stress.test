@@ -66,7 +66,7 @@ run_stress_test(
 
 ### 2. run the following lines to obtain results
 ## TODO: set run_ts to dir name
-run_ts <- "2021-11-15 13/45/38"
+run_ts <- "ADD_ME"
 old_results <- import_asset_results(run_ts = run_ts)
 
 ### 3. check out dev branch of repo (or whichever branch you want to use as comparison)
