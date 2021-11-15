@@ -75,13 +75,14 @@ implies that the argument columns each just contain one value.
 
 #### Sensitivity Analyses
 
-Running a sensitivity analysis produces as many standard results as parameter
-values are passed to the model variable of interest. To make the ensuing
-analysis easy and avoid clutter in the output directory, analysis outputs will
-use the name if the variable that is varied as the suffix and simply contain
-the results of multiple runs in one file. The variation can be seen by looking
-the argument column of the variable that was iterated over. Instead of just one
-value, it will contain values for every iteration of the sensitivity analysis.
+Running a sensitivity analysis produces as many sets of results as parameter
+values are passed to the variable the analysis is iterated over. To make the
+ensuing analysis easy and avoid clutter in the output directory, analysis
+outputs will use the name of the variable that is varied as the suffix and
+simply contain the results of multiple runs in one file. The variation can be
+seen by looking at the argument column of the variable that was iterated over.
+Instead of just one value, it will contain values for every iteration of the
+sensitivity analysis.
 
 ### stress_test_results_loans_comp_\<suffix\>
 
@@ -92,17 +93,19 @@ exposures of the companies, technologies and sectors included in the portfolio
 or loan book.
 
 * `investor_name`: Name of the investor or bank for which the analysis was run.
+(Currently this is hard coded to "Meta Investor" internally)
 * `portfolio_name`: Name of the portfolio or loan book managed by the investor
-or bank for which the analysis was run.
+or bank for which the analysis was run. (Currently this is hard coded to "Meta
+Investor" internally)
 * `company_name`: Name of the company that was analyzed.
 * `scenario_geography`: Region for which the analysis was run. This refers to the
 location of assets considered as well as the regionality of scenario targets used.
 * `scenario_name`: Name that highlights the use of the Carbon budget compensation
-mechanism and the Year of the introduction of a transition policy.
+mechanism and the year of the introduction of a transition policy.
 * `year_of_shock`: Year the transition policy is first introduced.
 * `duration_of_shock`: Number of years the companies have to compensate for any
 previous misalignment of their production plans relative to scenario targets.
-When using a Carbon budget approach, this is the period between the chock year
+When using a Carbon budget approach, this is the period between the shock year
 and the end year of the analysis.
 * `ald_sector`: Sector of the production assets analyzed.
 * `technology`: The technology can be understood as a sub sector. These must be in
@@ -160,8 +163,8 @@ portfolio or loan book on the level of in scope sectors. Calculated as
 given asset type.
 * `portfolio_value_change_perc`: Relative potential value change of portfolio or
 loan book across all companies relative to the total portfolio value. Note that
-this does not cover potential losses for out of scope companies. Value in
-percentage points.
+this does not cover potential losses for companies operating in sectors that are
+out of scope. Value in percentage points.
 * `portfolio_value_change`: Potential absolute value change of the portfolio or
 loan book. Calculated as `portfolio_aum * portfolio_value_change_perc`.
 * `exclude`: Logical indicator that shows if the given combination of company
@@ -198,7 +201,7 @@ the loan book in percentage points.
 the Merton credit risk model and a climate transition policy shock as indicated.
 in `scenario_name`. In percentage points. Notice: A positive number indicates
 the probability of default increases, hence the expected loss also increases.
-* `lgd`: Loss given default applied in the calculation oof the expected loss.
+* `lgd`: Loss given default applied in the calculation of the expected loss.
 Depending on which asset type was analyzed, this will reflect the setting of
 either `lgd_senior_claims_arg` or `lgd_subordinated_claims_arg`. For corporate
 loan books, this reflects senior claims.
@@ -240,7 +243,7 @@ rolled over every year after the policy shock will change over time.
 This file contains an overview on the sector level of how overall probabilities
 of default change depending on the maturities of the underlying loans.
 
-* `scenario_name`: Name that highlights the use of the Carbon budget
+* `scenario_name`: Name that highlights the use of the Carbon budget.
 * `scenario_geography`: Region for which the analysis was run. This refers to
 the location of assets considered as well as the regionality of scenario targets
 used.
