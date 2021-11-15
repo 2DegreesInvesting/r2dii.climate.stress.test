@@ -151,8 +151,9 @@ run_stress_test(
 ```
 
 ### Output files
-The output files are written to the path indicated as `output_path` in the
-function and are named:
+The output files are written into a subdirectory of the path indicated as
+`output_path` in the function call. The name of the subdirectory is the
+timestamp of the analysis. It will be generated automatically.
 
 * `stress_test_results_loans_port_standard.csv`
 * `stress_test_results_loans_comp_standard.csv`
