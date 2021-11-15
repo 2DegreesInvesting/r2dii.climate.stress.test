@@ -3,7 +3,6 @@
 #' @name lookup
 #'
 #' @examples
-#' lgd_senior_claims_range_lookup
 #'
 #' lgd_subordinated_claims_range_lookup
 #'
@@ -46,9 +45,6 @@ baseline_scenario_lookup <- "NPS"
 shock_scenario_lookup <- "SDS"
 calculation_level_lookup <- "company"
 
-#' @rdname lookup
-#' @export
-lgd_senior_claims_range_lookup <- c(0.3, 0.6)
 #' @rdname lookup
 #' @export
 lgd_subordinated_claims_range_lookup <- c(0.6, 0.9)

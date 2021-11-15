@@ -23,7 +23,9 @@ validate_input_values <- function(lgd_senior_claims, lgd_subordinated_claims,
     stop("Argmuent company_exclusion must be a boolean.")
   }
 
-  if (!dplyr::between(lgd_senior_claims, min(lgd_senior_claims_range_lookup), max(lgd_senior_claims_range_lookup))) {
+  if (!dplyr::between(lgd_senior_claims,
+                      stress_test_arguments %>% dplyr::filter(name == "lgd_senior_claims") %>% dplyr::pull(min),
+                      stress_test_arguments %>% dplyr::filter(name == "lgd_senior_claims") %>% dplyr::pull(max))) {
     stop("Argument lgd_senior_claims is outside accepted range.")
   }
 

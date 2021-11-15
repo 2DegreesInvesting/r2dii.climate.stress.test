@@ -3,7 +3,6 @@
 \docType{data}
 \name{lookup}
 \alias{lookup}
-\alias{lgd_senior_claims_range_lookup}
 \alias{lgd_subordinated_claims_range_lookup}
 \alias{terminal_value_range_lookup}
 \alias{risk_free_rate_range_lookup}
@@ -28,13 +27,9 @@ An object of class \code{numeric} of length 2.
 
 An object of class \code{numeric} of length 2.
 
-An object of class \code{numeric} of length 2.
-
 An object of class \code{character} of length 2.
 }
 \usage{
-lgd_senior_claims_range_lookup
-
 lgd_subordinated_claims_range_lookup
 
 terminal_value_range_lookup
@@ -55,7 +50,6 @@ credit_type_lookup
 Lookup valid values
 }
 \examples{
-lgd_senior_claims_range_lookup
 
 lgd_subordinated_claims_range_lookup
 
