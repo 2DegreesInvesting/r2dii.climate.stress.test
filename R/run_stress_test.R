@@ -53,7 +53,9 @@ run_stress_test <- function(asset_type,
                             company_exclusion = TRUE) {
   cat("-- Running transition risk stress test \n\n\n")
 
-  args_list <- mget(names(formals()), sys.frame(sys.nframe()))
+  args_list <- mget(names(formals()), sys.frame(sys.nframe())) %>%
+    fail_if_input_args_are_missing()
+
   iter_var <- get_iter_var(args_list)
   args_tibble <- tibble::as_tibble(args_list) %>%
     dplyr::mutate(iter_var = .env$iter_var)
