@@ -46,27 +46,8 @@ contain mean.
 ### Shared Outputs: Model Parameters
 
 All result files discussed below contain information on the settings of the
-stress testing model. This means they all contain the following common variables:
-
-* `asset_type_arg`: Asset type for which the analysis was run.
-* `lgd_senior_claims_arg`: Loss given default of senior claims set in the analysis
-(this is only relevant for expected loss calculations of loan books). 
-* `lgd_subordinated_claims_arg` Loss given default of subordinated claims set in
-the analysis (this is not relevant forexpected loss calculations  on loan books). 
-* `terminal_value_arg`: Terminal value used in the DCF model for which the
-analysis was run.
-* `risk_free_rate_arg`: Risk free interest rate used in the Merton credit risk
-model for which the analysis was run.
-* `discount_rate_arg`: Discount rate used in the DCF model for which the
-analysis was run.
-* `div_netprofit_prop_coef_arg`: Dividends net profit proportionality
-coefficient used in the Market risk model to derive percentage value changes
-based on changes in future company profits.
-* `shock_year_arg`: Shock year for which the analysis was run.
-* `term_arg`: Number of years until maturity used in the expected loss
-calculation of the credit risk model for which the analysis was run.
-* `company_exclusion_arg`: Indicates whether any company exclusion based on
-phasing out of technologies was done in the analysis.
+stress testing model. This means each one of them contains information on all
+model input variables, [as described here](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/03-run-stress-test.html#understanding-the-input-arguments).
 
 While there is some redundancy to this information, it is the easiest way to
 ensure the results remain reproducible and a straight forward way for the user
