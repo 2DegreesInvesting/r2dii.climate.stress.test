@@ -103,7 +103,7 @@ run_stress_test_iteration <- function(n, args_tibble) {
     as.list()
 
   arg_tibble_row <- arg_tibble_row %>%
-    dplyr::select(-setup_vars_lookup) %>%
+    dplyr::select(-dplyr::all_of(setup_vars_lookup)) %>%
     dplyr::rename_with(~paste0(.x, "_arg"))
 
   st_result <- do.call(args = arg_list_row, what = run_stress_test_impl) %>%
