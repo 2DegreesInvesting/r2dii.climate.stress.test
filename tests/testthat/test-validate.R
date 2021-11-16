@@ -14,6 +14,21 @@ test_that("Error is thrown if an input value is out of bounds", {
   ), "risk_free_rate")
 })
 
+test_that("Error is thrown if a character input value is out of bounds", {
+  expect_error(validate_input_values(
+    lgd_senior_claims = 0.45,
+    lgd_subordinated_claims = 0.75,
+    terminal_value = 0,
+    risk_free_rate = 1,
+    discount_rate = 0.02,
+    div_netprofit_prop_coef = 1,
+    shock_year = 2030,
+    term = 4,
+    company_exclusion = TRUE,
+    asset_type = "derivates"
+  ), "asset_type")
+})
+
 test_that("Error is thrown if term is not an integer", {
   expect_error(validate_input_values(
     lgd_senior_claims = 0.45,
