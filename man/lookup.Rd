@@ -3,73 +3,18 @@
 \docType{data}
 \name{lookup}
 \alias{lookup}
-\alias{lgd_senior_claims_range_lookup}
-\alias{lgd_subordinated_claims_range_lookup}
-\alias{terminal_value_range_lookup}
-\alias{risk_free_rate_range_lookup}
-\alias{discount_rate_range_lookup}
-\alias{div_netprofit_prop_coef_range_lookup}
-\alias{shock_year_range_lookup}
-\alias{term_range_lookup}
 \alias{credit_type_lookup}
 \title{Lookup valid values}
 \format{
-An object of class \code{numeric} of length 2.
-
-An object of class \code{numeric} of length 2.
-
-An object of class \code{numeric} of length 2.
-
-An object of class \code{numeric} of length 2.
-
-An object of class \code{numeric} of length 2.
-
-An object of class \code{numeric} of length 2.
-
-An object of class \code{numeric} of length 2.
-
-An object of class \code{numeric} of length 2.
-
 An object of class \code{character} of length 2.
 }
 \usage{
-lgd_senior_claims_range_lookup
-
-lgd_subordinated_claims_range_lookup
-
-terminal_value_range_lookup
-
-risk_free_rate_range_lookup
-
-discount_rate_range_lookup
-
-div_netprofit_prop_coef_range_lookup
-
-shock_year_range_lookup
-
-term_range_lookup
-
 credit_type_lookup
 }
 \description{
 Lookup valid values
 }
 \examples{
-lgd_senior_claims_range_lookup
-
-lgd_subordinated_claims_range_lookup
-
-terminal_value_range_lookup
-
-risk_free_rate_range_lookup
-
-discount_rate_range_lookup
-
-div_netprofit_prop_coef_range_lookup
-
-shock_year_range_lookup
-
-term_range_lookup
 
 credit_type_lookup
 }

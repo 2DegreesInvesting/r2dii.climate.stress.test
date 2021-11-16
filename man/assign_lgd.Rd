@@ -11,11 +11,11 @@ assign_lgd(asset_type, lgd_senior_claims, lgd_subordinated_claims)
 \code{asset_types_lookup}.}
 
 \item{lgd_senior_claims}{Numeric, holding the loss given default for senior
-claims, for accepted value range check \code{lgd_senior_claims_range_lookup}.}
+claims, for accepted value range check \code{stress_test_arguments}.}
 
 \item{lgd_subordinated_claims}{Numeric, holding the loss given default for
 subordinated claims, for accepted value range check
-\code{lgd_subordinated_claims_range_lookup}.}
+\code{stress_test_arguments}.}
 }
 \value{
 A numeric holding value of lgd.
