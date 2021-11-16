@@ -33,6 +33,16 @@ validate_input_values <- function(lgd_senior_claims, lgd_subordinated_claims,
   }
 }
 
+#'  Validate that value in within values
+#'
+#' #' Checks that value of variable `var` is in valid values as defined in
+#' r2dii.climate_stress_test::stress_test_arguments.
+#'
+#' @param var String holding name of variable.
+#' @param args_list Named list holding arguments of parent function call and
+#'   their values.
+#'
+#' @return NULL
 validate_value_in_values <- function(var, args_list) {
   arg_type <- stress_test_arguments %>%
     dplyr::filter(.data$name == .env$var) %>%
@@ -60,8 +70,17 @@ validate_value_in_values <- function(var, args_list) {
       )
     )
   }
+  invisible()
 }
 
+#' Validate that value in within range
+#'
+#' Checks that value of variable `var` is in valid range as defined in
+#' r2dii.climate_stress_test::stress_test_arguments.
+#'
+#' @inheritParams validate_value_in_values
+#'
+#' @return NULL
 validate_value_in_range <- function(var, args_list) {
   min <- stress_test_arguments %>%
     dplyr::filter(.data$name == .env$var) %>%
@@ -88,4 +107,5 @@ validate_value_in_range <- function(var, args_list) {
       )
     )
   }
+  invisible()
 }
