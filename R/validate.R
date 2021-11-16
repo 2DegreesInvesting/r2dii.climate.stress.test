@@ -36,11 +36,11 @@ validate_input_values <- function(lgd_senior_claims, lgd_subordinated_claims,
 validate_value_in_values <- function(var, args_list) {
   arg_type <- stress_test_arguments %>%
     dplyr::filter(.data$name == .env$var) %>%
-    dplyr::pull(type)
+    dplyr::pull(.data$type)
 
   allowed_values <- stress_test_arguments %>%
     dplyr::filter(.data$name == .env$var) %>%
-    dplyr::pull(allowed) %>%
+    dplyr::pull(.data$allowed) %>%
     strsplit(",") %>%
     purrr::pluck(1) %>%
     purrr::map_chr(trimws) # FIXME: configure in stress_test_arguments without whitespace
@@ -65,14 +65,14 @@ validate_value_in_values <- function(var, args_list) {
 validate_value_in_range <- function(var, args_list) {
   min <- stress_test_arguments %>%
     dplyr::filter(.data$name == .env$var) %>%
-    dplyr::pull(min) %>%
+    dplyr::pull(.data$min) %>%
     as.numeric()
 
   stopifnot(length(min) == 1)
 
   max <- stress_test_arguments %>%
     dplyr::filter(.data$name == .env$var) %>%
-    dplyr::pull(max) %>%
+    dplyr::pull(.data$max) %>%
     as.numeric()
 
   stopifnot(length(max) == 1)
