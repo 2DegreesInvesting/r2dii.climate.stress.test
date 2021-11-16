@@ -59,7 +59,15 @@ validate_value_in_values <- function(var, args_list) {
 
   if (arg_type == "logical") {
     allowed_values <- as.logical(allowed_values)
-    stopifnot(is.logical(arg_val))
+    if (!is.logical(arg_val)) {
+      rlang::abort(
+        c(
+          glue::glue("Must provide valid data type for variable {var}."),
+          x = glue::glue("Invalid type: {typeof(arg_val)}."),
+          i = glue::glue("Valid type is: logical.")
+        )
+      )
+    }
   }
 
   if (!arg_val %in% allowed_values) {
@@ -99,7 +107,16 @@ validate_value_in_range <- function(var, args_list) {
   stopifnot(length(max) == 1)
 
   arg_val <- get(var, args_list)
-  stopifnot(is.numeric(arg_val))
+
+  if (!is.numeric(arg_val)) {
+    rlang::abort(
+      c(
+        glue::glue("Must provide valid data type for variable {var}."),
+        x = glue::glue("Invalid type: {typeof(arg_val)}."),
+        i = glue::glue("Valid type is: numeric.")
+      )
+    )
+  }
 
   if (!dplyr::between(arg_val, min, max)) {
     rlang::abort(
