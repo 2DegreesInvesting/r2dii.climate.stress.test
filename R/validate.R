@@ -55,11 +55,13 @@ validate_value_in_values <- function(var, args_list) {
     purrr::pluck(1) %>%
     purrr::map_chr(trimws) # FIXME: configure in stress_test_arguments without whitespace
 
+  arg_val <- get(var, args_list)
+
   if (arg_type == "logical") {
     allowed_values <- as.logical(allowed_values)
+    stopifnot(is.logical(arg_val))
   }
 
-  arg_val <- get(var, args_list)
   if (!arg_val %in% allowed_values) {
     allowed_values_collapsed <- paste0(allowed_values, collapse = ", ")
     rlang::abort(
@@ -97,6 +99,7 @@ validate_value_in_range <- function(var, args_list) {
   stopifnot(length(max) == 1)
 
   arg_val <- get(var, args_list)
+  stopifnot(is.numeric(arg_val))
 
   if (!dplyr::between(arg_val, min, max)) {
     rlang::abort(
