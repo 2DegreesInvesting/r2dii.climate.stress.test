@@ -4,20 +4,6 @@
 #'
 #' @examples
 #'
-#' lgd_subordinated_claims_range_lookup
-#'
-#' terminal_value_range_lookup
-#'
-#' risk_free_rate_range_lookup
-#'
-#' discount_rate_range_lookup
-#'
-#' div_netprofit_prop_coef_range_lookup
-#'
-#' shock_year_range_lookup
-#'
-#' term_range_lookup
-#'
 #' credit_type_lookup
 NULL
 
@@ -44,28 +30,6 @@ scenarios_lookup <- c(
 baseline_scenario_lookup <- "NPS"
 shock_scenario_lookup <- "SDS"
 calculation_level_lookup <- "company"
-
-#' @rdname lookup
-#' @export
-lgd_subordinated_claims_range_lookup <- c(0.6, 0.9)
-#' @rdname lookup
-#' @export
-terminal_value_range_lookup <- c(0, 0.1)
-#' @rdname lookup
-#' @export
-risk_free_rate_range_lookup <- c(0, 0.05)
-#' @rdname lookup
-#' @export
-discount_rate_range_lookup <- c(-0.01, 0.05)
-#' @rdname lookup
-#' @export
-div_netprofit_prop_coef_range_lookup <- c(0.8, 1.0)
-#' @rdname lookup
-#' @export
-shock_year_range_lookup <- c(2025, 2035)
-#' @rdname lookup
-#' @export
-term_range_lookup <- c(1, 10)
 
 end_year_lookup <- 2040
 
