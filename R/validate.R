@@ -19,6 +19,14 @@ validate_input_values <- function(lgd_senior_claims, lgd_subordinated_claims,
     stop("Input arguments to stress test run need to be of length 1")
   }
 
+  c("company_exclusion", "asset_type") %>% purrr::walk(function(var) {
+    allowed_values <- stress_test_arguments %>%
+      dplyr::filter(.data$name == .env$var) %>%
+      dplyr::pull(allowed)
+browser()
+  })
+
+
   if (!is.logical(company_exclusion)) {
     stop("Argmuent company_exclusion must be a boolean.")
   }
