@@ -10,26 +10,14 @@ validate_input_values <- function(lgd_senior_claims, lgd_subordinated_claims,
                                   div_netprofit_prop_coef, shock_year, term,
                                   company_exclusion, asset_type) {
 
-  input_args <- list(
-    lgd_senior_claims, lgd_subordinated_claims, terminal_value, risk_free_rate,
-    discount_rate, div_netprofit_prop_coef, shock_year, term, company_exclusion
-  )
+  input_args <- mget(names(formals()), sys.frame(sys.nframe()))
 
   if (any(purrr::map_int(input_args, length) != 1)) {
     stop("Input arguments to stress test run need to be of length 1")
   }
 
-  c("company_exclusion", "asset_type") %>% purrr::walk(function(var) {
-    allowed_values <- stress_test_arguments %>%
-      dplyr::filter(.data$name == .env$var) %>%
-      dplyr::pull(allowed)
-browser()
-  })
-
-
-  if (!is.logical(company_exclusion)) {
-    stop("Argmuent company_exclusion must be a boolean.")
-  }
+  c("company_exclusion", "asset_type") %>%
+    purrr::walk(validate_value_in_values, named_list = input_args)
 
   if (!dplyr::between(lgd_senior_claims,
                       stress_test_arguments %>% dplyr::filter(name == "lgd_senior_claims") %>% dplyr::pull(min),
@@ -75,7 +63,35 @@ browser()
     stop("Argmemnt term must be a whole number")
   }
 
-  if (!asset_type %in% asset_types_lookup) {
-    stop("Invalid value for argument asset_type")
+}
+
+validate_value_in_values <- function(var, named_list) {
+
+  arg_type <- stress_test_arguments %>%
+    dplyr::filter(.data$name == .env$var) %>%
+    dplyr::pull(type)
+
+  allowed_values <- stress_test_arguments %>%
+    dplyr::filter(.data$name == .env$var) %>%
+    dplyr::pull(allowed) %>%
+    strsplit(",") %>%
+    purrr::pluck(1) %>%
+    purrr::map_chr(trimws) # FIXME: configure in stress_test_arguments without whitespace
+
+  if (arg_type == "logical") {
+    allowed_values <- as.logical(allowed_values)
   }
+
+  arg_val <- get(var, named_list)
+  if (!arg_val %in% allowed_values) {
+    allowed_values_collapsed <- paste0(allowed_values, collapse = ", ")
+    rlang::abort(
+      c(
+        glue::glue("Must provide valid input for argument {var}."),
+        x = glue::glue("Invalid input: {arg_val}."),
+        i = glue::glue("Valid values are: {allowed_values_collapsed}.")
+      )
+    )
+  }
+
 }
