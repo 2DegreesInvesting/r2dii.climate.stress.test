@@ -119,7 +119,7 @@
 <p>In order to run a stress test for loans on one set of parameters, the user needs to pass exactly one value per input argument to the function <code><a href="../../reference/run_stress_test.html">run_stress_test()</a></code>. The only arguments that do not have a default value and must be set by the user are <code>asset_type</code> and the file paths. In this case, we want to run the stress test for loans, so the easiest way to obtain results is by running:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/run_stress_test.html">run_stress_test</a></span><span class="op">(</span>
-  <span class="st">"loans"</span>,
+  asset_type <span class="op">=</span> <span class="st">"loans"</span>,
   input_path_project_specific <span class="op">=</span> <span class="st">"/path/to/specific/data/inputs"</span>,
   input_path_project_agnostic <span class="op">=</span> <span class="st">"/path/to/agnostic/data"</span>,
   output_path <span class="op">=</span> <span class="st">"/path/to/output/directory"</span>
@@ -176,7 +176,7 @@
 <p>The user may want to run a stress test that is tailored to their assumptions about a plausible transition risk shock scenario. For example, the user could decide to set a lower <code>risk_free_rate</code> and shock the companies earlier than by default, using:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/run_stress_test.html">run_stress_test</a></span><span class="op">(</span>
-  <span class="st">"loans"</span>,
+  asset_type <span class="op">=</span> <span class="st">"loans"</span>,
   input_path_project_specific <span class="op">=</span> <span class="st">"/path/to/specific/data/inputs"</span>,
   input_path_project_agnostic <span class="op">=</span> <span class="st">"/path/to/agnostic/data"</span>,
   output_path <span class="op">=</span> <span class="st">"/path/to/output/directory"</span>,
@@ -207,7 +207,7 @@
 <p>If the user wishes to understand the impact of the <code>shock_year</code> on the results for example, they can run the following:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/run_stress_test.html">run_stress_test</a></span><span class="op">(</span>
-  <span class="st">"loans"</span>,
+  asset_type <span class="op">=</span> <span class="st">"loans"</span>,
   input_path_project_specific <span class="op">=</span> <span class="st">"/path/to/specific/data/inputs"</span>,
   input_path_project_agnostic <span class="op">=</span> <span class="st">"/path/to/agnostic/data"</span>,
   output_path <span class="op">=</span> <span class="st">"/path/to/output/directory"</span>,
@@ -226,7 +226,7 @@
 <p>For example, when iterating over the <code>shock_year</code>, it is still possible to use a <code>risk_free_rate</code> lower than the default like so:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/run_stress_test.html">run_stress_test</a></span><span class="op">(</span>
-  <span class="st">"loans"</span>,
+  asset_type <span class="op">=</span> <span class="st">"loans"</span>,
   input_path_project_specific <span class="op">=</span> <span class="st">"/path/to/specific/data/inputs"</span>,
   input_path_project_agnostic <span class="op">=</span> <span class="st">"/path/to/agnostic/data"</span>,
   output_path <span class="op">=</span> <span class="st">"/path/to/output/directory"</span>,
