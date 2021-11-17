@@ -4,15 +4,17 @@
 \alias{customise_output_path}
 \title{Customise output path}
 \usage{
-customise_output_path(output_path)
+customise_output_path(output_path, iter_var)
 }
 \arguments{
 \item{output_path}{String holding path to st output folder.}
+
+\item{iter_var}{String holding name of iteration variable.}
 }
 \value{
 Path to subdirectory in st output folder.
 }
 \description{
 Checks for existence of provided \code{output_path} and extends it to hold a
-subdirectory names after the timestamp.
+subdirectory named after the timestamp and \code{iter_var}.
 }
