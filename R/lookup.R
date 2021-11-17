@@ -103,4 +103,4 @@ p4b_scenarios_lookup <- c("target_b2ds", "target_cps", "target_rts",
                           "target_sds")
 
 # holds names of input arguments to run_stress_test that are not model paramters
-setup_vars_lookup <- c("input_path_project_agnostic", "input_path_project_specific", "output_path", "iter_var")
+setup_vars_lookup <- c("input_path_project_agnostic", "input_path_project_specific", "output_path", "iter_var", "return_results")
