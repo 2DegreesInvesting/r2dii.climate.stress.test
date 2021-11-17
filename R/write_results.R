@@ -35,46 +35,18 @@ write_stress_test_results <- function(results, expected_loss,
     )
 
   expected_loss %>%
-    report_missings(
-      name_data = "Expected loss"
-    ) %>%
-    report_all_duplicate_kinds(
-      composite_unique_cols = c(
-        "scenario_name", "scenario_geography", "investor_name", "portfolio_name",
-        "company_name", "ald_sector",
-        sensitivity_analysis_vars
-      )
-    ) %>%
     readr::write_csv(file.path(
       output_path,
       paste0("stress_test_results_", asset_type, "_comp_el_", iter_var,".csv")
     ))
 
   annual_pd_changes_sector %>%
-    report_missings(
-      name_data = "Annual PD changes sector"
-    ) %>%
-    report_all_duplicate_kinds(
-      composite_unique_cols = c(
-        "scenario_name", "scenario_geography", "investor_name", "portfolio_name",
-        "ald_sector", "year", sensitivity_analysis_vars
-      )
-    ) %>%
     readr::write_csv(file.path(
       output_path,
       paste0("stress_test_results_", asset_type, "_sector_pd_changes_annual_", iter_var, ".csv")
     ))
 
   overall_pd_changes_sector %>%
-    report_missings(
-      name_data = "Overall PD changes sector"
-    ) %>%
-    report_all_duplicate_kinds(
-      composite_unique_cols = c(
-        "scenario_name", "scenario_geography", "investor_name", "portfolio_name",
-        "ald_sector", "term", sensitivity_analysis_vars
-      )
-    ) %>%
     readr::write_csv(file.path(
       output_path,
       paste0("stress_test_results_", asset_type, "_sector_pd_changes_overall_", iter_var, ".csv")

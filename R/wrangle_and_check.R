@@ -328,3 +328,45 @@ wrangle_results <- function(results, expected_loss, annual_pd_changes, overall_p
               overall_pd_changes_sector = overall_pd_changes_sector))
 
 }
+
+check_results <- function(results, expected_loss, annual_pd_changes, overall_pd_changes, sensitivity_analysis_vars) {
+
+  expected_loss %>%
+    report_missings(
+      name_data = "Expected loss"
+    ) %>%
+    report_all_duplicate_kinds(
+      composite_unique_cols = c(
+        "scenario_name", "scenario_geography", "investor_name", "portfolio_name",
+        "company_name", "ald_sector",
+        sensitivity_analysis_vars
+      )
+    )
+
+  annual_pd_changes_sector %>%
+    report_missings(
+      name_data = "Annual PD changes sector"
+    ) %>%
+    report_all_duplicate_kinds(
+      composite_unique_cols = c(
+        "scenario_name", "scenario_geography", "investor_name", "portfolio_name",
+        "ald_sector", "year", sensitivity_analysis_vars
+      )
+    )
+
+  overall_pd_changes_sector %>%
+    report_missings(
+      name_data = "Overall PD changes sector"
+    ) %>%
+    report_all_duplicate_kinds(
+      composite_unique_cols = c(
+        "scenario_name", "scenario_geography", "investor_name", "portfolio_name",
+        "ald_sector", "term", sensitivity_analysis_vars
+      )
+    )
+
+  return(list(results = results,
+              expected_loss = expected_loss,
+              annual_pd_changes_sector = annual_pd_changes_sector,
+              overall_pd_changes_sector = overall_pd_changes_sector))
+}
