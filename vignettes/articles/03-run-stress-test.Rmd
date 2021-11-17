@@ -66,13 +66,14 @@ log file into the designated output directory, using the default values for all
 detail arguments.
 
 **NOTE:** The default mode will **not return** any objects within the R session.
-We find this is the easiest and most user friendly way to obtain results, but we
-acknowledge that more advanced R users may find this to depart from the
-conventions of other packages. Below we highlight, how to return the results as
-objects within the R session.
+We find this is the easiest and most user friendly way to obtain results. We
+alternatively provide the option that the function returns a list holding the
+result objects. This allows the user to inspect and further analyze the data
+directly in R.
+
 
 ### Input arguments
-Specifications on the detail arguments are summarised in the following overview.
+Specifications on the detail arguments are summarized in the following overview.
 The defaults that are used if the argument is not adjusted when calling
 `run_stress_test()` can be found in column `default`. The user may change any
 detail argument by explicitly passing it to the function. Note that there are
@@ -114,8 +115,9 @@ dedicated mechanism in place that handles companies which are phasing out
 certain technologies within the time frame of the production forecast.
 * `return_results` Logical parameter that indicates if the outputs of the
 analysis should be directly written to the indicated output path or simply
-returned as objects within the running session. The default is FALSE, which
-writes the outputs to the target directory and does not return them as objects.
+returned as a list of results within the running session. The default is FALSE,
+which writes the outputs to the target directory and does not return them as a
+list object in R.
 
 ### Adjusting the input arguments
 The user may want to run a stress test that is tailored to their assumptions
@@ -138,12 +140,12 @@ run_stress_test(
 results are written, is the argument `return_results`. Per default it is set to
 `FALSE`, which means that results are written as csv files to a sub directory in
 the `output_path` and the user must open these files to view the results.
-If the user wants to view the results directly in RStudio, they can set the
-argument to `TRUE` which will return them as data frames in the R session. This
+If the user wants to view the results directly in R, they can set the argument
+to `TRUE` which will return them as a list of data frames in the R session. This
 means they are not written to the designated `output_path` however, so the user
 must do this by themselves if the results ought to be kept. In this case, the
-user must still provide an output path though, as every calculation will write
-a log file.
+user must still provide an output path though, as every calculation will write a
+log file.
 
 ### Output files
 The output files are written into a sub directory of the path indicated as
