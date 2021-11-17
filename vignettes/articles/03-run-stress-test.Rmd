@@ -34,8 +34,9 @@ for details on how to do this.
 ## Running the Analysis
 
 The climate transition risk stress test can be run for a single set of
-parameters or as a sensitivity analysis for a set of parameters that iterates
-over one of the input arguments. We will look at both cases.
+parameters with one value per input argument or as a sensitivity analysis, where
+one of the input arguments is iterated over and gets a vector of parameters and
+all other arguments get one input value each. We will look at both cases.
 
 Use `library()` to attach the package
 
