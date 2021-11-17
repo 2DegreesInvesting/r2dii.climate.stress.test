@@ -9,29 +9,27 @@
 #' @param overall_pd_changes_sector Tibble holding stress test results on overall
 #'   changes of probability of default.
 #' @param asset_type String holding asset type.
-#' @param calculation_level String holding calculation level.
-#' @param sensitivity_analysis_vars String vector holding names of iteration
-#'   arguments.
 #' @param iter_var String holding name of iteration variable.
 #' @param output_path String holding path to output dir.
 #'
 #' @return NULL
-write_stress_test_results <- function(results, expected_loss,
+write_stress_test_results <- function(market_risk_company,
+                                      market_risk_portfolio, expected_loss,
                                       annual_pd_changes_sector, overall_pd_changes_sector,
-                                      asset_type, calculation_level,
-                                      sensitivity_analysis_vars, iter_var,
+                                      asset_type, iter_var,
                                       output_path) {
 
-  sensitivity_analysis_vars <- paste0(sensitivity_analysis_vars, "_arg")
+  market_risk_company %>%
+    readr::write_csv(file.path(
+      output_path,
+      glue::glue("stress_test_results_{asset_type}_comp_{iter_var}.csv")
+    ))
 
-  results %>%
-    write_results_new(
-      path_to_results = output_path,
-      asset_type = asset_type,
-      level = calculation_level,
-      sensitivity_analysis_vars = sensitivity_analysis_vars,
-      iter_var = iter_var
-    )
+  market_risk_portfolio %>%
+    readr::write_csv(file.path(
+      output_path,
+      glue::glue("stress_test_results_{asset_type}_port_{iter_var}.csv")
+    ))
 
   expected_loss %>%
     readr::write_csv(file.path(
@@ -220,41 +218,3 @@ write_results <- function(data,
   }
 }
 
-#' Write the results to the project directory
-#'
-#' Unlike [write_results()] as used in webscript function only allows level
-#' company and does not create a new directory level by `investorname`.
-#'
-#' @param data A dataframe the results of the stress test for one asset type
-#' @param path_to_results Character. A string that contains the path that the
-#'   result should be written to.
-#' @param asset_type Character. A vector of length one indicating which type of
-#'   asset the results belong to. Currently supports "equity" and "bonds".
-#' @param level Character. A vector of length one indicating which type of output
-#'   format to use. This depends on whether portfolio or company level pacta
-#'   data were used as input to the analysis. Defaults to the level indicated
-#'   in the work flow. Supports "company" and "portfolio".
-#' @inheritParams write_stress_test_results
-#'
-#' @family output functions
-#' @return NULL
-write_results_new <- function(data,
-                              path_to_results = NULL,
-                              asset_type = NULL,
-                              level = NULL,
-                              sensitivity_analysis_vars,
-                              iter_var) {
-
-  data_comp %>%
-    readr::write_csv(file.path(
-      path_to_results,
-      glue::glue("stress_test_results_{asset_type}_comp_{iter_var}.csv")
-    ))
-
-  data_port %>%
-    readr::write_csv(file.path(
-      path_to_results,
-      glue::glue("stress_test_results_{asset_type}_port_{iter_var}.csv")
-    ))
-
-}
