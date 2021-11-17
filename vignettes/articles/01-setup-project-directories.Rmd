@@ -50,7 +50,7 @@ to, it will fail with an error.
 
 A recommended structure for the project-specific data would look like this:
 
-* `example_project/`
+* `example_folder/`
     * `inputs/`
         * `raw_loanbook.csv`
         * `matched_loan_book.csv`
