@@ -269,8 +269,16 @@ check_valid_financial_data_values <- function(financial_data, asset_type) {
   }
 }
 
-
-
+#' Wrangle results
+#'
+#' Function wrangles results to expected formats. List element entry `results`
+#' is split into market risk results for company and portfolio level.
+#'
+#' @param results_list A list of results.
+#' @param sensitivity_analysis_vars  String vector holding names of iteration
+#'   arguments.
+#'
+#' @return A list of wrangled results.
 wrangle_results <- function(results_list, sensitivity_analysis_vars) {
   sensitivity_analysis_vars <- paste0(sensitivity_analysis_vars, "_arg")
 
@@ -384,6 +392,14 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
   ))
 }
 
+#' Check results
+#'
+#' Function checks results for missings and duplicates.
+#'
+#' @inheritParams wrangle_results
+#' @param wrangled_results_list A list of wrangled results.
+#'
+#' @return `wrangled_results_list`
 check_results <- function(wrangled_results_list, sensitivity_analysis_vars) {
   sensitivity_analysis_vars <- paste0(sensitivity_analysis_vars, "_arg")
 
@@ -448,13 +464,22 @@ check_results <- function(wrangled_results_list, sensitivity_analysis_vars) {
   return(invisible(wrangled_results_list))
 }
 
+#' Rename results
+#'
+#' Rename results lists entries so that results as returned to the user on
+#' demand follow naming convention of exported results.
+#'
+#' @param results_list A list of wrangled and checked results.
+#'
+#' @return `result_list` with adjusted named
 rename_results <- function(results_list) {
-
-  renamed_results_list <- list(stress_test_results_comp = results_list$market_risk_company,
-                              stress_test_results_port = results_list$market_risk_portfolio,
-                              stress_test_results_comp_el = results_list$expected_loss,
-                              stress_test_results_sector_pd_changes_annual = results_list$annual_pd_changes_sector,
-                              stress_test_results_sector_pd_changes_overall = results_list$overall_pd_changes_sector)
+  renamed_results_list <- list(
+    stress_test_results_comp = results_list$market_risk_company,
+    stress_test_results_port = results_list$market_risk_portfolio,
+    stress_test_results_comp_el = results_list$expected_loss,
+    stress_test_results_sector_pd_changes_annual = results_list$annual_pd_changes_sector,
+    stress_test_results_sector_pd_changes_overall = results_list$overall_pd_changes_sector
+  )
 
   return(renamed_results_list)
 }
