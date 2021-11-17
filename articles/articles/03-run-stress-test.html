@@ -108,7 +108,7 @@
 <div id="running-the-analysis" class="section level2">
 <h2 class="hasAnchor">
 <a href="#running-the-analysis" class="anchor"></a>Running the Analysis</h2>
-<p>The climate transition risk stress test can be run for a single set of parameters or as a sensitivity analysis for a set of parameters that iterates over one of the input arguments. We will look at both cases.</p>
+<p>The climate transition risk stress test can be run for a single set of parameters with one value per input argument or as a sensitivity analysis, where one of the input arguments is iterated over and gets a vector of parameters and all other arguments get one input value each. We will look at both cases.</p>
 <p>Use <code><a href="https://rdrr.io/r/base/library.html">library()</a></code> to attach the package</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test">r2dii.climate.stress.test</a></span><span class="op">)</span></code></pre></div>
@@ -125,10 +125,11 @@
   output_path <span class="op">=</span> <span class="st">"/path/to/output/directory"</span>
 <span class="op">)</span></code></pre></div>
 <p>This will calculate the stress test for loans and write the results along with a log file into the designated output directory, using the default values for all detail arguments.</p>
+<p><strong>NOTE:</strong> The default mode will <strong>not return</strong> any objects within the R session. We find this is the easiest and most user friendly way to obtain results. We alternatively provide the option that the function returns a list holding the result objects. This allows the user to inspect and further analyze the data directly in R.</p>
 <div id="input-arguments" class="section level3">
 <h3 class="hasAnchor">
 <a href="#input-arguments" class="anchor"></a>Input arguments</h3>
-<p>Specifications on the detail arguments are summarised in the following overview. The defaults that are used if the argument is not adjusted when calling <code><a href="../../reference/run_stress_test.html">run_stress_test()</a></code> can be found in column <code>default</code>. The user may change any detail argument by explicitly passing it to the function. Note that there are allowed values for each of the inputs. For logical or character variables refer to column <code>allowed</code>, for numeric variables the allowed values are the range from <code>min</code> (inclusive) to <code>max</code> (inclusive).</p>
+<p>Specifications on the detail arguments are summarized in the following overview. The defaults that are used if the argument is not adjusted when calling <code><a href="../../reference/run_stress_test.html">run_stress_test()</a></code> can be found in column <code>default</code>. The user may change any detail argument by explicitly passing it to the function. Note that there are allowed values for each of the inputs. For logical or character variables refer to column <code>allowed</code>, for numeric variables the allowed values are the range from <code>min</code> (inclusive) to <code>max</code> (inclusive).</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">stress_test_arguments</span>
 <span class="co">#&gt; # A tibble: 10 × 6</span>
@@ -168,6 +169,8 @@
 <code>term</code> indicates which maturity the loans in the loan book are assumed to have. At this point we assume these are rolled over every year.</li>
 <li>
 <code>company_exclusion</code> Logical parameter that indicates if certain combinations of company and technology should be excluded from the analysis. At this point, it is strictly recommended to set this to TRUE (default) because there is not yet a dedicated mechanism in place that handles companies which are phasing out certain technologies within the time frame of the production forecast.</li>
+<li>
+<code>return_results</code> Logical parameter that indicates if the outputs of the analysis should be directly written to the indicated output path or simply returned as a list of results within the running session. The default is FALSE, which writes the outputs to the target directory and does not return them as a list object in R.</li>
 </ul>
 </div>
 <div id="adjusting-the-input-arguments" class="section level3">
@@ -183,12 +186,14 @@
   risk_free_rate <span class="op">=</span> <span class="fl">0.01</span>,
   shock_year <span class="op">=</span> <span class="fl">2028</span>
 <span class="op">)</span></code></pre></div>
+<p><strong>NOTE:</strong> One important input argument that affects the behavior of where the results are written, is the argument <code>return_results</code>. Per default it is set to <code>FALSE</code>, which means that results are written as csv files to a sub directory in the <code>output_path</code> and the user must open these files to view the results. If the user wants to view the results directly in R, they can set the argument to <code>TRUE</code> which will return them as a list of data frames in the R session. This means they are not written to the designated <code>output_path</code> however, so the user must do this by themselves if the results ought to be kept. In this case, the user must still provide an output path though, as every calculation will write a log file.</p>
 </div>
 <div id="output-files" class="section level3">
 <h3 class="hasAnchor">
 <a href="#output-files" class="anchor"></a>Output files</h3>
-<p>The output files are written into a subdirectory of the path indicated as <code>output_path</code> in the function call. The name of the subdirectory is created from the timestamp of the analysis and a suffix. The suffix <code>_standard</code> is used when each argument uses a single parameter value. If a sensitivity analysis (see below) is run the name of the varied detail variable is used. The subdirectory will be generated automatically, this way we ensure that no existing results are overwritten.</p>
+<p>The output files are written into a sub directory of the path indicated as <code>output_path</code> in the function call. The name of the sub directory is created from the time stamp of the analysis and a suffix. The suffix <code>_standard</code> is used when each argument uses a single parameter value. If a sensitivity analysis (see below) is run the name of the varied detail variable is used. The sub directory will be generated automatically, this way we ensure that no existing results are overwritten.</p>
 <ul>
+<li><code>log_file_standard.txt</code></li>
 <li><code>stress_test_results_loans_port_standard.csv</code></li>
 <li><code>stress_test_results_loans_comp_standard.csv</code></li>
 <li><code>stress_test_results_loans_comp_el_standard.csv</code></li>
