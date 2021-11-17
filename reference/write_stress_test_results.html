@@ -40,7 +40,7 @@
 
 
 <meta property="og:title" content="Write stress test reports to output dir — write_stress_test_results" />
-<meta property="og:description" content="Stress test results are wrangled and exported to the output dir." />
+<meta property="og:description" content="Stress test results are  exported to the output dir." />
 
 
 
@@ -130,54 +130,21 @@
     </div>
 
     <div class="ref-description">
-    <p>Stress test results are wrangled and exported to the output dir.</p>
+    <p>Stress test results are  exported to the output dir.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>write_stress_test_results</span><span class='op'>(</span>
-  <span class='va'>results</span>,
-  <span class='va'>expected_loss</span>,
-  <span class='va'>annual_pd_changes</span>,
-  <span class='va'>overall_pd_changes</span>,
-  <span class='va'>asset_type</span>,
-  <span class='va'>calculation_level</span>,
-  <span class='va'>sensitivity_analysis_vars</span>,
-  <span class='va'>iter_var</span>,
-  <span class='va'>output_path</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>write_stress_test_results</span><span class='op'>(</span><span class='va'>results_list</span>, <span class='va'>asset_type</span>, <span class='va'>iter_var</span>, <span class='va'>output_path</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>results</th>
-      <td><p>Tibble holding stress test results.</p></td>
-    </tr>
-    <tr>
-      <th>expected_loss</th>
-      <td><p>Tibble holding stress test results on expected loss.</p></td>
-    </tr>
-    <tr>
-      <th>annual_pd_changes</th>
-      <td><p>Tibble holding stress test results on annual changes
-of probability of default.</p></td>
-    </tr>
-    <tr>
-      <th>overall_pd_changes</th>
-      <td><p>Tibble holding stress test results on overall
-changes of probability of default.</p></td>
+      <th>results_list</th>
+      <td><p>A list of st results.</p></td>
     </tr>
     <tr>
       <th>asset_type</th>
       <td><p>String holding asset type.</p></td>
-    </tr>
-    <tr>
-      <th>calculation_level</th>
-      <td><p>String holding calculation level.</p></td>
-    </tr>
-    <tr>
-      <th>sensitivity_analysis_vars</th>
-      <td><p>String vector holding names of iteration
-arguments.</p></td>
     </tr>
     <tr>
       <th>iter_var</th>

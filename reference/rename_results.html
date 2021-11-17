@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Run stress testing for provided asset type. — run_stress_test • r2dii.climate.stress.test</title>
+<title>Rename results — rename_results • r2dii.climate.stress.test</title>
 
 
 <!-- jquery -->
@@ -39,14 +39,9 @@
 
 
 
-<meta property="og:title" content="Run stress testing for provided asset type. — run_stress_test" />
-<meta property="og:description" content="This function runs the transition risk stress test. It can be desirable to
-understand sensitivities of the scenarios, in which case the user may pass a
-vector of values to one (and only one) of the detail arguments. This will
-result in running the analysis multiple times in a row with the argument
-varied.
-NOTE: argument asset_type is not iterateable.
-NOTE: if return_results is TRUE results will not be written to output path but instead are returned." />
+<meta property="og:title" content="Rename results — rename_results" />
+<meta property="og:description" content="Rename results lists entries so that results as returned to the user on
+demand follow naming convention of exported results." />
 
 
 
@@ -130,120 +125,30 @@ NOTE: if return_results is TRUE results will not be written to output path but i
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Run stress testing for provided asset type.</h1>
+    <h1>Rename results</h1>
     
-    <div class="hidden name"><code>run_stress_test.Rd</code></div>
+    <div class="hidden name"><code>rename_results.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function runs the transition risk stress test. It can be desirable to
-understand sensitivities of the scenarios, in which case the user may pass a
-vector of values to one (and only one) of the detail arguments. This will
-result in running the analysis multiple times in a row with the argument
-varied.
-NOTE: argument <code>asset_type</code> is not iterateable.
-NOTE: if <code>return_results</code> is TRUE results will not be written to <code>output path</code> but instead are returned.</p>
+    <p>Rename results lists entries so that results as returned to the user on
+demand follow naming convention of exported results.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>run_stress_test</span><span class='op'>(</span>
-  <span class='va'>asset_type</span>,
-  <span class='va'>input_path_project_specific</span>,
-  <span class='va'>input_path_project_agnostic</span>,
-  <span class='va'>output_path</span>,
-  lgd_senior_claims <span class='op'>=</span> <span class='fl'>0.45</span>,
-  lgd_subordinated_claims <span class='op'>=</span> <span class='fl'>0.75</span>,
-  terminal_value <span class='op'>=</span> <span class='fl'>0</span>,
-  risk_free_rate <span class='op'>=</span> <span class='fl'>0.02</span>,
-  discount_rate <span class='op'>=</span> <span class='fl'>0.02</span>,
-  div_netprofit_prop_coef <span class='op'>=</span> <span class='fl'>1</span>,
-  shock_year <span class='op'>=</span> <span class='fl'>2030</span>,
-  term <span class='op'>=</span> <span class='fl'>2</span>,
-  company_exclusion <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  return_results <span class='op'>=</span> <span class='cn'>FALSE</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>rename_results</span><span class='op'>(</span><span class='va'>results_list</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>asset_type</th>
-      <td><p>String holding asset_type. For accepted values compare
-<code>stress_test_arguments</code>.</p></td>
-    </tr>
-    <tr>
-      <th>input_path_project_specific</th>
-      <td><p>String holding path to project specific
-data.</p></td>
-    </tr>
-    <tr>
-      <th>input_path_project_agnostic</th>
-      <td><p>String holding path to project agnostic
-data.</p></td>
-    </tr>
-    <tr>
-      <th>output_path</th>
-      <td><p>String holding path to which output files are written.
-NOTE: Results and logs per run are saved to a subdirectory of output_path
-that will be generated automatically. The name of the subdirectory is the
-timestamp of the run of the analysis.</p></td>
-    </tr>
-    <tr>
-      <th>lgd_senior_claims</th>
-      <td><p>Numeric, holding the loss given default for senior
-claims, for accepted value range check <code>stress_test_arguments</code>.</p></td>
-    </tr>
-    <tr>
-      <th>lgd_subordinated_claims</th>
-      <td><p>Numeric, holding the loss given default for
-subordinated claims, for accepted value range check
-<code>stress_test_arguments</code>.</p></td>
-    </tr>
-    <tr>
-      <th>terminal_value</th>
-      <td><p>Numeric. A ratio to determine the share of the
-discounted value used in the terminal value calculation beyond the
-projected time frame. For accepted range compare
-<code>stress_test_arguments</code>.</p></td>
-    </tr>
-    <tr>
-      <th>risk_free_rate</th>
-      <td><p>Numeric that indicates the risk free rate of interest.
-For accepted range compare <code>stress_test_arguments</code>.</p></td>
-    </tr>
-    <tr>
-      <th>discount_rate</th>
-      <td><p>Numeric, that holds the discount rate of dividends per
-year in the DCF. For accepted range compare <code>stress_test_arguments</code>.</p></td>
-    </tr>
-    <tr>
-      <th>div_netprofit_prop_coef</th>
-      <td><p>Numeric. A coefficient that determines how
-strongly the future dividends propagate to the company value. For accepted
-range compare <code>stress_test_arguments</code>.</p></td>
-    </tr>
-    <tr>
-      <th>shock_year</th>
-      <td><p>Numeric, holding year the shock is applied. For accepted
-range compare <code>stress_test_arguments</code>.</p></td>
-    </tr>
-    <tr>
-      <th>term</th>
-      <td><p>Numeric. A coefficient that determines for which maturity the
-expected loss should be calculated in the credit risk section. For accepted
-range compare <code>stress_test_arguments</code>.</p></td>
-    </tr>
-    <tr>
-      <th>company_exclusion</th>
-      <td><p>Boolean, indicating if companies provided in dataset
-excluded_companies.csv shall be excluded. For accepted values compare
-<code>stress_test_arguments</code>.</p></td>
-    </tr>
-    <tr>
-      <th>return_results</th>
-      <td><p>Boolean, indicating if results shall be exported.</p></td>
+      <th>results_list</th>
+      <td><p>A list of wrangled and checked results.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p><code>result_list</code> with adjusted named</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

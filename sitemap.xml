@@ -55,6 +55,9 @@
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/check_financial_data.html</loc>
   </url>
   <url>
+    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/check_results.html</loc>
+  </url>
+  <url>
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/check_valid_financial_data_values.html</loc>
   </url>
   <url>
@@ -166,6 +169,9 @@
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/read_transition_scenarios.html</loc>
   </url>
   <url>
+    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/rename_results.html</loc>
+  </url>
+  <url>
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/report_all_duplicate_kinds.html</loc>
   </url>
   <url>
@@ -250,13 +256,13 @@
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/wrangle_and_check_sector_exposures.html</loc>
   </url>
   <url>
+    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/wrangle_results.html</loc>
+  </url>
+  <url>
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/wrangle_scenario_data.html</loc>
   </url>
   <url>
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/write_results.html</loc>
-  </url>
-  <url>
-    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/write_results_new.html</loc>
   </url>
   <url>
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/write_stress_test_results.html</loc>
