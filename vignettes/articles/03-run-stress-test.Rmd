@@ -126,8 +126,12 @@ run_stress_test(
 
 ### Output files
 The output files are written into a subdirectory of the path indicated as
-`output_path` in the function call. The name of the subdirectory is the
-timestamp of the analysis. It will be generated automatically.
+`output_path` in the function call. The name of the subdirectory is created from
+the timestamp of the analysis and a suffix. The suffix is `_standard` if
+stresstest is run with a fixed set of parameters. If a sensitivity analysis (see
+below) is run the name of varied the detail variable is used. The subdirectory
+will be generated automatically, this way we ensure that no existing results are
+overwritten.
 
 * `stress_test_results_loans_port_standard.csv`
 * `stress_test_results_loans_comp_standard.csv`
@@ -135,8 +139,6 @@ timestamp of the analysis. It will be generated automatically.
 * `stress_test_results_loans_sector_pd_changes_annual_standard.csv`
 * `stress_test_results_loans_sector_pd_changes_overall_standard.csv`
 
-**NOTE:** The suffix `_standard` indicates that the stress test was run for a
-single set of parameters.
 
 ## Running a Sensitivity Analysis for the Stress Test
 
