@@ -1,48 +1,39 @@
 #' Write stress test reports to output dir
 #'
-#' Stress test results are wrangled and exported to the output dir.
+#' Stress test results are  exported to the output dir.
 #'
-#' @param results Tibble holding stress test results.
-#' @param expected_loss Tibble holding stress test results on expected loss.
-#' @param annual_pd_changes_sector Tibble holding stress test results on annual changes
-#'   of probability of default.
-#' @param overall_pd_changes_sector Tibble holding stress test results on overall
-#'   changes of probability of default.
 #' @param asset_type String holding asset type.
 #' @param iter_var String holding name of iteration variable.
 #' @param output_path String holding path to output dir.
 #'
 #' @return NULL
-write_stress_test_results <- function(market_risk_company,
-                                      market_risk_portfolio, expected_loss,
-                                      annual_pd_changes_sector, overall_pd_changes_sector,
-                                      asset_type, iter_var,
+write_stress_test_results <- function(results_list, asset_type, iter_var,
                                       output_path) {
-  market_risk_company %>%
+  results_list$market_risk_company %>%
     readr::write_csv(file.path(
       output_path,
       glue::glue("stress_test_results_{asset_type}_comp_{iter_var}.csv")
     ))
 
-  market_risk_portfolio %>%
+  results_list$market_risk_portfolio %>%
     readr::write_csv(file.path(
       output_path,
       glue::glue("stress_test_results_{asset_type}_port_{iter_var}.csv")
     ))
 
-  expected_loss %>%
+  results_list$expected_loss %>%
     readr::write_csv(file.path(
       output_path,
       paste0("stress_test_results_", asset_type, "_comp_el_", iter_var, ".csv")
     ))
 
-  annual_pd_changes_sector %>%
+  results_list$annual_pd_changes_sector %>%
     readr::write_csv(file.path(
       output_path,
       paste0("stress_test_results_", asset_type, "_sector_pd_changes_annual_", iter_var, ".csv")
     ))
 
-  overall_pd_changes_sector %>%
+  results_list$overall_pd_changes_sector %>%
     readr::write_csv(file.path(
       output_path,
       paste0("stress_test_results_", asset_type, "_sector_pd_changes_overall_", iter_var, ".csv")

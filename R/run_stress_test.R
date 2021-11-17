@@ -74,7 +74,6 @@ run_stress_test <- function(asset_type,
     }) %>%
     purrr::set_names(result_names)
 
-browser()
   st_results_wrangled_and_checked <- wrangle_results(
     results_list = st_results,
     sensitivity_analysis_vars = names(args_list)[!names(args_list) %in% setup_vars_lookup]
@@ -83,11 +82,7 @@ browser()
   )
 
   write_stress_test_results(
-    market_risk_company = st_results$market_risk_company,
-    market_risk_portfolio = st_results$market_risk_portfolio,
-    expected_loss = st_results$expected_loss,
-    annual_pd_changes_sector = st_results$annual_pd_changes_sector,
-    overall_pd_changes_sector = st_results$overall_pd_changes_sector,
+    results_list = st_results_wrangled_and_checked,
     asset_type = asset_type,
     iter_var = iter_var,
     output_path = args_list$output_path
