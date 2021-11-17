@@ -6,8 +6,8 @@
 #' result in running the analysis multiple times in a row with the argument
 #' varied. NOTE: argument `asset_type` is not iterateable.
 #'
-#' @param asset_type String holding asset_type, for allowed value compare
-#'   `asset_types_lookup`.
+#' @param asset_type String holding asset_type. For accepted values compare
+#'   `stress_test_arguments`.
 #' @param input_path_project_specific String holding path to project specific
 #'   data.
 #' @param input_path_project_agnostic String holding path to project agnostic

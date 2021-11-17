@@ -21,8 +21,8 @@ run_stress_test(
 )
 }
 \arguments{
-\item{asset_type}{String holding asset_type, for allowed value compare
-\code{asset_types_lookup}.}
+\item{asset_type}{String holding asset_type. For accepted values compare
+\code{stress_test_arguments}.}
 
 \item{input_path_project_specific}{String holding path to project specific
 data.}
