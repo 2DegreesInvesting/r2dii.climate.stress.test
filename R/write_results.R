@@ -244,17 +244,6 @@ write_results_new <- function(data,
                               level = NULL,
                               sensitivity_analysis_vars,
                               iter_var) {
-
-  path_to_results %||% stop("Must provide 'path_to_results'")
-  level %||% stop("Must provide 'level'")
-
-  valid_asset_type <- asset_type %in% c("equity", "bonds", "loans")
-  stopifnot(valid_asset_type)
-
-  if (level != "company") {
-    stop("Only calculation level company is supported.")
-  }
-
   validate_data_has_expected_cols(
     data = data,
     expected_columns = c(
@@ -271,7 +260,7 @@ write_results_new <- function(data,
     )
   )
 
-  data <- data %>%
+  data_comp <- data %>%
     # ADO 2549 - select instead of relocate so that no surplus columns can sneak in
     dplyr::select(
       .data$investor_name, .data$portfolio_name, .data$company_name,
@@ -299,14 +288,14 @@ write_results_new <- function(data,
       )
     )
 
-  data %>%
+  data_comp %>%
     readr::write_csv(file.path(
       path_to_results,
       glue::glue("stress_test_results_{asset_type}_comp_{iter_var}.csv")
     ))
 
 
-  data <- data %>%
+  data_port <- data %>%
     # ADO 2549 - actively select all columns that should remain in the portfolio
     # level results, rather than unselecting some. This avoids extra columns.
     dplyr::select(
@@ -336,7 +325,7 @@ write_results_new <- function(data,
       )
     )
 
-  data %>%
+  data_port %>%
     readr::write_csv(file.path(
       path_to_results,
       glue::glue("stress_test_results_{asset_type}_port_{iter_var}.csv")
