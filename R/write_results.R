@@ -18,7 +18,6 @@ write_stress_test_results <- function(market_risk_company,
                                       annual_pd_changes_sector, overall_pd_changes_sector,
                                       asset_type, iter_var,
                                       output_path) {
-
   market_risk_company %>%
     readr::write_csv(file.path(
       output_path,
@@ -34,7 +33,7 @@ write_stress_test_results <- function(market_risk_company,
   expected_loss %>%
     readr::write_csv(file.path(
       output_path,
-      paste0("stress_test_results_", asset_type, "_comp_el_", iter_var,".csv")
+      paste0("stress_test_results_", asset_type, "_comp_el_", iter_var, ".csv")
     ))
 
   annual_pd_changes_sector %>%
@@ -87,7 +86,7 @@ write_results <- function(data,
   stopifnot(valid_file_type)
 
   if (level == "company") {
-    expected_columns <-  c(
+    expected_columns <- c(
       "investor_name", "portfolio_name", "company_name", "scenario_geography",
       "scenario_name", "year_of_shock", "duration_of_shock", "ald_sector",
       "technology", "production_shock_perc", "asset_portfolio_value",
@@ -100,14 +99,14 @@ write_results <- function(data,
       "portfolio_value_change_perc", "portfolio_value_change"
     )
   } else {
-   expected_columns <- c(
-     "investor_name", "portfolio_name", "ald_sector", "technology",
-     "scenario_geography", "VaR_technology", "asset_portfolio_value",
-     "VaR_sector", "scenario_name", "technology_exposure", "sector_exposure",
-     "sector_loss", "climate_relevant_var", "portfolio_aum",
-     "portfolio_loss_perc", "year_of_shock", "duration_of_shock",
-     "production_shock_perc"
-   )
+    expected_columns <- c(
+      "investor_name", "portfolio_name", "ald_sector", "technology",
+      "scenario_geography", "VaR_technology", "asset_portfolio_value",
+      "VaR_sector", "scenario_name", "technology_exposure", "sector_exposure",
+      "sector_loss", "climate_relevant_var", "portfolio_aum",
+      "portfolio_loss_perc", "year_of_shock", "duration_of_shock",
+      "production_shock_perc"
+    )
   }
   validate_data_has_expected_cols(
     data = data,
@@ -217,4 +216,3 @@ write_results <- function(data,
     )
   }
 }
-

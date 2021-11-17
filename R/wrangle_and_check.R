@@ -136,7 +136,6 @@ wrangle_and_check_pacta_results <- function(pacta_results, start_year, time_hori
 #'   asset_type = "equity"
 #' )
 check_financial_data <- function(financial_data, asset_type) {
-
   if (!asset_type %in% c("bonds", "equity", "loans")) {
     stop("Invalid asset type.")
   }
@@ -379,16 +378,16 @@ wrangle_results <- function(results, expected_loss, annual_pd_changes, overall_p
       .data$portfolio_name, .data$ald_sector, .data$term
     )
 
-  return(list(market_risk_company = market_risk_company,
-              market_risk_portfolio = market_risk_portfolio,
-              expected_loss = expected_loss,
-              annual_pd_changes_sector = annual_pd_changes_sector,
-              overall_pd_changes_sector = overall_pd_changes_sector))
-
+  return(list(
+    market_risk_company = market_risk_company,
+    market_risk_portfolio = market_risk_portfolio,
+    expected_loss = expected_loss,
+    annual_pd_changes_sector = annual_pd_changes_sector,
+    overall_pd_changes_sector = overall_pd_changes_sector
+  ))
 }
 
 check_results <- function(market_risk_portfolio, market_risk_company, expected_loss, annual_pd_changes_sector, overall_pd_changes_sector, sensitivity_analysis_vars) {
-
   sensitivity_analysis_vars <- paste0(sensitivity_analysis_vars, "_arg")
 
 
@@ -450,9 +449,11 @@ check_results <- function(market_risk_portfolio, market_risk_company, expected_l
       )
     )
 
-  return(list(market_risk_company = market_risk_company,
-              market_risk_portfolio = market_risk_portfolio,
-              expected_loss = expected_loss,
-              annual_pd_changes_sector = annual_pd_changes_sector,
-              overall_pd_changes_sector = overall_pd_changes_sector))
+  return(list(
+    market_risk_company = market_risk_company,
+    market_risk_portfolio = market_risk_portfolio,
+    expected_loss = expected_loss,
+    annual_pd_changes_sector = annual_pd_changes_sector,
+    overall_pd_changes_sector = overall_pd_changes_sector
+  ))
 }

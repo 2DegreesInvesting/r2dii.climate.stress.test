@@ -75,7 +75,6 @@ run_stress_test <- function(asset_type,
     purrr::set_names(result_names)
 
 
-
   st_results <- wrangle_results(
     results = st_results$results,
     expected_loss = st_results$expected_loss,
@@ -84,13 +83,14 @@ run_stress_test <- function(asset_type,
     sensitivity_analysis_vars = names(args_list)[!names(args_list) %in% setup_vars_lookup]
   )
 
-
-  check_results(market_risk_portfolio = st_results$market_risk_portfolio,
-                market_risk_company = st_results$market_risk_company,
-                expected_loss = st_results$expected_loss,
-                annual_pd_changes_sector = st_results$annual_pd_changes_sector,
-                overall_pd_changes_sector = st_results$overall_pd_changes_sector,
-                sensitivity_analysis_vars = names(args_list)[!names(args_list) %in% setup_vars_lookup])
+  check_results(
+    market_risk_portfolio = st_results$market_risk_portfolio,
+    market_risk_company = st_results$market_risk_company,
+    expected_loss = st_results$expected_loss,
+    annual_pd_changes_sector = st_results$annual_pd_changes_sector,
+    overall_pd_changes_sector = st_results$overall_pd_changes_sector,
+    sensitivity_analysis_vars = names(args_list)[!names(args_list) %in% setup_vars_lookup]
+  )
 
   write_stress_test_results(
     market_risk_company = st_results$market_risk_company,
@@ -122,7 +122,7 @@ run_stress_test_iteration <- function(n, args_tibble) {
 
   arg_tibble_row <- arg_tibble_row %>%
     dplyr::select(-dplyr::all_of(setup_vars_lookup)) %>%
-    dplyr::rename_with(~paste0(.x, "_arg"))
+    dplyr::rename_with(~ paste0(.x, "_arg"))
 
   st_result <- do.call(args = arg_list_row, what = run_stress_test_impl) %>%
     purrr::map(dplyr::bind_cols, data_y = arg_tibble_row)
@@ -151,7 +151,6 @@ run_stress_test_impl <- function(asset_type,
                                  term,
                                  company_exclusion,
                                  iter_var) {
-
   cat("-- Validating input arguments. \n")
 
   validate_input_values(
