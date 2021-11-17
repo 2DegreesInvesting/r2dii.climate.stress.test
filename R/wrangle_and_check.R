@@ -447,3 +447,14 @@ check_results <- function(wrangled_results_list, sensitivity_analysis_vars) {
 
   return(invisible(wrangled_results_list))
 }
+
+rename_results <- function(results_list) {
+
+  renamed_results_list <- list(stress_test_results_comp = results_list$market_risk_company,
+                              stress_test_results_port = results_list$market_risk_portfolio,
+                              stress_test_results_comp_el = results_list$expected_loss,
+                              stress_test_results_sector_pd_changes_annual = results_list$annual_pd_changes_sector,
+                              stress_test_results_sector_pd_changes_overall = results_list$overall_pd_changes_sector)
+
+  return(renamed_results_list)
+}
