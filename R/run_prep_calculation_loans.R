@@ -1,6 +1,5 @@
 #' Run stress testing data preparation for loans
 #'
-#'
 #' @inheritParams run_stress_test
 #' @param data_prep_output_path Path where results are written.
 #'   NOTE: This is a workflow that is needed exclusively in preparation of
@@ -16,6 +15,8 @@ run_prep_calculation_loans <- function(input_path_project_specific,
                                        input_path_project_agnostic,
                                        data_prep_output_path,
                                        credit_type = "outstanding") {
+
+  cat("-- Running data preparation. \n")
 
   #### Validate input-----------------------------------------------------------
 
@@ -203,6 +204,7 @@ run_prep_calculation_loans <- function(input_path_project_specific,
     )
 
   #### Wrangle portfolio overview to P4I format---------------------------------
+  cat("-- Preparing portfolio overview. \n")
 
   sector_credit_type <- glue::glue("sector_loan_size_{credit_type}")
   credit_currency <- glue::glue("loan_size_{credit_type}_currency")
@@ -265,6 +267,7 @@ run_prep_calculation_loans <- function(input_path_project_specific,
     )
 
   #### Calculate unweighted company level PACTA results-------------------------
+  cat("-- Preparing unweighted company level PACTA results. \n")
   if (credit_type == "credit_limit") {
     use_credit_limit <- TRUE
   } else {
@@ -330,6 +333,8 @@ run_prep_calculation_loans <- function(input_path_project_specific,
     saveRDS(
       file.path(data_prep_output_path, "Loans_results_company.rda")
     )
+
+  cat("-- Exported prepared data to designated output path. \n")
 
 }
 

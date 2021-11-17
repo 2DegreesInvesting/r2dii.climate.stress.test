@@ -53,9 +53,11 @@ inputs directory and auxiliary data from the project-agnostic data directory.
 
 It will then perform all calculations and wrangling required and write the
 intermediate input files `Loans_results_company.rda` and
-`overview_portfolio.rda` to the indicated `data_prep_output_path`. As these data
-files will serve as inputs the the subsequent stress test it is advisable to set
-`data_prep_output_path` to the same path as `input_path_project_specific`.
+`overview_portfolio.rda` to the indicated `data_prep_output_path`. 
+**NOTE:** Data generated with this workflow will serve as inputs for the
+subsequent stress test. Thus it is advisable to set `data_prep_output_path` to
+the same path as `input_path_project_specific` so that the generated data is
+written there.
 
 ```{r, eval=FALSE}
 run_prep_calculation_loans(

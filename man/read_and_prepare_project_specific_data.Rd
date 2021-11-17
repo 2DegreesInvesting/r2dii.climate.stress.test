@@ -16,8 +16,8 @@ read_and_prepare_project_specific_data(
 )
 }
 \arguments{
-\item{asset_type}{String holding asset_type, for allowed value compare
-\code{asset_types_lookup}.}
+\item{asset_type}{String holding asset_type. For accepted values compare
+\code{stress_test_arguments}.}
 
 \item{calculation_level}{String holding level of calculation.}
 

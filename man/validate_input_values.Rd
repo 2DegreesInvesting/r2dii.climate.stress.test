@@ -51,8 +51,8 @@ range compare \code{stress_test_arguments}.}
 excluded_companies.csv shall be excluded. For accepted values compare
 \code{stress_test_arguments}.}
 
-\item{asset_type}{String holding asset_type, for allowed value compare
-\code{asset_types_lookup}.}
+\item{asset_type}{String holding asset_type. For accepted values compare
+\code{stress_test_arguments}.}
 }
 \description{
 Checks that user inputs are of length 1 and within defined ranges.
