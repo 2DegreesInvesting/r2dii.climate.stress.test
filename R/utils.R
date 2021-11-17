@@ -428,12 +428,13 @@ fail_if_input_args_are_missing <- function(args_list) {
 #' Customise output path
 #'
 #' Checks for existence of provided `output_path` and extends it to hold a
-#' subdirectory names after the timestamp.
+#' subdirectory named after the timestamp and `iter_var`.
 #'
 #' @param output_path String holding path to st output folder.
+#' @param iter_var String holding name of iteration variable.
 #'
 #' @return Path to subdirectory in st output folder.
-customise_output_path <- function(output_path) {
+customise_output_path <- function(output_path, iter_var) {
   if (!dir.exists(output_path)) {
     rlang::abort(
       c(
@@ -444,9 +445,9 @@ customise_output_path <- function(output_path) {
     )
   }
 
-  output_path_with_ts <- file.path(output_path, Sys.time())
+  output_path_custom <- file.path(output_path, paste(Sys.time(), iter_var, sep = "_"))
 
-  dir.create(output_path_with_ts)
+  dir.create(output_path_custom)
 
-  return(output_path_with_ts)
+  return(output_path_custom)
 }
