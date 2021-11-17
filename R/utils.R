@@ -445,7 +445,10 @@ customise_output_path <- function(output_path, iter_var) {
     )
   }
 
-  output_path_custom <- file.path(output_path, paste(Sys.time(), iter_var, sep = "_"))
+  timestamp <- paste(Sys.time(), iter_var, sep = "_")
+  timestamp <- gsub(" ", "_", timestamp)
+  timestamp <- gsub(":", "-", timestamp)
+  output_path_custom <- file.path(output_path, timestamp)
 
   dir.create(output_path_custom)
 
