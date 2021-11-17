@@ -4,9 +4,9 @@
 #'
 #' @param results Tibble holding stress test results.
 #' @param expected_loss Tibble holding stress test results on expected loss.
-#' @param annual_pd_changes Tibble holding stress test results on annual changes
+#' @param annual_pd_changes_sector Tibble holding stress test results on annual changes
 #'   of probability of default.
-#' @param overall_pd_changes Tibble holding stress test results on overall
+#' @param overall_pd_changes_sector Tibble holding stress test results on overall
 #'   changes of probability of default.
 #' @param asset_type String holding asset type.
 #' @param calculation_level String holding calculation level.
@@ -17,7 +17,7 @@
 #'
 #' @return NULL
 write_stress_test_results <- function(results, expected_loss,
-                                      annual_pd_changes, overall_pd_changes,
+                                      annual_pd_changes_sector, overall_pd_changes_sector,
                                       asset_type, calculation_level,
                                       sensitivity_analysis_vars, iter_var,
                                       output_path) {
@@ -32,19 +32,6 @@ write_stress_test_results <- function(results, expected_loss,
       file_type = "csv",
       sensitivity_analysis_vars = sensitivity_analysis_vars,
       iter_var = iter_var
-    )
-
-  expected_loss <- expected_loss %>%
-    dplyr::select(
-      .data$scenario_name, .data$scenario_geography, .data$investor_name,
-      .data$portfolio_name, .data$company_name, .data$ald_sector,
-      .data$pd, .data$PD_change, .data$lgd, .data$exposure_at_default,
-      .data$expected_loss_baseline, .data$expected_loss_late_sudden,
-      !!!rlang::syms(sensitivity_analysis_vars)
-    ) %>%
-    dplyr::arrange(
-      .data$scenario_geography, .data$scenario_name, .data$investor_name,
-      .data$portfolio_name, .data$company_name, .data$ald_sector
     )
 
   expected_loss %>%
@@ -63,23 +50,6 @@ write_stress_test_results <- function(results, expected_loss,
       paste0("stress_test_results_", asset_type, "_comp_el_", iter_var,".csv")
     ))
 
-  annual_pd_changes_sector <- annual_pd_changes %>%
-    dplyr::group_by(
-      .data$scenario_name, .data$scenario_geography, .data$investor_name,
-      .data$portfolio_name, .data$ald_sector, .data$year,
-      !!!rlang::syms(sensitivity_analysis_vars)
-    ) %>%
-    dplyr::summarise(
-      # ADO 2312 - weight the PD change by baseline equity because this represents the original exposure better
-      PD_change = weighted.mean(x = .data$PD_change, w = .data$equity_t_baseline, na.rm = TRUE),
-      .groups = "drop"
-    ) %>%
-    dplyr::ungroup() %>%
-    dplyr::arrange(
-      .data$scenario_geography, .data$scenario_name, .data$investor_name,
-      .data$portfolio_name, .data$ald_sector, .data$year
-    )
-
   annual_pd_changes_sector %>%
     report_missings(
       name_data = "Annual PD changes sector"
@@ -94,23 +64,6 @@ write_stress_test_results <- function(results, expected_loss,
       output_path,
       paste0("stress_test_results_", asset_type, "_sector_pd_changes_annual_", iter_var, ".csv")
     ))
-
-  overall_pd_changes_sector <- overall_pd_changes %>%
-    dplyr::group_by(
-      .data$scenario_name, .data$scenario_geography, .data$investor_name,
-      .data$portfolio_name, .data$ald_sector, .data$term,
-      !!!rlang::syms(sensitivity_analysis_vars)
-    ) %>%
-    dplyr::summarise(
-      # ADO 2312 - weight the PD change by baseline equity because this represents the original exposure better
-      PD_change = weighted.mean(x = .data$PD_change, w = .data$equity_0_baseline, na.rm = TRUE),
-      .groups = "drop"
-    ) %>%
-    dplyr::ungroup() %>%
-    dplyr::arrange(
-      .data$scenario_geography, .data$scenario_name, .data$investor_name,
-      .data$portfolio_name, .data$ald_sector, .data$term
-    )
 
   overall_pd_changes_sector %>%
     report_missings(

@@ -269,3 +269,62 @@ check_valid_financial_data_values <- function(financial_data, asset_type) {
     stop("Implausibe value(s) < 0 for volatility detected. Please check.")
   }
 }
+
+
+
+wrangle_results <- function(results, expected_loss, annual_pd_changes, overall_pd_changes, sensitivity_analysis_vars) {
+  sensitivity_analysis_vars <- paste0(sensitivity_analysis_vars, "_arg")
+
+  expected_loss <- expected_loss %>%
+    dplyr::select(
+      .data$scenario_name, .data$scenario_geography, .data$investor_name,
+      .data$portfolio_name, .data$company_name, .data$ald_sector,
+      .data$pd, .data$PD_change, .data$lgd, .data$exposure_at_default,
+      .data$expected_loss_baseline, .data$expected_loss_late_sudden,
+      !!!rlang::syms(sensitivity_analysis_vars)
+    ) %>%
+    dplyr::arrange(
+      .data$scenario_geography, .data$scenario_name, .data$investor_name,
+      .data$portfolio_name, .data$company_name, .data$ald_sector
+    )
+
+  annual_pd_changes_sector <- annual_pd_changes %>%
+    dplyr::group_by(
+      .data$scenario_name, .data$scenario_geography, .data$investor_name,
+      .data$portfolio_name, .data$ald_sector, .data$year,
+      !!!rlang::syms(sensitivity_analysis_vars)
+    ) %>%
+    dplyr::summarise(
+      # ADO 2312 - weight the PD change by baseline equity because this represents the original exposure better
+      PD_change = weighted.mean(x = .data$PD_change, w = .data$equity_t_baseline, na.rm = TRUE),
+      .groups = "drop"
+    ) %>%
+    dplyr::ungroup() %>%
+    dplyr::arrange(
+      .data$scenario_geography, .data$scenario_name, .data$investor_name,
+      .data$portfolio_name, .data$ald_sector, .data$year
+    )
+
+  overall_pd_changes_sector <- overall_pd_changes %>%
+    dplyr::group_by(
+      .data$scenario_name, .data$scenario_geography, .data$investor_name,
+      .data$portfolio_name, .data$ald_sector, .data$term,
+      !!!rlang::syms(sensitivity_analysis_vars)
+    ) %>%
+    dplyr::summarise(
+      # ADO 2312 - weight the PD change by baseline equity because this represents the original exposure better
+      PD_change = weighted.mean(x = .data$PD_change, w = .data$equity_0_baseline, na.rm = TRUE),
+      .groups = "drop"
+    ) %>%
+    dplyr::ungroup() %>%
+    dplyr::arrange(
+      .data$scenario_geography, .data$scenario_name, .data$investor_name,
+      .data$portfolio_name, .data$ald_sector, .data$term
+    )
+
+  return(list(results = results,
+              expected_loss = expected_loss,
+              annual_pd_changes_sector = annual_pd_changes_sector,
+              overall_pd_changes_sector = overall_pd_changes_sector))
+
+}

@@ -74,11 +74,22 @@ run_stress_test <- function(asset_type,
     }) %>%
     purrr::set_names(result_names)
 
-  write_stress_test_results(
+
+
+  st_results <- wrangle_results(
     results = st_results$results,
     expected_loss = st_results$expected_loss,
     annual_pd_changes = st_results$annual_pd_changes,
     overall_pd_changes = st_results$overall_pd_changes,
+    sensitivity_analysis_vars = names(args_list)[!names(args_list) %in% setup_vars_lookup]
+  )
+
+
+  write_stress_test_results(
+    results = st_results$results,
+    expected_loss = st_results$expected_loss,
+    annual_pd_changes_sector = st_results$annual_pd_changes_sector,
+    overall_pd_changes_sector = st_results$overall_pd_changes_sector,
     asset_type = asset_type,
     calculation_level = calculation_level_lookup,
     sensitivity_analysis_vars = names(args_list)[!names(args_list) %in% setup_vars_lookup],
