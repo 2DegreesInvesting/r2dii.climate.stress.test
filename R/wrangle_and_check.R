@@ -271,12 +271,11 @@ check_valid_financial_data_values <- function(financial_data, asset_type) {
 
 
 
-wrangle_results <- function(results, expected_loss, annual_pd_changes, overall_pd_changes, sensitivity_analysis_vars) {
+wrangle_results <- function(results_list, sensitivity_analysis_vars) {
   sensitivity_analysis_vars <- paste0(sensitivity_analysis_vars, "_arg")
 
-
   validate_data_has_expected_cols(
-    data = results,
+    data = results_list$results,
     expected_columns = c(
       "investor_name", "portfolio_name", "company_name", "scenario_geography",
       "scenario_name", "year_of_shock", "duration_of_shock", "ald_sector",
@@ -291,8 +290,7 @@ wrangle_results <- function(results, expected_loss, annual_pd_changes, overall_p
     )
   )
 
-
-  market_risk_company <- results %>%
+  market_risk_company <- results_list$results %>%
     # ADO 2549 - select instead of relocate so that no surplus columns can sneak in
     dplyr::select(
       .data$investor_name, .data$portfolio_name, .data$company_name,
@@ -310,8 +308,7 @@ wrangle_results <- function(results, expected_loss, annual_pd_changes, overall_p
       .data$exclude, !!!rlang::syms(sensitivity_analysis_vars)
     )
 
-
-  market_risk_portfolio <- results %>%
+  market_risk_portfolio <- results_list$results %>%
     # ADO 2549 - actively select all columns that should remain in the portfolio
     # level results, rather than unselecting some. This avoids extra columns.
     dplyr::select(
@@ -331,7 +328,7 @@ wrangle_results <- function(results, expected_loss, annual_pd_changes, overall_p
     dplyr::distinct_all() %>%
     dplyr::arrange(.data$year_of_shock, .data$ald_sector, .data$technology)
 
-  expected_loss <- expected_loss %>%
+  expected_loss <- results_list$expected_loss %>%
     dplyr::select(
       .data$scenario_name, .data$scenario_geography, .data$investor_name,
       .data$portfolio_name, .data$company_name, .data$ald_sector,
@@ -344,7 +341,7 @@ wrangle_results <- function(results, expected_loss, annual_pd_changes, overall_p
       .data$portfolio_name, .data$company_name, .data$ald_sector
     )
 
-  annual_pd_changes_sector <- annual_pd_changes %>%
+  annual_pd_changes_sector <- results_list$annual_pd_changes %>%
     dplyr::group_by(
       .data$scenario_name, .data$scenario_geography, .data$investor_name,
       .data$portfolio_name, .data$ald_sector, .data$year,
@@ -361,7 +358,7 @@ wrangle_results <- function(results, expected_loss, annual_pd_changes, overall_p
       .data$portfolio_name, .data$ald_sector, .data$year
     )
 
-  overall_pd_changes_sector <- overall_pd_changes %>%
+  overall_pd_changes_sector <- results_list$overall_pd_changes %>%
     dplyr::group_by(
       .data$scenario_name, .data$scenario_geography, .data$investor_name,
       .data$portfolio_name, .data$ald_sector, .data$term,
@@ -387,11 +384,10 @@ wrangle_results <- function(results, expected_loss, annual_pd_changes, overall_p
   ))
 }
 
-check_results <- function(market_risk_portfolio, market_risk_company, expected_loss, annual_pd_changes_sector, overall_pd_changes_sector, sensitivity_analysis_vars) {
+check_results <- function(wrangled_results_list, sensitivity_analysis_vars) {
   sensitivity_analysis_vars <- paste0(sensitivity_analysis_vars, "_arg")
 
-
-  market_risk_company %>%
+  wrangled_results_list$market_risk_company %>%
     report_missings(
       name_data = "Stress test results - Company level"
     ) %>%
@@ -403,7 +399,7 @@ check_results <- function(market_risk_portfolio, market_risk_company, expected_l
       )
     )
 
-  market_risk_portfolio %>%
+  wrangled_results_list$market_risk_portfolio %>%
     report_missings(
       name_data = "Stress test results - Portfolios level"
     ) %>%
@@ -415,7 +411,7 @@ check_results <- function(market_risk_portfolio, market_risk_company, expected_l
       )
     )
 
-  expected_loss %>%
+  wrangled_results_list$expected_loss %>%
     report_missings(
       name_data = "Expected loss"
     ) %>%
@@ -427,7 +423,7 @@ check_results <- function(market_risk_portfolio, market_risk_company, expected_l
       )
     )
 
-  annual_pd_changes_sector %>%
+  wrangled_results_list$annual_pd_changes_sector %>%
     report_missings(
       name_data = "Annual PD changes sector"
     ) %>%
@@ -438,7 +434,7 @@ check_results <- function(market_risk_portfolio, market_risk_company, expected_l
       )
     )
 
-  overall_pd_changes_sector %>%
+  wrangled_results_list$overall_pd_changes_sector %>%
     report_missings(
       name_data = "Overall PD changes sector"
     ) %>%
@@ -449,11 +445,5 @@ check_results <- function(market_risk_portfolio, market_risk_company, expected_l
       )
     )
 
-  return(list(
-    market_risk_company = market_risk_company,
-    market_risk_portfolio = market_risk_portfolio,
-    expected_loss = expected_loss,
-    annual_pd_changes_sector = annual_pd_changes_sector,
-    overall_pd_changes_sector = overall_pd_changes_sector
-  ))
+  return(invisible(wrangled_results_list))
 }
