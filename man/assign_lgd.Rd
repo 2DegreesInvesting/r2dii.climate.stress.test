@@ -7,8 +7,8 @@
 assign_lgd(asset_type, lgd_senior_claims, lgd_subordinated_claims)
 }
 \arguments{
-\item{asset_type}{String holding asset_type, for allowed value compare
-\code{asset_types_lookup}.}
+\item{asset_type}{String holding asset_type. For accepted values compare
+\code{stress_test_arguments}.}
 
 \item{lgd_senior_claims}{Numeric, holding the loss given default for senior
 claims, for accepted value range check \code{stress_test_arguments}.}

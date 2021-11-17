@@ -7,8 +7,8 @@
 assign_flat_multiplier(asset_type)
 }
 \arguments{
-\item{asset_type}{String holding asset_type, for allowed value compare
-\code{asset_types_lookup}.}
+\item{asset_type}{String holding asset_type. For accepted values compare
+\code{stress_test_arguments}.}
 }
 \value{
 A double holding value of the flat multiplier.

@@ -54,7 +54,7 @@ results is by running:
 
 ```{r, eval = FALSE}
 run_stress_test(
-  "loans",
+  asset_type = "loans",
   input_path_project_specific = "/path/to/specific/data/inputs",
   input_path_project_agnostic = "/path/to/agnostic/data",
   output_path = "/path/to/output/directory"
@@ -115,7 +115,7 @@ default, using:
 
 ```{r, eval = FALSE}
 run_stress_test(
-  "loans",
+  asset_type = "loans",
   input_path_project_specific = "/path/to/specific/data/inputs",
   input_path_project_agnostic = "/path/to/agnostic/data",
   output_path = "/path/to/output/directory",
@@ -156,7 +156,7 @@ for example, they can run the following:
 
 ```{r, eval = FALSE}
 run_stress_test(
-  "loans",
+  asset_type = "loans",
   input_path_project_specific = "/path/to/specific/data/inputs",
   input_path_project_agnostic = "/path/to/agnostic/data",
   output_path = "/path/to/output/directory",
@@ -186,7 +186,7 @@ For example, when iterating over the `shock_year`, it is still possible to use a
 
 ```{r, eval = FALSE}
 run_stress_test(
-  "loans",
+  asset_type = "loans",
   input_path_project_specific = "/path/to/specific/data/inputs",
   input_path_project_agnostic = "/path/to/agnostic/data",
   output_path = "/path/to/output/directory",
