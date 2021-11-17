@@ -17,7 +17,8 @@ run_stress_test(
   div_netprofit_prop_coef = 1,
   shock_year = 2030,
   term = 2,
-  company_exclusion = TRUE
+  company_exclusion = TRUE,
+  return_results = FALSE
 )
 }
 \arguments{
@@ -67,11 +68,15 @@ range compare \code{stress_test_arguments}.}
 \item{company_exclusion}{Boolean, indicating if companies provided in dataset
 excluded_companies.csv shall be excluded. For accepted values compare
 \code{stress_test_arguments}.}
+
+\item{return_results}{Boolean, indicating if results shall be exported.}
 }
 \description{
 This function runs the transition risk stress test. It can be desirable to
 understand sensitivities of the scenarios, in which case the user may pass a
 vector of values to one (and only one) of the detail arguments. This will
 result in running the analysis multiple times in a row with the argument
-varied. NOTE: argument \code{asset_type} is not iterateable.
+varied.
+NOTE: argument \code{asset_type} is not iterateable.
+NOTE: if \code{return_results} is TRUE results will not be written to \verb{output path} but instead are returned.
 }

@@ -36,8 +36,4 @@ be written to the result path. Currently supports "csv" and "rda".}
 \description{
 Write the results to the project directory
 }
-\seealso{
-Other output functions: 
-\code{\link{write_results_new}()}
-}
 \concept{output functions}

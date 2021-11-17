@@ -4,7 +4,10 @@
 #' understand sensitivities of the scenarios, in which case the user may pass a
 #' vector of values to one (and only one) of the detail arguments. This will
 #' result in running the analysis multiple times in a row with the argument
-#' varied. NOTE: argument `asset_type` is not iterateable.
+#' varied.
+#' NOTE: argument `asset_type` is not iterateable.
+#' NOTE: if `return_results` is TRUE results will not be written to `output
+#' path` but instead are returned.
 #'
 #' @param asset_type String holding asset_type. For accepted values compare
 #'   `stress_test_arguments`.
@@ -40,6 +43,7 @@
 #' @param company_exclusion Boolean, indicating if companies provided in dataset
 #'   excluded_companies.csv shall be excluded. For accepted values compare
 #'   `stress_test_arguments`.
+#' @param return_results Boolean, indicating if results shall be exported.
 #' @return NULL
 #' @export
 run_stress_test <- function(asset_type,
@@ -54,7 +58,8 @@ run_stress_test <- function(asset_type,
                             div_netprofit_prop_coef = 1,
                             shock_year = 2030,
                             term = 2,
-                            company_exclusion = TRUE) {
+                            company_exclusion = TRUE,
+                            return_results = FALSE) {
   cat("-- Running transition risk stress test. \n\n\n")
 
   args_list <- mget(names(formals()), sys.frame(sys.nframe())) %>%
@@ -74,14 +79,22 @@ run_stress_test <- function(asset_type,
     }) %>%
     purrr::set_names(result_names)
 
+  st_results_wrangled_and_checked <- wrangle_results(
+    results_list = st_results,
+    sensitivity_analysis_vars = names(args_list)[!names(args_list) %in% setup_vars_lookup]
+  ) %>%
+    check_results(
+      sensitivity_analysis_vars = names(args_list)[!names(args_list) %in% setup_vars_lookup]
+    ) %>%
+    rename_results()
+
+  if (return_results) {
+    return(st_results_wrangled_and_checked)
+  }
+
   write_stress_test_results(
-    results = st_results$results,
-    expected_loss = st_results$expected_loss,
-    annual_pd_changes = st_results$annual_pd_changes,
-    overall_pd_changes = st_results$overall_pd_changes,
+    results_list = st_results_wrangled_and_checked,
     asset_type = asset_type,
-    calculation_level = calculation_level_lookup,
-    sensitivity_analysis_vars = names(args_list)[!names(args_list) %in% setup_vars_lookup],
     iter_var = iter_var,
     output_path = args_list$output_path
   )
@@ -101,11 +114,12 @@ run_stress_test_iteration <- function(n, args_tibble) {
     dplyr::slice(n)
 
   arg_list_row <- arg_tibble_row %>%
+    dplyr::select(-.data$return_results) %>%
     as.list()
 
   arg_tibble_row <- arg_tibble_row %>%
     dplyr::select(-dplyr::all_of(setup_vars_lookup)) %>%
-    dplyr::rename_with(~paste0(.x, "_arg"))
+    dplyr::rename_with(~ paste0(.x, "_arg"))
 
   st_result <- do.call(args = arg_list_row, what = run_stress_test_impl) %>%
     purrr::map(dplyr::bind_cols, data_y = arg_tibble_row)
@@ -134,7 +148,6 @@ run_stress_test_impl <- function(asset_type,
                                  term,
                                  company_exclusion,
                                  iter_var) {
-
   cat("-- Validating input arguments. \n")
 
   validate_input_values(
@@ -160,7 +173,6 @@ run_stress_test_impl <- function(asset_type,
       paste_write(log_path = log_path)
   })
   paste_write("\n", log_path = log_path)
-
 
   cat("-- Configuring analysis settings. \n")
 

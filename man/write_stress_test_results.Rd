@@ -4,40 +4,17 @@
 \alias{write_stress_test_results}
 \title{Write stress test reports to output dir}
 \usage{
-write_stress_test_results(
-  results,
-  expected_loss,
-  annual_pd_changes,
-  overall_pd_changes,
-  asset_type,
-  calculation_level,
-  sensitivity_analysis_vars,
-  iter_var,
-  output_path
-)
+write_stress_test_results(results_list, asset_type, iter_var, output_path)
 }
 \arguments{
-\item{results}{Tibble holding stress test results.}
-
-\item{expected_loss}{Tibble holding stress test results on expected loss.}
-
-\item{annual_pd_changes}{Tibble holding stress test results on annual changes
-of probability of default.}
-
-\item{overall_pd_changes}{Tibble holding stress test results on overall
-changes of probability of default.}
+\item{results_list}{A list of st results.}
 
 \item{asset_type}{String holding asset type.}
-
-\item{calculation_level}{String holding calculation level.}
-
-\item{sensitivity_analysis_vars}{String vector holding names of iteration
-arguments.}
 
 \item{iter_var}{String holding name of iteration variable.}
 
 \item{output_path}{String holding path to output dir.}
 }
 \description{
-Stress test results are wrangled and exported to the output dir.
+Stress test results are  exported to the output dir.
 }
