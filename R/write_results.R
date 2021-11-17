@@ -29,7 +29,6 @@ write_stress_test_results <- function(results, expected_loss,
       path_to_results = output_path,
       asset_type = asset_type,
       level = calculation_level,
-      file_type = "csv",
       sensitivity_analysis_vars = sensitivity_analysis_vars,
       iter_var = iter_var
     )
@@ -235,8 +234,6 @@ write_results <- function(data,
 #'   format to use. This depends on whether portfolio or company level pacta
 #'   data were used as input to the analysis. Defaults to the level indicated
 #'   in the work flow. Supports "company" and "portfolio".
-#' @param file_type Character. A string containing the type of file that should
-#'   be written to the result path. Currently supports "csv" and "rda".
 #' @inheritParams write_stress_test_results
 #'
 #' @family output functions
@@ -245,7 +242,6 @@ write_results_new <- function(data,
                               path_to_results = NULL,
                               asset_type = NULL,
                               level = NULL,
-                              file_type = NULL,
                               sensitivity_analysis_vars,
                               iter_var) {
 
@@ -254,9 +250,6 @@ write_results_new <- function(data,
 
   valid_asset_type <- asset_type %in% c("equity", "bonds", "loans")
   stopifnot(valid_asset_type)
-
-  valid_file_type <- file_type %in% c("csv", "rda")
-  stopifnot(valid_file_type)
 
   if (level != "company") {
     stop("Only calculation level company is supported.")
@@ -306,19 +299,12 @@ write_results_new <- function(data,
       )
     )
 
-  switch(file_type,
-    csv = data %>%
-      readr::write_csv(file.path(
-        path_to_results,
-        glue::glue("stress_test_results_{asset_type}_comp_{iter_var}.csv")
-      )),
-    rda = data %>%
-      saveRDS(file.path(
-        path_to_results,
-        glue::glue("stress_test_results_{asset_type}_comp_{iter_var}.rda")
-      )),
-    stop("Invalid file_type provided. Please use csv or rda!")
-  )
+  data %>%
+    readr::write_csv(file.path(
+      path_to_results,
+      glue::glue("stress_test_results_{asset_type}_comp_{iter_var}.csv")
+    ))
+
 
   data <- data %>%
     # ADO 2549 - actively select all columns that should remain in the portfolio
@@ -350,17 +336,10 @@ write_results_new <- function(data,
       )
     )
 
-  switch(file_type,
-    csv = data %>%
-      readr::write_csv(file.path(
-        path_to_results,
-        glue::glue("stress_test_results_{asset_type}_port_{iter_var}.csv")
-      )),
-    rda = data %>%
-      saveRDS(file.path(
-        path_to_results,
-        glue::glue("stress_test_results_{asset_type}_port_{iter_var}.rda")
-      )),
-    stop("Invalid file_type provided. Please use csv or rda!")
-  )
+  data %>%
+    readr::write_csv(file.path(
+      path_to_results,
+      glue::glue("stress_test_results_{asset_type}_port_{iter_var}.csv")
+    ))
+
 }
