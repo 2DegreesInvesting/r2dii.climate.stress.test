@@ -187,7 +187,7 @@
 <div id="output-files" class="section level3">
 <h3 class="hasAnchor">
 <a href="#output-files" class="anchor"></a>Output files</h3>
-<p>The output files are written into a subdirectory of the path indicated as <code>output_path</code> in the function call. The name of the subdirectory is the timestamp of the analysis. It will be generated automatically.</p>
+<p>The output files are written into a subdirectory of the path indicated as <code>output_path</code> in the function call. The name of the subdirectory is created from the timestamp of the analysis and a suffix. The suffix <code>_standard</code> is used when each argument uses a single parameter value. If a sensitivity analysis (see below) is run the name of the varied detail variable is used. The subdirectory will be generated automatically, this way we ensure that no existing results are overwritten.</p>
 <ul>
 <li><code>stress_test_results_loans_port_standard.csv</code></li>
 <li><code>stress_test_results_loans_comp_standard.csv</code></li>
@@ -195,7 +195,6 @@
 <li><code>stress_test_results_loans_sector_pd_changes_annual_standard.csv</code></li>
 <li><code>stress_test_results_loans_sector_pd_changes_overall_standard.csv</code></li>
 </ul>
-<p><strong>NOTE:</strong> The suffix <code>_standard</code> indicates that the stress test was run for a single set of parameters.</p>
 </div>
 </div>
 <div id="running-a-sensitivity-analysis-for-the-stress-test" class="section level2">

@@ -41,7 +41,7 @@
 
 <meta property="og:title" content="Customise output path — customise_output_path" />
 <meta property="og:description" content="Checks for existence of provided output_path and extends it to hold a
-subdirectory names after the timestamp." />
+subdirectory named after the timestamp and iter_var." />
 
 
 
@@ -132,10 +132,10 @@ subdirectory names after the timestamp." />
 
     <div class="ref-description">
     <p>Checks for existence of provided <code>output_path</code> and extends it to hold a
-subdirectory names after the timestamp.</p>
+subdirectory named after the timestamp and <code>iter_var</code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>customise_output_path</span><span class='op'>(</span><span class='va'>output_path</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>customise_output_path</span><span class='op'>(</span><span class='va'>output_path</span>, <span class='va'>iter_var</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -143,6 +143,10 @@ subdirectory names after the timestamp.</p>
     <tr>
       <th>output_path</th>
       <td><p>String holding path to st output folder.</p></td>
+    </tr>
+    <tr>
+      <th>iter_var</th>
+      <td><p>String holding name of iteration variable.</p></td>
     </tr>
     </table>
 
