@@ -449,5 +449,8 @@ customise_output_path <- function(output_path, iter_var) {
 
   dir.create(output_path_custom)
 
+  # FIXME: quick solution to avoid empty output dirs in case of failing calculations
+  paste_write("Starting analysis.", log_path = file.path(output_path_custom, paste0("log_file_", iter_var, ".txt")))
+
   return(output_path_custom)
 }
