@@ -34,8 +34,9 @@ for details on how to do this.
 ## Running the Analysis
 
 The climate transition risk stress test can be run for a single set of
-parameters or as a sensitivity analysis for a set of parameters that iterates
-over one of the input arguments. We will look at both cases.
+parameters with one value per input argument or as a sensitivity analysis, where
+one of the input arguments is iterated over and gets a vector of parameters and
+all other arguments get one input value each. We will look at both cases.
 
 Use `library()` to attach the package
 
@@ -47,10 +48,9 @@ library(r2dii.climate.stress.test)
 
 In order to run a stress test for loans on one set of parameters, the user needs
 to pass exactly one value per input argument to the function `run_stress_test()`.
-The only arguments that do not have a default
-value and must be set by the user are `asset_type` and the file paths. In this
-case, we want to run the stress test for loans, so the easiest way to obtain
-results is by running:
+The only arguments that do not have a default value and must be set by the user
+are `asset_type` and the file paths. In this case, we want to run the stress
+test for loans, so the easiest way to obtain results is by running:
 
 ```{r, eval = FALSE}
 run_stress_test(
@@ -65,8 +65,15 @@ This will calculate the stress test for loans and write the results along with a
 log file into the designated output directory, using the default values for all
 detail arguments.
 
+**NOTE:** The default mode will **not return** any objects within the R session.
+We find this is the easiest and most user friendly way to obtain results. We
+alternatively provide the option that the function returns a list holding the
+result objects. This allows the user to inspect and further analyze the data
+directly in R.
+
+
 ### Input arguments
-Specifications on the detail arguments are summarised in the following overview.
+Specifications on the detail arguments are summarized in the following overview.
 The defaults that are used if the argument is not adjusted when calling
 `run_stress_test()` can be found in column `default`. The user may change any
 detail argument by explicitly passing it to the function. Note that there are
@@ -106,6 +113,11 @@ company and technology should be excluded from the analysis. At this point, it
 is strictly recommended to set this to TRUE (default) because there is not yet a
 dedicated mechanism in place that handles companies which are phasing out
 certain technologies within the time frame of the production forecast.
+* `return_results` Logical parameter that indicates if the outputs of the
+analysis should be directly written to the indicated output path or simply
+returned as a list of results within the running session. The default is FALSE,
+which writes the outputs to the target directory and does not return them as a
+list object in R.
 
 ### Adjusting the input arguments
 The user may want to run a stress test that is tailored to their assumptions
@@ -124,15 +136,27 @@ run_stress_test(
 )
 ```
 
+**NOTE:** One important input argument that affects the behavior of where the
+results are written, is the argument `return_results`. Per default it is set to
+`FALSE`, which means that results are written as csv files to a sub directory in
+the `output_path` and the user must open these files to view the results.
+If the user wants to view the results directly in R, they can set the argument
+to `TRUE` which will return them as a list of data frames in the R session. This
+means they are not written to the designated `output_path` however, so the user
+must do this by themselves if the results ought to be kept. In this case, the
+user must still provide an output path though, as every calculation will write a
+log file.
+
 ### Output files
-The output files are written into a subdirectory of the path indicated as
-`output_path` in the function call. The name of the subdirectory is created from
-the timestamp of the analysis and a suffix. The suffix `_standard` is used when
-each argument uses a single parameter value. If a sensitivity analysis (see
-below) is run the name of the varied detail variable is used. The subdirectory
+The output files are written into a sub directory of the path indicated as
+`output_path` in the function call. The name of the sub directory is created
+from the time stamp of the analysis and a suffix. The suffix `_standard` is used
+when each argument uses a single parameter value. If a sensitivity analysis (see
+below) is run the name of the varied detail variable is used. The sub directory
 will be generated automatically, this way we ensure that no existing results are
 overwritten.
 
+* `log_file_standard.txt`
 * `stress_test_results_loans_port_standard.csv`
 * `stress_test_results_loans_comp_standard.csv`
 * `stress_test_results_loans_comp_el_standard.csv`
