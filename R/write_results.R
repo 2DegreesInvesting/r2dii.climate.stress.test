@@ -25,19 +25,19 @@ write_stress_test_results <- function(results_list, asset_type, iter_var,
   results_list$stress_test_results_comp_el %>%
     readr::write_csv(file.path(
       output_path,
-      paste0("stress_test_results_", asset_type, "_comp_el_", iter_var, ".csv")
+      glue::glue("stress_test_results_{asset_type}_comp_el_{iter_var}.csv")
     ))
 
   results_list$stress_test_results_sector_pd_changes_annual %>%
     readr::write_csv(file.path(
       output_path,
-      paste0("stress_test_results_", asset_type, "_sector_pd_changes_annual_", iter_var, ".csv")
+      glue::glue("stress_test_results_{asset_type}_sector_pd_changes_annual_{iter_var}.csv")
     ))
 
   results_list$stress_test_results_sector_pd_changes_overall %>%
     readr::write_csv(file.path(
       output_path,
-      paste0("stress_test_results_", asset_type, "_sector_pd_changes_overall_", iter_var, ".csv")
+      glue::glue("stress_test_results_{asset_type}_sector_pd_changes_overall_{iter_var}.csv")
     ))
 }
 
