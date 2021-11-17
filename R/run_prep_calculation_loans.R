@@ -16,7 +16,7 @@ run_prep_calculation_loans <- function(input_path_project_specific,
                                        data_prep_output_path,
                                        credit_type = "outstanding") {
 
-  cat("-- Running data preparation \n")
+  cat("-- Running data preparation. \n")
 
   #### Validate input-----------------------------------------------------------
 
