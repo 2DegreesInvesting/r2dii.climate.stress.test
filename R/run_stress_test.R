@@ -55,7 +55,7 @@ run_stress_test <- function(asset_type,
                             shock_year = 2030,
                             term = 2,
                             company_exclusion = TRUE) {
-  cat("-- Running transition risk stress test \n\n\n")
+  cat("-- Running transition risk stress test. \n\n\n")
 
   args_list <- mget(names(formals()), sys.frame(sys.nframe())) %>%
     fail_if_input_args_are_missing()
