@@ -59,7 +59,7 @@ A recommended structure for the project-specific data would look like this:
 A recommended structure for the project-agnostic data would look like this:
 
 * `analysis_input_files/`
-    * `Prewrangled_financial_data_stress_test.csv`
+    * `prewrangled_financial_data_stress_test.csv`
     * `prices_data_2021Q1.csv`
     * `scenario_2020.csv`
     * `Scenario_AnalysisInput_2020.csv`
