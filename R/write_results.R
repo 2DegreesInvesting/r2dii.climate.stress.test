@@ -244,21 +244,6 @@ write_results_new <- function(data,
                               level = NULL,
                               sensitivity_analysis_vars,
                               iter_var) {
-  validate_data_has_expected_cols(
-    data = data,
-    expected_columns = c(
-      "investor_name", "portfolio_name", "company_name", "scenario_geography",
-      "scenario_name", "year_of_shock", "duration_of_shock", "ald_sector",
-      "technology", "production_shock_perc", "asset_portfolio_value",
-      "tech_company_exposure", "VaR_tech_company", "tech_company_value_change",
-      "company_exposure", "VaR_company", "company_value_change",
-      "technology_exposure", "VaR_technology", "technology_value_change",
-      "sector_exposure", "VaR_sector", "sector_value_change",
-      "analysed_sectors_exposure", "VaR_analysed_sectors",
-      "analysed_sectors_value_change", "portfolio_aum",
-      "portfolio_value_change_perc", "portfolio_value_change", sensitivity_analysis_vars
-    )
-  )
 
   data_comp <- data %>%
     # ADO 2549 - select instead of relocate so that no surplus columns can sneak in
