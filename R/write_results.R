@@ -2,6 +2,7 @@
 #'
 #' Stress test results are  exported to the output dir.
 #'
+#' @param results_list A list of st results.
 #' @param asset_type String holding asset type.
 #' @param iter_var String holding name of iteration variable.
 #' @param output_path String holding path to output dir.

@@ -7,6 +7,8 @@
 write_stress_test_results(results_list, asset_type, iter_var, output_path)
 }
 \arguments{
+\item{results_list}{A list of st results.}
+
 \item{asset_type}{String holding asset type.}
 
 \item{iter_var}{String holding name of iteration variable.}
