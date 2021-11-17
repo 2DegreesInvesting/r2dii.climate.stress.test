@@ -245,70 +245,11 @@ write_results_new <- function(data,
                               sensitivity_analysis_vars,
                               iter_var) {
 
-  data_comp <- data %>%
-    # ADO 2549 - select instead of relocate so that no surplus columns can sneak in
-    dplyr::select(
-      .data$investor_name, .data$portfolio_name, .data$company_name,
-      .data$scenario_geography, .data$scenario_name, .data$year_of_shock,
-      .data$duration_of_shock, .data$ald_sector, .data$technology,
-      .data$production_shock_perc, .data$asset_portfolio_value,
-      .data$tech_company_exposure, .data$VaR_tech_company,
-      .data$tech_company_value_change, .data$company_exposure,
-      .data$VaR_company, .data$company_value_change, .data$technology_exposure,
-      .data$VaR_technology, .data$technology_value_change,
-      .data$sector_exposure, .data$VaR_sector, .data$sector_value_change,
-      .data$analysed_sectors_exposure, .data$VaR_analysed_sectors,
-      .data$analysed_sectors_value_change, .data$portfolio_aum,
-      .data$portfolio_value_change_perc, .data$portfolio_value_change,
-      .data$exclude, !!!rlang::syms(sensitivity_analysis_vars)
-    ) %>%
-    report_missings(
-      name_data = "Stress test results - Company level"
-    ) %>%
-    report_all_duplicate_kinds(
-      composite_unique_cols = c(
-        "investor_name", "portfolio_name", "company_name", "scenario_geography",
-        "scenario_name", "year_of_shock", "duration_of_shock", "ald_sector", "technology",
-        sensitivity_analysis_vars
-      )
-    )
-
   data_comp %>%
     readr::write_csv(file.path(
       path_to_results,
       glue::glue("stress_test_results_{asset_type}_comp_{iter_var}.csv")
     ))
-
-
-  data_port <- data %>%
-    # ADO 2549 - actively select all columns that should remain in the portfolio
-    # level results, rather than unselecting some. This avoids extra columns.
-    dplyr::select(
-      .data$investor_name, .data$portfolio_name, .data$scenario_geography,
-      .data$scenario_name, .data$year_of_shock, .data$duration_of_shock,
-      .data$ald_sector, .data$technology, .data$production_shock_perc,
-      .data$asset_portfolio_value, .data$technology_exposure,
-      .data$VaR_technology, .data$technology_value_change,
-      .data$sector_exposure, .data$VaR_sector, .data$sector_value_change,
-      .data$analysed_sectors_exposure, .data$VaR_analysed_sectors,
-      .data$analysed_sectors_value_change, .data$portfolio_aum,
-      .data$portfolio_value_change_perc, .data$portfolio_value_change,
-      !!!rlang::syms(sensitivity_analysis_vars)
-    ) %>%
-    # ADO 2549 - all numeric variables should be unique across the CUC variables
-    # running distinct all and the check afterwards ensures this is the case
-    dplyr::distinct_all() %>%
-    dplyr::arrange(.data$year_of_shock, .data$ald_sector, .data$technology) %>%
-    report_missings(
-      name_data = "Stress test results - Portfolios level"
-    ) %>%
-    report_all_duplicate_kinds(
-      composite_unique_cols = c(
-        "investor_name", "portfolio_name", "scenario_geography", "scenario_name",
-        "year_of_shock", "duration_of_shock", "ald_sector", "technology",
-        sensitivity_analysis_vars
-      )
-    )
 
   data_port %>%
     readr::write_csv(file.path(

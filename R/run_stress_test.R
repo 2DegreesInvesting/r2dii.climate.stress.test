@@ -85,6 +85,14 @@ run_stress_test <- function(asset_type,
   )
 
 
+  check_results(market_risk_portfolio = st_results$market_risk_portfolio,
+                market_risk_company = st_results$market_risk_company,
+                expected_loss = st_results$expected_loss,
+                annual_pd_changes_sector = st_results$annual_pd_changes_sector,
+                overall_pd_changes_sector = st_results$overall_pd_changes_sector,
+                sensitivity_analysis_vars = names(args_list)[!names(args_list) %in% setup_vars_lookup])
+  browser()
+
   write_stress_test_results(
     results = st_results$results,
     expected_loss = st_results$expected_loss,

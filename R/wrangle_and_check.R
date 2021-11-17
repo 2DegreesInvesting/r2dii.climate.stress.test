@@ -293,10 +293,44 @@ wrangle_results <- function(results, expected_loss, annual_pd_changes, overall_p
   )
 
 
+  market_risk_company <- results %>%
+    # ADO 2549 - select instead of relocate so that no surplus columns can sneak in
+    dplyr::select(
+      .data$investor_name, .data$portfolio_name, .data$company_name,
+      .data$scenario_geography, .data$scenario_name, .data$year_of_shock,
+      .data$duration_of_shock, .data$ald_sector, .data$technology,
+      .data$production_shock_perc, .data$asset_portfolio_value,
+      .data$tech_company_exposure, .data$VaR_tech_company,
+      .data$tech_company_value_change, .data$company_exposure,
+      .data$VaR_company, .data$company_value_change, .data$technology_exposure,
+      .data$VaR_technology, .data$technology_value_change,
+      .data$sector_exposure, .data$VaR_sector, .data$sector_value_change,
+      .data$analysed_sectors_exposure, .data$VaR_analysed_sectors,
+      .data$analysed_sectors_value_change, .data$portfolio_aum,
+      .data$portfolio_value_change_perc, .data$portfolio_value_change,
+      .data$exclude, !!!rlang::syms(sensitivity_analysis_vars)
+    )
 
 
-
-
+  market_risk_portfolio <- results %>%
+    # ADO 2549 - actively select all columns that should remain in the portfolio
+    # level results, rather than unselecting some. This avoids extra columns.
+    dplyr::select(
+      .data$investor_name, .data$portfolio_name, .data$scenario_geography,
+      .data$scenario_name, .data$year_of_shock, .data$duration_of_shock,
+      .data$ald_sector, .data$technology, .data$production_shock_perc,
+      .data$asset_portfolio_value, .data$technology_exposure,
+      .data$VaR_technology, .data$technology_value_change,
+      .data$sector_exposure, .data$VaR_sector, .data$sector_value_change,
+      .data$analysed_sectors_exposure, .data$VaR_analysed_sectors,
+      .data$analysed_sectors_value_change, .data$portfolio_aum,
+      .data$portfolio_value_change_perc, .data$portfolio_value_change,
+      !!!rlang::syms(sensitivity_analysis_vars)
+    ) %>%
+    # ADO 2549 - all numeric variables should be unique across the CUC variables
+    # running distinct all and the check afterwards ensures this is the case
+    dplyr::distinct_all() %>%
+    dplyr::arrange(.data$year_of_shock, .data$ald_sector, .data$technology)
 
   expected_loss <- expected_loss %>%
     dplyr::select(
@@ -345,14 +379,42 @@ wrangle_results <- function(results, expected_loss, annual_pd_changes, overall_p
       .data$portfolio_name, .data$ald_sector, .data$term
     )
 
-  return(list(results = results,
+  return(list(market_risk_company = market_risk_company,
+              market_risk_portfolio = market_risk_portfolio,
               expected_loss = expected_loss,
               annual_pd_changes_sector = annual_pd_changes_sector,
               overall_pd_changes_sector = overall_pd_changes_sector))
 
 }
 
-check_results <- function(results, expected_loss, annual_pd_changes, overall_pd_changes, sensitivity_analysis_vars) {
+check_results <- function(market_risk_portfolio, market_risk_company, expected_loss, annual_pd_changes_sector, overall_pd_changes_sector, sensitivity_analysis_vars) {
+
+  sensitivity_analysis_vars <- paste0(sensitivity_analysis_vars, "_arg")
+
+
+  market_risk_company %>%
+    report_missings(
+      name_data = "Stress test results - Company level"
+    ) %>%
+    report_all_duplicate_kinds(
+      composite_unique_cols = c(
+        "investor_name", "portfolio_name", "company_name", "scenario_geography",
+        "scenario_name", "year_of_shock", "duration_of_shock", "ald_sector", "technology",
+        sensitivity_analysis_vars
+      )
+    )
+
+  market_risk_portfolio %>%
+    report_missings(
+      name_data = "Stress test results - Portfolios level"
+    ) %>%
+    report_all_duplicate_kinds(
+      composite_unique_cols = c(
+        "investor_name", "portfolio_name", "scenario_geography", "scenario_name",
+        "year_of_shock", "duration_of_shock", "ald_sector", "technology",
+        sensitivity_analysis_vars
+      )
+    )
 
   expected_loss %>%
     report_missings(
@@ -388,7 +450,8 @@ check_results <- function(results, expected_loss, annual_pd_changes, overall_pd_
       )
     )
 
-  return(list(results = results,
+  return(list(market_risk_company = market_risk_company,
+              market_risk_portfolio = market_risk_portfolio,
               expected_loss = expected_loss,
               annual_pd_changes_sector = annual_pd_changes_sector,
               overall_pd_changes_sector = overall_pd_changes_sector))
