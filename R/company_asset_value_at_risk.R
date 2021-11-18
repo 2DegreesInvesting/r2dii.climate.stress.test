@@ -59,12 +59,26 @@ company_asset_value_at_risk <- function(data,
     )
   )
 
-  data <- data %>%
+  data <-  data %>%
     dplyr::filter(
       .data$year >= shock_scenario$year_of_shock,
       !is.na(.data$discounted_net_profit_ls),
       !is.na(.data$discounted_net_profit_baseline)
-    ) %>%
+    )
+
+
+  ##### BEGIN CHECK
+  browser()
+
+  #
+  # NOTE: Comparing comparing what happens to VaR, discounted_net_profit_ls and discounted_net_profit_baseline
+  # with 2 different terminal_values.
+  # I removed all constants
+  #
+
+  terminal_value <- 0
+
+  data1 <- data  %>%
     dplyr::group_by(
       .data$investor_name, .data$portfolio_name, .data$company_name,
       .data$ald_sector, .data$technology, .data$scenario_geography
@@ -76,14 +90,57 @@ company_asset_value_at_risk <- function(data,
         (1 + .env$terminal_value),
       .groups = "drop_last"
     ) %>%
-    dplyr::ungroup() %>%
-    dplyr::mutate(
-      scenario_name = .env$shock_scenario$scenario_name,
-      VaR_tech_company = .env$flat_multiplier * 100 * .env$div_netprofit_prop_coef *
-        (.data$total_disc_npv_ls - .data$total_disc_npv_baseline) /
-        .data$total_disc_npv_baseline
+    dplyr::ungroup()
+
+  data1 <- data1 %>%
+    dplyr::mutate(VaR_tech_company = (.data$total_disc_npv_ls - .data$total_disc_npv_baseline) / .data$total_disc_npv_baseline) %>%
+    dplyr::select(.data$total_disc_npv_ls, .data$total_disc_npv_baseline, .data$VaR_tech_company)
+
+  terminal_value <- 1000
+
+  data2 <- data  %>%
+    dplyr::group_by(
+      .data$investor_name, .data$portfolio_name, .data$company_name,
+      .data$ald_sector, .data$technology, .data$scenario_geography
     ) %>%
-    dplyr::select(-c(.data$total_disc_npv_ls, .data$total_disc_npv_baseline))
+    dplyr::summarise(
+      total_disc_npv_ls = sum(.data$discounted_net_profit_ls) *
+        (1 + .env$terminal_value),
+      total_disc_npv_baseline = sum(.data$discounted_net_profit_baseline) *
+        (1 + .env$terminal_value),
+      .groups = "drop_last"
+    ) %>%
+    dplyr::ungroup()
+
+  data2 <- data2 %>%
+    dplyr::mutate(VaR_tech_company = (.data$total_disc_npv_ls - .data$total_disc_npv_baseline) / .data$total_disc_npv_baseline) %>%
+    dplyr::select(.data$total_disc_npv_ls, .data$total_disc_npv_baseline, .data$VaR_tech_company)
+
+
+  info <- all.equal(data1, data2)
+  print(info)
+  # VaR is itentical, the total_disc_npv vars differ (on mean relative diff by the diff between terminal values)
+  abs_diff <- data1$total_disc_npv_ls - data2$total_disc_npv_ls
+  abs_diff # absolute diff is differing
+
+  quotient_diff <- data1$total_disc_npv_ls / data2$total_disc_npv_ls
+  summary(quotient_diff) # relative diff is identical
+
+  quotient_diff2 <- data1$total_disc_npv_baseline / data2$total_disc_npv_baseline
+  summary(quotient_diff2) # relative diff is identical
+
+  # That means, I think, that we multiply with a contant multiplicator per row.
+  # This kuerzt sich raus in application of forumala for VaR_tech_company
+  #
+  # ax - bx/(bx) == ax/bx -bx/bx = a/b - 1
+  # means: we calculate data1$total_disc_npv_ls/data1$total_disc_npv_baseline - 1
+  #
+
+  # quick FYI:
+  data1 %>% dplyr::filter(total_disc_npv_baseline == 0) # not sure if this is a problem
+
+  ### END CHECK
+
 
   if (!is.null(exclusion)) {
     validate_data_has_expected_cols(
@@ -92,6 +149,11 @@ company_asset_value_at_risk <- function(data,
         "company_name", "technology"
       )
     )
+
+
+
+
+
 
     exclusion <- exclusion %>%
       dplyr::mutate(exclude = TRUE)
