@@ -94,8 +94,6 @@ a potentially important parameter in this calculation)
 * `lgd_subordinated_claims` is the loss given default used in the expected loss
 calculation of loans for subordinated claims (notably for corporate bonds. Not
 of relevance in the loans calculation)
-* `terminal_value` the percentage of the net present value that should be used
-to approximate further cash flows beyond the time frame of the model.
 * `risk_free_rate` the risk free interest rate. Input parameter to the Merton
 credit risk model.
 * `discount_rate` the annual rate at which future cash flows are discounted when

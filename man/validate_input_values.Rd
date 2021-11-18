@@ -25,11 +25,6 @@ claims, for accepted value range check \code{stress_test_arguments}.}
 subordinated claims, for accepted value range check
 \code{stress_test_arguments}.}
 
-\item{terminal_value}{Numeric. A ratio to determine the share of the
-discounted value used in the terminal value calculation beyond the
-projected time frame. For accepted range compare
-\code{stress_test_arguments}.}
-
 \item{risk_free_rate}{Numeric that indicates the risk free rate of interest.
 For accepted range compare \code{stress_test_arguments}.}
 

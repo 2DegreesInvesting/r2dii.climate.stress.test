@@ -24,10 +24,6 @@
 #' @param lgd_subordinated_claims Numeric, holding the loss given default for
 #'   subordinated claims, for accepted value range check
 #'   `stress_test_arguments`.
-#' @param terminal_value Numeric. A ratio to determine the share of the
-#'   discounted value used in the terminal value calculation beyond the
-#'   projected time frame. For accepted range compare
-#'   `stress_test_arguments`.
 #' @param risk_free_rate Numeric that indicates the risk free rate of interest.
 #'   For accepted range compare `stress_test_arguments`.
 #' @param discount_rate Numeric, that holds the discount rate of dividends per
@@ -52,7 +48,6 @@ run_stress_test <- function(asset_type,
                             output_path,
                             lgd_senior_claims = 0.45,
                             lgd_subordinated_claims = 0.75,
-                            terminal_value = 0,
                             risk_free_rate = 0.02,
                             discount_rate = 0.02,
                             div_netprofit_prop_coef = 1,
@@ -145,7 +140,6 @@ run_stress_test_impl <- function(asset_type,
                                  output_path,
                                  lgd_senior_claims,
                                  lgd_subordinated_claims,
-                                 terminal_value,
                                  risk_free_rate,
                                  discount_rate,
                                  div_netprofit_prop_coef,
@@ -158,7 +152,7 @@ run_stress_test_impl <- function(asset_type,
   validate_input_values(
     lgd_senior_claims = lgd_senior_claims,
     lgd_subordinated_claims = lgd_subordinated_claims,
-    terminal_value = terminal_value,
+    terminal_value = terminal_value_lookup,
     risk_free_rate = risk_free_rate,
     discount_rate = discount_rate,
     div_netprofit_prop_coef = div_netprofit_prop_coef,
@@ -282,7 +276,7 @@ run_stress_test_impl <- function(asset_type,
 
   results <- company_asset_value_at_risk(
     data = annual_profits,
-    terminal_value = terminal_value,
+    terminal_value = terminal_value_lookup,
     shock_scenario = transition_scenario,
     div_netprofit_prop_coef = div_netprofit_prop_coef,
     plan_carsten = exposure_by_technology_and_company,
