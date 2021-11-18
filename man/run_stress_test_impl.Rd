@@ -11,7 +11,6 @@ run_stress_test_impl(
   output_path,
   lgd_senior_claims,
   lgd_subordinated_claims,
-  terminal_value,
   risk_free_rate,
   discount_rate,
   div_netprofit_prop_coef,
@@ -41,11 +40,6 @@ claims, for accepted value range check \code{stress_test_arguments}.}
 
 \item{lgd_subordinated_claims}{Numeric, holding the loss given default for
 subordinated claims, for accepted value range check
-\code{stress_test_arguments}.}
-
-\item{terminal_value}{Numeric. A ratio to determine the share of the
-discounted value used in the terminal value calculation beyond the
-projected time frame. For accepted range compare
 \code{stress_test_arguments}.}
 
 \item{risk_free_rate}{Numeric that indicates the risk free rate of interest.
