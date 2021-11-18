@@ -152,7 +152,6 @@ run_stress_test_impl <- function(asset_type,
   validate_input_values(
     lgd_senior_claims = lgd_senior_claims,
     lgd_subordinated_claims = lgd_subordinated_claims,
-    terminal_value = terminal_value_lookup,
     risk_free_rate = risk_free_rate,
     discount_rate = discount_rate,
     div_netprofit_prop_coef = div_netprofit_prop_coef,
