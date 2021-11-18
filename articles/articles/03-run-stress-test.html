@@ -132,19 +132,18 @@
 <p>Specifications on the detail arguments are summarized in the following overview. The defaults that are used if the argument is not adjusted when calling <code><a href="../../reference/run_stress_test.html">run_stress_test()</a></code> can be found in column <code>default</code>. The user may change any detail argument by explicitly passing it to the function. Note that there are allowed values for each of the inputs. For logical or character variables refer to column <code>allowed</code>, for numeric variables the allowed values are the range from <code>min</code> (inclusive) to <code>max</code> (inclusive).</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">stress_test_arguments</span>
-<span class="co">#&gt; # A tibble: 10 × 6</span>
-<span class="co">#&gt;    name                    type      default allowed              min   max  </span>
-<span class="co">#&gt;    &lt;chr&gt;                   &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt;                &lt;chr&gt; &lt;chr&gt;</span>
-<span class="co">#&gt;  1 asset_type              character &lt;NA&gt;    equity, bonds, loans &lt;NA&gt;  &lt;NA&gt; </span>
-<span class="co">#&gt;  2 lgd_senior_claims       double    0.45    &lt;NA&gt;                 0.3   0.6  </span>
-<span class="co">#&gt;  3 lgd_subordinated_claims double    0.75    &lt;NA&gt;                 0.6   0.9  </span>
-<span class="co">#&gt;  4 terminal_value          double    0       &lt;NA&gt;                 0     0.1  </span>
-<span class="co">#&gt;  5 risk_free_rate          double    0.02    &lt;NA&gt;                 0     0.05 </span>
-<span class="co">#&gt;  6 discount_rate           double    0.02    &lt;NA&gt;                 -0.01 0.05 </span>
-<span class="co">#&gt;  7 div_netprofit_prop_coef double    1       &lt;NA&gt;                 0.8   1    </span>
-<span class="co">#&gt;  8 shock_year              double    2030    &lt;NA&gt;                 2025  2035 </span>
-<span class="co">#&gt;  9 term                    double    2       &lt;NA&gt;                 1     10   </span>
-<span class="co">#&gt; 10 company_exclusion       logical   TRUE    TRUE, FALSE          &lt;NA&gt;  &lt;NA&gt;</span></code></pre></div>
+<span class="co">#&gt; # A tibble: 9 × 6</span>
+<span class="co">#&gt;   name                    type      default allowed              min   max  </span>
+<span class="co">#&gt;   &lt;chr&gt;                   &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt;                &lt;chr&gt; &lt;chr&gt;</span>
+<span class="co">#&gt; 1 asset_type              character &lt;NA&gt;    equity, bonds, loans &lt;NA&gt;  &lt;NA&gt; </span>
+<span class="co">#&gt; 2 lgd_senior_claims       double    0.45    &lt;NA&gt;                 0.3   0.6  </span>
+<span class="co">#&gt; 3 lgd_subordinated_claims double    0.75    &lt;NA&gt;                 0.6   0.9  </span>
+<span class="co">#&gt; 4 risk_free_rate          double    0.02    &lt;NA&gt;                 0     0.05 </span>
+<span class="co">#&gt; 5 discount_rate           double    0.02    &lt;NA&gt;                 -0.01 0.05 </span>
+<span class="co">#&gt; 6 div_netprofit_prop_coef double    1       &lt;NA&gt;                 0.8   1    </span>
+<span class="co">#&gt; 7 shock_year              double    2030    &lt;NA&gt;                 2025  2035 </span>
+<span class="co">#&gt; 8 term                    double    2       &lt;NA&gt;                 1     10   </span>
+<span class="co">#&gt; 9 company_exclusion       logical   TRUE    TRUE, FALSE          &lt;NA&gt;  &lt;NA&gt;</span></code></pre></div>
 </div>
 <div id="understanding-the-input-arguments" class="section level3">
 <h3 class="hasAnchor">
@@ -155,8 +154,6 @@
 <code>lgd_senior_claims</code> is the loss given default used in the expected loss calculation of loans for senior claims (notably for corporate loans, so this is a potentially important parameter in this calculation)</li>
 <li>
 <code>lgd_subordinated_claims</code> is the loss given default used in the expected loss calculation of loans for subordinated claims (notably for corporate bonds. Not of relevance in the loans calculation)</li>
-<li>
-<code>terminal_value</code> the percentage of the net present value that should be used to approximate further cash flows beyond the time frame of the model.</li>
 <li>
 <code>risk_free_rate</code> the risk free interest rate. Input parameter to the Merton credit risk model.</li>
 <li>

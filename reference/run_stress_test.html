@@ -152,7 +152,6 @@ NOTE: if <code>return_results</code> is TRUE results will not be written to <cod
   <span class='va'>output_path</span>,
   lgd_senior_claims <span class='op'>=</span> <span class='fl'>0.45</span>,
   lgd_subordinated_claims <span class='op'>=</span> <span class='fl'>0.75</span>,
-  terminal_value <span class='op'>=</span> <span class='fl'>0</span>,
   risk_free_rate <span class='op'>=</span> <span class='fl'>0.02</span>,
   discount_rate <span class='op'>=</span> <span class='fl'>0.02</span>,
   div_netprofit_prop_coef <span class='op'>=</span> <span class='fl'>1</span>,
@@ -196,13 +195,6 @@ claims, for accepted value range check <code>stress_test_arguments</code>.</p></
       <th>lgd_subordinated_claims</th>
       <td><p>Numeric, holding the loss given default for
 subordinated claims, for accepted value range check
-<code>stress_test_arguments</code>.</p></td>
-    </tr>
-    <tr>
-      <th>terminal_value</th>
-      <td><p>Numeric. A ratio to determine the share of the
-discounted value used in the terminal value calculation beyond the
-projected time frame. For accepted range compare
 <code>stress_test_arguments</code>.</p></td>
     </tr>
     <tr>
