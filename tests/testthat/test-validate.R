@@ -4,7 +4,6 @@ test_that("Error is thrown if input values are of incorrect type", {
   expect_error(validate_input_values(
     lgd_senior_claims = 0.45,
     lgd_subordinated_claims = 0.75,
-    terminal_value = 0,
     risk_free_rate = 0,
     discount_rate = 0.02,
     div_netprofit_prop_coef = 1,
@@ -18,7 +17,6 @@ test_that("Error is thrown if input values are of incorrect type", {
   expect_error(validate_input_values(
     lgd_senior_claims = 0.45,
     lgd_subordinated_claims = 0.75,
-    terminal_value = 0,
     risk_free_rate = 0,
     discount_rate = 0.02,
     div_netprofit_prop_coef = "1",
@@ -35,7 +33,6 @@ test_that("Error is thrown if an input value is out of bounds", {
   expect_error(validate_input_values(
     lgd_senior_claims = 0.45,
     lgd_subordinated_claims = 0.75,
-    terminal_value = 0,
     risk_free_rate = -1,
     discount_rate = 0.02,
     div_netprofit_prop_coef = 1,
@@ -50,7 +47,6 @@ test_that("Error is thrown if a character input value is out of bounds", {
   expect_error(validate_input_values(
     lgd_senior_claims = 0.45,
     lgd_subordinated_claims = 0.75,
-    terminal_value = 0,
     risk_free_rate = 1,
     discount_rate = 0.02,
     div_netprofit_prop_coef = 1,
@@ -65,7 +61,6 @@ test_that("Error is thrown if term is not an integer", {
   expect_error(validate_input_values(
     lgd_senior_claims = 0.45,
     lgd_subordinated_claims = 0.75,
-    terminal_value = 0,
     risk_free_rate = 0.02,
     discount_rate = 0.02,
     div_netprofit_prop_coef = 1,
@@ -80,7 +75,6 @@ test_that("No error is thrown if an input value equals a bound", {
   expect_null(validate_input_values(
     lgd_senior_claims = 0.45,
     lgd_subordinated_claims = 0.75,
-    terminal_value = 0,
     risk_free_rate = 0,
     discount_rate = 0.02,
     div_netprofit_prop_coef = 1,
@@ -97,7 +91,6 @@ test_that("Error is thrown if an input value is of length other than 1", {
   expect_error(validate_input_values(
     lgd_senior_claims = 0.45,
     lgd_subordinated_claims = 0.75,
-    terminal_value = 0,
     risk_free_rate = 0,
     discount_rate = NULL,
     div_netprofit_prop_coef = 1,
@@ -110,8 +103,7 @@ test_that("Error is thrown if an input value is of length other than 1", {
   # length > 1
   expect_error(validate_input_values(
     lgd_senior_claims = 0.45,
-    lgd_subordinated_claims = 0.75,
-    terminal_value = c(0, 1),
+    lgd_subordinated_claims = c(0.75, 0.76),
     risk_free_rate = 0,
     discount_rate = 0.02,
     div_netprofit_prop_coef = 1,

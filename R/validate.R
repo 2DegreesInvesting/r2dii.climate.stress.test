@@ -6,7 +6,7 @@
 #'
 #' @return NULL
 validate_input_values <- function(lgd_senior_claims, lgd_subordinated_claims,
-                                  terminal_value, risk_free_rate, discount_rate,
+                                  risk_free_rate, discount_rate,
                                   div_netprofit_prop_coef, shock_year, term,
                                   company_exclusion, asset_type) {
   input_args <- mget(names(formals()), sys.frame(sys.nframe()))
@@ -18,7 +18,7 @@ validate_input_values <- function(lgd_senior_claims, lgd_subordinated_claims,
   c("company_exclusion", "asset_type") %>%
     purrr::walk(validate_value_in_values, args_list = input_args)
 
-  c("lgd_senior_claims", "lgd_subordinated_claims", "terminal_value", "risk_free_rate",
+  c("lgd_senior_claims", "lgd_subordinated_claims", "risk_free_rate",
     "discount_rate", "div_netprofit_prop_coef", "shock_year", "term") %>%
     purrr::walk(validate_value_in_range, args_list = input_args)
 
