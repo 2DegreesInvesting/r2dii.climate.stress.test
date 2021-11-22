@@ -18,6 +18,27 @@ source(file.path("R","set_paths.R"))
 source(file.path("R","stress_test_model_functions.R"))
 source("0_global_functions_st.R")
 
+
+################
+# CUSTOM FUNCTIONS
+################
+set_project_paths <- function(project_name, twodii_internal, project_location_ext) {
+  portcheck_v2_path <<- path_dropbox_2dii("PortCheck_v2")
+  project_location <<- ifelse(twodii_internal,
+                              path_dropbox_2dii("PortCheck_v2", "10_Projects", project_name),
+                              paste0(project_location_ext, "/", project_name)
+  )
+
+  log_path <<- paste0(project_location, "/00_Log_Files")
+  par_file_path <<- paste0(project_location, "/10_Parameter_File")
+  raw_input_path <<- paste0(project_location, "/20_Raw_Inputs")
+  proc_input_path <<- paste0(project_location, "/30_Processed_Inputs")
+  results_path <<- paste0(project_location, "/40_Results")
+  outputs_path <<- paste0(project_location, "/50_Outputs")
+}
+
+
+
 ################
 # INPUT VARIABLES
 ################
