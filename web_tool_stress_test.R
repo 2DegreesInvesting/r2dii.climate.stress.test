@@ -40,7 +40,6 @@ function_paths <- c(
       "read_transition_scenarios.R",
       "read_pacta_results.R",
       "read_price_data.R",
-      "set_params_st.R",
       "set_paths.R",
       "set_tech_trajectories.R",
       "stress_test_model_functions.R",
