@@ -79,7 +79,7 @@ check_asset_types <- function(fin_data){
            asset_type = dplyr::if_else(is.na(asset_type), "Others", asset_type),
     )
 
-  fin_data$asset_type <- first_char_up(fin_data$asset_type)
+  fin_data$asset_type <- stringr::str_to_sentence(fin_data$asset_type)
 
   ### TEST
   if (!any(unique(fin_data$asset_type) %in% allowable_asset_list)){
@@ -195,6 +195,23 @@ classify_all_funds <- function(fin_data){
 }
 
 ### Portfolio Check Functions
+
+# Checks whether a variable is a dataframe. Considers also logicals and null values.
+data_check <- function(df) {
+  if (is.data.frame(df)) {
+    if (nrow(df) > 0) {
+      check <- TRUE
+    } else {
+      check <- FALSE
+    }
+  } else {
+    check <- FALSE
+  }
+
+  return(check)
+}
+
+
 check_funds_wo_bbg <- function(fund_data, fin_data){
 
   # isin in the fund_data but no bbg data available

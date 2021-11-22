@@ -21,12 +21,6 @@ function_paths <- c(
   "0_web_functions.R", # This script is sourced from PACTA_analysis, so path is correct
   file.path(
     stress_test_path,
-    c(
-      "0_global_functions_st.R"
-    )
-  ),
-  file.path(
-    stress_test_path,
     "R",
     c(
       "apply_filters.R",
@@ -48,6 +42,7 @@ function_paths <- c(
     )
   )
 )
+
 
 source_all(function_paths)
 
