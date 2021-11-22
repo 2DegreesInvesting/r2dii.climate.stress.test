@@ -17,29 +17,33 @@ library(zoo)
 
 source(file.path(stress_test_path, "R", "functions.R"))
 
-function_paths <- file.path(
-  stress_test_path,
-  "R",
-  c(
-    "apply_filters.R",
-    "asset_value_at_risk.R",
-    "company_asset_value_at_risk.R",
-    "convert_cap_to_generation.R",
-    "extend_scenario_trajectory.R",
-    "get_st_data_path.R",
-    "interpolate_automotive_scenario.R",
-    "read_capacity_factors.R",
-    "read_transition_scenarios.R",
-    "read_pacta_results.R",
-    "read_price_data.R",
-    "set_params_st.R",
-    "set_paths.R",
-    "set_tech_trajectories.R",
-    "stress_test_model_functions.R",
-    "utils.R",
-    "write_results.R"
+function_paths <- c(
+  "0_web_functions.R", # This script is sourced from PACTA_analysis, so path is correct
+  file.path(
+    stress_test_path,
+    "R",
+    c(
+      "apply_filters.R",
+      "asset_value_at_risk.R",
+      "company_asset_value_at_risk.R",
+      "convert_cap_to_generation.R",
+      "extend_scenario_trajectory.R",
+      "get_st_data_path.R",
+      "interpolate_automotive_scenario.R",
+      "read_capacity_factors.R",
+      "read_transition_scenarios.R",
+      "read_pacta_results.R",
+      "read_price_data.R",
+      "set_params_st.R",
+      "set_paths.R",
+      "set_tech_trajectories.R",
+      "stress_test_model_functions.R",
+      "utils.R",
+      "write_results.R"
+    )
   )
 )
+
 
 source_all(function_paths)
 
