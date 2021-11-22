@@ -46,8 +46,6 @@ investor_name_filter <- investor_name
 # NOTE: relevant fin data comes directly through the portfolio
 
 # fund_data <- c() # we dont need fund data, as we already have the EQ and CB input portfolios, we just want to merge the IPR/DNB/BOE sector classifications to the inputportfolios, through the financial data
-# fin_data <- get_and_clean_fin_data(fund_data) %>%
-#   select(isin,sector_boe,subsector_boe,sector_dnb,sector_ipr,subsector_ipr)
 
 if (file.exists(file.path(proc_input_path, pf_name, "total_portfolio.rda")) &
   file.exists(file.path(proc_input_path, pf_name, "overview_portfolio.rda"))) {
