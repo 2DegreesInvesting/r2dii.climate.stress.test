@@ -274,8 +274,6 @@ get_and_clean_fin_data <- function(fund_data){
   # Checks to ensure all finds are classified as such
   fin_data <- classify_all_funds(fin_data)
 
-  # fin_data <- add_bics_sector(fin_data)
-
   # Select relevant columns
   fin_data <- fin_data %>%
     dplyr::select(
@@ -297,14 +295,5 @@ get_and_clean_fin_data <- function(fund_data){
   if(data_check(fund_data))  check_funds_wo_bbg(fund_data,fin_data)
 
   return(fin_data)
-
-}
-
-add_bics_sector <- function(fin_data){
-
-  bics_bridge <- read_csv("data-raw/bics_bridge.csv")
-
-  fin_data_ <- dplyr::left_join(fin_data, bics_bridge, by = c("security_bics_subgroup" = "bics_subsector"))
-
 
 }
