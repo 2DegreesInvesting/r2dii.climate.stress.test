@@ -1,9 +1,3 @@
-# FIXME: Avoid NOTE: no visible binding for '<<-' assignment
-# These files are not used by the package but they are by legacy code that
-# uses the repository that hosts the package.
-^R/set_params_st\.R$
-^tests/testthat/test-set_params_st\.R$
-
 ^r2dii\.climate\.stress\.test\.Rproj$
 ^\.Rproj\.user$
 ^README\.Rmd$
