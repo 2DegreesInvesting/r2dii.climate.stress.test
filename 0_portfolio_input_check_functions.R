@@ -174,23 +174,3 @@ identify_sb <- function(fin_data){
   fin_data
 
 }
-
-classify_all_funds <- function(fin_data){
-
-  nrow(fin_data[fin_data$asset_type == "Funds",])
-
-  fin_data <- fin_data %>%
-    dplyr::mutate(asset_type = dplyr::case_when(grepl("Fund", security_type) ~ "Funds" ,
-                                  grepl("ETF", security_type) ~ "Funds",
-                                  grepl("Fund", security_bclass4) ~ "Funds" ,
-                                  grepl("ETF", security_bclass4) ~ "Funds",
-                                  grepl("Fund", security_icb_subsector) ~ "Funds" ,
-                                  grepl("ETF", security_icb_subsector) ~ "Funds",
-                                  TRUE ~ asset_type))
-
-
-  ### TEST?
-
-  fin_data
-}
-
