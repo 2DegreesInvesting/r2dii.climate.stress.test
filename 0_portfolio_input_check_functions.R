@@ -210,23 +210,3 @@ data_check <- function(df) {
 
   return(check)
 }
-
-
-check_funds_wo_bbg <- function(fund_data, fin_data){
-
-  # isin in the fund_data but no bbg data available
-  fin_data_funds <- fin_data %>% dplyr::filter(asset_type == "Funds") %>% dplyr::select(isin) %>% dplyr::distinct()
-
-  fund_isins <- fund_data %>% dplyr::select(fund_isin) %>% dplyr::distinct()
-
-  fund_isins_missing_bbg <- fund_isins %>% dplyr::filter(!fund_isin %in% fin_data_funds$isin)
-
-  known_missing_isins <- read_csv("data-raw/fund_isins_without_bbg_data.csv", col_types =  "c")
-
-  known_missing_isins <- known_missing_isins %>% dplyr::bind_rows(fund_isins_missing_bbg) %>% dplyr::distinct()
-
-  write.csv(fund_isins_missing_bbg, "data-raw/fund_isins_without_bbg_data.csv", row.names = F)
-
-  if (data_check(fund_isins_missing_bbg)){print("Warning: There are funds without bbg data. These are excluded from the analysis.")}
-
-}
