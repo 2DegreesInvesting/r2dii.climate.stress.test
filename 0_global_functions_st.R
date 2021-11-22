@@ -13,17 +13,6 @@ set_project_paths <- function(project_name, twodii_internal, project_location_ex
   outputs_path <<- paste0(project_location, "/50_Outputs")
 }
 
-set_analysis_inputs_path <- function(twodii_internal, data_location_ext, dataprep_ref = DATAPREP.TIMESTAMP()) {
-  if (twodii_internal) {
-    analysis_inputs_path <- path_dropbox_2dii("PortCheck", "00_Data", "07_AnalysisInputs", dataprep_ref)
-    analysis_inputs_path <- paste0(analysis_inputs_path, "/")
-  } else {
-    analysis_inputs_path <- data_location_ext
-  }
-
-  return(analysis_inputs_path)
-}
-
 first_char_up <- function(x) {
   x <- paste0(toupper(substr(x, 1, 1)), tolower(substr(x, 2, nchar(x))))
   x
