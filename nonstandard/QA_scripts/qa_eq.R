@@ -1,18 +1,15 @@
 source(file.path("R", "functions.R"))
 
-function_paths <- c(
-  "0_global_functions_st.R",
-  file.path(
-    "R",
-    c(
-      "annual_pd_change_company_sector.R",
-      "annual_pd_change_sector_shock_year.R",
-      "get_st_data_path.R",
-      "overall_pd_change_company_sector.R",
-      "overall_pd_change_sector_shock_year.R",
-      "qa_graphs_st.R",
-      "stress_test_model_functions.R"
-    )
+function_paths <- file.path(
+  "R",
+  c(
+    "annual_pd_change_company_sector.R",
+    "annual_pd_change_sector_shock_year.R",
+    "get_st_data_path.R",
+    "overall_pd_change_company_sector.R",
+    "overall_pd_change_sector_shock_year.R",
+    "qa_graphs_st.R",
+    "stress_test_model_functions.R"
   )
 )
 

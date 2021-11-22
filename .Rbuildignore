@@ -5,7 +5,6 @@
 ^\.pacta$
 ^model_parameters$
 ^nonstandard$
-^0_global_functions_st\.R$
 ^0_portfolio_input_check_functions\.R$
 ^st_project_settings\.yml$
 ^web_tool_external_stress_test\.R$
