@@ -14,7 +14,6 @@
 ^0_global_functions_st\.R$
 ^0_portfolio_input_check_functions\.R$
 ^external_stress_test_application_code\.R$
-^external_stress_test_on_existing_results\.R$
 ^st_project_settings\.yml$
 ^stress_test_litigation_risk\.R$
 ^stress_test_model_functions\.R$
