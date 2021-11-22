@@ -195,6 +195,23 @@ classify_all_funds <- function(fin_data){
 }
 
 ### Portfolio Check Functions
+
+# Checks whether a variable is a dataframe. Considers also logicals and null values.
+data_check <- function(df) {
+  if (is.data.frame(df)) {
+    if (nrow(df) > 0) {
+      check <- TRUE
+    } else {
+      check <- FALSE
+    }
+  } else {
+    check <- FALSE
+  }
+
+  return(check)
+}
+
+
 check_funds_wo_bbg <- function(fund_data, fin_data){
 
   # isin in the fund_data but no bbg data available
@@ -291,19 +308,3 @@ add_bics_sector <- function(fin_data){
 
 
 }
-
-# Checks whether a variable is a dataframe. Considers also logicals and null values.
-data_check <- function(df) {
-  if (is.data.frame(df)) {
-    if (nrow(df) > 0) {
-      check <- TRUE
-    } else {
-      check <- FALSE
-    }
-  } else {
-    check <- FALSE
-  }
-
-  return(check)
-}
-
