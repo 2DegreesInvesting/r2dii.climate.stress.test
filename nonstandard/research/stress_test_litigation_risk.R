@@ -37,7 +37,21 @@ set_project_paths <- function(project_name, twodii_internal, project_location_ex
   outputs_path <<- paste0(project_location, "/50_Outputs")
 }
 
+# checks validity of project config
+# FIXME:
+# check_valid_cfg <- function(cfg) stopifnot(exists("cfg") == TRUE)
+# testthat::expect_error(check_valid_cfg())
+# #> Error: `check_valid_cfg()` did not throw an error.
+check_valid_cfg <- function(cfg, expected_no_args = 3) {
+  stopifnot(exists("cfg") == TRUE)
+  stopifnot(cfg %>% class() == "list")
+  stopifnot(cfg %>% length() == expected_no_args)
 
+  stopifnot(cfg$project_name %>% is.character() == TRUE)
+  stopifnot(cfg$project_internal$twodii_internal %>% is.logical() == TRUE)
+
+  invisible(cfg)
+}
 
 ################
 # INPUT VARIABLES
