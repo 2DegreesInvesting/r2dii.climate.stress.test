@@ -79,7 +79,7 @@ check_asset_types <- function(fin_data){
            asset_type = dplyr::if_else(is.na(asset_type), "Others", asset_type),
     )
 
-  fin_data$asset_type <- stringr::str_to_title(fin_data$asset_type)
+  fin_data$asset_type <- stringr::str_to_sentence(fin_data$asset_type)
 
   ### TEST
   if (!any(unique(fin_data$asset_type) %in% allowable_asset_list)){
