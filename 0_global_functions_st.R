@@ -116,19 +116,3 @@ set_analysis_inputs_path <- function(twodii_internal, data_location_ext, datapre
   return(analysis_inputs_path)
 }
 
-# Checks whether a variable is a dataframe. Considers also logicals and null values.
-data_check <- function(df) {
-  if (is.data.frame(df)) {
-    if (nrow(df) > 0) {
-      check <- TRUE
-    } else {
-      check <- FALSE
-    }
-  } else {
-    check <- FALSE
-  }
-
-  return(check)
-}
-
-
