@@ -130,7 +130,6 @@ validate_data_has_expected_cols <- function(data,
 #'   warning.
 #'
 #' @return input `data`.
-#' @export
 report_all_duplicate_kinds <- function(data, composite_unique_cols, throw_error = TRUE) {
 
   validate_data_has_expected_cols(
@@ -166,7 +165,6 @@ report_all_duplicate_kinds <- function(data, composite_unique_cols, throw_error 
 #' @inheritParams report_all_duplicate_kinds
 #'
 #' @return NULL
-#' @export
 report_missing_col_combinations <- function(data, composite_unique_cols, throw_error = FALSE) {
   all_combinations <- data %>%
     tidyr::expand(!!!rlang::syms(composite_unique_cols))

@@ -39,8 +39,6 @@ read_price_data <- function(path,
 #' @description This function reads in price data using long file format.
 #'   It is expected to work with data based on IEA WEO 2020.
 #' @inheritParams read_price_data
-#'
-#' @export
 read_price_data_internal <- function(path) {
 
   data <- validate_file_exists(path) %>%
@@ -74,8 +72,6 @@ read_price_data_internal <- function(path) {
 #'
 #' @description This function reads in price data using the old wide data format.
 #' @inheritParams read_price_data
-#'
-#' @export
 read_price_data_internal_old <- function(path) {
 
 

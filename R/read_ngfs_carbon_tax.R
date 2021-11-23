@@ -5,8 +5,6 @@
 #'   NGFS carbon tax information
 #'
 #' @family import functions
-#'
-#' @export
 read_ngfs_carbon_tax <- function(path = NULL) {
   path %||% stop("Must provide 'path'")
 

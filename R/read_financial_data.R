@@ -5,8 +5,6 @@
 #'   company financial data.
 #'
 #' @family import functions
-#'
-#' @export
 read_financial_data <- function(path = NULL) {
   path %||% stop("Must provide 'path'")
 
