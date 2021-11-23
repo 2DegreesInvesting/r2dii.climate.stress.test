@@ -9,7 +9,6 @@
 #' @param asset_type Type of analyzed asset. Can be bonds or equity.
 #'
 #' @return `sector_exposures` holding only valid rows for `asset_type`
-#' @export
 wrangle_and_check_sector_exposures <- function(sector_exposures, asset_type) {
   asset_type <- stringr::str_to_title(asset_type)
 
@@ -77,7 +76,6 @@ wrangle_and_check_sector_exposures <- function(sector_exposures, asset_type) {
 #'   indicates which equity market to apply in the analysis.
 #'
 #' @return Wrangled `pacta_results.`
-#' @export
 wrangle_and_check_pacta_results <- function(pacta_results, start_year, time_horizon,
                                             scenario_geography_filter, scenarios_filter,
                                             equity_market_filter) {

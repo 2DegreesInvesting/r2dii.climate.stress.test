@@ -69,8 +69,6 @@ path_dropbox_2dii <- function(...) {
 #' @param path Character vector indicating the directory of a file.
 #'
 #' @return String holding provided `path`.
-#'
-#' @export
 validate_file_exists <- function(path) {
   valid_file_path <- file.exists(path)
 
@@ -91,9 +89,7 @@ validate_file_exists <- function(path) {
 #' @param data data frame that is to be validated
 #' @param expected_columns Character vector listing the expected columns
 #'
-#' @return A boolean.
-#'
-#' @export
+#' @return NULL
 validate_data_has_expected_cols <- function(data,
                                             expected_columns) {
   stopifnot(rlang::is_named(data))
@@ -130,7 +126,6 @@ validate_data_has_expected_cols <- function(data,
 #'   warning.
 #'
 #' @return input `data`.
-#' @export
 report_all_duplicate_kinds <- function(data, composite_unique_cols, throw_error = TRUE) {
 
   validate_data_has_expected_cols(
@@ -166,7 +161,6 @@ report_all_duplicate_kinds <- function(data, composite_unique_cols, throw_error 
 #' @inheritParams report_all_duplicate_kinds
 #'
 #' @return NULL
-#' @export
 report_missing_col_combinations <- function(data, composite_unique_cols, throw_error = FALSE) {
   all_combinations <- data %>%
     tidyr::expand(!!!rlang::syms(composite_unique_cols))

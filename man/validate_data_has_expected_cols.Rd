@@ -11,9 +11,6 @@ validate_data_has_expected_cols(data, expected_columns)
 
 \item{expected_columns}{Character vector listing the expected columns}
 }
-\value{
-A boolean.
-}
 \description{
 Validate that all expected columns for an operation are given in a data frame.
 }
