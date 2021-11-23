@@ -74,7 +74,7 @@ check_valid_cfg <- function(cfg, expected_no_args = 3) {
 # in this repo
 
 
-cfg_st <- config::get(file = "st_project_settings.yml")
+cfg_st <- config::get(file = "nonstandard/st_project_settings.yml")
 check_valid_cfg(cfg = cfg_st, expected_no_args = 5)
 project_name <- cfg_st$project_name
 twodii_internal <- cfg_st$project_internal$twodii_internal
