@@ -82,8 +82,6 @@ read_transition_scenarios <- function(path = NULL,
 #'   the shocks to be used in the analysis
 #'
 #' @family import functions
-#'
-#' @export
 generate_transition_shocks <- function(start_of_analysis,
                                        end_of_analysis,
                                        shock_years) {
