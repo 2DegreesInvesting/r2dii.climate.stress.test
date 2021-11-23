@@ -7,7 +7,6 @@
 #'
 #' @return A tibble holding columns investor_name, portfolio_name and
 #'   asset_portfolio_value.
-#' @export
 calculate_aum <- function(sector_exposures) {
   aum <- sector_exposures %>%
     dplyr::group_by(investor_name, portfolio_name) %>%

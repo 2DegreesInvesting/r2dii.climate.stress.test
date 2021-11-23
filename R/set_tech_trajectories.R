@@ -95,8 +95,6 @@ set_baseline_trajectory <- function(data,
 #' @family scenario definition
 #'
 #' @return numeric vector
-#'
-#' @export
 calc_future_prod_follows_scen <- function(planned_prod = .data$plan_tech_prod,
                                           change_scen_prod = .data$scenario_change) {
   first_production_na <- which(is.na(planned_prod))[1]
@@ -328,8 +326,6 @@ set_ls_trajectory <- function(data,
 #' @family scenario definition
 #'
 #' @return numeric vector
-#'
-#' @export
 calc_late_sudden_traj <- function(start_year, end_year, year_of_shock, duration_of_shock,
                                   shock_strength, scen_to_follow, planned_prod, late_and_sudden,
                                   scenario_change, scenario_change_baseline, scenario_change_aligned,
