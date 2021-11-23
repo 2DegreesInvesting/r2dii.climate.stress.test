@@ -20,7 +20,7 @@ results_path <- get_st_data_path("ST_PROJECT_FOLDER_OUTPUT")
 graph_path <- file.path(get_st_data_path("ST_PROJECT_FOLDER_OUTPUT"), "graphs")
 if (!fs::dir_exists(graph_path)) {fs::dir_create(graph_path)}
 
-cfg_st <- config::get(file = "st_project_settings.yml")
+cfg_st <- config::get(file = "nonstandard/st_project_settings.yml")
 project_name <- cfg_st$project_name
 
 # price trajectories
