@@ -62,3 +62,14 @@ test_that("Function returns vector of identical length as input args", {
   expect_equal(length(p_survival), 2)
 })
 
+test_that("P survival is calculated correctly", {
+  p_survival <- calc_survival_probability_merton(
+    L = c(10, 10),
+    V0 = c(20, 20),
+    sigma = c(0.2, 0.2),
+    r = c(0.05, 0.05),
+    t = c(1, 2)
+  )
+
+  expect_equal(p_survival, c(0.9998502522032213, 0.9935406143843375))
+})
