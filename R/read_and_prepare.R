@@ -37,9 +37,8 @@ read_and_prepare_project_agnostic_data <- function(start_year, end_year, company
     excluded_companies <- NULL
   }
 
-  df_price <- read_price_data(
+  df_price <- read_price_data_old(
     path = file.path(path, paste0("prices_data_", price_data_version_lookup, ".csv")),
-    version = "old",
     expected_technologies = technologies_lookup
   ) %>%
     dplyr::filter(year >= start_year) %>%

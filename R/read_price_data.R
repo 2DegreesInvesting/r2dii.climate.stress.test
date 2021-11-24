@@ -1,45 +1,13 @@
-#' Read in price data from csv and check that all expected columns are given.
+#' Read in price data
+#'
+#' This function reads in price data using long file format. It is expected to
+#' work with data based on IEA WEO 2020.
 #'
 #' @param path A string that points to the location of the file containing the
 #'   price data
-#' @param version A string indicating whether to prepare the capacity factors
-#'   based on the old price data structure or the new long format. Must be
-#'   either "old" or "new".
-#' @param expected_technologies A character vector listing all technologies for
-#'   which price data must be provided
-#'
-#' @family import functions
-#'
-#' @export
-read_price_data <- function(path,
-                            version,
-                            expected_technologies) {
-  validate_file_exists(path)
-
-  version_allowed <- version %in% c("old", "new")
-  stopifnot(version_allowed)
-
-  if (version == "new") {
-    data <- read_price_data_internal(path = path)
-  } else {
-    data <- read_price_data_internal_old(path = path)
-  }
-
-  prices_for_all_technologies_available <- all(
-    expected_technologies %in% unique(data$technology)
-  )
-  stopifnot(prices_for_all_technologies_available)
-
-  return(data)
-}
-
-
-#' Read in price data from csv and check that all expected columns are given.
-#'
-#' @description This function reads in price data using long file format.
-#'   It is expected to work with data based on IEA WEO 2020.
-#' @inheritParams read_price_data
-read_price_data_internal <- function(path) {
+#' @param expected_technologies A vector holding names of expected technologies.
+#' @return A tibble holding price data in long format.
+read_price_data <- function(path, expected_technologies) {
 
   data <- validate_file_exists(path) %>%
     readr::read_csv(
@@ -53,7 +21,8 @@ read_price_data_internal <- function(path) {
       unit = "c",
       price = "d"
     )
-  )
+  ) %>%
+    check_technology_availability(expected_technologies = expected_technologies)
 
   validate_data_has_expected_cols(
     data = data,
@@ -66,14 +35,15 @@ read_price_data_internal <- function(path) {
   return(data)
 }
 
-
-
-#' Read in price data from csv and check that all expected columns are given.
+#' Read in price data
 #'
-#' @description This function reads in price data using the old wide data format.
+#' This function reads in price data using the old wide data format.
+#'
 #' @inheritParams read_price_data
-read_price_data_internal_old <- function(path) {
-
+#'
+#' @return A tibble holding price data in long format.
+#' @export
+read_price_data_old <- function(path, expected_technologies) {
 
   data <- validate_file_exists(path) %>%
     readr::read_csv(
@@ -93,7 +63,8 @@ read_price_data_internal_old <- function(path) {
       Baseline = "d",
       baseline_source = "c"
     )
-  )
+  ) %>%
+    check_technology_availability(expected_technologies = expected_technologies)
 
   validate_data_has_expected_cols(
     data = data,
