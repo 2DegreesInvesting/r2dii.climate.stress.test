@@ -21,8 +21,7 @@ read_and_prepare_project_agnostic_data <- function(start_year, end_year, company
   }
 
   capacity_factors_power <- read_capacity_factors(
-    path = file.path(path, "capacity_factors_WEO_2020.csv"),
-    version = "new"
+    path = file.path(path, "capacity_factors_WEO_2020.csv")
   )
 
   if (company_exclusion) {
