@@ -11,10 +11,6 @@ validate_input_values <- function(lgd_senior_claims, lgd_subordinated_claims,
                                   company_exclusion, asset_type) {
   input_args <- mget(names(formals()), sys.frame(sys.nframe()))
 
-  if (any(purrr::map_int(input_args, length) != 1)) {
-    stop("Input arguments to stress test run need to be of length 1")
-  }
-
   c("company_exclusion", "asset_type") %>%
     purrr::walk(validate_value_in_values, args_list = input_args)
 

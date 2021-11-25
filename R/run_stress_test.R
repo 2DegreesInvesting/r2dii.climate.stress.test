@@ -62,6 +62,18 @@ run_stress_test <- function(asset_type,
 
   iter_var <- get_iter_var(args_list)
 
+  validate_input_values(
+    lgd_senior_claims = lgd_senior_claims,
+    lgd_subordinated_claims = lgd_subordinated_claims,
+    risk_free_rate = risk_free_rate,
+    discount_rate = discount_rate,
+    div_netprofit_prop_coef = div_netprofit_prop_coef,
+    shock_year = shock_year,
+    term = term,
+    company_exclusion = company_exclusion,
+    asset_type = asset_type
+  )
+
   args_list$output_path <- customise_output_path(
     output_path = args_list$output_path,
     iter_var = iter_var
@@ -148,18 +160,6 @@ run_stress_test_impl <- function(asset_type,
                                  company_exclusion,
                                  iter_var) {
   cat("-- Validating input arguments. \n")
-
-  validate_input_values(
-    lgd_senior_claims = lgd_senior_claims,
-    lgd_subordinated_claims = lgd_subordinated_claims,
-    risk_free_rate = risk_free_rate,
-    discount_rate = discount_rate,
-    div_netprofit_prop_coef = div_netprofit_prop_coef,
-    shock_year = shock_year,
-    term = term,
-    company_exclusion = company_exclusion,
-    asset_type = asset_type
-  )
 
   args_list <- mget(names(formals()), sys.frame(sys.nframe()))
 
