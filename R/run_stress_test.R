@@ -62,6 +62,8 @@ run_stress_test <- function(asset_type,
 
   iter_var <- get_iter_var(args_list)
 
+  cat("-- Validating input arguments. \n")
+
   validate_input_values(
     lgd_senior_claims = lgd_senior_claims,
     lgd_subordinated_claims = lgd_subordinated_claims,
@@ -159,7 +161,6 @@ run_stress_test_impl <- function(asset_type,
                                  term,
                                  company_exclusion,
                                  iter_var) {
-  cat("-- Validating input arguments. \n")
 
   args_list <- mget(names(formals()), sys.frame(sys.nframe()))
 
