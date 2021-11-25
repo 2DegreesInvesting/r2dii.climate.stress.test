@@ -25,7 +25,7 @@ validate_input_values <- function(lgd_senior_claims, lgd_subordinated_claims,
   # ADO 1943 - Once we decide to add a separate Merton calculation on the average
   # maturity of a portfolio, this check will need to be removed
   if (!term %% 1 == 0) {
-    stop("Argmemnt term must be a whole number")
+    stop("Argument term must be a whole number")
   }
 }
 
