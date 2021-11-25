@@ -18,13 +18,13 @@ validate_input_values <- function(lgd_senior_claims, lgd_subordinated_claims,
     "discount_rate", "div_netprofit_prop_coef", "shock_year", "term") %>%
     purrr::walk(validate_values_in_range, args_list = input_args)
 
-  if (!shock_year %% 1 == 0) {
+  if (!all(shock_year %% 1 == 0)) {
     stop("Argmuent shock_year must be a whole number")
   }
 
   # ADO 1943 - Once we decide to add a separate Merton calculation on the average
   # maturity of a portfolio, this check will need to be removed
-  if (!term %% 1 == 0) {
+  if (!all(term %% 1 == 0)) {
     stop("Argument term must be a whole number")
   }
 }
