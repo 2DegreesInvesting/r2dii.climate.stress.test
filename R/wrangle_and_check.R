@@ -81,7 +81,6 @@ wrangle_and_check_pacta_results <- function(pacta_results, start_year, time_hori
                                             equity_market_filter) {
   wrangled_pacta_results <- pacta_results %>%
     dplyr::filter(!is.na(.data$scenario)) %>%
-    check_scenario_settings(scenario_selections = scenarios_lookup) %>%
     dplyr::filter(.data$scenario %in% scenarios_lookup) %>%
     # TODO: temporary fix, remove once all scenario data is used from scenario file
     dplyr::filter(!(.data$scenario == "ETP2017_NPS" & .data$ald_sector == "Power")) %>%
