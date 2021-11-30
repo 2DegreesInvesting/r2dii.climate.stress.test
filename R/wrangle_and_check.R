@@ -510,9 +510,9 @@ select_sector_scenario_combinations <- function(pacta_results) {
   if (any(is.na(scenario_availability_check_data$indicator_col))) {
 
     missing_combinations <- scenario_availability_check_data %>%
-      dplyr::filter(is.na(indicator_col)) %>%
-      dplyr::mutate(missings = paste(scenario, ald_sector, sep = ": ")) %>%
-      dplyr::pull(missings) %>%
+      dplyr::filter(is.na(.data$indicator_col)) %>%
+      dplyr::mutate(missings = paste(.data$scenario, .data$ald_sector, sep = ": ")) %>%
+      dplyr::pull(.data$missings) %>%
       paste0(collapse = ", ")
 
     rlang::abort(c(
