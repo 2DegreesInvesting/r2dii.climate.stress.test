@@ -37,9 +37,11 @@ wrangled into the specific input format required by `r2dii.climate.stress.test`.
 To make this process as easy as possible for the user, we provide a function,
 `run_prep_calculation_loans()`, which takes care of all relevant steps with
 minimal input from the user.
-**NOTE:** We recommend to provide the matched loan book including holdings from all
-available sectors that are available in the loan book and supported in this
-climate stress testing implementation. Supported sectors are:
+**NOTE:** We recommend to provide the matched loan book including holdings from
+all available sectors that are available in the loan book and supported in this
+climate stress testing implementation. Including only a part of the loanbook
+would alter results on all variables that are influenced by the entire loanbook.
+Supported sectors are:
   
 ```{r}
 sectors_lookup
