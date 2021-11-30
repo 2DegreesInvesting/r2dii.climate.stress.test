@@ -28,6 +28,14 @@ scenarios_lookup <- c(
   "WEO2019_SDS"
 )
 
+sector_scenarios_mapping_lookup <- tibble::tibble(
+  ald_sector = c("Power", "Power", "Oil&Gas", "Oil&Gas", "Coal", "Coal", "Automotive", "Automotive"),
+  scenario = c(
+    rep(c("WEO2019_NPS", "WEO2019_SDS"), 3),
+    c("ETP2017_NPS", "ETP2017_SDS")
+  )
+)
+
 baseline_scenario_lookup <- "NPS"
 shock_scenario_lookup <- "SDS"
 calculation_level_lookup <- "company"
