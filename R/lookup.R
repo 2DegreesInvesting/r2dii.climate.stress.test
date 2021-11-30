@@ -5,6 +5,7 @@
 #' @examples
 #'
 #' credit_type_lookup
+#' sectors_lookup
 NULL
 
 # An investor name is needed for legacy reasons currently there is no
@@ -41,7 +42,8 @@ price_data_version_lookup <- "2021Q1"
 #' @export
 credit_type_lookup <- c("outstanding", "credit_limit")
 
-# vector holding considered sectors in stress testing
+#' @rdname lookup
+#' @export
 sectors_lookup <- c("Power", "Oil&Gas", "Coal", "Automotive")
 
 # vector holding considered technologies in stress testing
