@@ -14,7 +14,10 @@ Tibble \code{pacta_results} holding only required sector - scenario
 combinations.
 }
 \description{
-Function: 1. Checks that for all supported sectors contained in
-\code{pacta_results} required scenarios are available. 1. Filters so that only
-required scenarios are kept.
+Function:
+\enumerate{
+\item Checks that for all supported sectors contained in \code{pacta_results}
+required scenarios are available.
+\item Filters so that only required scenarios are kept.
+}
 }
