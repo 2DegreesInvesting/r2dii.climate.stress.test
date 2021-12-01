@@ -1,4 +1,3 @@
-stop("Intentionally break CI")
 # web tool version of external stress test scenario calculation - IPR, DNB, BoE
 
 library(dplyr)
