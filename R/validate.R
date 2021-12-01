@@ -1,6 +1,6 @@
 #' Check that input values are valid
 #'
-#' Checks that user inputs are of length 1 and within defined ranges.
+#' Checks that user inputs are within defined ranges.
 #'
 #' @inheritParams run_stress_test
 #'
@@ -11,31 +11,27 @@ validate_input_values <- function(lgd_senior_claims, lgd_subordinated_claims,
                                   company_exclusion, asset_type) {
   input_args <- mget(names(formals()), sys.frame(sys.nframe()))
 
-  if (any(purrr::map_int(input_args, length) != 1)) {
-    stop("Input arguments to stress test run need to be of length 1")
-  }
-
   c("company_exclusion", "asset_type") %>%
-    purrr::walk(validate_value_in_values, args_list = input_args)
+    purrr::walk(validate_values_in_values, args_list = input_args)
 
   c("lgd_senior_claims", "lgd_subordinated_claims", "risk_free_rate",
     "discount_rate", "div_netprofit_prop_coef", "shock_year", "term") %>%
-    purrr::walk(validate_value_in_range, args_list = input_args)
+    purrr::walk(validate_values_in_range, args_list = input_args)
 
-  if (!shock_year %% 1 == 0) {
+  if (!all(shock_year %% 1 == 0)) {
     stop("Argmuent shock_year must be a whole number")
   }
 
   # ADO 1943 - Once we decide to add a separate Merton calculation on the average
   # maturity of a portfolio, this check will need to be removed
-  if (!term %% 1 == 0) {
-    stop("Argmemnt term must be a whole number")
+  if (!all(term %% 1 == 0)) {
+    stop("Argument term must be a whole number")
   }
 }
 
-#'  Validate that value in within values
+#'  Validate that values are in within values
 #'
-#' #' Checks that value of variable `var` is in valid values as defined in
+#' #' Checks that values of variable `var` are in valid values as defined in
 #' r2dii.climate_stress_test::stress_test_arguments.
 #'
 #' @param var String holding name of variable.
@@ -43,7 +39,7 @@ validate_input_values <- function(lgd_senior_claims, lgd_subordinated_claims,
 #'   their values.
 #'
 #' @return NULL
-validate_value_in_values <- function(var, args_list) {
+validate_values_in_values <- function(var, args_list) {
   arg_type <- stress_test_arguments %>%
     dplyr::filter(.data$name == .env$var) %>%
     dplyr::pull(.data$type)
@@ -70,12 +66,14 @@ validate_value_in_values <- function(var, args_list) {
     }
   }
 
-  if (!arg_val %in% allowed_values) {
+  if (!all(arg_val %in% allowed_values)) {
+    arg_vals_invalid <- arg_val[!(arg_val %in% allowed_values)]
+    arg_vals_invalid_collapsed <- paste0(arg_vals_invalid, collapse = ", ")
     allowed_values_collapsed <- paste0(allowed_values, collapse = ", ")
     rlang::abort(
       c(
         glue::glue("Must provide valid input for argument {var}."),
-        x = glue::glue("Invalid input: {arg_val}."),
+        x = glue::glue("Invalid input: {arg_vals_invalid_collapsed}."),
         i = glue::glue("Valid values are: {allowed_values_collapsed}.")
       )
     )
@@ -83,15 +81,16 @@ validate_value_in_values <- function(var, args_list) {
   invisible()
 }
 
-#' Validate that value in within range
+#' Validate that values are within range
 #'
-#' Checks that value of variable `var` is in valid range as defined in
+#' Checks that values of variable `var` are in valid range as defined in
 #' r2dii.climate_stress_test::stress_test_arguments.
 #'
-#' @inheritParams validate_value_in_values
+#' @inheritParams validate_values_in_values
 #'
 #' @return NULL
-validate_value_in_range <- function(var, args_list) {
+validate_values_in_range <- function(var, args_list) {
+
   min <- stress_test_arguments %>%
     dplyr::filter(.data$name == .env$var) %>%
     dplyr::pull(.data$min) %>%
@@ -118,11 +117,13 @@ validate_value_in_range <- function(var, args_list) {
     )
   }
 
-  if (!dplyr::between(arg_val, min, max)) {
+  if (!all(dplyr::between(arg_val, min, max))) {
+    arg_vals_invalid <- arg_val[!(dplyr::between(arg_val, min, max))]
+    arg_vals_invalid_collapsed <- paste0(arg_vals_invalid, collapse = ", ")
     rlang::abort(
       c(
         glue::glue("Must provide valid input for argument {var}."),
-        x = glue::glue("Invalid input: {arg_val}."),
+        x = glue::glue("Invalid input: {arg_vals_invalid_collapsed}."),
         i = glue::glue("Is your argument in valid range between {min} and {max}?")
       )
     )
