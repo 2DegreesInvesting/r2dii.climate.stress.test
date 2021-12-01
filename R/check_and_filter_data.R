@@ -68,8 +68,10 @@ check_and_filter_data <- function(st_data_list, start_year, end_year,
     c("year", "sector", "technology"),
     c("scenario_geography", "scenario", "ald_sector", "technology", "year"),
     c("company_name", "company_id"),
-    c("year", "equity_market", "ald_sector", "technology", "scenario", "allocation",
-      "scenario_geography", "company_name", "id", "investor_name", "portfolio_name"),
+    c(
+      "year", "equity_market", "ald_sector", "technology", "scenario", "allocation",
+      "scenario_geography", "company_name", "id", "investor_name", "portfolio_name"
+    ),
     c("financial_sector", "investor_name", "portfolio_name")
   )
 

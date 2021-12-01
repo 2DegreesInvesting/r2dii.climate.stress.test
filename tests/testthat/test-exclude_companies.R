@@ -68,5 +68,4 @@ test_that("input data is return if exclusion is NULL", {
   )
 
   expect_equal(test_excluded, test_comp_annual_profits)
-
 })
