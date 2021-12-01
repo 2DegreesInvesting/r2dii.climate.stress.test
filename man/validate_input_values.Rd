@@ -49,5 +49,5 @@ excluded_companies.csv shall be excluded. For accepted values compare
 \code{stress_test_arguments}.}
 }
 \description{
-Checks that user inputs are of length 1 and within defined ranges.
+Checks that user inputs are within defined ranges.
 }
