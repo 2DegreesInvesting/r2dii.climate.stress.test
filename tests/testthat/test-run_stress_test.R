@@ -2,8 +2,8 @@ test_that("with bonds output is unchanged and names have the suffix '_arg'", {
   skip_on_ci()
   skip_on_cran()
 
-  in_agnostic <- "/home/mauro/tmp/st/ST_INPUTS_MASTER"
-  in_specific <- "/home/mauro/tmp/st/ST_TESTING_BONDS/inputs"
+  in_agnostic <- Sys.getenv("ST_AGNOSTIC")
+  in_specific <- Sys.getenv("ST_SPECIFIC_BONDS")
   out <- tempfile()
   fs::dir_create(out)
 
