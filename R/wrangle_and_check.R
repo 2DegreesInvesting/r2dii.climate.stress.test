@@ -480,10 +480,10 @@ rename_results <- function(results_list) {
 #' Select required sector scenario combinations
 #'
 #' Function:
-#' 1. Checks that for all provided sector required scenarios are available
+#' 1. Checks that for all provided sector required scenarios are available.
 #' 1. Filters so that only required scenarios are kept.
 #'
-#' @param pacta_results A tibble holding pacta results
+#' @param pacta_results A tibble holding pacta results.
 #'
 #' @return Tibble `pacta_results` holding only required sector - scenario
 #'   combinations.

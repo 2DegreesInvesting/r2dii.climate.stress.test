@@ -7,7 +7,7 @@
 select_sector_scenario_combinations(pacta_results)
 }
 \arguments{
-\item{pacta_results}{A tibble holding pacta results}
+\item{pacta_results}{A tibble holding pacta results.}
 }
 \value{
 Tibble \code{pacta_results} holding only required sector - scenario
@@ -16,7 +16,7 @@ combinations.
 \description{
 Function:
 \enumerate{
-\item Checks that for all provided sector required scenarios are available
+\item Checks that for all provided sector required scenarios are available.
 \item Filters so that only required scenarios are kept.
 }
 }
