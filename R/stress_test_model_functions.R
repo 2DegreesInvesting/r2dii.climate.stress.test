@@ -15,13 +15,11 @@ f <- function(shock_strength_calc) {
 
 # LATE AND SUDDEN PRICES ----------------------------------------
 
-late_sudden_prices <- function(
-    SDS_price,
-    Baseline_price,
-    year_of_shock,
-    start_year,
-    duration_of_shock
-  ) {
+late_sudden_prices <- function(SDS_price,
+                               Baseline_price,
+                               year_of_shock,
+                               start_year,
+                               duration_of_shock) {
   # input:
   # vector with SDS and Baseline (NPS) prices
   # Calculates late and sudden prices based on these two vectors
@@ -177,7 +175,6 @@ check_scenario_timeframe <- function(scenario_data, start_year = start_year, end
 # check if the scenarios selected in the stress test project at hand
 # are compatible with the scenarios passed from the PACTA results input
 check_scenario_settings <- function(portfolio, scenario_selections = scenarios) {
-
   if (!all(scenario_selections %in% unique(portfolio$scenario))) {
     stop(
       paste0(
