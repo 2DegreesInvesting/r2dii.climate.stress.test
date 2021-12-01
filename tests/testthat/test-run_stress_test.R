@@ -1,6 +1,6 @@
-test_that("output includes argument names with suffix '_arg'", {
-  is_me <- identical(path.expand("~"), "/home/mauro")
-  skip_if_not(is_me)
+test_that("with bonds output is unchanged and names have the suffix '_arg'", {
+  skip_on_ci()
+  skip_on_cran()
 
   in_agnostic <- "/home/mauro/tmp/st/ST_INPUTS_MASTER"
   in_specific <- "/home/mauro/tmp/st/ST_TESTING_BONDS/inputs"
@@ -12,12 +12,15 @@ test_that("output includes argument names with suffix '_arg'", {
       input_path_project_agnostic = in_agnostic,
       input_path_project_specific = in_specific,
       output_path = out,
-      term = 1:2
+      term = 1:2,
+      return_results = TRUE
     )
   ))
 
+  expect_snapshot(x)
+
   csv_files <- fs::dir_ls(out, regexp = "[.]csv$")
   data <- purrr::map(csv_files, readr::read_csv, col_types = list())
-  cols_from_arguments_have_suffix_arg <- purrr::map_lgl(data, ~ rlang::has_name(.x, "term_arg"))
-  expect_true(all(cols_from_arguments_have_suffix_arg))
+  have_suffix_arg <- purrr::map_lgl(data, ~ rlang::has_name(.x, "term_arg"))
+  expect_true(all(have_suffix_arg))
 })
