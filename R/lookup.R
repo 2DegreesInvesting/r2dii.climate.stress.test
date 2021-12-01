@@ -102,9 +102,11 @@ p4i_p4b_scenario_lookup <- tibble::tribble(
 # styler: on
 
 # P4B scenario list
-p4b_scenarios_lookup <- c("target_b2ds", "target_cps", "target_rts",
-                          "target_sps", "target_steps", "target_2ds",
-                          "target_sds")
+p4b_scenarios_lookup <- c(
+  "target_b2ds", "target_cps", "target_rts",
+  "target_sps", "target_steps", "target_2ds",
+  "target_sds"
+)
 
 # holds names of input arguments to run_stress_test that are not model paramters
 setup_vars_lookup <- c("input_path_project_agnostic", "input_path_project_specific", "output_path", "iter_var", "return_results")
