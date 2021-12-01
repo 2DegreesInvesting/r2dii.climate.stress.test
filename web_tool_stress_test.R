@@ -1,4 +1,3 @@
-stop()
 library(tidyr)
 library(dplyr)
 library(scales)
