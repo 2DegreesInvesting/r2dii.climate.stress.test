@@ -1,4 +1,4 @@
-# style: off
+# styler: off
 stress_test_arguments <- tibble::tribble(
                       ~name,       ~type, ~default,               ~allowed,       ~min,       ~max,
                "asset_type", "character",       NA, "equity, bonds, loans",         NA,         NA,
@@ -12,6 +12,6 @@ stress_test_arguments <- tibble::tribble(
                      "term",    "double",      "2",                     NA,        "1",       "10",
         "company_exclusion",   "logical",   "TRUE",          "TRUE, FALSE",         NA,         NA
 )
-# style: on
+# styler: on
 
 usethis::use_data(stress_test_arguments, overwrite = TRUE)

@@ -5,7 +5,7 @@
 #' vector of values to one (and only one) of the detail arguments. This will
 #' result in running the analysis multiple times in a row with the argument
 #' varied.
-#' NOTE: argument `asset_type` is not iterateable.
+#' NOTE: argument `asset_type` cannot be iterated.
 #' NOTE: if `return_results` is TRUE results will not be written to `output
 #' path` but instead are returned.
 #'
@@ -161,7 +161,6 @@ run_stress_test_impl <- function(asset_type,
                                  term,
                                  company_exclusion,
                                  iter_var) {
-
   args_list <- mget(names(formals()), sys.frame(sys.nframe()))
 
   log_path <- file.path(output_path, paste0("log_file_", iter_var, ".txt"))

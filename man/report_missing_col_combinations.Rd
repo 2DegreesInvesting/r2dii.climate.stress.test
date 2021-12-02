@@ -24,9 +24,9 @@ Checks if all level combinations of \code{composite_unique_cols} are in\code{dat
 throws a warning on missing combinations.
 NOTE:
 \enumerate{
-\item a combination of all levels is not neccesarily required/useful, make sure
+\item a combination of all levels is not necessarily required/useful, make sure
 to use function only in adequate context.
-\item combiantions of too many columns/values may exceed memory size.
+\item combinations of too many columns/values may exceed memory size.
 .
 }
 }

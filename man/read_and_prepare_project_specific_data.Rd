@@ -21,7 +21,7 @@ read_and_prepare_project_specific_data(
 
 \item{calculation_level}{String holding level of calculation.}
 
-\item{time_horizon}{Considered timefram for PACTA analysis.}
+\item{time_horizon}{Considered timeframe for PACTA analysis.}
 
 \item{scenario_geography_filter}{String holding geographic asset locations to
 be considered in analysis.}

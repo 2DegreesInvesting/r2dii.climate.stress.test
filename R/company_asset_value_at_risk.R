@@ -1,6 +1,7 @@
 #' Calculate percentage value change between scenarios for equity (and
 #' temporarily other asset types) on the company-technology level
 #'
+#' @inheritParams exclude_companies
 #' @param data A dataframe containing the (discounted) annual profits
 #' @param terminal_value Numeric. A ratio to determine the share of the
 #'   discounted value used in the terminal value calculation beyond the
@@ -16,9 +17,6 @@
 #'   the asset type at hand
 #' @param flat_multiplier Numeric. A ratio that determines for the asset type
 #'   if how strongly the DCF should propagate to value changes.
-#' @param exclusion Optional. A dataframe with two character columns, "company_name" and
-#'   "technology", that lists which technologies from which companies should be
-#'   set to 0 in the reaminder of the analysis.
 company_asset_value_at_risk <- function(data,
                                         terminal_value = NULL,
                                         shock_scenario = NULL,

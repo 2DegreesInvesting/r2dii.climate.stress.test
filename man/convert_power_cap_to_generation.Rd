@@ -17,7 +17,7 @@ output.}
 
 \item{capacity_factors_power}{A data frame containing capacity factors to
 translate company level power capacity to units sold. Contains information
-on the technology (pwoer sector only) and scenario_geography levels.}
+on the technology (power sector only) and scenario_geography levels.}
 
 \item{baseline_scenario}{String holding name of baseline scenario.}
 }

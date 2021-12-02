@@ -89,7 +89,7 @@ set_baseline_trajectory <- function(data,
 #'   the production trajectories according to the baseline scenario. After the
 #'   end of the production forecast period (i.e. the first NA in planned_prod),
 #'   the planned production is extended until the end of the analysis period
-#'   using these absolute changes. This results in an offset that is a parallell
+#'   using these absolute changes. This results in an offset that is a parallel
 #'   shift relative to the original baseline scenario.
 #'
 #' @family scenario definition
@@ -421,9 +421,9 @@ filter_negative_late_and_sudden <- function(data_with_late_and_sudden, log_path)
     # log_path will be NULL when function is called from webtool
     if (!is.null(log_path)) {
       paste_write(
-          format_indent_1(), "Removed", n_rows_before_removal - nrow(data_with_late_and_sudden),
-          "rows because negative production compensation targets were set in late and sudden production paths ways. Negative absolute production is impossible \n"
-          , log_path = log_path
+        format_indent_1(), "Removed", n_rows_before_removal - nrow(data_with_late_and_sudden),
+        "rows because negative production compensation targets were set in late and sudden production paths ways. Negative absolute production is impossible \n",
+        log_path = log_path
       )
     }
 

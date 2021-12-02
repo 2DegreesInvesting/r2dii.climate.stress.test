@@ -61,4 +61,3 @@ test_that("Function returns vector of identical length as input args", {
 
   expect_equal(length(p_survival), 2)
 })
-

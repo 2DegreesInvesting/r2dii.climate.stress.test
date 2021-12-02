@@ -7,7 +7,7 @@
 #'   forecasts (of the companies in the portfolio). Usually based on PACTA output.
 #' @param capacity_factors_power A data frame containing capacity factors to
 #'   translate company level power capacity to units sold. Contains information
-#'   on the technology (pwer sector only) and scenario_geography levels.
+#'   on the technology (power sector only) and scenario_geography levels.
 
 convert_cap_to_generation <- function(data,
                                       capacity_factors_power = NULL) {
@@ -74,7 +74,7 @@ convert_cap_to_generation <- function(data,
 #'   output.
 #' @param capacity_factors_power A data frame containing capacity factors to
 #'   translate company level power capacity to units sold. Contains information
-#'   on the technology (pwoer sector only) and scenario_geography levels.
+#'   on the technology (power sector only) and scenario_geography levels.
 #' @param baseline_scenario String holding name of baseline scenario.
 convert_power_cap_to_generation <- function(data,
                                             capacity_factors_power = NULL,

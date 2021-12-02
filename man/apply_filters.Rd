@@ -34,7 +34,7 @@ technologies.}
 \item{scenario_geography_filter}{Character. A vector of length 1 that
 indicates which geographic scenario to apply in the analysis.}
 
-\item{scenarios}{Chracter. A vector containing the unique names of the
+\item{scenarios}{Character. A vector containing the unique names of the
 scenarios to include in the analysis. This refers to baseline, target and
 aligned scenarios.}
 
