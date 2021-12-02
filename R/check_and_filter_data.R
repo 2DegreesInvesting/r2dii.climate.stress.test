@@ -68,8 +68,10 @@ check_and_filter_data <- function(st_data_list, start_year, end_year,
     c("year", "sector", "technology"),
     c("scenario_geography", "scenario", "ald_sector", "technology", "year"),
     c("company_name", "company_id"),
-    c("year", "equity_market", "ald_sector", "technology", "scenario", "allocation",
-      "scenario_geography", "company_name", "id", "investor_name", "portfolio_name"),
+    c(
+      "year", "equity_market", "ald_sector", "technology", "scenario", "allocation",
+      "scenario_geography", "company_name", "id", "investor_name", "portfolio_name"
+    ),
     c("financial_sector", "investor_name", "portfolio_name")
   )
 
@@ -83,4 +85,23 @@ check_and_filter_data <- function(st_data_list, start_year, end_year,
   )
 
   return(data_list)
+}
+
+#' Check that required technologies are provided
+#'
+#' @param data A tibble holding at least column `technology`
+#' @inheritParams read_price_data
+#'
+#' @return Returns `data` invisibly.
+check_technology_availability <- function(data, expected_technologies) {
+  if (!all(expected_technologies %in% unique(data$technology))) {
+    missing_technologies <- paste0(setdiff(expected_technologies, unique(data$technology)), collapse = ", ")
+    rlang::abort(c(
+      "Data must hold all expected technologies.",
+      x = glue::glue("Missing technologies: {missing_technologies}."),
+      i = "Please check input data."
+    ))
+  }
+
+  return(invisible(data))
 }
