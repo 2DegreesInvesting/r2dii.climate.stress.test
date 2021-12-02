@@ -107,22 +107,22 @@ calculate_exposure_by_technology_and_company <- function(asset_type,
     )
 
   exposure_by_technology_and_company <- input_data_list$pacta_results %>%
-    dplyr::filter(
-      .data$year == .env$start_year,
-      .data$scenario %in% .env$scenario_to_follow_ls
-    ) %>%
-    dplyr::inner_join(
-      y = financial_data_subset,
-      by = merge_cols
-    ) %>%
-    # TODO:  what to do with entries that have NAs for pd?
-    dplyr::select(
-      investor_name, portfolio_name, company_name, ald_sector, technology,
-      scenario_geography, year, plan_carsten, plan_sec_carsten, term, pd
-    ) %>%
-    report_all_duplicate_kinds(
-      composite_unique_cols = names(.)
-    )
+   dplyr::filter(
+     .data$year == .env$start_year,
+     .data$scenario %in% .env$scenario_to_follow_ls
+   ) %>%
+   dplyr::inner_join(
+     y = financial_data_subset,
+     by = merge_cols
+   ) %>%
+   # TODO:  what to do with entries that have NAs for pd?
+   dplyr::select(
+     investor_name, portfolio_name, company_name, ald_sector, technology,
+     scenario_geography, year, plan_carsten, plan_sec_carsten, term, pd
+   ) %>%
+   report_all_duplicate_kinds(
+     composite_unique_cols = names(.)
+   )
 
   n_companies_pre <- length(unique(exposure_by_technology_and_company$company_name))
 
@@ -132,18 +132,15 @@ calculate_exposure_by_technology_and_company <- function(asset_type,
   n_companies_post <- length(unique(exposure_by_technology_and_company_filtered$company_name))
 
   if (n_companies_pre > n_companies_post) {
-    percent_loss <- (n_companies_pre - n_companies_post) * 100 / n_companies_pre
+    percent_loss <- (n_companies_pre - n_companies_post) * 100/n_companies_pre
     affected_companies <- sort(
-      setdiff(
-        exposure_by_technology_and_company$company_name,
-        exposure_by_technology_and_company_filtered$company_name
+      setdiff(exposure_by_technology_and_company$company_name,
+              exposure_by_technology_and_company_filtered$company_name)
       )
-    )
     paste_write(
       format_indent_1(), "When filtering out holdings with exposures of 0 value, dropped rows for",
       n_companies_pre - n_companies_post, "out of", n_companies_pre, "companies",
-      log_path = log_path
-    )
+    log_path = log_path)
     paste_write(format_indent_2(), "percent loss:", percent_loss, log_path = log_path)
     paste_write(format_indent_2(), "affected companies:", log_path = log_path)
     purrr::walk(affected_companies, function(company) {

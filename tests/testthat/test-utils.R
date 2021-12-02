@@ -157,6 +157,7 @@ test_that("function returns input", {
 
 # report_missings --------------------------------------------------------
 test_that("Missings are reported correctly in verbose_log_env ", {
+
   verbose_log_env()
   data <- tibble::tibble(
     a = c("A1", "A1", "A1", NA),
@@ -165,6 +166,7 @@ test_that("Missings are reported correctly in verbose_log_env ", {
   )
 
   expect_output(report_missings(data, name_data = "some"), "Counted 1 missings on column a")
+
 })
 
 test_that("Error is thrown if throw_error is TRUE", {
@@ -174,10 +176,10 @@ test_that("Error is thrown if throw_error is TRUE", {
     c = c(1, 1, 2, NaN)
   )
 
-  expect_error(
-    report_missings(data, name_data = "some", throw_error = TRUE),
-    "Missings detected on some"
-  )
+   expect_error(
+     report_missings(data, name_data = "some", throw_error = TRUE),
+     "Missings detected on some"
+   )
 })
 
 # validate_data_has_expected_cols -----------------------------------------
@@ -196,4 +198,5 @@ test_that("Error is thrown if colnames are missing", {
     ),
     "columns: D, E."
   )
+
 })
