@@ -25,7 +25,6 @@ test_that("Error is thrown if input values are of incorrect type", {
     company_exclusion = TRUE,
     asset_type = "bonds"
   ), "numeric")
-
 })
 
 test_that("Error is thrown if input values are of incorrect type for input values of length > 1", {
@@ -54,7 +53,6 @@ test_that("Error is thrown if input values are of incorrect type for input value
     company_exclusion = TRUE,
     asset_type = "bonds"
   ), "numeric")
-
 })
 
 

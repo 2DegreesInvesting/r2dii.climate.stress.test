@@ -173,9 +173,8 @@ transition_scenarios <- read_transition_scenarios(
 
 # Load utilization factors power
 # TODO: replace with new capacity factors
-capacity_factors_power <- read_capacity_factors(
-  path = file.path(data_location, "capacity_factors_WEO_2017.csv"),
-  version = "old"
+capacity_factors_power <- read_capacity_factors_old(
+  path = file.path(data_location, "capacity_factors_WEO_2017.csv")
 )
 
 # Load scenario data----------------------------------------
@@ -198,9 +197,8 @@ scenario_data <- scenario_data %>%
 
 # %>% filter(year %in% c(start_year,2020, 2021, 2022, 2023, 2024, 2025, 2030, 2035, 2040))
 
-df_price <- read_price_data(
+df_price <- read_price_data_old(
     path = file.path(data_location, paste0("prices_data_", price_data_version, ".csv")),
-    version = "old",
     expected_technologies = technologies
   ) %>%
   dplyr::filter(year >= start_year) %>%

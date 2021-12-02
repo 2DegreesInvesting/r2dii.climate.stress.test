@@ -59,6 +59,7 @@ equity_market_filter_lookup <- "GlobalMarket"
 
 # technology and sector mapping between P4I and P4B
 # HDV and shipping not consistently defined across both versions at this time
+# styler: off
 p4i_p4b_sector_technology_lookup <- tibble::tribble(
   ~sector_p4b,   ~technology_p4b,             ~sector_p4i,    ~technology_p4i,
   "automotive",  "electric",                 "Automotive",   "Electric",
@@ -96,11 +97,13 @@ p4i_p4b_scenario_lookup <- tibble::tribble(
   "target_sds",   "SDS",
   "target_b2ds",  "B2DS",
 )
+# styler: on
 
 # P4B scenario list
-p4b_scenarios_lookup <- c("target_b2ds", "target_cps", "target_rts",
-                          "target_sps", "target_steps", "target_2ds",
-                          "target_sds")
+p4b_scenarios_lookup <- c(
+  "target_b2ds", "target_cps", "target_rts", "target_sps", "target_steps",
+  "target_2ds", "target_sds"
+)
 
 # holds names of input arguments to run_stress_test that are not model parameters
 setup_vars_lookup <- c("input_path_project_agnostic", "input_path_project_specific", "output_path", "iter_var", "return_results")
