@@ -5,15 +5,11 @@
 \title{Read in power capacity factors from csv and check that all expected columns
 are given.}
 \usage{
-read_capacity_factors(path = NULL, version = NULL)
+read_capacity_factors(path = NULL)
 }
 \arguments{
 \item{path}{A string that points to the location of the file containing the
-capacity factors}
-
-\item{version}{A string indicating whether to prepare the capacity factors
-basedn on the old logic (2017 data set) or the new logic (long format,
-multiple years and scenarios). Must be either "old" or "new".}
+capacity factors.}
 }
 \description{
 Read in power capacity factors from csv and check that all expected columns
@@ -22,6 +18,7 @@ are given.
 \seealso{
 Other import functions: 
 \code{\link{generate_transition_shocks}()},
+\code{\link{read_capacity_factors_old}()},
 \code{\link{read_financial_data}()},
 \code{\link{read_ngfs_carbon_tax}()},
 \code{\link{read_pacta_results}()},
