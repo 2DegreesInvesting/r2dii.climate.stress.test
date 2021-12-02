@@ -9,17 +9,17 @@ read_financial_data <- function(path = NULL) {
   path %||% stop("Must provide 'path'")
 
   data <- validate_file_exists(file.path(path)) %>%
-  readr::read_csv(
-    col_types = readr::cols_only(
-      company_name = "c",
-      company_id = "d",
-      corporate_bond_ticker = "c",
-      pd = "d",
-      net_profit_margin = "d",
-      debt_equity_ratio = "d",
-      volatility = "d"
+    readr::read_csv(
+      col_types = readr::cols_only(
+        company_name = "c",
+        company_id = "d",
+        corporate_bond_ticker = "c",
+        pd = "d",
+        net_profit_margin = "d",
+        debt_equity_ratio = "d",
+        volatility = "d"
+      )
     )
-  )
 
   return(data)
 }

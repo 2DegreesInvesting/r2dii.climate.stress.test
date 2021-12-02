@@ -21,7 +21,6 @@ calculate_pd_change_annual <- function(data,
                                        shock_year = NULL,
                                        end_of_analysis = NULL,
                                        risk_free_interest_rate = NULL) {
-
   force(data)
   shock_year %||% stop("Must provide input for 'shock_year'", call. = FALSE)
   end_of_analysis %||% stop("Must provide input for 'end_of_analysis'", call. = FALSE)
@@ -108,5 +107,4 @@ calculate_pd_change_annual <- function(data,
     )
 
   return(results)
-
 }

@@ -25,7 +25,6 @@ test_that("Error is thrown if input values are of incorrect type", {
     company_exclusion = TRUE,
     asset_type = "bonds"
   ), "numeric")
-
 })
 
 
