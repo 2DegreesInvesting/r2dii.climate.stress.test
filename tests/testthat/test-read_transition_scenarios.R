@@ -136,4 +136,3 @@ test_that("with valid inputs, generate_transition_shocks generates a data frame
     n_shock_years
   )
 })
-

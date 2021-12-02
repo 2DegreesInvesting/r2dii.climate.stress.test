@@ -20,16 +20,16 @@ read_transition_scenarios <- function(path = NULL,
 
   data <- validate_file_exists(path) %>%
     readr::read_csv(
-    col_types = readr::cols(
-      scenario_name = "c",
-      year_of_shock = "d",
-      overshoot_method = "l",
-      duration_of_shock = "d",
-      use_prod_forecasts_ls = "l",
-      use_prod_forecasts_baseline = "l",
-      .default = readr::col_number()
+      col_types = readr::cols(
+        scenario_name = "c",
+        year_of_shock = "d",
+        overshoot_method = "l",
+        duration_of_shock = "d",
+        use_prod_forecasts_ls = "l",
+        use_prod_forecasts_baseline = "l",
+        .default = readr::col_number()
+      )
     )
-  )
 
   data <- data %>%
     dplyr::mutate(
