@@ -15,6 +15,7 @@ run_prep_calculation_loans <- function(input_path_project_specific,
                                        input_path_project_agnostic,
                                        data_prep_output_path,
                                        credit_type = "outstanding") {
+
   cat("-- Running data preparation. \n")
 
   #### Validate input-----------------------------------------------------------
@@ -91,8 +92,8 @@ run_prep_calculation_loans <- function(input_path_project_specific,
   # Production forecast data
   production_forecast_data <- validate_file_exists(file.path(input_path_project_agnostic, "2021-07-15_AR_2020Q4_PACTA-Data (3).xlsx")) %>%
     readxl::read_xlsx(
-      sheet = "Company Indicators - PACTA"
-    )
+    sheet = "Company Indicators - PACTA"
+  )
 
   # Scenario data - market share
   scenario_data_market_share <- validate_file_exists(file.path(input_path_project_agnostic, "scenario_2020.csv")) %>%
@@ -125,8 +126,8 @@ run_prep_calculation_loans <- function(input_path_project_specific,
         nrow(matched) - nrow(matched_non_negative),
         " loans removed from the matched loan book because of negative loan
         values. Please check the input loan book to address this issue."
-      ),
-      call. = FALSE
+      )
+      , call. = FALSE
     )
   }
 
@@ -212,8 +213,7 @@ run_prep_calculation_loans <- function(input_path_project_specific,
     dplyr::inner_join(
       # ADO 2393 - use distinct to only map sectors, not technlogies
       p4i_p4b_sector_technology_lookup %>% dplyr::distinct(.data$sector_p4b, .data$sector_p4i),
-      by = c("sector_ald" = "sector_p4b")
-    ) %>%
+      by = c("sector_ald" = "sector_p4b")) %>%
     dplyr::mutate(sector_ald = .data$sector_p4i) %>%
     dplyr::select(
       .data$sector_ald,
@@ -291,7 +291,7 @@ run_prep_calculation_loans <- function(input_path_project_specific,
     ) %>%
     dplyr::rename(
       production_unweighted = .data$production
-    ) %>%
+    )  %>%
     dplyr::mutate(technology_share = round(.data$technology_share, 8)) %>%
     report_all_duplicate_kinds(
       composite_unique_cols = c(
@@ -335,4 +335,6 @@ run_prep_calculation_loans <- function(input_path_project_specific,
     )
 
   cat("-- Exported prepared data to designated output path. \n")
+
 }
+

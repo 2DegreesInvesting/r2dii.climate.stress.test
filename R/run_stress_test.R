@@ -161,6 +161,7 @@ run_stress_test_impl <- function(asset_type,
                                  term,
                                  company_exclusion,
                                  iter_var) {
+
   args_list <- mget(names(formals()), sys.frame(sys.nframe()))
 
   log_path <- file.path(output_path, paste0("log_file_", iter_var, ".txt"))
