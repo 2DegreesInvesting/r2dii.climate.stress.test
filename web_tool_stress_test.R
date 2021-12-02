@@ -173,9 +173,8 @@ transition_scenarios <- read_transition_scenarios(
 
 # Load utilization factors power
 # TODO: replace with new capacity factors
-capacity_factors_power <- read_capacity_factors(
-  path = file.path(data_location, "capacity_factors_WEO_2017.csv"),
-  version = "old"
+capacity_factors_power <- read_capacity_factors_old(
+  path = file.path(data_location, "capacity_factors_WEO_2017.csv")
 )
 
 # Load scenario data----------------------------------------
