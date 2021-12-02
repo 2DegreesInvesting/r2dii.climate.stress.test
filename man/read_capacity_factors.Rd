@@ -12,7 +12,7 @@ read_capacity_factors(path = NULL, version = NULL)
 capacity factors}
 
 \item{version}{A string indicating whether to prepare the capacity factors
-basedn on the old logic (2017 data set) or the new logic (long format,
+based on the old logic (2017 data set) or the new logic (long format,
 multiple years and scenarios). Must be either "old" or "new".}
 }
 \description{

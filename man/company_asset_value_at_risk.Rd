@@ -39,9 +39,9 @@ the asset type at hand}
 \item{flat_multiplier}{Numeric. A ratio that determines for the asset type
 if how strongly the DCF should propagate to value changes.}
 
-\item{exclusion}{Optional. A dataframe with two character columns, "company_name" and
+\item{exclusion}{A dataframe with two character columns, "company_name" and
 "technology", that lists which technologies from which companies should be
-set to 0 in the reaminder of the analysis.}
+set to 0 in the remainder of the analysis.}
 }
 \description{
 Calculate percentage value change between scenarios for equity (and

@@ -10,7 +10,7 @@ Description: The package provides functions and workflows for conducting
     financial stress tests of listed equity, corporate bond and corporate
     loan portfolios.  It specifically focuses on climate change related
     risks, such as transition/policy risk, litigation risk and physical
-    risk. The methodologies develpoped by 2DII focus on forward looking
+    risk. The methodologies developed by 2DII focus on forward looking
     approaches and asset based analyses where possible. Some external
     stress tests are also featured.  This package is currently in the beta
     stage and not finalised yet. Changes to the methodology will still be

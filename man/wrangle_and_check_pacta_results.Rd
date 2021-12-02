@@ -18,7 +18,7 @@ wrangle_and_check_pacta_results(
 
 \item{start_year}{First considered year in analysis.}
 
-\item{time_horizon}{Considered timefram for PACTA analysis.}
+\item{time_horizon}{Considered timeframe for PACTA analysis.}
 
 \item{scenario_geography_filter}{Character. A vector of length 1 that
 indicates which geographic scenario to apply in the analysis.}

@@ -4,7 +4,7 @@
 #' @param path A string that points to the location of the file containing the
 #'   capacity factors
 #' @param version A string indicating whether to prepare the capacity factors
-#'   basedn on the old logic (2017 data set) or the new logic (long format,
+#'   based on the old logic (2017 data set) or the new logic (long format,
 #'   multiple years and scenarios). Must be either "old" or "new".
 #'
 #' @family import functions

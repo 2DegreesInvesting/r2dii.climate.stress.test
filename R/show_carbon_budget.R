@@ -6,7 +6,7 @@
 #'   used in the analysis.
 #' @param target_scenario Character. A vector of length one containing the name
 #'   of the target scenario against which to compare the carbon budget.
-#' @param scenario_name_qa Chracter. A vector of length one containing the name of
+#' @param scenario_name_qa Character. A vector of length one containing the name of
 #'   the transition scenario to inspect.
 #' @param cumulative Logical. A vector of length one, indicating whether the
 #'   output should be an overview of changes in the carbon budget per technology

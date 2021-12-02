@@ -21,7 +21,7 @@ after the final forecast year. This usually comes from a PACTA analysis.}
 the production trajectories according to the baseline scenario. After the
 end of the production forecast period (i.e. the first NA in planned_prod),
 the planned production is extended until the end of the analysis period
-using these absolute changes. This results in an offset that is a parallell
+using these absolute changes. This results in an offset that is a parallel
 shift relative to the original baseline scenario.}
 }
 \value{

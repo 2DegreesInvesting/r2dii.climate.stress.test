@@ -153,9 +153,9 @@ report_all_duplicate_kinds <- function(data, composite_unique_cols, throw_error 
 #' Checks if all level combinations of `composite_unique_cols` are in`data` and
 #' throws a warning on missing combinations.
 #' NOTE:
-#' 1. a combination of all levels is not neccesarily required/useful, make sure
+#' 1. a combination of all levels is not necessarily required/useful, make sure
 #' to use function only in adequate context.
-#' 1. combiantions of too many columns/values may exceed memory size.
+#' 1. combinations of too many columns/values may exceed memory size.
 #' .
 #'
 #' @inheritParams report_all_duplicate_kinds
@@ -248,11 +248,11 @@ report_company_drops <- function(data_list, asset_type, log_path) {
 #' Function conducts inner join on two datasets and reports number of dropped
 #' rows on `data_x`.
 #'
-#' @param data_x Tibble with data that is joinable to `data_y`.
-#' @param data_y Tibble with data that is joinable to `data_x`.
+#' @param data_x Tibble with data that can be joined to `data_y`.
+#' @param data_y Tibble with data that can be joined to `data_x`.
 #' @param name_y Name of `data_x`.
 #' @param merge_cols Vector holds columns to join on.
-#' @param name_x Name of `data_x, defults to PACTA results.
+#' @param name_x Name of `data_x, defaults to PACTA results.
 #' @inheritParams report_company_drops
 #'
 #' @return The merged dataset.
@@ -360,7 +360,7 @@ get_iter_var <- function(args_list) {
 
     if (iter_var %in% c("asset_type", setup_vars_lookup)) {
       rlang::abort(c(
-        "Must not provide more than one value for not iterateable argument",
+        "Must not provide more than one value for argument that cannot be iterated",
         x = glue::glue("Arguments with multiple values: {toString(iter_var)}."),
         i = "Please coorect your function call"
         ))
