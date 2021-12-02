@@ -28,7 +28,6 @@ globalVariables(
     "check_portfolio_consistency",
     "check_price_consistency",
     "check_scenario_availability",
-    "check_scenario_settings",
     "check_scenario_timeframe",
     "company_id",
     "company_name",

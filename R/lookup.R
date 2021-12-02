@@ -5,6 +5,7 @@
 #' @examples
 #'
 #' credit_type_lookup
+#' sectors_lookup
 NULL
 
 # An investor name is needed for legacy reasons currently there is no
@@ -27,6 +28,14 @@ scenarios_lookup <- c(
   "WEO2019_SDS"
 )
 
+sector_scenarios_mapping_lookup <- tibble::tibble(
+  ald_sector = c("Power", "Power", "Oil&Gas", "Oil&Gas", "Coal", "Coal", "Automotive", "Automotive"),
+  scenario = c(
+    rep(c("WEO2019_NPS", "WEO2019_SDS"), 3),
+    c("ETP2017_NPS", "ETP2017_SDS")
+  )
+)
+
 baseline_scenario_lookup <- "NPS"
 shock_scenario_lookup <- "SDS"
 calculation_level_lookup <- "company"
@@ -41,7 +50,8 @@ price_data_version_lookup <- "2021Q1"
 #' @export
 credit_type_lookup <- c("outstanding", "credit_limit")
 
-# vector holding considered sectors in stress testing
+#' @rdname lookup
+#' @export
 sectors_lookup <- c("Power", "Oil&Gas", "Coal", "Automotive")
 
 # vector holding considered technologies in stress testing
