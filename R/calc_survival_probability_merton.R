@@ -18,6 +18,7 @@
 #'
 #' @return A vector holding survival probabilities,
 calc_survival_probability_merton <- function(L, V0, sigma, r, t) {
+
   input_args <- list(L, V0, sigma, r, t)
 
   if (dplyr::n_distinct(purrr::map_int(input_args, length)) > 1) {
@@ -35,6 +36,7 @@ calc_survival_probability_merton <- function(L, V0, sigma, r, t) {
   if (!all(unique(purrr::map_lgl(list(L, V0, sigma, t), function(x) {
     all(x > 0)
   })))) {
+
     stop(paste0("Unexpected non positive numbers detected on at least one of arguments L, V0, sigma, t."))
   }
 

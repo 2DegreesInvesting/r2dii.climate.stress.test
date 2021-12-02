@@ -10,16 +10,16 @@ read_ngfs_carbon_tax <- function(path = NULL) {
 
   data <- validate_file_exists(path) %>%
     readr::read_csv(
-      col_types = readr::cols(
-        year = "d",
-        model = "c",
-        scenario = "c",
-        scenario_geography = "c",
-        variable = "c",
-        unit = "c",
-        carbon_tax = "d"
-      )
+    col_types = readr::cols(
+      year = "d",
+      model = "c",
+      scenario = "c",
+      scenario_geography = "c",
+      variable = "c",
+      unit = "c",
+      carbon_tax = "d"
     )
+  )
 
   expected_columns <- c(
     "year", "model", "scenario", "scenario_geography", "variable", "unit",

@@ -127,6 +127,7 @@ validate_data_has_expected_cols <- function(data,
 #'
 #' @return input `data`.
 report_all_duplicate_kinds <- function(data, composite_unique_cols, throw_error = TRUE) {
+
   validate_data_has_expected_cols(
     data = data,
     expected_columns = composite_unique_cols
@@ -216,6 +217,7 @@ report_duplicates <- function(data, cols, throw_error = TRUE) {
 #'
 #' @return NULL
 report_company_drops <- function(data_list, asset_type, log_path) {
+
   if (asset_type == "bonds") {
     merge_cols <- c("company_name", "id" = "corporate_bond_ticker")
   } else {
@@ -255,6 +257,7 @@ report_company_drops <- function(data_list, asset_type, log_path) {
 #'
 #' @return The merged dataset.
 report_dropped_company_names <- function(data_x, data_y, name_y, merge_cols, name_x = "PACTA results", log_path) {
+
   data <- data_x %>%
     dplyr::inner_join(
       data_y,
@@ -265,7 +268,7 @@ report_dropped_company_names <- function(data_x, data_y, name_y, merge_cols, nam
   n_companies <- length(unique(data$company_name))
 
   if (n_companies < n_companies_x) {
-    percent_loss <- (n_companies_x - n_companies) * 100 / n_companies_x
+    percent_loss <- (n_companies_x - n_companies) * 100/n_companies_x
     affected_companies <- sort(setdiff(data_x$company_name, data$company_name))
     paste_write(
       format_indent_1(), "When joining", name_x, "on", name_y, "on column(s)", paste0(merge_cols, collapse = ", "), "could not match entries for",
@@ -318,7 +321,7 @@ report_missings <- function(data, name_data, throw_error = FALSE) {
 #'
 #' @return A double holding value of the flat multiplier.
 assign_flat_multiplier <- function(asset_type) {
-  flat_multiplier <- ifelse(asset_type %in% c("loans", "bonds"), 0.15, 1.0)
+  flat_multiplier <- ifelse(asset_type %in% c("loans", "bonds"),  0.15, 1.0)
   return(flat_multiplier)
 }
 
@@ -345,6 +348,7 @@ assign_lgd <- function(asset_type, lgd_senior_claims,
 #'
 #' @return String holding name of iterator variable.
 get_iter_var <- function(args_list) {
+
   iterate_arg <- purrr::map_int(args_list, length) %>%
     tibble::enframe() %>%
     dplyr::filter(.data$value > 1)
@@ -359,7 +363,7 @@ get_iter_var <- function(args_list) {
         "Must not provide more than one value for not iterateable argument",
         x = glue::glue("Arguments with multiple values: {toString(iter_var)}."),
         i = "Please coorect your function call"
-      ))
+        ))
     }
   } else {
     rlang::abort(c(
@@ -384,12 +388,8 @@ paste_write <- function(..., log_path, append = TRUE) {
 }
 
 # helper functions to indent lines in logfile
-format_indent_1 <- function() {
-  ">>"
-}
-format_indent_2 <- function() {
-  "  >>"
-}
+format_indent_1 <- function() {">>"}
+format_indent_2 <- function() {"  >>"}
 
 
 #' Checks if input args are missing

@@ -15,11 +15,13 @@ f <- function(shock_strength_calc) {
 
 # LATE AND SUDDEN PRICES ----------------------------------------
 
-late_sudden_prices <- function(SDS_price,
-                               Baseline_price,
-                               year_of_shock,
-                               start_year,
-                               duration_of_shock) {
+late_sudden_prices <- function(
+    SDS_price,
+    Baseline_price,
+    year_of_shock,
+    start_year,
+    duration_of_shock
+  ) {
   # input:
   # vector with SDS and Baseline (NPS) prices
   # Calculates late and sudden prices based on these two vectors

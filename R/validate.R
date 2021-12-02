@@ -14,10 +14,8 @@ validate_input_values <- function(lgd_senior_claims, lgd_subordinated_claims,
   c("company_exclusion", "asset_type") %>%
     purrr::walk(validate_values_in_values, args_list = input_args)
 
-  c(
-    "lgd_senior_claims", "lgd_subordinated_claims", "risk_free_rate",
-    "discount_rate", "div_netprofit_prop_coef", "shock_year", "term"
-  ) %>%
+  c("lgd_senior_claims", "lgd_subordinated_claims", "risk_free_rate",
+    "discount_rate", "div_netprofit_prop_coef", "shock_year", "term") %>%
     purrr::walk(validate_values_in_range, args_list = input_args)
 
   if (!all(shock_year %% 1 == 0)) {
@@ -92,6 +90,7 @@ validate_values_in_values <- function(var, args_list) {
 #'
 #' @return NULL
 validate_values_in_range <- function(var, args_list) {
+
   min <- stress_test_arguments %>%
     dplyr::filter(.data$name == .env$var) %>%
     dplyr::pull(.data$min) %>%
