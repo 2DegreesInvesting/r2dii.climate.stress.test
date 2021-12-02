@@ -21,7 +21,6 @@ exclude_companies <- function(data,
                               exclusion = NULL,
                               scenario_baseline = NULL,
                               scenario_ls = NULL) {
-
   if (is.null(exclusion)) {
     return(data)
   }

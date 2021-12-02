@@ -75,7 +75,7 @@ read_capacity_factors_old <- function(path = NULL) {
       !is.na(.data$capacityfactor_WEO_2016),
       .data$Region == "World" |
         (.data$technology %in% c("HydroCap", "NuclearCap", "RenewablesCap") &
-           .data$Region == "OECD")
+          .data$Region == "OECD")
     ) %>%
     # ADO 2393 - legacy web tool version
     dplyr::distinct(.data$technology, .data$capacityfactor_WEO_2016) %>%
