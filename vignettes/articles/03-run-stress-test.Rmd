@@ -99,7 +99,7 @@ credit risk model.
 * `discount_rate` the annual rate at which future cash flows are discounted when
 calculating the net present value of companies in the loan book. Since the net
 present values are indirect inputs into the Merton credit risk model, this
-paramter my be relevant.
+parameter my be relevant.
 * `div_netprofit_prop_coef` Coefficient that indicates what share of the net
 present value should be considered to derive the equity value of a company.
 * `shock_year` year in which the policy is introduced, that adjusts the

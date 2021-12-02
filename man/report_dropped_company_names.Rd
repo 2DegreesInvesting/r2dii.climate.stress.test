@@ -14,15 +14,15 @@ report_dropped_company_names(
 )
 }
 \arguments{
-\item{data_x}{Tibble with data that is joinable to \code{data_y}.}
+\item{data_x}{Tibble with data that can be joined to \code{data_y}.}
 
-\item{data_y}{Tibble with data that is joinable to \code{data_x}.}
+\item{data_y}{Tibble with data that can be joined to \code{data_x}.}
 
 \item{name_y}{Name of \code{data_x}.}
 
 \item{merge_cols}{Vector holds columns to join on.}
 
-\item{name_x}{Name of `data_x, defults to PACTA results.}
+\item{name_x}{Name of `data_x, defaults to PACTA results.}
 
 \item{log_path}{String holding path to log file.}
 }

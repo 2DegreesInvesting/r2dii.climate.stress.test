@@ -6,8 +6,8 @@
 the company-technology level. The function uses a maximum term of 5 years and
 all loans with longer maturities are thrown into the 5 year bucket. The
 calculation of PD changes that underlies the input to this function is based
-on the comparison of overall NPVs of the correpsonding equity values for the
-companies at hand. That is, the PD changes take into account all dscounted
+on the comparison of overall NPVs of the corresponding equity values for the
+companies at hand. That is, the PD changes take into account all discounted
 future profits plus the terminal value.}
 \usage{
 company_expected_loss(
@@ -37,7 +37,7 @@ Calculate change of expected loss between scenarios for corporate loans on
 the company-technology level. The function uses a maximum term of 5 years and
 all loans with longer maturities are thrown into the 5 year bucket. The
 calculation of PD changes that underlies the input to this function is based
-on the comparison of overall NPVs of the correpsonding equity values for the
-companies at hand. That is, the PD changes take into account all dscounted
+on the comparison of overall NPVs of the corresponding equity values for the
+companies at hand. That is, the PD changes take into account all discounted
 future profits plus the terminal value.
 }

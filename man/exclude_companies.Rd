@@ -17,7 +17,7 @@ type.}
 
 \item{exclusion}{A dataframe with two character columns, "company_name" and
 "technology", that lists which technologies from which companies should be
-set to 0 in the reaminder of the analysis.}
+set to 0 in the remainder of the analysis.}
 
 \item{scenario_baseline}{Character. String that defines which scenario is
 considered baseline. Usually this should be the same as throughout the

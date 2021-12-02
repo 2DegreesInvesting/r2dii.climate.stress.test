@@ -13,7 +13,7 @@
 #'   technologies.
 #' @param scenario_geography_filter Character. A vector of length 1 that
 #'   indicates which geographic scenario to apply in the analysis.
-#' @param scenarios Chracter. A vector containing the unique names of the
+#' @param scenarios Character. A vector containing the unique names of the
 #'   scenarios to include in the analysis. This refers to baseline, target and
 #'   aligned scenarios.
 #' @param allocation_method Character. A vector of length 1 indicating the
