@@ -60,7 +60,6 @@ read_capacity_factors <- function(path = NULL,
         "technology", "capacity_factor", "scenario_geography"
       )
     )
-
   } else {
     # ADO 2393 - this should keep the source and filter based on global settings
     # not in this hard coded manner
