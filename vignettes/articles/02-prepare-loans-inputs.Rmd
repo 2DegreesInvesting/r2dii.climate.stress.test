@@ -37,10 +37,15 @@ wrangled into the specific input format required by `r2dii.climate.stress.test`.
 To make this process as easy as possible for the user, we provide a function,
 `run_prep_calculation_loans()`, which takes care of all relevant steps with
 minimal input from the user.
-**NOTE:** We recommend to provide the matched loan book including holdings from
-all available sectors that are available in the loan book and supported in this
-climate stress testing implementation. Including only a part of the loanbook
-would alter results on all variables that are influenced by the entire loanbook.
+
+**NOTE:** We strongly recommend providing the matched and prioritized loan book
+in one file for the entire raw loan book to be analyzed. In PACTA for banks, it
+can sometimes be advantageous for matching to split the loan book into separate
+files for each sector (or other splits). This should be avoided here, since the
+function also calculates relative exposures. Hence, after completing the steps
+of matching and prioritizing the loan book, all prioritized files should be
+combined into one file, before running this function.
+
 Supported sectors are:
   
 ```{r}
