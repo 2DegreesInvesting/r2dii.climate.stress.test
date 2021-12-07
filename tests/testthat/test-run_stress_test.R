@@ -7,8 +7,8 @@ test_that("with bonds output is unchanged and names have the suffix '_arg'", {
   out <- tempfile()
   fs::dir_create(out)
 
-  x <- suppressWarnings(capture.output(
-    run_stress_test("bonds",
+  suppressed_console_output <- suppressWarnings(capture.output(
+    results <- run_stress_test("bonds",
       input_path_project_agnostic = in_agnostic,
       input_path_project_specific = in_specific,
       output_path = out,
@@ -17,7 +17,7 @@ test_that("with bonds output is unchanged and names have the suffix '_arg'", {
     )
   ))
 
-  expect_snapshot(x)
+  expect_snapshot(lapply(results, as.data.frame))
 
   csv_files <- fs::dir_ls(out, regexp = "[.]csv$")
   data <- purrr::map(csv_files, readr::read_csv, col_types = list())
