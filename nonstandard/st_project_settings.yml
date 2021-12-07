@@ -1,0 +1,13 @@
+default:
+
+  project_name: ST_TESTING
+
+  project_internal:
+    twodii_internal: TRUE
+    project_location_ext: ~/path/to/project
+
+  price_data_version: 2021Q1
+
+  calculation_level: company
+
+  company_exclusion: TRUE
