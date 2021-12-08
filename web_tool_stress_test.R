@@ -63,7 +63,11 @@ pf_name <- portfolio_name_ref_all
 # project_code is passed via GlobalEnv of P2020 webtool
 # price_data_version passed via GlobalEnv of P2020 webtool; fallback use "2020Q4" if old parameter file used in webtool
 price_data_version <- if (exists("price_data_version")) price_data_version else "2020Q4"
-calculation_level <- "portfolio"
+calculation_level <- if (exists("calculation_level")) calculation_level else "portfolio"
+
+if (calculation_level != "portfolio") {
+  stop("Can only support calculation_level portfolio.")
+}
 
 ##### Filters----------------------------------------
 # The filter settings should comply with the filters from the parent PACTA project as per default
