@@ -4,7 +4,6 @@
 #'
 #' @return Logical.
 #'
-#' @export
 #' @examples
 #' dropbox_exists()
 dropbox_exists <- function() {
@@ -17,7 +16,6 @@ dropbox_exists <- function() {
 #'
 #' @return A string.
 #'
-#' @export
 #' @examples
 #' degrees()
 #' glue::glue("2{degrees()} Investing Initiative")
@@ -53,8 +51,6 @@ degrees <- function() {
 #' @family functions to output 2dii paths
 #'
 #' @return A character string.
-#'
-#' @export
 path_dropbox_2dii <- function(...) {
   custom <- getOption("r2dii_dropbox")
   default <- sprintf("Dropbox (2%s Investing)", degrees())

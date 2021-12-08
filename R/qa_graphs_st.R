@@ -7,8 +7,6 @@
 #' @family qa graphing functions
 #'
 #' @return ggplot object
-#'
-#' @export
 show_price_trajectories <- function(data = df_price,
                                     price_scenarios = c(
                                       "B2DS", "NPS", "SDS", "Baseline"
@@ -48,8 +46,6 @@ show_price_trajectories <- function(data = df_price,
 #' @family qa graphing functions
 #'
 #' @return ggplot object
-#'
-#' @export
 show_prod_trajectories <- function(data = scenario_data,
                                    end_year = 2040,
                                    source = NULL,
@@ -94,8 +90,6 @@ show_prod_trajectories <- function(data = scenario_data,
 #' @family qa graphing functions
 #'
 #' @return ggplot object
-#'
-#' @export
 show_impact_by_shock_year <- function(data,
                                       level = NULL) {
   valid_level_input <- level %in% c("technology", "ald_sector")
@@ -144,8 +138,6 @@ show_impact_by_shock_year <- function(data,
 #' @family qa graphing functions
 #'
 #' @return ggplot object
-#'
-#' @export
 show_var_change_by_shock_year <- function(data,
                                           level = NULL) {
   valid_level_input <- level %in% c("technology", "ald_sector")
@@ -198,8 +190,6 @@ show_var_change_by_shock_year <- function(data,
 #' @family qa graphing functions
 #'
 #' @return ggplot object
-#'
-#' @export
 show_prod_baseline_target_ls_pf <- function(data,
                                             geography_filter = NULL,
                                             shock_year = NULL) {
@@ -240,8 +230,6 @@ show_prod_baseline_target_ls_pf <- function(data,
 #' @family qa graphing functions
 #'
 #' @return ggplot object
-#'
-#' @export
 show_pf_technology_shares <- function(data) {
   data_has_expected_columns <- all(c("ald_sector", "technology", "plan_carsten")
   %in% colnames(data))
