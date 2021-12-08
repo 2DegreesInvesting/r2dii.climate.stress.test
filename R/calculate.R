@@ -115,7 +115,6 @@ calculate_exposure_by_technology_and_company <- function(asset_type,
       y = financial_data_subset,
       by = merge_cols
     ) %>%
-    # TODO:  what to do with entries that have NAs for pd?
     dplyr::select(
       investor_name, portfolio_name, company_name, ald_sector, technology,
       scenario_geography, year, plan_carsten, plan_sec_carsten, term, pd

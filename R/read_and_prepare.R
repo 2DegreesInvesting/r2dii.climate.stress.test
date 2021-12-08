@@ -99,12 +99,12 @@ read_and_prepare_project_specific_data <- function(asset_type, calculation_level
       equity_market_filter = equity_market_filter
     ) %>%
     # ADO 1943 - for the time being, one global term value is set by the user.
-    # TODO: next version to allow term input on holding/company level
+    # TODO: ADO 3182 - allow setting loan level term
     dplyr::mutate(term = term)
 
   sector_exposures <- read_sector_exposures(file.path(path, "overview_portfolio.rda")) %>%
     wrangle_and_check_sector_exposures(asset_type = asset_type)
-  # TODO: potentially convert currencies to USD or at least common currency
+  # TODO: ADO3242 - force conversion of holdings to one common currency
 
   return(
     list(

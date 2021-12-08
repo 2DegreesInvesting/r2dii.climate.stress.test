@@ -47,7 +47,6 @@ annual_pd_change_company_sector <- function(data,
     ) +
     geom_col(position = "dodge") +
     labs(
-      # TODO: must display full years
       x = "Year",
       y = "PD change in % points",
       fill = "PD change in % points",

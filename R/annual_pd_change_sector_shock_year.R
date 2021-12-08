@@ -42,7 +42,6 @@ annual_pd_change_sector_shock_year <- function(data,
     ) %>%
     ggplot(
       aes(
-        # TODO: must display full years
         x = .data$year,
         y = .data$PD_change * 100,
         fill = .data$PD_change * 100

@@ -7,7 +7,6 @@
 read_capacity_factors <- function(path = NULL) {
   path %||% stop("Must provide 'path'")
 
-  # TODO: once the input is in long format the expected col types can be set
   data <- validate_file_exists(path) %>%
     readr::read_csv(col_types = readr::cols())
 
@@ -47,7 +46,6 @@ read_capacity_factors <- function(path = NULL) {
 read_capacity_factors_old <- function(path = NULL) {
   path %||% stop("Must provide 'path'")
 
-  # TODO: once the input is in long format the expected col types can be set
   data <- validate_file_exists(path) %>%
     readr::read_csv(col_types = readr::cols())
 

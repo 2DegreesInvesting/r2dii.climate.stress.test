@@ -96,7 +96,8 @@ p4i_p4b_sector_technology_lookup <- tibble::tribble(
 )
 
 # scenario mapping between P4I and P4B
-# TODO: should the implicit mappin a la sps is the follow up NPS be hapening elsewhere?
+# TODO: ADO 3129 - Implicit mapping of successor scenarios (SPS to NPS) should
+# be removed
 p4i_p4b_scenario_lookup <- tibble::tribble(
   ~scenario_p4b,   ~scenario_p4i,
   "target_cps",   "CPS",
