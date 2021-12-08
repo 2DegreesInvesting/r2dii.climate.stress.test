@@ -174,9 +174,6 @@ run_prep_calculation_loans <- function(input_path_project_specific,
       .data$loan_size_credit_limit_currency
     )
 
-  #### Calculate tech level loan book size and value share----------------------
-  # TODO: figure out a way to get tech share. Is this still relevant?
-
   #### Calculate sector level loan book size and value share--------------------
 
   sector_share <- matched_non_negative %>%
