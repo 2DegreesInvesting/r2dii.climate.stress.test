@@ -194,7 +194,6 @@ wrangle_scenario_data <- function(scenario_data, start_year, end_year) {
   scenario_data_wrangled <- scenario_data %>%
     dplyr::rename(source = .data$scenario_source) %>%
     dplyr::filter(.data$source %in% c("ETP2017", "WEO2019")) %>%
-    # TODO: this should be set elsewhere
     dplyr::filter(!(.data$source == "ETP2017" & .data$ald_sector == "Power")) %>%
     dplyr::mutate(scenario = ifelse(stringr::str_detect(.data$scenario, "_"), stringr::str_extract(.data$scenario, "[^_]*$"), .data$scenario)) %>%
     check_scenario_timeframe(start_year = start_year, end_year = end_year) %>%

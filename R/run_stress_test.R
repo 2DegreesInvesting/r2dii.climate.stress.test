@@ -242,7 +242,6 @@ run_stress_test_impl <- function(asset_type,
     scenarios = scenarios_filter
   )
 
-  # TODO: validate
   port_aum <- calculate_aum(input_data_list$sector_exposures)
   transition_scenario <- generate_transition_shocks(
     start_of_analysis = start_year,
@@ -300,7 +299,6 @@ run_stress_test_impl <- function(asset_type,
     data = overall_pd_changes,
     loss_given_default = lgd,
     exposure_at_default = exposure_by_technology_and_company,
-    # TODO: what to do with this? some sector level exposure for loanbook?
     port_aum = port_aum
   )
 

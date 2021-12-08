@@ -174,9 +174,6 @@ run_prep_calculation_loans <- function(input_path_project_specific,
       .data$loan_size_credit_limit_currency
     )
 
-  #### Calculate tech level loan book size and value share----------------------
-  # TODO: figure out a way to get tech share. Is this still relevant?
-
   #### Calculate sector level loan book size and value share--------------------
 
   sector_share <- matched_non_negative %>%
@@ -282,7 +279,7 @@ run_prep_calculation_loans <- function(input_path_project_specific,
       by_company = TRUE,
       weight_production = FALSE
     ) %>%
-    # TODO filter must be generalised for diff scenario inputs
+    # TODO remove hard coded filtering in ADO 3129
     dplyr::filter(
       (.data$sector == "automotive" & .data$scenario_source == "etp_2017") |
         (.data$sector == "coal" & .data$scenario_source == "weo_2019") |

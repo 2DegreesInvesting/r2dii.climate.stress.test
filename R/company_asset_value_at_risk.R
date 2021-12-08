@@ -190,7 +190,9 @@ company_asset_value_at_risk <- function(data,
       analysed_sectors_value_change = .data$analysed_sectors_exposure *
         .data$VaR_analysed_sectors / 100,
       portfolio_aum = .data$asset_portfolio_value,
-      # TODO: portfolio_value_change assumes no other sectors are affected!
+      # setting portfolio_value_change = analysed_sectors_value_change will
+      # underestimate overall impact on portfolio as there can of course be
+      # impacts on companies in the portfolio that operate in other sectors
       portfolio_value_change = .data$analysed_sectors_value_change,
       portfolio_value_change_perc = sum(.data$VaR_tech_company * .data$tech_company_exposure, na.rm = TRUE) /
         .data$portfolio_aum
