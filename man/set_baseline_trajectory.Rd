@@ -18,7 +18,7 @@ of the scenarios included in the analysis should be used to set the
 baseline technology trajectories.}
 }
 \value{
-dataframe
+dataframe.
 }
 \description{
 Picks the corresponding values from the original scenario

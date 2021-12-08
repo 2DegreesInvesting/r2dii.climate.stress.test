@@ -11,8 +11,6 @@
 #' @family qa graphing functions
 #'
 #' @return ggplot object
-#'
-#' @export
 overall_pd_change_company_sector <- function(data,
                                              shock_year = NULL,
                                              sector_filter = NULL,
