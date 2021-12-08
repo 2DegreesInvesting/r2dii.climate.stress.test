@@ -345,15 +345,6 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
           analysis_time_frame = time_horizon
         )
 
-      if (exists("excluded_companies")) {
-        equity_annual_profits <- equity_annual_profits %>%
-          exclude_companies(
-            exclusion = excluded_companies,
-            scenario_baseline = scenario_to_follow_baseline,
-            scenario_ls = scenario_to_follow_ls
-          )
-      }
-
       equity_annual_profits <- equity_annual_profits %>%
         join_price_data(df_prices = df_prices) %>%
         join_net_profit_margins(net_profit_margins = net_profit_margins) %>%
@@ -494,15 +485,6 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
           end_year = end_year,
           analysis_time_frame = time_horizon
         )
-
-      if (exists("excluded_companies")) {
-        bonds_annual_profits <- bonds_annual_profits %>%
-          exclude_companies(
-            exclusion = excluded_companies,
-            scenario_baseline = scenario_to_follow_baseline,
-            scenario_ls = scenario_to_follow_ls
-          )
-      }
 
       bonds_annual_profits <- bonds_annual_profits %>%
         join_price_data(df_prices = df_prices) %>%
