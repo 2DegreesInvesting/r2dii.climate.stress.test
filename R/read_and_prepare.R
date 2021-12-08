@@ -104,7 +104,7 @@ read_and_prepare_project_specific_data <- function(asset_type, calculation_level
 
   sector_exposures <- read_sector_exposures(file.path(path, "overview_portfolio.rda")) %>%
     wrangle_and_check_sector_exposures(asset_type = asset_type)
-  # TODO: potentially convert currencies to USD or at least common currency
+  # TODO: ADO3242 - force conversion of holdings to one common currency
 
   return(
     list(
