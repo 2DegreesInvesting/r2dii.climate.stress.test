@@ -279,7 +279,7 @@ run_prep_calculation_loans <- function(input_path_project_specific,
       by_company = TRUE,
       weight_production = FALSE
     ) %>%
-    # TODO filter must be generalised for diff scenario inputs
+    # TODO remove hard coded filtering in ADO 3129
     dplyr::filter(
       (.data$sector == "automotive" & .data$scenario_source == "etp_2017") |
         (.data$sector == "coal" & .data$scenario_source == "weo_2019") |
