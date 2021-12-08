@@ -20,8 +20,6 @@ test_that("with bonds output is unchanged and names have the suffix '_arg'", {
 
   expect_snapshot(lapply(results, as.data.frame))
 
-  csv_files <- fs::dir_ls(out, regexp = "[.]csv$")
-  data <- purrr::map(csv_files, readr::read_csv, col_types = list())
-  have_suffix_arg <- purrr::map_lgl(data, ~ rlang::has_name(.x, "term_arg"))
+  have_suffix_arg <- purrr::map_lgl(results, ~ rlang::has_name(.x, "term_arg"))
   expect_true(all(have_suffix_arg))
 })
