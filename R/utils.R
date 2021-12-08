@@ -5,7 +5,7 @@
 #' @return Logical.
 #'
 #' @examples
-#' dropbox_exists()
+#' r2dii.climate.stress.test:::dropbox_exists()
 dropbox_exists <- function() {
   fs::dir_exists(path_dropbox_2dii())
 }
@@ -17,8 +17,8 @@ dropbox_exists <- function() {
 #' @return A string.
 #'
 #' @examples
-#' degrees()
-#' glue::glue("2{degrees()} Investing Initiative")
+#' r2dii.climate.stress.test:::degrees()
+#' glue::glue("2{r2dii.climate.stress.test:::degrees()} Investing Initiative")
 degrees <- function() {
   "\u00B0"
 }
