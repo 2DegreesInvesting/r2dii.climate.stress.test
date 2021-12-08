@@ -242,7 +242,6 @@ run_stress_test_impl <- function(asset_type,
     scenarios = scenarios_filter
   )
 
-  # TODO: validate
   port_aum <- calculate_aum(input_data_list$sector_exposures)
   transition_scenario <- generate_transition_shocks(
     start_of_analysis = start_year,
