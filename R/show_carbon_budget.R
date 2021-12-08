@@ -59,7 +59,6 @@ show_carbon_budget <- function(data,
 
   data <- data %>%
     dplyr::mutate(
-      # TODO: .env does not work within rlang::sym().. how to mask this?
       target_scenario = !!rlang::sym(target_scenario)
     ) %>%
     dplyr::group_by(
