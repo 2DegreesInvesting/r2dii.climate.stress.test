@@ -9,8 +9,6 @@
 #'   end year of the analysis
 #'
 #' @family import functions
-#'
-#' @export
 read_transition_scenarios <- function(path = NULL,
                                       start_of_analysis = NULL,
                                       end_of_analysis = NULL) {
