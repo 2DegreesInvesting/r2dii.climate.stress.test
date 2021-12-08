@@ -119,7 +119,6 @@ format_loanbook_st <- function(data,
       )
     )
 
-  # TODO: re-map the scenario names
   results_loanbook <- scen %>%
     dplyr::inner_join(
       plan,
