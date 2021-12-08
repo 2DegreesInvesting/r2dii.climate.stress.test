@@ -1,4 +1,5 @@
 test_that("with bonds output is unchanged and names have the suffix '_arg'", {
+  skip_if_not(opt_in_snapshots())
   skip_on_ci()
   skip_on_cran()
 
