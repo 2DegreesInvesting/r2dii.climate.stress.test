@@ -41,7 +41,6 @@ read_price_data <- function(path, expected_technologies) {
 #' @inheritParams read_price_data
 #'
 #' @return A tibble holding price data in long format.
-#' @export
 read_price_data_old <- function(path, expected_technologies) {
   data <- validate_file_exists(path) %>%
     readr::read_csv(

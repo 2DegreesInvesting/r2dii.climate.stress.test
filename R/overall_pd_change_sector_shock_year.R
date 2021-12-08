@@ -9,8 +9,6 @@
 #' @family qa graphing functions
 #'
 #' @return ggplot object
-#'
-#' @export
 overall_pd_change_sector_shock_year <- function(data,
                                                 scenario_filter = NULL,
                                                 geography_filter = NULL) {

@@ -9,7 +9,6 @@
 #'
 #' @return Character
 #'
-#' @export
 #' @examples
 #' data_path()
 data_path <- function(..., data_store = "data-raw") {
