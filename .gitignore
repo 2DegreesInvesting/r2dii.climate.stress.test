@@ -47,3 +47,4 @@ Desktop.ini
 *.icloud
 .Rproj.user
 docs
+tests/testthat/_snaps/run_stress_test*
