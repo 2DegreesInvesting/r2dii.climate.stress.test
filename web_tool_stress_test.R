@@ -64,7 +64,10 @@ pf_name <- portfolio_name_ref_all
 # price_data_version passed via GlobalEnv of P2020 webtool; fallback use "2020Q4" if old parameter file used in webtool
 price_data_version <- if (exists("price_data_version")) price_data_version else "2020Q4"
 calculation_level <- if (exists("calculation_level")) calculation_level else "portfolio"
-company_exclusion <- if (exists("company_exclusion")) company_exclusion else FALSE
+
+if (calculation_level != "portfolio") {
+  stop("Can only support calculation_level portfolio.")
+}
 
 ##### Filters----------------------------------------
 # The filter settings should comply with the filters from the parent PACTA project as per default
@@ -216,14 +219,6 @@ net_profit_margins <- net_profit_margin_setup(
   net_profit_margin_oilcap = net_profit_margin_oilcap
 )
 
-if (identical(calculation_level, "company") & company_exclusion) {
-  excluded_companies <- readr::read_csv(
-    file.path(data_location, "exclude-companies.csv"),
-    col_types = "cc"
-  )
-}
-
-
 ###############
 # Prepare data for stress test model----------------------------------------
 ###############
@@ -245,7 +240,6 @@ nesting_vars <- c(
   "investor_name", "portfolio_name", "equity_market", "ald_sector", "technology",
   "scenario", "allocation", "scenario_geography"#, "company_name"
 )
-if (identical(calculation_level, "company")) {nesting_vars <- c(nesting_vars, "company_name")}
 
 # the webtool should run through regardless of whether there are data for only one of the asset types or both
 if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calculation_level, ".rda")))) {
@@ -355,15 +349,6 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
           analysis_time_frame = time_horizon
         )
 
-      if (exists("excluded_companies")) {
-        equity_annual_profits <- equity_annual_profits %>%
-          exclude_companies(
-            exclusion = excluded_companies,
-            scenario_baseline = scenario_to_follow_baseline,
-            scenario_ls = scenario_to_follow_ls
-          )
-      }
-
       equity_annual_profits <- equity_annual_profits %>%
         join_price_data(df_prices = df_prices) %>%
         join_net_profit_margins(net_profit_margins = net_profit_margins) %>%
@@ -377,60 +362,22 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
           scenario_geography == scenario_geography_filter
         )
 
-      if(identical(calculation_level, "company")) {
-        plan_carsten_equity <- plan_carsten_equity %>%
-          dplyr::distinct(investor_name, portfolio_name, company_name, ald_sector, technology,
-                   scenario_geography, year, plan_carsten, plan_sec_carsten)
+      plan_carsten_equity <- plan_carsten_equity %>%
+        dplyr::distinct(investor_name, portfolio_name, ald_sector, technology,
+                        scenario_geography, year, plan_carsten, plan_sec_carsten)
 
-        if (!exists("excluded_companies")) {
-          equity_results <- dplyr::bind_rows(
-            equity_results,
-            company_asset_value_at_risk(
-              data = equity_annual_profits,
-              terminal_value = terminal_value,
-              shock_scenario = transition_scenario_i,
-              div_netprofit_prop_coef = div_netprofit_prop_coef,
-              plan_carsten = plan_carsten_equity,
-              port_aum = equity_port_aum,
-              flat_multiplier = 1,
-              exclusion = NULL
-            )
-          )
-        } else {
-          equity_results <- dplyr::bind_rows(
-            equity_results,
-            company_asset_value_at_risk(
-              data = equity_annual_profits,
-              terminal_value = terminal_value,
-              shock_scenario = transition_scenario_i,
-              div_netprofit_prop_coef = div_netprofit_prop_coef,
-              plan_carsten = plan_carsten_equity,
-              port_aum = equity_port_aum,
-              flat_multiplier = 1,
-              exclusion = excluded_companies
-            )
-          )
-        }
-
-      } else {
-        plan_carsten_equity <- plan_carsten_equity %>%
-          dplyr::distinct(investor_name, portfolio_name, ald_sector, technology,
-                   scenario_geography, year, plan_carsten, plan_sec_carsten)
-
-        equity_results <- dplyr::bind_rows(
-          equity_results,
-          asset_value_at_risk(
-            data = equity_annual_profits,
-            terminal_value = terminal_value,
-            shock_scenario = transition_scenario_i,
-            div_netprofit_prop_coef = div_netprofit_prop_coef,
-            plan_carsten = plan_carsten_equity,
-            port_aum = equity_port_aum,
-            flat_multiplier = 1
-          )
+      equity_results <- dplyr::bind_rows(
+        equity_results,
+        asset_value_at_risk(
+          data = equity_annual_profits,
+          terminal_value = terminal_value,
+          shock_scenario = transition_scenario_i,
+          div_netprofit_prop_coef = div_netprofit_prop_coef,
+          plan_carsten = plan_carsten_equity,
+          port_aum = equity_port_aum,
+          flat_multiplier = 1
         )
-      }
-
+      )
     }
   }
 } else {
@@ -543,15 +490,6 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
           analysis_time_frame = time_horizon
         )
 
-      if (exists("excluded_companies")) {
-        bonds_annual_profits <- bonds_annual_profits %>%
-          exclude_companies(
-            exclusion = excluded_companies,
-            scenario_baseline = scenario_to_follow_baseline,
-            scenario_ls = scenario_to_follow_ls
-          )
-      }
-
       bonds_annual_profits <- bonds_annual_profits %>%
         join_price_data(df_prices = df_prices) %>%
         join_net_profit_margins(net_profit_margins = net_profit_margins) %>%
@@ -565,60 +503,22 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
           scenario_geography == scenario_geography_filter
         )
 
-      if(identical(calculation_level, "company")) {
-        plan_carsten_bonds <- plan_carsten_bonds %>%
-          dplyr::distinct(investor_name, portfolio_name, company_name, ald_sector, technology,
-                   scenario_geography, year, plan_carsten, plan_sec_carsten)
+      plan_carsten_bonds <- plan_carsten_bonds %>%
+        dplyr::distinct(investor_name, portfolio_name, ald_sector, technology,
+                        scenario_geography, year, plan_carsten, plan_sec_carsten)
 
-        if (!exists("excluded_companies")) {
-          bonds_results <- dplyr::bind_rows(
-            bonds_results,
-            company_asset_value_at_risk(
-              data = bonds_annual_profits,
-              terminal_value = terminal_value,
-              shock_scenario = transition_scenario_i,
-              div_netprofit_prop_coef = div_netprofit_prop_coef,
-              plan_carsten = plan_carsten_bonds,
-              port_aum = bonds_port_aum,
-              flat_multiplier = 0.15,
-              exclusion = NULL
-            )
-          )
-        } else {
-          bonds_results <- dplyr::bind_rows(
-            bonds_results,
-            company_asset_value_at_risk(
-              data = bonds_annual_profits,
-              terminal_value = terminal_value,
-              shock_scenario = transition_scenario_i,
-              div_netprofit_prop_coef = div_netprofit_prop_coef,
-              plan_carsten = plan_carsten_bonds,
-              port_aum = bonds_port_aum,
-              flat_multiplier = 0.15,
-              exclusion = excluded_companies
-            )
-          )
-        }
-
-      } else {
-        plan_carsten_bonds <- plan_carsten_bonds %>%
-          dplyr::distinct(investor_name, portfolio_name, ald_sector, technology,
-                   scenario_geography, year, plan_carsten, plan_sec_carsten)
-
-        bonds_results <- dplyr::bind_rows(
-          bonds_results,
-          asset_value_at_risk(
-            data = bonds_annual_profits,
-            terminal_value = terminal_value,
-            shock_scenario = transition_scenario_i,
-            div_netprofit_prop_coef = div_netprofit_prop_coef,
-            plan_carsten = plan_carsten_bonds,
-            port_aum = bonds_port_aum,
-            flat_multiplier = 0.15
-          )
+      bonds_results <- dplyr::bind_rows(
+        bonds_results,
+        asset_value_at_risk(
+          data = bonds_annual_profits,
+          terminal_value = terminal_value,
+          shock_scenario = transition_scenario_i,
+          div_netprofit_prop_coef = div_netprofit_prop_coef,
+          plan_carsten = plan_carsten_bonds,
+          port_aum = bonds_port_aum,
+          flat_multiplier = 0.15
         )
-      }
-
+      )
     }
   }
 } else {

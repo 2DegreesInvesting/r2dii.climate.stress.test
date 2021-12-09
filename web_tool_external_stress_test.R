@@ -59,8 +59,9 @@ if (file.exists(file.path(proc_input_path, pf_name, "total_portfolio.rda")) &
     group_by(investor_name, portfolio_name, asset_type) %>%
     dplyr::summarise(
       portfolio_size = sum(valid_value_usd),
-      .groups = "drop_last"
-    )
+      .groups = "drop"
+    ) %>%
+    dplyr::ungroup()
 } else {
   print("Insufficient Portfolio Data available. Skipping IPR stress test!")
 }
@@ -106,8 +107,9 @@ if (exists("portfolio")) {
     group_by(investor_name, portfolio_name, sector_ipr, subsector_ipr) %>%
     dplyr::summarise(
       exposure = sum(value_usd, na.rm = TRUE),
-      .groups = "drop_last"
+      .groups = "drop"
     ) %>%
+    dplyr::ungroup() %>%
     dplyr::rename(sector = sector_ipr, subsector = subsector_ipr) %>%
     # ADO 1945 - left join ensures that all holdings that are not classified in
     # any IPR sector can be identifies as "Other"
@@ -118,8 +120,7 @@ if (exists("portfolio")) {
     dplyr::mutate(
       loss = exposure * shock / 100,
       sector = ifelse(is.na(sector), "Other", sector)
-    ) %>%
-    dplyr::ungroup()
+    )
 } else {
   print("No portfolio data -- skipping IPR stress test")
 }
