@@ -218,21 +218,59 @@ run_stress_test_impl <- function(asset_type,
   wrangled_sector_exposures <- sector_exposures %>%
     wrangle_and_check_sector_exposures(asset_type = asset_type)
 
-  project_specific_data_list <- list(
+  capacity_factors_power <- read_capacity_factors(
+    path = file.path(input_path_project_agnostic, "capacity_factors_WEO_2020.csv")
+  )
+
+  if (company_exclusion) {
+    excluded_companies <- validate_file_exists(file.path(input_path_project_agnostic, "exclude-companies.csv")) %>%
+      readr::read_csv(
+        col_types = readr::cols(
+          company_name = "c",
+          technology = "c"
+        )
+      )
+  } else {
+    excluded_companies <- NULL
+  }
+
+  df_price <- read_price_data_old(
+    path = file.path(input_path_project_agnostic, paste0("prices_data_", price_data_version_lookup, ".csv")),
+    expected_technologies = technologies_lookup
+  )
+
+  df_price_wrangled <- df_price %>%
+    dplyr::filter(year >= start_year) %>%
+    check_price_consistency(start_year = start_year)
+
+  scenario_data <- read_scenario_data(
+    path = file.path(input_path_project_agnostic, paste0("Scenarios_AnalysisInput_", start_year, ".csv"))
+  )
+
+  scenario_data_wrangled <- scenario_data %>%
+    wrangle_scenario_data(start_year = start_year, end_year = end_year) %>%
+    dplyr::filter(
+      .data$ald_sector %in% sectors_lookup &
+        .data$technology %in% technologies_lookup &
+        .data$scenario_geography == scenario_geography_filter
+    )
+
+  financial_data <- read_financial_data(
+    path = file.path(input_path_project_agnostic, "prewrangled_financial_data_stress_test.csv")
+  )
+
+  financial_data_wrangled <- financial_data %>%
+    check_financial_data(asset_type = asset_type)
+
+  input_data_list <- list(
     pacta_results = wrangled_pacta_results,
-    sector_exposures = wrangled_sector_exposures
-  )
-
-  project_agnostic_data_list <- read_and_prepare_project_agnostic_data(
-    start_year = start_year,
-    end_year = end_year,
-    company_exclusion = company_exclusion,
-    scenario_geography_filter = scenario_geography_filter,
-    asset_type = asset_type,
-    path = input_path_project_agnostic
-  )
-
-  input_data_list <- c(project_specific_data_list, project_agnostic_data_list) %>%
+    sector_exposures = wrangled_sector_exposures,
+    capacity_factors_power = capacity_factors_power,
+    excluded_companies = excluded_companies,
+    df_price = df_price_wrangled,
+    scenario_data = scenario_data_wrangled,
+    financial_data = financial_data_wrangled
+  ) %>%
     check_and_filter_data(
       start_year = start_year,
       end_year = end_year,
