@@ -18,3 +18,10 @@ opt_in_snapshots <- function() {
   out <- Sys.getenv("ST_OPT_IN_SNAPSHOTS", unset = "FALSE")
   as.logical(out)
 }
+
+skip_slow_tests <- function() {
+  skipping_slow_tests <- as.logical(
+    Sys.getenv("ST_SKIP_SLOW_TESTS", unset = "TRUE")
+  )
+  testthat::skip_if(skipping_slow_tests)
+}

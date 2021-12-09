@@ -2,6 +2,7 @@ test_that("with bonds output is unchanged and names have the suffix '_arg'", {
   skip_if_not(opt_in_snapshots())
   skip_on_ci()
   skip_on_cran()
+  skip_slow_tests()
 
   in_agnostic <- Sys.getenv("ST_AGNOSTIC")
   in_specific <- Sys.getenv("ST_SPECIFIC_BONDS")
