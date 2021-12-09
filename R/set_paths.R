@@ -9,9 +9,8 @@
 #'
 #' @return Character
 #'
-#' @export
 #' @examples
-#' data_path()
+#' r2dii.climate.stress.test:::data_path()
 data_path <- function(..., data_store = "data-raw") {
   fs::path(data_store, ...)
 }

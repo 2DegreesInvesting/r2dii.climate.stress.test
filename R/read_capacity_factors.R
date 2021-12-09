@@ -41,8 +41,6 @@ read_capacity_factors <- function(path = NULL) {
 #'   capacity factors
 #'
 #' @family import functions
-#'
-#' @export
 read_capacity_factors_old <- function(path = NULL) {
   path %||% stop("Must provide 'path'")
 

@@ -4,9 +4,8 @@
 #'
 #' @return Logical.
 #'
-#' @export
 #' @examples
-#' dropbox_exists()
+#' r2dii.climate.stress.test:::dropbox_exists()
 dropbox_exists <- function() {
   fs::dir_exists(path_dropbox_2dii())
 }
@@ -17,10 +16,9 @@ dropbox_exists <- function() {
 #'
 #' @return A string.
 #'
-#' @export
 #' @examples
-#' degrees()
-#' glue::glue("2{degrees()} Investing Initiative")
+#' r2dii.climate.stress.test:::degrees()
+#' glue::glue("2{r2dii.climate.stress.test:::degrees()} Investing Initiative")
 degrees <- function() {
   "\u00B0"
 }
@@ -53,8 +51,6 @@ degrees <- function() {
 #' @family functions to output 2dii paths
 #'
 #' @return A character string.
-#'
-#' @export
 path_dropbox_2dii <- function(...) {
   custom <- getOption("r2dii_dropbox")
   default <- sprintf("Dropbox (2%s Investing)", degrees())

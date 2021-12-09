@@ -59,8 +59,6 @@ write_stress_test_results <- function(results_list, asset_type, iter_var,
 #'   be written to the result path. Currently supports "csv" and "rda".
 #'
 #' @family output functions
-#'
-#' @export
 write_results <- function(data,
                           path_to_results = NULL,
                           investorname = NULL,
