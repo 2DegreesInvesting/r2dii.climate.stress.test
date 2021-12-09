@@ -18,7 +18,7 @@
     financial stress tests of listed equity, corporate bond and corporate
     loan portfolios.  It specifically focuses on climate change related
     risks, such as transition/policy risk, litigation risk and physical
-    risk. The methodologies develpoped by 2DII focus on forward looking
+    risk. The methodologies developed by 2DII focus on forward looking
     approaches and asset based analyses where possible. Some external
     stress tests are also featured.  This package is currently in the beta
     stage and not finalised yet. Changes to the methodology will still be
@@ -30,6 +30,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -42,18 +44,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">r2dii.climate.stress.test</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9002</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="reference/index.html">Reference</a>
 </li>
@@ -65,16 +61,16 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="articles/articles/01-setup-project-directories.html">01 - Set up project directories for climate transition risk stress test</a>
+      <a href="articles/01-setup-project-directories.html">01 - Set up project directories for climate transition risk stress test</a>
     </li>
     <li>
-      <a href="articles/articles/02-prepare-loans-inputs.html">02 - Prepare loan input files for stress testing corporate loan books</a>
+      <a href="articles/02-prepare-loans-inputs.html">02 - Prepare loan input files for stress testing corporate loan books</a>
     </li>
     <li>
-      <a href="articles/articles/03-run-stress-test.html">03 - Run transition risk stress test on corporate loan books</a>
+      <a href="articles/03-run-stress-test.html">03 - Run transition risk stress test on corporate loan books</a>
     </li>
     <li>
-      <a href="articles/articles/04-read-the-outputs.html">04 - Understand the output files of the transition risk stress test</a>
+      <a href="articles/04-read-the-outputs.html">04 - Understand the output files of the transition risk stress test</a>
     </li>
   </ul>
 </li>
@@ -91,29 +87,29 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="r2diiclimatestresstest-" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#r2diiclimatestresstest-" class="anchor"></a>r2dii.climate.stress.test <a href="https://github.com/2DegreesInvesting/r2dii.climate.stress.test"><img src="https://imgur.com/A5ASZPE.png" align="right" height="43"></a>
+<div class="section level1">
+<div class="page-header"><h1 id="r2diiclimatestresstest-">r2dii.climate.stress.test <a href="https://github.com/2DegreesInvesting/r2dii.climate.stress.test" class="external-link"><img src="https://imgur.com/A5ASZPE.png" align="right" height="43"></a>
+<a class="anchor" aria-label="anchor" href="#r2diiclimatestresstest-"></a>
 </h1></div>
 <!-- badges: start -->
 
 <p>The goal of r2dii.climate.stress.test is to provide a tool that can be used to conduct what-if climate stress test analyses for financial institutions, supervisors, regulators and other stakeholders. The tool aims at highlighting potential financial risk in especially climate relevant sectors, split by production technology where required. The sectors covered by the 2DII climate stress test and therefore by this package, follow mostly the logic of the Paris Agreement Capital Transition Assessment (PACTA) tool, but can in principle be adapted to other settings. Application of the code requires availability of custom data. For more information about the methodology and inquiries on running a pilot of the stress test in cooperation with 2DII, please contact <a href="mailto:jacob@2degrees-investing.org" class="email">jacob@2degrees-investing.org</a>.</p>
-<div id="installation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h2>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
 <p>Install the development version of r2dii.climate.stress.test from GitHub with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># install.packages("devtools")</span>
 <span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"2DegreesInvesting/r2dii.climate.stress.test"</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="example" class="section level2">
-<h2 class="hasAnchor">
-<a href="#example" class="anchor"></a>Example</h2>
+<div class="section level2">
+<h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
+</h2>
 <ul>
-<li>Use <code><a href="https://rdrr.io/r/base/library.html">library()</a></code> to attach the package</li>
+<li>Use <code><a href="https://rdrr.io/r/base/library.html" class="external-link">library()</a></code> to attach the package</li>
 </ul>
 <!-- end list --><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test">r2dii.climate.stress.test</a></span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test">r2dii.climate.stress.test</a></span><span class="op">)</span></code></pre></div>
 <ul>
 <li>Stress tests for corporate loans require a preparatory step for input data preparation for initial application of stress testing on a loan book</li>
 </ul>
@@ -141,12 +137,12 @@
   input_path_project_specific <span class="op">=</span> <span class="st">"/path/to/specific/data"</span>,
   input_path_project_agnostic <span class="op">=</span> <span class="st">"/path/to/agnostic/data"</span>,
   output_path <span class="op">=</span> <span class="st">"/path/to/output/directory"</span>,
-  risk_free_rate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.01</span>, <span class="fl">0.03</span><span class="op">)</span>
+  risk_free_rate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.01</span>, <span class="fl">0.03</span><span class="op">)</span>
 <span class="op">)</span></code></pre></div>
 </div>
-<div id="details" class="section level2">
-<h2 class="hasAnchor">
-<a href="#details" class="anchor"></a>Details</h2>
+<div class="section level2">
+<h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a>
+</h2>
 <p>To actually run an analysis…</p>
 <ul>
 <li>the project directories must be set up,</li>
@@ -156,9 +152,9 @@
 <p>Detailed information for all these steps and on interpreting the outcomes can be found in the articles linked below.</p>
 <p><a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/">Further Information</a>.</p>
 </div>
-<div id="funding" class="section level2">
-<h2 class="hasAnchor">
-<a href="#funding" class="anchor"></a>Funding</h2>
+<div class="section level2">
+<h2 id="funding">Funding<a class="anchor" aria-label="anchor" href="#funding"></a>
+</h2>
 <p>The development of the stress test methodology and the technical software implementation was funded by the EU - LIFE PACTA 2.0 (LIFE19 GIC/DE/001294). The views expressed are the sole responsibility of the authors and do not necessarily reflect the views of the funders. The funders are not responsible for any use that may be made of the information it contains.</p>
 </div>
 </div>
@@ -166,43 +162,55 @@
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="license">
-<h2>License</h2>
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li><a href="LICENSE.html">Full license</a></li>
-<li><small><a href="https://opensource.org/licenses/mit-license.php">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a></small></li>
+<li><small><a href="https://opensource.org/licenses/mit-license.php" class="external-link">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a></small></li>
 </ul>
 </div>
+
 <div class="community">
-<h2>Community</h2>
+<h2 data-toc-skip>Community</h2>
 <ul class="list-unstyled">
 <li><a href="CONTRIBUTING.html">Contributing guide</a></li>
 </ul>
 </div>
+
+<div class="citation">
+<h2 data-toc-skip>Citation</h2>
+<ul class="list-unstyled">
+<li><a href="authors.html#citation">Citing r2dii.climate.stress.test</a></li>
+</ul>
+</div>
+
 <div class="developers">
-<h2>Developers</h2>
+<h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
 <li>Jacob Kastl <br><small class="roles"> Author, maintainer </small>  </li>
 <li>2 Degrees Investing Initiative <br><small class="roles"> Copyright holder, funder </small>  </li>
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://www.tidyverse.org/lifecycle/#experimental"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="lifecycle"></a></li>
-<li><a href="https://github.com/2DegreesInvesting/r2dii.climate.stress.test/actions"><img src="https://github.com/2DegreesInvesting/r2dii.climate.stress.test/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://www.tidyverse.org/lifecycle/#experimental" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="lifecycle"></a></li>
+<li><a href="https://github.com/2DegreesInvesting/r2dii.climate.stress.test/actions" class="external-link"><img src="https://github.com/2DegreesInvesting/r2dii.climate.stress.test/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
 </ul>
 </div>
-</div>
+
+  </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Jacob Kastl, 2 Degrees Investing Initiative.</p>
+  <p></p>
+<p>Developed by Jacob Kastl, 2 Degrees Investing Initiative.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
 </div>
 
       </footer>
@@ -210,6 +218,8 @@
 
   
 
+
+  
 
   </body>
 </html>
