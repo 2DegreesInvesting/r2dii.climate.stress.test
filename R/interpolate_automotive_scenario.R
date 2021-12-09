@@ -5,8 +5,6 @@
 #' @param interpolation_years Numeric vector. Vector of years which ought to be replaced by the interpolation
 #'
 #' @return Data frame
-#'
-#' @export
 correct_automotive_scendata <- function(data, interpolation_years = NULL) {
   stopifnot(
     all(

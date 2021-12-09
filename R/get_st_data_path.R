@@ -11,8 +11,6 @@
 #' @family miscellaneous utility functions
 #'
 #' @return Character
-#'
-#' @export
 get_st_data_path <- function(var = "ST_DATA_PATH") {
   path <- Sys.getenv(var, unset = getOption(var) %||% "unset")
 

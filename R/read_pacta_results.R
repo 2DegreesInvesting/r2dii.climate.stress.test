@@ -8,8 +8,6 @@
 #'   Allowed values are "company", "portfolio".
 #'
 #' @family import functions
-#'
-#' @export
 read_pacta_results <- function(path = NULL,
                                level = NULL) {
   path %||% stop("Must provide 'path'")

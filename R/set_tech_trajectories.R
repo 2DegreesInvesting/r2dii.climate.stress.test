@@ -25,9 +25,7 @@
 #'
 #' @family scenario definition
 #'
-#' @return dataframe
-#'
-#' @export
+#' @return dataframe.
 set_baseline_trajectory <- function(data,
                                     scenario_to_follow_baseline) {
   if (!"id" %in% names(data)) {
@@ -149,8 +147,6 @@ calc_future_prod_follows_scen <- function(planned_prod = .data$plan_tech_prod,
 #' @family scenario definition
 #'
 #' @return data frame
-#'
-#' @export
 set_ls_trajectory <- function(data,
                               scenario_to_follow_ls = "SDS",
                               shock_scenario,

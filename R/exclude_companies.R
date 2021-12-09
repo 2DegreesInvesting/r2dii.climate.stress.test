@@ -15,8 +15,6 @@
 #'   workflow.
 #'
 #' @family processing functions
-#'
-#' @export
 exclude_companies <- function(data,
                               exclusion = NULL,
                               scenario_baseline = NULL,

@@ -3,8 +3,6 @@
 #' @family helper functions for testthat
 #'
 #' @return A dataframe
-#'
-#' @export
 read_test_data <- function(file, path = testthat::test_path("test_data", file)) {
   readr::read_csv(path, col_types = list())
 }
@@ -19,8 +17,6 @@ read_test_data <- function(file, path = testthat::test_path("test_data", file)) 
 #' @family helper functions for testthat
 #'
 #' @return A dataframe
-#'
-#' @export
 test_create_target_directory <- function(path = NULL,
                                          add_level = NULL) {
   path <- path %||% stop("Must provide 'path'")

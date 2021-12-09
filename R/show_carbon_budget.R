@@ -16,9 +16,6 @@
 #' @family qa graphing functions
 #'
 #' @return ggplot object
-#'
-#' @export
-
 show_carbon_budget <- function(data,
                                scenarios = NULL,
                                target_scenario = NULL,
