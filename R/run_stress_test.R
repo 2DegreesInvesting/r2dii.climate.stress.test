@@ -194,19 +194,34 @@ run_stress_test_impl <- function(asset_type,
 
   cat("-- Importing and preparing input data from designated input path. \n")
 
-  pacta_based_data <- read_and_prepare_project_specific_data(
-    asset_type = asset_type,
-    calculation_level = calculation_level,
-    time_horizon = time_horizon,
-    scenario_geography_filter = scenario_geography_filter,
-    scenarios_filter = scenarios_filter,
-    equity_market_filter = equity_market_filter_lookup,
-    term = term,
-    path = input_path_project_specific
+  pacta_results <- read_pacta_results(
+    path = file.path(input_path_project_specific, paste0(stringr::str_to_title(asset_type), "_results_", calculation_level, ".rda")),
+    level = calculation_level
   )
 
-  project_specific_data_list <- pacta_based_data$data_list
-  start_year <- pacta_based_data$start_year
+  start_year <- min(pacta_results$year, na.rm = TRUE)
+
+  wrangled_pacta_results <- pacta_results %>%
+    wrangle_and_check_pacta_results(
+      start_year = start_year,
+      time_horizon = time_horizon,
+      scenario_geography_filter = scenario_geography_filter,
+      scenarios_filter = scenarios_filter,
+      equity_market_filter = equity_market_filter_lookup
+    ) %>%
+    # ADO 1943 - for the time being, one global term value is set by the user.
+    # TODO: ADO 3182 - allow setting loan level term
+    dplyr::mutate(term = term)
+
+  sector_exposures <- read_sector_exposures(file.path(input_path_project_specific, "overview_portfolio.rda"))
+
+  wrangled_sector_exposures <- sector_exposures %>%
+    wrangle_and_check_sector_exposures(asset_type = asset_type)
+
+  project_specific_data_list <- list(
+    pacta_results = wrangled_pacta_results,
+    sector_exposures = wrangled_sector_exposures
+  )
 
   project_agnostic_data_list <- read_and_prepare_project_agnostic_data(
     start_year = start_year,

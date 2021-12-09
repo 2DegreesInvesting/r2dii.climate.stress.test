@@ -58,65 +58,16 @@ read_and_prepare_project_agnostic_data <- function(start_year, end_year, company
   ) %>%
     check_financial_data(asset_type = asset_type)
 
-  return(list(
-    capacity_factors_power = capacity_factors_power,
-    excluded_companies = excluded_companies,
-    df_price = df_price,
-    scenario_data = scenario_data,
-    financial_data = financial_data
-  ))
-}
-
-#' Read and prepare project specific data
-#'
-#' Function reads in data that are specific the project and conducts some
-#' checking and wrangling. Also infers start_year of analysis.
-#'
-#' @inheritParams validate_input_values
-#' @inheritParams read_and_prepare_project_agnostic_data
-#' @inheritParams wrangle_and_check_pacta_results
-#' @param calculation_level String holding level of calculation.
-#' @param path String holding path to data.
-#'
-#' @return A list of lists holding prepared project specific data.
-read_and_prepare_project_specific_data <- function(asset_type, calculation_level,
-                                                   time_horizon, scenario_geography_filter,
-                                                   scenarios_filter, equity_market_filter,
-                                                   term, path) {
-  pacta_results <- read_pacta_results(
-    path = file.path(path, paste0(stringr::str_to_title(asset_type), "_results_", calculation_level, ".rda")),
-    level = calculation_level
-  )
-
-  start_year <- min(pacta_results$year, na.rm = TRUE)
-
-  wrangled_pacta_results <- pacta_results %>%
-    wrangle_and_check_pacta_results(
-      start_year = start_year,
-      time_horizon = time_horizon,
-      scenario_geography_filter = scenario_geography_filter,
-      scenarios_filter = scenarios_filter,
-      equity_market_filter = equity_market_filter
-    ) %>%
-    # ADO 1943 - for the time being, one global term value is set by the user.
-    # TODO: ADO 3182 - allow setting loan level term
-    dplyr::mutate(term = term)
-
-  sector_exposures <- read_sector_exposures(file.path(path, "overview_portfolio.rda")) %>%
-    wrangle_and_check_sector_exposures(asset_type = asset_type)
-  # TODO: ADO3242 - force conversion of holdings to one common currency
-
   return(
     list(
-      data_list = list(
-        pacta_results = wrangled_pacta_results,
-        sector_exposures = sector_exposures
-      ),
-      start_year = start_year
+      capacity_factors_power = capacity_factors_power,
+      excluded_companies = excluded_companies,
+      df_price = df_price,
+      scenario_data = scenario_data,
+      financial_data = financial_data
     )
   )
 }
-
 
 #' Read sector exposures
 #'
