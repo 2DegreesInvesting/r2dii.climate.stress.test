@@ -1,5 +1,4 @@
-test_that("with bonds, with iteration, using default settings output is unchanged
-          and names have the suffix '_arg'", {
+test_that("with bonds, with iteration, using default settings output is unchanged and names have the suffix '_arg'", {
   skip_if_not(opt_in_snapshots())
   skip_on_ci()
   skip_on_cran()
@@ -26,8 +25,7 @@ test_that("with bonds, with iteration, using default settings output is unchange
   expect_true(all(have_suffix_arg))
 })
 
-test_that("with loans, without iteration, using minimum values of input
-          arguments output is unchanged", {
+test_that("with loans, without iteration, using minimum values of input arguments output is unchanged", {
   skip_if_not(opt_in_snapshots())
   skip_on_ci()
   skip_on_cran()
@@ -58,8 +56,7 @@ test_that("with loans, without iteration, using minimum values of input
   expect_snapshot(lapply(results, as.data.frame))
 })
 
-test_that("with equity, without iteration, using maximum values of input
-          arguments output is unchanged", {
+test_that("with equity, without iteration, using maximum values of input arguments output is unchanged", {
   skip_if_not(opt_in_snapshots())
   skip_on_ci()
   skip_on_cran()
