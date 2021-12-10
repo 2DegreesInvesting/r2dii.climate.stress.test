@@ -28,3 +28,15 @@ test_create_target_directory <- function(path = NULL,
     target_dir <- file.path(path, add_level)
   }
 }
+
+
+# custom helper function to extract column value from from `stress_test_arguments`
+# for a given `name`, converted to numeric
+get_st_arg_val_num <- function(arg, col, arg_tibble = stress_test_arguments) {
+
+  arg_val <- arg_tibble %>%
+    dplyr::filter(name == !!arg) %>%
+    dplyr::pull(!!col)
+
+  return(as.numeric(arg_val))
+}
