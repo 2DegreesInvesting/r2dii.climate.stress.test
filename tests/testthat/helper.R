@@ -28,3 +28,29 @@ test_create_target_directory <- function(path = NULL,
     target_dir <- file.path(path, add_level)
   }
 }
+
+
+#' Get a valid value of an argumetn of `run_stress_test()`
+#'
+#' @examples
+#' get_st_argument("term")
+#' # Same
+#' get_st_argument("term", "default")
+#'
+#' get_st_argument("term", "min")
+#'
+#' typeof(get_st_argument("company_exclusion"))
+#' typeof(get_st_argument("asset_type"))
+#' @noRd
+get_st_argument <- function(name,
+                            value = c("default", "allowed", "min", "max")) {
+  stopifnot(is.character(name), length(name) == 1)
+
+  value <- match.arg(value)
+  out <- stress_test_arguments
+
+  out <- out[out$name == name, c("type", value)]
+  as_type <- get(paste0("as.", out$type))
+  out <- as_type(out[[value]])
+  out
+}
