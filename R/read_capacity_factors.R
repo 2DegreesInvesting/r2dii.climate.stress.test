@@ -10,20 +10,6 @@ read_capacity_factors <- function(path = NULL) {
   data <- validate_file_exists(path) %>%
     readr::read_csv(col_types = readr::cols())
 
-  # ADO 2393 - this should keep the source and filter based on global settings
-  # not in this hard coded manner
-  data <- data %>%
-    dplyr::select(
-      .data$scenario, .data$scenario_geography, .data$technology,
-      .data$year, .data$capacity_factor
-    ) %>%
-    dplyr::mutate(
-      scenario = dplyr::if_else(.data$scenario == "SPS", "NPS", .data$scenario)
-    ) %>%
-    report_all_duplicate_kinds(
-      composite_unique_cols = c("scenario", "scenario_geography", "technology", "year")
-    )
-
   validate_data_has_expected_cols(
     data = data,
     expected_columns = c(
