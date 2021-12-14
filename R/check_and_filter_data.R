@@ -20,11 +20,7 @@
 #'   analysis.
 check_and_filter_data <- function(st_data_list, start_year, end_year,
                                   scenarios_filter, scenario_geography_filter) {
-  capacity_factors_power_filtered <- st_data_list$capacity_factors_power %>%
-    dplyr::filter(.data$scenario %in% .env$scenarios_filter) %>%
-    dplyr::filter(.data$scenario_geography %in% .env$scenario_geography_filter) %>%
-    dplyr::filter(.data$technology %in% .env$technologies_lookup) %>%
-    dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year))
+
 
   if (is.null(st_data_list$excluded_companies)) {
     excluded_companies_filtered <- NULL
@@ -53,7 +49,6 @@ check_and_filter_data <- function(st_data_list, start_year, end_year,
     dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year))
 
   data_list <- list(
-    capacity_factors_power = capacity_factors_power_filtered,
     excluded_companies = excluded_companies_filtered,
     df_price = df_price_filtered,
     scenario_data = scenario_data_filtered,
@@ -63,7 +58,6 @@ check_and_filter_data <- function(st_data_list, start_year, end_year,
   )
 
   cuc_list <- list(
-    c("scenario", "scenario_geography", "technology", "year"),
     c("company_name", "technology"),
     c("year", "sector", "technology"),
     c("scenario_geography", "scenario", "ald_sector", "technology", "year"),

@@ -120,3 +120,5 @@ p4b_scenarios_lookup <- c(
 setup_vars_lookup <- c("input_path_project_agnostic", "input_path_project_specific", "output_path", "iter_var", "return_results")
 
 terminal_value_lookup <- 0
+
+cuc_capacity_factors_power <- c("scenario", "scenario_geography", "technology", "year")

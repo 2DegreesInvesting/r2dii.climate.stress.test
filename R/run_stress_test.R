@@ -220,7 +220,12 @@ run_stress_test_impl <- function(asset_type,
 
   capacity_factors_power <- read_capacity_factors(
     path = file.path(input_path_project_agnostic, "prewrangled_capacity_factors_WEO_2020.csv")
-  )
+  ) %>%
+    process_capacity_factors_power(scenarios_filter = scenarios_filter,
+                                   scenario_geography_filter = scenario_geography_filter,
+                                   technologies = technologies_lookup,
+                                   start_year = start_year,
+                                   end_year = end_year)
 
   if (company_exclusion) {
     excluded_companies <- validate_file_exists(file.path(input_path_project_agnostic, "exclude-companies.csv")) %>%
@@ -262,10 +267,9 @@ run_stress_test_impl <- function(asset_type,
   financial_data_wrangled <- financial_data %>%
     check_financial_data(asset_type = asset_type)
 
-  input_data_list <- list(
+  input_data_list <- c(list(
     pacta_results = wrangled_pacta_results,
     sector_exposures = wrangled_sector_exposures,
-    capacity_factors_power = capacity_factors_power,
     excluded_companies = excluded_companies,
     df_price = df_price_wrangled,
     scenario_data = scenario_data_wrangled,
@@ -276,7 +280,7 @@ run_stress_test_impl <- function(asset_type,
       end_year = end_year,
       scenarios_filter = scenarios_filter,
       scenario_geography_filter = scenario_geography_filter
-    )
+    ), list(capacity_factors_power = capacity_factors_power))
 
   if (asset_type == "loans") {
     input_data_list$financial_data <- input_data_list$financial_data %>%
