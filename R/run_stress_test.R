@@ -213,9 +213,7 @@ run_stress_test_impl <- function(asset_type,
     # TODO: ADO 3182 - allow setting loan level term
     dplyr::mutate(term = term)
 
-  sector_exposures <- read_sector_exposures(file.path(input_path_project_specific, "overview_portfolio.rda"))
-
-  wrangled_sector_exposures <- sector_exposures %>%
+  sector_exposures <- read_sector_exposures(file.path(input_path_project_specific, "overview_portfolio.rda")) %>%
     process_sector_exposures(asset_type = asset_type)
 
   capacity_factors_power <- read_capacity_factors(
