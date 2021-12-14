@@ -6,7 +6,7 @@ process_sector_exposures <- function(data, asset_type) {
 
   data_processed <- data %>%
    wrangle_and_check_sector_exposures(asset_type = asset_type) %>%
-    report_all_duplicate_kinds(data = data, composite_unique_cols = cuc_sector_exposures) %>%
+    report_all_duplicate_kinds(composite_unique_cols = cuc_sector_exposures) %>%
     report_missings(name_data = "sector exposures", throw_error = TRUE)
 
   data_processed
@@ -24,7 +24,7 @@ process_capacity_factors_power <- function(data,
     dplyr::filter(.data$scenario_geography %in% .env$scenario_geography_filter) %>%
     dplyr::filter(.data$technology %in% .env$technologies) %>%
     dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year)) %>%
-    report_all_duplicate_kinds(data = data, composite_unique_cols = cuc_capacity_factors_power) %>%
+    report_all_duplicate_kinds(composite_unique_cols = cuc_capacity_factors_power) %>%
     report_missings(name_data = "capacity factors", throw_error = TRUE)
 
   return(data_processed)
@@ -34,7 +34,7 @@ process_excluded_companies <- function(data, technologies) {
 
   data_processed <- data %>%
     dplyr::filter(.data$technology %in% .env$technologies) %>%
-    report_all_duplicate_kinds(data = data, composite_unique_cols = cuc_company_exclusion) %>%
+    report_all_duplicate_kinds(omposite_unique_cols = cuc_company_exclusion) %>%
     report_missings(name_data = "company exclusion", throw_error = TRUE)
 
   return(data_processed)
