@@ -216,7 +216,7 @@ run_stress_test_impl <- function(asset_type,
   sector_exposures <- read_sector_exposures(file.path(input_path_project_specific, "overview_portfolio.rda"))
 
   wrangled_sector_exposures <- sector_exposures %>%
-    wrangle_and_check_sector_exposures(asset_type = asset_type)
+    process_sector_exposures(asset_type = asset_type)
 
   capacity_factors_power <- read_capacity_factors(
     path = file.path(input_path_project_agnostic, "prewrangled_capacity_factors_WEO_2020.csv")
@@ -270,7 +270,6 @@ run_stress_test_impl <- function(asset_type,
 
   input_data_list <- c(list(
     pacta_results = wrangled_pacta_results,
-    sector_exposures = wrangled_sector_exposures,
     df_price = df_price_wrangled,
     scenario_data = scenario_data_wrangled,
     financial_data = financial_data_wrangled
@@ -281,7 +280,8 @@ run_stress_test_impl <- function(asset_type,
       scenarios_filter = scenarios_filter,
       scenario_geography_filter = scenario_geography_filter
     ), list(capacity_factors_power = capacity_factors_power,
-            excluded_companies = excluded_companies))
+            excluded_companies = excluded_companies,
+            sector_exposures = sector_exposures))
 
   if (asset_type == "loans") {
     input_data_list$financial_data <- input_data_list$financial_data %>%

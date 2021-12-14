@@ -123,3 +123,4 @@ terminal_value_lookup <- 0
 
 cuc_capacity_factors_power <- c("scenario", "scenario_geography", "technology", "year")
 cuc_company_exclusion <- c("company_name", "technology")
+cuc_sector_exposures <- c("financial_sector", "investor_name", "portfolio_name")

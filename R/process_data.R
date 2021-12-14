@@ -2,7 +2,14 @@ process_pacta_results <- function(data) {
 
 }
 
-process_sector_exposures <- function(data) {
+process_sector_exposures <- function(data, asset_type) {
+
+  data_processed <- data %>%
+   wrangle_and_check_sector_exposures(asset_type = asset_type) %>%
+    report_all_duplicate_kinds(data = data, composite_unique_cols = cuc_sector_exposures) %>%
+    report_missings(name_data = "sector exposures", throw_error = TRUE)
+
+  data_processed
 
 }
 

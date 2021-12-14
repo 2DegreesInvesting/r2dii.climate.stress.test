@@ -44,8 +44,7 @@ check_and_filter_data <- function(st_data_list, start_year, end_year,
     df_price = df_price_filtered,
     scenario_data = scenario_data_filtered,
     financial_data = st_data_list$financial_data,
-    pacta_results = pacta_results_filtered,
-    sector_exposures = st_data_list$sector_exposures
+    pacta_results = pacta_results_filtered
   )
 
   cuc_list <- list(
@@ -55,8 +54,7 @@ check_and_filter_data <- function(st_data_list, start_year, end_year,
     c(
       "year", "equity_market", "ald_sector", "technology", "scenario", "allocation",
       "scenario_geography", "company_name", "id", "investor_name", "portfolio_name"
-    ),
-    c("financial_sector", "investor_name", "portfolio_name")
+    )
   )
 
   mapply(
