@@ -219,7 +219,7 @@ run_stress_test_impl <- function(asset_type,
     wrangle_and_check_sector_exposures(asset_type = asset_type)
 
   capacity_factors_power <- read_capacity_factors(
-    path = file.path(input_path_project_agnostic, "capacity_factors_WEO_2020.csv")
+    path = file.path(input_path_project_agnostic, "prewrangled_capacity_factors_WEO_2020.csv")
   )
 
   if (company_exclusion) {
