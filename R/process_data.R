@@ -18,7 +18,7 @@ process_capacity_factors_power <- function(data,
     dplyr::filter(.data$technology %in% .env$technologies) %>%
     dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year)) %>%
     report_all_duplicate_kinds(data = data, composite_unique_cols = cuc_capacity_factors_power) %>%
-    report_missing(name_data = "capacity factors", throw_error = TRUE)
+    report_missings(name_data = "capacity factors", throw_error = TRUE)
 
   return(data_processed)
 }
