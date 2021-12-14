@@ -34,7 +34,7 @@ process_excluded_companies <- function(data, technologies) {
 
   data_processed <- data %>%
     dplyr::filter(.data$technology %in% .env$technologies) %>%
-    report_all_duplicate_kinds(omposite_unique_cols = cuc_company_exclusion) %>%
+    report_all_duplicate_kinds(composite_unique_cols = cuc_company_exclusion) %>%
     report_missings(name_data = "company exclusion", throw_error = TRUE)
 
   return(data_processed)
