@@ -234,7 +234,8 @@ run_stress_test_impl <- function(asset_type,
           company_name = "c",
           technology = "c"
         )
-      )
+      ) %>%
+      process_excluded_companies(technologies = technologies_lookup)
   } else {
     excluded_companies <- NULL
   }
@@ -270,7 +271,6 @@ run_stress_test_impl <- function(asset_type,
   input_data_list <- c(list(
     pacta_results = wrangled_pacta_results,
     sector_exposures = wrangled_sector_exposures,
-    excluded_companies = excluded_companies,
     df_price = df_price_wrangled,
     scenario_data = scenario_data_wrangled,
     financial_data = financial_data_wrangled
@@ -280,7 +280,8 @@ run_stress_test_impl <- function(asset_type,
       end_year = end_year,
       scenarios_filter = scenarios_filter,
       scenario_geography_filter = scenario_geography_filter
-    ), list(capacity_factors_power = capacity_factors_power))
+    ), list(capacity_factors_power = capacity_factors_power,
+            excluded_companies = excluded_companies))
 
   if (asset_type == "loans") {
     input_data_list$financial_data <- input_data_list$financial_data %>%

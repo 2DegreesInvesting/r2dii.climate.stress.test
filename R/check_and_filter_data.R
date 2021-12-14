@@ -21,14 +21,6 @@
 check_and_filter_data <- function(st_data_list, start_year, end_year,
                                   scenarios_filter, scenario_geography_filter) {
 
-
-  if (is.null(st_data_list$excluded_companies)) {
-    excluded_companies_filtered <- NULL
-  } else {
-    excluded_companies_filtered <- st_data_list$excluded_companies %>%
-      dplyr::filter(.data$technology %in% .env$technologies_lookup)
-  }
-
   df_price_filtered <- st_data_list$df_price %>%
     dplyr::filter(.data$sector %in% .env$sectors_lookup) %>%
     dplyr::filter(.data$technology %in% .env$technologies_lookup) %>%
@@ -49,7 +41,6 @@ check_and_filter_data <- function(st_data_list, start_year, end_year,
     dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year))
 
   data_list <- list(
-    excluded_companies = excluded_companies_filtered,
     df_price = df_price_filtered,
     scenario_data = scenario_data_filtered,
     financial_data = st_data_list$financial_data,
@@ -58,7 +49,6 @@ check_and_filter_data <- function(st_data_list, start_year, end_year,
   )
 
   cuc_list <- list(
-    c("company_name", "technology"),
     c("year", "sector", "technology"),
     c("scenario_geography", "scenario", "ald_sector", "technology", "year"),
     c("company_name", "company_id"),

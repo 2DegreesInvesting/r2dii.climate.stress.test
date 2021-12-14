@@ -122,3 +122,4 @@ setup_vars_lookup <- c("input_path_project_agnostic", "input_path_project_specif
 terminal_value_lookup <- 0
 
 cuc_capacity_factors_power <- c("scenario", "scenario_geography", "technology", "year")
+cuc_company_exclusion <- c("company_name", "technology")
