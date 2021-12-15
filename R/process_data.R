@@ -1,4 +1,25 @@
-process_pacta_results <- function(data) {
+process_pacta_results <- function(data, start_year, end_year, time_horizon, scenario_geography_filter, scenarios_filter, equity_market_filter, term, sectors, technologies) {
+
+  data_processed <- data %>%
+    wrangle_and_check_pacta_results(
+      start_year = start_year,
+      time_horizon = time_horizon,
+      scenario_geography_filter = scenario_geography_filter,
+      scenarios_filter = scenarios_filter,
+      equity_market_filter = equity_market_filter
+    ) %>%
+    # ADO 1943 - for the time being, one global term value is set by the user.
+    # TODO: ADO 3182 - allow setting loan level term
+    dplyr::mutate(term = term) %>%
+      dplyr::filter(.data$scenario %in% .env$scenarios_filter) %>%
+      dplyr::filter(.data$scenario_geography %in% .env$scenario_geography_filter) %>%
+      dplyr::filter(.data$ald_sector %in% .env$sectors) %>%
+      dplyr::filter(.data$technology %in% .env$technologies) %>%
+      dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year)) %>%
+    report_all_duplicate_kinds(composite_unique_cols = cuc_pacta_results)
+  # TODO: Add missingness check once pacta results input is overhauled
+
+  return(data_processed)
 
 }
 
@@ -8,7 +29,7 @@ process_sector_exposures <- function(data, asset_type) {
     report_all_duplicate_kinds(composite_unique_cols = cuc_sector_exposures) %>%
     report_missings(name_data = "sector exposures", throw_error = TRUE)
 
-  data_processed
+  return(data_processed)
 }
 
 process_capacity_factors_power <- function(data,

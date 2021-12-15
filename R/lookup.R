@@ -126,3 +126,7 @@ cuc_company_exclusion <- c("company_name", "technology")
 cuc_sector_exposures <- c("financial_sector", "investor_name", "portfolio_name")
 cuc_scenario_data <- c("scenario_geography", "scenario", "ald_sector", "technology", "year")
 cuc_price_data <- c("year", "sector", "technology")
+cuc_pacta_results <- c(
+  "year", "equity_market", "ald_sector", "technology", "scenario", "allocation",
+  "scenario_geography", "company_name", "id", "investor_name", "portfolio_name"
+)

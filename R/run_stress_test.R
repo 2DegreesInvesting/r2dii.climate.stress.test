@@ -201,17 +201,16 @@ run_stress_test_impl <- function(asset_type,
 
   start_year <- min(pacta_results$year, na.rm = TRUE)
 
-  wrangled_pacta_results <- pacta_results %>%
-    wrangle_and_check_pacta_results(
-      start_year = start_year,
-      time_horizon = time_horizon,
-      scenario_geography_filter = scenario_geography_filter,
-      scenarios_filter = scenarios_filter,
-      equity_market_filter = equity_market_filter_lookup
-    ) %>%
-    # ADO 1943 - for the time being, one global term value is set by the user.
-    # TODO: ADO 3182 - allow setting loan level term
-    dplyr::mutate(term = term)
+  pacta_results <- pacta_results %>%
+    process_pacta_results(start_year = start_year,
+                          end_year = end_year,
+                          time_horizon = time_horizon,
+                          scenario_geography_filter = scenario_geography_filter,
+                          scenarios_filter = scenarios_filter,
+                          equity_market_filter = equity_market_filter_lookup,
+                          term = term,
+                          sectors = sectors_lookup,
+                          technologies = technologies_lookup)
 
   sector_exposures <- read_sector_exposures(file.path(input_path_project_specific, "overview_portfolio.rda")) %>%
     process_sector_exposures(asset_type = asset_type)
@@ -270,7 +269,6 @@ run_stress_test_impl <- function(asset_type,
     check_financial_data(asset_type = asset_type)
 
   input_data_list <- c(list(
-    pacta_results = wrangled_pacta_results,
     financial_data = financial_data_wrangled
   ) %>%
     check_and_filter_data(
@@ -279,6 +277,7 @@ run_stress_test_impl <- function(asset_type,
       scenarios_filter = scenarios_filter,
       scenario_geography_filter = scenario_geography_filter
     ), list(
+      pacta_results = pacta_results,
     capacity_factors_power = capacity_factors_power,
     excluded_companies = excluded_companies,
     sector_exposures = sector_exposures,
