@@ -48,7 +48,6 @@ process_capacity_factors_power <- function(data,
 }
 
 process_excluded_companies <- function(data, company_exlusion, technologies) {
-
   if (!company_exlusion) {
     return(NULL)
   }

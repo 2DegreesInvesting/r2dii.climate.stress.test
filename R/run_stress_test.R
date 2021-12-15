@@ -228,9 +228,10 @@ run_stress_test_impl <- function(asset_type,
       end_year = end_year
     )
 
-    excluded_companies <- read_excluded_companies(
-      path = file.path(input_path_project_agnostic, "exclude-companies.csv")) %>%
-      process_excluded_companies(company_exclusion = company_exclusion, technologies = technologies_lookup)
+  excluded_companies <- read_excluded_companies(
+    path = file.path(input_path_project_agnostic, "exclude-companies.csv")
+  ) %>%
+    process_excluded_companies(company_exclusion = company_exclusion, technologies = technologies_lookup)
 
   df_price <- read_price_data_old2(
     path = file.path(input_path_project_agnostic, paste0("prices_data_", price_data_version_lookup, ".csv"))
