@@ -45,8 +45,8 @@ process_df_price <- function(data, technologies, sectors, start_year, end_year) 
     dplyr::filter(.data$sector %in% .env$sectors_lookup) %>%
     dplyr::filter(.data$technology %in% .env$technologies_lookup) %>%
     dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year)) %>%
-    report_all_duplicate_kinds(composite_unique_cols = cuc_price_data) %>%
-    report_missings(name_data = "price data", throw_error = TRUE)
+    report_all_duplicate_kinds(composite_unique_cols = cuc_price_data)
+    # TODO: add reporting on missing after switching to long pricendata
 
   return(data_processed)
 }
