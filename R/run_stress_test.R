@@ -243,10 +243,12 @@ run_stress_test_impl <- function(asset_type,
   df_price <- read_price_data_old2(
     path = file.path(input_path_project_agnostic, paste0("prices_data_", price_data_version_lookup, ".csv"))
   ) %>%
-    process_df_price(technologies = technologies_lookup,
-                     sectors = sectors_lookup,
-                     start_year = start_year,
-                     end_year = end_year)
+    process_df_price(
+      technologies = technologies_lookup,
+      sectors = sectors_lookup,
+      start_year = start_year,
+      end_year = end_year
+    )
 
   scenario_data <- read_scenario_data(
     path = file.path(input_path_project_agnostic, paste0("Scenarios_AnalysisInput_", start_year, ".csv"))

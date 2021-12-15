@@ -20,7 +20,6 @@
 #'   analysis.
 check_and_filter_data <- function(st_data_list, start_year, end_year,
                                   scenarios_filter, scenario_geography_filter) {
-
   pacta_results_filtered <- st_data_list$pacta_results %>%
     dplyr::filter(.data$scenario %in% .env$scenarios_filter) %>%
     dplyr::filter(.data$scenario_geography %in% .env$scenario_geography_filter) %>%
