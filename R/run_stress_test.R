@@ -49,7 +49,7 @@ run_stress_test <- function(asset_type,
                             lgd_senior_claims = 0.45,
                             lgd_subordinated_claims = 0.75,
                             risk_free_rate = 0.02,
-                            discount_rate = 0.02,
+                            discount_rate = 0.07,
                             div_netprofit_prop_coef = 1,
                             shock_year = 2030,
                             term = 2,
@@ -240,12 +240,12 @@ run_stress_test_impl <- function(asset_type,
     excluded_companies <- NULL
   }
 
-  df_price <- read_price_data_old(
-    path = file.path(input_path_project_agnostic, paste0("prices_data_", price_data_version_lookup, ".csv")),
-    expected_technologies = technologies_lookup
+  df_price <- read_price_data_old2(
+    path = file.path(input_path_project_agnostic, paste0("prices_data_", price_data_version_lookup, ".csv"))
   )
 
   df_price_wrangled <- df_price %>%
+    check_technology_availability(expected_technologies = technologies_lookup) %>%
     dplyr::filter(year >= start_year) %>%
     check_price_consistency(start_year = start_year)
 
