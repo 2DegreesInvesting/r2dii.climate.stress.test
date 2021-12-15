@@ -5,7 +5,7 @@
 \title{Read in the PACTA results from a given project and check that all expected
 columns are given.}
 \usage{
-read_pacta_results(path = NULL, level = NULL)
+read_pacta_results(path = NULL)
 }
 \arguments{
 \item{path}{A string that points to the location of the file containing the
