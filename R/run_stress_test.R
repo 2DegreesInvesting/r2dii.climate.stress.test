@@ -228,18 +228,9 @@ run_stress_test_impl <- function(asset_type,
       end_year = end_year
     )
 
-  if (company_exclusion) {
-    excluded_companies <- validate_file_exists(file.path(input_path_project_agnostic, "exclude-companies.csv")) %>%
-      readr::read_csv(
-        col_types = readr::cols(
-          company_name = "c",
-          technology = "c"
-        )
-      ) %>%
-      process_excluded_companies(technologies = technologies_lookup)
-  } else {
-    excluded_companies <- NULL
-  }
+    excluded_companies <- read_excluded_companies(
+      path = file.path(input_path_project_agnostic, "exclude-companies.csv")) %>%
+      process_excluded_companies(company_exclusion = company_exclusion, technologies = technologies_lookup)
 
   df_price <- read_price_data_old2(
     path = file.path(input_path_project_agnostic, paste0("prices_data_", price_data_version_lookup, ".csv"))

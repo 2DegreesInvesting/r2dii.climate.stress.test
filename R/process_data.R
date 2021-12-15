@@ -47,7 +47,12 @@ process_capacity_factors_power <- function(data,
   return(data_processed)
 }
 
-process_excluded_companies <- function(data, technologies) {
+process_excluded_companies <- function(data, company_exlusion, technologies) {
+
+  if (!company_exlusion) {
+    return(NULL)
+  }
+
   data_processed <- data %>%
     dplyr::filter(.data$technology %in% .env$technologies) %>%
     report_all_duplicate_kinds(composite_unique_cols = cuc_company_exclusion) %>%
