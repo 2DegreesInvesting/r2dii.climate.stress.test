@@ -1,3 +1,20 @@
+#' Process data of type indicated by function name
+#'
+#' @inheritParams run_stress_test
+#' @param data A tibble of data of type indicated by function name.
+#' @param start_year Numeric, holding start year of analysis.
+#' @param end_year Numeric, holding end year of analysis.
+#' @param time_horizon Numeric, holding time horizon of analysis.
+#' @param scenario_geography_filter Character. A vector of length 1 that
+#'   indicates which geographic scenario to apply in the analysis.
+#' @param scenarios_filter Vector holding baseline and shock scenario name.
+#' @param equity_market_filter Character. A vector of length 1 that
+#'   indicates which equity market to apply in the analysis.
+#' @param sectors Character vector, holding considered sectors.
+#' @param technologies Character vector, holding considered technologies.
+#'
+#' @return A tibble of data as indicated by function name.
+#' @noRd
 process_pacta_results <- function(data, start_year, end_year, time_horizon, scenario_geography_filter, scenarios_filter, equity_market_filter, term, sectors, technologies) {
   data_processed <- data %>%
     wrangle_and_check_pacta_results(
@@ -21,6 +38,13 @@ process_pacta_results <- function(data, start_year, end_year, time_horizon, scen
   return(data_processed)
 }
 
+#' Process data of type indicated by function name
+#'
+#' @inheritParams process_pacta_results
+#' @inheritParams run_stress_test
+#'
+#' @return A tibble of data as indicated by function name.
+#' @noRd
 process_sector_exposures <- function(data, asset_type) {
   data_processed <- data %>%
     wrangle_and_check_sector_exposures(asset_type = asset_type) %>%
@@ -30,6 +54,12 @@ process_sector_exposures <- function(data, asset_type) {
   return(data_processed)
 }
 
+#' Process data of type indicated by function name
+#'
+#' @inheritParams process_pacta_results
+#'
+#' @return A tibble of data as indicated by function name.
+#' @noRd
 process_capacity_factors_power <- function(data,
                                            scenarios_filter,
                                            scenario_geography_filter,
@@ -47,6 +77,13 @@ process_capacity_factors_power <- function(data,
   return(data_processed)
 }
 
+#' Process data of type indicated by function name
+#'
+#' @inheritParams process_pacta_results
+#' @inheritParams run_stress_test
+#'
+#' @return A tibble of data as indicated by function name.
+#' @noRd
 process_excluded_companies <- function(data, company_exclusion, technologies) {
   if (!company_exclusion) {
     return(NULL)
@@ -60,6 +97,12 @@ process_excluded_companies <- function(data, company_exclusion, technologies) {
   return(data_processed)
 }
 
+#' Process data of type indicated by function name
+#'
+#' @inheritParams process_pacta_results
+#'
+#' @return A tibble of data as indicated by function name.
+#' @noRd
 process_df_price <- function(data, technologies, sectors, start_year, end_year) {
   data_processed <- data %>%
     check_technology_availability(expected_technologies = technologies) %>%
@@ -69,11 +112,17 @@ process_df_price <- function(data, technologies, sectors, start_year, end_year) 
     dplyr::filter(.data$technology %in% .env$technologies_lookup) %>%
     dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year)) %>%
     report_all_duplicate_kinds(composite_unique_cols = cuc_price_data)
-  # TODO: add reporting on missing after switching to long pricendata
+  # TODO: add reporting on missing after switching to long price data
 
   return(data_processed)
 }
 
+#' Process data of type indicated by function name
+#'
+#' @inheritParams process_pacta_results
+#'
+#' @return A tibble of data as indicated by function name.
+#' @noRd
 process_scenario_data <- function(data, start_year, end_year, sectors, technologies, scenario_geography_filter, scenarios_filter) {
   data_processed <- data %>%
     wrangle_scenario_data(start_year = start_year, end_year = end_year) %>%
@@ -93,6 +142,13 @@ process_scenario_data <- function(data, start_year, end_year, sectors, technolog
   return(data_processed)
 }
 
+#' Process data of type indicated by function name
+#'
+#' @inheritParams process_pacta_results
+#' @inheritParams run_stress_test
+#'
+#' @return A tibble of data as indicated by function name.
+#' @noRd
 process_financial_data <- function(data, asset_type) {
   data_processed <- data %>%
     check_financial_data(asset_type = asset_type) %>%
