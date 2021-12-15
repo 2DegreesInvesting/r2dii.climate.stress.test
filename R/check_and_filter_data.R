@@ -20,16 +20,8 @@
 #'   analysis.
 check_and_filter_data <- function(st_data_list, start_year, end_year,
                                   scenarios_filter, scenario_geography_filter) {
-
   df_price_filtered <- st_data_list$df_price %>%
     dplyr::filter(.data$sector %in% .env$sectors_lookup) %>%
-    dplyr::filter(.data$technology %in% .env$technologies_lookup) %>%
-    dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year))
-
-  scenario_data_filtered <- st_data_list$scenario_data %>%
-    dplyr::filter(.data$scenario %in% .env$scenarios_filter) %>%
-    dplyr::filter(.data$scenario_geography %in% .env$scenario_geography_filter) %>%
-    dplyr::filter(.data$ald_sector %in% .env$sectors_lookup) %>%
     dplyr::filter(.data$technology %in% .env$technologies_lookup) %>%
     dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year))
 
@@ -42,14 +34,12 @@ check_and_filter_data <- function(st_data_list, start_year, end_year,
 
   data_list <- list(
     df_price = df_price_filtered,
-    scenario_data = scenario_data_filtered,
     financial_data = st_data_list$financial_data,
     pacta_results = pacta_results_filtered
   )
 
   cuc_list <- list(
     c("year", "sector", "technology"),
-    c("scenario_geography", "scenario", "ald_sector", "technology", "year"),
     c("company_name", "company_id"),
     c(
       "year", "equity_market", "ald_sector", "technology", "scenario", "allocation",

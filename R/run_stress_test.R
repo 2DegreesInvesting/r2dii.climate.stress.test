@@ -257,7 +257,8 @@ run_stress_test_impl <- function(asset_type,
       end_year = end_year,
       sectors = sectors_lookup,
       technologies = technologies_lookup,
-      scenario_geography_filter = scenario_geography_filter
+      scenario_geography_filter = scenario_geography_filter,
+      scenarios_filter = scenarios_filter
     )
 
   financial_data <- read_financial_data(
@@ -280,7 +281,8 @@ run_stress_test_impl <- function(asset_type,
     ), list(
     capacity_factors_power = capacity_factors_power,
     excluded_companies = excluded_companies,
-    sector_exposures = sector_exposures
+    sector_exposures = sector_exposures,
+    scenario_data = scenario_data
   ))
 
   if (asset_type == "loans") {
