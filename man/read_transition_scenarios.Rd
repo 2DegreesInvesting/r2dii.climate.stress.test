@@ -32,6 +32,7 @@ Other import functions:
 \code{\link{read_capacity_factors}()},
 \code{\link{read_financial_data}()},
 \code{\link{read_ngfs_carbon_tax}()},
+\code{\link{read_pacta_results_wt}()},
 \code{\link{read_pacta_results}()}
 }
 \concept{import functions}
