@@ -219,11 +219,13 @@ run_stress_test_impl <- function(asset_type,
   capacity_factors_power <- read_capacity_factors(
     path = file.path(input_path_project_agnostic, "prewrangled_capacity_factors_WEO_2020.csv")
   ) %>%
-    process_capacity_factors_power(scenarios_filter = scenarios_filter,
-                                   scenario_geography_filter = scenario_geography_filter,
-                                   technologies = technologies_lookup,
-                                   start_year = start_year,
-                                   end_year = end_year)
+    process_capacity_factors_power(
+      scenarios_filter = scenarios_filter,
+      scenario_geography_filter = scenario_geography_filter,
+      technologies = technologies_lookup,
+      start_year = start_year,
+      end_year = end_year
+    )
 
   if (company_exclusion) {
     excluded_companies <- validate_file_exists(file.path(input_path_project_agnostic, "exclude-companies.csv")) %>%
@@ -249,14 +251,13 @@ run_stress_test_impl <- function(asset_type,
 
   scenario_data <- read_scenario_data(
     path = file.path(input_path_project_agnostic, paste0("Scenarios_AnalysisInput_", start_year, ".csv"))
-  )
-
-  scenario_data_wrangled <- scenario_data %>%
-    wrangle_scenario_data(start_year = start_year, end_year = end_year) %>%
-    dplyr::filter(
-      .data$ald_sector %in% sectors_lookup &
-        .data$technology %in% technologies_lookup &
-        .data$scenario_geography == scenario_geography_filter
+  ) %>%
+    process_scenario_data(
+      start_year = start_year,
+      end_year = end_year,
+      sectors = sectors_lookup,
+      technologies = technologies_lookup,
+      scenario_geography_filter = scenario_geography_filter
     )
 
   financial_data <- read_financial_data(
@@ -269,7 +270,6 @@ run_stress_test_impl <- function(asset_type,
   input_data_list <- c(list(
     pacta_results = wrangled_pacta_results,
     df_price = df_price_wrangled,
-    scenario_data = scenario_data_wrangled,
     financial_data = financial_data_wrangled
   ) %>%
     check_and_filter_data(
@@ -277,9 +277,11 @@ run_stress_test_impl <- function(asset_type,
       end_year = end_year,
       scenarios_filter = scenarios_filter,
       scenario_geography_filter = scenario_geography_filter
-    ), list(capacity_factors_power = capacity_factors_power,
-            excluded_companies = excluded_companies,
-            sector_exposures = sector_exposures))
+    ), list(
+    capacity_factors_power = capacity_factors_power,
+    excluded_companies = excluded_companies,
+    sector_exposures = sector_exposures
+  ))
 
   if (asset_type == "loans") {
     input_data_list$financial_data <- input_data_list$financial_data %>%

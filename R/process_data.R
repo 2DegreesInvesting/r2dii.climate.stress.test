@@ -44,7 +44,14 @@ process_df_price <- function(data) {
 
 }
 
-process_scenario_data <- function(data) {
+process_scenario_data <- function(data, start_year, end_year, sectors, technologies, scenario_geography_filter) {
+  data_processed <- data %>%
+    wrangle_scenario_data(start_year = start_year, end_year = end_year) %>%
+    dplyr::filter(
+      .data$ald_sector %in% sectors &
+        .data$technology %in% technologies &
+        .data$scenario_geography == scenario_geography_filter
+    )
 
 }
 
