@@ -1,5 +1,4 @@
 process_pacta_results <- function(data, start_year, end_year, time_horizon, scenario_geography_filter, scenarios_filter, equity_market_filter, term, sectors, technologies) {
-
   data_processed <- data %>%
     wrangle_and_check_pacta_results(
       start_year = start_year,
@@ -11,16 +10,15 @@ process_pacta_results <- function(data, start_year, end_year, time_horizon, scen
     # ADO 1943 - for the time being, one global term value is set by the user.
     # TODO: ADO 3182 - allow setting loan level term
     dplyr::mutate(term = term) %>%
-      dplyr::filter(.data$scenario %in% .env$scenarios_filter) %>%
-      dplyr::filter(.data$scenario_geography %in% .env$scenario_geography_filter) %>%
-      dplyr::filter(.data$ald_sector %in% .env$sectors) %>%
-      dplyr::filter(.data$technology %in% .env$technologies) %>%
-      dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year)) %>%
+    dplyr::filter(.data$scenario %in% .env$scenarios_filter) %>%
+    dplyr::filter(.data$scenario_geography %in% .env$scenario_geography_filter) %>%
+    dplyr::filter(.data$ald_sector %in% .env$sectors) %>%
+    dplyr::filter(.data$technology %in% .env$technologies) %>%
+    dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year)) %>%
     report_all_duplicate_kinds(composite_unique_cols = cuc_pacta_results)
   # TODO: Add missingness check once pacta results input is overhauled
 
   return(data_processed)
-
 }
 
 process_sector_exposures <- function(data, asset_type) {
@@ -67,7 +65,7 @@ process_df_price <- function(data, technologies, sectors, start_year, end_year) 
     dplyr::filter(.data$technology %in% .env$technologies_lookup) %>%
     dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year)) %>%
     report_all_duplicate_kinds(composite_unique_cols = cuc_price_data)
-    # TODO: add reporting on missing after switching to long pricendata
+  # TODO: add reporting on missing after switching to long pricendata
 
   return(data_processed)
 }

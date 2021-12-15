@@ -202,15 +202,17 @@ run_stress_test_impl <- function(asset_type,
   start_year <- min(pacta_results$year, na.rm = TRUE)
 
   pacta_results <- pacta_results %>%
-    process_pacta_results(start_year = start_year,
-                          end_year = end_year,
-                          time_horizon = time_horizon,
-                          scenario_geography_filter = scenario_geography_filter,
-                          scenarios_filter = scenarios_filter,
-                          equity_market_filter = equity_market_filter_lookup,
-                          term = term,
-                          sectors = sectors_lookup,
-                          technologies = technologies_lookup)
+    process_pacta_results(
+      start_year = start_year,
+      end_year = end_year,
+      time_horizon = time_horizon,
+      scenario_geography_filter = scenario_geography_filter,
+      scenarios_filter = scenarios_filter,
+      equity_market_filter = equity_market_filter_lookup,
+      term = term,
+      sectors = sectors_lookup,
+      technologies = technologies_lookup
+    )
 
   sector_exposures <- read_sector_exposures(file.path(input_path_project_specific, "overview_portfolio.rda")) %>%
     process_sector_exposures(asset_type = asset_type)
@@ -267,7 +269,7 @@ run_stress_test_impl <- function(asset_type,
     process_financial_data(asset_type = asset_type)
 
   input_data_list <- list(
-      pacta_results = pacta_results,
+    pacta_results = pacta_results,
     capacity_factors_power = capacity_factors_power,
     excluded_companies = excluded_companies,
     sector_exposures = sector_exposures,
