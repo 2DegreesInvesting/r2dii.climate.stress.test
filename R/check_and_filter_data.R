@@ -20,10 +20,6 @@
 #'   analysis.
 check_and_filter_data <- function(st_data_list, start_year, end_year,
                                   scenarios_filter, scenario_geography_filter) {
-  df_price_filtered <- st_data_list$df_price %>%
-    dplyr::filter(.data$sector %in% .env$sectors_lookup) %>%
-    dplyr::filter(.data$technology %in% .env$technologies_lookup) %>%
-    dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year))
 
   pacta_results_filtered <- st_data_list$pacta_results %>%
     dplyr::filter(.data$scenario %in% .env$scenarios_filter) %>%
@@ -33,13 +29,11 @@ check_and_filter_data <- function(st_data_list, start_year, end_year,
     dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year))
 
   data_list <- list(
-    df_price = df_price_filtered,
     financial_data = st_data_list$financial_data,
     pacta_results = pacta_results_filtered
   )
 
   cuc_list <- list(
-    c("year", "sector", "technology"),
     c("company_name", "company_id"),
     c(
       "year", "equity_market", "ald_sector", "technology", "scenario", "allocation",

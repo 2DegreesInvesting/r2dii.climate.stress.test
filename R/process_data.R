@@ -37,8 +37,19 @@ process_excluded_companies <- function(data, technologies) {
   return(data_processed)
 }
 
-process_df_price <- function(data) {
+process_df_price <- function(data, technologies, sectors, start_year, end_year) {
 
+  data_processed <- data %>%
+    check_technology_availability(expected_technologies = technologies) %>%
+    dplyr::filter(year >= start_year) %>%
+    check_price_consistency(start_year = start_year) %>%
+      dplyr::filter(.data$sector %in% .env$sectors_lookup) %>%
+      dplyr::filter(.data$technology %in% .env$technologies_lookup) %>%
+      dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year))  %>%
+    report_all_duplicate_kinds(composite_unique_cols = cuc_price_data) %>%
+    report_missings(name_data = "price data", throw_error = TRUE)
+
+  return(data_processed)
 }
 
 process_scenario_data <- function(data, start_year, end_year, sectors, technologies, scenario_geography_filter, scenarios_filter) {

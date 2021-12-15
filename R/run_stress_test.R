@@ -242,12 +242,11 @@ run_stress_test_impl <- function(asset_type,
 
   df_price <- read_price_data_old2(
     path = file.path(input_path_project_agnostic, paste0("prices_data_", price_data_version_lookup, ".csv"))
-  )
-
-  df_price_wrangled <- df_price %>%
-    check_technology_availability(expected_technologies = technologies_lookup) %>%
-    dplyr::filter(year >= start_year) %>%
-    check_price_consistency(start_year = start_year)
+  ) %>%
+    process_df_price(technologies = technologies_lookup,
+                     sectors = sectors_lookup,
+                     start_year = start_year,
+                     end_year = end_year)
 
   scenario_data <- read_scenario_data(
     path = file.path(input_path_project_agnostic, paste0("Scenarios_AnalysisInput_", start_year, ".csv"))
@@ -270,7 +269,6 @@ run_stress_test_impl <- function(asset_type,
 
   input_data_list <- c(list(
     pacta_results = wrangled_pacta_results,
-    df_price = df_price_wrangled,
     financial_data = financial_data_wrangled
   ) %>%
     check_and_filter_data(
@@ -282,7 +280,8 @@ run_stress_test_impl <- function(asset_type,
     capacity_factors_power = capacity_factors_power,
     excluded_companies = excluded_companies,
     sector_exposures = sector_exposures,
-    scenario_data = scenario_data
+    scenario_data = scenario_data,
+    df_price = df_price
   ))
 
   if (asset_type == "loans") {
