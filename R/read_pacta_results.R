@@ -5,8 +5,7 @@
 #'   pacta results
 #'
 #' @family import functions
-read_pacta_results <- function(path = NULL,
-                               level = NULL) {
+read_pacta_results <- function(path = NULL) {
   path %||% stop("Must provide 'path'")
 
   data <- validate_file_exists(path) %>%
@@ -42,7 +41,7 @@ read_pacta_results <- function(path = NULL,
 #'
 #' @family import functions
 read_pacta_results_wt <- function(path = NULL,
-                               level = NULL) {
+                                  level = NULL) {
   path %||% stop("Must provide 'path'")
   level %||% stop("Must provide 'level'")
 
