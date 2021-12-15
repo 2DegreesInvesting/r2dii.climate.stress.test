@@ -263,27 +263,18 @@ run_stress_test_impl <- function(asset_type,
 
   financial_data <- read_financial_data(
     path = file.path(input_path_project_agnostic, "prewrangled_financial_data_stress_test.csv")
-  )
-
-  financial_data_wrangled <- financial_data %>%
-    check_financial_data(asset_type = asset_type)
-
-  input_data_list <- c(list(
-    financial_data = financial_data_wrangled
   ) %>%
-    check_and_filter_data(
-      start_year = start_year,
-      end_year = end_year,
-      scenarios_filter = scenarios_filter,
-      scenario_geography_filter = scenario_geography_filter
-    ), list(
+    process_financial_data(asset_type = asset_type)
+
+  input_data_list <- list(
       pacta_results = pacta_results,
     capacity_factors_power = capacity_factors_power,
     excluded_companies = excluded_companies,
     sector_exposures = sector_exposures,
     scenario_data = scenario_data,
-    df_price = df_price
-  ))
+    df_price = df_price,
+    financial_data = financial_data
+  )
 
   if (asset_type == "loans") {
     input_data_list$financial_data <- input_data_list$financial_data %>%

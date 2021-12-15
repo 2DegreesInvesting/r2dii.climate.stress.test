@@ -91,6 +91,11 @@ process_scenario_data <- function(data, start_year, end_year, sectors, technolog
   return(data_processed)
 }
 
-process_financial_data <- function(data) {
+process_financial_data <- function(data, asset_type) {
+  data_processed <- data %>%
+    check_financial_data(asset_type = asset_type) %>%
+    report_all_duplicate_kinds(composite_unique_cols = cuc_financial_data) %>%
+    report_missings(name_data = "financial data", throw_error = TRUE)
 
+  return(data_processed)
 }

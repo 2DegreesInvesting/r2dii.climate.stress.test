@@ -130,3 +130,4 @@ cuc_pacta_results <- c(
   "year", "equity_market", "ald_sector", "technology", "scenario", "allocation",
   "scenario_geography", "company_name", "id", "investor_name", "portfolio_name"
 )
+cuc_financial_data <- c("company_name", "company_id")
