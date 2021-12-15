@@ -74,3 +74,43 @@ read_price_data_old <- function(path, expected_technologies) {
 
   return(data)
 }
+
+#' Read in price data
+#'
+#' This function reads in price data using the old wide data format.
+#'
+#' @inheritParams read_price_data
+#'
+#' @return A tibble holding price data in long format.
+read_price_data_old2 <- function(path) {
+  data <- validate_file_exists(path) %>%
+    readr::read_csv(
+      col_types = readr::cols(
+        year = "d",
+        sector = "c",
+        technology = "c",
+        sector_unit_ds = "c",
+        price_unit_iea = "c",
+        price_unit_etr = "c",
+        B2DS = "d",
+        b2ds_source = "c",
+        NPS = "d",
+        nps_source = "c",
+        SDS = "d",
+        sds_source = "c",
+        Baseline = "d",
+        baseline_source = "c"
+      )
+    )
+
+  validate_data_has_expected_cols(
+    data = data,
+    expected_columns = c(
+      "year", "sector", "technology", "sector_unit_ds", "price_unit_iea",
+      "price_unit_etr", "B2DS", "b2ds_source", "NPS", "nps_source", "SDS",
+      "sds_source", "Baseline", "baseline_source"
+    )
+  )
+
+  return(data)
+}
