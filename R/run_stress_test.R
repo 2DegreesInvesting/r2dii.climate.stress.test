@@ -195,8 +195,7 @@ run_stress_test_impl <- function(asset_type,
   cat("-- Importing and preparing input data from designated input path. \n")
 
   pacta_results <- read_pacta_results(
-    path = file.path(input_path_project_specific, paste0(stringr::str_to_title(asset_type), "_results_", calculation_level, ".rda")),
-    level = calculation_level
+    path = file.path(input_path_project_specific, paste0(stringr::str_to_title(asset_type), "_results_", calculation_level, ".rda"))
   )
 
   start_year <- min(pacta_results$year, na.rm = TRUE)
