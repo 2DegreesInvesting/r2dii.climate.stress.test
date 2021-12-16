@@ -15,7 +15,9 @@
 #'
 #' @return A tibble of data as indicated by function name.
 #' @noRd
-process_pacta_results <- function(data, start_year, end_year, time_horizon, scenario_geography_filter, scenarios_filter, equity_market_filter, term, sectors, technologies) {
+process_pacta_results <- function(data, start_year, end_year, time_horizon,
+                                  scenario_geography_filter, scenarios_filter,
+                                  equity_market_filter, term, sectors, technologies) {
   data_processed <- data %>%
     wrangle_and_check_pacta_results(
       start_year = start_year,
@@ -123,7 +125,8 @@ process_df_price <- function(data, technologies, sectors, start_year, end_year) 
 #'
 #' @return A tibble of data as indicated by function name.
 #' @noRd
-process_scenario_data <- function(data, start_year, end_year, sectors, technologies, scenario_geography_filter, scenarios_filter) {
+process_scenario_data <- function(data, start_year, end_year, sectors, technologies,
+                                  scenario_geography_filter, scenarios_filter) {
   data_processed <- data %>%
     wrangle_scenario_data(start_year = start_year, end_year = end_year) %>%
     dplyr::filter(
