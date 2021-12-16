@@ -68,7 +68,7 @@ columns are given.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">read_pacta_results</span><span class="op">(</span>path <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">read_pacta_results</span><span class="op">(</span>path <span class="op">=</span> <span class="cn">NULL</span>, level <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -76,6 +76,10 @@ columns are given.</p>
     <dl><dt>path</dt>
 <dd><p>A string that points to the location of the file containing the
 pacta results</p></dd>
+<dt>level</dt>
+<dd><p>A character vector of length 1 that indicates whether results on
+the company level or on the portfolio level are to be analyzed.
+Allowed values are "company", "portfolio".</p></dd>
 </dl></div>
     <div id="see-also">
     <h2>See also</h2>
@@ -85,7 +89,6 @@ pacta results</p></dd>
 <code><a href="read_capacity_factors.html">read_capacity_factors</a>()</code>,
 <code><a href="read_financial_data.html">read_financial_data</a>()</code>,
 <code><a href="read_ngfs_carbon_tax.html">read_ngfs_carbon_tax</a>()</code>,
-<code><a href="read_pacta_results_wt.html">read_pacta_results_wt</a>()</code>,
 <code><a href="read_transition_scenarios.html">read_transition_scenarios</a>()</code></p></div>
     </div>
 
