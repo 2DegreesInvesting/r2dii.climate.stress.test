@@ -247,7 +247,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
 
   equity_path <- file.path(results_path, pf_name, paste0("Equity_results_", calculation_level, ".rda"))
 
-  pacta_equity_results_full <- read_pacta_results(
+  pacta_equity_results_full <- read_pacta_results_wt(
     path = equity_path,
     level = calculation_level
   )
@@ -390,7 +390,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
 
   bonds_path <- file.path(results_path, pf_name, paste0("Bonds_results_", calculation_level, ".rda"))
 
-  pacta_bonds_results_full <- read_pacta_results(
+  pacta_bonds_results_full <- read_pacta_results_wt(
     path = bonds_path,
     level = calculation_level
   )
