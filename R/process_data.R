@@ -12,20 +12,26 @@
 #'   indicates which equity market to apply in the analysis.
 #' @param sectors Character vector, holding considered sectors.
 #' @param technologies Character vector, holding considered technologies.
+#' @param allocation_method Character. A vector of length 1 indicating the
+#'   set of PACTA data to be used in the analysis, based on the choice of an
+#'   allocation rule.
 #'
 #' @return A tibble of data as indicated by function name.
 #' @noRd
 process_pacta_results <- function(data, start_year, end_year, time_horizon,
                                   scenario_geography_filter, scenarios_filter,
-                                  equity_market_filter, term, sectors, technologies) {
+                                  equity_market_filter, term, sectors, technologies,
+                                  allocation_method) {
   data_processed <- data %>%
     wrangle_and_check_pacta_results(
       start_year = start_year,
       time_horizon = time_horizon,
       scenario_geography_filter = scenario_geography_filter,
       scenarios_filter = scenarios_filter,
-      equity_market_filter = equity_market_filter
+      allocation_method = allocation_method,
     ) %>%
+    dplyr::filter(.data$equity_market == equity_market_filter) %>%
+    dplyr::filter(.data$allocation == allocation_method) %>%
     dplyr::filter(.data$scenario %in% .env$scenarios_filter) %>%
     dplyr::filter(.data$scenario_geography %in% .env$scenario_geography_filter) %>%
     dplyr::filter(.data$ald_sector %in% .env$sectors) %>%
