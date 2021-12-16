@@ -66,14 +66,8 @@ wrangle_and_check_sector_exposures <- function(sector_exposures, asset_type) {
 #'
 #' Also consistency checks are run.
 #'
+#' @inheritParams process_pacta_results
 #' @param pacta_results Results from PACTA analysis.
-#' @param start_year First considered year in analysis.
-#' @param time_horizon Considered timeframe for PACTA analysis.
-#' @param scenario_geography_filter Character. A vector of length 1 that
-#'   indicates which geographic scenario to apply in the analysis.
-#' @param scenarios_filter Vector holding baseline and shock scenario name.
-#' @param equity_market_filter Character. A vector of length 1 that
-#'   indicates which equity market to apply in the analysis.
 #'
 #' @return Wrangled `pacta_results.`
 wrangle_and_check_pacta_results <- function(pacta_results, start_year, time_horizon,
@@ -96,6 +90,8 @@ wrangle_and_check_pacta_results <- function(pacta_results, start_year, time_hori
       allocation_method = allocation_method,
       start_analysis = start_year
     )
+
+  return(wrangled_pacta_results)
 }
 
 #' Check financial data

@@ -17,18 +17,18 @@
 #'   allocation rule.
 #'
 #' @return A tibble of data as indicated by function name.
-#' @noRd
 process_pacta_results <- function(data, start_year, end_year, time_horizon,
                                   scenario_geography_filter, scenarios_filter,
                                   equity_market_filter, term, sectors, technologies,
                                   allocation_method) {
+
   data_processed <- data %>%
     wrangle_and_check_pacta_results(
       start_year = start_year,
       time_horizon = time_horizon,
       scenario_geography_filter = scenario_geography_filter,
       scenarios_filter = scenarios_filter,
-      allocation_method = allocation_method,
+      allocation_method = allocation_method
     ) %>%
     dplyr::filter(.data$equity_market == equity_market_filter) %>%
     dplyr::filter(.data$allocation == allocation_method) %>%

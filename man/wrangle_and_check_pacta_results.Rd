@@ -10,23 +10,24 @@ wrangle_and_check_pacta_results(
   time_horizon,
   scenario_geography_filter,
   scenarios_filter,
-  equity_market_filter
+  allocation_method
 )
 }
 \arguments{
 \item{pacta_results}{Results from PACTA analysis.}
 
-\item{start_year}{First considered year in analysis.}
+\item{start_year}{Numeric, holding start year of analysis.}
 
-\item{time_horizon}{Considered timeframe for PACTA analysis.}
+\item{time_horizon}{Numeric, holding time horizon of analysis.}
 
 \item{scenario_geography_filter}{Character. A vector of length 1 that
 indicates which geographic scenario to apply in the analysis.}
 
 \item{scenarios_filter}{Vector holding baseline and shock scenario name.}
 
-\item{equity_market_filter}{Character. A vector of length 1 that
-indicates which equity market to apply in the analysis.}
+\item{allocation_method}{Character. A vector of length 1 indicating the
+set of PACTA data to be used in the analysis, based on the choice of an
+allocation rule.}
 }
 \value{
 Wrangled \code{pacta_results.}
