@@ -120,3 +120,15 @@ p4b_scenarios_lookup <- c(
 setup_vars_lookup <- c("input_path_project_agnostic", "input_path_project_specific", "output_path", "iter_var", "return_results")
 
 terminal_value_lookup <- 0
+
+cuc_pacta_results <- c(
+  "year", "equity_market", "ald_sector", "technology", "scenario", "allocation",
+  "scenario_geography", "company_name", "id", "investor_name", "portfolio_name"
+)
+cuc_sector_exposures <- c("financial_sector", "investor_name", "portfolio_name")
+
+cuc_capacity_factors_power <- c("scenario", "scenario_geography", "technology", "year")
+cuc_company_exclusion <- c("company_name", "technology")
+cuc_price_data <- c("year", "sector", "technology")
+cuc_financial_data <- c("company_name", "company_id")
+cuc_scenario_data <- c("scenario_geography", "scenario", "ald_sector", "technology", "year")

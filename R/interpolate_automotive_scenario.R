@@ -80,4 +80,3 @@ correct_automotive_scendata <- function(data, interpolation_years = NULL) {
 
   data
 }
-

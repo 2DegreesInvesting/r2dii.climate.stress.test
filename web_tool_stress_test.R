@@ -25,7 +25,7 @@ function_paths <- c(
     c(
       "apply_filters.R",
       "asset_value_at_risk.R",
-      "check_and_filter_data.R",
+      "check_data.R",
       "company_asset_value_at_risk.R",
       "convert_cap_to_generation.R",
       "extend_scenario_trajectory.R",
