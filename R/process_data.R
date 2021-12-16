@@ -26,14 +26,14 @@ process_pacta_results <- function(data, start_year, end_year, time_horizon,
       scenarios_filter = scenarios_filter,
       equity_market_filter = equity_market_filter
     ) %>%
-    # ADO 1943 - for the time being, one global term value is set by the user.
-    # TODO: ADO 3182 - allow setting loan level term
-    dplyr::mutate(term = term) %>%
     dplyr::filter(.data$scenario %in% .env$scenarios_filter) %>%
     dplyr::filter(.data$scenario_geography %in% .env$scenario_geography_filter) %>%
     dplyr::filter(.data$ald_sector %in% .env$sectors) %>%
     dplyr::filter(.data$technology %in% .env$technologies) %>%
     dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year)) %>%
+    # ADO 1943 - for the time being, one global term value is set by the user.
+    # TODO: ADO 3182 - allow setting loan level term
+    dplyr::mutate(term = term) %>%
     report_all_duplicate_kinds(composite_unique_cols = cuc_pacta_results)
   # TODO: Add missingness check once pacta results input is overhauled
 
