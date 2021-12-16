@@ -129,11 +129,6 @@ process_scenario_data <- function(data, start_year, end_year, sectors, technolog
                                   scenario_geography_filter, scenarios_filter) {
   data_processed <- data %>%
     wrangle_scenario_data(start_year = start_year, end_year = end_year) %>%
-    dplyr::filter(
-      .data$ald_sector %in% sectors &
-        .data$technology %in% technologies &
-        .data$scenario_geography == scenario_geography_filter
-    ) %>%
     dplyr::filter(.data$scenario %in% .env$scenarios_filter) %>%
     dplyr::filter(.data$scenario_geography %in% .env$scenario_geography_filter) %>%
     dplyr::filter(.data$ald_sector %in% .env$sectors) %>%
