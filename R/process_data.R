@@ -12,28 +12,34 @@
 #'   indicates which equity market to apply in the analysis.
 #' @param sectors Character vector, holding considered sectors.
 #' @param technologies Character vector, holding considered technologies.
+#' @param allocation_method Character. A vector of length 1 indicating the
+#'   set of PACTA data to be used in the analysis, based on the choice of an
+#'   allocation rule.
 #'
 #' @return A tibble of data as indicated by function name.
-#' @noRd
 process_pacta_results <- function(data, start_year, end_year, time_horizon,
                                   scenario_geography_filter, scenarios_filter,
-                                  equity_market_filter, term, sectors, technologies) {
+                                  equity_market_filter, term, sectors, technologies,
+                                  allocation_method) {
+
   data_processed <- data %>%
     wrangle_and_check_pacta_results(
       start_year = start_year,
       time_horizon = time_horizon,
       scenario_geography_filter = scenario_geography_filter,
       scenarios_filter = scenarios_filter,
-      equity_market_filter = equity_market_filter
+      allocation_method = allocation_method
     ) %>%
-    # ADO 1943 - for the time being, one global term value is set by the user.
-    # TODO: ADO 3182 - allow setting loan level term
-    dplyr::mutate(term = term) %>%
+    dplyr::filter(.data$equity_market == equity_market_filter) %>%
+    dplyr::filter(.data$allocation == allocation_method) %>%
     dplyr::filter(.data$scenario %in% .env$scenarios_filter) %>%
     dplyr::filter(.data$scenario_geography %in% .env$scenario_geography_filter) %>%
     dplyr::filter(.data$ald_sector %in% .env$sectors) %>%
     dplyr::filter(.data$technology %in% .env$technologies) %>%
     dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year)) %>%
+    # ADO 1943 - for the time being, one global term value is set by the user.
+    # TODO: ADO 3182 - allow setting loan level term
+    dplyr::mutate(term = term) %>%
     report_all_duplicate_kinds(composite_unique_cols = cuc_pacta_results)
   # TODO: Add missingness check once pacta results input is overhauled
 
@@ -108,8 +114,6 @@ process_excluded_companies <- function(data, company_exclusion, technologies) {
 process_df_price <- function(data, technologies, sectors, start_year, end_year) {
   data_processed <- data %>%
     check_technology_availability(expected_technologies = technologies) %>%
-    dplyr::filter(year >= start_year) %>%
-    check_price_consistency(start_year = start_year) %>%
     dplyr::filter(.data$sector %in% .env$sectors_lookup) %>%
     dplyr::filter(.data$technology %in% .env$technologies_lookup) %>%
     dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year)) %>%
@@ -129,11 +133,6 @@ process_scenario_data <- function(data, start_year, end_year, sectors, technolog
                                   scenario_geography_filter, scenarios_filter) {
   data_processed <- data %>%
     wrangle_scenario_data(start_year = start_year, end_year = end_year) %>%
-    dplyr::filter(
-      .data$ald_sector %in% sectors &
-        .data$technology %in% technologies &
-        .data$scenario_geography == scenario_geography_filter
-    ) %>%
     dplyr::filter(.data$scenario %in% .env$scenarios_filter) %>%
     dplyr::filter(.data$scenario_geography %in% .env$scenario_geography_filter) %>%
     dplyr::filter(.data$ald_sector %in% .env$sectors) %>%
