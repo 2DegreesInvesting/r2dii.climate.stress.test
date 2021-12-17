@@ -79,9 +79,6 @@
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/calculate_pd_change_overall.html</loc>
   </url>
   <url>
-    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/check_and_filter_data.html</loc>
-  </url>
-  <url>
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/check_financial_data.html</loc>
   </url>
   <url>
@@ -169,10 +166,16 @@
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/pipe.html</loc>
   </url>
   <url>
+    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/process_pacta_results.html</loc>
+  </url>
+  <url>
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/read_capacity_factors.html</loc>
   </url>
   <url>
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/read_capacity_factors_old.html</loc>
+  </url>
+  <url>
+    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/read_excluded_companies.html</loc>
   </url>
   <url>
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/read_financial_data.html</loc>
@@ -182,6 +185,9 @@
   </url>
   <url>
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/read_pacta_results.html</loc>
+  </url>
+  <url>
+    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/read_pacta_results_wt.html</loc>
   </url>
   <url>
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/read_price_data.html</loc>

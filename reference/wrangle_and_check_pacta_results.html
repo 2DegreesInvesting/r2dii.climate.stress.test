@@ -74,7 +74,7 @@ to apply run/project related selections.
   <span class="va">time_horizon</span>,
   <span class="va">scenario_geography_filter</span>,
   <span class="va">scenarios_filter</span>,
-  <span class="va">equity_market_filter</span>
+  <span class="va">allocation_method</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
@@ -83,17 +83,18 @@ to apply run/project related selections.
     <dl><dt>pacta_results</dt>
 <dd><p>Results from PACTA analysis.</p></dd>
 <dt>start_year</dt>
-<dd><p>First considered year in analysis.</p></dd>
+<dd><p>Numeric, holding start year of analysis.</p></dd>
 <dt>time_horizon</dt>
-<dd><p>Considered timeframe for PACTA analysis.</p></dd>
+<dd><p>Numeric, holding time horizon of analysis.</p></dd>
 <dt>scenario_geography_filter</dt>
 <dd><p>Character. A vector of length 1 that
 indicates which geographic scenario to apply in the analysis.</p></dd>
 <dt>scenarios_filter</dt>
 <dd><p>Vector holding baseline and shock scenario name.</p></dd>
-<dt>equity_market_filter</dt>
-<dd><p>Character. A vector of length 1 that
-indicates which equity market to apply in the analysis.</p></dd>
+<dt>allocation_method</dt>
+<dd><p>Character. A vector of length 1 indicating the
+set of PACTA data to be used in the analysis, based on the choice of an
+allocation rule.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
