@@ -82,8 +82,6 @@ scenario_geography_filter <- "Global"
 # NOTE scenarios from the same source, same secenario name and diff years will likely fail
 # E.g. WEO2019_SDS AND WEO2020_SDS will produce near-duplicates that break the analysis
 scenarios <- c(
-  # "B2DS",
-  # "CPS",#"NPS","NPSRTS","SDS",)#,
   "ETP2017_B2DS",
   "ETP2017_NPS",
   "ETP2017_SDS",
@@ -93,8 +91,6 @@ scenarios <- c(
   # "WEO2020_NPS",
   # "WEO2020_SDS"
 )
-# scenarios <- cfg$Large.Universe.Filter$SCENARIO.FILTER
-
 
 
 allocation_method_equity <- "portfolio_weight"
