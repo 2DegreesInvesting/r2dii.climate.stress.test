@@ -174,28 +174,23 @@ run_stress_test_impl <- function(asset_type,
 
   cat("-- Configuring analysis settings. \n")
 
-  scenario_to_follow_baseline <- baseline_scenario_lookup
-  scenario_to_follow_ls <- shock_scenario_lookup
-  calculation_level <- calculation_level_lookup
-  end_year <- end_year_lookup
-  time_horizon <- time_horizon_lookup
   flat_multiplier <- assign_flat_multiplier(asset_type = asset_type)
   lgd <- assign_lgd(
     asset_type = asset_type, lgd_senior_claims = lgd_senior_claims,
     lgd_subordinated_claims = lgd_subordinated_claims
   )
-  scenario_geography_filter <- "Global"
+
   scenarios_filter <- unique(
     c(
-      scenario_to_follow_baseline,
-      scenario_to_follow_ls
+      baseline_scenario_lookup,
+      shock_scenario_lookup
     )
   )
 
   cat("-- Importing and preparing input data from designated input path. \n")
 
   pacta_results <- read_pacta_results(
-    path = file.path(input_path_project_specific, paste0(stringr::str_to_title(asset_type), "_results_", calculation_level, ".rda"))
+    path = file.path(input_path_project_specific, paste0(stringr::str_to_title(asset_type), "_results_", calculation_level_lookup, ".rda"))
   )
 
   start_year <- min(pacta_results$year, na.rm = TRUE)
@@ -203,14 +198,15 @@ run_stress_test_impl <- function(asset_type,
   pacta_results <- pacta_results %>%
     process_pacta_results(
       start_year = start_year,
-      end_year = end_year,
-      time_horizon = time_horizon,
-      scenario_geography_filter = scenario_geography_filter,
+      end_year = end_year_lookup,
+      time_horizon = time_horizon_lookup,
+      scenario_geography_filter = scenario_geography_filter_lookup,
       scenarios_filter = scenarios_filter,
       equity_market_filter = equity_market_filter_lookup,
       term = term,
       sectors = sectors_lookup,
-      technologies = technologies_lookup
+      technologies = technologies_lookup,
+      allocation_method = allocation_method_lookup
     )
 
   sector_exposures <- read_sector_exposures(file.path(input_path_project_specific, "overview_portfolio.rda")) %>%
@@ -221,10 +217,10 @@ run_stress_test_impl <- function(asset_type,
   ) %>%
     process_capacity_factors_power(
       scenarios_filter = scenarios_filter,
-      scenario_geography_filter = scenario_geography_filter,
+      scenario_geography_filter = scenario_geography_filter_lookup,
       technologies = technologies_lookup,
       start_year = start_year,
-      end_year = end_year
+      end_year = end_year_lookup
     )
 
   excluded_companies <- read_excluded_companies(
@@ -239,7 +235,7 @@ run_stress_test_impl <- function(asset_type,
       technologies = technologies_lookup,
       sectors = sectors_lookup,
       start_year = start_year,
-      end_year = end_year
+      end_year = end_year_lookup
     )
 
   scenario_data <- read_scenario_data(
@@ -247,10 +243,10 @@ run_stress_test_impl <- function(asset_type,
   ) %>%
     process_scenario_data(
       start_year = start_year,
-      end_year = end_year,
+      end_year = end_year_lookup,
       sectors = sectors_lookup,
       technologies = technologies_lookup,
-      scenario_geography_filter = scenario_geography_filter,
+      scenario_geography_filter = scenario_geography_filter_lookup,
       scenarios_filter = scenarios_filter
     )
 
@@ -289,7 +285,7 @@ run_stress_test_impl <- function(asset_type,
   port_aum <- calculate_aum(input_data_list$sector_exposures)
   transition_scenario <- generate_transition_shocks(
     start_of_analysis = start_year,
-    end_of_analysis = end_year,
+    end_of_analysis = end_year_lookup,
     shock_years = shock_year
   )
 
@@ -298,12 +294,12 @@ run_stress_test_impl <- function(asset_type,
   annual_profits <- calculate_annual_profits(
     asset_type = asset_type,
     input_data_list = input_data_list,
-    scenario_to_follow_baseline = scenario_to_follow_baseline,
-    scenario_to_follow_ls = scenario_to_follow_ls,
+    scenario_to_follow_baseline = baseline_scenario_lookup,
+    scenario_to_follow_ls = shock_scenario_lookup,
     transition_scenario = transition_scenario,
     start_year = start_year,
-    end_year = end_year,
-    time_horizon = time_horizon,
+    end_year = end_year_lookup,
+    time_horizon = time_horizon_lookup,
     discount_rate = discount_rate,
     log_path = log_path
   )
@@ -312,7 +308,7 @@ run_stress_test_impl <- function(asset_type,
     asset_type = asset_type,
     input_data_list = input_data_list,
     start_year = start_year,
-    scenario_to_follow_ls = scenario_to_follow_ls,
+    scenario_to_follow_ls = shock_scenario_lookup,
     log_path = log_path
   )
 
@@ -332,7 +328,7 @@ run_stress_test_impl <- function(asset_type,
   overall_pd_changes <- annual_profits %>%
     calculate_pd_change_overall(
       shock_year = transition_scenario$year_of_shock,
-      end_of_analysis = end_year,
+      end_of_analysis = end_year_lookup,
       risk_free_interest_rate = risk_free_rate
     )
 
@@ -352,7 +348,7 @@ run_stress_test_impl <- function(asset_type,
   annual_pd_changes <- calculate_pd_change_annual(
     data = annual_profits,
     shock_year = transition_scenario$year_of_shock,
-    end_of_analysis = end_year,
+    end_of_analysis = end_year_lookup,
     risk_free_interest_rate = risk_free_rate
   )
 
