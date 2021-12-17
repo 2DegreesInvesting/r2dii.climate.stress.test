@@ -249,7 +249,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
   )
 
   if ("NPS" %in% stringr::str_extract(pacta_equity_results_full$scenario, "[^_]*$") &
-      "NPSRTS" %in% stringr::str_extract(pacta_equity_results_full$scenario, "[^_]*$")) {
+    "NPSRTS" %in% stringr::str_extract(pacta_equity_results_full$scenario, "[^_]*$")) {
     stop("May not provide NPS and NPSRTS scenarios in the same portfolio")
   }
 
@@ -397,7 +397,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
   )
 
   if ("NPS" %in% stringr::str_extract(pacta_bonds_results_full$scenario, "[^_]*$") &
-      "NPSRTS" %in% stringr::str_extract(pacta_bonds_results_full$scenario, "[^_]*$")) {
+    "NPSRTS" %in% stringr::str_extract(pacta_bonds_results_full$scenario, "[^_]*$")) {
     stop("May not provide NPS and NPSRTS scenarios in the same portfolio")
   }
 
