@@ -82,8 +82,6 @@ scenario_geography_filter <- "Global"
 # NOTE scenarios from the same source, same secenario name and diff years will likely fail
 # E.g. WEO2019_SDS AND WEO2020_SDS will produce near-duplicates that break the analysis
 scenarios <- c(
-  # "B2DS",
-  # "CPS",#"NPS","NPSRTS","SDS",)#,
   "ETP2017_B2DS",
   "ETP2017_NPS",
   "ETP2017_SDS",
@@ -93,8 +91,6 @@ scenarios <- c(
   # "WEO2020_NPS",
   # "WEO2020_SDS"
 )
-# scenarios <- cfg$Large.Universe.Filter$SCENARIO.FILTER
-
 
 
 allocation_method_equity <- "portfolio_weight"
@@ -253,6 +249,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
   )
 
   pacta_equity_results_full <- pacta_equity_results_full %>%
+    dplyr::mutate(scenario = stringr::str_replace(scenario, "NPSRTS", "NPS")) %>%
     dplyr::filter(!(scenario == "ETP2017_NPS" & ald_sector == "Power")) %>%
     # ADO 2473 - hotfix - ensure scenario names match across data sets (SPS is the follow up to NPS)
     dplyr::mutate(scenario = dplyr::if_else(stringr::str_detect(scenario, "WEO2019_SPS"), "WEO2019_NPS", scenario)) %>%
@@ -279,7 +276,6 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
       allocation == allocation_method_equity,
       equity_market %in% equity_market_filter
     ) %>%
-    dplyr::mutate(scenario = stringr::str_replace(scenario, "NPSRTS", "NPS")) %>%
     dplyr::distinct_all()
 
   if (nrow(pacta_equity_results) <= 0) {
@@ -396,6 +392,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
   )
 
   pacta_bonds_results_full <- pacta_bonds_results_full %>%
+    dplyr::mutate(scenario = stringr::str_replace(scenario, "NPSRTS", "NPS")) %>%
     dplyr::filter(!(scenario == "ETP2017_NPS" & ald_sector == "Power")) %>%
     # ADO 2473 - hotfix - ensure scenario names match across data sets (SPS is the follow up to NPS)
     dplyr::mutate(scenario = dplyr::if_else(stringr::str_detect(scenario, "WEO2019_SPS"), "WEO2019_NPS", scenario)) %>%
@@ -422,7 +419,6 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
       allocation == allocation_method_equity,
       equity_market %in% equity_market_filter
     ) %>%
-    dplyr::mutate(scenario = stringr::str_replace(scenario, "NPSRTS", "NPS")) %>%
     dplyr::distinct_all()
 
   if (nrow(pacta_bonds_results) <= 0) {
