@@ -114,7 +114,6 @@ process_excluded_companies <- function(data, company_exclusion, technologies) {
 #' @noRd
 process_df_price <- function(data, technologies, sectors, start_year, end_year) {
   data_processed <- data %>%
-    check_technology_availability(expected_technologies = technologies) %>%
     dplyr::filter(.data$sector %in% .env$sectors_lookup) %>%
     dplyr::filter(.data$technology %in% .env$technologies_lookup) %>%
     dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year)) %>%
