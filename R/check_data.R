@@ -1,7 +1,7 @@
 #' Check that required technologies are provided
 #'
 #' @param data A tibble holding at least column `technology`
-#' @param expectected_technologies String vector holding names of expected
+#' @param expected_technologies String vector holding names of expected
 #'   technologies.
 #'
 #' @return Returns `data` invisibly.
