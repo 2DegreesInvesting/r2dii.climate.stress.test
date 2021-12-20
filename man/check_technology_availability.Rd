@@ -9,7 +9,8 @@ check_technology_availability(data, expected_technologies)
 \arguments{
 \item{data}{A tibble holding at least column \code{technology}}
 
-\item{expected_technologies}{A vector holding names of expected technologies.}
+\item{expectected_technologies}{String vector holding names of expected
+technologies.}
 }
 \value{
 Returns \code{data} invisibly.
