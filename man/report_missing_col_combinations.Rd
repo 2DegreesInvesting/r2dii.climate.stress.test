@@ -4,17 +4,12 @@
 \alias{report_missing_col_combinations}
 \title{Identify and report missing value combinations}
 \usage{
-report_missing_col_combinations(
-  data,
-  composite_unique_cols,
-  throw_error = FALSE
-)
+report_missing_col_combinations(data, col_names, throw_error = FALSE)
 }
 \arguments{
 \item{data}{A tibble.}
 
-\item{composite_unique_cols}{A vector of names of columns that shall be
-unique in their combination.}
+\item{col_names}{String holding names of columns.}
 
 \item{throw_error}{Boolean, if TRUE error is thrown on failures, otherwise a
 warning.}

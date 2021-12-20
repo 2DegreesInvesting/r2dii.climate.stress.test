@@ -154,20 +154,21 @@ report_all_duplicate_kinds <- function(data, composite_unique_cols, throw_error 
 #' .
 #'
 #' @inheritParams report_all_duplicate_kinds
+#' @param col_names String holding names of columns.
 #'
 #' @return NULL
-report_missing_col_combinations <- function(data, composite_unique_cols, throw_error = FALSE) {
+report_missing_col_combinations <- function(data, col_names, throw_error = FALSE) {
   all_combinations <- data %>%
-    tidyr::expand(!!!rlang::syms(composite_unique_cols))
+    tidyr::expand(!!!rlang::syms(col_names))
 
   missing_rows <- all_combinations %>%
-    dplyr::anti_join(data, by = composite_unique_cols)
+    dplyr::anti_join(data, by = col_names)
 
   if (nrow(missing_rows) > 0) {
     if (throw_error) {
-      stop(paste0("Identified ", nrow(missing_rows), " missing combinations on columns ", paste(composite_unique_cols, collapse = ", "), "."))
+      stop(paste0("Identified ", nrow(missing_rows), " missing combinations on columns ", paste(col_names, collapse = ", "), "."))
     } else {
-      warning(paste0("Identified ", nrow(missing_rows), " missing combinations on columns ", paste(composite_unique_cols, collapse = ", "), "."), call. = FALSE)
+      warning(paste0("Identified ", nrow(missing_rows), " missing combinations on columns ", paste(col_names, collapse = ", "), "."), call. = FALSE)
     }
   }
 
