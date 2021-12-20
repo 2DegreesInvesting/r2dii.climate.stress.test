@@ -14,6 +14,9 @@ report_missing_col_combinations(data, col_names, throw_error = FALSE)
 \item{throw_error}{Boolean, if TRUE error is thrown on failures, otherwise a
 warning.}
 }
+\value{
+Returns \code{data} invisibly.
+}
 \description{
 Checks if all level combinations of \code{composite_unique_cols} are in\code{data} and
 throws a warning on missing combinations.

@@ -156,7 +156,7 @@ report_all_duplicate_kinds <- function(data, composite_unique_cols, throw_error 
 #' @inheritParams report_all_duplicate_kinds
 #' @param col_names String holding names of columns.
 #'
-#' @return NULL
+#' @return Returns `data` invisibly.
 report_missing_col_combinations <- function(data, col_names, throw_error = FALSE) {
   all_combinations <- data %>%
     tidyr::expand(!!!rlang::syms(col_names))
@@ -172,7 +172,7 @@ report_missing_col_combinations <- function(data, col_names, throw_error = FALSE
     }
   }
 
-  return(invisible())
+  return(invisible(data))
 }
 
 #' Report duplicate rows
