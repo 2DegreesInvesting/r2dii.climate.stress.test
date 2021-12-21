@@ -21,7 +21,7 @@ validate_input_values <- function(lgd_senior_claims, lgd_subordinated_claims,
     purrr::walk(validate_values_in_range, args_list = input_args)
 
   if (!all(shock_year %% 1 == 0)) {
-    stop("Argmuent shock_year must be a whole number")
+    stop("Argument shock_year must be a whole number")
   }
 
   # ADO 1943 - Once we decide to add a separate Merton calculation on the average
