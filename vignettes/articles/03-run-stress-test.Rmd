@@ -111,6 +111,9 @@ company and technology should be excluded from the analysis. At this point, it
 is strictly recommended to set this to TRUE (default) because there is not yet a
 dedicated mechanism in place that handles companies which are phasing out
 certain technologies within the time frame of the production forecast.
+* `use_company_terms` Logical parameter, indicating if individually provided
+terms for companies as configured in company_terms.csv shall be used instead of
+fallback as provided in `term`.
 * `return_results` Logical parameter that indicates if the outputs of the
 analysis should be directly written to the indicated output path or simply
 returned as a list of results within the running session. The default is FALSE,
