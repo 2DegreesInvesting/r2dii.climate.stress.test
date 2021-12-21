@@ -17,6 +17,7 @@ run_stress_test_impl(
   shock_year,
   term,
   company_exclusion,
+  use_company_terms,
   iter_var
 )
 }
@@ -62,6 +63,11 @@ range compare \code{stress_test_arguments}.}
 \item{company_exclusion}{Boolean, indicating if companies provided in dataset
 excluded_companies.csv shall be excluded. For accepted values compare
 \code{stress_test_arguments}.}
+
+\item{use_company_terms}{Boolean, indicating if term values for individual
+companies are to be used. For accepted values compare
+\code{stress_test_arguments}. Note that currently this functionality is not
+available for asset_type bonds.}
 
 \item{iter_var}{String holding name of iteration variable.}
 }

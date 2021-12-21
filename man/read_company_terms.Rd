@@ -4,13 +4,18 @@
 \alias{read_company_terms}
 \title{Read in company terms}
 \usage{
-read_company_terms(path)
+read_company_terms(path, use_company_terms)
 }
 \arguments{
 \item{path}{Path to dir holding company terms data.}
+
+\item{use_company_terms}{Boolean, indicating if term values for individual
+companies are to be used. For accepted values compare
+\code{stress_test_arguments}. Note that currently this functionality is not
+available for asset_type bonds.}
 }
 \value{
-A tibble holding company terms data.
+A tibble holding company terms data or NULL
 }
 \description{
 Function reads in company terms and checks for existence of required columns.

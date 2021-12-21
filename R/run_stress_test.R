@@ -39,7 +39,7 @@
 #' @param company_exclusion Boolean, indicating if companies provided in dataset
 #'   excluded_companies.csv shall be excluded. For accepted values compare
 #'   `stress_test_arguments`.
-#' @param use_company_terms Boolean, indicating if term valuesfor individual
+#' @param use_company_terms Boolean, indicating if term values for individual
 #'   companies are to be used. For accepted values compare
 #'   `stress_test_arguments`. Note that currently this functionality is not
 #'   available for asset_type bonds.

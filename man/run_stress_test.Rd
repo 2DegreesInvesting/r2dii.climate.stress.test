@@ -17,6 +17,7 @@ run_stress_test(
   shock_year = 2030,
   term = 2,
   company_exclusion = TRUE,
+  use_company_terms = FALSE,
   return_results = FALSE
 )
 }
@@ -62,6 +63,11 @@ range compare \code{stress_test_arguments}.}
 \item{company_exclusion}{Boolean, indicating if companies provided in dataset
 excluded_companies.csv shall be excluded. For accepted values compare
 \code{stress_test_arguments}.}
+
+\item{use_company_terms}{Boolean, indicating if term values for individual
+companies are to be used. For accepted values compare
+\code{stress_test_arguments}. Note that currently this functionality is not
+available for asset_type bonds.}
 
 \item{return_results}{Boolean, indicating if results shall be exported.}
 }
