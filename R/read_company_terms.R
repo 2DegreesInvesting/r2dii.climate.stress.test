@@ -2,10 +2,16 @@
 #'
 #' Function reads in company terms and checks for existence of required columns.
 #'
+#' @inheritParams run_stress_test
 #' @param path Path to dir holding company terms data.
 #'
-#' @return A tibble holding company terms data.
-read_company_terms <- function(path) {
+#' @return A tibble holding company terms data or NULL
+read_company_terms <- function(path, use_company_terms) {
+
+  if (!use_company_terms) {
+    return(NULL)
+  }
+
   company_terms <- validate_file_exists(path) %>%
     readr::read_csv(
       col_types = readr::cols(
