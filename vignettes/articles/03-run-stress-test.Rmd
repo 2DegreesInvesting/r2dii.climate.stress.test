@@ -173,7 +173,7 @@ only one) of the detail arguments when running the stress test function. This
 will lead to the model iterating over the set of values passed for the chosen
 argument, while keeping all other input arguments constant.
 
-**NOTE:** It is not possible to iterate over `asset_type`.
+**NOTE:** It is not possible to iterate over `asset_type` and `term`.
 
 If the user wishes to understand the impact of the `shock_year` on the results
 for example, they can run the following:
