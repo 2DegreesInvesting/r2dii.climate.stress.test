@@ -169,6 +169,7 @@ run_stress_test_impl <- function(asset_type,
                                  shock_year,
                                  term,
                                  company_exclusion,
+                                 use_company_terms,
                                  iter_var) {
   args_list <- mget(names(formals()), sys.frame(sys.nframe()))
 
