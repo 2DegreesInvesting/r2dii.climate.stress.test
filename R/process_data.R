@@ -136,6 +136,7 @@ process_df_price <- function(data, technologies, sectors, start_year, end_year) 
     dplyr::filter(.data$sector %in% .env$sectors_lookup) %>%
     dplyr::filter(.data$technology %in% .env$technologies_lookup) %>%
     dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year)) %>%
+    check_sector_tech_mapping(sector_col = "sector") %>%
     check_level_availability(
       expected_levels_list =
         list(
@@ -166,6 +167,7 @@ process_scenario_data <- function(data, start_year, end_year, sectors, technolog
     dplyr::filter(.data$ald_sector %in% .env$sectors) %>%
     dplyr::filter(.data$technology %in% .env$technologies) %>%
     dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year)) %>%
+    check_sector_tech_mapping(sector_col = "ald_sector") %>%
     check_level_availability(
       expected_levels_list =
         list(

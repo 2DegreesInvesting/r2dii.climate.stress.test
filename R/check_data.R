@@ -40,3 +40,20 @@ check_level_availability <- function(data, expected_levels_list) {
 
   return(invisible(data))
 }
+
+check_sector_tech_mapping <- function(data, sector_col, mapper_template = p4i_p4b_sector_technology_lookup) {
+
+  sector_tech_mapper <- mapper_template %>%
+    dplyr::select(sector_p4i, technology_p4i) %>%
+    dplyr::rename(ald_sector = sector_p4i, technology = technology_p4i)
+
+  missing_sector_tech_combinations <- data %>%
+    dplyr::rename(ald_sector = rlang::sym(sector_col)) %>%
+    dplyr::anti_join(sector_tech_mapper, by = c("ald_sector", "technology"))
+
+  if (nrow(missing_sector_tech_combinations) > 0) {
+    stop("Incorrect mapping of sectors to technologies indentified in data, please check.")
+  }
+
+  return(invisible(data))
+}
