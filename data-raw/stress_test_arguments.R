@@ -10,7 +10,8 @@ stress_test_arguments <- tibble::tribble(
   "div_netprofit_prop_coef",    "double",      "1",                     NA,      "0.8",        "1",
                "shock_year",    "double",   "2030",                     NA,     "2025",     "2035",
                      "term",    "double",      "2",                     NA,        "1",        "5",
-        "company_exclusion",   "logical",   "TRUE",          "TRUE, FALSE",         NA,         NA
+        "company_exclusion",   "logical",   "TRUE",          "TRUE, FALSE",         NA,         NA,
+         "use_company_term",   "logical",   "FALSE",         "TRUE, FALSE",         NA,         NA
 )
 # styler: on
 
