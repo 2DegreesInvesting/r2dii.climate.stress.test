@@ -255,6 +255,8 @@ run_stress_test_impl <- function(asset_type,
   ) %>%
     process_financial_data(asset_type = asset_type)
 
+  company_terms <- read_company_terms(file.path(input_path_project_specific, "company_terms.csv"))
+
   input_data_list <- list(
     pacta_results = pacta_results,
     capacity_factors_power = capacity_factors_power,
