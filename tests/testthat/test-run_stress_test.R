@@ -49,6 +49,7 @@ test_that("with loans, without iteration, using minimum values of input argument
       shock_year = get_st_argument("shock_year", "min"),
       term = as.integer(get_st_argument("term", "min")),
       company_exclusion = FALSE,
+      use_company_terms = TRUE,
       return_results = TRUE
     )
   ))
@@ -80,6 +81,7 @@ test_that("with equity, without iteration, using maximum values of input argumen
       shock_year = get_st_argument("shock_year", "max"),
       term = as.integer(get_st_argument("term", "max")),
       company_exclusion = TRUE,
+      use_company_terms = TRUE,
       return_results = TRUE
     )
   ))
