@@ -39,6 +39,10 @@
 #' @param company_exclusion Boolean, indicating if companies provided in dataset
 #'   excluded_companies.csv shall be excluded. For accepted values compare
 #'   `stress_test_arguments`.
+#' @param use_company_terms Boolean, indicating if term valuesfor individual
+#'   companies are to be used. For accepted values compare
+#'   `stress_test_arguments`. Note that currently this functionality is not
+#'   available for asset_type bonds.
 #' @param return_results Boolean, indicating if results shall be exported.
 #' @return NULL
 #' @export
@@ -54,6 +58,7 @@ run_stress_test <- function(asset_type,
                             shock_year = 2030,
                             term = 2,
                             company_exclusion = TRUE,
+                            use_company_terms = FALSE,
                             return_results = FALSE) {
   cat("-- Running transition risk stress test. \n\n\n")
 
@@ -73,8 +78,12 @@ run_stress_test <- function(asset_type,
     shock_year = shock_year,
     term = term,
     company_exclusion = company_exclusion,
+    use_company_terms = use_company_terms,
     asset_type = asset_type
   )
+
+  validate_use_company_terms(asset_type = asset_type,
+                                 use_company_terms = use_company_terms)
 
   args_list$output_path <- customise_output_path(
     output_path = args_list$output_path,
