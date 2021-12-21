@@ -7,7 +7,6 @@
 #'
 #' @return A tibble holding company terms data or NULL
 read_company_terms <- function(path, use_company_terms) {
-
   if (!use_company_terms) {
     return(NULL)
   }

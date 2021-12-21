@@ -21,7 +21,6 @@ process_pacta_results <- function(data, start_year, end_year, time_horizon,
                                   scenario_geography_filter, scenarios_filter,
                                   equity_market_filter, term, sectors, technologies,
                                   allocation_method) {
-
   data_processed <- data %>%
     wrangle_and_check_pacta_results(
       start_year = start_year,
