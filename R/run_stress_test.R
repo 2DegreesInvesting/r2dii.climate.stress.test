@@ -5,7 +5,7 @@
 #' vector of values to one (and only one) of the detail arguments. This will
 #' result in running the analysis multiple times in a row with the argument
 #' varied.
-#' NOTE: argument `asset_type` cannot be iterated.
+#' NOTE: argument `asset_type` and `term` cannot be iterated.
 #' NOTE: if `return_results` is TRUE results will not be written to `output
 #' path` but instead are returned.
 #'
@@ -39,6 +39,10 @@
 #' @param company_exclusion Boolean, indicating if companies provided in dataset
 #'   excluded_companies.csv shall be excluded. For accepted values compare
 #'   `stress_test_arguments`.
+#' @param use_company_terms Boolean, indicating if term values for individual
+#'   companies are to be used. For accepted values compare
+#'   `stress_test_arguments`. Note that currently this functionality is not
+#'   available for asset_type bonds.
 #' @param return_results Boolean, indicating if results shall be exported.
 #' @return NULL
 #' @export
@@ -54,6 +58,7 @@ run_stress_test <- function(asset_type,
                             shock_year = 2030,
                             term = 2,
                             company_exclusion = TRUE,
+                            use_company_terms = FALSE,
                             return_results = FALSE) {
   cat("-- Running transition risk stress test. \n\n\n")
 
@@ -73,7 +78,13 @@ run_stress_test <- function(asset_type,
     shock_year = shock_year,
     term = term,
     company_exclusion = company_exclusion,
+    use_company_terms = use_company_terms,
     asset_type = asset_type
+  )
+
+  validate_use_company_terms(
+    asset_type = asset_type,
+    use_company_terms = use_company_terms
   )
 
   args_list$output_path <- customise_output_path(
@@ -160,6 +171,7 @@ run_stress_test_impl <- function(asset_type,
                                  shock_year,
                                  term,
                                  company_exclusion,
+                                 use_company_terms,
                                  iter_var) {
   args_list <- mget(names(formals()), sys.frame(sys.nframe()))
 
@@ -254,6 +266,10 @@ run_stress_test_impl <- function(asset_type,
     path = file.path(input_path_project_agnostic, "prewrangled_financial_data_stress_test.csv")
   ) %>%
     process_financial_data(asset_type = asset_type)
+
+  company_terms <- read_company_terms(file.path(input_path_project_specific, "company_terms.csv"),
+    use_company_terms = use_company_terms
+  )
 
   input_data_list <- list(
     pacta_results = pacta_results,

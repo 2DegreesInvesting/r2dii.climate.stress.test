@@ -111,6 +111,9 @@ company and technology should be excluded from the analysis. At this point, it
 is strictly recommended to set this to TRUE (default) because there is not yet a
 dedicated mechanism in place that handles companies which are phasing out
 certain technologies within the time frame of the production forecast.
+* `use_company_terms` Logical parameter, indicating if individually provided
+terms for companies as configured in company_terms.csv shall be used instead of
+fallback as provided in `term`.
 * `return_results` Logical parameter that indicates if the outputs of the
 analysis should be directly written to the indicated output path or simply
 returned as a list of results within the running session. The default is FALSE,
@@ -173,7 +176,7 @@ only one) of the detail arguments when running the stress test function. This
 will lead to the model iterating over the set of values passed for the chosen
 argument, while keeping all other input arguments constant.
 
-**NOTE:** It is not possible to iterate over `asset_type`.
+**NOTE:** It is not possible to iterate over `asset_type` and `term`.
 
 If the user wishes to understand the impact of the `shock_year` on the results
 for example, they can run the following:

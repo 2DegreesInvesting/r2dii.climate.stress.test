@@ -17,6 +17,7 @@ run_stress_test(
   shock_year = 2030,
   term = 2,
   company_exclusion = TRUE,
+  use_company_terms = FALSE,
   return_results = FALSE
 )
 }
@@ -63,6 +64,11 @@ range compare \code{stress_test_arguments}.}
 excluded_companies.csv shall be excluded. For accepted values compare
 \code{stress_test_arguments}.}
 
+\item{use_company_terms}{Boolean, indicating if term values for individual
+companies are to be used. For accepted values compare
+\code{stress_test_arguments}. Note that currently this functionality is not
+available for asset_type bonds.}
+
 \item{return_results}{Boolean, indicating if results shall be exported.}
 }
 \description{
@@ -71,6 +77,6 @@ understand sensitivities of the scenarios, in which case the user may pass a
 vector of values to one (and only one) of the detail arguments. This will
 result in running the analysis multiple times in a row with the argument
 varied.
-NOTE: argument \code{asset_type} cannot be iterated.
+NOTE: argument \code{asset_type} and \code{term} cannot be iterated.
 NOTE: if \code{return_results} is TRUE results will not be written to \verb{output path} but instead are returned.
 }
