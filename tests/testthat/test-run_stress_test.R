@@ -14,7 +14,7 @@ test_that("with bonds, with iteration, using default settings output is unchange
       input_path_project_specific = in_specific,
       input_path_project_agnostic = in_agnostic,
       output_path = out,
-      term = 1:2,
+      shock_year = c(2025, 2030),
       return_results = TRUE
     )
   ))
