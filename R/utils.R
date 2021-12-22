@@ -351,11 +351,11 @@ get_iter_var <- function(args_list) {
   } else if (nrow(iterate_arg) == 1) {
     iter_var <- iterate_arg$name
 
-    if (iter_var %in% c("asset_type", setup_vars_lookup)) {
+    if (iter_var %in% c("asset_type", "term", setup_vars_lookup)) {
       rlang::abort(c(
         "Must not provide more than one value for argument that cannot be iterated",
         x = glue::glue("Arguments with multiple values: {toString(iter_var)}."),
-        i = "Please coorect your function call"
+        i = "Please correct your function call"
       ))
     }
   } else {

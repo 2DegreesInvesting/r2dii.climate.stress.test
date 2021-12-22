@@ -8,10 +8,10 @@
 validate_input_values <- function(lgd_senior_claims, lgd_subordinated_claims,
                                   risk_free_rate, discount_rate,
                                   div_netprofit_prop_coef, shock_year, term,
-                                  company_exclusion, asset_type) {
+                                  company_exclusion, use_company_terms, asset_type) {
   input_args <- mget(names(formals()), sys.frame(sys.nframe()))
 
-  c("company_exclusion", "asset_type") %>%
+  c("company_exclusion", "asset_type", "use_company_terms") %>%
     purrr::walk(validate_values_in_values, args_list = input_args)
 
   c(
@@ -21,7 +21,7 @@ validate_input_values <- function(lgd_senior_claims, lgd_subordinated_claims,
     purrr::walk(validate_values_in_range, args_list = input_args)
 
   if (!all(shock_year %% 1 == 0)) {
-    stop("Argmuent shock_year must be a whole number")
+    stop("Argument shock_year must be a whole number")
   }
 
   # ADO 1943 - Once we decide to add a separate Merton calculation on the average
@@ -130,4 +130,18 @@ validate_values_in_range <- function(var, args_list) {
     )
   }
   invisible()
+}
+
+# temporary helper function
+# TODO: activate use of company terms for bonds
+validate_use_company_terms <- function(asset_type, use_company_terms) {
+  if (use_company_terms && asset_type == "bonds") {
+    rlang::abort(
+      c(
+        glue::glue("May not use company level terms for asset type bonds."),
+        x = glue::glue("Use of company level terms for asset type bonds is not supported (yet)."),
+        i = glue::glue("Please check values of variables asset_type and use_company_terms.")
+      )
+    )
+  }
 }

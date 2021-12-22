@@ -10,6 +10,7 @@ test_that("Error is thrown if input values are of incorrect type", {
     shock_year = 2030,
     term = 4,
     company_exclusion = "TRUE",
+    use_company_terms = FALSE,
     asset_type = "loans"
   ), "logical")
 
@@ -23,6 +24,7 @@ test_that("Error is thrown if input values are of incorrect type", {
     shock_year = 2030,
     term = 4,
     company_exclusion = TRUE,
+    use_company_terms = FALSE,
     asset_type = "bonds"
   ), "numeric")
 })
@@ -38,6 +40,7 @@ test_that("Error is thrown if input values are of incorrect type for input value
     shock_year = 2030,
     term = 4,
     company_exclusion = c("TRUE", "FALSE"),
+    use_company_terms = FALSE,
     asset_type = "loans"
   ), "logical")
 
@@ -51,6 +54,7 @@ test_that("Error is thrown if input values are of incorrect type for input value
     shock_year = 2030,
     term = 4,
     company_exclusion = TRUE,
+    use_company_terms = FALSE,
     asset_type = "bonds"
   ), "numeric")
 })
@@ -68,6 +72,7 @@ test_that("Error is thrown if an input value is out of bounds", {
     shock_year = 2030,
     term = 4,
     company_exclusion = TRUE,
+    use_company_terms = FALSE,
     asset_type = "loans"
   ), "risk_free_rate")
 
@@ -81,6 +86,7 @@ test_that("Error is thrown if an input value is out of bounds", {
     shock_year = 2030,
     term = 4,
     company_exclusion = TRUE,
+    use_company_terms = FALSE,
     asset_type = "loans"
   ), "Invalid input: -1, 100.")
 })
@@ -97,6 +103,7 @@ test_that("Error is thrown if a character input value is out of bounds", {
     shock_year = 2030,
     term = 4,
     company_exclusion = TRUE,
+    use_company_terms = FALSE,
     asset_type = "derivates"
   ), "asset_type")
 
@@ -110,6 +117,7 @@ test_that("Error is thrown if a character input value is out of bounds", {
     shock_year = 2030,
     term = 4,
     company_exclusion = TRUE,
+    use_company_terms = FALSE,
     asset_type = c("derivates", "fund")
   ), "asset_type")
 })
@@ -124,6 +132,7 @@ test_that("Error is thrown if term is not an integer", {
     shock_year = 2030,
     term = 4.5,
     company_exclusion = TRUE,
+    use_company_terms = FALSE,
     asset_type = "loans"
   ), "whole number")
 })
@@ -138,6 +147,7 @@ test_that("No error is thrown if an input value equals a bound", {
     shock_year = 2030,
     term = 4,
     company_exclusion = TRUE,
+    use_company_terms = FALSE,
     asset_type = "loans"
   ))
 })

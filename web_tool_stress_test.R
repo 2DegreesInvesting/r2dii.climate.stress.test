@@ -1,7 +1,6 @@
 library(tidyr)
 library(dplyr)
 library(scales)
-library(ggplot2)
 library(purrr)
 library(readr)
 library(forcats)
