@@ -56,5 +56,5 @@ test_that("error is thrown in case technology not expected for ald_sector is pre
 
   expect_error(check_sector_tech_mapping(
     data = test_data,
-), "Incorrect mapping")
+  ), "Incorrect mapping")
 })

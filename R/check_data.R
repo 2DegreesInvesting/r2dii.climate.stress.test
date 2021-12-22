@@ -44,7 +44,7 @@ check_level_availability <- function(data, expected_levels_list) {
 #' Check that sector to technology mapping corresponds to template
 #'
 #' @param data A tibble.
-#' @param sector_col Name of column holdign sector (needed due to naming
+#' @param sector_col Name of column holding sector (needed due to naming
 #'   inconsistencies.)
 #' @param mapper_template A tibble holding, among others, mapping of sectors to
 #'   technologies.
@@ -52,10 +52,9 @@ check_level_availability <- function(data, expected_levels_list) {
 #' @return Returns `data` invisibly.
 check_sector_tech_mapping <- function(data, sector_col = "ald_sector",
                                       mapper_template = p4i_p4b_sector_technology_lookup) {
-
   sector_tech_mapper <- mapper_template %>%
-    dplyr::select(sector_p4i, technology_p4i) %>%
-    dplyr::rename(ald_sector = sector_p4i, technology = technology_p4i) %>%
+    dplyr::select(.data$sector_p4i, .data$technology_p4i) %>%
+    dplyr::rename(ald_sector = .data$sector_p4i, technology = .data$technology_p4i) %>%
     dplyr::filter(.data$ald_sector %in% unique(get(sector_col, data)))
 
   additional_sector_tech_combinations <- data %>%
@@ -64,7 +63,7 @@ check_sector_tech_mapping <- function(data, sector_col = "ald_sector",
 
   missing_sector_tech_combinations <- sector_tech_mapper %>%
     dplyr::anti_join(data %>%
-                       dplyr::rename(ald_sector = rlang::sym(sector_col)), by = c("ald_sector", "technology"))
+      dplyr::rename(ald_sector = rlang::sym(sector_col)), by = c("ald_sector", "technology"))
 
   if (nrow(additional_sector_tech_combinations) > 0 | nrow(missing_sector_tech_combinations) > 0) {
     stop("Incorrect mapping of sectors to technologies indentified in data, please check.")
