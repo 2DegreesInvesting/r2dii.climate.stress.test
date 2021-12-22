@@ -170,6 +170,7 @@ process_company_terms <- function(data) {
 
   data_processed <- data %>%
     check_terms() %>%
+    dplyr::mutate(term = as.double(term)) %>%
     report_all_duplicate_kinds(composite_unique_cols = cuc_company_terms)
 
   return(data_processed)
