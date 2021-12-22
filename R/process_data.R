@@ -1,6 +1,5 @@
 #' Process data of type indicated by function name
 #'
-#' @inheritParams run_stress_test
 #' @param data A tibble of data of type indicated by function name.
 #' @param start_year Numeric, holding start year of analysis.
 #' @param end_year Numeric, holding end year of analysis.
@@ -19,7 +18,7 @@
 #' @return A tibble of data as indicated by function name.
 process_pacta_results <- function(data, start_year, end_year, time_horizon,
                                   scenario_geography_filter, scenarios_filter,
-                                  equity_market_filter, term, sectors, technologies,
+                                  equity_market_filter, sectors, technologies,
                                   allocation_method) {
   data_processed <- data %>%
     wrangle_and_check_pacta_results(
@@ -36,9 +35,6 @@ process_pacta_results <- function(data, start_year, end_year, time_horizon,
     dplyr::filter(.data$ald_sector %in% .env$sectors) %>%
     dplyr::filter(.data$technology %in% .env$technologies) %>%
     dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year)) %>%
-    # ADO 1943 - for the time being, one global term value is set by the user.
-    # TODO: ADO 3182 - allow setting loan level term
-    dplyr::mutate(term = term) %>%
     report_all_duplicate_kinds(composite_unique_cols = cuc_pacta_results)
   # TODO: Add missingness check once pacta results input is overhauled
 

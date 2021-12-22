@@ -12,7 +12,6 @@ process_pacta_results(
   scenario_geography_filter,
   scenarios_filter,
   equity_market_filter,
-  term,
   sectors,
   technologies,
   allocation_method
@@ -34,10 +33,6 @@ indicates which geographic scenario to apply in the analysis.}
 
 \item{equity_market_filter}{Character. A vector of length 1 that
 indicates which equity market to apply in the analysis.}
-
-\item{term}{Numeric. A coefficient that determines for which maturity the
-expected loss should be calculated in the credit risk section. For accepted
-range compare \code{stress_test_arguments}.}
 
 \item{sectors}{Character vector, holding considered sectors.}
 
