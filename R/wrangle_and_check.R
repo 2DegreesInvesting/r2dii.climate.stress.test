@@ -179,9 +179,11 @@ check_financial_data <- function(financial_data, asset_type) {
 #'
 #' @return Returns data invisibly.
 check_company_terms <- function(data) {
-  terms <- data$term
+  not_na_terms <- data %>%
+    dplyr::filter(!is.na(term)) %>%
+    dplyr::pull(term)
 
-  if (any(terms < 1)) {
+  if (any(not_na_terms < 1)) {
     rlang::abort(c(
       "Must not provide terms below 1",
       x = glue::glue("Identified terms below."),
@@ -189,7 +191,7 @@ check_company_terms <- function(data) {
     ))
   }
 
-  if (!all(terms %% 1 == 0)) {
+  if (!all(not_na_terms %% 1 == 0)) {
     rlang::abort(c(
       "Terms must be provided as whole numbers.",
       x = glue::glue("Identified terms that are not whole numbers."),
