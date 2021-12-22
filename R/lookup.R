@@ -76,7 +76,6 @@ p4i_p4b_sector_technology_lookup <- tibble::tribble(
   ~sector_p4b,   ~technology_p4b,             ~sector_p4i,    ~technology_p4i,
   "automotive",  "electric",                 "Automotive",   "Electric",
   "automotive",  "hybrid",                   "Automotive",   "Hybrid",
-  "automotive",  "fuelcell",                 "Automotive",   "FuelCell",
   "automotive",  "ice",                      "Automotive",   "ICE",
   "coal",        "coal",                     "Coal",         "Coal",
   "oil and gas", "gas",                      "Oil&Gas",      "Gas",
