@@ -179,7 +179,6 @@ check_financial_data <- function(financial_data, asset_type) {
 #'
 #' @return Returns data invisibly.
 check_company_terms <- function(data) {
-
   terms <- data$term
 
   if (any(terms < 1)) {
