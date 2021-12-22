@@ -23,7 +23,7 @@ add_terms <- function(pacta_results, company_terms, fallback_term) {
   # as this would indicate incorrect company_terms data
   companies_before_merge <- unique(pacta_results$company_name)
 
-  merged_results <- pacta_results %>%
+  results_with_term <- pacta_results %>%
     dplyr::inner_join(company_terms, by = "company_name")
 
   companies_after_merge <- unique(pacta_results$company_name)
@@ -38,18 +38,18 @@ add_terms <- function(pacta_results, company_terms, fallback_term) {
     ))
   }
 
-  companies_with_na_term <- companies_after_merge %>%
-    dplyr::select(.data$company_name, .data$term) %>%
-    dplyr::distinct() %>%
+  companies_with_na_term <- results_with_term %>%
     dplyr::filter(is.na(term)) %>%
-    nrow()
+    dplyr::pull(company_name) %>%
+    unique() %>%
+    length()
 
   if (companies_with_na_term > 0) {
-    message(paste("Using fallback term ", fallback_term, "for ", companies_with_na_term, "companies."))
+    message(paste("Using fallback term", fallback_term, "for", companies_with_na_term, "companies."))
 
-    merged_results <- merged_results %>%
+    results_with_term <- results_with_term %>%
       dplyr::mutate(term = dplyr::if_else(is.na(.data$term), fallback_term, .data$term))
   }
 
-  return(merged_results)
+  return(results_with_term)
 }
