@@ -48,7 +48,7 @@ add_terms <- function(pacta_results, company_terms, fallback_term) {
     message(paste("Using fallback term", fallback_term, "for", companies_with_na_term, "companies."))
 
     results_with_term <- results_with_term %>%
-      dplyr::mutate(term = dplyr::if_else(is.na(.data$term), fallback_term, .data$term))
+      dplyr::mutate(term = dplyr::if_else(is.na(.data$term), as.double(fallback_term), .data$term))
   }
 
   return(results_with_term)

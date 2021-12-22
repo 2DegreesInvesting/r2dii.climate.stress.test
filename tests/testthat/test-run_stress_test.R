@@ -68,7 +68,7 @@ test_that("with equity, without iteration, using maximum values of input argumen
   out <- tempfile()
   fs::dir_create(out)
 
-  suppressed_console_output <- suppressWarnings(capture.output(
+  suppressed_console_output <- suppressWarnings(suppressMessages(capture.output(
     results <- run_stress_test("equity",
       input_path_project_specific = in_specific,
       input_path_project_agnostic = in_agnostic,
@@ -84,7 +84,7 @@ test_that("with equity, without iteration, using maximum values of input argumen
       use_company_terms = TRUE,
       return_results = TRUE
     )
-  ))
+  )))
 
   expect_snapshot(lapply(results, as.data.frame))
 })
