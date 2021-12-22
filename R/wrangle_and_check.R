@@ -183,7 +183,11 @@ check_company_terms <- function(data) {
   terms <- data$term
 
   if (any(terms < 1)) {
-    stop("TBC")
+    rlang::abort(c(
+      "Must not provide terms below 1",
+      x = glue::glue("Identified terms below."),
+      i = "Please check company_terms.csv file."
+    ))
   }
 
   if (!all(terms %% 1 == 0)) {
