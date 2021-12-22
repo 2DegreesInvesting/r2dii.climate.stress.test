@@ -20,8 +20,7 @@ read_price_data <- function(path, expected_technologies) {
         unit = "c",
         price = "d"
       )
-    ) %>%
-    check_technology_availability(expected_technologies = expected_technologies)
+    )
 
   validate_data_has_expected_cols(
     data = data,

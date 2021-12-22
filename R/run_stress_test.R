@@ -292,12 +292,6 @@ run_stress_test_impl <- function(asset_type,
     log_path = log_path
   )
 
-  check_scenario_availability(
-    portfolio = input_data_list$pacta_results,
-    scen_data = input_data_list$scenario_data,
-    scenarios = scenarios_filter
-  )
-
   port_aum <- calculate_aum(input_data_list$sector_exposures)
   transition_scenario <- generate_transition_shocks(
     start_of_analysis = start_year,

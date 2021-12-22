@@ -35,10 +35,21 @@ process_pacta_results <- function(data, start_year, end_year, time_horizon,
     dplyr::filter(.data$scenario_geography %in% .env$scenario_geography_filter) %>%
     dplyr::filter(.data$ald_sector %in% .env$sectors) %>%
     dplyr::filter(.data$technology %in% .env$technologies) %>%
-    dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year)) %>%
+    dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$start_year + .env$time_horizon)) %>%
     # ADO 1943 - for the time being, one global term value is set by the user.
     # TODO: ADO 3182 - allow setting loan level term
     dplyr::mutate(term = term) %>%
+    check_level_availability(
+      expected_levels_list =
+        list(
+          year = start_year:(start_year + time_horizon),
+          allocation = allocation_method,
+          equity_market = equity_market_filter,
+          scenario = scenarios_filter,
+          scenario_geography = scenario_geography_filter
+        )
+    ) %>%
+    report_missing_col_combinations(col_names = c("allocation", "equity_market", "scenario", "scenario_geography", "technology", "year")) %>%
     report_all_duplicate_kinds(composite_unique_cols = cuc_pacta_results)
   # TODO: Add missingness check once pacta results input is overhauled
 
@@ -78,6 +89,16 @@ process_capacity_factors_power <- function(data,
     dplyr::filter(.data$scenario_geography %in% .env$scenario_geography_filter) %>%
     dplyr::filter(.data$technology %in% .env$technologies) %>%
     dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year)) %>%
+    check_level_availability(
+      expected_levels_list =
+        list(
+          year = start_year:end_year,
+          scenario = scenarios_filter,
+          scenario_geography = scenario_geography_filter,
+          technology = technologies[grep("Cap", technologies)] # when checking for expected levels of technology variable only expecte power sector levels
+        )
+    ) %>%
+    report_missing_col_combinations(col_names = c("scenario", "scenario_geography", "technology", "year")) %>%
     report_all_duplicate_kinds(composite_unique_cols = cuc_capacity_factors_power) %>%
     report_missings(name_data = "capacity factors", throw_error = TRUE)
 
@@ -112,10 +133,19 @@ process_excluded_companies <- function(data, company_exclusion, technologies) {
 #' @noRd
 process_df_price <- function(data, technologies, sectors, start_year, end_year) {
   data_processed <- data %>%
-    check_technology_availability(expected_technologies = technologies) %>%
     dplyr::filter(.data$sector %in% .env$sectors_lookup) %>%
+    check_sector_tech_mapping(sector_col = "sector") %>%
     dplyr::filter(.data$technology %in% .env$technologies_lookup) %>%
     dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year)) %>%
+    check_level_availability(
+      expected_levels_list =
+        list(
+          year = start_year:end_year,
+          sector = sectors,
+          technology = technologies
+        )
+    ) %>%
+    report_missing_col_combinations(col_names = c("technology", "year")) %>%
     report_all_duplicate_kinds(composite_unique_cols = cuc_price_data)
   # TODO: add reporting on missing after switching to long price data
 
@@ -135,8 +165,20 @@ process_scenario_data <- function(data, start_year, end_year, sectors, technolog
     dplyr::filter(.data$scenario %in% .env$scenarios_filter) %>%
     dplyr::filter(.data$scenario_geography %in% .env$scenario_geography_filter) %>%
     dplyr::filter(.data$ald_sector %in% .env$sectors) %>%
+    check_sector_tech_mapping() %>%
     dplyr::filter(.data$technology %in% .env$technologies) %>%
     dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year)) %>%
+    check_level_availability(
+      expected_levels_list =
+        list(
+          year = start_year:end_year,
+          ald_sector = sectors,
+          scenario = scenarios_filter,
+          scenario_geography = scenario_geography_filter,
+          technology = technologies
+        )
+    ) %>%
+    report_missing_col_combinations(col_names = c("scenario", "scenario_geography", "technology", "year")) %>%
     report_all_duplicate_kinds(composite_unique_cols = cuc_scenario_data) %>%
     report_missings(name_data = "scenario data", throw_error = TRUE)
 

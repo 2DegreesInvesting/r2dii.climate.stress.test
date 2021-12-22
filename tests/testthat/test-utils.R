@@ -42,7 +42,7 @@ test_that("No warning is thrown if combinations are exhaustive", {
 
   expect_silent(report_missing_col_combinations(
     data = data,
-    composite_unique_cols = c("a", "b")
+    col_names = c("a", "b")
   ))
 })
 
@@ -56,7 +56,7 @@ test_that("Warning is thrown if combinations are missing", {
   expect_warning(
     report_missing_col_combinations(
       data = data,
-      composite_unique_cols = c("a", "b")
+      col_names = c("a", "b")
     ),
     "Identified 1 missing combinations"
   )
