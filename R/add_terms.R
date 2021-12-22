@@ -38,5 +38,18 @@ add_terms <- function(pacta_results, company_terms, fallback_term) {
     ))
   }
 
+  companies_with_na_term <- companies_after_merge %>%
+    dplyr::select(.data$company_name, .data$term) %>%
+    dplyr::distinct() %>%
+    dplyr::filter(is.na(term)) %>%
+    nrow()
 
+  if (companies_with_na_term > 0) {
+    message(paste("Using fallback term ", fallback_term, "for ", companies_with_na_term, "companies."))
+
+    merged_results <- merged_results %>%
+      dplyr::mutate(term = dplyr::if_else(is.na(.data$term), fallback_term, .data$term))
+  }
+
+  return(merged_results)
 }
