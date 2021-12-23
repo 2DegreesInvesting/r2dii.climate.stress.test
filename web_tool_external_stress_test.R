@@ -61,6 +61,8 @@ if (file.exists(file.path(proc_input_path, pf_name, "total_portfolio.rda")) &
       .groups = "drop"
     ) %>%
     dplyr::ungroup()
+} else {
+  write_log("Insufficient Portfolio Data available. Skipping IPR stress test!")
 }
 
 
@@ -72,6 +74,8 @@ if (file.exists(file.path(results_path, pf_name, "Bonds_results_portfolio.rda"))
     dplyr::inner_join(portfolio_overview %>%
                        dplyr::filter(asset_type == "Equity"), by = c("investor_name", "portfolio_name")) %>%
     dplyr::mutate(tech_exposure = plan_carsten * portfolio_size)
+} else {
+  write_log("No Bonds Portfolio Data available. Skipping!")
 }
 
 if (file.exists(file.path(results_path, pf_name, "Equity_results_portfolio.rda"))) {
@@ -81,6 +85,8 @@ if (file.exists(file.path(results_path, pf_name, "Equity_results_portfolio.rda")
     dplyr::inner_join(portfolio_overview %>%
                        dplyr::filter(asset_type == "Equity"), by = c("investor_name", "portfolio_name")) %>%
     dplyr::mutate(tech_exposure = plan_carsten * portfolio_size)
+} else {
+  write_log("No Equity Portfolio Data available. Skipping!")
 }
 
 # load external shock data
@@ -114,6 +120,8 @@ if (exists("portfolio")) {
       loss = exposure * shock / 100,
       sector = ifelse(is.na(sector), "Other", sector)
     )
+} else {
+  write_log("No portfolio data -- skipping IPR stress test")
 }
 
 
@@ -123,4 +131,6 @@ if (exists("results_ipr")) {
   if (any(unique(results_ipr$sector) != "Other")) {
     results_ipr %>% readr::write_rds(file.path(results_path, pf_name, "Stress_test_results_IPR.rds"))
   }
+} else {
+  write_log("No Stress Test results available for IPR FPS Scenario")
 }
