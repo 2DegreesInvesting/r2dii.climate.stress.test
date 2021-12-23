@@ -373,6 +373,8 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
       )
     }
   }
+} else {
+  write_log("No Equity Portfolio Data available. Skipping!")
 }
 
 
@@ -510,6 +512,8 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
       )
     }
   }
+} else {
+  write_log("No Bonds Portfolio Data available. Skipping!")
 }
 
 
