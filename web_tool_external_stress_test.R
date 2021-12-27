@@ -23,7 +23,7 @@ source(file.path(stress_test_path, "R", "set_paths.R"))
 source("0_web_functions.R") # This script is sourced from PACTA_analysis, so path is correct
 source(file.path(stress_test_path, "R", "stress_test_model_functions.R"))
 
-devtools::load_all()
+devtools::load_all(quiet = TRUE)
 
 ################
 # INPUT VARIABLES
@@ -62,7 +62,7 @@ if (file.exists(file.path(proc_input_path, pf_name, "total_portfolio.rda")) &
     ) %>%
     dplyr::ungroup()
 } else {
-  print("Insufficient Portfolio Data available. Skipping IPR stress test!")
+  write_log("Insufficient Portfolio Data available. Skipping IPR stress test!")
 }
 
 
@@ -75,7 +75,7 @@ if (file.exists(file.path(results_path, pf_name, "Bonds_results_portfolio.rda"))
                        dplyr::filter(asset_type == "Equity"), by = c("investor_name", "portfolio_name")) %>%
     dplyr::mutate(tech_exposure = plan_carsten * portfolio_size)
 } else {
-  print("No Bonds Portfolio Data available. Skipping!")
+  write_log("No Bonds Portfolio Data available. Skipping!")
 }
 
 if (file.exists(file.path(results_path, pf_name, "Equity_results_portfolio.rda"))) {
@@ -86,7 +86,7 @@ if (file.exists(file.path(results_path, pf_name, "Equity_results_portfolio.rda")
                        dplyr::filter(asset_type == "Equity"), by = c("investor_name", "portfolio_name")) %>%
     dplyr::mutate(tech_exposure = plan_carsten * portfolio_size)
 } else {
-  print("No Equity Portfolio Data available. Skipping!")
+  write_log("No Equity Portfolio Data available. Skipping!")
 }
 
 # load external shock data
@@ -121,7 +121,7 @@ if (exists("portfolio")) {
       sector = ifelse(is.na(sector), "Other", sector)
     )
 } else {
-  print("No portfolio data -- skipping IPR stress test")
+  write_log("No portfolio data -- skipping IPR stress test")
 }
 
 
@@ -132,5 +132,5 @@ if (exists("results_ipr")) {
     results_ipr %>% readr::write_rds(file.path(results_path, pf_name, "Stress_test_results_IPR.rds"))
   }
 } else {
-  "No Stress Test results available for IPR FPS Scenario"
+  write_log("No Stress Test results available for IPR FPS Scenario")
 }
