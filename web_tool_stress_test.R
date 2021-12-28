@@ -276,7 +276,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
     dplyr::distinct_all()
 
   if (nrow(pacta_equity_results) <= 0) {
-    print("Input pacta data has 0 valid rows after filtering. Skipping equity calculation!")
+    write_log("Input pacta data has 0 valid rows after filtering. Skipping equity calculation!")
   } else {
 
     # check scenario availability across data inputs for equity
@@ -417,7 +417,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
     dplyr::distinct_all()
 
   if (nrow(pacta_bonds_results) <= 0) {
-    print("Input pacta data has 0 valid rows after filtering. Skipping bonds calculation!")
+    write_log("Input pacta data has 0 valid rows after filtering. Skipping bonds calculation!")
   } else {
 
     # check scenario availability across data inputs for bonds
