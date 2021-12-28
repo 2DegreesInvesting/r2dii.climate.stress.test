@@ -1,6 +1,12 @@
 devtools::load_all()
 
 high_carbon_tech <- c("Oil", "Gas", "Coal", "CoalCap", "GasCap", "OilCap", "ICE")
+investor_name_test <- "Meta Investor"
+portfolio_name_test <- "Meta Portfolio"
+asset_type_test <- "Equity"
+portfolio_size <- 2000000
+
+###----1 - Define Company trajectories
 
 ###----- standard case incl technology with increasing target----
 # company 101 & company 102 have an increasing and a decreasing technology each
@@ -9,9 +15,9 @@ high_carbon_tech <- c("Oil", "Gas", "Coal", "CoalCap", "GasCap", "OilCap", "ICE"
 
 ###----- case incl technology with increasing target and (partially) aligned plans----
 # companies 103, 104 and 105 have an increasing and a decreasing technology each
-# company 103 is aligend in the high carbon technology, but misaligned in the low carbon technology
-# company 104 is aligend in the low carbon technology, but misaligned in the high carbon technology
-# company 105 is aligend in both technologies
+# company 103 is aligned in the high carbon technology, but misaligned in the low carbon technology
+# company 104 is aligned in the low carbon technology, but misaligned in the high carbon technology
+# company 105 is aligned in both technologies
 
 ###----- case incl technology with increasing target and zero start value----
 # company 106 has 0 production of an increasing technology and no build out plans
@@ -40,8 +46,8 @@ high_carbon_tech <- c("Oil", "Gas", "Coal", "CoalCap", "GasCap", "OilCap", "ICE"
 
 
 test_cases <- tibble::tibble(
-  investor_name = "Meta Investor",
-  portfolio_name = "Meta Investor",
+  investor_name = investor_name_test,
+  portfolio_name = portfolio_name_test,
   scenario_source = "WEO2019",
   scenario = rep.int(c("WEO2019_NPS", "WEO2019_SDS"), 156),
   allocation = "portfolio_weight",
@@ -255,3 +261,90 @@ plot_example_company <- function(data) {
 }
 
 test_cases_long %>% plot_example_company()
+
+###----2 - Define Portfolio Exposures
+# we assume that all companies are valid inputs of the main asset type
+
+test_portfolio_distribution <- test_cases %>%
+  dplyr::filter(.data$year == min(.data$year, na.rm = TRUE)) %>%
+  dplyr::distinct(.data$investor_name, .data$portfolio_name, .data$financial_sector, .data$id, .data$technology, .data$plan_carsten) %>%
+  dplyr::group_by(.data$investor_name, .data$portfolio_name, .data$financial_sector) %>%
+  dplyr::summarise(plan_carsten = sum(.data$plan_carsten, na.rm = TRUE), .groups = "drop") %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(
+    asset_type = asset_type_test,
+    valid_input = TRUE,
+    value = .data$plan_carsten * portfolio_size
+  )
+
+test_exposures <- tibble::tibble(
+  investor_name = investor_name_test,
+  portfolio_name = portfolio_name_test,
+  asset_type = c(
+    rep.int(asset_type_test, 10),
+    asset_type_test,
+    "Others",
+    "Unclassifiable"
+  ), # potential other types: "Bonds", "Loans", "Funds", "Other", "Unclassifiable"
+  financial_sector = c(
+    "Automotive",
+    "Aviation",
+    "Cement",
+    "Coal",
+    "HDV",
+    "Oil&Gas",
+    "Other",
+    "Power",
+    "Shipping",
+    "Steel",
+    "Other",
+    "Power",
+    "Unclassifiable"
+  ),
+  valid_input = c(
+    rep.int(TRUE, 10),
+    FALSE,
+    TRUE,
+    FALSE
+  ),
+  valid_value_usd = NA_real_,
+  asset_value_usd = NA_real_,
+  portfolio_value_usd = NA_real_,
+  currency = "USD"
+)
+
+# left join the exposures so that the other sectors can be filled with 0 for
+# demo purposes
+test_exposures <- test_exposures %>%
+  dplyr::left_join(
+    test_portfolio_distribution,
+    by = c("investor_name", "portfolio_name", "asset_type", "financial_sector", "valid_input")
+  ) %>%
+  dplyr::mutate(
+    valid_value_usd = dplyr::if_else(!is.na(.data$value), .data$value, 0)
+  ) %>%
+  dplyr::select(-.data$value) %>%
+  dplyr::group_by(.data$investor_name, .data$portfolio_name, .data$asset_type, .data$valid_input) %>%
+  dplyr::mutate(asset_value_usd = sum(.data$valid_value_usd, na.rm = TRUE)) %>%
+  dplyr::ungroup() %>%
+  dplyr::group_by(.data$investor_name, .data$portfolio_name, .data$valid_input) %>%
+  dplyr::mutate(portfolio_value_usd = sum(.data$valid_value_usd, na.rm = TRUE)) %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(
+    portfolio_value_usd = dplyr::if_else(
+      asset_type == "Unclassifiable",
+      portfolio_size - sum(.data$valid_value_usd, na.rm = TRUE),
+      .data$portfolio_value_usd
+    ),
+    asset_value_usd = dplyr::if_else(
+      asset_type == "Unclassifiable",
+      portfolio_size - sum(.data$valid_value_usd, na.rm = TRUE),
+      .data$asset_value_usd
+    ),
+    valid_value_usd = dplyr::if_else(
+      asset_type == "Unclassifiable",
+      portfolio_size - sum(.data$valid_value_usd, na.rm = TRUE),
+      .data$valid_value_usd
+    )
+  )
+# verify that total exposure equals portfolio size
