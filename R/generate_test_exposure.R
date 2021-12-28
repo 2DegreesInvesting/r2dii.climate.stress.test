@@ -12,9 +12,17 @@
 generate_test_exposure <- function(data) {
   test_portfolio_distribution <- data %>%
     dplyr::filter(.data$year == min(.data$year, na.rm = TRUE)) %>%
-    dplyr::distinct(.data$investor_name, .data$portfolio_name, .data$financial_sector, .data$id, .data$technology, .data$plan_carsten) %>%
-    dplyr::group_by(.data$investor_name, .data$portfolio_name, .data$financial_sector) %>%
-    dplyr::summarise(plan_carsten = sum(.data$plan_carsten, na.rm = TRUE), .groups = "drop") %>%
+    dplyr::distinct(
+      .data$investor_name, .data$portfolio_name, .data$financial_sector,
+      .data$id, .data$technology, .data$plan_carsten
+    ) %>%
+    dplyr::group_by(
+      .data$investor_name, .data$portfolio_name, .data$financial_sector
+    ) %>%
+    dplyr::summarise(
+      plan_carsten = sum(.data$plan_carsten, na.rm = TRUE),
+      .groups = "drop"
+    ) %>%
     dplyr::ungroup() %>%
     dplyr::mutate(
       asset_type = .env$asset_type_test,
@@ -69,11 +77,20 @@ generate_test_exposure <- function(data) {
       valid_value_usd = dplyr::if_else(!is.na(.data$value), .data$value, 0)
     ) %>%
     dplyr::select(-.data$value) %>%
-    dplyr::group_by(.data$investor_name, .data$portfolio_name, .data$asset_type, .data$valid_input) %>%
-    dplyr::mutate(asset_value_usd = sum(.data$valid_value_usd, na.rm = TRUE)) %>%
+    dplyr::group_by(
+      .data$investor_name, .data$portfolio_name, .data$asset_type,
+      .data$valid_input
+    ) %>%
+    dplyr::mutate(
+      asset_value_usd = sum(.data$valid_value_usd, na.rm = TRUE)
+    ) %>%
     dplyr::ungroup() %>%
-    dplyr::group_by(.data$investor_name, .data$portfolio_name, .data$valid_input) %>%
-    dplyr::mutate(portfolio_value_usd = sum(.data$valid_value_usd, na.rm = TRUE)) %>%
+    dplyr::group_by(
+      .data$investor_name, .data$portfolio_name, .data$valid_input
+    ) %>%
+    dplyr::mutate(
+      portfolio_value_usd = sum(.data$valid_value_usd, na.rm = TRUE)
+    ) %>%
     dplyr::ungroup() %>%
     dplyr::mutate(
       portfolio_value_usd = dplyr::if_else(

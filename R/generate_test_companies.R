@@ -148,15 +148,23 @@ generate_test_companies <- function() {
     dplyr::mutate(
       plan_sec_prod = sum(.data$plan_tech_prod, na.rm = TRUE),
       plan_alloc_wt_sec_prod = sum(.data$plan_alloc_wt_tech_prod, na.rm = TRUE),
-      plan_sec_emission_factor = weighted.mean(.data$plan_emission_factor, w = .data$plan_tech_prod),
+      plan_sec_emission_factor = weighted.mean(
+        .data$plan_emission_factor,
+        w = .data$plan_tech_prod
+      ),
       scen_sec_prod = sum(.data$scen_tech_prod, na.rm = TRUE),
       scen_alloc_wt_sec_prod = sum(.data$scen_alloc_wt_tech_prod, na.rm = TRUE),
-      scen_sec_emission_factor = weighted.mean(.data$scen_emission_factor, w = .data$scen_tech_prod)
+      scen_sec_emission_factor = weighted.mean(
+        .data$scen_emission_factor,
+        w = .data$scen_tech_prod
+      )
     ) %>%
     dplyr::ungroup() %>%
     dplyr::mutate(
-      plan_carsten = (.data$plan_tech_prod / .data$plan_sec_prod) * .data$allocation_weight,
-      scen_carsten = (.data$scen_tech_prod / .data$scen_sec_prod) * .data$allocation_weight,
+      plan_carsten = (.data$plan_tech_prod / .data$plan_sec_prod) *
+        .data$allocation_weight,
+      scen_carsten = (.data$scen_tech_prod / .data$scen_sec_prod) *
+        .data$allocation_weight,
       plan_tech_share = .data$plan_tech_prod / .data$plan_sec_prod,
       scen_tech_share = .data$scen_tech_prod / .data$scen_sec_prod
     ) %>%
@@ -172,8 +180,10 @@ generate_test_companies <- function() {
     ) %>%
     dplyr::mutate(
       trajectory_deviation = dplyr::case_when(
-        .data$scen_alloc_wt_tech_prod == 0 & .data$plan_alloc_wt_tech_prod == 0 ~ 0,
-        .data$scen_alloc_wt_tech_prod == 0 & .data$plan_alloc_wt_tech_prod != 0 ~ -1,
+        .data$scen_alloc_wt_tech_prod == 0 &
+          .data$plan_alloc_wt_tech_prod == 0 ~ 0,
+        .data$scen_alloc_wt_tech_prod == 0 &
+          .data$plan_alloc_wt_tech_prod != 0 ~ -1,
         TRUE ~ .data$trajectory_deviation
       )
     ) %>%
