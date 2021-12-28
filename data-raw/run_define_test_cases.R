@@ -46,9 +46,10 @@ portfolio_size <- 2000000
 # company 112 has one aligned and one misaligned decreasing technology
 # company 113 has two aligned decreasing technologies
 
-
+# TODO: scenario paths should match the toy scenario data
 test_cases <- generate_test_companies()
 
+# generate QA graph for companies
 test_cases_long <- test_cases %>%
   dplyr::select(
     .data$scenario_source,
@@ -79,7 +80,6 @@ test_cases_long <- test_cases %>%
   dplyr::select(-c(.data$scenario_source, .data$scenario)) %>%
   dplyr::distinct_all() # remove duplicates introduced by pivoting
 
-
 plot_example_company <- function(data) {
   data %>%
     ggplot2::ggplot(ggplot2::aes(x = .data$year, y = .data$production, color = .data$metric)) +
@@ -89,8 +89,25 @@ plot_example_company <- function(data) {
 
 plot_example_company(test_cases_long)
 
+
 ### ----2 - Define Portfolio Exposures
 # we assume that all companies are valid inputs of the main asset type
 
 test_exposure <- generate_test_exposure(test_cases)
-# verify that total exposure equals portfolio size
+# TODO: verify that total exposure equals portfolio size
+
+### ----3 - Define toy scenario data
+# assumptions...
+
+test_scenarios <- generate_test_scenarios()
+
+# generate QA graph for scenarios
+plot_example_scenario <- function(data) {
+  data %>%
+    ggplot2::ggplot(ggplot2::aes(x = .data$year, y = .data$fair_share_perc, color = .data$scenario)) +
+    ggplot2::geom_line() +
+    ggplot2::facet_wrap(~ .data$ald_sector + .data$technology)
+}
+
+plot_example_scenario(test_scenarios)
+
