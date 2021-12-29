@@ -1,9 +1,9 @@
-#' Generates a toy scenario data set for the technologies of the stylized examples
+#' Generates a toy scenario data set for all technologies
 #'
 #' @description
 #' Does not take any inputs. Generates a data frame that contains toy scenario
 #' data in the format generally expected in the climate transition risk stress
-#' test. This is done for all technologies used in the stylized example cases.
+#' test. This is done for all technologies.
 #' @family example case functions
 #' @return data frame
 #' @export
@@ -11,17 +11,38 @@ generate_test_scenarios <- function() {
   test_scenario <- tibble::tibble(
     scenario_source = .env$scenario_source_test,
     scenario_geography = "Global",
-    scenario = rep.int(c(rep.int("WEO2019_NPS", 21), rep.int("WEO2019_SDS", 21)), 8),
+    scenario = c(
+      rep.int(
+        c(
+          rep.int("ETP2017_NPS", 21),
+          rep.int("ETP2017_SDS", 21)
+        ), 3
+      ),
+      rep.int(
+        c(
+          rep.int("WEO2019_NPS", 21),
+          rep.int("WEO2019_SDS", 21)
+        ), 9
+      )
+    ),
     ald_sector = c(
+      rep.int("Automotive", 126),
+      rep.int("Coal", 42),
       rep.int("Oil&Gas", 84),
       rep.int("Power", 252)
     ),
     units = c(
+      rep.int("#", 126),
+      rep.int("tonnes", 42),
       rep.int("cm", 42),
       rep.int("b/a", 42),
       rep.int("MW", 252)
     ),
     technology = c(
+      rep.int("Electric", 42),
+      rep.int("Hybrid", 42),
+      rep.int("ICE", 42),
+      rep.int("Coal", 42),
       rep.int("Gas", 42),
       rep.int("Oil", 42),
       rep.int("CoalCap", 42),
@@ -32,8 +53,12 @@ generate_test_scenarios <- function() {
       rep.int("OilCap", 42),
       rep.int("RenewablesCap", 42)
     ),
-    year = rep.int(2020:2040, 16),
+    year = rep.int(2020:2040, 24),
     direction = c(
+      rep.int("increasing", 42),
+      rep.int("increasing", 42),
+      rep.int("declining", 42),
+      rep.int("declining", 42),
       rep.int("declining", 42),
       rep.int("declining", 42),
       rep.int("declining", 42),
@@ -45,6 +70,10 @@ generate_test_scenarios <- function() {
       rep.int("increasing", 42)
     ),
     fair_share_perc = c(
+      seq(0, 0.1, by = 0.005), seq(0, 0.2, by = 0.01),
+      seq(0, 0.05, by = 0.0025), seq(0, 0.1, by = 0.005),
+      seq(0, -0.2, by = -0.01), seq(0, -0.3, by = -0.015),
+      seq(0, -0.2, by = -0.01), seq(0, -0.4, by = -0.02),
       seq(0, -0.1, by = -0.005), seq(0, -0.2, by = -0.01),
       seq(0, -0.2, by = -0.01), seq(0, -0.3, by = -0.015),
       seq(0, -0.2, by = -0.01), seq(0, -0.3, by = -0.015),

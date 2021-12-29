@@ -89,7 +89,6 @@ plot_example_company <- function(data) {
 
 plot_example_company(test_cases_long)
 
-
 ### ----2 - Define Portfolio Exposures
 # we assume that all companies are valid inputs of the main asset type
 test_exposure <- generate_test_exposure(test_cases)
@@ -108,7 +107,6 @@ plot_example_scenario <- function(data) {
 }
 
 plot_example_scenario(test_scenarios)
-
 
 ### ----4 - Define toy capacity factors data
 # assumptions...

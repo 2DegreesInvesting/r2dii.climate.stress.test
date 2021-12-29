@@ -2,7 +2,7 @@
 % Please edit documentation in R/generate_test_scenarios.R
 \name{generate_test_scenarios}
 \alias{generate_test_scenarios}
-\title{Generates a toy scenario data set for the technologies of the stylized examples}
+\title{Generates a toy scenario data set for all technologies}
 \usage{
 generate_test_scenarios()
 }
@@ -12,7 +12,7 @@ data frame
 \description{
 Does not take any inputs. Generates a data frame that contains toy scenario
 data in the format generally expected in the climate transition risk stress
-test. This is done for all technologies used in the stylized example cases.
+test. This is done for all technologies.
 }
 \seealso{
 Other example case functions: 

@@ -108,5 +108,10 @@ generate_test_exposure <- function(data) {
         .env$portfolio_size - sum(.data$valid_value_usd, na.rm = TRUE),
         .data$valid_value_usd
       )
+    ) %>%
+    dplyr::select(
+      .data$investor_name, .data$portfolio_name, .data$asset_type,
+      .data$financial_sector, .data$valid_input, .data$valid_value_usd,
+      .data$asset_value_usd, .data$portfolio_value_usd
     )
 }

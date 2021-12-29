@@ -12,7 +12,7 @@ data frame
 \description{
 Does not take any inputs. Generates a data frame that contains toy price
 data in the format generally expected in the climate transition risk stress
-test. This is done for all technologies used in the stylized examples.
+test. This is done for all technologies.
 }
 \seealso{
 Other example case functions: 
