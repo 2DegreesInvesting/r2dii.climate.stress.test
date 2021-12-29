@@ -3,6 +3,7 @@
 export("%>%")
 export(check_financial_data)
 export(credit_type_lookup)
+export(generate_test_capacity_factors)
 export(generate_test_companies)
 export(generate_test_exposure)
 export(generate_test_scenarios)

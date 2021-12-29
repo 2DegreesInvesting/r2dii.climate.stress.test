@@ -16,6 +16,7 @@ test. This is done for all technologies used in the stylized example cases.
 }
 \seealso{
 Other example case functions: 
+\code{\link{generate_test_capacity_factors}()},
 \code{\link{generate_test_companies}()},
 \code{\link{generate_test_exposure}()}
 }

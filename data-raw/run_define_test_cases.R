@@ -111,3 +111,8 @@ plot_example_scenario <- function(data) {
 
 plot_example_scenario(test_scenarios)
 
+
+### ----4 - Define toy capacity factors data
+# assumptions...
+
+test_capacity_factors <- generate_test_capacity_factors()

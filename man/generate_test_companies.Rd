@@ -16,6 +16,7 @@ stress test.
 }
 \seealso{
 Other example case functions: 
+\code{\link{generate_test_capacity_factors}()},
 \code{\link{generate_test_exposure}()},
 \code{\link{generate_test_scenarios}()}
 }
