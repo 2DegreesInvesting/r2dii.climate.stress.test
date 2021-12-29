@@ -116,3 +116,10 @@ plot_example_scenario(test_scenarios)
 # assumptions...
 
 test_capacity_factors <- generate_test_capacity_factors()
+
+### ----5 - Define toy price data (wide and long)
+# assumptions...
+
+test_price_data_wide <- generate_price_data_wide()
+
+test_price_data <- generate_price_data()
