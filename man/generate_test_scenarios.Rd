@@ -20,6 +20,7 @@ Other example case functions:
 \code{\link{generate_price_data}()},
 \code{\link{generate_test_capacity_factors}()},
 \code{\link{generate_test_companies}()},
+\code{\link{generate_test_exclude_companies_data}()},
 \code{\link{generate_test_exposure}()},
 \code{\link{generate_test_financial_data}()}
 }

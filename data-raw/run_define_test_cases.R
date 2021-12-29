@@ -92,13 +92,11 @@ plot_example_company(test_cases_long)
 
 ### ----2 - Define Portfolio Exposures
 # we assume that all companies are valid inputs of the main asset type
-
 test_exposure <- generate_test_exposure(test_cases)
 # TODO: verify that total exposure equals portfolio size
 
 ### ----3 - Define toy scenario data
 # assumptions...
-
 test_scenarios <- generate_test_scenarios()
 
 # generate QA graph for scenarios
@@ -114,18 +112,17 @@ plot_example_scenario(test_scenarios)
 
 ### ----4 - Define toy capacity factors data
 # assumptions...
-
 test_capacity_factors <- generate_test_capacity_factors()
 
 ### ----5 - Define toy price data (wide and long)
 # assumptions...
-
 test_price_data_wide <- generate_price_data_wide()
-
 test_price_data <- generate_price_data()
 
 ### ----6 - Define toy financial data
 # assumptions...
-
 test_financial_data <- generate_test_financial_data(test_cases)
 
+### ----7 - Define toy company exclusion data
+# assumptions...
+test_exclude_companies_data <- generate_test_exclude_companies_data()
