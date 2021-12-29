@@ -123,3 +123,9 @@ test_capacity_factors <- generate_test_capacity_factors()
 test_price_data_wide <- generate_price_data_wide()
 
 test_price_data <- generate_price_data()
+
+### ----6 - Define toy financial data
+# assumptions...
+
+test_financial_data <- generate_test_financial_data(test_cases)
+

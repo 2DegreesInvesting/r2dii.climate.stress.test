@@ -21,6 +21,7 @@ Other example case functions:
 \code{\link{generate_price_data}()},
 \code{\link{generate_test_companies}()},
 \code{\link{generate_test_exposure}()},
+\code{\link{generate_test_financial_data}()},
 \code{\link{generate_test_scenarios}()}
 }
 \concept{example case functions}
