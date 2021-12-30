@@ -4,15 +4,18 @@
 \alias{generate_test_companies}
 \title{Generates a toy PACTA style portfolio with example companies}
 \usage{
-generate_test_companies()
+generate_test_companies(data)
+}
+\arguments{
+\item{data}{data frame containing the test scenario data set}
 }
 \value{
 data frame
 }
 \description{
-Does not take any inputs. Generates a PACTA style portfolio that contains
-companies representing stylized cases of interest for the transition risk
-stress test.
+Takes example scenario data set as input. Generates a PACTA style portfolio
+that contains companies representing stylized cases of interest for the
+transition risk stress test.
 }
 \seealso{
 Other example case functions: 

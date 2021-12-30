@@ -8,7 +8,22 @@ scenario_pair_test <- c("WEO2019_NPS", "WEO2019_SDS")
 asset_type_test <- "Equity"
 portfolio_size <- 2000000
 
-### ----1 - Define Company trajectories
+### ----1 - Define toy scenario data
+# assumptions...
+test_scenarios <- generate_test_scenarios()
+
+# generate QA graph for scenarios
+plot_example_scenario <- function(data) {
+  data %>%
+    ggplot2::ggplot(ggplot2::aes(x = .data$year, y = .data$fair_share_perc, color = .data$scenario)) +
+    ggplot2::geom_line() +
+    ggplot2::facet_wrap(~ .data$ald_sector + .data$technology)
+}
+
+plot_example_scenario(test_scenarios)
+
+
+### ----2 - Define Company trajectories
 
 ### ----- standard case incl technology with increasing target----
 # company 101 & company 102 have an increasing and a decreasing technology each
@@ -47,7 +62,7 @@ portfolio_size <- 2000000
 # company 113 has two aligned decreasing technologies
 
 # TODO: scenario paths should match the toy scenario data
-test_cases <- generate_test_companies()
+test_cases <- generate_test_companies(test_scenarios)
 
 # generate QA graph for companies
 test_cases_long <- test_cases %>%
@@ -89,24 +104,10 @@ plot_example_company <- function(data) {
 
 plot_example_company(test_cases_long)
 
-### ----2 - Define Portfolio Exposures
+### ----3 - Define Portfolio Exposures
 # we assume that all companies are valid inputs of the main asset type
 test_exposure <- generate_test_exposure(test_cases)
 # TODO: verify that total exposure equals portfolio size
-
-### ----3 - Define toy scenario data
-# assumptions...
-test_scenarios <- generate_test_scenarios()
-
-# generate QA graph for scenarios
-plot_example_scenario <- function(data) {
-  data %>%
-    ggplot2::ggplot(ggplot2::aes(x = .data$year, y = .data$fair_share_perc, color = .data$scenario)) +
-    ggplot2::geom_line() +
-    ggplot2::facet_wrap(~ .data$ald_sector + .data$technology)
-}
-
-plot_example_scenario(test_scenarios)
 
 ### ----4 - Define toy capacity factors data
 # assumptions...
