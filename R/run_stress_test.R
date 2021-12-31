@@ -180,7 +180,6 @@ run_stress_test_impl <- function(asset_type,
 
   cat("-- Configuring analysis settings. \n")
 
-  flat_multiplier <- assign_flat_multiplier(asset_type = asset_type)
   lgd <- assign_lgd(
     asset_type = asset_type, lgd_senior_claims = lgd_senior_claims,
     lgd_subordinated_claims = lgd_subordinated_claims
@@ -318,7 +317,7 @@ run_stress_test_impl <- function(asset_type,
     div_netprofit_prop_coef = div_netprofit_prop_coef,
     plan_carsten = exposure_by_technology_and_company,
     port_aum = port_aum,
-    flat_multiplier = flat_multiplier,
+    flat_multiplier = assign_flat_multiplier(asset_type = asset_type),
     exclusion = input_data_list$excluded_companies
   )
 
