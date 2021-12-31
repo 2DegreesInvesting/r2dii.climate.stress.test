@@ -185,6 +185,8 @@ run_stress_test_impl <- function(asset_type,
   # TODO: It's more transparent to access the elements explicitely
   list2env(input_data_list, rlang::current_env())
 
+
+
   if (asset_type == "loans") {
     input_data_list$financial_data <- input_data_list$financial_data %>%
       dplyr::mutate(company_name = stringr::str_to_lower(.data$company_name))
@@ -202,6 +204,14 @@ run_stress_test_impl <- function(asset_type,
 
   cat("-- Calculating market risk. \n")
 
+  exposure_by_technology_and_company <- calculate_exposure_by_technology_and_company(
+    asset_type = asset_type,
+    input_data_list = input_data_list,
+    start_year = start_year,
+    scenario_to_follow_ls = shock_scenario_lookup,
+    log_path = log_path
+  )
+
   annual_profits <- calculate_annual_profits(
     asset_type = asset_type,
     input_data_list = input_data_list,
@@ -214,15 +224,6 @@ run_stress_test_impl <- function(asset_type,
     discount_rate = discount_rate,
     log_path = log_path
   )
-
-  exposure_by_technology_and_company <- calculate_exposure_by_technology_and_company(
-    asset_type = asset_type,
-    input_data_list = input_data_list,
-    start_year = start_year,
-    scenario_to_follow_ls = shock_scenario_lookup,
-    log_path = log_path
-  )
-
   port_aum <- calculate_aum(input_data_list$sector_exposures)
   results <- company_asset_value_at_risk(
     data = annual_profits,
