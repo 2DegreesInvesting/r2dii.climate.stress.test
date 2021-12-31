@@ -92,10 +92,11 @@ run_stress_test <- function(asset_type,
     iter_var = iter_var
   )
 
-  args_tibble <- tibble::as_tibble(args_list) %>%
+  args <- tibble::as_tibble(args_list) %>%
     dplyr::mutate(iter_var = .env$iter_var)
 
-  st_results_list <- purrr::map(1:nrow(args_tibble), run_stress_test_iteration, args_tibble = args_tibble)
+  st_results_list <- 1:nrow(args) %>%
+    purrr::map(~run_stress_test_iteration(args, n = .x))
 
   result_names <- names(st_results_list[[1]])
   st_results <- result_names %>%
@@ -134,8 +135,8 @@ run_stress_test <- function(asset_type,
 #'   `run_stress_test_imp` per row.
 #'
 #' @return List of stress test results.
-run_stress_test_iteration <- function(n, args_tibble) {
-  arg_tibble <- dplyr::slice(args_tibble, n)
+run_stress_test_iteration <- function(args, n) {
+  arg_tibble <- dplyr::slice(args, n)
 
   arg_list <- arg_tibble %>%
     dplyr::select(-.data$return_results) %>%
