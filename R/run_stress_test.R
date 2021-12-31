@@ -182,97 +182,106 @@ run_stress_test_impl <- function(asset_type,
 
   cat("-- Importing and preparing input data from designated input path. \n")
   input_data_list <- read_input_data(args_list)
-  # TODO: It's more transparent to access the elements explicitely
-  list2env(input_data_list, rlang::current_env())
 
-  report_company_drops(
-    data_list = input_data_list, asset_type = asset_type, log_path = log_path
-  )
+  compute_results_loss_and_changes <- function(input_data_list) {
+    # TODO: It's more transparent to access the elements explicitely
+    list2env(input_data_list, rlang::current_env())
 
-  transition_scenario <- generate_transition_shocks(
-    start_of_analysis = start_year,
-    end_of_analysis = end_year_lookup,
-    shock_years = shock_year
-  )
+    report_company_drops(
+      data_list = input_data_list,
+      asset_type = asset_type,
+      log_path = log_path
+    )
 
-  cat("-- Calculating market risk. \n")
+    transition_scenario <- generate_transition_shocks(
+      start_of_analysis = start_year,
+      end_of_analysis = end_year_lookup,
+      shock_years = shock_year
+    )
 
-  exposure_by_technology_and_company <- calculate_exposure_by_technology_and_company(
-    asset_type = asset_type,
-    input_data_list = input_data_list,
-    start_year = start_year,
-    scenario_to_follow_ls = shock_scenario_lookup,
-    log_path = log_path
-  )
+    cat("-- Calculating market risk. \n")
 
-  annual_profits <- calculate_annual_profits(
-    asset_type = asset_type,
-    input_data_list = input_data_list,
-    scenario_to_follow_baseline = baseline_scenario_lookup,
-    scenario_to_follow_ls = shock_scenario_lookup,
-    transition_scenario = transition_scenario,
-    start_year = start_year,
-    end_year = end_year_lookup,
-    time_horizon = time_horizon_lookup,
-    discount_rate = discount_rate,
-    log_path = log_path
-  )
-  port_aum <- calculate_aum(input_data_list$sector_exposures)
-  results <- company_asset_value_at_risk(
-    data = annual_profits,
-    terminal_value = terminal_value_lookup,
-    shock_scenario = transition_scenario,
-    div_netprofit_prop_coef = div_netprofit_prop_coef,
-    plan_carsten = exposure_by_technology_and_company,
-    port_aum = port_aum,
-    flat_multiplier = assign_flat_multiplier(asset_type = asset_type),
-    exclusion = input_data_list$excluded_companies
-  )
+    exposure_by_technology_and_company <-
+      calculate_exposure_by_technology_and_company(
+        asset_type = asset_type,
+        input_data_list = input_data_list,
+        start_year = start_year,
+        scenario_to_follow_ls = shock_scenario_lookup,
+        log_path = log_path
+      )
 
-  cat("-- Calculating credit risk. \n\n\n")
+    annual_profits <- calculate_annual_profits(
+      asset_type = asset_type,
+      input_data_list = input_data_list,
+      scenario_to_follow_baseline = baseline_scenario_lookup,
+      scenario_to_follow_ls = shock_scenario_lookup,
+      transition_scenario = transition_scenario,
+      start_year = start_year,
+      end_year = end_year_lookup,
+      time_horizon = time_horizon_lookup,
+      discount_rate = discount_rate,
+      log_path = log_path
+    )
+    port_aum <- calculate_aum(input_data_list$sector_exposures)
+    results <- company_asset_value_at_risk(
+      data = annual_profits,
+      terminal_value = terminal_value_lookup,
+      shock_scenario = transition_scenario,
+      div_netprofit_prop_coef = div_netprofit_prop_coef,
+      plan_carsten = exposure_by_technology_and_company,
+      port_aum = port_aum,
+      flat_multiplier = assign_flat_multiplier(asset_type = asset_type),
+      exclusion = input_data_list$excluded_companies
+    )
 
-  overall_pd_changes <- annual_profits %>%
-    calculate_pd_change_overall(
+    cat("-- Calculating credit risk. \n\n\n")
+
+    overall_pd_changes <- annual_profits %>%
+      calculate_pd_change_overall(
+        shock_year = transition_scenario$year_of_shock,
+        end_of_analysis = end_year_lookup,
+        risk_free_interest_rate = risk_free_rate
+      )
+
+    # TODO: ADO 879 - note which companies produce missing results due to
+    # insufficient input information (e.g. NAs for financials or 0 equity value)
+
+    expected_loss <- company_expected_loss(
+      data = overall_pd_changes,
+      loss_given_default = assign_lgd(
+        asset_type = asset_type,
+        lgd_senior_claims = lgd_senior_claims,
+        lgd_subordinated_claims = lgd_subordinated_claims
+      ),
+      exposure_at_default = exposure_by_technology_and_company,
+      port_aum = port_aum
+    )
+
+    # TODO: ADO 879 - note which companies produce missing results due to
+    # insufficient output from overall pd changes or related financial data inputs
+
+    annual_pd_changes <- calculate_pd_change_annual(
+      data = annual_profits,
       shock_year = transition_scenario$year_of_shock,
       end_of_analysis = end_year_lookup,
       risk_free_interest_rate = risk_free_rate
     )
 
-  # TODO: ADO 879 - note which companies produce missing results due to
-  # insufficient input information (e.g. NAs for financials or 0 equity value)
+    # TODO: ADO 879 - note which companies produce missing results due to
+    # insufficient input information (e.g. NAs for financials or 0 equity value)
 
-  expected_loss <- company_expected_loss(
-    data = overall_pd_changes,
-    loss_given_default = assign_lgd(
-      asset_type = asset_type,
-      lgd_senior_claims = lgd_senior_claims,
-      lgd_subordinated_claims = lgd_subordinated_claims
-    ),
-    exposure_at_default = exposure_by_technology_and_company,
-    port_aum = port_aum
-  )
-
-  # TODO: ADO 879 - note which companies produce missing results due to
-  # insufficient output from overall pd changes or related financial data inputs
-
-  annual_pd_changes <- calculate_pd_change_annual(
-    data = annual_profits,
-    shock_year = transition_scenario$year_of_shock,
-    end_of_analysis = end_year_lookup,
-    risk_free_interest_rate = risk_free_rate
-  )
-
-  # TODO: ADO 879 - note which companies produce missing results due to
-  # insufficient input information (e.g. NAs for financials or 0 equity value)
-
-  return(
-    list(
-      results = results,
-      expected_loss = expected_loss,
-      annual_pd_changes = annual_pd_changes,
-      overall_pd_changes = overall_pd_changes
+    return(
+      list(
+        results = results,
+        expected_loss = expected_loss,
+        annual_pd_changes = annual_pd_changes,
+        overall_pd_changes = overall_pd_changes
+      )
     )
-  )
+  }
+
+  return(compute_results_loss_and_changes(input_data_list))
+
 }
 
 log_args <- function(args_list, log_path) {
