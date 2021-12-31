@@ -181,7 +181,8 @@ run_stress_test_impl <- function(asset_type,
   cat("-- Configuring analysis settings. \n")
 
   lgd <- assign_lgd(
-    asset_type = asset_type, lgd_senior_claims = lgd_senior_claims,
+    asset_type = asset_type,
+    lgd_senior_claims = lgd_senior_claims,
     lgd_subordinated_claims = lgd_subordinated_claims
   )
 
