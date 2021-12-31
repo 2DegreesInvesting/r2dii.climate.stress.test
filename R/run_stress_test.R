@@ -176,6 +176,7 @@ run_stress_test_impl <- function(asset_type,
   args_list <- mget(names(formals()), sys.frame(sys.nframe()))
 
   out <- args_list %>%
+    # TODO: This should be done once, not one time per iteration
     read_input_data() %>%
     compute_results_loss_and_changes(args_list)
 
