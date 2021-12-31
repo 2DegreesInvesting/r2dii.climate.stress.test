@@ -175,14 +175,8 @@ run_stress_test_impl <- function(asset_type,
                                  iter_var) {
   args_list <- mget(names(formals()), sys.frame(sys.nframe()))
 
-  log_path <- file.path(output_path, paste0("log_file_", iter_var, ".txt"))
-
-  paste_write("\n\nIteration with parameter settings:", log_path = log_path)
-  purrr::walk(names(args_list), function(name) {
-    paste(name, magrittr::extract2(args_list, name), sep = ": ") %>%
-      paste_write(log_path = log_path)
-  })
-  paste_write("\n", log_path = log_path)
+  log_path <- log_path(args_list)
+  log_args(args_list, log_path)
 
   cat("-- Configuring analysis settings. \n")
 
@@ -372,5 +366,22 @@ run_stress_test_impl <- function(asset_type,
       annual_pd_changes = annual_pd_changes,
       overall_pd_changes = overall_pd_changes
     )
+  )
+}
+
+log_args <- function(args_list, log_path) {
+  paste_write("\n\nIteration with parameter settings:", log_path = log_path)
+  purrr::walk(names(args_list), function(name) {
+    paste(name, magrittr::extract2(args_list, name), sep = ": ") %>%
+      paste_write(log_path = log_path)
+  })
+  paste_write("\n", log_path = log_path)
+
+  invisible(args_list)
+}
+
+log_path <- function(args_list) {
+  file.path(
+    args_list$output_path, paste0("log_file_", args_list$iter_var, ".txt")
   )
 }
