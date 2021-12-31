@@ -175,10 +175,6 @@ run_stress_test_impl <- function(asset_type,
                                  iter_var) {
   args_list <- mget(names(formals()), sys.frame(sys.nframe()))
 
-  cat("-- Configuring analysis settings. \n")
-
-  cat("-- Importing and preparing input data from designated input path. \n")
-
   out <- args_list %>%
     read_input_data() %>%
     compute_results_loss_and_changes(args_list)
@@ -207,6 +203,8 @@ log_path <- function(args_list) {
 }
 
 read_input_data <- function(args_list) {
+  cat("-- Importing and preparing input data from designated input path. \n")
+
   # TODO: It's more transparent to access the elements explicitely
   list2env(args_list, envir = rlang::current_env())
 
@@ -308,6 +306,9 @@ scenarios_filter <- function() {
 }
 
 compute_results_loss_and_changes <- function(input_data_list, args_list) {
+  # TODO: Move where?
+  cat("-- Configuring analysis settings. \n")
+
   # TODO: It's more transparent to access the elements explicitely
   list2env(args_list, rlang::current_env())
   list2env(input_data_list, rlang::current_env())
@@ -315,53 +316,50 @@ compute_results_loss_and_changes <- function(input_data_list, args_list) {
   log_path <- log_path(args_list)
   log_args(args_list, log_path)
 
-  report_company_drops(
-    data_list = input_data_list,
-    asset_type = asset_type,
-    log_path = log_path
-  )
+  report_company_drops(input_data_list, asset_type, log_path)
 
-  transition_scenario <- generate_transition_shocks(
-    start_of_analysis = start_year,
-    end_of_analysis = end_year_lookup,
-    shock_years = shock_year
-  )
+  transition_scenario <- start_year %>%
+    generate_transition_shocks(
+      end_of_analysis = end_year_lookup,
+      shock_years = shock_year
+    )
 
+  # TODO: Move into calculate_exposure_by_technology_and_company?
   cat("-- Calculating market risk. \n")
 
-  exposure_by_technology_and_company <-
+  exposure_by_technology_and_company <- asset_type %>%
     calculate_exposure_by_technology_and_company(
-      asset_type = asset_type,
       input_data_list = input_data_list,
       start_year = start_year,
       scenario_to_follow_ls = shock_scenario_lookup,
       log_path = log_path
     )
 
-  annual_profits <- calculate_annual_profits(
-    asset_type = asset_type,
-    input_data_list = input_data_list,
-    scenario_to_follow_baseline = baseline_scenario_lookup,
-    scenario_to_follow_ls = shock_scenario_lookup,
-    transition_scenario = transition_scenario,
-    start_year = start_year,
-    end_year = end_year_lookup,
-    time_horizon = time_horizon_lookup,
-    discount_rate = discount_rate,
-    log_path = log_path
-  )
+  annual_profits <- asset_type %>%
+    calculate_annual_profits(
+      input_data_list = input_data_list,
+      scenario_to_follow_baseline = baseline_scenario_lookup,
+      scenario_to_follow_ls = shock_scenario_lookup,
+      transition_scenario = transition_scenario,
+      start_year = start_year,
+      end_year = end_year_lookup,
+      time_horizon = time_horizon_lookup,
+      discount_rate = discount_rate,
+      log_path = log_path
+    )
   port_aum <- calculate_aum(input_data_list$sector_exposures)
-  results <- company_asset_value_at_risk(
-    data = annual_profits,
-    terminal_value = terminal_value_lookup,
-    shock_scenario = transition_scenario,
-    div_netprofit_prop_coef = div_netprofit_prop_coef,
-    plan_carsten = exposure_by_technology_and_company,
-    port_aum = port_aum,
-    flat_multiplier = assign_flat_multiplier(asset_type = asset_type),
-    exclusion = input_data_list$excluded_companies
-  )
+  results <- annual_profits %>%
+    company_asset_value_at_risk(
+      terminal_value = terminal_value_lookup,
+      shock_scenario = transition_scenario,
+      div_netprofit_prop_coef = div_netprofit_prop_coef,
+      plan_carsten = exposure_by_technology_and_company,
+      port_aum = port_aum,
+      flat_multiplier = assign_flat_multiplier(asset_type = asset_type),
+      exclusion = input_data_list$excluded_companies
+    )
 
+  # TODO: Move into calculate_pd_change_overall?
   cat("-- Calculating credit risk. \n\n\n")
 
   overall_pd_changes <- annual_profits %>%
@@ -374,26 +372,26 @@ compute_results_loss_and_changes <- function(input_data_list, args_list) {
   # TODO: ADO 879 - note which companies produce missing results due to
   # insufficient input information (e.g. NAs for financials or 0 equity value)
 
-  expected_loss <- company_expected_loss(
-    data = overall_pd_changes,
-    loss_given_default = assign_lgd(
-      asset_type = asset_type,
-      lgd_senior_claims = lgd_senior_claims,
-      lgd_subordinated_claims = lgd_subordinated_claims
-    ),
-    exposure_at_default = exposure_by_technology_and_company,
-    port_aum = port_aum
-  )
+  expected_loss <- overall_pd_changes %>%
+    company_expected_loss(
+      loss_given_default = assign_lgd(
+        asset_type = asset_type,
+        lgd_senior_claims = lgd_senior_claims,
+        lgd_subordinated_claims = lgd_subordinated_claims
+      ),
+      exposure_at_default = exposure_by_technology_and_company,
+      port_aum = port_aum
+    )
 
   # TODO: ADO 879 - note which companies produce missing results due to
   # insufficient output from overall pd changes or related financial data inputs
 
-  annual_pd_changes <- calculate_pd_change_annual(
-    data = annual_profits,
-    shock_year = transition_scenario$year_of_shock,
-    end_of_analysis = end_year_lookup,
-    risk_free_interest_rate = risk_free_rate
-  )
+  annual_pd_changes <- annual_profits %>%
+    calculate_pd_change_annual(
+      shock_year = transition_scenario$year_of_shock,
+      end_of_analysis = end_year_lookup,
+      risk_free_interest_rate = risk_free_rate
+    )
 
   # TODO: ADO 879 - note which companies produce missing results due to
   # insufficient input information (e.g. NAs for financials or 0 equity value)
