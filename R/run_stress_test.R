@@ -300,94 +300,94 @@ log_path <- function(args_list) {
   return(out)
 }
 
-  read_input_data <- function(args_list) {
-    # TODO: It's more transparent to access the elements explicitely
-    list2env(args_list, envir = rlang::current_env())
+read_input_data <- function(args_list) {
+  # TODO: It's more transparent to access the elements explicitely
+  list2env(args_list, envir = rlang::current_env())
 
-    pacta_results <- read_pacta_results(
-        path = file.path(input_path_project_specific, paste0(stringr::str_to_title(asset_type), "_results_", calculation_level_lookup, ".rda"))
-      )
-
-    start_year <- min(pacta_results$year, na.rm = TRUE)
-
-    pacta_results <- pacta_results %>%
-      process_pacta_results(
-        start_year = start_year,
-        end_year = end_year_lookup,
-        time_horizon = time_horizon_lookup,
-        scenario_geography_filter = scenario_geography_filter_lookup,
-        scenarios_filter = scenarios_filter(),
-        equity_market_filter = equity_market_filter_lookup,
-        term = term,
-        sectors = sectors_lookup,
-        technologies = technologies_lookup,
-        allocation_method = allocation_method_lookup
-      )
-
-    sector_exposures <- read_sector_exposures(file.path(input_path_project_specific, "overview_portfolio.rda")) %>%
-      process_sector_exposures(asset_type = asset_type)
-
-    capacity_factors_power <- read_capacity_factors(
-      path = file.path(input_path_project_agnostic, "prewrangled_capacity_factors_WEO_2020.csv")
-    ) %>%
-      process_capacity_factors_power(
-        scenarios_filter = scenarios_filter(),
-        scenario_geography_filter = scenario_geography_filter_lookup,
-        technologies = technologies_lookup,
-        start_year = start_year,
-        end_year = end_year_lookup
-      )
-
-    excluded_companies <- read_excluded_companies(
-      path = file.path(input_path_project_agnostic, "exclude-companies.csv")
-    ) %>%
-      process_excluded_companies(company_exclusion = company_exclusion, technologies = technologies_lookup)
-
-    df_price <- read_price_data_old2(
-      path = file.path(input_path_project_agnostic, paste0("prices_data_", price_data_version_lookup, ".csv"))
-    ) %>%
-      process_df_price(
-        technologies = technologies_lookup,
-        sectors = sectors_lookup,
-        start_year = start_year,
-        end_year = end_year_lookup
-      )
-
-    scenario_data <- read_scenario_data(
-      path = file.path(input_path_project_agnostic, paste0("Scenarios_AnalysisInput_", start_year, ".csv"))
-    ) %>%
-      process_scenario_data(
-        start_year = start_year,
-        end_year = end_year_lookup,
-        sectors = sectors_lookup,
-        technologies = technologies_lookup,
-        scenario_geography_filter = scenario_geography_filter_lookup,
-        scenarios_filter = scenarios_filter()
-      )
-
-    financial_data <- read_financial_data(
-      path = file.path(input_path_project_agnostic, "prewrangled_financial_data_stress_test.csv")
-    ) %>%
-      process_financial_data(asset_type = asset_type)
-
-    company_terms <- read_company_terms(file.path(input_path_project_specific, "company_terms.csv"),
-      use_company_terms = use_company_terms
+  pacta_results <- read_pacta_results(
+      path = file.path(input_path_project_specific, paste0(stringr::str_to_title(asset_type), "_results_", calculation_level_lookup, ".rda"))
     )
 
-    input_data_list <- list(
+  start_year <- min(pacta_results$year, na.rm = TRUE)
+
+  pacta_results <- pacta_results %>%
+    process_pacta_results(
       start_year = start_year,
-      pacta_results = pacta_results,
-      capacity_factors_power = capacity_factors_power,
-      excluded_companies = excluded_companies,
-      sector_exposures = sector_exposures,
-      scenario_data = scenario_data,
-      df_price = df_price,
-      financial_data = financial_data
+      end_year = end_year_lookup,
+      time_horizon = time_horizon_lookup,
+      scenario_geography_filter = scenario_geography_filter_lookup,
+      scenarios_filter = scenarios_filter(),
+      equity_market_filter = equity_market_filter_lookup,
+      term = term,
+      sectors = sectors_lookup,
+      technologies = technologies_lookup,
+      allocation_method = allocation_method_lookup
     )
 
-    return(input_data_list)
+  sector_exposures <- read_sector_exposures(file.path(input_path_project_specific, "overview_portfolio.rda")) %>%
+    process_sector_exposures(asset_type = asset_type)
+
+  capacity_factors_power <- read_capacity_factors(
+    path = file.path(input_path_project_agnostic, "prewrangled_capacity_factors_WEO_2020.csv")
+  ) %>%
+    process_capacity_factors_power(
+      scenarios_filter = scenarios_filter(),
+      scenario_geography_filter = scenario_geography_filter_lookup,
+      technologies = technologies_lookup,
+      start_year = start_year,
+      end_year = end_year_lookup
+    )
+
+  excluded_companies <- read_excluded_companies(
+    path = file.path(input_path_project_agnostic, "exclude-companies.csv")
+  ) %>%
+    process_excluded_companies(company_exclusion = company_exclusion, technologies = technologies_lookup)
+
+  df_price <- read_price_data_old2(
+    path = file.path(input_path_project_agnostic, paste0("prices_data_", price_data_version_lookup, ".csv"))
+  ) %>%
+    process_df_price(
+      technologies = technologies_lookup,
+      sectors = sectors_lookup,
+      start_year = start_year,
+      end_year = end_year_lookup
+    )
+
+  scenario_data <- read_scenario_data(
+    path = file.path(input_path_project_agnostic, paste0("Scenarios_AnalysisInput_", start_year, ".csv"))
+  ) %>%
+    process_scenario_data(
+      start_year = start_year,
+      end_year = end_year_lookup,
+      sectors = sectors_lookup,
+      technologies = technologies_lookup,
+      scenario_geography_filter = scenario_geography_filter_lookup,
+      scenarios_filter = scenarios_filter()
+    )
+
+  financial_data <- read_financial_data(
+    path = file.path(input_path_project_agnostic, "prewrangled_financial_data_stress_test.csv")
+  ) %>%
+    process_financial_data(asset_type = asset_type)
+
+  company_terms <- read_company_terms(file.path(input_path_project_specific, "company_terms.csv"),
+    use_company_terms = use_company_terms
+  )
+
+  input_data_list <- list(
+    start_year = start_year,
+    pacta_results = pacta_results,
+    capacity_factors_power = capacity_factors_power,
+    excluded_companies = excluded_companies,
+    sector_exposures = sector_exposures,
+    scenario_data = scenario_data,
+    df_price = df_price,
+    financial_data = financial_data
+  )
+
+  return(input_data_list)
 }
 
 scenarios_filter <- function() {
-  unique(c(baseline_scenario_lookup, shock_scenario_lookup))
+  return(unique(c(baseline_scenario_lookup, shock_scenario_lookup)))
 }
