@@ -186,12 +186,7 @@ run_stress_test_impl <- function(asset_type,
     lgd_subordinated_claims = lgd_subordinated_claims
   )
 
-  scenarios_filter <- unique(
-    c(
-      baseline_scenario_lookup,
-      shock_scenario_lookup
-    )
-  )
+  scenarios_filter <- unique(c(baseline_scenario_lookup, shock_scenario_lookup))
 
   cat("-- Importing and preparing input data from designated input path. \n")
 
