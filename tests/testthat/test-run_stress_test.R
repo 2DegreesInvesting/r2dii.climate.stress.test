@@ -2,7 +2,7 @@ test_that("with bonds, with iteration, using default settings output is unchange
   skip_if_not(opt_in_snapshots())
   skip_on_ci()
   skip_on_cran()
-  # skip_slow_tests()
+  skip_slow_tests()
 
   in_specific <- Sys.getenv("ST_SPECIFIC_BONDS")
   in_agnostic <- Sys.getenv("ST_AGNOSTIC")

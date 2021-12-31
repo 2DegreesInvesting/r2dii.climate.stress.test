@@ -144,11 +144,12 @@ run_stress_test_iteration <- function(n, args_tibble) {
   arg_tibble2 <- arg_tibble %>%
     dplyr::select(-dplyr::all_of(setup_vars_lookup)) %>%
     dplyr::rename_with(~ paste0(.x, "_arg"))
-  # browser()
-  st_result <- do.call(args = arg_list, what = run_stress_test_impl) %>%
+
+  out <- arg_list %>%
+    run_stress_test_impl() %>%
     purrr::map(dplyr::bind_cols, data_y = arg_tibble2)
 
-  return(st_result)
+  return(out)
 }
 
 
@@ -160,29 +161,13 @@ run_stress_test_iteration <- function(n, args_tibble) {
 #' @inheritParams write_stress_test_results
 #'
 #' @return A list of stress test results.
-run_stress_test_impl <- function(asset_type,
-                                 input_path_project_specific,
-                                 input_path_project_agnostic,
-                                 output_path,
-                                 lgd_senior_claims,
-                                 lgd_subordinated_claims,
-                                 risk_free_rate,
-                                 discount_rate,
-                                 div_netprofit_prop_coef,
-                                 shock_year,
-                                 term,
-                                 company_exclusion,
-                                 use_company_terms,
-                                 iter_var) {
-  args_list <- mget(names(formals()), sys.frame(sys.nframe()))
-
+run_stress_test_impl <- function(args_list) {
   out <- args_list %>%
     # TODO: This should be done once, not one time per iteration
     read_input_data() %>%
     compute_results_loss_and_changes(args_list)
 
   return(out)
-
 }
 
 log_args <- function(args_list, log_path) {
