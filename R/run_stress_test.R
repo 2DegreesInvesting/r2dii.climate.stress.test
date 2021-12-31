@@ -180,12 +180,6 @@ run_stress_test_impl <- function(asset_type,
 
   cat("-- Configuring analysis settings. \n")
 
-  # lgd <- assign_lgd(
-  #   asset_type = asset_type,
-  #   lgd_senior_claims = lgd_senior_claims,
-  #   lgd_subordinated_claims = lgd_subordinated_claims
-  # )
-
   cat("-- Importing and preparing input data from designated input path. \n")
   input_data_list <- read_input_data(args_list)
   # TODO: It's more transparent to access the elements explicitely
@@ -197,12 +191,9 @@ run_stress_test_impl <- function(asset_type,
   }
 
   report_company_drops(
-    data_list = input_data_list,
-    asset_type = asset_type,
-    log_path = log_path
+    data_list = input_data_list, asset_type = asset_type, log_path = log_path
   )
 
-  port_aum <- calculate_aum(input_data_list$sector_exposures)
   transition_scenario <- generate_transition_shocks(
     start_of_analysis = start_year,
     end_of_analysis = end_year_lookup,
@@ -232,6 +223,7 @@ run_stress_test_impl <- function(asset_type,
     log_path = log_path
   )
 
+  port_aum <- calculate_aum(input_data_list$sector_exposures)
   results <- company_asset_value_at_risk(
     data = annual_profits,
     terminal_value = terminal_value_lookup,
