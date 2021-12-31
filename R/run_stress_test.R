@@ -180,11 +180,11 @@ run_stress_test_impl <- function(asset_type,
 
   cat("-- Configuring analysis settings. \n")
 
-  lgd <- assign_lgd(
-    asset_type = asset_type,
-    lgd_senior_claims = lgd_senior_claims,
-    lgd_subordinated_claims = lgd_subordinated_claims
-  )
+  # lgd <- assign_lgd(
+  #   asset_type = asset_type,
+  #   lgd_senior_claims = lgd_senior_claims,
+  #   lgd_subordinated_claims = lgd_subordinated_claims
+  # )
 
   cat("-- Importing and preparing input data from designated input path. \n")
   input_data_list <- read_input_data(args_list)
@@ -257,7 +257,11 @@ run_stress_test_impl <- function(asset_type,
 
   expected_loss <- company_expected_loss(
     data = overall_pd_changes,
-    loss_given_default = lgd,
+    loss_given_default = assign_lgd(
+      asset_type = asset_type,
+      lgd_senior_claims = lgd_senior_claims,
+      lgd_subordinated_claims = lgd_subordinated_claims
+    ),
     exposure_at_default = exposure_by_technology_and_company,
     port_aum = port_aum
   )
