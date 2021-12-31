@@ -148,6 +148,8 @@ run_stress_test_iteration <- function(n, args_tibble) {
 
   st_result <- do.call(args = arg_list_row, what = run_stress_test_impl) %>%
     purrr::map(dplyr::bind_cols, data_y = arg_tibble_row)
+
+  return(st_result)
 }
 
 
