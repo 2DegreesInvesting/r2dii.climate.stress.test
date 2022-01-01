@@ -62,11 +62,6 @@ run_stress_test <- function(asset_type,
                             return_results = FALSE) {
   cat("-- Running transition risk stress test. \n\n\n")
 
-  args_list <- mget(names(formals()), sys.frame(sys.nframe())) %>%
-    fail_if_input_args_are_missing()
-
-  iter_var <- get_iter_var(args_list)
-
   cat("-- Validating input arguments. \n")
 
   validate_input_values(
@@ -87,12 +82,11 @@ run_stress_test <- function(asset_type,
     use_company_terms = use_company_terms
   )
 
-  args_list$output_path <- customise_output_path(
-    output_path = args_list$output_path,
-    iter_var = iter_var
-  )
-
-  st_results_list <- run_stress_test_iteration2(args_list, iter_var)
+  args_list <- mget(names(formals()), sys.frame(sys.nframe())) %>%
+    fail_if_input_args_are_missing()
+  iter_var <- get_iter_var(args_list)
+  args_list$output_path <- customise_output_path(args_list$output_path, iter_var)
+  st_results_list <- run_stress_test_iteration(args_list, iter_var)
 
   result_names <- names(st_results_list[[1]])
   st_results <- result_names %>%
@@ -131,7 +125,7 @@ run_stress_test <- function(asset_type,
 #'   `run_stress_test_imp` per row.
 #'
 #' @return List of stress test results.
-run_stress_test_iteration2 <- function(args_list, iter_var) {
+run_stress_test_iteration <- function(args_list, iter_var) {
   # browser()
 
   args <- tibble::as_tibble(args_list) %>%
@@ -159,24 +153,6 @@ run_stress_test_iteration2 <- function(args_list, iter_var) {
 
   return(out)
 }
-run_stress_test_iteration <- function(args, n) {
-  arg_tibble <- dplyr::slice(args, n)
-
-  arg_list <- arg_tibble %>%
-    dplyr::select(-.data$return_results) %>%
-    as.list()
-
-  arg_tibble2 <- arg_tibble %>%
-    dplyr::select(-dplyr::all_of(setup_vars_lookup)) %>%
-    dplyr::rename_with(~ paste0(.x, "_arg"))
-
-  out <- arg_list %>%
-    run_stress_test_impl() %>%
-    purrr::map(dplyr::bind_cols, data_y = arg_tibble2)
-
-  return(out)
-}
-
 
 #' Run stress testing for provided asset type.
 #'
