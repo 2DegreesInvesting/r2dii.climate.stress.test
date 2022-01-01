@@ -126,29 +126,26 @@ run_stress_test <- function(asset_type,
 #'
 #' @return List of stress test results.
 run_stress_test_iteration <- function(args_list, iter_var) {
-  # browser()
-
   args <- tibble::as_tibble(args_list) %>%
     dplyr::mutate(iter_var = .env$iter_var)
 
   n <- nrow(args)
   out <- as.list(logical(n))
-  for (i in seq_len(n)) {
-    arg_row <- dplyr::slice(args, i)
 
-    args_i <- arg_row %>%
+  for (i in seq_len(n)) {
+    args_row_i <- dplyr::slice(args, i)
+
+    args_i <- args_row_i %>%
       dplyr::select(-.data$return_results) %>%
       as.list()
 
-    arg_tibble2 <- arg_row %>%
+    arg_metadata <- args_row_i %>%
       dplyr::select(-dplyr::all_of(setup_vars_lookup)) %>%
       dplyr::rename_with(~ paste0(.x, "_arg"))
 
-    out_i <- run_stress_test_impl(args_i)
-    out_i <- out_i %>%
-      purrr::map(dplyr::bind_cols, data_y = arg_tibble2)
-
-    out[[i]] <- out_i
+    out[[i]] <- args_i %>%
+      run_stress_test_impl() %>%
+      purrr::map(dplyr::bind_cols, data_y = arg_metadata)
   }
 
   return(out)
