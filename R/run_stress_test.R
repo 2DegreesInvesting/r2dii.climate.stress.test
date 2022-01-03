@@ -139,31 +139,19 @@ run_stress_test_iteration <- function(args_list, iter_var) {
       dplyr::select(-.data$return_results) %>%
       as.list()
 
+    cat("-- Importing and preparing input data from designated input path. \n")
+    data <- args_i %>%
+      st_read() %>%
+      st_process(args_i)
+
     arg_metadata <- args_row_i %>%
       dplyr::select(-dplyr::all_of(setup_vars_lookup)) %>%
       dplyr::rename_with(~ paste0(.x, "_arg"))
 
-    out[[i]] <- args_i %>%
-      run_stress_test_impl() %>%
+    out[[i]] <- data %>%
+      compute_results_loss_and_changes(args_i) %>%
       purrr::map(dplyr::bind_cols, data_y = arg_metadata)
   }
-
-  return(out)
-}
-
-#' Run stress testing for provided asset type.
-#'
-#' Runs stress test per iteration.
-#'
-#' @inheritParams run_stress_test
-#' @inheritParams write_stress_test_results
-#'
-#' @return A list of stress test results.
-run_stress_test_impl <- function(args_list) {
-  out <- args_list %>%
-    # TODO: This should be done once, not one time per iteration
-    read_input_data() %>%
-    compute_results_loss_and_changes(args_list)
 
   return(out)
 }
@@ -187,10 +175,7 @@ log_path <- function(args_list) {
   return(out)
 }
 
-read_input_data <- function(args_list) {
-  cat("-- Importing and preparing input data from designated input path. \n")
-
-  # TODO: It's more transparent to access the elements explicitely
+st_read <- function(args_list) {
   list2env(args_list, envir = rlang::current_env())
 
   pacta_results <- input_path_project_specific %>%
@@ -198,6 +183,48 @@ read_input_data <- function(args_list) {
     read_pacta_results()
 
   start_year <- min(pacta_results$year, na.rm = TRUE)
+
+  sector_exposures <- input_path_project_specific %>%
+    file.path("overview_portfolio.rda") %>%
+    read_sector_exposures()
+
+  capacity_factors_power <- input_path_project_agnostic %>%
+    file.path("prewrangled_capacity_factors_WEO_2020.csv") %>%
+    read_capacity_factors()
+
+  excluded_companies <- input_path_project_agnostic %>%
+    file.path("exclude-companies.csv") %>%
+    read_excluded_companies()
+
+  df_price <- input_path_project_agnostic %>%
+    file.path(paste0("prices_data_", price_data_version_lookup, ".csv")) %>%
+    read_price_data_old2()
+
+  scenario_data <- input_path_project_agnostic %>%
+    file.path(paste0("Scenarios_AnalysisInput_", start_year, ".csv")) %>%
+    read_scenario_data()
+
+  financial_data <- input_path_project_agnostic %>%
+    file.path("prewrangled_financial_data_stress_test.csv") %>%
+    read_financial_data()
+
+  return(
+    list(
+      start_year = start_year,
+      pacta_results = pacta_results,
+      capacity_factors_power = capacity_factors_power,
+      excluded_companies = excluded_companies,
+      sector_exposures = sector_exposures,
+      scenario_data = scenario_data,
+      df_price = df_price,
+      financial_data = financial_data
+    )
+  )
+}
+
+st_process <- function(input_data, args_list) {
+  list2env(input_data, envir = rlang::current_env())
+  list2env(args_list, envir = rlang::current_env())
 
   pacta_results <- pacta_results %>%
     process_pacta_results(
@@ -213,14 +240,10 @@ read_input_data <- function(args_list) {
       allocation_method = allocation_method_lookup
     )
 
-  sector_exposures <- input_path_project_specific %>%
-    file.path("overview_portfolio.rda") %>%
-    read_sector_exposures() %>%
+  sector_exposures <- sector_exposures %>%
     process_sector_exposures(asset_type = asset_type)
 
-  capacity_factors_power <- input_path_project_agnostic %>%
-    file.path("prewrangled_capacity_factors_WEO_2020.csv") %>%
-    read_capacity_factors() %>%
+  capacity_factors_power <- capacity_factors_power %>%
     process_capacity_factors_power(
       scenarios_filter = scenarios_filter(),
       scenario_geography_filter = scenario_geography_filter_lookup,
@@ -229,17 +252,13 @@ read_input_data <- function(args_list) {
       end_year = end_year_lookup
     )
 
-  excluded_companies <- input_path_project_agnostic %>%
-    file.path("exclude-companies.csv") %>%
-    read_excluded_companies() %>%
+  excluded_companies <- excluded_companies %>%
     process_excluded_companies(
       company_exclusion = company_exclusion,
       technologies = technologies_lookup
     )
 
-  df_price <- input_path_project_agnostic %>%
-    file.path(paste0("prices_data_", price_data_version_lookup, ".csv")) %>%
-    read_price_data_old2() %>%
+  df_price <- df_price %>%
     process_df_price(
       technologies = technologies_lookup,
       sectors = sectors_lookup,
@@ -247,9 +266,7 @@ read_input_data <- function(args_list) {
       end_year = end_year_lookup
     )
 
-  scenario_data <- input_path_project_agnostic %>%
-    file.path(paste0("Scenarios_AnalysisInput_", start_year, ".csv")) %>%
-    read_scenario_data() %>%
+  scenario_data <- scenario_data %>%
     process_scenario_data(
       start_year = start_year,
       end_year = end_year_lookup,
@@ -259,9 +276,7 @@ read_input_data <- function(args_list) {
       scenarios_filter = scenarios_filter()
     )
 
-  financial_data <- input_path_project_agnostic %>%
-    file.path("prewrangled_financial_data_stress_test.csv") %>%
-    read_financial_data() %>%
+  financial_data <- financial_data %>%
     process_financial_data(asset_type = asset_type)
 
   if (asset_type == "loans") {
@@ -269,16 +284,18 @@ read_input_data <- function(args_list) {
       dplyr::mutate(company_name = stringr::str_to_lower(.data$company_name))
   }
 
-  return(list(
-    start_year = start_year,
-    pacta_results = pacta_results,
-    capacity_factors_power = capacity_factors_power,
-    excluded_companies = excluded_companies,
-    sector_exposures = sector_exposures,
-    scenario_data = scenario_data,
-    df_price = df_price,
-    financial_data = financial_data
-  ))
+  return(
+    list(
+      start_year = start_year,
+      pacta_results = pacta_results,
+      capacity_factors_power = capacity_factors_power,
+      excluded_companies = excluded_companies,
+      sector_exposures = sector_exposures,
+      scenario_data = scenario_data,
+      df_price = df_price,
+      financial_data = financial_data
+    )
+  )
 }
 
 scenarios_filter <- function() {
