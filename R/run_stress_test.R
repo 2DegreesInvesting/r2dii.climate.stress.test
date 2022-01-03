@@ -269,11 +269,6 @@ read_input_data <- function(args_list) {
       dplyr::mutate(company_name = stringr::str_to_lower(.data$company_name))
   }
 
-  # FIXME: Is this dead code?
-  company_terms <- input_path_project_specific %>%
-    file.path("company_terms.csv") %>%
-    read_company_terms(use_company_terms)
-
   return(list(
     start_year = start_year,
     pacta_results = pacta_results,
