@@ -92,10 +92,7 @@ run_stress_test <- function(asset_type,
     iter_var = iter_var
   )
 
-  args_tibble <- tibble::as_tibble(args_list) %>%
-    dplyr::mutate(iter_var = .env$iter_var)
-
-  st_results_list <- purrr::map(1:nrow(args_tibble), run_stress_test_iteration, args_tibble = args_tibble)
+  st_results_list <- run_stress_test_iteration(args_list)
 
   result_names <- names(st_results_list[[1]])
   st_results <- result_names %>%
@@ -127,53 +124,35 @@ run_stress_test <- function(asset_type,
   cat("-- Exported results to designated output path. \n")
 }
 
-#' Iterate over stress test runs
-#'
-#' @param n Numeric.
-#' @param args_tibble  A tibble holding a set of params for
-#'   `run_stress_test_imp` per row.
-#'
-#' @return List of stress test results.
-run_stress_test_iteration <- function(n, args_tibble) {
-  arg_tibble_row <- args_tibble %>%
-    dplyr::slice(n)
+run_stress_test_iteration <- function(args_list) {
+  run_stress_test_iteration_once <- function(arg_tibble_row) {
+    arg_list_row <- arg_tibble_row %>%
+      dplyr::select(-.data$return_results) %>%
+      as.list()
 
-  arg_list_row <- arg_tibble_row %>%
-    dplyr::select(-.data$return_results) %>%
-    as.list()
+    arg_tibble_row <- arg_tibble_row %>%
+      dplyr::select(-dplyr::all_of(setup_vars_lookup)) %>%
+      dplyr::rename_with( ~ paste0(.x, "_arg"))
 
-  arg_tibble_row <- arg_tibble_row %>%
-    dplyr::select(-dplyr::all_of(setup_vars_lookup)) %>%
-    dplyr::rename_with(~ paste0(.x, "_arg"))
+    st_result <- run_stress_test_impl(arg_list_row) %>%
+      purrr::map(dplyr::bind_cols, data_y = arg_tibble_row)
 
-  st_result <- do.call(args = arg_list_row, what = run_stress_test_impl) %>%
-    purrr::map(dplyr::bind_cols, data_y = arg_tibble_row)
+    return(st_result)
+  }
+
+  iter_var <- get_iter_var(args_list)
+  args_tibble <- tibble::as_tibble(args_list) %>%
+    dplyr::mutate(iter_var = .env$iter_var)
+
+  out <- iteration_sequence(args_list) %>%
+    purrr::map(~dplyr::slice(args_tibble, .x)) %>%
+    purrr::map(run_stress_test_iteration_once)
+
+  return(out)
 }
 
-
-#' Run stress testing for provided asset type.
-#'
-#' Runs stress test per iteration.
-#'
-#' @inheritParams run_stress_test
-#' @inheritParams write_stress_test_results
-#'
-#' @return A list of stress test results.
-run_stress_test_impl <- function(asset_type,
-                                 input_path_project_specific,
-                                 input_path_project_agnostic,
-                                 output_path,
-                                 lgd_senior_claims,
-                                 lgd_subordinated_claims,
-                                 risk_free_rate,
-                                 discount_rate,
-                                 div_netprofit_prop_coef,
-                                 shock_year,
-                                 term,
-                                 company_exclusion,
-                                 use_company_terms,
-                                 iter_var) {
-  args_list <- mget(names(formals()), sys.frame(sys.nframe()))
+run_stress_test_impl <- function(args_list) {
+  list2env(args_list, envir = rlang::current_env())
 
   log_path <- file.path(output_path, paste0("log_file_", iter_var, ".txt"))
 
@@ -373,4 +352,13 @@ run_stress_test_impl <- function(asset_type,
       overall_pd_changes = overall_pd_changes
     )
   )
+}
+
+iteration_sequence <- function(args_list) {
+  iter_var <- get_iter_var(args_list)
+  if (identical(iter_var, "standard")) {
+    return(1L)
+  } else {
+    return(seq_along(args_list[[iter_var]]))
+  }
 }
