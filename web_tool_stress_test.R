@@ -46,7 +46,7 @@ function_paths <- c(
 
 source_all(function_paths)
 
-devtools::load_all()
+devtools::load_all(quiet = TRUE)
 
 ################
 # INPUT VARIABLES
@@ -238,8 +238,6 @@ nesting_vars <- c(
 
 # the webtool should run through regardless of whether there are data for only one of the asset types or both
 if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calculation_level, ".rda")))) {
-  print("Calculate Stress Test for Equity Portfolio")
-
   equity_path <- file.path(results_path, pf_name, paste0("Equity_results_", calculation_level, ".rda"))
 
   pacta_equity_results_full <- read_pacta_results_wt(
@@ -278,7 +276,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
     dplyr::distinct_all()
 
   if (nrow(pacta_equity_results) <= 0) {
-    print("Input pacta data has 0 valid rows after filtering. Skipping equity calculation!")
+    write_log("Input pacta data has 0 valid rows after filtering. Skipping equity calculation!")
   } else {
 
     # check scenario availability across data inputs for equity
@@ -376,13 +374,11 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
     }
   }
 } else {
-  print("No Equity Portfolio Data available. Skipping!")
+  write_log("No Equity Portfolio Data available. Skipping!")
 }
 
 
 if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calculation_level, ".rda")))) {
-  print("Calculate Stress Test for Bonds Portfolio")
-
   bonds_path <- file.path(results_path, pf_name, paste0("Bonds_results_", calculation_level, ".rda"))
 
   pacta_bonds_results_full <- read_pacta_results_wt(
@@ -421,7 +417,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
     dplyr::distinct_all()
 
   if (nrow(pacta_bonds_results) <= 0) {
-    print("Input pacta data has 0 valid rows after filtering. Skipping bonds calculation!")
+    write_log("Input pacta data has 0 valid rows after filtering. Skipping bonds calculation!")
   } else {
 
     # check scenario availability across data inputs for bonds
@@ -517,7 +513,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
     }
   }
 } else {
-  print("No Bonds Portfolio Data available. Skipping!")
+  write_log("No Bonds Portfolio Data available. Skipping!")
 }
 
 
