@@ -140,9 +140,12 @@ run_stress_test_iteration <- function(args_list, iter_var) {
       as.list()
 
     cat("-- Importing and preparing input data from designated input path. \n")
-    data <- args_i %>%
-      st_read() %>%
-      st_process(args_i)
+    data <- read_input_data(
+      args_i$asset_type,
+      args_i$input_path_project_specific,
+      args_i$input_path_project_agnostic
+    ) %>%
+      process_input_data(args_i)
 
     arg_metadata <- args_row_i %>%
       dplyr::select(-dplyr::all_of(setup_vars_lookup)) %>%
@@ -175,9 +178,9 @@ log_path <- function(args_list) {
   return(out)
 }
 
-st_read <- function(args_list) {
-  list2env(args_list, envir = rlang::current_env())
-
+read_input_data <- function(asset_type,
+                            input_path_project_specific,
+                            input_path_project_agnostic) {
   pacta_results <- input_path_project_specific %>%
     file.path(paste0(stringr::str_to_title(asset_type), "_results_", calculation_level_lookup, ".rda")) %>%
     read_pacta_results()
@@ -208,21 +211,21 @@ st_read <- function(args_list) {
     file.path("prewrangled_financial_data_stress_test.csv") %>%
     read_financial_data()
 
-  return(
-    list(
-      start_year = start_year,
-      pacta_results = pacta_results,
-      capacity_factors_power = capacity_factors_power,
-      excluded_companies = excluded_companies,
-      sector_exposures = sector_exposures,
-      scenario_data = scenario_data,
-      df_price = df_price,
-      financial_data = financial_data
-    )
+  out <- list(
+    start_year = start_year,
+    pacta_results = pacta_results,
+    capacity_factors_power = capacity_factors_power,
+    excluded_companies = excluded_companies,
+    sector_exposures = sector_exposures,
+    scenario_data = scenario_data,
+    df_price = df_price,
+    financial_data = financial_data
   )
+
+  return(out)
 }
 
-st_process <- function(input_data, args_list) {
+process_input_data <- function(input_data, args_list) {
   list2env(input_data, envir = rlang::current_env())
   list2env(args_list, envir = rlang::current_env())
 
