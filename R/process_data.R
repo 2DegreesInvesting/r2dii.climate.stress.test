@@ -53,6 +53,13 @@ process_pacta_results <- function(data, start_year, end_year, time_horizon,
     report_all_duplicate_kinds(composite_unique_cols = cuc_pacta_results)
   # TODO: Add missingness check once pacta results input is overhauled
 
+  data_processed %>%
+    dplyr::rename(corporate_bond_ticker = .data$id) %>%
+    dplyr::filter(!is.na(corporate_bond_ticker)) %>%
+    dplyr::select(company_name, corporate_bond_ticker) %>%
+    dplyr::distinct() %>%
+    check_company_ticker_mapping()
+
   return(data_processed)
 }
 
