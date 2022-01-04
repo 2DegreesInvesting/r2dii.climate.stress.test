@@ -13,7 +13,7 @@ cap_terms(data)
 Tibble \code{data} with capped term.
 }
 \description{
-Caps terms to maximum  of 5 (years). The value 5 was chosen as for longer
+Caps terms to maximum of 5 (years). The value 5 was chosen as for longer
 time frames reliability of model deteriorates. Informative message on number
 of affected companies is thrown.
 }

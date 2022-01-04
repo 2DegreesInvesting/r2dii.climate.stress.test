@@ -553,9 +553,34 @@ select_sector_scenario_combinations <- function(pacta_results) {
   return(selected_sector_scenario_combinations)
 }
 
+
+#' Fill missing terms with fallback term
+#'
+#' Also throws informative message on number of filled values.
+#'
+#' @param data A tibble holding at least column `term`.
+#' @param fallback_term Numeric, holding fallback term.
+#'
+#' @return Tibble `data `
+fill_na_terms <- function(data, fallback_term) {
+
+  n_companies_with_na_term <- data %>%
+    dplyr::filter(is.na(term)) %>%
+    nrow()
+
+  if (n_companies_with_na_term > 0) {
+    message(paste("Using fallback term", fallback_term, "for", n_companies_with_na_term, "companies."))
+
+    data <- data %>%
+      dplyr::mutate(term = dplyr::if_else(is.na(.data$term), as.double(fallback_term), .data$term))
+  }
+
+  return(data)
+}
+
 #' Cap terms
 #'
-#' Caps terms to maximum  of 5 (years). The value 5 was chosen as for longer
+#' Caps terms to maximum of 5 (years). The value 5 was chosen as for longer
 #' time frames reliability of model deteriorates. Informative message on number
 #' of affected companies is thrown.
 #'
@@ -573,7 +598,7 @@ cap_terms <- function(data) {
   }
 
   data_capped <- data %>%
-    dplyr::mutate(term = dplyr::if_else(.data$term > 5, 5, as.double(.data$term))) #NAs?
+    dplyr::mutate(term = dplyr::if_else(.data$term > 5, 5, .data$term))
 
   return(data_capped)
 }
