@@ -82,11 +82,6 @@ run_stress_test <- function(asset_type,
     asset_type = asset_type
   )
 
-  validate_use_company_terms(
-    asset_type = asset_type,
-    use_company_terms = use_company_terms
-  )
-
   args_list$output_path <- customise_output_path(
     output_path = args_list$output_path,
     iter_var = iter_var
