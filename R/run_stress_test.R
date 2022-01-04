@@ -82,11 +82,6 @@ run_stress_test <- function(asset_type,
     asset_type = asset_type
   )
 
-  validate_use_company_terms(
-    asset_type = asset_type,
-    use_company_terms = use_company_terms
-  )
-
   args_list$output_path <- customise_output_path(
     output_path = args_list$output_path,
     iter_var = iter_var
@@ -271,11 +266,13 @@ run_stress_test_impl <- function(asset_type,
   ) %>%
     process_company_terms()
 
+
   pacta_results <- add_terms(
     pacta_results = pacta_results,
     company_terms = company_terms,
     fallback_term = term
   )
+
 
   input_data_list <- list(
     pacta_results = pacta_results,

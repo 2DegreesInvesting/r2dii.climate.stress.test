@@ -207,7 +207,6 @@ process_financial_data <- function(data, asset_type) {
 #' @inheritParams process_pacta_results
 #'
 #' @return A tibble of data as indicated by function name.
-#' @noRd
 process_company_terms <- function(data) {
   if (is.null(data)) {
     return(data)

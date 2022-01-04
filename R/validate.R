@@ -132,16 +132,3 @@ validate_values_in_range <- function(var, args_list) {
   invisible()
 }
 
-# temporary helper function
-# TODO: activate use of company terms for bonds
-validate_use_company_terms <- function(asset_type, use_company_terms) {
-  if (use_company_terms && asset_type == "bonds") {
-    rlang::abort(
-      c(
-        glue::glue("May not use company level terms for asset type bonds."),
-        x = glue::glue("Use of company level terms for asset type bonds is not supported (yet)."),
-        i = glue::glue("Please check values of variables asset_type and use_company_terms.")
-      )
-    )
-  }
-}
