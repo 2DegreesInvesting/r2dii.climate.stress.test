@@ -20,7 +20,7 @@
 process_pacta_results <- function(data, start_year, end_year, time_horizon,
                                   scenario_geography_filter, scenarios_filter,
                                   equity_market_filter, term, sectors, technologies,
-                                  allocation_method) {
+                                  allocation_method, asset_type) {
   data_processed <- data %>%
     wrangle_and_check_pacta_results(
       start_year = start_year,
@@ -52,6 +52,15 @@ process_pacta_results <- function(data, start_year, end_year, time_horizon,
     report_missing_col_combinations(col_names = c("allocation", "equity_market", "scenario", "scenario_geography", "technology", "year")) %>%
     report_all_duplicate_kinds(composite_unique_cols = cuc_pacta_results)
   # TODO: Add missingness check once pacta results input is overhauled
+
+  if (asset_type == "bonds") {
+    data_processed %>%
+      dplyr::rename(corporate_bond_ticker = .data$id) %>%
+      dplyr::filter(!is.na(corporate_bond_ticker)) %>%
+      dplyr::select(company_name, corporate_bond_ticker) %>%
+      dplyr::distinct() %>%
+      check_company_ticker_mapping()
+  }
 
   return(data_processed)
 }

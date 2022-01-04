@@ -15,7 +15,8 @@ process_pacta_results(
   term,
   sectors,
   technologies,
-  allocation_method
+  allocation_method,
+  asset_type
 )
 }
 \arguments{
@@ -46,6 +47,9 @@ range compare \code{stress_test_arguments}.}
 \item{allocation_method}{Character. A vector of length 1 indicating the
 set of PACTA data to be used in the analysis, based on the choice of an
 allocation rule.}
+
+\item{asset_type}{String holding asset_type. For accepted values compare
+\code{stress_test_arguments}.}
 }
 \value{
 A tibble of data as indicated by function name.
