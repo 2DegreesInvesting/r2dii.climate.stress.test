@@ -19,7 +19,7 @@
 #' @return A tibble of data as indicated by function name.
 process_pacta_results <- function(data, start_year, end_year, time_horizon,
                                   scenario_geography_filter, scenarios_filter,
-                                  equity_market_filter, term, sectors, technologies,
+                                  equity_market_filter, sectors, technologies,
                                   allocation_method) {
   data_processed <- data %>%
     wrangle_and_check_pacta_results(
@@ -36,9 +36,6 @@ process_pacta_results <- function(data, start_year, end_year, time_horizon,
     dplyr::filter(.data$ald_sector %in% .env$sectors) %>%
     dplyr::filter(.data$technology %in% .env$technologies) %>%
     dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$start_year + .env$time_horizon)) %>%
-    # ADO 1943 - for the time being, one global term value is set by the user.
-    # TODO: ADO 3182 - allow setting loan level term
-    dplyr::mutate(term = term) %>%
     check_level_availability(
       expected_levels_list =
         list(
