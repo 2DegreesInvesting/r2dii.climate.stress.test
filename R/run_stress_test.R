@@ -266,6 +266,12 @@ run_stress_test_impl <- function(asset_type,
   ) %>%
     process_company_terms()
 
+  pacta_results <- add_terms(
+    pacta_results = pacta_results,
+    company_terms = company_terms,
+    fallback_term = term
+  )
+
   input_data_list <- list(
     pacta_results = pacta_results,
     capacity_factors_power = capacity_factors_power,
