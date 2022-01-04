@@ -226,7 +226,7 @@ process_company_terms <- function(data, fallback_term) {
     check_company_terms() %>%
     dplyr::mutate(term = as.double(term)) %>%
     fill_na_terms(fallback_term) %>%
-    cap_terms()
+    cap_terms() %>%
     report_all_duplicate_kinds(composite_unique_cols = cuc_company_terms)
 
   return(data_processed)
