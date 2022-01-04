@@ -38,14 +38,14 @@ add_terms <- function(pacta_results, company_terms, fallback_term) {
     ))
   }
 
-  companies_with_na_term <- results_with_term %>%
+  n_companies_with_na_term <- results_with_term %>%
     dplyr::filter(is.na(term)) %>%
     dplyr::pull(company_name) %>%
     unique() %>%
     length()
 
-  if (companies_with_na_term > 0) {
-    message(paste("Using fallback term", fallback_term, "for", companies_with_na_term, "companies."))
+  if (n_companies_with_na_term > 0) {
+    message(paste("Using fallback term", fallback_term, "for", n_companies_with_na_term, "companies."))
 
     results_with_term <- results_with_term %>%
       dplyr::mutate(term = dplyr::if_else(is.na(.data$term), as.double(fallback_term), .data$term))
