@@ -51,5 +51,7 @@ add_terms <- function(pacta_results, company_terms, fallback_term) {
       dplyr::mutate(term = dplyr::if_else(is.na(.data$term), as.double(fallback_term), .data$term))
   }
 
+  results_with_term <- cap_terms(results_with_term)
+
   return(results_with_term)
 }

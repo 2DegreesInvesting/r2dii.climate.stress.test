@@ -552,3 +552,28 @@ select_sector_scenario_combinations <- function(pacta_results) {
 
   return(selected_sector_scenario_combinations)
 }
+
+#' Cap terms
+#'
+#' Caps terms to maximum  of 5 (years). The value 5 was chosen as for longer
+#' time frames reliability of model deteriorates. Informative message on number
+#' of affected companies is thrown.
+#'
+#' @param data A tibble holding at least column `term`.
+#'
+#' @return Tibble `data` with capped term.
+cap_terms <- function(data) {
+
+  n_terms_bigger_5 <- data %>%
+    dplyr::filter(term > 5) %>%
+    nrow()
+
+  if (n_terms_bigger_5 > 0) {
+    message(paste("Capping term values to 5 for", n_terms_bigger_5, "companies."))
+  }
+
+  data_capped <- data %>%
+    dplyr::mutate(term = dplyr::if_else(.data$term > 5, 5, as.double(.data$term))) #NAs?
+
+  return(data_capped)
+}
