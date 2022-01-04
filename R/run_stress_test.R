@@ -213,7 +213,8 @@ run_stress_test_impl <- function(asset_type,
       term = term,
       sectors = sectors_lookup,
       technologies = technologies_lookup,
-      allocation_method = allocation_method_lookup
+      allocation_method = allocation_method_lookup,
+      asset_type = asset_type
     )
 
   sector_exposures <- read_sector_exposures(file.path(input_path_project_specific, "overview_portfolio.rda")) %>%
