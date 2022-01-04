@@ -79,6 +79,9 @@
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/calculate_pd_change_overall.html</loc>
   </url>
   <url>
+    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/check_company_terms.html</loc>
+  </url>
+  <url>
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/check_financial_data.html</loc>
   </url>
   <url>
@@ -170,6 +173,9 @@
   </url>
   <url>
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/pipe.html</loc>
+  </url>
+  <url>
+    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/process_company_terms.html</loc>
   </url>
   <url>
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/process_pacta_results.html</loc>
