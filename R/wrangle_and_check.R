@@ -173,6 +173,36 @@ check_financial_data <- function(financial_data, asset_type) {
   return(financial_data)
 }
 
+#' Check company term values for plausibility
+#'
+#' @param data A tibble holding company_terms data.
+#'
+#' @return Returns data invisibly.
+check_company_terms <- function(data) {
+  not_na_terms <- data %>%
+    dplyr::filter(!is.na(term)) %>%
+    dplyr::pull(term)
+
+  if (any(not_na_terms < 1)) {
+    rlang::abort(c(
+      "Must not provide terms below 1",
+      x = glue::glue("Identified terms below."),
+      i = "Please check company_terms.csv file."
+    ))
+  }
+
+  if (!all(not_na_terms %% 1 == 0)) {
+    rlang::abort(c(
+      "Terms must be provided as whole numbers.",
+      x = glue::glue("Identified terms that are not whole numbers."),
+      i = "Please check company_terms.csv file."
+    ))
+  }
+
+  return(invisible(data))
+}
+
+
 #' Wrangle scenario data
 #'
 #' Function applies custom wrangling to scenario data.
