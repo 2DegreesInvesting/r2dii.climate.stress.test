@@ -14,7 +14,7 @@ add_terms <- function(pacta_results, company_terms, fallback_term) {
 
   if (is.null(company_terms)) {
     pacta_results <- pacta_results %>%
-      dplyr::mutate(term = fallback_term)
+      dplyr::mutate(term = as.double(fallback_term))
 
     return(pacta_results)
   }
@@ -36,19 +36,6 @@ add_terms <- function(pacta_results, company_terms, fallback_term) {
       x = glue::glue("Missing companies: {missing_companies}."),
       i = "Please check input data."
     ))
-  }
-
-  n_companies_with_na_term <- results_with_term %>%
-    dplyr::filter(is.na(term)) %>%
-    dplyr::pull(company_name) %>%
-    unique() %>%
-    length()
-
-  if (n_companies_with_na_term > 0) {
-    message(paste("Using fallback term", fallback_term, "for", n_companies_with_na_term, "companies."))
-
-    results_with_term <- results_with_term %>%
-      dplyr::mutate(term = dplyr::if_else(is.na(.data$term), as.double(fallback_term), .data$term))
   }
 
   return(results_with_term)

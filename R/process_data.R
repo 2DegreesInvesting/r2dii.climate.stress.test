@@ -214,9 +214,10 @@ process_financial_data <- function(data, asset_type) {
 #' NOTE returns NULL if `data` is NULL.
 #'
 #' @inheritParams process_pacta_results
+#' @param fallback_term Numeric, holding fallback term.
 #'
 #' @return A tibble of data as indicated by function name.
-process_company_terms <- function(data) {
+process_company_terms <- function(data, fallback_term) {
   if (is.null(data)) {
     return(data)
   }
@@ -224,6 +225,8 @@ process_company_terms <- function(data) {
   data_processed <- data %>%
     check_company_terms() %>%
     dplyr::mutate(term = as.double(term)) %>%
+    fill_na_terms(fallback_term) %>%
+    cap_terms() %>%
     report_all_duplicate_kinds(composite_unique_cols = cuc_company_terms)
 
   return(data_processed)

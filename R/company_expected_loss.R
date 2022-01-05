@@ -61,8 +61,7 @@ company_expected_loss <- function(data,
   company_exposure <- company_exposure %>%
     dplyr::mutate(
       exposure_at_default = .data$asset_portfolio_value * .data$percent_exposure
-    ) %>%
-    dplyr::mutate(term = dplyr::if_else(.data$term > 5, 5, as.double(.data$term)))
+    )
 
   data <- data %>%
     dplyr::mutate(lgd = loss_given_default)

@@ -36,7 +36,7 @@ test_that("with loans, without iteration, using minimum values of input argument
   out <- tempfile()
   fs::dir_create(out)
 
-  suppressed_console_output <- suppressWarnings(capture.output(
+  suppressed_console_output <- suppressWarnings(suppressMessages(capture.output(
     results <- run_stress_test("loans",
       input_path_project_specific = in_specific,
       input_path_project_agnostic = in_agnostic,
@@ -52,7 +52,7 @@ test_that("with loans, without iteration, using minimum values of input argument
       use_company_terms = TRUE,
       return_results = TRUE
     )
-  ))
+  )))
 
   expect_snapshot(lapply(results, as.data.frame))
 })

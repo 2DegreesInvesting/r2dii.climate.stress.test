@@ -4,10 +4,12 @@
 \alias{process_company_terms}
 \title{Process data of type indicated by function name}
 \usage{
-process_company_terms(data)
+process_company_terms(data, fallback_term)
 }
 \arguments{
 \item{data}{A tibble of data of type indicated by function name.}
+
+\item{fallback_term}{Numeric, holding fallback term.}
 }
 \value{
 A tibble of data as indicated by function name.
