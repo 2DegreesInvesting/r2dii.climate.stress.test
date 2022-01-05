@@ -595,10 +595,10 @@ cap_terms <- function(data) {
 
   if (n_terms_bigger_5 > 0) {
     message(paste("Capping term values to 5 for", n_terms_bigger_5, "companies."))
+
+    data <- data %>%
+      dplyr::mutate(term = dplyr::if_else(.data$term > 5, 5, .data$term))
   }
 
-  data_capped <- data %>%
-    dplyr::mutate(term = dplyr::if_else(.data$term > 5, 5, .data$term))
-
-  return(data_capped)
+  return(data)
 }
