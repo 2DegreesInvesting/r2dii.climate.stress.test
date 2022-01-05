@@ -1,0 +1,44 @@
+---
+title: "04 - Improve stress test by providing further project specific data"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This vignettes describes in detail how an analysis can be configured further by
+providing your own dataset for term values on company level. The configurations
+are not necessary but, in case required information is available, may help you
+improve the accuracy of your results.
+
+## Prerequisites
+In order to keep this vignette concise, we assume that you have successfully
+complete all preparation steps described in the vignettes ["Set up project
+directories"](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/01-setup-project-directories.html)
+and [prepare loans
+inputs](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-prepare-loans-inputs.html)
+
+
+## Company - term data
+Including company - term data allows you to incorporate the information you have
+on the term values of the companies in your portfolio, instead of using an
+identical term value for all companies.
+
+
+### Preparing company - term data
+
+### Validating company - term data
+
+### Running the Stress Test with provided company - term data
+```{r, eval = FALSE}
+run_stress_test(
+  asset_type = "loans",
+  input_path_project_specific = "/path/to/specific/data/inputs",
+  input_path_project_agnostic = "/path/to/agnostic/data",
+  output_path = "/path/to/output/directory",
+  use_company_terms = TRUE
+)
+```
