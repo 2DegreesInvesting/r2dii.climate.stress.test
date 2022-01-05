@@ -14,7 +14,7 @@ add_terms <- function(pacta_results, company_terms, fallback_term) {
 
   if (is.null(company_terms)) {
     pacta_results <- pacta_results %>%
-      dplyr::mutate(term = fallback_term)
+      dplyr::mutate(term = as.double(fallback_term))
 
     return(pacta_results)
   }
