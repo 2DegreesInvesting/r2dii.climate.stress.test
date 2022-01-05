@@ -9,7 +9,7 @@ stress_test_arguments <- tibble::tribble(
             "discount_rate",    "double",   "0.07",                     NA,    "-0.01",      "0.1",
   "div_netprofit_prop_coef",    "double",      "1",                     NA,      "0.8",        "1",
                "shock_year",    "double",   "2030",                     NA,     "2025",     "2035",
-                     "term",    "double",      "2",                     NA,        "1",        "5",
+                     "term",    "double",      "2",                     NA,        "1",        "5", # NOTE: before changing check cap_terms().
         "company_exclusion",   "logical",   "TRUE",          "TRUE, FALSE",         NA,         NA,
         "use_company_terms",   "logical",   "FALSE",         "TRUE, FALSE",         NA,         NA
 )
