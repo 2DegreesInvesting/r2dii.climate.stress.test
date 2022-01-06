@@ -4,6 +4,7 @@ jobs:
   Source-web-tool-scripts:
     container: 2dii/r-packages:latest
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     name: Source web tool scripts in container r2dii/r-packages
     strategy:
       fail-fast: false
