@@ -10,16 +10,16 @@ knitr::opts_chunk$set(
 ```
 
 This vignettes describes in detail how an analysis can be configured further by
-providing your own dataset for term values on company level. The configurations
-are not necessary but, in case required information is available, may help you
-improve the accuracy of your results.
+providing further custom data. The configurations are not necessary but, in case
+required information is available, may help you improve the accuracy of your
+results.
 
 ## Prerequisites
 In order to keep this vignette concise, we assume that you have successfully
 complete all preparation steps described in the vignettes ["Set up project
 directories"](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/01-setup-project-directories.html)
 and [prepare loans
-inputs](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-prepare-loans-inputs.html)
+inputs](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-prepare-loans-inputs.html).
 
 
 ## Company - term data
@@ -28,17 +28,21 @@ on the term values of the companies in your portfolio, instead of using an
 identical term value for all companies.
 
 ### Preparing company - term data
-The data that needs to be created is a csv file named company_terms.csv. It
+The data that needs to be created is a csv file named `company_terms.csv`. It
 holds the columns `company_name` (character, holding name of analysed companies)
 and term (numeric, indicates which maturity the loans to respective company is
-assumed to have in years). In column `company_name` include all unique company names from
-`Loans_results_company.rda`, which you generated in [prepare loans
+assumed to have in years). In column `company_name` include all unique company
+names from `Loans_results_company.rda`, which you generated in [prepare loans
 inputs](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-prepare-loans-inputs.html).
 If you want to use R to obtain this column you can take the following steps.
 
 ```{r, eval = FALSE}
 library(readr)
-data <- readr::read_rds(file.path("/path/to/specific/data/inputs", "Loans_results_company.rda"))
+library(r2dii.climate.stress.test)
+
+loans_results_company_file_path <- file.path("/path/to/specific/data/inputs", "Loans_results_company.rda")
+validate_file_exists(loans_results_company_file_path)
+data <- readr::read_rds(loans_results_company_file_path)
 unique_companies <- data %>%
   dplyr::select(company_name) %>%
   dplyr::distinct()
@@ -47,14 +51,14 @@ readr::write_csv(unique_companies, file.path("/path/to/specific/data/inputs", "c
 ```
 
 You can now open this file in a tool of your choice, and add second column
-named term. In term add the terms per company.   
+named term. In column term add the terms per company.   
 
 **NOTE:** 
 
 * Terms need to be whole numbers. 
 * Only include values up to 5. Higher values will be capped to 5 as predictions
-for longer time frames the reliability of model deteriorates.
-* leave term  blank for companies for which you lack respective information. A
+for longer time frames the reliability of the model deteriorates.
+* Leave term  blank for companies for which you lack respective information. A
 fallback, as provided as argument `term` to `run_stress_test()` will be used to
 fill the gaps.
 
@@ -64,14 +68,27 @@ file complies with requirements concerning structure and content. You may verify
 by executing the following lines of code.
 ```{r, eval = FALSE}
 library(r2dii.climate.stress.test)
-data <- readr::read_csv(file.path("/path/to/specific/data/inputs", "company_terms.csv"))
 
+company_terms_path <- file.path("/path/to/specific/data/inputs", "company_terms.csv")
+validate_file_exists(company_terms_path)
+data <- readr::read_csv(company_terms_path)
+validate_data_has_expected_cols(data = data, expected_columns = c("company_name", "term"))
+check_company_terms(data = data, interactive_mode = TRUE)
 
 ```
 
 ### Placing file in folder structure
+In order to make sure the file can be included in the analysis place it in
+
+* `example_folder/`
+    * `inputs/`  
+    
+as set up in ["Set up project
+directories"](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/01-setup-project-directories.html).
 
 ### Running the Stress Test with provided company - term data
+In order to include the company - term data in your analysis set argument
+`use_company_terms` to TRUE in the call to `run_stress_test`.
 ```{r, eval = FALSE}
 run_stress_test(
   asset_type = "loans",
