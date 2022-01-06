@@ -178,9 +178,11 @@ check_financial_data <- function(financial_data, asset_type) {
 #' Check company term values for plausibility
 #'
 #' @param data A tibble holding company_terms data.
+#' @param interactive_mode If TRUE the, more verbose, interactive mode is used.
 #'
 #' @return Returns data invisibly.
-check_company_terms <- function(data) {
+#' @export
+check_company_terms <- function(data, interactive_mode = FALSE) {
   not_na_terms <- data %>%
     dplyr::filter(!is.na(term)) %>%
     dplyr::pull(term)
@@ -199,6 +201,16 @@ check_company_terms <- function(data) {
       x = glue::glue("Identified terms that are not whole numbers."),
       i = "Please check company_terms.csv file."
     ))
+  }
+
+  if (interactive_mode) {
+    n_terms_bigger_5 <- not_na_terms %>%
+      dplyr::filter(term > 5) %>%
+      nrow()
+
+    if (n_terms_bigger_5 > 0) {
+      message(paste("Identified", n_terms_bigger_5, "companies with term > 5. Terms will be capped."))
+    }
   }
 
   return(invisible(data))
