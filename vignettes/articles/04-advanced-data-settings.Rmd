@@ -9,23 +9,23 @@ knitr::opts_chunk$set(
 )
 ```
 
-This vignettes describes in detail how an analysis can be configured further by
-providing further custom data. The configurations are not necessary but, in case
-required information is available, may help you improve the accuracy of your
+This vignette describes in detail how an analysis can be configured further by
+providing more custom data. The configurations are not required but, in case
+additional information is available, may help you improve the accuracy of your
 results.
 
 ## Prerequisites
 In order to keep this vignette concise, we assume that you have successfully
-complete all preparation steps described in the vignettes ["Set up project
+completed all preparation steps described in the vignettes ["Set up project
 directories"](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/01-setup-project-directories.html)
-and [prepare loans
-inputs](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-prepare-loans-inputs.html).
+and ["prepare loans
+inputs"](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-prepare-loans-inputs.html).
 
 
 ## Company - term data
 Including company - term data allows you to incorporate the information you have
-on the term values of the companies in your portfolio, instead of using an
-identical term value for all companies.
+on term values of the loan to a company in your loan book, instead of using an
+identical term value for all loans.
 
 ### Preparing company - term data
 The data that needs to be created is a csv file named `company_terms.csv`. It
@@ -50,14 +50,16 @@ readr::write_csv(unique_companies, file.path("/some/path", "company_terms.csv"))
 
 ```
 
-You can now open this file in a tool of your choice, and add second column
-named term. In column `term` add the terms per company.   
+You can now open this file in a tool of your choice, and add second column named
+term. In column `term` add the terms per company. Please make sure to save the
+result as a csv file again.
 
 **NOTE:** 
 
 * Terms need to be whole numbers. 
-* Only include values up to 5. Higher values will be capped to 5 as predictions
-for longer time frames the reliability of the model deteriorates.
+* Only include values up to 5. Higher values will be capped to 5 as for
+calculations with longer time frames the reliability of the Merton model
+deteriorates.
 * Leave term blank for companies for which you lack respective information. A
 fallback, as provided as argument `term` to `run_stress_test()` will be used to
 fill the gaps.

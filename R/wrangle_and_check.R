@@ -185,7 +185,7 @@ check_financial_data <- function(financial_data, asset_type) {
 check_company_terms <- function(data, interactive_mode = FALSE) {
   not_na_terms <- data %>%
     dplyr::filter(!is.na(.data$term)) %>%
-    dplyr::pull(term)
+    dplyr::pull(.data$term)
 
   if (any(not_na_terms < 1)) {
     rlang::abort(c(
