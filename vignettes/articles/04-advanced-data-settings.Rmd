@@ -27,10 +27,49 @@ Including company - term data allows you to incorporate the information you have
 on the term values of the companies in your portfolio, instead of using an
 identical term value for all companies.
 
-
 ### Preparing company - term data
+The data that needs to be created is a csv file named company_terms.csv. It
+holds the columns `company_name` (character, holding name of analysed companies)
+and term (numeric, indicates which maturity the loans to respective company is
+assumed to have in years). In column `company_name` include all unique company names from
+`Loans_results_company.rda`, which you generated in [prepare loans
+inputs](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-prepare-loans-inputs.html).
+If you want to use R to obtain this column you can take the following steps.
+
+```{r, eval = FALSE}
+library(readr)
+data <- readr::read_rds(file.path("/path/to/specific/data/inputs", "Loans_results_company.rda"))
+unique_companies <- data %>%
+  dplyr::select(company_name) %>%
+  dplyr::distinct()
+readr::write_csv(unique_companies, file.path("/path/to/specific/data/inputs", "company_terms.csv"))
+
+```
+
+You can now open this file in a tool of your choice, and add second column
+named term. In term add the terms per company.   
+
+**NOTE:** 
+
+* Terms need to be whole numbers. 
+* Only include values up to 5. Higher values will be capped to 5 as predictions
+for longer time frames the reliability of model deteriorates.
+* leave term  blank for companies for which you lack respective information. A
+fallback, as provided as argument `term` to `run_stress_test()` will be used to
+fill the gaps.
 
 ### Validating company - term data
+Before including the file in your analysis you may want to validate that your
+file complies with requirements concerning structure and content. You may verify
+by executing the following lines of code.
+```{r, eval = FALSE}
+library(r2dii.climate.stress.test)
+data <- readr::read_csv(file.path("/path/to/specific/data/inputs", "company_terms.csv"))
+
+
+```
+
+### Placing file in folder structure
 
 ### Running the Stress Test with provided company - term data
 ```{r, eval = FALSE}
