@@ -4,10 +4,12 @@
 \alias{check_company_terms}
 \title{Check company term values for plausibility}
 \usage{
-check_company_terms(data)
+check_company_terms(data, interactive_mode = FALSE)
 }
 \arguments{
 \item{data}{A tibble holding company_terms data.}
+
+\item{interactive_mode}{If TRUE the, more verbose, interactive mode is used.}
 }
 \value{
 Returns data invisibly.
