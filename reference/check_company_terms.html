@@ -41,7 +41,10 @@
       <a href="../articles/03-run-stress-test.html">03 - Run transition risk stress test on corporate loan books</a>
     </li>
     <li>
-      <a href="../articles/04-read-the-outputs.html">04 - Understand the output files of the transition risk stress test</a>
+      <a href="../articles/04-advanced-data-settings.html">04 - Improve stress test by providing further project specific data</a>
+    </li>
+    <li>
+      <a href="../articles/05-read-the-outputs.html">04 - Understand the output files of the transition risk stress test</a>
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"></ul></div><!--/.nav-collapse -->
@@ -63,13 +66,15 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">check_company_terms</span><span class="op">(</span><span class="va">data</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">check_company_terms</span><span class="op">(</span><span class="va">data</span>, interactive_mode <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>A tibble holding company_terms data.</p></dd>
+<dt>interactive_mode</dt>
+<dd><p>If TRUE the, more verbose, interactive mode is used.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>

@@ -5,8 +5,9 @@ articles:
   01-setup-project-directories: 01-setup-project-directories.html
   02-prepare-loans-inputs: 02-prepare-loans-inputs.html
   03-run-stress-test: 03-run-stress-test.html
-  04-read-the-outputs: 04-read-the-outputs.html
-last_built: 2022-01-05T14:37Z
+  04-advanced-data-settings: 04-advanced-data-settings.html
+  05-read-the-outputs: 05-read-the-outputs.html
+last_built: 2022-01-06T12:45Z
 urls:
   reference: https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference
   article: https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles

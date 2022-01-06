@@ -59,7 +59,10 @@
       <a href="../articles/03-run-stress-test.html">03 - Run transition risk stress test on corporate loan books</a>
     </li>
     <li>
-      <a href="../articles/04-read-the-outputs.html">04 - Understand the output files of the transition risk stress test</a>
+      <a href="../articles/04-advanced-data-settings.html">04 - Improve stress test by providing further project specific data</a>
+    </li>
+    <li>
+      <a href="../articles/05-read-the-outputs.html">04 - Understand the output files of the transition risk stress test</a>
     </li>
   </ul>
 </li>
@@ -164,7 +167,7 @@
 <li>
 <code>company_exclusion</code> Logical parameter that indicates if certain combinations of company and technology should be excluded from the analysis. At this point, it is strictly recommended to set this to TRUE (default) because there is not yet a dedicated mechanism in place that handles companies which are phasing out certain technologies within the time frame of the production forecast.</li>
 <li>
-<code>use_company_terms</code> Logical parameter, indicating if individually provided terms for companies as configured in company_terms.csv shall be used instead of fallback as provided in <code>term</code>.</li>
+<code>use_company_terms</code> Logical parameter, indicating if individually provided terms for companies as configured in company_terms.csv shall be used instead of fallback as provided in <code>term</code>. The default is FALSE. For more details compare <a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/04-advanced-data-settings.html">“Advanced data settings”</a>.</li>
 <li>
 <code>return_results</code> Logical parameter that indicates if the outputs of the analysis should be directly written to the indicated output path or simply returned as a list of results within the running session. The default is FALSE, which writes the outputs to the target directory and does not return them as a list object in R.</li>
 </ul>
