@@ -600,7 +600,7 @@ fill_na_terms <- function(data, fallback_term) {
 cap_terms <- function(data) {
 
   n_terms_bigger_5 <- data %>%
-    dplyr::filter(term > 5) %>%
+    dplyr::filter(.data$term > 5) %>%
     nrow()
 
   if (n_terms_bigger_5 > 0) {
