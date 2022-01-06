@@ -184,7 +184,7 @@ check_financial_data <- function(financial_data, asset_type) {
 #' @export
 check_company_terms <- function(data, interactive_mode = FALSE) {
   not_na_terms <- data %>%
-    dplyr::filter(!is.na(term)) %>%
+    dplyr::filter(!is.na(.data$term)) %>%
     dplyr::pull(term)
 
   if (any(not_na_terms < 1)) {
@@ -204,12 +204,10 @@ check_company_terms <- function(data, interactive_mode = FALSE) {
   }
 
   if (interactive_mode) {
-    n_terms_bigger_5 <- not_na_terms %>%
-      dplyr::filter(term > 5) %>%
-      nrow()
+    n_terms_bigger_5 <- not_na_terms[not_na_terms > 5]
 
-    if (n_terms_bigger_5 > 0) {
-      message(paste("Identified", n_terms_bigger_5, "companies with term > 5. Terms will be capped."))
+    if (length(n_terms_bigger_5) > 0) {
+      message(paste("Identified", length(n_terms_bigger_5), "companies with term > 5. Terms will be capped."))
     }
   }
 
