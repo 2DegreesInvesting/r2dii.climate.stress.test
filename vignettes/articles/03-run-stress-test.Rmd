@@ -113,7 +113,7 @@ dedicated mechanism in place that handles companies which are phasing out
 certain technologies within the time frame of the production forecast.
 * `use_company_terms` Logical parameter, indicating if individually provided
 terms for companies as configured in company_terms.csv shall be used instead of
-fallback as provided in `term`.
+fallback as provided in `term`. The default is FALSE. For more details compare ["Advanced data settings"](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/04-advanced-data-settings.html).
 * `return_results` Logical parameter that indicates if the outputs of the
 analysis should be directly written to the indicated output path or simply
 returned as a list of results within the running session. The default is FALSE,
