@@ -30,7 +30,7 @@ identical term value for all companies.
 ### Preparing company - term data
 The data that needs to be created is a csv file named `company_terms.csv`. It
 holds the columns `company_name` (character, holding name of analysed companies)
-and term (numeric, indicates which maturity the loans to respective company is
+and term (numeric, indicates which maturity the loans to respective companies is
 assumed to have in years). In column `company_name` include all unique company
 names from `Loans_results_company.rda`, which you generated in [prepare loans
 inputs](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-prepare-loans-inputs.html).
@@ -46,19 +46,19 @@ data <- readr::read_rds(loans_results_company_file_path)
 unique_companies <- data %>%
   dplyr::select(company_name) %>%
   dplyr::distinct()
-readr::write_csv(unique_companies, file.path("/path/to/specific/data/inputs", "company_terms.csv"))
+readr::write_csv(unique_companies, file.path("/some/path", "company_terms.csv"))
 
 ```
 
 You can now open this file in a tool of your choice, and add second column
-named term. In column term add the terms per company.   
+named term. In column `term` add the terms per company.   
 
 **NOTE:** 
 
 * Terms need to be whole numbers. 
 * Only include values up to 5. Higher values will be capped to 5 as predictions
 for longer time frames the reliability of the model deteriorates.
-* Leave term  blank for companies for which you lack respective information. A
+* Leave term blank for companies for which you lack respective information. A
 fallback, as provided as argument `term` to `run_stress_test()` will be used to
 fill the gaps.
 
@@ -69,7 +69,7 @@ by executing the following lines of code.
 ```{r, eval = FALSE}
 library(r2dii.climate.stress.test)
 
-company_terms_path <- file.path("/path/to/specific/data/inputs", "company_terms.csv")
+company_terms_path <- file.path("/path/to/file")
 validate_file_exists(company_terms_path)
 data <- readr::read_csv(company_terms_path)
 validate_data_has_expected_cols(data = data, expected_columns = c("company_name", "term"))
@@ -78,7 +78,8 @@ check_company_terms(data = data, interactive_mode = TRUE)
 ```
 
 ### Placing file in folder structure
-In order to make sure the file can be included in the analysis place it in
+In order to make sure `company_terms.csv` can be included in the analysis place
+it in
 
 * `example_folder/`
     * `inputs/`  
