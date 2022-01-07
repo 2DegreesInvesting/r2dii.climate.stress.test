@@ -67,7 +67,8 @@ fill the gaps.
 ### Validating company - term data
 Before including the file in your analysis you may want to validate that your
 file complies with requirements concerning structure and content. You may verify
-by executing the following lines of code.
+by executing the following lines of code. You will receive warning/error
+messages in case problems are detected.
 ```{r, eval = FALSE}
 library(readr)
 library(r2dii.climate.stress.test)
@@ -141,12 +142,11 @@ library(r2dii.climate.stress.test)
 loans_results_company_file_path <- file.path("/path/to/specific/data/inputs", "Loans_results_company.rda")
 validate_file_exists(loans_results_company_file_path)
 data <- readr::read_rds(loans_results_company_file_path)
-unique_companies <- data %>%
+unique_companies_with_id <- data %>%
   dplyr::select(company_name) %>%
   dplyr::distinct() %>% 
   dplyr::mutate(company_id = NA_real_)
-readr::write_csv(unique_companies, file.path("/some/path", "prewrangled_financial_data_stress_test.csv")) # NOTE that this will overwrite financial data currently stored at the location if available
-
+readr::write_csv(unique_companies_with_id, file.path("/some/path", "prewrangled_financial_data_stress_test.csv")) # NOTE that this will overwrite financial data currently stored at the location if available
 ```
 
 You can now open this file in a tool of your choice, and add the remaining
@@ -155,7 +155,8 @@ variables. Please make sure to save the result as a csv file again.
 ### Validating financial data
 Before including the file in your analysis you may want to validate that your
 file complies with requirements concerning structure and content. You may verify
-by executing the following lines of code.
+by executing the following lines of code. You will receive warning/error
+messages in case problems are detected.
 ```{r, eval = FALSE}
 library(readr)
 library(r2dii.climate.stress.test)
@@ -163,7 +164,7 @@ library(r2dii.climate.stress.test)
 financial_data_path <- file.path("/path/to/file")
 validate_file_exists(financial_data_path)
 data <- readr::read_csv(financial_data_path)
-check_financial_data(data = data, asset_type = "loans")
+check_financial_data(financial_data = data, asset_type = "loans")
 
 ```
 
