@@ -157,7 +157,8 @@ check_financial_data <- function(financial_data, asset_type) {
 
   report_missings(
     data = financial_data,
-    name_data = "Financial Data"
+    name_data = "Financial Data",
+    throw_error = TRUE
   )
 
   report_all_duplicate_kinds(
