@@ -117,6 +117,8 @@ It holds the columns:
 * `company_name`: character, holding name of analysed companies
 * `company_id`: numeric, id of company as classified by asset resolution. For
 loans workflow a placeholder value will be used.
+* `corporate_bond_ticker`: character, holding indentifier. Will be NA for loans
+workflow.
 * `pd`: numeric, holding probability of default per company. Needs to be equal
 to or larger than 0 and smaller than 1.
 * `net_profit_margin`: numeric, holding net_profit_margin per company. Needs to
@@ -126,7 +128,7 @@ company's equity value. This is the leverage. Needs to be larger than 0.
 * `volatility`: numeric, holding volatility of asset. Needs to be equal to or
 larger than 0.
 
-**NOTE**: No column may have missing values.
+**NOTE**: No column, expect for corporate_bond_ticker, may have missing values.
 
 In column `company_name` include all unique company
 names from `Loans_results_company.rda`, which you generated in [prepare loans
@@ -142,11 +144,11 @@ library(r2dii.climate.stress.test)
 loans_results_company_file_path <- file.path("/path/to/specific/data/inputs", "Loans_results_company.rda")
 validate_file_exists(loans_results_company_file_path)
 data <- readr::read_rds(loans_results_company_file_path)
-unique_companies_with_id <- data %>%
+fin_companies <- data %>%
   dplyr::select(company_name) %>%
   dplyr::distinct() %>% 
-  dplyr::mutate(company_id = 999)
-readr::write_csv(unique_companies_with_id, file.path("/some/path", "prewrangled_financial_data_stress_test.csv")) # NOTE that this will overwrite financial data currently stored at the location if available
+  dplyr::mutate(company_id = 999,   corporate_bond_ticker = NA)
+readr::write_csv(fin_companies, file.path("/some/path", "prewrangled_financial_data_stress_test.csv")) # NOTE that this will overwrite financial data currently stored at the location if available
 ```
 
 You can now open this file in a tool of your choice, and add the remaining
@@ -180,6 +182,6 @@ directories"](https://2degreesinvesting.github.io/r2dii.climate.stress.test/arti
 If the respective dataset as provided by 2DII already exists there make sure to 
 replace it with your custom file.
 
-### Running the Stress Test with provided company - term data
+### Running the Stress Test with provided financial data
 You can now run the stress test as described in vignette ["Run stress test"](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/03-run-stress-test.html).
 
