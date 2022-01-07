@@ -148,7 +148,7 @@ data <- readr::read_rds(loans_results_company_file_path)
 fin_companies <- data %>%
   dplyr::select(company_name) %>%
   dplyr::distinct() %>% 
-  dplyr::mutate(company_id = 999,   corporate_bond_ticker = NA)
+  dplyr::mutate(company_id = 999, corporate_bond_ticker = NA)
 readr::write_csv(fin_companies, file.path("/some/path", "prewrangled_financial_data_stress_test.csv")) # NOTE that this will overwrite financial data currently stored at the location if available
 ```
 
@@ -185,4 +185,3 @@ replace it with your custom file.
 
 ### Running the Stress Test with provided financial data
 You can now run the stress test as described in vignette ["Run stress test"](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/03-run-stress-test.html).
-
