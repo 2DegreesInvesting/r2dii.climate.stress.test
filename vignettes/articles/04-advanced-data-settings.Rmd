@@ -128,12 +128,13 @@ company's equity value. This is the leverage. Needs to be larger than 0.
 * `volatility`: numeric, holding volatility of asset. Needs to be equal to or
 larger than 0.
 
-**NOTE**: No column, expect for corporate_bond_ticker, may have missing values.
+**NOTE**: No column, except for corporate_bond_ticker, may have missing values.
 
-In column `company_name` include all unique company
-names from `Loans_results_company.rda`, which you generated in [prepare loans
+In column `company_name` include all unique company names from
+`Loans_results_company.rda`, which you generated in [prepare loans
 inputs](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-prepare-loans-inputs.html).
-Also create column company_name holding a placeholder value, e.g. 999.
+Also create column `company_id` holding a placeholder value, e.g. 999, and
+column `corporate_bond_ticker`, holding NA.
 
 If you want to use R to obtain this data you can take the following steps.
 
