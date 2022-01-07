@@ -69,6 +69,7 @@ Before including the file in your analysis you may want to validate that your
 file complies with requirements concerning structure and content. You may verify
 by executing the following lines of code.
 ```{r, eval = FALSE}
+library(readr)
 library(r2dii.climate.stress.test)
 
 company_terms_path <- file.path("/path/to/file")
@@ -124,11 +125,12 @@ company's equity value. This is the leverage. Needs to be larger than 0.
 * `volatility`: numeric, holding volatility of asset. Needs to be equal to or
 larger than 0.
 
-**NOTE**: Expect for `company_id` to column may have missing values.
+**NOTE**: Except for `company_id` no column may have missing values.
 
 In column `company_name` include all unique company
 names from `Loans_results_company.rda`, which you generated in [prepare loans
 inputs](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-prepare-loans-inputs.html).
+Also create column company_name holding NAs.
 
 If you want to use R to obtain this column you can take the following steps.
 
@@ -143,7 +145,7 @@ unique_companies <- data %>%
   dplyr::select(company_name) %>%
   dplyr::distinct() %>% 
   dplyr::mutate(company_id = NA_real_)
-readr::write_csv(unique_companies, file.path("/some/path", "prewrangled_financial_data_stress_test.csv")) # NOTE that this will overwrite financial currently stored at the location if available
+readr::write_csv(unique_companies, file.path("/some/path", "prewrangled_financial_data_stress_test.csv")) # NOTE that this will overwrite financial data currently stored at the location if available
 
 ```
 
@@ -155,19 +157,20 @@ Before including the file in your analysis you may want to validate that your
 file complies with requirements concerning structure and content. You may verify
 by executing the following lines of code.
 ```{r, eval = FALSE}
+library(readr)
 library(r2dii.climate.stress.test)
 
 financial_data_path <- file.path("/path/to/file")
 validate_file_exists(financial_data_path)
 data <- readr::read_csv(financial_data_path)
-validate_data_has_expected_cols(data = data, expected_columns = c("company_name", "term"))
 check_financial_data(data = data, asset_type = "loans")
 
 ```
 
 ### Placing file in folder structure
-In order to make sure `prewrangled_financial_data_stress_test.csv` is included
-in the analysis place it in  
+In order to make sure your version
+of`prewrangled_financial_data_stress_test.csv` is used in the analysis place it
+in
 
 * `example_folder/`
     * `inputs/`  
