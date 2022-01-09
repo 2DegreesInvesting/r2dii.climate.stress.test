@@ -129,7 +129,7 @@ run_stress_test_iteration <- function(args_list) {
       dplyr::select(-dplyr::all_of(setup_vars_lookup)) %>%
       dplyr::rename_with( ~ paste0(.x, "_arg"))
 
-    st_result <- run_stress_test_impl(arg_list_row) %>%
+    st_result <- read_and_process(arg_list_row) %>%
       purrr::map(dplyr::bind_cols, data_y = arg_tibble_row)
 
     return(st_result)
@@ -148,7 +148,7 @@ run_stress_test_iteration <- function(args_list) {
 
 # Avoid R CMD check NOTE: "Undefined global functions or variables"
 globalVariables(c(names(formals(run_stress_test)), "iter_var"))
-run_stress_test_impl <- function(args_list) {
+read_and_process <- function(args_list) {
   list2env(args_list, envir = rlang::current_env())
 
   log_path <- file.path(output_path, paste0("log_file_", iter_var, ".txt"))
@@ -175,11 +175,11 @@ run_stress_test_impl <- function(args_list) {
     )
   )
 
-  cat("-- Importing and preparing input data from designated input path. \n")
+  cat("-- Importing input data from designated input path. \n")
+  cat("-- Preparing input data. \n")
+  data <- st_read(input_path_project_specific, asset_type)
 
-  pacta_results <- read_pacta_results(
-    path = file.path(input_path_project_specific, paste0(stringr::str_to_title(asset_type), "_results_", calculation_level_lookup, ".rda"))
-  )
+  pacta_results <-  data[["pacta_results"]]
 
   start_year <- min(pacta_results$year, na.rm = TRUE)
 
@@ -365,4 +365,22 @@ iteration_sequence <- function(args_list) {
   } else {
     return(seq_along(args_list[[iter_var]]))
   }
+}
+
+st_read <- function(input_path_project_specific, asset_type) {
+  path <- pacta_results_path(input_path_project_specific, asset_type)
+
+  out <- list(
+    pacta_results = read_pacta_results(path)
+  )
+
+  return(out)
+}
+
+pacta_results_path <- function(dir, asset_type) {
+  asset_type <- stringr::str_to_title(asset_type)
+
+  file <- glue::glue("{asset_type}_results_{calculation_level_lookup}.rda")
+  path <- file.path(dir, file)
+  return(path)
 }
