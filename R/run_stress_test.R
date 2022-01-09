@@ -168,8 +168,6 @@ read_and_process <- function(args_list) {
     lgd_subordinated_claims = lgd_subordinated_claims
   )
 
-  scenarios_filter <- scenarios_filter()
-
   cat("-- Importing input data from designated input path. \n")
   cat("-- Preparing input data. \n")
   data <- st_read(input_path_project_specific, asset_type)
@@ -185,7 +183,7 @@ read_and_process <- function(args_list) {
     path = file.path(input_path_project_agnostic, "prewrangled_capacity_factors_WEO_2020.csv")
   ) %>%
     process_capacity_factors_power(
-      scenarios_filter = scenarios_filter,
+      scenarios_filter = scenarios_filter(),
       scenario_geography_filter = scenario_geography_filter_lookup,
       technologies = technologies_lookup,
       start_year = start_year,
@@ -216,7 +214,7 @@ read_and_process <- function(args_list) {
       sectors = sectors_lookup,
       technologies = technologies_lookup,
       scenario_geography_filter = scenario_geography_filter_lookup,
-      scenarios_filter = scenarios_filter
+      scenarios_filter = scenarios_filter()
     )
 
   financial_data <- read_financial_data(
