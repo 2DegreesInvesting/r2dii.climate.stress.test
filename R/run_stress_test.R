@@ -168,11 +168,10 @@ read_and_process <- function(args_list) {
     lgd_subordinated_claims = lgd_subordinated_claims
   )
 
-  cat("-- Importing input data from designated input path. \n")
-  cat("-- Preparing input data. \n")
-
+  cat("-- Reading input data from designated input path. \n")
   data <- st_read(input_path_project_specific, asset_type)
 
+  cat("-- Processing input data. \n")
   pacta_results <- st_process(data, asset_type)$pacta_results
 
   start_year <- get_start_year(data)
