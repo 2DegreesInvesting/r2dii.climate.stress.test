@@ -173,7 +173,7 @@ read_and_process <- function(args_list) {
 
   data <- st_read(input_path_project_specific, asset_type)
 
-  pacta_results <- st_process(data, asset_type)[["pacta_results"]]
+  pacta_results <- st_process(data, asset_type)$pacta_results
 
   start_year <- get_start_year(data)
 
