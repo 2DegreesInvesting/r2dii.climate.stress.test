@@ -168,34 +168,15 @@ read_and_process <- function(args_list) {
     lgd_subordinated_claims = lgd_subordinated_claims
   )
 
-  scenarios_filter <- unique(
-    c(
-      baseline_scenario_lookup,
-      shock_scenario_lookup
-    )
-  )
+  scenarios_filter <- scenarios_filter()
 
   cat("-- Importing input data from designated input path. \n")
   cat("-- Preparing input data. \n")
   data <- st_read(input_path_project_specific, asset_type)
 
-  pacta_results <-  data[["pacta_results"]]
+  pacta_results <- st_process(data, asset_type)[["pacta_results"]]
 
-  start_year <- min(pacta_results$year, na.rm = TRUE)
-
-  pacta_results <- pacta_results %>%
-    process_pacta_results(
-      start_year = start_year,
-      end_year = end_year_lookup,
-      time_horizon = time_horizon_lookup,
-      scenario_geography_filter = scenario_geography_filter_lookup,
-      scenarios_filter = scenarios_filter,
-      equity_market_filter = equity_market_filter_lookup,
-      sectors = sectors_lookup,
-      technologies = technologies_lookup,
-      allocation_method = allocation_method_lookup,
-      asset_type = asset_type
-    )
+  start_year <- get_start_year(data)
 
   sector_exposures <- read_sector_exposures(file.path(input_path_project_specific, "overview_portfolio.rda")) %>%
     process_sector_exposures(asset_type = asset_type)
@@ -383,4 +364,36 @@ pacta_results_path <- function(dir, asset_type) {
   file <- glue::glue("{asset_type}_results_{calculation_level_lookup}.rda")
   path <- file.path(dir, file)
   return(path)
+}
+
+st_process <- function(data, asset_type) {
+  pacta_results <- data$pacta_results %>%
+    process_pacta_results(
+      start_year = get_start_year(data),
+      end_year = end_year_lookup,
+      time_horizon = time_horizon_lookup,
+      scenario_geography_filter = scenario_geography_filter_lookup,
+      scenarios_filter = scenarios_filter(),
+      equity_market_filter = equity_market_filter_lookup,
+      sectors = sectors_lookup,
+      technologies = technologies_lookup,
+      allocation_method = allocation_method_lookup,
+      asset_type = asset_type
+    )
+
+  out <- list(
+    pacta_results = pacta_results
+  )
+
+  return(out)
+}
+
+get_start_year <- function(data) {
+  out <- min(data$pacta_results$year, na.rm = TRUE)
+  return(out)
+}
+
+scenarios_filter <- function() {
+  out <- unique(c(baseline_scenario_lookup, shock_scenario_lookup))
+  return(out)
 }
