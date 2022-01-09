@@ -357,14 +357,6 @@ st_read <- function(input_path_project_specific, asset_type) {
   return(out)
 }
 
-pacta_results_path <- function(dir, asset_type) {
-  asset_type <- stringr::str_to_title(asset_type)
-
-  file <- glue::glue("{asset_type}_results_{calculation_level_lookup}.rda")
-  path <- file.path(dir, file)
-  return(path)
-}
-
 st_process <- function(data, asset_type) {
   pacta_results <- data$pacta_results %>%
     process_pacta_results(
@@ -385,6 +377,13 @@ st_process <- function(data, asset_type) {
   )
 
   return(out)
+}
+pacta_results_path <- function(dir, asset_type) {
+  asset_type <- stringr::str_to_title(asset_type)
+
+  file <- glue::glue("{asset_type}_results_{calculation_level_lookup}.rda")
+  path <- file.path(dir, file)
+  return(path)
 }
 
 get_start_year <- function(data) {
