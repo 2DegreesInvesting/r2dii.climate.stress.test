@@ -170,6 +170,7 @@ read_and_process <- function(args_list) {
 
   cat("-- Importing input data from designated input path. \n")
   cat("-- Preparing input data. \n")
+
   data <- st_read(input_path_project_specific, asset_type)
 
   pacta_results <- st_process(data, asset_type)[["pacta_results"]]
