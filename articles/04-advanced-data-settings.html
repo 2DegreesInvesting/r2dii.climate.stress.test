@@ -103,7 +103,7 @@
 <div class="section level3">
 <h3 id="preparing-company---term-data">Preparing company - term data<a class="anchor" aria-label="anchor" href="#preparing-company---term-data"></a>
 </h3>
-<p>The data that needs to be created is a csv file named <code>company_terms.csv</code>. It holds the columns <code>company_name</code> (character, holding name of analysed companies) and term (numeric, indicates which maturity the loans to respective companies is assumed to have in years). In column <code>company_name</code> include all unique company names from <code>Loans_results_company.rda</code>, which you generated in <a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-prepare-loans-inputs.html">prepare loans inputs</a>. If you want to use R to obtain this column you can take the following steps.</p>
+<p>The data that needs to be created is a csv file named <code>company_terms.csv</code>. It holds the columns <code>company_name</code> (character, holding name of analysed companies) and term (numeric, indicates which maturity the loans to respective companies is assumed to have in years). In column <code>company_name</code> include all unique company names from <code>Loans_results_company.rda</code>, which you generated in <a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-prepare-loans-inputs.html">“prepare loans inputs”</a>. If you want to use R to obtain this column you can take the following steps.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://readr.tidyverse.org" class="external-link">readr</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test">r2dii.climate.stress.test</a></span><span class="op">)</span>
@@ -126,9 +126,10 @@
 <div class="section level3">
 <h3 id="validating-company---term-data">Validating company - term data<a class="anchor" aria-label="anchor" href="#validating-company---term-data"></a>
 </h3>
-<p>Before including the file in your analysis you may want to validate that your file complies with requirements concerning structure and content. You may verify by executing the following lines of code.</p>
+<p>Before including the file in your analysis you may want to validate that your file complies with requirements concerning structure and content. You may verify by executing the following lines of code. You will receive warning/error messages in case problems are detected.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test">r2dii.climate.stress.test</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://readr.tidyverse.org" class="external-link">readr</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test">r2dii.climate.stress.test</a></span><span class="op">)</span>
 
 <span class="va">company_terms_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"/path/to/file"</span><span class="op">)</span>
 <span class="fu"><a href="../reference/validate_file_exists.html">validate_file_exists</a></span><span class="op">(</span><span class="va">company_terms_path</span><span class="op">)</span>
@@ -162,6 +163,75 @@
   output_path <span class="op">=</span> <span class="st">"/path/to/output/directory"</span>,
   use_company_terms <span class="op">=</span> <span class="cn">TRUE</span>
 <span class="op">)</span></code></pre></div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="financial-data">Financial data<a class="anchor" aria-label="anchor" href="#financial-data"></a>
+</h2>
+<p>Financial data provide several financial indicators on the company level. If data is available you can replace our standard financial data set with a data set holding your financial information on the companies you included in the analysis.</p>
+<div class="section level3">
+<h3 id="preparing-financial-data">Preparing financial data<a class="anchor" aria-label="anchor" href="#preparing-financial-data"></a>
+</h3>
+<p>The data that needs to be created is a csv file named <code>prewrangled_financial_data_stress_test.csv</code>. It holds the columns:</p>
+<ul>
+<li>
+<code>company_name</code>: character, holding name of analysed companies</li>
+<li>
+<code>company_id</code>: numeric, id of company as classified by asset resolution. For loans workflow a placeholder value will be used.</li>
+<li>
+<code>corporate_bond_ticker</code>: character, holding indentifier. Will be NA for loans workflow.</li>
+<li>
+<code>pd</code>: numeric, holding probability of default per company. Needs to be equal to or larger than 0 and smaller than 1.</li>
+<li>
+<code>net_profit_margin</code>: numeric, holding net_profit_margin per company. Needs to be larger than 0 and equal to or smaller than 1.</li>
+<li>
+<code>debt_equity_ratio</code>: numeric, holding ratio of outstanding debt to the company’s equity value. This is the leverage. Needs to be larger than 0.</li>
+<li>
+<code>volatility</code>: numeric, holding volatility of asset. Needs to be equal to or larger than 0.</li>
+</ul>
+<p><strong>NOTE</strong>: No column, except for corporate_bond_ticker, may have missing values.</p>
+<p>In column <code>company_name</code> include all unique company names from <code>Loans_results_company.rda</code>, which you generated in <a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-prepare-loans-inputs.html">prepare loans inputs</a>. Also create column <code>company_id</code> holding a placeholder value, e.g. 999, and column <code>corporate_bond_ticker</code>, holding NA.</p>
+<p>If you want to use R to obtain this data you can take the following steps.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://readr.tidyverse.org" class="external-link">readr</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test">r2dii.climate.stress.test</a></span><span class="op">)</span>
+
+<span class="va">loans_results_company_file_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"/path/to/specific/data/inputs"</span>, <span class="st">"Loans_results_company.rda"</span><span class="op">)</span>
+<span class="fu"><a href="../reference/validate_file_exists.html">validate_file_exists</a></span><span class="op">(</span><span class="va">loans_results_company_file_path</span><span class="op">)</span>
+<span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">read_rds</a></span><span class="op">(</span><span class="va">loans_results_company_file_path</span><span class="op">)</span>
+<span class="va">fin_companies</span> <span class="op">&lt;-</span> <span class="va">data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">company_name</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>company_id <span class="op">=</span> <span class="fl">999</span>, corporate_bond_ticker <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>
+<span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/write_delim.html" class="external-link">write_csv</a></span><span class="op">(</span><span class="va">fin_companies</span>, <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"/some/path"</span>, <span class="st">"prewrangled_financial_data_stress_test.csv"</span><span class="op">)</span><span class="op">)</span> <span class="co"># NOTE that this will overwrite financial data currently stored at the location if available</span></code></pre></div>
+<p>You can now open this file in a tool of your choice, and add the remaining variables. Please make sure to save the result as a csv file again.</p>
+</div>
+<div class="section level3">
+<h3 id="validating-financial-data">Validating financial data<a class="anchor" aria-label="anchor" href="#validating-financial-data"></a>
+</h3>
+<p>Before including the file in your analysis you may want to validate that your file complies with requirements concerning structure and content. You may verify by executing the following lines of code. You will receive warning/error messages in case problems are detected.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://readr.tidyverse.org" class="external-link">readr</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test">r2dii.climate.stress.test</a></span><span class="op">)</span>
+
+<span class="va">financial_data_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"/path/to/file"</span><span class="op">)</span>
+<span class="fu"><a href="../reference/validate_file_exists.html">validate_file_exists</a></span><span class="op">(</span><span class="va">financial_data_path</span><span class="op">)</span>
+<span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span><span class="va">financial_data_path</span><span class="op">)</span>
+<span class="fu"><a href="../reference/check_financial_data.html">check_financial_data</a></span><span class="op">(</span>financial_data <span class="op">=</span> <span class="va">data</span>, asset_type <span class="op">=</span> <span class="st">"loans"</span><span class="op">)</span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="placing-file-in-folder-structure-1">Placing file in folder structure<a class="anchor" aria-label="anchor" href="#placing-file-in-folder-structure-1"></a>
+</h3>
+<p>In order to make sure your version of<code>prewrangled_financial_data_stress_test.csv</code> is used in the analysis place it in</p>
+<ul>
+<li><code>analysis_input_files/</code></li>
+</ul>
+<p>as set up in <a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/01-setup-project-directories.html">“Set up project directories”</a>. If the respective dataset as provided by 2DII already exists there make sure to replace it with your custom file.</p>
+</div>
+<div class="section level3">
+<h3 id="running-the-stress-test-with-provided-financial-data">Running the Stress Test with provided financial data<a class="anchor" aria-label="anchor" href="#running-the-stress-test-with-provided-financial-data"></a>
+</h3>
+<p>You can now run the stress test as described in vignette <a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/03-run-stress-test.html">“Run stress test”</a>.</p>
 </div>
 </div>
   </div>
