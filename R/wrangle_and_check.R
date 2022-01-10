@@ -574,7 +574,6 @@ select_sector_scenario_combinations <- function(pacta_results) {
 #'
 #' @return Tibble `data `
 fill_na_terms <- function(data, fallback_term) {
-
   n_companies_with_na_term <- data %>%
     dplyr::filter(is.na(term)) %>%
     nrow()
@@ -599,7 +598,6 @@ fill_na_terms <- function(data, fallback_term) {
 #'
 #' @return Tibble `data` with capped term.
 cap_terms <- function(data) {
-
   n_terms_bigger_5 <- data %>%
     dplyr::filter(.data$term > 5) %>%
     nrow()

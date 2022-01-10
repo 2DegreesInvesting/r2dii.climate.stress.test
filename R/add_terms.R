@@ -11,7 +11,6 @@
 #'
 #' @return `data` with added column terms.
 add_terms <- function(pacta_results, company_terms, fallback_term) {
-
   if (is.null(company_terms)) {
     pacta_results <- pacta_results %>%
       dplyr::mutate(term = as.double(fallback_term))
@@ -29,7 +28,6 @@ add_terms <- function(pacta_results, company_terms, fallback_term) {
   companies_after_merge <- unique(pacta_results$company_name)
 
   if (length(companies_before_merge) > length(companies_after_merge)) {
-
     missing_companies <- paste0(setdiff(companies_before_merge, companies_after_merge), collapse = ", ")
     rlang::abort(c(
       "All companies considered in this analysis must be provided in company_terms.",
