@@ -172,7 +172,9 @@ read_and_process <- function(args_list) {
   data <- st_read(input_path_project_specific, asset_type)
 
   cat("-- Processing input data. \n")
-  pacta_results <- st_process(data, asset_type)$pacta_results
+  processed <- st_process(data, asset_type)
+
+  pacta_results <- processed$pacta_results
 
   sector_exposures <- read_sector_exposures(file.path(input_path_project_specific, "overview_portfolio.rda")) %>%
     process_sector_exposures(asset_type = asset_type)
