@@ -129,7 +129,7 @@ run_stress_test_iteration <- function(args_list) {
       dplyr::select(-dplyr::all_of(setup_vars_lookup)) %>%
       dplyr::rename_with( ~ paste0(.x, "_arg"))
 
-    st_result <- run_stress_test_impl(arg_list_row) %>%
+    st_result <- read_and_process(arg_list_row) %>%
       purrr::map(dplyr::bind_cols, data_y = arg_tibble_row)
 
     return(st_result)
@@ -148,7 +148,7 @@ run_stress_test_iteration <- function(args_list) {
 
 # Avoid R CMD check NOTE: "Undefined global functions or variables"
 globalVariables(c(names(formals(run_stress_test)), "iter_var"))
-run_stress_test_impl <- function(args_list) {
+read_and_process <- function(args_list) {
   list2env(args_list, envir = rlang::current_env())
 
   log_path <- file.path(output_path, paste0("log_file_", iter_var, ".txt"))
@@ -168,37 +168,14 @@ run_stress_test_impl <- function(args_list) {
     lgd_subordinated_claims = lgd_subordinated_claims
   )
 
-  scenarios_filter <- unique(
-    c(
-      baseline_scenario_lookup,
-      shock_scenario_lookup
-    )
-  )
-
-  cat("-- Importing and preparing input data from designated input path. \n")
-
-  pacta_results <- read_pacta_results(
-    path = file.path(input_path_project_specific, paste0(stringr::str_to_title(asset_type), "_results_", calculation_level_lookup, ".rda"))
-  )
-
-  start_year <- min(pacta_results$year, na.rm = TRUE)
-
-  pacta_results <- pacta_results %>%
-    process_pacta_results(
-      start_year = start_year,
-      end_year = end_year_lookup,
-      time_horizon = time_horizon_lookup,
-      scenario_geography_filter = scenario_geography_filter_lookup,
-      scenarios_filter = scenarios_filter,
-      equity_market_filter = equity_market_filter_lookup,
-      sectors = sectors_lookup,
-      technologies = technologies_lookup,
-      allocation_method = allocation_method_lookup,
-      asset_type = asset_type
-    )
+  cat("-- Reading input data from designated input path. \n")
+  data <- st_read(input_path_project_specific, asset_type)
 
   sector_exposures <- read_sector_exposures(file.path(input_path_project_specific, "overview_portfolio.rda")) %>%
     process_sector_exposures(asset_type = asset_type)
+
+  start_year <- get_start_year(data)
+  scenarios_filter <- scenarios_filter()
 
   capacity_factors_power <- read_capacity_factors(
     path = file.path(input_path_project_agnostic, "prewrangled_capacity_factors_WEO_2020.csv")
@@ -248,8 +225,11 @@ run_stress_test_impl <- function(args_list) {
   ) %>%
     process_company_terms(fallback_term = term)
 
+  cat("-- Processing input data. \n")
+  processed <- st_process(data, asset_type)
+
   pacta_results <- add_terms(
-    pacta_results = pacta_results,
+    pacta_results = processed$pacta_results,
     company_terms = company_terms,
     fallback_term = term
   )
@@ -365,4 +345,53 @@ iteration_sequence <- function(args_list) {
   } else {
     return(seq_along(args_list[[iter_var]]))
   }
+}
+
+st_read <- function(input_path_project_specific, asset_type) {
+  path <- pacta_results_path(input_path_project_specific, asset_type)
+
+  out <- list(
+    pacta_results = read_pacta_results(path)
+  )
+
+  return(out)
+}
+
+st_process <- function(data, asset_type) {
+  pacta_results <- data$pacta_results %>%
+    process_pacta_results(
+      start_year = get_start_year(data),
+      end_year = end_year_lookup,
+      time_horizon = time_horizon_lookup,
+      scenario_geography_filter = scenario_geography_filter_lookup,
+      scenarios_filter = scenarios_filter(),
+      equity_market_filter = equity_market_filter_lookup,
+      sectors = sectors_lookup,
+      technologies = technologies_lookup,
+      allocation_method = allocation_method_lookup,
+      asset_type = asset_type
+    )
+
+  out <- list(
+    pacta_results = pacta_results
+  )
+
+  return(out)
+}
+
+pacta_results_path <- function(dir, asset_type) {
+  asset_type <- stringr::str_to_title(asset_type)
+  file <- glue::glue("{asset_type}_results_{calculation_level_lookup}.rda")
+  path <- file.path(dir, file)
+  return(path)
+}
+
+get_start_year <- function(data) {
+  out <- min(data$pacta_results$year, na.rm = TRUE)
+  return(out)
+}
+
+scenarios_filter <- function() {
+  out <- unique(c(baseline_scenario_lookup, shock_scenario_lookup))
+  return(out)
 }
