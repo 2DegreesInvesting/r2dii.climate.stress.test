@@ -345,12 +345,9 @@ iteration_sequence <- function(args_list) {
 }
 
 st_read <- function(dir, asset_type) {
-  pacta_results_path <- pacta_results_path(dir, asset_type)
-  sector_exposures_path <- file.path(dir, "overview_portfolio.rda")
-
   out <- list(
-    pacta_results = read_pacta_results(pacta_results_path),
-    sector_exposures = read_sector_exposures(sector_exposures_path)
+    pacta_results = read_pacta_results(pacta_results_file(dir, asset_type)),
+    sector_exposures = read_sector_exposures(sector_exposures_file(dir))
   )
 
   return(out)
@@ -382,11 +379,16 @@ st_process <- function(data, asset_type) {
   return(out)
 }
 
-pacta_results_path <- function(dir, asset_type) {
+pacta_results_file <- function(dir, asset_type) {
   asset_type <- stringr::str_to_title(asset_type)
   file <- glue::glue("{asset_type}_results_{calculation_level_lookup}.rda")
-  path <- file.path(dir, file)
-  return(path)
+  out <- file.path(dir, file)
+  return(out)
+}
+
+sector_exposures_file <- function(dir) {
+  out <- file.path(dir, "overview_portfolio.rda")
+  return(out)
 }
 
 get_start_year <- function(data) {
