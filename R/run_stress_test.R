@@ -127,7 +127,7 @@ run_stress_test_iteration <- function(args_list) {
 
     arg_tibble_row <- arg_tibble_row %>%
       dplyr::select(-dplyr::all_of(setup_vars_lookup)) %>%
-      dplyr::rename_with( ~ paste0(.x, "_arg"))
+      dplyr::rename_with(~ paste0(.x, "_arg"))
 
     st_result <- read_and_process(arg_list_row) %>%
       purrr::map(dplyr::bind_cols, data_y = arg_tibble_row)
@@ -140,7 +140,7 @@ run_stress_test_iteration <- function(args_list) {
     dplyr::mutate(iter_var = .env$iter_var)
 
   out <- iteration_sequence(args_list) %>%
-    purrr::map(~dplyr::slice(args_tibble, .x)) %>%
+    purrr::map(~ dplyr::slice(args_tibble, .x)) %>%
     purrr::map(run_stress_test_iteration_once)
 
   return(out)
