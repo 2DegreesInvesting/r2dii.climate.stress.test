@@ -103,7 +103,7 @@ wrangle_and_check_pacta_results <- function(pacta_results, start_year, time_hori
 #' @param asset_type A string indicating if company data are for analysis for
 #'   bond or equity.
 #'
-#' @return A prewrangled `financial_data` set.
+#' @return Returns prewrangled `financial_data` invisibly.
 #' @export
 #' @examples
 #' fin_data <- tibble::tibble(
@@ -157,7 +157,8 @@ check_financial_data <- function(financial_data, asset_type) {
 
   report_missings(
     data = financial_data,
-    name_data = "Financial Data"
+    name_data = "Financial Data",
+    throw_error = TRUE
   )
 
   report_all_duplicate_kinds(
@@ -172,7 +173,7 @@ check_financial_data <- function(financial_data, asset_type) {
     asset_type = asset_type
   )
 
-  return(financial_data)
+  return(invisible(financial_data))
 }
 
 #' Check company term values for plausibility

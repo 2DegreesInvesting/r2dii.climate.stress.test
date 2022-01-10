@@ -13,7 +13,7 @@ check_financial_data(financial_data, asset_type)
 bond or equity.}
 }
 \value{
-A prewrangled \code{financial_data} set.
+Returns prewrangled \code{financial_data} invisibly.
 }
 \description{
 Applies sanity checks to financial data. Also remove column

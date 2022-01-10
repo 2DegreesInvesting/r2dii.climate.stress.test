@@ -32,8 +32,8 @@ The data that needs to be created is a csv file named `company_terms.csv`. It
 holds the columns `company_name` (character, holding name of analysed companies)
 and term (numeric, indicates which maturity the loans to respective companies is
 assumed to have in years). In column `company_name` include all unique company
-names from `Loans_results_company.rda`, which you generated in [prepare loans
-inputs](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-prepare-loans-inputs.html).
+names from `Loans_results_company.rda`, which you generated in ["prepare loans
+inputs"](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-prepare-loans-inputs.html).
 If you want to use R to obtain this column you can take the following steps.
 
 ```{r, eval = FALSE}
@@ -67,8 +67,10 @@ fill the gaps.
 ### Validating company - term data
 Before including the file in your analysis you may want to validate that your
 file complies with requirements concerning structure and content. You may verify
-by executing the following lines of code.
+by executing the following lines of code. You will receive warning/error
+messages in case problems are detected.
 ```{r, eval = FALSE}
+library(readr)
 library(r2dii.climate.stress.test)
 
 company_terms_path <- file.path("/path/to/file")
@@ -101,3 +103,85 @@ run_stress_test(
   use_company_terms = TRUE
 )
 ```
+
+## Financial data
+Financial data provide several financial indicators on the company level. If
+data is available you can replace our standard financial data set with a data
+set holding your financial information on the companies you included in the
+analysis.  
+
+### Preparing financial data
+The data that needs to be created is a csv file named `prewrangled_financial_data_stress_test.csv`. 
+It holds the columns:
+
+* `company_name`: character, holding name of analysed companies
+* `company_id`: numeric, id of company as classified by asset resolution. For
+loans workflow a placeholder value will be used.
+* `corporate_bond_ticker`: character, holding indentifier. Will be NA for loans
+workflow.
+* `pd`: numeric, holding probability of default per company. Needs to be equal
+to or larger than 0 and smaller than 1.
+* `net_profit_margin`: numeric, holding net_profit_margin per company. Needs to
+be larger than 0 and equal to or smaller than 1.
+* `debt_equity_ratio`: numeric, holding ratio of outstanding debt to the
+company's equity value. This is the leverage. Needs to be larger than 0.
+* `volatility`: numeric, holding volatility of asset. Needs to be equal to or
+larger than 0.
+
+**NOTE**: No column, except for corporate_bond_ticker, may have missing values.
+
+In column `company_name` include all unique company names from
+`Loans_results_company.rda`, which you generated in [prepare loans
+inputs](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-prepare-loans-inputs.html).
+Also create column `company_id` holding a placeholder value, e.g. 999, and
+column `corporate_bond_ticker`, holding NA.
+
+If you want to use R to obtain this data you can take the following steps.
+
+```{r, eval = FALSE}
+library(readr)
+library(r2dii.climate.stress.test)
+
+loans_results_company_file_path <- file.path("/path/to/specific/data/inputs", "Loans_results_company.rda")
+validate_file_exists(loans_results_company_file_path)
+data <- readr::read_rds(loans_results_company_file_path)
+fin_companies <- data %>%
+  dplyr::select(company_name) %>%
+  dplyr::distinct() %>% 
+  dplyr::mutate(company_id = 999, corporate_bond_ticker = NA)
+readr::write_csv(fin_companies, file.path("/some/path", "prewrangled_financial_data_stress_test.csv")) # NOTE that this will overwrite financial data currently stored at the location if available
+```
+
+You can now open this file in a tool of your choice, and add the remaining
+variables. Please make sure to save the result as a csv file again.
+
+### Validating financial data
+Before including the file in your analysis you may want to validate that your
+file complies with requirements concerning structure and content. You may verify
+by executing the following lines of code. You will receive warning/error
+messages in case problems are detected.
+```{r, eval = FALSE}
+library(readr)
+library(r2dii.climate.stress.test)
+
+financial_data_path <- file.path("/path/to/file")
+validate_file_exists(financial_data_path)
+data <- readr::read_csv(financial_data_path)
+check_financial_data(financial_data = data, asset_type = "loans")
+
+```
+
+### Placing file in folder structure
+In order to make sure your version
+of`prewrangled_financial_data_stress_test.csv` is used in the analysis place it
+in
+
+* `analysis_input_files/`  
+    
+as set up in ["Set up project
+directories"](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/01-setup-project-directories.html).
+If the respective dataset as provided by 2DII already exists there make sure to 
+replace it with your custom file.
+
+### Running the Stress Test with provided financial data
+You can now run the stress test as described in vignette ["Run stress test"](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/03-run-stress-test.html).
