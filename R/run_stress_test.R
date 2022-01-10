@@ -171,9 +171,6 @@ read_and_process <- function(args_list) {
   cat("-- Reading input data from designated input path. \n")
   data <- st_read(input_path_project_specific, asset_type)
 
-  sector_exposures <- read_sector_exposures(file.path(input_path_project_specific, "overview_portfolio.rda")) %>%
-    process_sector_exposures(asset_type = asset_type)
-
   start_year <- get_start_year(data)
   scenarios_filter <- scenarios_filter()
 
@@ -238,7 +235,7 @@ read_and_process <- function(args_list) {
     pacta_results = pacta_results,
     capacity_factors_power = capacity_factors_power,
     excluded_companies = excluded_companies,
-    sector_exposures = sector_exposures,
+    sector_exposures = processed$sector_exposures,
     scenario_data = scenario_data,
     df_price = df_price,
     financial_data = financial_data
@@ -347,11 +344,13 @@ iteration_sequence <- function(args_list) {
   }
 }
 
-st_read <- function(input_path_project_specific, asset_type) {
-  path <- pacta_results_path(input_path_project_specific, asset_type)
+st_read <- function(dir, asset_type) {
+  pacta_results_path <- pacta_results_path(dir, asset_type)
+  sector_exposures_path <- file.path(dir, "overview_portfolio.rda")
 
   out <- list(
-    pacta_results = read_pacta_results(path)
+    pacta_results = read_pacta_results(pacta_results_path),
+    sector_exposures = read_sector_exposures(sector_exposures_path)
   )
 
   return(out)
@@ -372,8 +371,12 @@ st_process <- function(data, asset_type) {
       asset_type = asset_type
     )
 
+  sector_exposures <- data$sector_exposures %>%
+    process_sector_exposures(asset_type = asset_type)
+
   out <- list(
-    pacta_results = pacta_results
+    pacta_results = pacta_results,
+    sector_exposures = sector_exposures
   )
 
   return(out)
