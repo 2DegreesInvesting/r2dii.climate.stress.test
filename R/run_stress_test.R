@@ -171,11 +171,6 @@ read_and_process <- function(args_list) {
   cat("-- Reading input data from designated input path. \n")
   data <- st_read(input_path_project_specific, asset_type)
 
-  cat("-- Processing input data. \n")
-  processed <- st_process(data, asset_type)
-
-  pacta_results <- processed$pacta_results
-
   sector_exposures <- read_sector_exposures(file.path(input_path_project_specific, "overview_portfolio.rda")) %>%
     process_sector_exposures(asset_type = asset_type)
 
@@ -230,8 +225,11 @@ read_and_process <- function(args_list) {
   ) %>%
     process_company_terms(fallback_term = term)
 
+  cat("-- Processing input data. \n")
+  processed <- st_process(data, asset_type)
+
   pacta_results <- add_terms(
-    pacta_results = pacta_results,
+    pacta_results = processed$pacta_results,
     company_terms = company_terms,
     fallback_term = term
   )
