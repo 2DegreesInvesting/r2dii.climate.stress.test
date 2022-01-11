@@ -169,21 +169,13 @@ read_and_process <- function(args_list) {
   )
 
   cat("-- Reading input data from designated input path. \n")
-  data <- st_read(input_path_project_specific, asset_type)
+  data <- append(
+    st_read_specific(input_path_project_specific, asset_type),
+    st_read_agnostic(input_path_project_agnostic, asset_type)
+  )
 
   start_year <- get_start_year(data)
   scenarios_filter <- scenarios_filter()
-
-  capacity_factors_power <- read_capacity_factors(
-    path = file.path(input_path_project_agnostic, "prewrangled_capacity_factors_WEO_2020.csv")
-  ) %>%
-    process_capacity_factors_power(
-      scenarios_filter = scenarios_filter,
-      scenario_geography_filter = scenario_geography_filter_lookup,
-      technologies = technologies_lookup,
-      start_year = start_year,
-      end_year = end_year_lookup
-    )
 
   excluded_companies <- read_excluded_companies(
     path = file.path(input_path_project_agnostic, "exclude-companies.csv")
@@ -233,7 +225,7 @@ read_and_process <- function(args_list) {
 
   input_data_list <- list(
     pacta_results = pacta_results,
-    capacity_factors_power = capacity_factors_power,
+    capacity_factors_power = processed$capacity_factors_power,
     excluded_companies = excluded_companies,
     sector_exposures = processed$sector_exposures,
     scenario_data = scenario_data,
@@ -344,7 +336,7 @@ iteration_sequence <- function(args_list) {
   }
 }
 
-st_read <- function(dir, asset_type) {
+st_read_specific <- function(dir, asset_type) {
   out <- list(
     pacta_results = read_pacta_results(pacta_results_file(dir, asset_type)),
     sector_exposures = read_sector_exposures(sector_exposures_file(dir))
@@ -353,14 +345,25 @@ st_read <- function(dir, asset_type) {
   return(out)
 }
 
+st_read_agnostic <- function(dir, asset_type) {
+  out <- list(
+    capacity_factors = read_capacity_factors(capacity_factor_file(dir))
+  )
+
+  return(out)
+}
+
 st_process <- function(data, asset_type) {
+  start_year <- get_start_year(data)
+  scenarios_filter <- scenarios_filter()
+
   pacta_results <- data$pacta_results %>%
     process_pacta_results(
-      start_year = get_start_year(data),
+      start_year = start_year,
       end_year = end_year_lookup,
       time_horizon = time_horizon_lookup,
       scenario_geography_filter = scenario_geography_filter_lookup,
-      scenarios_filter = scenarios_filter(),
+      scenarios_filter = scenarios_filter,
       equity_market_filter = equity_market_filter_lookup,
       sectors = sectors_lookup,
       technologies = technologies_lookup,
@@ -371,9 +374,20 @@ st_process <- function(data, asset_type) {
   sector_exposures <- data$sector_exposures %>%
     process_sector_exposures(asset_type = asset_type)
 
+  capacity_factors_power <- data$capacity_factors %>%
+    process_capacity_factors_power(
+      scenarios_filter = scenarios_filter,
+      scenario_geography_filter = scenario_geography_filter_lookup,
+      technologies = technologies_lookup,
+      start_year = start_year,
+      end_year = end_year_lookup
+    )
+
+
   out <- list(
     pacta_results = pacta_results,
-    sector_exposures = sector_exposures
+    sector_exposures = sector_exposures,
+    capacity_factors_power = capacity_factors_power
   )
 
   return(out)
@@ -388,6 +402,11 @@ pacta_results_file <- function(dir, asset_type) {
 
 sector_exposures_file <- function(dir) {
   out <- file.path(dir, "overview_portfolio.rda")
+  return(out)
+}
+
+capacity_factor_file <- function(dir) {
+  out <- file.path(dir, "prewrangled_capacity_factors_WEO_2020.csv")
   return(out)
 }
 
