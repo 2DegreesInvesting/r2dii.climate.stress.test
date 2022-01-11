@@ -177,11 +177,6 @@ read_and_process <- function(args_list) {
   start_year <- get_start_year(data)
   scenarios_filter <- scenarios_filter()
 
-  excluded_companies <- read_excluded_companies(
-    path = file.path(input_path_project_agnostic, "exclude-companies.csv")
-  ) %>%
-    process_excluded_companies(company_exclusion = company_exclusion, technologies = technologies_lookup)
-
   df_price <- read_price_data_old2(
     path = file.path(input_path_project_agnostic, paste0("prices_data_", price_data_version_lookup, ".csv"))
   ) %>%
@@ -215,7 +210,7 @@ read_and_process <- function(args_list) {
     process_company_terms(fallback_term = term)
 
   cat("-- Processing input data. \n")
-  processed <- st_process(data, asset_type)
+  processed <- st_process(data, asset_type, company_exclusion)
 
   pacta_results <- add_terms(
     pacta_results = processed$pacta_results,
@@ -226,7 +221,7 @@ read_and_process <- function(args_list) {
   input_data_list <- list(
     pacta_results = pacta_results,
     capacity_factors_power = processed$capacity_factors_power,
-    excluded_companies = excluded_companies,
+    excluded_companies = processed$excluded_companies,
     sector_exposures = processed$sector_exposures,
     scenario_data = scenario_data,
     df_price = df_price,
@@ -347,13 +342,14 @@ st_read_specific <- function(dir, asset_type) {
 
 st_read_agnostic <- function(dir, asset_type) {
   out <- list(
-    capacity_factors = read_capacity_factors(capacity_factor_file(dir))
+    capacity_factors = read_capacity_factors(capacity_factor_file(dir)),
+    excluded_companies = read_excluded_companies(excluded_companies_file(dir))
   )
 
   return(out)
 }
 
-st_process <- function(data, asset_type) {
+st_process <- function(data, asset_type, company_exclusion) {
   start_year <- get_start_year(data)
   scenarios_filter <- scenarios_filter()
 
@@ -383,11 +379,17 @@ st_process <- function(data, asset_type) {
       end_year = end_year_lookup
     )
 
+  excluded_companies <- process_excluded_companies(
+    data$excluded_companies,
+    company_exclusion = company_exclusion,
+    technologies = technologies_lookup
+  )
 
   out <- list(
     pacta_results = pacta_results,
     sector_exposures = sector_exposures,
-    capacity_factors_power = capacity_factors_power
+    capacity_factors_power = capacity_factors_power,
+    excluded_companies = excluded_companies
   )
 
   return(out)
@@ -407,6 +409,11 @@ sector_exposures_file <- function(dir) {
 
 capacity_factor_file <- function(dir) {
   out <- file.path(dir, "prewrangled_capacity_factors_WEO_2020.csv")
+  return(out)
+}
+
+excluded_companies_file <- function(dir) {
+  out <- file.path(dir, "exclude-companies.csv")
   return(out)
 }
 
