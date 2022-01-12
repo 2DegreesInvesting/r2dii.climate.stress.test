@@ -41,7 +41,10 @@
       <a href="../articles/03-run-stress-test.html">03 - Run transition risk stress test on corporate loan books</a>
     </li>
     <li>
-      <a href="../articles/04-read-the-outputs.html">04 - Understand the output files of the transition risk stress test</a>
+      <a href="../articles/04-advanced-data-settings.html">04 - Improve stress test by providing further project specific data</a>
+    </li>
+    <li>
+      <a href="../articles/05-read-the-outputs.html">04 - Understand the output files of the transition risk stress test</a>
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"></ul></div><!--/.nav-collapse -->
@@ -72,6 +75,7 @@
   <span class="va">shock_year</span>,
   <span class="va">term</span>,
   <span class="va">company_exclusion</span>,
+  <span class="va">use_company_terms</span>,
   <span class="va">asset_type</span>
 <span class="op">)</span></code></pre></div>
     </div>
@@ -106,6 +110,11 @@ range compare <code>stress_test_arguments</code>.</p></dd>
 <dd><p>Boolean, indicating if companies provided in dataset
 excluded_companies.csv shall be excluded. For accepted values compare
 <code>stress_test_arguments</code>.</p></dd>
+<dt>use_company_terms</dt>
+<dd><p>Boolean, indicating if term values for individual
+companies are to be used. For accepted values compare
+<code>stress_test_arguments</code>. Note that currently this functionality is not
+available for asset_type bonds.</p></dd>
 <dt>asset_type</dt>
 <dd><p>String holding asset_type. For accepted values compare
 <code>stress_test_arguments</code>.</p></dd>

@@ -59,7 +59,10 @@
       <a href="../articles/03-run-stress-test.html">03 - Run transition risk stress test on corporate loan books</a>
     </li>
     <li>
-      <a href="../articles/04-read-the-outputs.html">04 - Understand the output files of the transition risk stress test</a>
+      <a href="../articles/04-advanced-data-settings.html">04 - Improve stress test by providing further project specific data</a>
+    </li>
+    <li>
+      <a href="../articles/05-read-the-outputs.html">04 - Understand the output files of the transition risk stress test</a>
     </li>
   </ul>
 </li>
@@ -128,18 +131,19 @@
 <p>Specifications on the detail arguments are summarized in the following overview. The defaults that are used if the argument is not adjusted when calling <code><a href="../reference/run_stress_test.html">run_stress_test()</a></code> can be found in column <code>default</code>. The user may change any detail argument by explicitly passing it to the function. Note that there are allowed values for each of the inputs. For logical or character variables refer to column <code>allowed</code>, for numeric variables the allowed values are the range from <code>min</code> (inclusive) to <code>max</code> (inclusive).</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">stress_test_arguments</span>
-<span class="co">#&gt; <span style="color: #949494;"># A tibble: 9 × 6</span></span>
-<span class="co">#&gt;   name                    type      default allowed              min   max  </span>
-<span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">1</span> asset_type              character <span style="color: #BB0000;">NA</span>      equity, bonds, loans <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">2</span> lgd_senior_claims       double    0.45    <span style="color: #BB0000;">NA</span>                   0.3   0.6  </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">3</span> lgd_subordinated_claims double    0.75    <span style="color: #BB0000;">NA</span>                   0.6   0.9  </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">4</span> risk_free_rate          double    0.02    <span style="color: #BB0000;">NA</span>                   0     0.05 </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">5</span> discount_rate           double    0.07    <span style="color: #BB0000;">NA</span>                   -0.01 0.1  </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">6</span> div_netprofit_prop_coef double    1       <span style="color: #BB0000;">NA</span>                   0.8   1    </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">7</span> shock_year              double    2030    <span style="color: #BB0000;">NA</span>                   2025  2035 </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">8</span> term                    double    2       <span style="color: #BB0000;">NA</span>                   1     10   </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">9</span> company_exclusion       logical   TRUE    TRUE, FALSE          <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span></span></code></pre></div>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 10 × 6</span></span>
+<span class="co">#&gt;    name                    type      default allowed              min   max  </span>
+<span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> asset_type              character <span style="color: #BB0000;">NA</span>      equity, bonds, loans <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> lgd_senior_claims       double    0.45    <span style="color: #BB0000;">NA</span>                   0.3   0.6  </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> lgd_subordinated_claims double    0.75    <span style="color: #BB0000;">NA</span>                   0.6   0.9  </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> risk_free_rate          double    0.02    <span style="color: #BB0000;">NA</span>                   0     0.05 </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> discount_rate           double    0.07    <span style="color: #BB0000;">NA</span>                   -0.01 0.1  </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> div_netprofit_prop_coef double    1       <span style="color: #BB0000;">NA</span>                   0.8   1    </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> shock_year              double    2030    <span style="color: #BB0000;">NA</span>                   2025  2035 </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> term                    double    2       <span style="color: #BB0000;">NA</span>                   1     5    </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> company_exclusion       logical   TRUE    TRUE, FALSE          <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">10</span> use_company_terms       logical   FALSE   TRUE, FALSE          <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="understanding-the-input-arguments">Understanding the input arguments<a class="anchor" aria-label="anchor" href="#understanding-the-input-arguments"></a>
@@ -162,6 +166,8 @@
 <code>term</code> indicates which maturity the loans in the loan book are assumed to have. At this point we assume these are rolled over every year.</li>
 <li>
 <code>company_exclusion</code> Logical parameter that indicates if certain combinations of company and technology should be excluded from the analysis. At this point, it is strictly recommended to set this to TRUE (default) because there is not yet a dedicated mechanism in place that handles companies which are phasing out certain technologies within the time frame of the production forecast.</li>
+<li>
+<code>use_company_terms</code> Logical parameter, indicating if individually provided terms for companies as configured in company_terms.csv shall be used instead of fallback as provided in <code>term</code>. The default is FALSE. For more details compare <a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/04-advanced-data-settings.html">“Advanced data settings”</a>.</li>
 <li>
 <code>return_results</code> Logical parameter that indicates if the outputs of the analysis should be directly written to the indicated output path or simply returned as a list of results within the running session. The default is FALSE, which writes the outputs to the target directory and does not return them as a list object in R.</li>
 </ul>
@@ -200,7 +206,7 @@
 </h2>
 <p>In case the user wants to understand the sensitivities of the model to the input parameters mentioned above, it is straight forward to run a sensitivity analysis that does exactly that.</p>
 <p>In order to do that, one simply passes a vector of allowed values for one (and only one) of the detail arguments when running the stress test function. This will lead to the model iterating over the set of values passed for the chosen argument, while keeping all other input arguments constant.</p>
-<p><strong>NOTE:</strong> It is not possible to iterate over <code>asset_type</code>.</p>
+<p><strong>NOTE:</strong> It is not possible to iterate over <code>asset_type</code> and <code>term</code>.</p>
 <p>If the user wishes to understand the impact of the <code>shock_year</code> on the results for example, they can run the following:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/run_stress_test.html">run_stress_test</a></span><span class="op">(</span>
