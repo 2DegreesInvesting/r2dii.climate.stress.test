@@ -171,7 +171,7 @@ read_and_process <- function(args_list) {
   cat("-- Reading input data from designated input path. \n")
   data <- append(
     st_read_specific(input_path_project_specific, asset_type),
-    st_read_agnostic(input_path_project_agnostic, asset_type)
+    st_read_agnostic(input_path_project_agnostic)
   )
 
   start_year <- get_start_year(data)
@@ -345,7 +345,7 @@ st_read_specific <- function(dir, asset_type) {
   return(out)
 }
 
-st_read_agnostic <- function(dir, asset_type) {
+st_read_agnostic <- function(dir) {
   out <- list(
     capacity_factors = read_capacity_factors(capacity_factor_file(dir))
   )
