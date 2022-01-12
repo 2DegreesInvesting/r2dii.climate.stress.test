@@ -200,7 +200,8 @@ read_and_process <- function(args_list) {
     process_company_terms(fallback_term = term)
 
   cat("-- Processing input data. \n")
-  processed <- st_process(data, asset_type, company_exclusion)
+  processed <- data %>%
+    st_process(asset_type = asset_type, company_exclusion = company_exclusion)
 
   pacta_results <- add_terms(
     pacta_results = processed$pacta_results,
