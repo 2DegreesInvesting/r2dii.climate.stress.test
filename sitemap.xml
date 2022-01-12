@@ -22,10 +22,7 @@
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/03-run-stress-test.html</loc>
   </url>
   <url>
-    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/04-advanced-data-settings.html</loc>
-  </url>
-  <url>
-    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/05-read-the-outputs.html</loc>
+    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/04-read-the-outputs.html</loc>
   </url>
   <url>
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/index.html</loc>
@@ -35,9 +32,6 @@
   </url>
   <url>
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/index.html</loc>
-  </url>
-  <url>
-    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/add_terms.html</loc>
   </url>
   <url>
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/annual_pd_change_company_sector.html</loc>
@@ -85,25 +79,10 @@
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/calculate_pd_change_overall.html</loc>
   </url>
   <url>
-    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/cap_terms.html</loc>
-  </url>
-  <url>
-    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/check_company_terms.html</loc>
-  </url>
-  <url>
-    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/check_company_ticker_mapping.html</loc>
-  </url>
-  <url>
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/check_financial_data.html</loc>
   </url>
   <url>
-    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/check_level_availability.html</loc>
-  </url>
-  <url>
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/check_results.html</loc>
-  </url>
-  <url>
-    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/check_sector_tech_mapping.html</loc>
   </url>
   <url>
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/check_technology_availability.html</loc>
@@ -151,9 +130,6 @@
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/fill_annual_profit_cols.html</loc>
   </url>
   <url>
-    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/fill_na_terms.html</loc>
-  </url>
-  <url>
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/filter_negative_late_and_sudden.html</loc>
   </url>
   <url>
@@ -190,19 +166,10 @@
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/pipe.html</loc>
   </url>
   <url>
-    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/process_company_terms.html</loc>
-  </url>
-  <url>
-    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/process_pacta_results.html</loc>
-  </url>
-  <url>
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/read_capacity_factors.html</loc>
   </url>
   <url>
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/read_capacity_factors_old.html</loc>
-  </url>
-  <url>
-    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/read_company_terms.html</loc>
   </url>
   <url>
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/read_excluded_companies.html</loc>
@@ -263,6 +230,12 @@
   </url>
   <url>
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/run_stress_test.html</loc>
+  </url>
+  <url>
+    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/run_stress_test_impl.html</loc>
+  </url>
+  <url>
+    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/run_stress_test_iteration.html</loc>
   </url>
   <url>
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/select_sector_scenario_combinations.html</loc>

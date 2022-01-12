@@ -49,10 +49,7 @@ combinations of too many columns/values may exceed memory size.
       <a href="../articles/03-run-stress-test.html">03 - Run transition risk stress test on corporate loan books</a>
     </li>
     <li>
-      <a href="../articles/04-advanced-data-settings.html">04 - Improve stress test by providing further project specific data</a>
-    </li>
-    <li>
-      <a href="../articles/05-read-the-outputs.html">04 - Understand the output files of the transition risk stress test</a>
+      <a href="../articles/04-read-the-outputs.html">04 - Understand the output files of the transition risk stress test</a>
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"></ul></div><!--/.nav-collapse -->
@@ -79,23 +76,24 @@ to use function only in adequate context.</p></li>
 </ol></div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">report_missing_col_combinations</span><span class="op">(</span><span class="va">data</span>, <span class="va">col_names</span>, throw_error <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">report_missing_col_combinations</span><span class="op">(</span>
+  <span class="va">data</span>,
+  <span class="va">composite_unique_cols</span>,
+  throw_error <span class="op">=</span> <span class="cn">FALSE</span>
+<span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>A tibble.</p></dd>
-<dt>col_names</dt>
-<dd><p>String holding names of columns.</p></dd>
+<dt>composite_unique_cols</dt>
+<dd><p>A vector of names of columns that shall be
+unique in their combination.</p></dd>
 <dt>throw_error</dt>
 <dd><p>Boolean, if TRUE error is thrown on failures, otherwise a
 warning.</p></dd>
 </dl></div>
-    <div id="value">
-    <h2>Value</h2>
-    <p>Returns <code>data</code> invisibly.</p>
-    </div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -4,7 +4,7 @@ understand sensitivities of the scenarios, in which case the user may pass a
 vector of values to one (and only one) of the detail arguments. This will
 result in running the analysis multiple times in a row with the argument
 varied.
-NOTE: argument asset_type and term cannot be iterated.
+NOTE: argument asset_type cannot be iterated.
 NOTE: if return_results is TRUE results will not be written to output path but instead are returned."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -47,10 +47,7 @@ NOTE: if return_results is TRUE results will not be written to output path but i
       <a href="../articles/03-run-stress-test.html">03 - Run transition risk stress test on corporate loan books</a>
     </li>
     <li>
-      <a href="../articles/04-advanced-data-settings.html">04 - Improve stress test by providing further project specific data</a>
-    </li>
-    <li>
-      <a href="../articles/05-read-the-outputs.html">04 - Understand the output files of the transition risk stress test</a>
+      <a href="../articles/04-read-the-outputs.html">04 - Understand the output files of the transition risk stress test</a>
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"></ul></div><!--/.nav-collapse -->
@@ -73,7 +70,7 @@ understand sensitivities of the scenarios, in which case the user may pass a
 vector of values to one (and only one) of the detail arguments. This will
 result in running the analysis multiple times in a row with the argument
 varied.
-NOTE: argument <code>asset_type</code> and <code>term</code> cannot be iterated.
+NOTE: argument <code>asset_type</code> cannot be iterated.
 NOTE: if <code>return_results</code> is TRUE results will not be written to <code>output path</code> but instead are returned.</p>
     </div>
 
@@ -91,7 +88,6 @@ NOTE: if <code>return_results</code> is TRUE results will not be written to <cod
   shock_year <span class="op">=</span> <span class="fl">2030</span>,
   term <span class="op">=</span> <span class="fl">2</span>,
   company_exclusion <span class="op">=</span> <span class="cn">TRUE</span>,
-  use_company_terms <span class="op">=</span> <span class="cn">FALSE</span>,
   return_results <span class="op">=</span> <span class="cn">FALSE</span>
 <span class="op">)</span></code></pre></div>
     </div>
@@ -140,11 +136,6 @@ range compare <code>stress_test_arguments</code>.</p></dd>
 <dd><p>Boolean, indicating if companies provided in dataset
 excluded_companies.csv shall be excluded. For accepted values compare
 <code>stress_test_arguments</code>.</p></dd>
-<dt>use_company_terms</dt>
-<dd><p>Boolean, indicating if term values for individual
-companies are to be used. For accepted values compare
-<code>stress_test_arguments</code>. Note that currently this functionality is not
-available for asset_type bonds.</p></dd>
 <dt>return_results</dt>
 <dd><p>Boolean, indicating if results shall be exported.</p></dd>
 </dl></div>
