@@ -177,21 +177,6 @@ read_and_process <- function(args_list) {
   start_year <- get_start_year(data)
   scenarios_filter <- scenarios_filter()
 
-  excluded_companies <- read_excluded_companies(
-    path = file.path(input_path_project_agnostic, "exclude-companies.csv")
-  ) %>%
-    process_excluded_companies(company_exclusion = company_exclusion, technologies = technologies_lookup)
-
-  df_price <- read_price_data_old2(
-    path = file.path(input_path_project_agnostic, paste0("prices_data_", price_data_version_lookup, ".csv"))
-  ) %>%
-    process_df_price(
-      technologies = technologies_lookup,
-      sectors = sectors_lookup,
-      start_year = start_year,
-      end_year = end_year_lookup
-    )
-
   scenario_data <- read_scenario_data(
     path = file.path(input_path_project_agnostic, paste0("Scenarios_AnalysisInput_", start_year, ".csv"))
   ) %>%
@@ -215,7 +200,8 @@ read_and_process <- function(args_list) {
     process_company_terms(fallback_term = term)
 
   cat("-- Processing input data. \n")
-  processed <- st_process(data, asset_type)
+  processed <- data %>%
+    st_process(asset_type = asset_type, company_exclusion = company_exclusion)
 
   pacta_results <- add_terms(
     pacta_results = processed$pacta_results,
@@ -226,10 +212,10 @@ read_and_process <- function(args_list) {
   input_data_list <- list(
     pacta_results = pacta_results,
     capacity_factors_power = processed$capacity_factors_power,
-    excluded_companies = excluded_companies,
+    excluded_companies = processed$excluded_companies,
     sector_exposures = processed$sector_exposures,
     scenario_data = scenario_data,
-    df_price = df_price,
+    df_price = processed$df_price,
     financial_data = financial_data
   )
 
@@ -347,18 +333,20 @@ st_read_specific <- function(dir, asset_type) {
 
 st_read_agnostic <- function(dir, asset_type) {
   out <- list(
-    capacity_factors = read_capacity_factors(capacity_factor_file(dir))
+    capacity_factors = read_capacity_factors(capacity_factor_file(dir)),
+    excluded_companies = read_excluded_companies(excluded_companies_file(dir)),
+    df_price = read_price_data_old2(price_data_file(dir))
   )
 
   return(out)
 }
 
-st_process <- function(data, asset_type) {
+st_process <- function(data, asset_type, company_exclusion) {
   start_year <- get_start_year(data)
   scenarios_filter <- scenarios_filter()
 
-  pacta_results <- data$pacta_results %>%
-    process_pacta_results(
+  pacta_results <- process_pacta_results(
+      data$pacta_results,
       start_year = start_year,
       end_year = end_year_lookup,
       time_horizon = time_horizon_lookup,
@@ -371,11 +359,13 @@ st_process <- function(data, asset_type) {
       asset_type = asset_type
     )
 
-  sector_exposures <- data$sector_exposures %>%
-    process_sector_exposures(asset_type = asset_type)
+  sector_exposures <- process_sector_exposures(
+    data$sector_exposures,
+    asset_type = asset_type
+  )
 
-  capacity_factors_power <- data$capacity_factors %>%
-    process_capacity_factors_power(
+  capacity_factors_power <- process_capacity_factors_power(
+      data$capacity_factors,
       scenarios_filter = scenarios_filter,
       scenario_geography_filter = scenario_geography_filter_lookup,
       technologies = technologies_lookup,
@@ -383,11 +373,26 @@ st_process <- function(data, asset_type) {
       end_year = end_year_lookup
     )
 
+  excluded_companies <- process_excluded_companies(
+    data$excluded_companies,
+    company_exclusion = company_exclusion,
+    technologies = technologies_lookup
+  )
+
+  df_price <- process_df_price(
+    data$df_price,
+    technologies = technologies_lookup,
+    sectors = sectors_lookup,
+    start_year = start_year,
+    end_year = end_year_lookup
+  )
 
   out <- list(
     pacta_results = pacta_results,
     sector_exposures = sector_exposures,
-    capacity_factors_power = capacity_factors_power
+    capacity_factors_power = capacity_factors_power,
+    excluded_companies = excluded_companies,
+    df_price = df_price
   )
 
   return(out)
@@ -407,6 +412,17 @@ sector_exposures_file <- function(dir) {
 
 capacity_factor_file <- function(dir) {
   out <- file.path(dir, "prewrangled_capacity_factors_WEO_2020.csv")
+  return(out)
+}
+
+excluded_companies_file <- function(dir) {
+  out <- file.path(dir, "exclude-companies.csv")
+  return(out)
+}
+
+price_data_file <- function(dir) {
+  file <- paste0("prices_data_", price_data_version_lookup, ".csv")
+  out <- file.path(dir, file)
   return(out)
 }
 
