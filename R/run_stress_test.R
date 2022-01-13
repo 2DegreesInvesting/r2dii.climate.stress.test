@@ -336,18 +336,18 @@ st_process <- function(data, asset_type, company_exclusion) {
   scenarios_filter <- scenarios_filter()
 
   pacta_results <- process_pacta_results(
-      data$pacta_results,
-      start_year = start_year,
-      end_year = end_year_lookup,
-      time_horizon = time_horizon_lookup,
-      scenario_geography_filter = scenario_geography_filter_lookup,
-      scenarios_filter = scenarios_filter,
-      equity_market_filter = equity_market_filter_lookup,
-      sectors = sectors_lookup,
-      technologies = technologies_lookup,
-      allocation_method = allocation_method_lookup,
-      asset_type = asset_type
-    )
+    data$pacta_results,
+    start_year = start_year,
+    end_year = end_year_lookup,
+    time_horizon = time_horizon_lookup,
+    scenario_geography_filter = scenario_geography_filter_lookup,
+    scenarios_filter = scenarios_filter,
+    equity_market_filter = equity_market_filter_lookup,
+    sectors = sectors_lookup,
+    technologies = technologies_lookup,
+    allocation_method = allocation_method_lookup,
+    asset_type = asset_type
+  )
 
   sector_exposures <- process_sector_exposures(
     data$sector_exposures,
@@ -355,13 +355,13 @@ st_process <- function(data, asset_type, company_exclusion) {
   )
 
   capacity_factors_power <- process_capacity_factors_power(
-      data$capacity_factors,
-      scenarios_filter = scenarios_filter,
-      scenario_geography_filter = scenario_geography_filter_lookup,
-      technologies = technologies_lookup,
-      start_year = start_year,
-      end_year = end_year_lookup
-    )
+    data$capacity_factors,
+    scenarios_filter = scenarios_filter,
+    scenario_geography_filter = scenario_geography_filter_lookup,
+    technologies = technologies_lookup,
+    start_year = start_year,
+    end_year = end_year_lookup
+  )
 
   excluded_companies <- process_excluded_companies(
     data$excluded_companies,
