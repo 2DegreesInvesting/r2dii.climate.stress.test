@@ -321,15 +321,11 @@ st_read_specific <- function(dir, asset_type) {
 }
 
 st_read_agnostic <- function(dir, start_year) {
-  scenario_data <- read_scenario_data(path = file.path(
-    dir, paste0("Scenarios_AnalysisInput_", start_year, ".csv")
-  ))
-
   out <- list(
     capacity_factors = read_capacity_factors(capacity_factor_file(dir)),
     excluded_companies = read_excluded_companies(excluded_companies_file(dir)),
     df_price = read_price_data_old2(price_data_file(dir)),
-    scenario_data = scenario_data
+    scenario_data = read_scenario_data(scenario_data_file(dir, start_year))
   )
 
   return(out)
@@ -428,6 +424,11 @@ excluded_companies_file <- function(dir) {
 price_data_file <- function(dir) {
   file <- paste0("prices_data_", price_data_version_lookup, ".csv")
   out <- file.path(dir, file)
+  return(out)
+}
+
+scenario_data_file <- function(dir, start_year) {
+  out <- file.path(dir, paste0("Scenarios_AnalysisInput_", start_year, ".csv"))
   return(out)
 }
 
