@@ -176,13 +176,6 @@ read_and_process <- function(args_list) {
     data, st_read_agnostic(input_path_project_agnostic, start_year = start_year)
   )
 
-  scenarios_filter <- scenarios_filter()
-
-  financial_data <- read_financial_data(
-    path = file.path(input_path_project_agnostic, "prewrangled_financial_data_stress_test.csv")
-  ) %>%
-    process_financial_data(asset_type = asset_type)
-
   company_terms <- read_company_terms(file.path(input_path_project_specific, "company_terms.csv"),
     use_company_terms = use_company_terms
   ) %>%
@@ -205,7 +198,7 @@ read_and_process <- function(args_list) {
     sector_exposures = processed$sector_exposures,
     scenario_data = processed$scenario_data,
     df_price = processed$df_price,
-    financial_data = financial_data
+    financial_data = processed$financial_data
   )
 
   if (asset_type == "loans") {
@@ -325,7 +318,8 @@ st_read_agnostic <- function(dir, start_year) {
     capacity_factors = read_capacity_factors(capacity_factor_file(dir)),
     excluded_companies = read_excluded_companies(excluded_companies_file(dir)),
     df_price = read_price_data_old2(price_data_file(dir)),
-    scenario_data = read_scenario_data(scenario_data_file(dir, start_year))
+    scenario_data = read_scenario_data(scenario_data_file(dir, start_year)),
+    financial_data = read_financial_data(financial_data_file(dir))
   )
 
   return(out)
@@ -387,13 +381,19 @@ st_process <- function(data, asset_type, company_exclusion) {
     scenarios_filter = scenarios_filter
   )
 
+  financial_data <- process_financial_data(
+    data$financial_data,
+    asset_type = asset_type
+  )
+
   out <- list(
     pacta_results = pacta_results,
     sector_exposures = sector_exposures,
     capacity_factors_power = capacity_factors_power,
     excluded_companies = excluded_companies,
     df_price = df_price,
-    scenario_data = scenario_data
+    scenario_data = scenario_data,
+    financial_data = financial_data
   )
 
   return(out)
@@ -429,6 +429,11 @@ price_data_file <- function(dir) {
 
 scenario_data_file <- function(dir, start_year) {
   out <- file.path(dir, paste0("Scenarios_AnalysisInput_", start_year, ".csv"))
+  return(out)
+}
+
+financial_data_file <- function(dir) {
+  out <- file.path(dir, "prewrangled_financial_data_stress_test.csv")
   return(out)
 }
 
