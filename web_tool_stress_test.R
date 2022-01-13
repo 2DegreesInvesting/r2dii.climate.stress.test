@@ -260,7 +260,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
       nesting(!!!syms(nesting_vars))
     ) %>%
     dplyr::mutate(plan_tech_prod = dplyr::if_else(is.na(plan_tech_prod), 0, plan_tech_prod)) %>%
-    apply_filters(
+    apply_filters_old(
       investor = investor_name,
       sectors = sectors,
       technologies = technologies,
@@ -324,7 +324,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
       # Convert capacity (MW)to generation (MWh) for power sector
       equity_annual_profits <- pacta_equity_results %>%
         convert_cap_to_generation(capacity_factors_power = capacity_factors_power) %>%
-        extend_scenario_trajectory(
+        extend_scenario_trajectory_old(
           scenario_data = scenario_data,
           start_analysis = start_year,
           end_analysis = end_year,
@@ -401,7 +401,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
       nesting(!!!syms(nesting_vars))
     ) %>%
     dplyr::mutate(plan_tech_prod = dplyr::if_else(is.na(plan_tech_prod), 0, plan_tech_prod)) %>%
-    apply_filters(
+    apply_filters_old(
       investor = investor_name,
       sectors = sectors,
       technologies = technologies,
@@ -463,7 +463,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
 
       bonds_annual_profits <- pacta_bonds_results %>%
         convert_cap_to_generation(capacity_factors_power = capacity_factors_power) %>%
-        extend_scenario_trajectory(
+        extend_scenario_trajectory_old(
           scenario_data = scenario_data,
           start_analysis = start_year,
           end_analysis = end_year,
