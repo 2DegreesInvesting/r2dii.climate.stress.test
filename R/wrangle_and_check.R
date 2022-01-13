@@ -68,11 +68,13 @@ wrangle_and_check_sector_exposures <- function(sector_exposures, asset_type) {
 #'
 #' @inheritParams process_pacta_results
 #' @param pacta_results Results from PACTA analysis.
+#' @param declining_technologies Character. A vector containing the technologies
+#'   defined as declining based on the scenario data.
 #'
 #' @return Wrangled `pacta_results.`
 wrangle_and_check_pacta_results <- function(pacta_results, start_year, time_horizon,
                                             scenario_geography_filter, scenarios_filter,
-                                            allocation_method) {
+                                            allocation_method, declining_technologies) {
   wrangled_pacta_results <- pacta_results %>%
     select_sector_scenario_combinations() %>%
     dplyr::mutate(scenario = sub(".*?_", "", scenario)) %>%
@@ -88,7 +90,8 @@ wrangle_and_check_pacta_results <- function(pacta_results, start_year, time_hori
       scenario_geography_filter = scenario_geography_filter,
       scenarios = scenarios_filter,
       allocation_method = allocation_method,
-      start_analysis = start_year
+      start_analysis = start_year,
+      declining_technologies = declining_technologies
     )
 
   return(wrangled_pacta_results)

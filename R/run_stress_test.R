@@ -201,7 +201,11 @@ read_and_process <- function(args_list) {
 
   cat("-- Processing input data. \n")
   processed <- data %>%
-    st_process(asset_type = asset_type, company_exclusion = company_exclusion)
+    st_process(
+      asset_type = asset_type,
+      company_exclusion = company_exclusion,
+      scenario_data = scenario_data
+    )
 
   pacta_results <- add_terms(
     pacta_results = processed$pacta_results,
@@ -341,9 +345,12 @@ st_read_agnostic <- function(dir) {
   return(out)
 }
 
-st_process <- function(data, asset_type, company_exclusion) {
+st_process <- function(data, asset_type, company_exclusion, scenario_data) {
   start_year <- get_start_year(data)
   scenarios_filter <- scenarios_filter()
+  declining_technologies <- scenario_data %>%
+    dplyr::filter(.data$direction == "declining") %>%
+    dplyr::distinct(.data$technology)
 
   pacta_results <- process_pacta_results(
       data$pacta_results,
@@ -356,7 +363,8 @@ st_process <- function(data, asset_type, company_exclusion) {
       sectors = sectors_lookup,
       technologies = technologies_lookup,
       allocation_method = allocation_method_lookup,
-      asset_type = asset_type
+      asset_type = asset_type,
+      declining_technologies = declining_technologies
     )
 
   sector_exposures <- process_sector_exposures(

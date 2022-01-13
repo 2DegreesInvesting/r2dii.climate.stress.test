@@ -17,7 +17,7 @@ test_that("with missing argument for technologies, apply_filters
   test_start_analysis <- 2020
 
   testthat::expect_error(
-    apply_filters(
+    apply_filters_old(
       data = test_data,
       investor = test_investor,
       sectors = test_sectors,
@@ -48,7 +48,7 @@ test_that("apply_filters returns expected number of rows based on input filter
     length(test_allocation_method) *
     length(unique(test_data$year))
 
-  test_results <- apply_filters(
+  test_results <- apply_filters_old(
     data = test_data,
     investor = test_investor,
     sectors = test_sectors,
