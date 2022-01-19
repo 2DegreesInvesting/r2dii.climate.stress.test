@@ -1,5 +1,5 @@
 pandoc: 2.7.3
-pkgdown: 2.0.1
+pkgdown: 2.0.2
 pkgdown_sha: ~
 articles:
   01-setup-project-directories: 01-setup-project-directories.html
@@ -7,7 +7,7 @@ articles:
   03-run-stress-test: 03-run-stress-test.html
   04-advanced-data-settings: 04-advanced-data-settings.html
   05-read-the-outputs: 05-read-the-outputs.html
-last_built: 2022-01-13T13:51Z
+last_built: 2022-01-19T09:40Z
 urls:
   reference: https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference
   article: https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles
