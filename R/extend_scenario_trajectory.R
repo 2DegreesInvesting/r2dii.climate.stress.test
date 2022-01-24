@@ -169,6 +169,17 @@ extend_scenario_trajectory <- function(data,
       .data$scen_tech_prod
     ) %>%
     dplyr::filter(.data$year <= .env$start_analysis + .env$time_frame) %>%
+    dplyr::group_by(
+      .data$investor_name, .data$portfolio_name, .data$id, .data$company_name,
+      .data$ald_sector, .data$technology, .data$scenario, .data$allocation,
+      .data$scenario_geography#, .data$source, .data$units
+    ) %>%
+    dplyr::mutate(initial_technology_production = dplyr::first(.data$plan_tech_prod)) %>%
+    dplyr::mutate(final_technology_production = dplyr::last(.data$plan_tech_prod)) %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(
+      phase_out = dplyr::if_else(final_technology_production == 0, TRUE, FALSE)
+    ) %>%
     tidyr::complete(
       year = seq(.env$start_analysis, .env$end_analysis),
       tidyr::nesting(
@@ -179,7 +190,13 @@ extend_scenario_trajectory <- function(data,
           )
         )
       )
-    )
+    ) %>%
+    dplyr::arrange(
+      .data$investor_name, .data$portfolio_name, .data$id, .data$company_name,
+      .data$ald_sector, .data$technology, .data$scenario, .data$allocation,
+      .data$scenario_geography, .data$year
+    ) %>%
+    tidyr::fill(.data$initial_technology_production, .data$final_technology_production, .data$phase_out)
 
   data <- data %>%
     # ADO 2393 - The join cols should be extended to cover the source
@@ -210,13 +227,6 @@ extend_scenario_trajectory <- function(data,
       .data$scenario_geography, .data$source, .data$units
     ) %>%
     dplyr::mutate(initial_sector_production = dplyr::first(.data$plan_sec_prod)) %>%
-    dplyr::ungroup() %>%
-    dplyr::group_by(
-      .data$investor_name, .data$portfolio_name, .data$id, .data$company_name,
-      .data$ald_sector, .data$technology, .data$scenario, .data$allocation,
-      .data$scenario_geography, .data$source, .data$units
-      ) %>%
-    dplyr::mutate(initial_technology_production = dplyr::first(.data$plan_tech_prod)) %>%
     dplyr::ungroup()
 
   data <- data %>%
@@ -228,10 +238,10 @@ extend_scenario_trajectory <- function(data,
       )
     ) %>%
     dplyr::mutate(
-      scen_tech_prod = ifelse(
-        .data$scen_tech_prod < 0,
-        0,
-        .data$scen_tech_prod
+      scen_tech_prod = dplyr::case_when(
+        .data$scen_tech_prod < 0 ~ 0,
+        .data$phase_out == TRUE ~ 0,
+        TRUE ~ .data$scen_tech_prod
       )
     )
 
@@ -239,7 +249,7 @@ extend_scenario_trajectory <- function(data,
     tidyr::pivot_wider(
       id_cols = c(
         "investor_name", "portfolio_name", "id", "company_name", "year",
-        "scenario_geography", "ald_sector", "technology", "plan_tech_prod"
+        "scenario_geography", "ald_sector", "technology", "plan_tech_prod", "phase_out"
       ),
       names_from = .data$scenario,
       values_from = .data$scen_tech_prod
