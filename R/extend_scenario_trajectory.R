@@ -19,6 +19,7 @@
 #'   year of the analysis.
 #' @param time_frame Numeric. A vector of length 1 indicating the number of years
 #'   for which forward looking production data is considered.
+#' @noRd
 extend_scenario_trajectory_old <- function(data,
                                            scenario_data = NULL,
                                            start_analysis = NULL,
@@ -132,6 +133,7 @@ extend_scenario_trajectory_old <- function(data,
 #'   year of the analysis.
 #' @param time_frame Numeric. A vector of length 1 indicating the number of years
 #'   for which forward looking production data is considered.
+#' @noRd
 extend_scenario_trajectory <- function(data,
                                        scenario_data = NULL,
                                        start_analysis = NULL,
