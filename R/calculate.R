@@ -125,8 +125,8 @@ calculate_exposure_by_technology_and_company <- function(asset_type,
 
   n_companies_pre <- length(unique(exposure_by_technology_and_company$company_name))
 
-  exposure_by_technology_and_company_filtered <- exposure_by_technology_and_company# %>%
-    # dplyr::filter(.data$plan_carsten > 0)
+  exposure_by_technology_and_company_filtered <- exposure_by_technology_and_company %>%
+    dplyr::filter(.data$plan_carsten > 0)
 
   n_companies_post <- length(unique(exposure_by_technology_and_company_filtered$company_name))
 
