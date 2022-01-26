@@ -23,13 +23,13 @@
 #'   year of the analysis.
 
 apply_filters_old <- function(data,
-                          investor = NULL,
-                          sectors = NULL,
-                          technologies = NULL,
-                          scenario_geography_filter = NULL,
-                          scenarios = NULL,
-                          allocation_method = NULL,
-                          start_analysis = NULL) {
+                              investor = NULL,
+                              sectors = NULL,
+                              technologies = NULL,
+                              scenario_geography_filter = NULL,
+                              scenarios = NULL,
+                              allocation_method = NULL,
+                              start_analysis = NULL) {
   force(data)
   investor %||% stop("Must provide input for 'investor'", call. = FALSE)
   sectors %||% stop("Must provide input for 'sectors'", call. = FALSE)
