@@ -50,6 +50,9 @@ jobs:
           install.packages('tinytex')
           tinytex::install_tinytex()
         shell: Rscript {0}
+      - name: Install additional R pkg dependencies
+        run: install.packages('vroom')
+        shell: Rscript {0}
       - name: Source web-tool scripts
         run: |
           setwd("PACTA_analysis")
