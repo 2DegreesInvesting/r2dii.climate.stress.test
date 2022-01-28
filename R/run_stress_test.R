@@ -192,8 +192,7 @@ read_and_process <- function(args_list) {
   processed <- data %>%
     st_process(
       asset_type = asset_type,
-      company_exclusion = company_exclusion,
-      scenario_data = scenario_data
+      company_exclusion = company_exclusion
     )
 
   pacta_results <- add_terms(
@@ -336,10 +335,10 @@ st_read_agnostic <- function(dir, start_year) {
   return(out)
 }
 
-st_process <- function(data, asset_type, company_exclusion, scenario_data) {
+st_process <- function(data, asset_type, company_exclusion) {
   start_year <- get_start_year(data)
   scenarios_filter <- scenarios_filter()
-  declining_technologies <- scenario_data %>%
+  declining_technologies <- data$scenario_data %>%
     dplyr::filter(.data$direction == "declining") %>%
     dplyr::distinct(.data$technology)
 
