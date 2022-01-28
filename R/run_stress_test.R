@@ -170,29 +170,27 @@ read_and_process <- function(args_list) {
 
   cat("-- Reading input data from designated input path. \n")
 
-  data <- st_read_specific(input_path_project_specific, asset_type)
+  data <- st_read_specific(
+    input_path_project_specific,
+    asset_type = asset_type,
+    use_company_terms = use_company_terms
+  )
   start_year <- get_start_year(data)
   data <- append(
     data, st_read_agnostic(input_path_project_agnostic, start_year = start_year)
   )
 
-  company_terms <- read_company_terms(file.path(input_path_project_specific, "company_terms.csv"),
-    use_company_terms = use_company_terms
-  ) %>%
-    process_company_terms(fallback_term = term)
-
   cat("-- Processing input data. \n")
-  processed <- data %>%
-    st_process(asset_type = asset_type, company_exclusion = company_exclusion)
 
-  pacta_results <- add_terms(
-    pacta_results = processed$pacta_results,
-    company_terms = company_terms,
-    fallback_term = term
-  )
+  processed <- data %>%
+    st_process(
+      asset_type = asset_type,
+      company_exclusion = company_exclusion,
+      term = term
+    )
 
   input_data_list <- list(
-    pacta_results = pacta_results,
+    pacta_results = processed$pacta_results,
     capacity_factors_power = processed$capacity_factors_power,
     excluded_companies = processed$excluded_companies,
     sector_exposures = processed$sector_exposures,
@@ -304,10 +302,11 @@ iteration_sequence <- function(args_list) {
   }
 }
 
-st_read_specific <- function(dir, asset_type) {
+st_read_specific <- function(dir, asset_type, use_company_terms) {
   out <- list(
     pacta_results = read_pacta_results(pacta_results_file(dir, asset_type)),
-    sector_exposures = read_sector_exposures(sector_exposures_file(dir))
+    sector_exposures = read_sector_exposures(sector_exposures_file(dir)),
+    company_terms = read_company_terms(company_terms_file(dir), use_company_terms)
   )
 
   return(out)
@@ -325,23 +324,9 @@ st_read_agnostic <- function(dir, start_year) {
   return(out)
 }
 
-st_process <- function(data, asset_type, company_exclusion) {
+st_process <- function(data, asset_type, company_exclusion, term) {
   start_year <- get_start_year(data)
   scenarios_filter <- scenarios_filter()
-
-  pacta_results <- process_pacta_results(
-    data$pacta_results,
-    start_year = start_year,
-    end_year = end_year_lookup,
-    time_horizon = time_horizon_lookup,
-    scenario_geography_filter = scenario_geography_filter_lookup,
-    scenarios_filter = scenarios_filter,
-    equity_market_filter = equity_market_filter_lookup,
-    sectors = sectors_lookup,
-    technologies = technologies_lookup,
-    allocation_method = allocation_method_lookup,
-    asset_type = asset_type
-  )
 
   sector_exposures <- process_sector_exposures(
     data$sector_exposures,
@@ -386,6 +371,26 @@ st_process <- function(data, asset_type, company_exclusion) {
     asset_type = asset_type
   )
 
+  company_terms <- process_company_terms(
+    data$company_terms,
+    fallback_term = term
+  )
+
+  pacta_results <- process_pacta_results(
+    data$pacta_results,
+    start_year = start_year,
+    end_year = end_year_lookup,
+    time_horizon = time_horizon_lookup,
+    scenario_geography_filter = scenario_geography_filter_lookup,
+    scenarios_filter = scenarios_filter,
+    equity_market_filter = equity_market_filter_lookup,
+    sectors = sectors_lookup,
+    technologies = technologies_lookup,
+    allocation_method = allocation_method_lookup,
+    asset_type = asset_type
+  ) %>%
+    add_terms(company_terms = company_terms, fallback_term = term)
+
   out <- list(
     pacta_results = pacta_results,
     sector_exposures = sector_exposures,
@@ -393,7 +398,8 @@ st_process <- function(data, asset_type, company_exclusion) {
     excluded_companies = excluded_companies,
     df_price = df_price,
     scenario_data = scenario_data,
-    financial_data = financial_data
+    financial_data = financial_data,
+    company_terms = company_terms
   )
 
   return(out)
@@ -434,6 +440,11 @@ scenario_data_file <- function(dir, start_year) {
 
 financial_data_file <- function(dir) {
   out <- file.path(dir, "prewrangled_financial_data_stress_test.csv")
+  return(out)
+}
+
+company_terms_file <- function(dir) {
+  out <- file.path(dir, "company_terms.csv")
   return(out)
 }
 
