@@ -245,6 +245,7 @@ read_and_process <- function(args_list) {
     asset_type = asset_type,
     input_data_list = input_data_list,
     start_year = start_year,
+    time_horizon = time_horizon_lookup,
     scenario_to_follow_ls = shock_scenario_lookup,
     log_path = log_path
   )
