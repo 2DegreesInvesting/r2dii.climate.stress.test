@@ -169,25 +169,14 @@ read_and_process <- function(args_list) {
   )
 
   cat("-- Reading input data from designated input path. \n")
+
+  data <- st_read_specific(input_path_project_specific, asset_type)
+  start_year <- get_start_year(data)
   data <- append(
-    st_read_specific(input_path_project_specific, asset_type),
-    st_read_agnostic(input_path_project_agnostic)
+    data, st_read_agnostic(input_path_project_agnostic, start_year = start_year)
   )
 
-  start_year <- get_start_year(data)
   scenarios_filter <- scenarios_filter()
-
-  scenario_data <- read_scenario_data(
-    path = file.path(input_path_project_agnostic, paste0("Scenarios_AnalysisInput_", start_year, ".csv"))
-  ) %>%
-    process_scenario_data(
-      start_year = start_year,
-      end_year = end_year_lookup,
-      sectors = sectors_lookup,
-      technologies = technologies_lookup,
-      scenario_geography_filter = scenario_geography_filter_lookup,
-      scenarios_filter = scenarios_filter
-    )
 
   financial_data <- read_financial_data(
     path = file.path(input_path_project_agnostic, "prewrangled_financial_data_stress_test.csv")
@@ -218,7 +207,7 @@ read_and_process <- function(args_list) {
     capacity_factors_power = processed$capacity_factors_power,
     excluded_companies = processed$excluded_companies,
     sector_exposures = processed$sector_exposures,
-    scenario_data = scenario_data,
+    scenario_data = processed$scenario_data,
     df_price = processed$df_price,
     financial_data = financial_data
   )
@@ -336,11 +325,12 @@ st_read_specific <- function(dir, asset_type) {
   return(out)
 }
 
-st_read_agnostic <- function(dir) {
+st_read_agnostic <- function(dir, start_year) {
   out <- list(
     capacity_factors = read_capacity_factors(capacity_factor_file(dir)),
     excluded_companies = read_excluded_companies(excluded_companies_file(dir)),
-    df_price = read_price_data_old2(price_data_file(dir))
+    df_price = read_price_data_old2(price_data_file(dir)),
+    scenario_data = read_scenario_data(scenario_data_file(dir, start_year))
   )
 
   return(out)
@@ -354,19 +344,19 @@ st_process <- function(data, asset_type, company_exclusion, scenario_data) {
     dplyr::distinct(.data$technology)
 
   pacta_results <- process_pacta_results(
-      data$pacta_results,
-      start_year = start_year,
-      end_year = end_year_lookup,
-      time_horizon = time_horizon_lookup,
-      scenario_geography_filter = scenario_geography_filter_lookup,
-      scenarios_filter = scenarios_filter,
-      equity_market_filter = equity_market_filter_lookup,
-      sectors = sectors_lookup,
-      technologies = technologies_lookup,
-      allocation_method = allocation_method_lookup,
-      asset_type = asset_type,
-      declining_technologies = declining_technologies
-    )
+    data$pacta_results,
+    start_year = start_year,
+    end_year = end_year_lookup,
+    time_horizon = time_horizon_lookup,
+    scenario_geography_filter = scenario_geography_filter_lookup,
+    scenarios_filter = scenarios_filter,
+    equity_market_filter = equity_market_filter_lookup,
+    sectors = sectors_lookup,
+    technologies = technologies_lookup,
+    allocation_method = allocation_method_lookup,
+    asset_type = asset_type,
+    declining_technologies = declining_technologies
+  )
 
   sector_exposures <- process_sector_exposures(
     data$sector_exposures,
@@ -374,13 +364,13 @@ st_process <- function(data, asset_type, company_exclusion, scenario_data) {
   )
 
   capacity_factors_power <- process_capacity_factors_power(
-      data$capacity_factors,
-      scenarios_filter = scenarios_filter,
-      scenario_geography_filter = scenario_geography_filter_lookup,
-      technologies = technologies_lookup,
-      start_year = start_year,
-      end_year = end_year_lookup
-    )
+    data$capacity_factors,
+    scenarios_filter = scenarios_filter,
+    scenario_geography_filter = scenario_geography_filter_lookup,
+    technologies = technologies_lookup,
+    start_year = start_year,
+    end_year = end_year_lookup
+  )
 
   excluded_companies <- process_excluded_companies(
     data$excluded_companies,
@@ -396,12 +386,23 @@ st_process <- function(data, asset_type, company_exclusion, scenario_data) {
     end_year = end_year_lookup
   )
 
+  scenario_data <- process_scenario_data(
+    data$scenario_data,
+    start_year = start_year,
+    end_year = end_year_lookup,
+    sectors = sectors_lookup,
+    technologies = technologies_lookup,
+    scenario_geography_filter = scenario_geography_filter_lookup,
+    scenarios_filter = scenarios_filter
+  )
+
   out <- list(
     pacta_results = pacta_results,
     sector_exposures = sector_exposures,
     capacity_factors_power = capacity_factors_power,
     excluded_companies = excluded_companies,
-    df_price = df_price
+    df_price = df_price,
+    scenario_data = scenario_data
   )
 
   return(out)
@@ -432,6 +433,11 @@ excluded_companies_file <- function(dir) {
 price_data_file <- function(dir) {
   file <- paste0("prices_data_", price_data_version_lookup, ".csv")
   out <- file.path(dir, file)
+  return(out)
+}
+
+scenario_data_file <- function(dir, start_year) {
+  out <- file.path(dir, paste0("Scenarios_AnalysisInput_", start_year, ".csv"))
   return(out)
 }
 
