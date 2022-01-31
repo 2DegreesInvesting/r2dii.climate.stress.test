@@ -27,12 +27,12 @@ Including company - term data allows you to incorporate the information you have
 on term values of the loan to a company in your loan book, instead of using an
 identical term value for all loans.
 
-### Preparing company - term data
-The data that needs to be created is a csv file named `company_terms.csv`. It
-holds the columns `company_name` (character, holding name of analysed companies)
-and term (numeric, indicates which maturity the loans to respective companies is
-assumed to have in years). In column `company_name` include all unique company
-names from `Loans_results_company.rda`, which you generated in ["prepare loans
+### Preparing company - term data The data that needs to be created is a csv
+file named `company_terms.csv`. It holds the columns `company_name` (character,
+holding the name of analysed companies) and term (numeric, indicates which
+maturity the loans to respective companies is assumed to have in years). In
+column `company_name` include all unique company names from
+`Loans_results_company.rda`, which you generated in ["prepare loans
 inputs"](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-prepare-loans-inputs.html).
 If you want to use R to obtain this column you can take the following steps.
 
@@ -114,7 +114,7 @@ analysis.
 The data that needs to be created is a csv file named `prewrangled_financial_data_stress_test.csv`. 
 It holds the columns:
 
-* `company_name`: character, holding name of analysed companies
+* `company_name`: character, holding the name of analysed companies
 * `company_id`: numeric, id of company as classified by asset resolution. For
 loans workflow a placeholder value will be used.
 * `corporate_bond_ticker`: character, holding indentifier. Will be NA for loans
