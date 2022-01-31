@@ -103,7 +103,9 @@ set holding your financial information on the companies you included in the
 analysis.  
 
 ### Preparing financial data
-The data that needs to be created is a csv file named `prewrangled_financial_data_stress_test.csv`. 
+The data that needs to be created is a csv file named
+`prewrangled_financial_data_stress_test.csv`. Note that it replaces the default
+`prewrangled_financial_data_stress_test.csv` file.
 It holds the columns:
 
 * `company_name`: character, holding the name of analysed companies
@@ -141,7 +143,7 @@ fin_companies <- data %>%
   dplyr::select(company_name) %>%
   dplyr::distinct() %>% 
   dplyr::mutate(company_id = 999, corporate_bond_ticker = NA)
-readr::write_csv(fin_companies, file.path("/some/path", "prewrangled_financial_data_stress_test.csv")) # NOTE that this will overwrite financial data currently stored at the location if available
+readr::write_csv(fin_companies, file.path("/path/to/agnostic/data", "prewrangled_financial_data_stress_test.csv")) # NOTE that this will overwrite financial data currently stored at the location if available
 ```
 
 You can now open this file in a tool of your choice, and add the remaining
