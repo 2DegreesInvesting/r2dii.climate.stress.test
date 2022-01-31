@@ -161,7 +161,7 @@ library(r2dii.climate.stress.test)
 financial_data_path <- file.path("/path/to/file")
 validate_file_exists(financial_data_path)
 data <- readr::read_csv(financial_data_path)
-check_financial_data(financial_data = data, asset_type = "loans")
+check_financial_data(financial_data = data, asset_type = "loans", interactive_mode = TRUE)
 
 ```
 
