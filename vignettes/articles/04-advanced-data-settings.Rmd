@@ -27,12 +27,13 @@ Including company - term data allows you to incorporate the information you have
 on term values of the loan to a company in your loan book, instead of using an
 identical term value for all loans.
 
-### Preparing company - term data The data that needs to be created is a csv
-file named `company_terms.csv`. It holds the columns `company_name` (character,
-holding the name of analysed companies) and term (numeric, indicates which
-maturity the loans to respective companies is assumed to have in years). In
-column `company_name` include all unique company names from
-`Loans_results_company.rda`, which you generated in ["prepare loans
+### Preparing company - term data 
+The data that needs to be created is a csv file named `company_terms.csv`. It
+holds the columns `company_name` (character, holding the name of analysed
+companies) and term (numeric, indicates which maturity the loans to respective
+companies is assumed to have in years). In column `company_name` include all
+unique company names from `Loans_results_company.rda`, which you generated in
+["prepare loans
 inputs"](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-prepare-loans-inputs.html).
 If you want to use R to obtain this column you can take the following steps.
 
@@ -46,13 +47,14 @@ data <- readr::read_rds(loans_results_company_file_path)
 unique_companies <- data %>%
   dplyr::select(company_name) %>%
   dplyr::distinct()
-readr::write_csv(unique_companies, file.path("/some/path", "company_terms.csv"))
+readr::write_csv(unique_companies, file.path("/path/to/specific/data/inputs", "company_terms.csv"))
 
 ```
 
 You can now open this file in a tool of your choice, and add second column named
 term. In column `term` add the terms per company. Please make sure to save the
-result as a csv file again.
+result as a csv file again. Make sure that file is saved in folder holding
+project specific data.
 
 **NOTE:** 
 
@@ -81,15 +83,6 @@ check_company_terms(data = data, interactive_mode = TRUE)
 
 ```
 
-### Placing file in folder structure
-In order to make sure `company_terms.csv` can be included in the analysis place
-it in
-
-* `example_folder/`
-    * `inputs/`  
-    
-as set up in ["Set up project
-directories"](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/01-setup-project-directories.html).
 
 ### Running the Stress Test with provided company - term data
 In order to include the company - term data in your analysis set argument
@@ -117,7 +110,7 @@ It holds the columns:
 * `company_name`: character, holding the name of analysed companies
 * `company_id`: numeric, id of company as classified by asset resolution. For
 loans workflow a placeholder value will be used.
-* `corporate_bond_ticker`: character, holding indentifier. Will be NA for loans
+* `corporate_bond_ticker`: character, holding identifier. Will be NA for loans
 workflow.
 * `pd`: numeric, holding probability of default per company. Needs to be equal
 to or larger than 0 and smaller than 1.
