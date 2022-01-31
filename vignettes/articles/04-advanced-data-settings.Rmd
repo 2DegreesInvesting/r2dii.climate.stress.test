@@ -124,9 +124,9 @@ to or larger than 0 and smaller than 1.
 * `net_profit_margin`: numeric, holding net_profit_margin per company. Needs to
 be larger than 0 and equal to or smaller than 1.
 * `debt_equity_ratio`: numeric, holding ratio of outstanding debt to the
-company's equity value. This is the leverage. Needs to be larger than 0.
-* `volatility`: numeric, holding volatility of asset. Needs to be equal to or
-larger than 0.
+company's equity value. This is the company's financial leverage. Needs to be
+larger than 0. * `volatility`: numeric, holding volatility of asset. Needs to be
+equal to or larger than 0.
 
 **NOTE**: No column, except for corporate_bond_ticker, may have missing values.
 
