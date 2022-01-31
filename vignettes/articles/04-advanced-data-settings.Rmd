@@ -80,7 +80,6 @@ validate_file_exists(company_terms_path)
 data <- readr::read_csv(company_terms_path)
 validate_data_has_expected_cols(data = data, expected_columns = c("company_name", "term"))
 check_company_terms(data = data, interactive_mode = TRUE)
-
 ```
 
 

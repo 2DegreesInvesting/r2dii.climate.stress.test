@@ -210,6 +210,8 @@ check_company_terms <- function(data, interactive_mode = FALSE) {
     if (length(n_terms_bigger_5) > 0) {
       message(paste("Identified", length(n_terms_bigger_5), "companies with term > 5. Terms will be capped."))
     }
+
+    rlang::message("Company - term data validated successfully.")
   }
 
   return(invisible(data))
