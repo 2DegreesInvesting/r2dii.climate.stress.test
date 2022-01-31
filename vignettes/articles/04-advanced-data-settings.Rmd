@@ -104,7 +104,7 @@ analysis.
 
 ### Preparing financial data
 The data that needs to be created is a csv file named
-`prewrangled_financial_data_stress_test.csv`. Note that it replaces the default
+`prewrangled_financial_data_stress_test.csv`to replace the default
 `prewrangled_financial_data_stress_test.csv` file.
 It holds the columns:
 
@@ -119,7 +119,8 @@ to or larger than 0 and smaller than 1.
 be larger than 0 and equal to or smaller than 1.
 * `debt_equity_ratio`: numeric, holding ratio of outstanding debt to the
 company's equity value. This is the company's financial leverage. Needs to be
-larger than 0. * `volatility`: numeric, holding volatility of asset. Needs to be
+larger than 0. 
+* `volatility`: numeric, holding volatility of asset. Needs to be
 equal to or larger than 0.
 
 **NOTE**: No column, except for corporate_bond_ticker, may have missing values.
@@ -127,10 +128,9 @@ equal to or larger than 0.
 In column `company_name` include all unique company names from
 `Loans_results_company.rda`, which you generated in [prepare loans
 inputs](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-prepare-loans-inputs.html).
-Also create column `company_id` holding a placeholder value, e.g. 999, and
-column `corporate_bond_ticker`, holding NA.
-
-If you want to use R to obtain this data you can take the following steps.
+Running the following code will generate a dataset with all required columns.
+Column `campany_name` includes the unique company names, `company_id` includes a
+placeholder id, all other columns are empty.
 
 ```{r, eval = FALSE}
 library(readr)
@@ -142,12 +142,20 @@ data <- readr::read_rds(loans_results_company_file_path)
 fin_companies <- data %>%
   dplyr::select(company_name) %>%
   dplyr::distinct() %>% 
-  dplyr::mutate(company_id = 999, corporate_bond_ticker = NA)
+  dplyr::mutate(
+    company_id = 999, 
+    corporate_bond_ticker = NA,
+    pd = NA,
+    net_profit_margin = NA,
+    debt_equity_ratio = NA,
+    volatility = NA)
 readr::write_csv(fin_companies, file.path("/path/to/agnostic/data", "prewrangled_financial_data_stress_test.csv")) # NOTE that this will overwrite financial data currently stored at the location if available
 ```
 
-You can now open this file in a tool of your choice, and add the remaining
-variables. Please make sure to save the result as a csv file again.
+You can now open this file in a tool of your choice and fill in values for the
+remaining variables. For column `company_id` keep using a placeholder value
+(999 in example) and leave entries for `corporate_bond_ticker`as NA. Please make
+sure to save the result as a csv file again.
 
 ### Validating financial data
 Before including the file in your analysis you may want to validate that your
