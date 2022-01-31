@@ -90,8 +90,11 @@ calculate_annual_profits <- function(asset_type, input_data_list, scenario_to_fo
 #'
 #' @return A tibble holding exposure_by_technology_and_company.
 calculate_exposure_by_technology_and_company <- function(asset_type,
-                                                         input_data_list, start_year,
-                                                         scenario_to_follow_ls, log_path) {
+                                                         input_data_list,
+                                                         start_year,
+                                                         time_horizon,
+                                                         scenario_to_follow_ls,
+                                                         log_path) {
   if (asset_type == "bonds") {
     subset_cols <- c("company_name", "corporate_bond_ticker", "pd")
     merge_cols <- c("company_name", "id" = "corporate_bond_ticker")
@@ -108,7 +111,7 @@ calculate_exposure_by_technology_and_company <- function(asset_type,
 
   exposure_by_technology_and_company <- input_data_list$pacta_results %>%
     dplyr::filter(
-      .data$year == .env$start_year,
+      .data$year == .env$start_year + .env$time_horizon,
       .data$scenario %in% .env$scenario_to_follow_ls
     ) %>%
     dplyr::inner_join(
