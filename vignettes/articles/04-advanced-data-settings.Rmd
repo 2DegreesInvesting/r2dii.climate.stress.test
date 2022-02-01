@@ -83,9 +83,8 @@ check_company_terms(data = data, interactive_mode = TRUE)
 ```
 
 ### Placing file in folder structure
-In order to make sure your version
-of `company_terms.csv` is used in the analysis place it
-in
+In order to make sure your version of `company_terms.csv` is used in the
+analysis place it in
 
 * `example_folder/`
     * `inputs/`
