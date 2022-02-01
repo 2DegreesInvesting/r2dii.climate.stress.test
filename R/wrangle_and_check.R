@@ -176,7 +176,7 @@ check_financial_data <- function(financial_data, asset_type,
   )
 
   if (interactive_mode) {
-    rlang::message("Financial data validated successfully.")
+    message("Financial data validated successfully.")
   }
 
   return(invisible(financial_data))
@@ -217,7 +217,7 @@ check_company_terms <- function(data, interactive_mode = FALSE) {
       message(paste("Identified", length(n_terms_bigger_5), "companies with term > 5. Terms will be capped."))
     }
 
-    rlang::message("Company - term data validated successfully.")
+    message("Company - term data validated successfully.")
   }
 
   return(invisible(data))
