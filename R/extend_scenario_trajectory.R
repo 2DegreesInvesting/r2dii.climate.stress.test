@@ -177,11 +177,19 @@ extend_scenario_trajectory <- function(data,
       .data$ald_sector, .data$technology, .data$scenario, .data$allocation,
       .data$scenario_geography
     ) %>%
-    dplyr::mutate(initial_technology_production = dplyr::first(.data$plan_tech_prod)) %>%
-    dplyr::mutate(final_technology_production = dplyr::last(.data$plan_tech_prod)) %>%
+    dplyr::mutate(
+      initial_technology_production = dplyr::first(.data$plan_tech_prod),
+      final_technology_production = dplyr::last(.data$plan_tech_prod),
+      sum_production_forecast = sum(.data$plan_tech_prod, na.rm = TRUE)
+    ) %>%
     dplyr::ungroup() %>%
     dplyr::mutate(
-      phase_out = dplyr::if_else(.data$final_technology_production == 0, TRUE, FALSE)
+      phase_out = dplyr::if_else(
+        .data$final_technology_production == 0 &
+          .data$sum_production_forecast > 0,
+        TRUE,
+        FALSE
+      )
     ) %>%
     tidyr::complete(
       year = seq(.env$start_analysis, .env$end_analysis),
