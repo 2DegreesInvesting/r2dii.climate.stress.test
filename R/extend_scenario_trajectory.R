@@ -1,10 +1,8 @@
 #' Extend the scenario pathways based on the fair share approach (now known as
-#' market share approach).  We first ensure that all scenarios are extended to
-#' the same point in time (start of the analysis plus forecast time frame.
-#' Then we take the first value of the production on company level as the start
-#' value and from the second year onward, we calculate the level of production
-#' for a company under the scenarios at hand by applying the relative changes
-#' for the respective years to the absolute values of the previous year.
+#' market share approach).  We first ensure that all company production plans
+#' are kept from the start year until the end of the forecast period.
+#' We then extend the scenario trajectories by multiplying the start value of
+#' the production with the relative change in each year/scenario combination.
 #'
 #' @param data A data frame containing the production forecasts of companies
 #'   (in the portfolio). Pre-processed to fit analysis parameters and after
@@ -113,12 +111,15 @@ extend_scenario_trajectory_old <- function(data,
 
 
 #' Extend the scenario pathways based on the fair share approach (now known as
-#' market share approach).  We first ensure that all scenarios are extended to
-#' the same point in time (start of the analysis plus forecast time frame.
-#' Then we take the first value of the production on company level as the start
-#' value and from the second year onward, we calculate the level of production
-#' for a company under the scenarios at hand by applying the relative changes
-#' for the respective years to the absolute values of the previous year.
+#' market share approach).  We first ensure that all company production plans
+#' are kept from the start year until the end of the forecast period.
+#' We then extend the scenario trajectories by multiplying the start value of
+#' the production with the relative change in each year/scenario combination.
+#' Contrary to the old version, this implements company targets based on the
+#' SMSP for increasing technologies and TMSR for decreasing ones.
+#' Companies that get production targets below 0 or that show a pattern of
+#' phasing out a technology within the forecast period, will get 0 scenario
+#' targets.
 #'
 #' @param data A data frame containing the production forecasts of companies
 #'   (in the portfolio). Pre-processed to fit analysis parameters and after
