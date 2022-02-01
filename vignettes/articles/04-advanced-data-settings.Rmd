@@ -82,6 +82,16 @@ validate_data_has_expected_cols(data = data, expected_columns = c("company_name"
 check_company_terms(data = data, interactive_mode = TRUE)
 ```
 
+### Placing file in folder structure
+In order to make sure your version
+of `company_terms.csv` is used in the analysis place it
+in
+
+* `example_folder/`
+    * `inputs/`
+    
+as set up in ["Set up project
+directories"](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/01-setup-project-directories.html).
 
 ### Running the Stress Test with provided company - term data
 In order to include the company - term data in your analysis set argument
@@ -175,7 +185,7 @@ check_financial_data(financial_data = data, asset_type = "loans", interactive_mo
 
 ### Placing file in folder structure
 In order to make sure your version
-of`prewrangled_financial_data_stress_test.csv` is used in the analysis place it
+of `prewrangled_financial_data_stress_test.csv` is used in the analysis place it
 in
 
 * `analysis_input_files/`  
