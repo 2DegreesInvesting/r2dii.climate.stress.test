@@ -179,6 +179,7 @@ extend_scenario_trajectory <- function(data,
     ) %>%
     dplyr::mutate(
       initial_technology_production = dplyr::first(.data$plan_tech_prod),
+      initial_technology_target = dplyr::first(.data$scen_tech_prod),
       final_technology_production = dplyr::last(.data$plan_tech_prod),
       sum_production_forecast = sum(.data$plan_tech_prod, na.rm = TRUE)
     ) %>%
@@ -207,7 +208,12 @@ extend_scenario_trajectory <- function(data,
       .data$ald_sector, .data$technology, .data$scenario, .data$allocation,
       .data$scenario_geography, .data$year
     ) %>%
-    tidyr::fill(.data$initial_technology_production, .data$final_technology_production, .data$phase_out)
+    tidyr::fill(
+      .data$initial_technology_production,
+      .data$initial_technology_target,
+      .data$final_technology_production,
+      .data$phase_out
+    )
 
   data <- data %>%
     # ADO 2393 - The join cols should be extended to cover the source
@@ -229,7 +235,10 @@ extend_scenario_trajectory <- function(data,
       .data$ald_sector, .data$scenario, .data$allocation,
       .data$scenario_geography, .data$source, .data$units, .data$year
     ) %>%
-    dplyr::mutate(plan_sec_prod = sum(.data$plan_tech_prod, na.rm = TRUE)) %>%
+    dplyr::mutate(
+      plan_sec_prod = sum(.data$plan_tech_prod, na.rm = TRUE),
+      scen_sec_prod = sum(.data$scen_tech_prod, na.rm = TRUE)
+    ) %>%
     dplyr::arrange(.data$year) %>%
     dplyr::ungroup() %>%
     dplyr::group_by(
@@ -237,15 +246,18 @@ extend_scenario_trajectory <- function(data,
       .data$ald_sector, .data$scenario, .data$allocation,
       .data$scenario_geography, .data$source, .data$units
     ) %>%
-    dplyr::mutate(initial_sector_production = dplyr::first(.data$plan_sec_prod)) %>%
+    dplyr::mutate(
+      initial_sector_production = dplyr::first(.data$plan_sec_prod),
+      initial_sector_target = dplyr::first(.data$scen_sec_prod)
+    ) %>%
     dplyr::ungroup()
 
   data <- data %>%
     dplyr::mutate(
       scen_tech_prod = dplyr::if_else(
         .data$direction == "declining",
-        .data$initial_technology_production * (1 + .data$fair_share_perc), # tmsr
-        .data$initial_technology_production + (.data$initial_sector_production * .data$fair_share_perc) # smsp
+        .data$initial_technology_target * (1 + .data$fair_share_perc), # tmsr
+        .data$initial_technology_target + (.data$initial_sector_target * .data$fair_share_perc) # smsp
       )
     ) %>%
     dplyr::mutate(
