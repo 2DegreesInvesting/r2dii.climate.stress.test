@@ -4,13 +4,15 @@
 \alias{check_financial_data}
 \title{Check financial data}
 \usage{
-check_financial_data(financial_data, asset_type)
+check_financial_data(financial_data, asset_type, interactive_mode = FALSE)
 }
 \arguments{
 \item{financial_data}{A data set of \code{financial_data}.}
 
 \item{asset_type}{A string indicating if company data are for analysis for
 bond or equity.}
+
+\item{interactive_mode}{If TRUE the, more verbose, interactive mode is used.}
 }
 \value{
 Returns prewrangled \code{financial_data} invisibly.

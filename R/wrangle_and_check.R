@@ -93,6 +93,7 @@ wrangle_and_check_pacta_results <- function(pacta_results, start_year, time_hori
 #' @param financial_data A data set of `financial_data`.
 #' @param asset_type A string indicating if company data are for analysis for
 #'   bond or equity.
+#' @param interactive_mode If TRUE the, more verbose, interactive mode is used.
 #'
 #' @return Returns prewrangled `financial_data` invisibly.
 #' @export
@@ -111,7 +112,8 @@ wrangle_and_check_pacta_results <- function(pacta_results, start_year, time_hori
 #'   financial_data = fin_data,
 #'   asset_type = "equity"
 #' )
-check_financial_data <- function(financial_data, asset_type) {
+check_financial_data <- function(financial_data, asset_type,
+                                 interactive_mode = FALSE) {
   if (!asset_type %in% c("bonds", "equity", "loans")) {
     stop("Invalid asset type.")
   }
@@ -164,6 +166,10 @@ check_financial_data <- function(financial_data, asset_type) {
     asset_type = asset_type
   )
 
+  if (interactive_mode) {
+    message("Financial data validated successfully.")
+  }
+
   return(invisible(financial_data))
 }
 
@@ -201,6 +207,8 @@ check_company_terms <- function(data, interactive_mode = FALSE) {
     if (length(n_terms_bigger_5) > 0) {
       message(paste("Identified", length(n_terms_bigger_5), "companies with term > 5. Terms will be capped."))
     }
+
+    message("Company - term data validated successfully.")
   }
 
   return(invisible(data))
@@ -401,12 +409,17 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
       .data$portfolio_name, .data$ald_sector, .data$term
     )
 
+
+  company_trajectories <- results_list$company_trajectories %>%
+    dplyr::rename(baseline_price = Baseline_price)
+
   return(list(
     market_risk_company = market_risk_company,
     market_risk_portfolio = market_risk_portfolio,
     expected_loss = expected_loss,
     annual_pd_changes_sector = annual_pd_changes_sector,
-    overall_pd_changes_sector = overall_pd_changes_sector
+    overall_pd_changes_sector = overall_pd_changes_sector,
+    company_trajectories = company_trajectories
   ))
 }
 
@@ -496,7 +509,8 @@ rename_results <- function(results_list) {
     stress_test_results_port = results_list$market_risk_portfolio,
     stress_test_results_comp_el = results_list$expected_loss,
     stress_test_results_sector_pd_changes_annual = results_list$annual_pd_changes_sector,
-    stress_test_results_sector_pd_changes_overall = results_list$overall_pd_changes_sector
+    stress_test_results_sector_pd_changes_overall = results_list$overall_pd_changes_sector,
+    company_trajectories = results_list$company_trajectories
   )
 
   return(renamed_results_list)
@@ -601,4 +615,18 @@ cap_terms <- function(data) {
   }
 
   return(data)
+}
+
+add_term_to_trajectories <- function(annual_profits, pacta_results) {
+
+  distinct_company_terms <- pacta_results %>%
+    dplyr::select(company_name, term) %>%
+    dplyr::distinct_all()
+
+  report_duplicates(data = distinct_company_terms, cols = names(distinct_company_terms))
+
+  annual_profits_with_term <- annual_profits %>%
+    dplyr::inner_join(distinct_company_terms, by = c("company_name"))
+
+  return(annual_profits_with_term)
 }
