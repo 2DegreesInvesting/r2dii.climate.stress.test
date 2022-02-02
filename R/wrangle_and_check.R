@@ -102,6 +102,7 @@ wrangle_and_check_pacta_results <- function(pacta_results, start_year, time_hori
 #' @param financial_data A data set of `financial_data`.
 #' @param asset_type A string indicating if company data are for analysis for
 #'   bond or equity.
+#' @param interactive_mode If TRUE the, more verbose, interactive mode is used.
 #'
 #' @return Returns prewrangled `financial_data` invisibly.
 #' @export
@@ -120,7 +121,8 @@ wrangle_and_check_pacta_results <- function(pacta_results, start_year, time_hori
 #'   financial_data = fin_data,
 #'   asset_type = "equity"
 #' )
-check_financial_data <- function(financial_data, asset_type) {
+check_financial_data <- function(financial_data, asset_type,
+                                 interactive_mode = FALSE) {
   if (!asset_type %in% c("bonds", "equity", "loans")) {
     stop("Invalid asset type.")
   }
@@ -173,6 +175,10 @@ check_financial_data <- function(financial_data, asset_type) {
     asset_type = asset_type
   )
 
+  if (interactive_mode) {
+    message("Financial data validated successfully.")
+  }
+
   return(invisible(financial_data))
 }
 
@@ -210,6 +216,8 @@ check_company_terms <- function(data, interactive_mode = FALSE) {
     if (length(n_terms_bigger_5) > 0) {
       message(paste("Identified", length(n_terms_bigger_5), "companies with term > 5. Terms will be capped."))
     }
+
+    message("Company - term data validated successfully.")
   }
 
   return(invisible(data))
