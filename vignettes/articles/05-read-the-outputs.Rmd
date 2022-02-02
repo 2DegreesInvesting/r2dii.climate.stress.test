@@ -238,4 +238,5 @@ portfolio or loan book, aggregated to the sector level. This PD change shows
 variation of the impact on PDs by different maturities on the sector level.
 
 
-
+### company_trajectories_\<suffix\>
+To be continued.
