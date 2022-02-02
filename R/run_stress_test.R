@@ -170,6 +170,10 @@ read_and_process <- function(args_list) {
 
   cat("-- Reading input data from designated input path. \n")
 
+  if (use_company_term) {
+    cat("-- Using user - configured company - term data.. \n")
+  }
+
   data <- st_read_specific(
     input_path_project_specific,
     asset_type = asset_type,
