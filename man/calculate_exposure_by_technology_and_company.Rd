@@ -8,6 +8,7 @@ calculate_exposure_by_technology_and_company(
   asset_type,
   input_data_list,
   start_year,
+  time_horizon,
   scenario_to_follow_ls,
   log_path
 )
@@ -18,6 +19,8 @@ calculate_exposure_by_technology_and_company(
 \item{input_data_list}{List with project agnostic and project specific input data}
 
 \item{start_year}{Numeric, holding start year of analysis.}
+
+\item{time_horizon}{Considered timeframe for PACTA analysis.}
 
 \item{scenario_to_follow_ls}{Character. A string that indicates which
 of the scenarios included in the analysis should be used to set the
