@@ -47,7 +47,7 @@ test_that("with loans, without iteration, using minimum values of input argument
       discount_rate = get_st_argument("discount_rate", "min"),
       div_netprofit_prop_coef = get_st_argument("div_netprofit_prop_coef", "min"),
       shock_year = get_st_argument("shock_year", "min"),
-      term = as.integer(get_st_argument("fallback_term", "min")),
+      fallback_term = as.integer(get_st_argument("fallback_term", "min")),
       company_exclusion = FALSE,
       use_company_terms = TRUE,
       return_results = TRUE
@@ -79,7 +79,7 @@ test_that("with equity, without iteration, using maximum values of input argumen
       discount_rate = get_st_argument("discount_rate", "max"),
       div_netprofit_prop_coef = get_st_argument("div_netprofit_prop_coef", "max"),
       shock_year = get_st_argument("shock_year", "max"),
-      term = as.integer(get_st_argument("fallback_term", "max")),
+      fallback_term = as.integer(get_st_argument("fallback_term", "max")),
       company_exclusion = TRUE,
       use_company_terms = TRUE,
       return_results = TRUE

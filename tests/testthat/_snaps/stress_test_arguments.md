@@ -13,7 +13,7 @@
        5 discount_rate           double    0.07    <NA>                 -0.01 0.1  
        6 div_netprofit_prop_coef double    1       <NA>                 0.8   1    
        7 shock_year              double    2030    <NA>                 2025  2035 
-       8 term                    double    2       <NA>                 1     5    
+       8 fallback_term           double    2       <NA>                 1     5    
        9 company_exclusion       logical   TRUE    TRUE, FALSE          <NA>  <NA> 
       10 use_company_terms       logical   FALSE   TRUE, FALSE          <NA>  <NA> 
 
