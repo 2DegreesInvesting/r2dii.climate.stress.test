@@ -171,7 +171,7 @@ read_and_process <- function(args_list) {
   cat("-- Reading input data from designated input path. \n")
 
   if (use_company_terms) {
-    paste_write("-- Using user - configured company - term data. \n", log_path = log_path)
+    paste_write("Using user - configured company - term data. \n", log_path = log_path)
   }
 
   data <- st_read_specific(
