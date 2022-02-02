@@ -170,7 +170,7 @@ read_and_process <- function(args_list) {
 
   cat("-- Reading input data from designated input path. \n")
 
-  if (use_company_term) {
+  if (use_company_terms) {
     cat("-- Using user - configured company - term data.. \n")
   }
 
