@@ -117,20 +117,20 @@ The data that needs to be created is a csv file named
 `prewrangled_financial_data_stress_test.csv` file.
 It holds the columns:
 
-* `company_name`: character, holding the name of analysed companies
-* `company_id`: numeric, id of company as classified by asset resolution. For
-loans workflow a placeholder value will be used.
-* `corporate_bond_ticker`: character, holding identifier. Will be NA for loans
-workflow.
-* `pd`: numeric, holding probability of default per company. Needs to be equal
-to or larger than 0 and smaller than 1.
-* `net_profit_margin`: numeric, holding net_profit_margin per company. Needs to
-be larger than 0 and equal to or smaller than 1.
-* `debt_equity_ratio`: numeric, holding ratio of outstanding debt to the
-company's equity value. This is the company's financial leverage. Needs to be
+* `company_name`: character, holding the name of analysed companies.
+* `company_id`: numeric, the id of company as classified by asset resolution.
+For loans workflow a placeholder value will be used.
+* `corporate_bond_ticker`: character, holding the identifier. Will be NA for
+loans workflow.
+* `pd`: numeric, holding the probability of default per company. Needs to be
+equal to or larger than 0 and smaller than 1.
+* `net_profit_margin`: numeric, holding the net_profit_margin per company. Needs
+to be larger than 0 and equal to or smaller than 1.
+* `debt_equity_ratio`: numeric, holding the ratio of outstanding debt to the
+company’s equity value. This is the leverage company's financial. Needs to be
 larger than 0. 
-* `volatility`: numeric, holding volatility of asset. Needs to be
-equal to or larger than 0.
+* `volatility`: numeric, holding the volatility of asset. Needs to be equal to
+or larger than 0.
 
 **NOTE**: No column, except for corporate_bond_ticker, may have missing values.
 
