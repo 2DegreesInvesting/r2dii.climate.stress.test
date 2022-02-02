@@ -5,7 +5,7 @@
 #' vector of values to one (and only one) of the detail arguments. This will
 #' result in running the analysis multiple times in a row with the argument
 #' varied.
-#' NOTE: argument `asset_type` and `term` cannot be iterated.
+#' NOTE: argument `asset_type` and `fallback_term` cannot be iterated.
 #' NOTE: if `return_results` is TRUE results will not be written to `output
 #' path` but instead are returned.
 #'
@@ -33,9 +33,10 @@
 #'   range compare `stress_test_arguments`.
 #' @param shock_year Numeric, holding year the shock is applied. For accepted
 #'   range compare `stress_test_arguments`.
-#' @param term Numeric. A coefficient that determines for which maturity the
-#'   expected loss should be calculated in the credit risk section. For accepted
-#'   range compare `stress_test_arguments`.
+#' @param fallback_term Numeric. A coefficient that determines for which
+#'   maturity the expected loss should be calculated in the credit risk section
+#'   in case no company level term data are provided via `use_company_terms`.
+#'   For accepted range compare `stress_test_arguments`.
 #' @param company_exclusion Boolean, indicating if companies provided in dataset
 #'   excluded_companies.csv shall be excluded. For accepted values compare
 #'   `stress_test_arguments`.
@@ -56,7 +57,7 @@ run_stress_test <- function(asset_type,
                             discount_rate = 0.07,
                             div_netprofit_prop_coef = 1,
                             shock_year = 2030,
-                            term = 2,
+                            fallback_term = 2,
                             company_exclusion = TRUE,
                             use_company_terms = FALSE,
                             return_results = FALSE) {
@@ -76,7 +77,7 @@ run_stress_test <- function(asset_type,
     discount_rate = discount_rate,
     div_netprofit_prop_coef = div_netprofit_prop_coef,
     shock_year = shock_year,
-    term = term,
+    fallback_term = fallback_term,
     company_exclusion = company_exclusion,
     use_company_terms = use_company_terms,
     asset_type = asset_type
@@ -190,7 +191,7 @@ read_and_process <- function(args_list) {
     st_process(
       asset_type = asset_type,
       company_exclusion = company_exclusion,
-      term = term
+      fallback_term = fallback_term
     )
 
   input_data_list <- list(
@@ -335,7 +336,7 @@ st_read_agnostic <- function(dir, start_year) {
   return(out)
 }
 
-st_process <- function(data, asset_type, company_exclusion, term) {
+st_process <- function(data, asset_type, company_exclusion, fallback_term) {
   start_year <- get_start_year(data)
   scenarios_filter <- scenarios_filter()
 
@@ -384,7 +385,7 @@ st_process <- function(data, asset_type, company_exclusion, term) {
 
   company_terms <- process_company_terms(
     data$company_terms,
-    fallback_term = term
+    fallback_term = fallback_term
   )
 
   pacta_results <- process_pacta_results(
@@ -400,7 +401,7 @@ st_process <- function(data, asset_type, company_exclusion, term) {
     allocation_method = allocation_method_lookup,
     asset_type = asset_type
   ) %>%
-    add_terms(company_terms = company_terms, fallback_term = term)
+    add_terms(company_terms = company_terms, fallback_term = fallback_term)
 
   out <- list(
     pacta_results = pacta_results,
