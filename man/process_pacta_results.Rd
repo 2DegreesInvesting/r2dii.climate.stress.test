@@ -15,8 +15,7 @@ process_pacta_results(
   sectors,
   technologies,
   allocation_method,
-  asset_type,
-  declining_technologies
+  asset_type
 )
 }
 \arguments{
@@ -46,9 +45,6 @@ allocation rule.}
 
 \item{asset_type}{String holding asset_type. For accepted values compare
 \code{stress_test_arguments}.}
-
-\item{declining_technologies}{Character. A vector containing the technologies
-defined as declining based on the scenario data.}
 }
 \value{
 A tibble of data as indicated by function name.

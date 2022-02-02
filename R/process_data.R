@@ -15,24 +15,21 @@
 #' @param allocation_method Character. A vector of length 1 indicating the
 #'   set of PACTA data to be used in the analysis, based on the choice of an
 #'   allocation rule.
-#' @param declining_technologies Character. A vector containing the technologies
-#'   defined as declining based on the scenario data.
 #'
 #' @return A tibble of data as indicated by function name.
 process_pacta_results <- function(data, start_year, end_year, time_horizon,
                                   scenario_geography_filter, scenarios_filter,
                                   equity_market_filter, sectors, technologies,
-                                  allocation_method, asset_type,
-                                  declining_technologies) {
+                                  allocation_method, asset_type) {
   data_processed <- data %>%
     wrangle_and_check_pacta_results(
       start_year = start_year,
       time_horizon = time_horizon,
       scenario_geography_filter = scenario_geography_filter,
       scenarios_filter = scenarios_filter,
-      allocation_method = allocation_method,
-      declining_technologies = declining_technologies
+      allocation_method = allocation_method
     ) %>%
+    dplyr::filter(.data$investor_name == investor_name_placeholder) %>%
     dplyr::filter(.data$equity_market == equity_market_filter) %>%
     dplyr::filter(.data$allocation == allocation_method) %>%
     dplyr::filter(.data$scenario %in% .env$scenarios_filter) %>%

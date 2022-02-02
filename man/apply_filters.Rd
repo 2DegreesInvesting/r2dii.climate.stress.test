@@ -14,8 +14,7 @@ apply_filters(
   scenario_geography_filter = NULL,
   scenarios = NULL,
   allocation_method = NULL,
-  start_analysis = NULL,
-  declining_technologies
+  start_analysis = NULL
 )
 }
 \arguments{
@@ -45,9 +44,6 @@ allocation rule.}
 
 \item{start_analysis}{Numeric. A vector of length 1 indicating the start
 year of the analysis.}
-
-\item{declining_technologies}{Character. A vector containing the technologies
-defined as declining based on the scenario data.}
 }
 \description{
 Filter input company or portfolio data to match model specifications and

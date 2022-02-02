@@ -327,9 +327,6 @@ st_read_agnostic <- function(dir, start_year) {
 st_process <- function(data, asset_type, company_exclusion, term) {
   start_year <- get_start_year(data)
   scenarios_filter <- scenarios_filter()
-  declining_technologies <- data$scenario_data %>%
-    dplyr::filter(.data$direction == "declining") %>%
-    dplyr::distinct(.data$technology)
 
   sector_exposures <- process_sector_exposures(
     data$sector_exposures,
@@ -390,8 +387,7 @@ st_process <- function(data, asset_type, company_exclusion, term) {
     sectors = sectors_lookup,
     technologies = technologies_lookup,
     allocation_method = allocation_method_lookup,
-    asset_type = asset_type,
-    declining_technologies = declining_technologies
+    asset_type = asset_type
   ) %>%
     add_terms(company_terms = company_terms, fallback_term = term)
 

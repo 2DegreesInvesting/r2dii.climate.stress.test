@@ -10,8 +10,7 @@ wrangle_and_check_pacta_results(
   time_horizon,
   scenario_geography_filter,
   scenarios_filter,
-  allocation_method,
-  declining_technologies
+  allocation_method
 )
 }
 \arguments{
@@ -29,9 +28,6 @@ indicates which geographic scenario to apply in the analysis.}
 \item{allocation_method}{Character. A vector of length 1 indicating the
 set of PACTA data to be used in the analysis, based on the choice of an
 allocation rule.}
-
-\item{declining_technologies}{Character. A vector containing the technologies
-defined as declining based on the scenario data.}
 }
 \value{
 Wrangled \code{pacta_results.}
