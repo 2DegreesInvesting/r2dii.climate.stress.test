@@ -79,7 +79,7 @@ test_that("with equity, without iteration, using maximum values of input argumen
       discount_rate = get_st_argument("discount_rate", "max"),
       div_netprofit_prop_coef = get_st_argument("div_netprofit_prop_coef", "max"),
       shock_year = get_st_argument("shock_year", "max"),
-      term = as.integer(get_st_argument("falllback_term", "max")),
+      term = as.integer(get_st_argument("fallback_term", "max")),
       company_exclusion = TRUE,
       use_company_terms = TRUE,
       return_results = TRUE
