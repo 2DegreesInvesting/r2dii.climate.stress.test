@@ -418,12 +418,17 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
       .data$portfolio_name, .data$ald_sector, .data$term
     )
 
+
+  company_trajectories <- results_list$company_trajectories %>%
+    dplyr::rename(baseline_price = Baseline_price)
+
   return(list(
     market_risk_company = market_risk_company,
     market_risk_portfolio = market_risk_portfolio,
     expected_loss = expected_loss,
     annual_pd_changes_sector = annual_pd_changes_sector,
-    overall_pd_changes_sector = overall_pd_changes_sector
+    overall_pd_changes_sector = overall_pd_changes_sector,
+    company_trajectories = company_trajectories
   ))
 }
 
@@ -513,7 +518,8 @@ rename_results <- function(results_list) {
     stress_test_results_port = results_list$market_risk_portfolio,
     stress_test_results_comp_el = results_list$expected_loss,
     stress_test_results_sector_pd_changes_annual = results_list$annual_pd_changes_sector,
-    stress_test_results_sector_pd_changes_overall = results_list$overall_pd_changes_sector
+    stress_test_results_sector_pd_changes_overall = results_list$overall_pd_changes_sector,
+    company_trajectories = results_list$company_trajectories
   )
 
   return(renamed_results_list)
@@ -618,4 +624,18 @@ cap_terms <- function(data) {
   }
 
   return(data)
+}
+
+add_term_to_trajectories <- function(annual_profits, pacta_results) {
+
+  distinct_company_terms <- pacta_results %>%
+    dplyr::select(company_name, term) %>%
+    dplyr::distinct_all()
+
+  report_duplicates(data = distinct_company_terms, cols = names(distinct_company_terms))
+
+  annual_profits_with_term <- annual_profits %>%
+    dplyr::inner_join(distinct_company_terms, by = c("company_name"))
+
+  return(annual_profits_with_term)
 }
