@@ -284,12 +284,18 @@ read_and_process <- function(args_list) {
   # TODO: ADO 879 - note which companies produce missing results due to
   # insufficient input information (e.g. NAs for financials or 0 equity value)
 
+  company_trajectories <- add_term_to_trajectories(
+    annual_profits = annual_profits,
+    pacta_results = input_data_list$pacta_results
+  )
+
   return(
     list(
       results = results,
       expected_loss = expected_loss,
       annual_pd_changes = annual_pd_changes,
-      overall_pd_changes = overall_pd_changes
+      overall_pd_changes = overall_pd_changes,
+      company_trajectories = company_trajectories
     )
   )
 }

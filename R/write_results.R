@@ -39,6 +39,12 @@ write_stress_test_results <- function(results_list, asset_type, iter_var,
       output_path,
       glue::glue("stress_test_results_{asset_type}_sector_pd_changes_overall_{iter_var}.csv")
     ))
+
+  results_list$company_trajectories %>%
+    readr::write_csv(file.path(
+      output_path,
+      glue::glue("company_trajectories_{iter_var}.csv")
+    ))
 }
 
 
