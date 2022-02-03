@@ -158,11 +158,11 @@ will be generated automatically, this way we ensure that no existing results are
 overwritten.
 
 * `log_file_standard.txt`
-* `stress_test_results_loans_port_standard.csv`
-* `stress_test_results_loans_comp_standard.csv`
-* `stress_test_results_loans_comp_el_standard.csv`
-* `stress_test_results_loans_sector_pd_changes_annual_standard.csv`
-* `stress_test_results_loans_sector_pd_changes_overall_standard.csv`
+* `loans_portfolio_value_changes_standard.csv`
+* `loans_company_value_changes__standard.csv`
+* `loans_comp_expected_loss_standard.csv`
+* `loans_sector_pd_changes_annual_standard.csv`
+* `loans_sector_pd_changes_overall_standard.csv`
 
 
 ## Running a Sensitivity Analysis for the Stress Test
