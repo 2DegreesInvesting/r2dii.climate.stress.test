@@ -163,7 +163,66 @@ extend_scenario_trajectory <- function(data,
       "scenario", "year", "direction", "fair_share_perc"
     )
   )
+#TODO buggy??
+  data <- data %>%
+    summarise_production_technology_forecasts(
+      start_analysis = .env$start_analysis,
+      time_frame = .env$time_frame
+    ) %>%
+    identify_technology_phase_out() %>%
+    extend_to_full_analysis_timeframe(
+      start_analysis = .env$start_analysis,
+      end_analysis = .env$end_analysis
+    )
 
+  data <- data %>%
+    # ADO 2393 - The join cols should be extended to cover the source
+    dplyr::inner_join(
+      scenario_data,
+      by = c("ald_sector", "technology", "scenario_geography", "scenario", "year")
+    ) %>%
+    report_all_duplicate_kinds(
+      composite_unique_cols = c(
+        "year", "investor_name", "portfolio_name", "id", "company_name",
+        "ald_sector", "technology", "scenario", "allocation",
+        "scenario_geography", "source", "units"
+      )
+    )
+
+  data <- data %>%
+    summarise_production_sector_forecasts()
+
+  data <- data %>%
+    apply_scenario_targets() %>%
+    handle_phase_out_and_negative_targets()
+
+  data <- data %>%
+    tidyr::pivot_wider(
+      id_cols = c(
+        "investor_name", "portfolio_name", "id", "company_name", "year",
+        "scenario_geography", "ald_sector", "technology", "plan_tech_prod", "phase_out"
+      ),
+      names_from = .data$scenario,
+      values_from = .data$scen_tech_prod
+    ) %>%
+    dplyr::arrange(
+      .data$investor_name, .data$portfolio_name, .data$id, .data$company_name,
+      .data$scenario_geography, .data$ald_sector, .data$technology, .data$year
+    )
+}
+
+#' Summarise the forecasts for company-tech level production within the five
+#' year time frame
+#'
+#' @param data A data frame containing the production forecasts of companies
+#'   (in the portfolio). Pre-processed to fit analysis parameters and after
+#'   conversion of power capacity to generation.
+#' @param start_analysis start of the analysis
+#' @param time_frame number of years with forward looking production data
+#' @noRd
+summarise_production_technology_forecasts <- function(data,
+                                                      start_analysis,
+                                                      time_frame) {
   data <- data %>%
     dplyr::select(
       .data$investor_name, .data$portfolio_name, .data$id, .data$company_name,
@@ -188,7 +247,17 @@ extend_scenario_trajectory <- function(data,
       final_technology_production = dplyr::last(.data$plan_tech_prod),
       sum_production_forecast = sum(.data$plan_tech_prod, na.rm = TRUE)
     ) %>%
-    dplyr::ungroup() %>%
+    dplyr::ungroup()
+}
+
+#' Identify which company technology combination is a phase out and mark as such
+#'
+#' @param data A data frame containing the production forecasts of companies
+#'   (in the portfolio). Pre-processed to fit analysis parameters and after
+#'   conversion of power capacity to generation.
+#' @noRd
+identify_technology_phase_out <- function(data) {
+  data <- data %>%
     dplyr::mutate(
       phase_out = dplyr::if_else(
         .data$final_technology_production == 0 &
@@ -196,7 +265,22 @@ extend_scenario_trajectory <- function(data,
         TRUE,
         FALSE
       )
-    ) %>%
+    )
+}
+
+#' Extend the dataframe containing the production and production summaries to
+#' cover the whole timeframe of the analysis, filling variables downwards where
+#' applicable.
+#'
+#' @param data A data frame containing the production forecasts of companies,
+#'   the summaries fo their forecasts and the phase out indicator.
+#' @param start_analysis start of the analysis
+#' @param end_analysis end of the analysis
+#' @noRd
+extend_to_full_analysis_timeframe <- function(data,
+                                              start_analysis,
+                                              end_analysis) {
+  data <- data %>%
     tidyr::complete(
       year = seq(.env$start_analysis, .env$end_analysis),
       tidyr::nesting(
@@ -219,21 +303,16 @@ extend_scenario_trajectory <- function(data,
       .data$final_technology_production,
       .data$phase_out
     )
+}
 
-  data <- data %>%
-    # ADO 2393 - The join cols should be extended to cover the source
-    dplyr::inner_join(
-      scenario_data,
-      by = c("ald_sector", "technology", "scenario_geography", "scenario", "year")
-    ) %>%
-    report_all_duplicate_kinds(
-      composite_unique_cols = c(
-        "year", "investor_name", "portfolio_name", "id", "company_name",
-        "ald_sector", "technology", "scenario", "allocation",
-        "scenario_geography", "source", "units"
-      )
-    )
-
+#' Summarise the forecasts for company-sector level production within the five
+#' year time frame
+#'
+#' @param data A data frame containing the production forecasts of companies
+#'   (in the portfolio). Pre-processed to fit analysis parameters and after
+#'   conversion of power capacity to generation.
+#' @noRd
+summarise_production_sector_forecasts <- function(data) {
   data <- data %>%
     dplyr::group_by(
       .data$investor_name, .data$portfolio_name, .data$id, .data$company_name,
@@ -256,7 +335,16 @@ extend_scenario_trajectory <- function(data,
       initial_sector_target = dplyr::first(.data$scen_sec_prod)
     ) %>%
     dplyr::ungroup()
+}
 
+#' Apply TMSR/SMSP scenario targets based on initial technology or sector
+#' production and type of technology
+#'
+#' @param data A data frame containing the production forecasts of companies
+#'   (in the portfolio). Pre-processed to fit analysis parameters and after
+#'   conversion of power capacity to generation.
+#' @noRd
+apply_scenario_targets <- function(data) {
   data <- data %>%
     dplyr::mutate(
       scen_tech_prod = dplyr::if_else(
@@ -264,26 +352,23 @@ extend_scenario_trajectory <- function(data,
         .data$initial_technology_target * (1 + .data$fair_share_perc), # tmsr
         .data$initial_technology_target + (.data$initial_sector_target * .data$fair_share_perc) # smsp
       )
-    ) %>%
+    )
+}
+
+#' Set scenario targets to zero where companies phase out a technology or the
+#' extension of the technology leads to negative values
+#'
+#' @param data A data frame containing the production forecasts of companies
+#'   (in the portfolio). Pre-processed to fit analysis parameters and after
+#'   conversion of power capacity to generation.
+#' @noRd
+handle_phase_out_and_negative_targets <- function(data) {
+  data <- data %>%
     dplyr::mutate(
       scen_tech_prod = dplyr::case_when(
         .data$scen_tech_prod < 0 ~ 0,
         .data$phase_out == TRUE ~ 0,
         TRUE ~ .data$scen_tech_prod
       )
-    )
-
-  data <- data %>%
-    tidyr::pivot_wider(
-      id_cols = c(
-        "investor_name", "portfolio_name", "id", "company_name", "year",
-        "scenario_geography", "ald_sector", "technology", "plan_tech_prod", "phase_out"
-      ),
-      names_from = .data$scenario,
-      values_from = .data$scen_tech_prod
-    ) %>%
-    dplyr::arrange(
-      .data$investor_name, .data$portfolio_name, .data$id, .data$company_name,
-      .data$scenario_geography, .data$ald_sector, .data$technology, .data$year
     )
 }
