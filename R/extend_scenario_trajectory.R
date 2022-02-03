@@ -177,6 +177,11 @@ extend_scenario_trajectory <- function(data,
       .data$ald_sector, .data$technology, .data$scenario, .data$allocation,
       .data$scenario_geography
     ) %>%
+    dplyr::arrange(
+      .data$investor_name, .data$portfolio_name, .data$id, .data$company_name,
+      .data$ald_sector, .data$technology, .data$scenario, .data$allocation,
+      .data$scenario_geography, .data$year
+    ) %>%
     dplyr::mutate(
       initial_technology_production = dplyr::first(.data$plan_tech_prod),
       initial_technology_target = dplyr::first(.data$scen_tech_prod),
