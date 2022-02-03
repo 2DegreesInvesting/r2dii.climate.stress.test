@@ -384,7 +384,7 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
       .data$portfolio_name, .data$company_name, .data$ald_sector
     )
 
-  sector_annual_pd_changes <- results_list$company_annual_pd_changes %>%
+  sector_pd_changes_annual <- results_list$company_pd_changes_annual %>%
     dplyr::group_by(
       .data$scenario_name, .data$scenario_geography, .data$investor_name,
       .data$portfolio_name, .data$ald_sector, .data$year,
@@ -401,7 +401,7 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
       .data$portfolio_name, .data$ald_sector, .data$year
     )
 
-  sector_overall_pd_changes <- results_list$company_overall_pd_changes %>%
+  sector_pd_changes_overall <- results_list$company_pd_changes_overall %>%
     dplyr::group_by(
       .data$scenario_name, .data$scenario_geography, .data$investor_name,
       .data$portfolio_name, .data$ald_sector, .data$term,
@@ -424,10 +424,10 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
 
   return(list(
     company_value_changes = company_value_changes,
-    portfolio_value_change = portfolio_value_changes,
+    portfolio_value_changes = portfolio_value_changes,
     company_expected_loss = company_expected_loss,
-    sector_annual_pd_changes = sector_annual_pd_changes,
-    sector_overall_pd_changes = sector_overall_pd_changes,
+    sector_pd_changes_annual = sector_pd_changes_annual,
+    sector_pd_changes_overall = sector_pd_changes_overall,
     company_trajectories = company_trajectories
   ))
 }
@@ -479,7 +479,7 @@ check_results <- function(wrangled_results_list, sensitivity_analysis_vars) {
       )
     )
 
-  wrangled_results_list$sector_annual_pd_changes %>%
+  wrangled_results_list$sector_pd_changes_annual %>%
     report_missings(
       name_data = "Annual PD changes sector"
     ) %>%
@@ -490,7 +490,7 @@ check_results <- function(wrangled_results_list, sensitivity_analysis_vars) {
       )
     )
 
-  wrangled_results_list$sector_overall_pd_changes %>%
+  wrangled_results_list$sector_pd_changes_overall %>%
     report_missings(
       name_data = "Overall PD changes sector"
     ) %>%

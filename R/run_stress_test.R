@@ -258,7 +258,7 @@ read_and_process <- function(args_list) {
 
   cat("-- Calculating credit risk. \n\n\n")
 
-  company_overall_pd_changes <- company_annual_profits %>%
+  company_pd_changes_overall <- company_annual_profits %>%
     calculate_pd_change_overall(
       shock_year = transition_scenario$year_of_shock,
       end_of_analysis = end_year_lookup,
@@ -269,7 +269,7 @@ read_and_process <- function(args_list) {
   # insufficient input information (e.g. NAs for financials or 0 equity value)
 
   company_expected_loss <- company_expected_loss(
-    data = overall_pd_changes,
+    data = company_pd_changes_overall,
     loss_given_default = lgd,
     exposure_at_default = exposure_by_technology_and_company,
     port_aum = port_aum
@@ -278,7 +278,7 @@ read_and_process <- function(args_list) {
   # TODO: ADO 879 - note which companies produce missing results due to
   # insufficient output from overall pd changes or related financial data inputs
 
-  company_annual_pd_changes <- calculate_pd_change_annual(
+  company_pd_changes_annual <- calculate_pd_change_annual(
     data = company_annual_profits,
     shock_year = transition_scenario$year_of_shock,
     end_of_analysis = end_year_lookup,
@@ -297,8 +297,8 @@ read_and_process <- function(args_list) {
     list(
       company_value_changes = company_value_changes,
       company_expected_loss = company_expected_loss,
-      company_annual_pd_changes = company_annual_pd_changes,
-      company_overall_pd_changes = company_overall_pd_changes,
+      company_pd_changes_annual = company_pd_changes_annual,
+      company_pd_changes_overall = company_pd_changes_overall,
       company_trajectories = company_trajectories
     )
   )
