@@ -13,37 +13,37 @@ write_stress_test_results <- function(results_list, asset_type, iter_var,
   results_list$stress_test_results_comp %>%
     readr::write_csv(file.path(
       output_path,
-      glue::glue("stress_test_results_{asset_type}_comp_{iter_var}.csv")
+      glue::glue("{asset_type}_company_value_changes_{iter_var}.csv")
     ))
 
   results_list$stress_test_results_port %>%
     readr::write_csv(file.path(
       output_path,
-      glue::glue("stress_test_results_{asset_type}_port_{iter_var}.csv")
+      glue::glue("{asset_type}_portfolio_value_changes_{iter_var}.csv")
     ))
 
   results_list$stress_test_results_comp_el %>%
     readr::write_csv(file.path(
       output_path,
-      glue::glue("stress_test_results_{asset_type}_comp_el_{iter_var}.csv")
+      glue::glue("{asset_type}_company_expected_loss_{iter_var}.csv")
     ))
 
   results_list$stress_test_results_sector_pd_changes_annual %>%
     readr::write_csv(file.path(
       output_path,
-      glue::glue("stress_test_results_{asset_type}_sector_pd_changes_annual_{iter_var}.csv")
+      glue::glue("{asset_type}_sector_pd_changes_annual_{iter_var}.csv")
     ))
 
   results_list$stress_test_results_sector_pd_changes_overall %>%
     readr::write_csv(file.path(
       output_path,
-      glue::glue("stress_test_results_{asset_type}_sector_pd_changes_overall_{iter_var}.csv")
+      glue::glue("{asset_type}_sector_pd_changes_overall_{iter_var}.csv")
     ))
 
   results_list$company_trajectories %>%
     readr::write_csv(file.path(
       output_path,
-      glue::glue("company_trajectories_{iter_var}.csv")
+      glue::glue("{asset_type}_company_trajectories_{iter_var}.csv")
     ))
 }
 

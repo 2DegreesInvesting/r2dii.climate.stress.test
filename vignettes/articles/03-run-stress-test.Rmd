@@ -158,11 +158,11 @@ will be generated automatically, this way we ensure that no existing results are
 overwritten.
 
 * `log_file_standard.txt`
-* `stress_test_results_loans_port_standard.csv`
-* `stress_test_results_loans_comp_standard.csv`
-* `stress_test_results_loans_comp_el_standard.csv`
-* `stress_test_results_loans_sector_pd_changes_annual_standard.csv`
-* `stress_test_results_loans_sector_pd_changes_overall_standard.csv`
+* `loans_portfolio_value_changes_standard.csv`
+* `loans_company_value_changes__standard.csv`
+* `loans_company_expected_loss_standard.csv`
+* `loans_sector_pd_changes_annual_standard.csv`
+* `loans_sector_pd_changes_overall_standard.csv`
 
 
 ## Running a Sensitivity Analysis for the Stress Test
@@ -195,11 +195,11 @@ This will yield outputs with four versions of the stress test, one for each of
 the shock years indicated. All the results will be written into one file per
 output type for ease of use, e.g.:
 
-* `stress_test_results_loans_port_shock_year.csv`
-* `stress_test_results_loans_comp_shock_year.csv`
-* `stress_test_results_loans_comp_el_shock_year.csv`
-* `stress_test_results_loans_sector_pd_changes_annual_shock_year.csv`
-* `stress_test_results_loans_sector_pd_changes_overall_shock_year.csv`
+* `loans_portfolio_value_changes_shock_year.csv`
+* `loans_company_value_changes_shock_year.csv`
+* `loans_company_expected_loss_shock_year.csv`
+* `loans_sector_pd_changes_annual_shock_year.csv`
+* `loans_sector_pd_changes_overall_shock_year.csv`
 
 **NOTE:** The suffix of the files is now changed to mirror which variable was
 iterated over. This enables the user to run multiple different sensitivity
