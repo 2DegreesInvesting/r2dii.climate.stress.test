@@ -163,16 +163,16 @@ extend_scenario_trajectory <- function(data,
       "scenario", "year", "direction", "fair_share_perc"
     )
   )
-#TODO buggy??
+
   data <- data %>%
     summarise_production_technology_forecasts(
-      start_analysis = .env$start_analysis,
-      time_frame = .env$time_frame
+      start_analysis = start_analysis,
+      time_frame = time_frame
     ) %>%
     identify_technology_phase_out() %>%
     extend_to_full_analysis_timeframe(
-      start_analysis = .env$start_analysis,
-      end_analysis = .env$end_analysis
+      start_analysis = start_analysis,
+      end_analysis = end_analysis
     )
 
   data <- data %>%
