@@ -33,11 +33,11 @@ test_create_target_directory <- function(path = NULL,
 #' Get a valid value of an argumetn of `run_stress_test()`
 #'
 #' @examples
-#' get_st_argument("term")
+#' get_st_argument("fallback_term")
 #' # Same
-#' get_st_argument("term", "default")
+#' get_st_argument("fallback_term", "default")
 #'
-#' get_st_argument("term", "min")
+#' get_st_argument("fallback_term", "min")
 #'
 #' typeof(get_st_argument("company_exclusion"))
 #' typeof(get_st_argument("asset_type"))
