@@ -11,7 +11,7 @@ validate_input_values(
   discount_rate,
   div_netprofit_prop_coef,
   shock_year,
-  term,
+  fallback_term,
   company_exclusion,
   use_company_terms,
   asset_type
@@ -38,9 +38,10 @@ range compare \code{stress_test_arguments}.}
 \item{shock_year}{Numeric, holding year the shock is applied. For accepted
 range compare \code{stress_test_arguments}.}
 
-\item{term}{Numeric. A coefficient that determines for which maturity the
-expected loss should be calculated in the credit risk section. For accepted
-range compare \code{stress_test_arguments}.}
+\item{fallback_term}{Numeric. A coefficient that determines for which
+maturity the expected loss should be calculated in the credit risk section
+in case no company level term data are provided via \code{use_company_terms}.
+For accepted range compare \code{stress_test_arguments}.}
 
 \item{company_exclusion}{Boolean, indicating if companies provided in dataset
 excluded_companies.csv shall be excluded. For accepted values compare

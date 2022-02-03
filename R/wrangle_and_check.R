@@ -570,7 +570,7 @@ select_sector_scenario_combinations <- function(pacta_results) {
 }
 
 
-#' Fill missing terms with fallback term
+#' Fill missing terms with fallback_term
 #'
 #' Also throws informative message on number of filled values.
 #'
