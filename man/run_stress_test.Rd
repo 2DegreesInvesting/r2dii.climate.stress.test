@@ -15,7 +15,7 @@ run_stress_test(
   discount_rate = 0.07,
   div_netprofit_prop_coef = 1,
   shock_year = 2030,
-  term = 2,
+  fallback_term = 2,
   company_exclusion = TRUE,
   use_company_terms = FALSE,
   return_results = FALSE
@@ -56,9 +56,10 @@ range compare \code{stress_test_arguments}.}
 \item{shock_year}{Numeric, holding year the shock is applied. For accepted
 range compare \code{stress_test_arguments}.}
 
-\item{term}{Numeric. A coefficient that determines for which maturity the
-expected loss should be calculated in the credit risk section. For accepted
-range compare \code{stress_test_arguments}.}
+\item{fallback_term}{Numeric. A coefficient that determines for which
+maturity the expected loss should be calculated in the credit risk section
+in case no company level term data are provided via \code{use_company_terms}.
+For accepted range compare \code{stress_test_arguments}.}
 
 \item{company_exclusion}{Boolean, indicating if companies provided in dataset
 excluded_companies.csv shall be excluded. For accepted values compare
@@ -77,6 +78,6 @@ understand sensitivities of the scenarios, in which case the user may pass a
 vector of values to one (and only one) of the detail arguments. This will
 result in running the analysis multiple times in a row with the argument
 varied.
-NOTE: argument \code{asset_type} and \code{term} cannot be iterated.
+NOTE: argument \code{asset_type} and \code{fallback_term} cannot be iterated.
 NOTE: if \code{return_results} is TRUE results will not be written to \verb{output path} but instead are returned.
 }

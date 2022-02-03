@@ -7,7 +7,7 @@
 #' @return NULL
 validate_input_values <- function(lgd_senior_claims, lgd_subordinated_claims,
                                   risk_free_rate, discount_rate,
-                                  div_netprofit_prop_coef, shock_year, term,
+                                  div_netprofit_prop_coef, shock_year, fallback_term,
                                   company_exclusion, use_company_terms, asset_type) {
   input_args <- mget(names(formals()), sys.frame(sys.nframe()))
 
@@ -16,7 +16,7 @@ validate_input_values <- function(lgd_senior_claims, lgd_subordinated_claims,
 
   c(
     "lgd_senior_claims", "lgd_subordinated_claims", "risk_free_rate",
-    "discount_rate", "div_netprofit_prop_coef", "shock_year", "term"
+    "discount_rate", "div_netprofit_prop_coef", "shock_year", "fallback_term"
   ) %>%
     purrr::walk(validate_values_in_range, args_list = input_args)
 
@@ -26,8 +26,8 @@ validate_input_values <- function(lgd_senior_claims, lgd_subordinated_claims,
 
   # ADO 1943 - Once we decide to add a separate Merton calculation on the average
   # maturity of a portfolio, this check will need to be removed
-  if (!all(term %% 1 == 0)) {
-    stop("Argument term must be a whole number")
+  if (!all(fallback_term %% 1 == 0)) {
+    stop("Argument fallback_term must be a whole number")
   }
 }
 

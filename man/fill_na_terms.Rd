@@ -2,7 +2,7 @@
 % Please edit documentation in R/wrangle_and_check.R
 \name{fill_na_terms}
 \alias{fill_na_terms}
-\title{Fill missing terms with fallback term}
+\title{Fill missing terms with fallback_term}
 \usage{
 fill_na_terms(data, fallback_term)
 }
