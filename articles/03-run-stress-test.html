@@ -193,11 +193,11 @@
 <p>The output files are written into a sub directory of the path indicated as <code>output_path</code> in the function call. The name of the sub directory is created from the time stamp of the analysis and a suffix. The suffix <code>_standard</code> is used when each argument uses a single parameter value. If a sensitivity analysis (see below) is run the name of the varied detail variable is used. The sub directory will be generated automatically, this way we ensure that no existing results are overwritten.</p>
 <ul>
 <li><code>log_file_standard.txt</code></li>
-<li><code>stress_test_results_loans_port_standard.csv</code></li>
-<li><code>stress_test_results_loans_comp_standard.csv</code></li>
-<li><code>stress_test_results_loans_comp_el_standard.csv</code></li>
-<li><code>stress_test_results_loans_sector_pd_changes_annual_standard.csv</code></li>
-<li><code>stress_test_results_loans_sector_pd_changes_overall_standard.csv</code></li>
+<li><code>loans_portfolio_value_changes_standard.csv</code></li>
+<li><code>loans_company_value_changes__standard.csv</code></li>
+<li><code>loans_company_expected_loss_standard.csv</code></li>
+<li><code>loans_sector_pd_changes_annual_standard.csv</code></li>
+<li><code>loans_sector_pd_changes_overall_standard.csv</code></li>
 </ul>
 </div>
 </div>
@@ -218,11 +218,11 @@
 <span class="op">)</span></code></pre></div>
 <p>This will yield outputs with four versions of the stress test, one for each of the shock years indicated. All the results will be written into one file per output type for ease of use, e.g.:</p>
 <ul>
-<li><code>stress_test_results_loans_port_shock_year.csv</code></li>
-<li><code>stress_test_results_loans_comp_shock_year.csv</code></li>
-<li><code>stress_test_results_loans_comp_el_shock_year.csv</code></li>
-<li><code>stress_test_results_loans_sector_pd_changes_annual_shock_year.csv</code></li>
-<li><code>stress_test_results_loans_sector_pd_changes_overall_shock_year.csv</code></li>
+<li><code>loans_portfolio_value_changes_shock_year.csv</code></li>
+<li><code>loans_company_value_changes_shock_year.csv</code></li>
+<li><code>loans_company_expected_loss_shock_year.csv</code></li>
+<li><code>loans_sector_pd_changes_annual_shock_year.csv</code></li>
+<li><code>loans_sector_pd_changes_overall_shock_year.csv</code></li>
 </ul>
 <p><strong>NOTE:</strong> The suffix of the files is now changed to mirror which variable was iterated over. This enables the user to run multiple different sensitivity analyses for a project and easily navigate these.</p>
 <p>When running a sensitivity analysis one one input, the user can still use other values than the default parameters for the other input arguments.</p>
