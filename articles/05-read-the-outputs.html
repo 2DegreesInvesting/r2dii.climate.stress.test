@@ -97,30 +97,23 @@
 <div class="section level3">
 <h3 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h3>
-<p>There are six output files that the user can expect when running the stress test for a given set of parameters.</p>
+<p>There are five output files that the user can expect when running the stress test for a given set of parameters.</p>
 <p>They can loosely be grouped in files that contain estimates of the market risk of companies in the portfolio and of the credit risk of said companies in a corporate loan book. Depending on the use case, one or the other may contain more relevant information. In addition, a log file is written to the results directory. It holds an overview on holdings that could not be considered in the analysis.</p>
 <div class="section level4">
 <h4 id="market-risk">Market Risk<a class="anchor" aria-label="anchor" href="#market-risk"></a>
 </h4>
 <ul>
-<li>loans_company_value_changes_&lt;suffix&gt;.csv</li>
-<li>loans_portfolio_value_changes_&lt;suffix&gt;.csv</li>
+<li>stress_test_results_loans_comp_&lt;suffix&gt;.csv</li>
+<li>stress_test_results_loans_port_&lt;suffix&gt;.csv</li>
 </ul>
 </div>
 <div class="section level4">
 <h4 id="credit-risk">Credit Risk<a class="anchor" aria-label="anchor" href="#credit-risk"></a>
 </h4>
 <ul>
-<li>loans_company_expected_loss_&lt;suffix&gt;.csv</li>
-<li>loans_sector_pd_changes_annual_&lt;suffix&gt;.csv</li>
-<li>loans_sector_pd_changes_overall_&lt;suffix&gt;.csv</li>
-</ul>
-</div>
-<div class="section level4">
-<h4 id="tbc">TBC<a class="anchor" aria-label="anchor" href="#tbc"></a>
-</h4>
-<ul>
-<li>loans_company_trajectories_&lt;suffix&gt;.csv</li>
+<li>stress_test_results_loans_comp_el_&lt;suffix&gt;.csv</li>
+<li>stress_test_results_loans_sector_pd_changes_annual_&lt;suffix&gt;.csv</li>
+<li>stress_test_results_loans_sector_pd_changes_overall_&lt;suffix&gt;.csv</li>
 </ul>
 </div>
 </div>
@@ -140,7 +133,7 @@
 </div>
 </div>
 <div class="section level4">
-<h4 id="loans_company_value_changes_suffix">loans_company_value_changes_&lt;suffix&gt;<a class="anchor" aria-label="anchor" href="#loans_company_value_changes_suffix"></a>
+<h4 id="stress_test_results_loans_comp_suffix">stress_test_results_loans_comp_&lt;suffix&gt;<a class="anchor" aria-label="anchor" href="#stress_test_results_loans_comp_suffix"></a>
 </h4>
 <p>This result file contains relative expected value changes on the company-technology level, based on the DCF model to calculate market risk. It additionally contains aggregations of these relative value changes to the exposures of the companies, technologies and sectors included in the portfolio or loan book.</p>
 <ul>
@@ -207,12 +200,12 @@
 </ul>
 </div>
 <div class="section level4">
-<h4 id="loans_portfolio_value_changes_suffix">loans_portfolio_value_changes_&lt;suffix&gt;<a class="anchor" aria-label="anchor" href="#loans_portfolio_value_changes_suffix"></a>
+<h4 id="stress_test_results_loans_port_suffix">stress_test_results_loans_port_&lt;suffix&gt;<a class="anchor" aria-label="anchor" href="#stress_test_results_loans_port_suffix"></a>
 </h4>
 <p>This result file contains relative expected value changes on the portfolio level, based on the DCF model to calculate market risk. It additionally contains aggregations on the technology, sector and total levels. The columns and rows in this file are a subset of the ones included in the company level output. The user can refer to the explanations above for reference.</p>
 </div>
 <div class="section level4">
-<h4 id="loans_company_expcted_loss_suffix">loans_company_expcted_loss_&lt;suffix&gt;<a class="anchor" aria-label="anchor" href="#loans_company_expcted_loss_suffix"></a>
+<h4 id="stress_test_results_loans_comp_el_suffix">stress_test_results_loans_comp_el_&lt;suffix&gt;<a class="anchor" aria-label="anchor" href="#stress_test_results_loans_comp_el_suffix"></a>
 </h4>
 <p>This result file contains expected changes in the probability of default and in expected losses. The company level pd changes are used to derive loan book level changes in expected loss.</p>
 <ul>
@@ -243,7 +236,7 @@
 </ul>
 </div>
 <div class="section level4">
-<h4 id="loans_sector_pd_changes_annual_suffix">loans_sector_pd_changes_annual_&lt;suffix&gt;<a class="anchor" aria-label="anchor" href="#loans_sector_pd_changes_annual_suffix"></a>
+<h4 id="stress_test_results_loans_sector_pd_changes_annual_suffix">stress_test_results_loans_sector_pd_changes_annual_&lt;suffix&gt;<a class="anchor" aria-label="anchor" href="#stress_test_results_loans_sector_pd_changes_annual_suffix"></a>
 </h4>
 <p>This file contains an overview on the sector level of how annual probabilities of default change relative to the baseline scenario after the shock year.</p>
 <ul>
@@ -264,7 +257,7 @@
 </ul>
 </div>
 <div class="section level4">
-<h4 id="loans_sector_pd_changes_overall_suffix">loans_sector_pd_changes_overall_&lt;suffix&gt;<a class="anchor" aria-label="anchor" href="#loans_sector_pd_changes_overall_suffix"></a>
+<h4 id="stress_test_results_loans_sector_pd_changes_overall_suffix">stress_test_results_loans_sector_pd_changes_overall_&lt;suffix&gt;<a class="anchor" aria-label="anchor" href="#stress_test_results_loans_sector_pd_changes_overall_suffix"></a>
 </h4>
 <p>This file contains an overview on the sector level of how overall probabilities of default change depending on the maturities of the underlying loans.</p>
 <ul>
