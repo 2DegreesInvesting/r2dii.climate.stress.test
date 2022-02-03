@@ -103,8 +103,7 @@ run_stress_test <- function(asset_type,
   ) %>%
     check_results(
       sensitivity_analysis_vars = names(args_list)[!names(args_list) %in% setup_vars_lookup]
-    ) %>%
-    rename_results()
+    )
 
   if (return_results) {
     return(st_results_wrangled_and_checked)
@@ -224,7 +223,7 @@ read_and_process <- function(args_list) {
 
   cat("-- Calculating market risk. \n")
 
-  annual_profits <- calculate_annual_profits(
+  company_annual_profits <- calculate_annual_profits(
     asset_type = asset_type,
     input_data_list = input_data_list,
     scenario_to_follow_baseline = baseline_scenario_lookup,
@@ -246,8 +245,8 @@ read_and_process <- function(args_list) {
     log_path = log_path
   )
 
-  results <- company_asset_value_at_risk(
-    data = annual_profits,
+  company_value_changes <- company_asset_value_at_risk(
+    data = company_annual_profits,
     terminal_value = terminal_value_lookup,
     shock_scenario = transition_scenario,
     div_netprofit_prop_coef = div_netprofit_prop_coef,
@@ -259,7 +258,7 @@ read_and_process <- function(args_list) {
 
   cat("-- Calculating credit risk. \n\n\n")
 
-  overall_pd_changes <- annual_profits %>%
+  company_overall_pd_changes <- company_annual_profits %>%
     calculate_pd_change_overall(
       shock_year = transition_scenario$year_of_shock,
       end_of_analysis = end_year_lookup,
@@ -269,7 +268,7 @@ read_and_process <- function(args_list) {
   # TODO: ADO 879 - note which companies produce missing results due to
   # insufficient input information (e.g. NAs for financials or 0 equity value)
 
-  expected_loss <- company_expected_loss(
+  company_expected_loss <- company_expected_loss(
     data = overall_pd_changes,
     loss_given_default = lgd,
     exposure_at_default = exposure_by_technology_and_company,
@@ -279,8 +278,8 @@ read_and_process <- function(args_list) {
   # TODO: ADO 879 - note which companies produce missing results due to
   # insufficient output from overall pd changes or related financial data inputs
 
-  annual_pd_changes <- calculate_pd_change_annual(
-    data = annual_profits,
+  company_annual_pd_changes <- calculate_pd_change_annual(
+    data = company_annual_profits,
     shock_year = transition_scenario$year_of_shock,
     end_of_analysis = end_year_lookup,
     risk_free_interest_rate = risk_free_rate
@@ -290,16 +289,16 @@ read_and_process <- function(args_list) {
   # insufficient input information (e.g. NAs for financials or 0 equity value)
 
   company_trajectories <- add_term_to_trajectories(
-    annual_profits = annual_profits,
+    annual_profits = company_annual_profits,
     pacta_results = input_data_list$pacta_results
   )
 
   return(
     list(
-      results = results,
-      expected_loss = expected_loss,
-      annual_pd_changes = annual_pd_changes,
-      overall_pd_changes = overall_pd_changes,
+      company_value_changes = company_value_changes,
+      company_expected_loss = company_expected_loss,
+      company_annual_pd_changes = company_annual_pd_changes,
+      company_overall_pd_changes = company_overall_pd_changes,
       company_trajectories = company_trajectories
     )
   )
