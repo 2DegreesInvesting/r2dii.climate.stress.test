@@ -63,8 +63,8 @@ project specific data.
 calculations with longer time frames the reliability of the Merton model
 deteriorates.
 * Leave term blank for companies for which you lack respective information. A
-fallback, as provided as argument `term` to `run_stress_test()` will be used to
-fill the gaps.
+fallback, as provided as argument `fallback_term` to `run_stress_test()` will be
+used to fill the gaps.
 
 ### Validating company - term data
 Before including the file in your analysis you may want to validate that your
