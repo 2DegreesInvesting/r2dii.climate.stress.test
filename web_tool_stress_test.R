@@ -324,7 +324,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
       # Convert capacity (MW)to generation (MWh) for power sector
       equity_annual_profits <- pacta_equity_results %>%
         convert_cap_to_generation(capacity_factors_power = capacity_factors_power) %>%
-        extend_scenario_trajectory(
+        extend_scenario_trajectory_old(
           scenario_data = scenario_data,
           start_analysis = start_year,
           end_analysis = end_year,
@@ -463,7 +463,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
 
       bonds_annual_profits <- pacta_bonds_results %>%
         convert_cap_to_generation(capacity_factors_power = capacity_factors_power) %>%
-        extend_scenario_trajectory(
+        extend_scenario_trajectory_old(
           scenario_data = scenario_data,
           start_analysis = start_year,
           end_analysis = end_year,

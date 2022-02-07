@@ -80,16 +80,7 @@ wrangle_and_check_pacta_results <- function(pacta_results, start_year, time_hori
       year = seq(start_year, start_year + time_horizon),
       tidyr::nesting(!!!rlang::syms(nesting_vars_lookup))
     ) %>%
-    dplyr::mutate(plan_tech_prod = dplyr::if_else(is.na(.data$plan_tech_prod), 0, .data$plan_tech_prod)) %>%
-    apply_filters(
-      investor = investor_name_placeholder,
-      sectors = sectors_lookup,
-      technologies = technologies_lookup,
-      scenario_geography_filter = scenario_geography_filter,
-      scenarios = scenarios_filter,
-      allocation_method = allocation_method,
-      start_analysis = start_year
-    )
+    dplyr::mutate(plan_tech_prod = dplyr::if_else(is.na(.data$plan_tech_prod), 0, .data$plan_tech_prod))
 
   return(wrangled_pacta_results)
 }

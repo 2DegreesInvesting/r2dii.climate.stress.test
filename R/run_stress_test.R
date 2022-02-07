@@ -186,7 +186,6 @@ read_and_process <- function(args_list) {
   )
 
   cat("-- Processing input data. \n")
-
   processed <- data %>%
     st_process(
       asset_type = asset_type,
