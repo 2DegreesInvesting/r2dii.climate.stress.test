@@ -4,7 +4,7 @@ understand sensitivities of the scenarios, in which case the user may pass a
 vector of values to one (and only one) of the detail arguments. This will
 result in running the analysis multiple times in a row with the argument
 varied.
-NOTE: argument asset_type and term cannot be iterated.
+NOTE: argument asset_type and fallback_term cannot be iterated.
 NOTE: if return_results is TRUE results will not be written to output path but instead are returned."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -73,7 +73,7 @@ understand sensitivities of the scenarios, in which case the user may pass a
 vector of values to one (and only one) of the detail arguments. This will
 result in running the analysis multiple times in a row with the argument
 varied.
-NOTE: argument <code>asset_type</code> and <code>term</code> cannot be iterated.
+NOTE: argument <code>asset_type</code> and <code>fallback_term</code> cannot be iterated.
 NOTE: if <code>return_results</code> is TRUE results will not be written to <code>output path</code> but instead are returned.</p>
     </div>
 
@@ -89,7 +89,7 @@ NOTE: if <code>return_results</code> is TRUE results will not be written to <cod
   discount_rate <span class="op">=</span> <span class="fl">0.07</span>,
   div_netprofit_prop_coef <span class="op">=</span> <span class="fl">1</span>,
   shock_year <span class="op">=</span> <span class="fl">2030</span>,
-  term <span class="op">=</span> <span class="fl">2</span>,
+  fallback_term <span class="op">=</span> <span class="fl">2</span>,
   company_exclusion <span class="op">=</span> <span class="cn">TRUE</span>,
   use_company_terms <span class="op">=</span> <span class="cn">FALSE</span>,
   return_results <span class="op">=</span> <span class="cn">FALSE</span>
@@ -132,10 +132,11 @@ range compare <code>stress_test_arguments</code>.</p></dd>
 <dt>shock_year</dt>
 <dd><p>Numeric, holding year the shock is applied. For accepted
 range compare <code>stress_test_arguments</code>.</p></dd>
-<dt>term</dt>
-<dd><p>Numeric. A coefficient that determines for which maturity the
-expected loss should be calculated in the credit risk section. For accepted
-range compare <code>stress_test_arguments</code>.</p></dd>
+<dt>fallback_term</dt>
+<dd><p>Numeric. A coefficient that determines for which
+maturity the expected loss should be calculated in the credit risk section
+in case no company level term data are provided via <code>use_company_terms</code>.
+For accepted range compare <code>stress_test_arguments</code>.</p></dd>
 <dt>company_exclusion</dt>
 <dd><p>Boolean, indicating if companies provided in dataset
 excluded_companies.csv shall be excluded. For accepted values compare

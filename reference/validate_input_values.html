@@ -73,7 +73,7 @@
   <span class="va">discount_rate</span>,
   <span class="va">div_netprofit_prop_coef</span>,
   <span class="va">shock_year</span>,
-  <span class="va">term</span>,
+  <span class="va">fallback_term</span>,
   <span class="va">company_exclusion</span>,
   <span class="va">use_company_terms</span>,
   <span class="va">asset_type</span>
@@ -102,10 +102,11 @@ range compare <code>stress_test_arguments</code>.</p></dd>
 <dt>shock_year</dt>
 <dd><p>Numeric, holding year the shock is applied. For accepted
 range compare <code>stress_test_arguments</code>.</p></dd>
-<dt>term</dt>
-<dd><p>Numeric. A coefficient that determines for which maturity the
-expected loss should be calculated in the credit risk section. For accepted
-range compare <code>stress_test_arguments</code>.</p></dd>
+<dt>fallback_term</dt>
+<dd><p>Numeric. A coefficient that determines for which
+maturity the expected loss should be calculated in the credit risk section
+in case no company level term data are provided via <code>use_company_terms</code>.
+For accepted range compare <code>stress_test_arguments</code>.</p></dd>
 <dt>company_exclusion</dt>
 <dd><p>Boolean, indicating if companies provided in dataset
 excluded_companies.csv shall be excluded. For accepted values compare
