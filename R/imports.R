@@ -80,6 +80,3 @@ globalVariables(
     "year_of_shock"
   )
 )
-
-# Avoid R CMD check NOTE: "Undefined global functions or variables"
-globalVariables(c(names(formals(run_stress_test)), "iter_var"))
