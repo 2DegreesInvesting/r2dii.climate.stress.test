@@ -308,7 +308,6 @@ check_valid_financial_data_values <- function(financial_data, asset_type) {
 wrangle_results <- function(results_list, sensitivity_analysis_vars) {
   sensitivity_analysis_vars <- paste0(sensitivity_analysis_vars, "_arg")
 
-
   # value changes -----------------------------------------------------------
   validate_data_has_expected_cols(
     data = results_list$company_value_changes,
@@ -379,6 +378,12 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
     )
 
   # probability of default --------------------------------------------------
+  company_pd_changes_annual <- results_list$company_pd_changes_annual %>%
+    dplyr::arrange(
+      .data$scenario_geography, .data$scenario_name, .data$investor_name,
+      .data$portfolio_name, .data$ald_sector, .data$year
+    )
+
   sector_pd_changes_annual <- results_list$company_pd_changes_annual %>%
     dplyr::group_by(
       .data$scenario_name, .data$scenario_geography, .data$investor_name,
@@ -394,6 +399,12 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
     dplyr::arrange(
       .data$scenario_geography, .data$scenario_name, .data$investor_name,
       .data$portfolio_name, .data$ald_sector, .data$year
+    )
+
+  company_pd_changes_overall <- results_list$company_pd_changes_overall %>%
+    dplyr::arrange(
+      .data$scenario_geography, .data$scenario_name, .data$investor_name,
+      .data$portfolio_name, .data$ald_sector, .data$term
     )
 
   sector_pd_changes_overall <- results_list$company_pd_changes_overall %>%
@@ -413,7 +424,6 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
       .data$portfolio_name, .data$ald_sector, .data$term
     )
 
-
   # company trajectories ----------------------------------------------------
   company_trajectories <- results_list$company_trajectories %>%
     dplyr::rename(baseline_price = Baseline_price)
@@ -422,7 +432,9 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
     company_value_changes = company_value_changes,
     portfolio_value_changes = portfolio_value_changes,
     company_expected_loss = company_expected_loss,
+    company_pd_changes_annual = company_pd_changes_annual,
     sector_pd_changes_annual = sector_pd_changes_annual,
+    company_pd_changes_overall = company_pd_changes_overall,
     sector_pd_changes_overall = sector_pd_changes_overall,
     company_trajectories = company_trajectories
   ))
