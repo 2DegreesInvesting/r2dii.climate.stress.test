@@ -308,6 +308,8 @@ check_valid_financial_data_values <- function(financial_data, asset_type) {
 wrangle_results <- function(results_list, sensitivity_analysis_vars) {
   sensitivity_analysis_vars <- paste0(sensitivity_analysis_vars, "_arg")
 
+
+  # value changes -----------------------------------------------------------
   validate_data_has_expected_cols(
     data = results_list$company_value_changes,
     expected_columns = c(
@@ -362,6 +364,7 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
     dplyr::distinct_all() %>%
     dplyr::arrange(.data$year_of_shock, .data$ald_sector, .data$technology)
 
+  # expected loss -----------------------------------------------------------
   company_expected_loss <- results_list$company_expected_loss %>%
     dplyr::select(
       .data$scenario_name, .data$scenario_geography, .data$investor_name,
@@ -375,6 +378,7 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
       .data$portfolio_name, .data$company_name, .data$ald_sector
     )
 
+  # probability of default --------------------------------------------------
   sector_pd_changes_annual <- results_list$company_pd_changes_annual %>%
     dplyr::group_by(
       .data$scenario_name, .data$scenario_geography, .data$investor_name,
@@ -410,6 +414,7 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
     )
 
 
+  # company trajectories ----------------------------------------------------
   company_trajectories <- results_list$company_trajectories %>%
     dplyr::rename(baseline_price = Baseline_price)
 
