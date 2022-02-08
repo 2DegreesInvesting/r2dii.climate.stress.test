@@ -129,7 +129,7 @@ run_stress_test_iteration <- function(args_list) {
       dplyr::select(-dplyr::all_of(setup_vars_lookup)) %>%
       dplyr::rename_with(~ paste0(.x, "_arg"))
 
-    st_result <- read_and_process(arg_list_row) %>%
+    st_result <- read_and_process_and_calc(arg_list_row) %>%
       purrr::map(dplyr::bind_cols, data_y = arg_tibble_row)
 
     return(st_result)
@@ -148,7 +148,7 @@ run_stress_test_iteration <- function(args_list) {
 
 # Avoid R CMD check NOTE: "Undefined global functions or variables"
 globalVariables(c(names(formals(run_stress_test)), "iter_var"))
-read_and_process <- function(args_list) {
+read_and_process_and_calc <- function(args_list) {
   list2env(args_list, envir = rlang::current_env())
 
   log_path <- file.path(output_path, paste0("log_file_", iter_var, ".txt"))
