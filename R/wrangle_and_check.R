@@ -380,9 +380,11 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
   # pd changes --------------------------------------------------------------
 
   company_pd_changes_annual <- results_list$company_pd_changes_annual %>%
-    dplyr::select(.data$scenario_name, .data$scenario_geography, .data$investor_name,
-                  .data$portfolio_name, .data$ald_sector, .data$company_name, .data$year,
-                  .data$PD_change, !!!rlang::syms(sensitivity_analysis_vars)) %>%
+    dplyr::select(
+      .data$scenario_name, .data$scenario_geography, .data$investor_name,
+      .data$portfolio_name, .data$ald_sector, .data$company_name, .data$year,
+      .data$PD_change, !!!rlang::syms(sensitivity_analysis_vars)
+    ) %>%
     dplyr::arrange(
       .data$scenario_geography, .data$scenario_name, .data$investor_name,
       .data$portfolio_name, .data$ald_sector, .data$company_name, .data$year
@@ -406,9 +408,11 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
     )
 
   company_pd_changes_overall <- results_list$company_pd_changes_overall %>%
-    dplyr::select(.data$scenario_name, .data$scenario_geography, .data$investor_name,
-                  .data$portfolio_name, .data$ald_sector, .data$company_name, .data$term, .data$PD_change,
-                  !!!rlang::syms(sensitivity_analysis_vars)) %>%
+    dplyr::select(
+      .data$scenario_name, .data$scenario_geography, .data$investor_name,
+      .data$portfolio_name, .data$ald_sector, .data$company_name, .data$term, .data$PD_change,
+      !!!rlang::syms(sensitivity_analysis_vars)
+    ) %>%
     dplyr::arrange(
       .data$scenario_geography, .data$scenario_name, .data$investor_name,
       .data$portfolio_name, .data$ald_sector, .data$company_name, .data$term
@@ -648,7 +652,6 @@ cap_terms <- function(data) {
 }
 
 add_term_to_trajectories <- function(annual_profits, pacta_results) {
-
   distinct_company_terms <- pacta_results %>%
     dplyr::select(company_name, term) %>%
     dplyr::distinct_all()
