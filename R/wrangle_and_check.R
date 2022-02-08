@@ -490,6 +490,17 @@ check_results <- function(wrangled_results_list, sensitivity_analysis_vars) {
     )
 
   # pd changes --------------------------------------------------------------
+  wrangled_results_list$company_pd_changes_annual %>%
+    report_missings(
+      name_data = "Annual PD changes - Company level"
+    ) %>%
+    report_all_duplicate_kinds(
+      composite_unique_cols = c(
+        "scenario_name", "scenario_geography", "investor_name", "portfolio_name",
+        "ald_sector", "year", "company_name", sensitivity_analysis_vars
+      )
+    )
+
   wrangled_results_list$sector_pd_changes_annual %>%
     report_missings(
       name_data = "Annual PD changes - Sector level"
@@ -498,6 +509,17 @@ check_results <- function(wrangled_results_list, sensitivity_analysis_vars) {
       composite_unique_cols = c(
         "scenario_name", "scenario_geography", "investor_name", "portfolio_name",
         "ald_sector", "year", sensitivity_analysis_vars
+      )
+    )
+
+  wrangled_results_list$company_pd_changes_overall %>%
+    report_missings(
+      name_data = "Overall PD changes - Company level"
+    ) %>%
+    report_all_duplicate_kinds(
+      composite_unique_cols = c(
+        "scenario_name", "scenario_geography", "investor_name", "portfolio_name",
+        "ald_sector", "term", "company_name", sensitivity_analysis_vars
       )
     )
 
