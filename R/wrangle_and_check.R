@@ -309,7 +309,7 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
   sensitivity_analysis_vars <- paste0(sensitivity_analysis_vars, "_arg")
 
   validate_data_has_expected_cols(
-    data = results_list$results,
+    data = results_list$company_value_changes,
     expected_columns = c(
       "investor_name", "portfolio_name", "company_name", "scenario_geography",
       "scenario_name", "year_of_shock", "duration_of_shock", "ald_sector",
@@ -324,7 +324,7 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
     )
   )
 
-  market_risk_company <- results_list$results %>%
+  company_value_changes <- results_list$company_value_changes %>%
     # ADO 2549 - select instead of relocate so that no surplus columns can sneak in
     dplyr::select(
       .data$investor_name, .data$portfolio_name, .data$company_name,
@@ -342,7 +342,7 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
       .data$exclude, !!!rlang::syms(sensitivity_analysis_vars)
     )
 
-  market_risk_portfolio <- results_list$results %>%
+  portfolio_value_changes <- results_list$company_value_changes %>%
     # ADO 2549 - actively select all columns that should remain in the portfolio
     # level results, rather than unselecting some. This avoids extra columns.
     dplyr::select(
@@ -362,7 +362,7 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
     dplyr::distinct_all() %>%
     dplyr::arrange(.data$year_of_shock, .data$ald_sector, .data$technology)
 
-  expected_loss <- results_list$expected_loss %>%
+  company_expected_loss <- results_list$company_expected_loss %>%
     dplyr::select(
       .data$scenario_name, .data$scenario_geography, .data$investor_name,
       .data$portfolio_name, .data$company_name, .data$ald_sector,
@@ -375,7 +375,7 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
       .data$portfolio_name, .data$company_name, .data$ald_sector
     )
 
-  annual_pd_changes_sector <- results_list$annual_pd_changes %>%
+  sector_pd_changes_annual <- results_list$company_pd_changes_annual %>%
     dplyr::group_by(
       .data$scenario_name, .data$scenario_geography, .data$investor_name,
       .data$portfolio_name, .data$ald_sector, .data$year,
@@ -392,7 +392,7 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
       .data$portfolio_name, .data$ald_sector, .data$year
     )
 
-  overall_pd_changes_sector <- results_list$overall_pd_changes %>%
+  sector_pd_changes_overall <- results_list$company_pd_changes_overall %>%
     dplyr::group_by(
       .data$scenario_name, .data$scenario_geography, .data$investor_name,
       .data$portfolio_name, .data$ald_sector, .data$term,
@@ -414,11 +414,11 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
     dplyr::rename(baseline_price = Baseline_price)
 
   return(list(
-    market_risk_company = market_risk_company,
-    market_risk_portfolio = market_risk_portfolio,
-    expected_loss = expected_loss,
-    annual_pd_changes_sector = annual_pd_changes_sector,
-    overall_pd_changes_sector = overall_pd_changes_sector,
+    company_value_changes = company_value_changes,
+    portfolio_value_changes = portfolio_value_changes,
+    company_expected_loss = company_expected_loss,
+    sector_pd_changes_annual = sector_pd_changes_annual,
+    sector_pd_changes_overall = sector_pd_changes_overall,
     company_trajectories = company_trajectories
   ))
 }
@@ -434,7 +434,7 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
 check_results <- function(wrangled_results_list, sensitivity_analysis_vars) {
   sensitivity_analysis_vars <- paste0(sensitivity_analysis_vars, "_arg")
 
-  wrangled_results_list$market_risk_company %>%
+  wrangled_results_list$company_value_changes %>%
     report_missings(
       name_data = "Stress test results - Company level"
     ) %>%
@@ -446,7 +446,7 @@ check_results <- function(wrangled_results_list, sensitivity_analysis_vars) {
       )
     )
 
-  wrangled_results_list$market_risk_portfolio %>%
+  wrangled_results_list$portfolio_value_changes %>%
     report_missings(
       name_data = "Stress test results - Portfolios level"
     ) %>%
@@ -458,7 +458,7 @@ check_results <- function(wrangled_results_list, sensitivity_analysis_vars) {
       )
     )
 
-  wrangled_results_list$expected_loss %>%
+  wrangled_results_list$company_expected_loss %>%
     report_missings(
       name_data = "Expected loss"
     ) %>%
@@ -470,7 +470,7 @@ check_results <- function(wrangled_results_list, sensitivity_analysis_vars) {
       )
     )
 
-  wrangled_results_list$annual_pd_changes_sector %>%
+  wrangled_results_list$sector_pd_changes_annual %>%
     report_missings(
       name_data = "Annual PD changes sector"
     ) %>%
@@ -481,7 +481,7 @@ check_results <- function(wrangled_results_list, sensitivity_analysis_vars) {
       )
     )
 
-  wrangled_results_list$overall_pd_changes_sector %>%
+  wrangled_results_list$sector_pd_changes_overall %>%
     report_missings(
       name_data = "Overall PD changes sector"
     ) %>%
@@ -493,27 +493,6 @@ check_results <- function(wrangled_results_list, sensitivity_analysis_vars) {
     )
 
   return(invisible(wrangled_results_list))
-}
-
-#' Rename results
-#'
-#' Rename results lists entries so that results as returned to the user on
-#' demand follow naming convention of exported results.
-#'
-#' @param results_list A list of wrangled and checked results.
-#'
-#' @return `result_list` with adjusted named
-rename_results <- function(results_list) {
-  renamed_results_list <- list(
-    stress_test_results_comp = results_list$market_risk_company,
-    stress_test_results_port = results_list$market_risk_portfolio,
-    stress_test_results_comp_el = results_list$expected_loss,
-    stress_test_results_sector_pd_changes_annual = results_list$annual_pd_changes_sector,
-    stress_test_results_sector_pd_changes_overall = results_list$overall_pd_changes_sector,
-    company_trajectories = results_list$company_trajectories
-  )
-
-  return(renamed_results_list)
 }
 
 #' Select required sector scenario combinations
