@@ -231,3 +231,84 @@ process_company_terms <- function(data, fallback_term) {
 
   return(data_processed)
 }
+
+st_process <- function(data, asset_type, company_exclusion, fallback_term) {
+  start_year <- get_start_year(data)
+  scenarios_filter <- scenarios_filter()
+
+  sector_exposures <- process_sector_exposures(
+    data$sector_exposures,
+    asset_type = asset_type
+  )
+
+  capacity_factors_power <- process_capacity_factors_power(
+    data$capacity_factors,
+    scenarios_filter = scenarios_filter,
+    scenario_geography_filter = scenario_geography_filter_lookup,
+    technologies = technologies_lookup,
+    start_year = start_year,
+    end_year = end_year_lookup
+  )
+
+  excluded_companies <- process_excluded_companies(
+    data$excluded_companies,
+    company_exclusion = company_exclusion,
+    technologies = technologies_lookup
+  )
+
+  df_price <- process_df_price(
+    data$df_price,
+    technologies = technologies_lookup,
+    sectors = sectors_lookup,
+    start_year = start_year,
+    end_year = end_year_lookup
+  )
+
+  scenario_data <- process_scenario_data(
+    data$scenario_data,
+    start_year = start_year,
+    end_year = end_year_lookup,
+    sectors = sectors_lookup,
+    technologies = technologies_lookup,
+    scenario_geography_filter = scenario_geography_filter_lookup,
+    scenarios_filter = scenarios_filter
+  )
+
+  financial_data <- process_financial_data(
+    data$financial_data,
+    asset_type = asset_type
+  )
+
+  company_terms <- process_company_terms(
+    data$company_terms,
+    fallback_term = fallback_term
+  )
+
+  pacta_results <- process_pacta_results(
+    data$pacta_results,
+    start_year = start_year,
+    end_year = end_year_lookup,
+    time_horizon = time_horizon_lookup,
+    scenario_geography_filter = scenario_geography_filter_lookup,
+    scenarios_filter = scenarios_filter,
+    equity_market_filter = equity_market_filter_lookup,
+    sectors = sectors_lookup,
+    technologies = technologies_lookup,
+    allocation_method = allocation_method_lookup,
+    asset_type = asset_type
+  ) %>%
+    add_terms(company_terms = company_terms, fallback_term = fallback_term)
+
+  out <- list(
+    pacta_results = pacta_results,
+    sector_exposures = sector_exposures,
+    capacity_factors_power = capacity_factors_power,
+    excluded_companies = excluded_companies,
+    df_price = df_price,
+    scenario_data = scenario_data,
+    financial_data = financial_data,
+    company_terms = company_terms
+  )
+
+  return(out)
+}
