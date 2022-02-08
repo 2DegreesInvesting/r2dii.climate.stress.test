@@ -378,10 +378,14 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
     )
 
   # pd changes --------------------------------------------------------------
+
   company_pd_changes_annual <- results_list$company_pd_changes_annual %>%
+    dplyr::select(.data$scenario_name, .data$scenario_geography, .data$investor_name,
+                  .data$portfolio_name, .data$ald_sector, .data$company_name, .data$year,
+                  .data$PD_change, !!!rlang::syms(sensitivity_analysis_vars)) %>%
     dplyr::arrange(
       .data$scenario_geography, .data$scenario_name, .data$investor_name,
-      .data$portfolio_name, .data$ald_sector, .data$year
+      .data$portfolio_name, .data$ald_sector, .data$company_name, .data$year
     )
 
   sector_pd_changes_annual <- results_list$company_pd_changes_annual %>%
@@ -402,9 +406,12 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
     )
 
   company_pd_changes_overall <- results_list$company_pd_changes_overall %>%
+    dplyr::select(.data$scenario_name, .data$scenario_geography, .data$investor_name,
+                  .data$portfolio_name, .data$ald_sector, .data$company_name, .data$term, .data$PD_change,
+                  !!!rlang::syms(sensitivity_analysis_vars)) %>%
     dplyr::arrange(
       .data$scenario_geography, .data$scenario_name, .data$investor_name,
-      .data$portfolio_name, .data$ald_sector, .data$term
+      .data$portfolio_name, .data$ald_sector, .data$company_name, .data$term
     )
 
   sector_pd_changes_overall <- results_list$company_pd_changes_overall %>%
