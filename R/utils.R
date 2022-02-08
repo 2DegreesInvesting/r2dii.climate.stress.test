@@ -450,3 +450,13 @@ customise_output_path <- function(output_path, iter_var) {
 
   return(output_path_custom)
 }
+
+get_start_year <- function(data) {
+  out <- min(data$pacta_results$year, na.rm = TRUE)
+  return(out)
+}
+
+scenarios_filter <- function() {
+  out <- unique(c(baseline_scenario_lookup, shock_scenario_lookup))
+  return(out)
+}
