@@ -615,7 +615,7 @@ add_term_to_trajectories <- function(annual_profits, pacta_results) {
 #' @param processed_data_list A list of processed stress test data.
 #' @param requested_geographies A vector holding requested geographies.
 #'
-#' @returns processed_data_list invisibly.
+#' @return returns processed_data_list invisibly.
 #' @noRd
 check_geography_availability <- function(processed_data_list, requested_geographies) {
   geo_list <- list(
