@@ -545,7 +545,17 @@ check_results <- function(wrangled_results_list, sensitivity_analysis_vars) {
       )
     )
 
-  # company_trajectories ----------------------------------------------------
+  # company trajectories ----------------------------------------------------
+  wrangled_results_list$company_trajectories %>%
+    report_missings(
+      name_data = "Company Trajectories"
+    ) %>%
+    report_all_duplicate_kinds(
+      composite_unique_cols = c(
+        c("investor_name", "portfolio_name", "id", "company_name", "year",
+          "scenario_geography", "ald_sector", "technology"), sensitivity_analysis_vars
+      )
+    )
 
   return(invisible(wrangled_results_list))
 }
