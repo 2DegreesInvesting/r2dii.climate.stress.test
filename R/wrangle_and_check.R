@@ -609,3 +609,30 @@ add_term_to_trajectories <- function(annual_profits, pacta_results) {
 
   return(annual_profits_with_term)
 }
+
+#' Check if requested geographies are available in data
+#'
+#' @param processed_data_list A list of processed stress test data.
+#' @param requested_geographies A vector holding requested geographies.
+#'
+#' @returns processed_data_list invisibly.
+#' @noRd
+check_geography_availability <- function(processed_data_list, requested_geographies) {
+  geo_list <- list(
+    unique(processed_list$pacta_results$scenario_geography),
+    unique(processed_list$scenario_data$scenario_geography),
+    unique(processed_list$capacity_factors_power$scenario_geography)
+  )
+
+  geography_overlap <- Reduce(intersect, geo_list)
+
+  if (!all(requested_geographies %in% geography_overlap)) {
+    geograpy_unsupported <- dplyr::setdiff(requested_geographies, geography_overlap)
+    rlang::abort(c(
+      glue::glue("Requested unsupported geographies {geography_unsupported}."),
+      x = glue::glue("Supported geographies: {geography_overlap}."),
+      i = "Please review the geographies you request.?."
+    ))
+  }
+  return(invisible(processed_data_list))
+}
