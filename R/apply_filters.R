@@ -21,7 +21,6 @@
 #'   allocation rule.
 #' @param start_analysis Numeric. A vector of length 1 indicating the start
 #'   year of the analysis.
-
 apply_filters <- function(data,
                           investor = NULL,
                           sectors = NULL,
@@ -73,17 +72,31 @@ apply_filters <- function(data,
       .data$plan_tech_prod == 0,
       .data$year == .env$start_analysis
     ) %>%
-    dplyr::mutate(
-      key = paste(.data$company_name, .data$id, .data$ald_sector, .data$technology, .data$scenario_geography)
-    ) %>%
+    add_key_for_invalid_entries() %>%
     # ADO 2393 - running distinct extracts the key as a variable with unique
     # values to be used for removal of invalid entries below
     dplyr::distinct(.data$key)
 
   data <- data %>%
-    dplyr::mutate(
-      key = paste(.data$company_name, .data$id, .data$ald_sector, .data$technology, .data$scenario_geography)
-    ) %>%
+    add_key_for_invalid_entries() %>%
     dplyr::filter(!.data$key %in% unique(remove$key)) %>%
     dplyr::select(-.data$key)
+}
+
+#' Create key for removal of invalid entries
+#'
+#' @param data A data frame containing the production forecasts of companies
+#'   (in the portfolio).
+#'
+#' @return data frame with one additional variable, `key`
+#' @noRd
+add_key_for_invalid_entries <- function(data) {
+  data <- data %>%
+    dplyr::mutate(
+      key = paste(
+        .data$company_name, .data$id, .data$ald_sector, .data$technology,
+        .data$scenario_geography
+      )
+    )
+  data
 }

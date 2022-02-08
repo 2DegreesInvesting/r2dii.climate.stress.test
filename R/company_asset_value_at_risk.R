@@ -124,6 +124,7 @@ company_asset_value_at_risk <- function(data,
   }
 
   data <- data %>%
+    # TODO: 3384 this is where increasing technologies with zero start value are removed
     dplyr::inner_join(
       plan_carsten,
       by = c(

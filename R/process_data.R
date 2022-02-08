@@ -29,6 +29,7 @@ process_pacta_results <- function(data, start_year, end_year, time_horizon,
       scenarios_filter = scenarios_filter,
       allocation_method = allocation_method
     ) %>%
+    dplyr::filter(.data$investor_name == investor_name_placeholder) %>%
     dplyr::filter(.data$equity_market == equity_market_filter) %>%
     dplyr::filter(.data$allocation == allocation_method) %>%
     dplyr::filter(.data$scenario %in% .env$scenarios_filter) %>%
