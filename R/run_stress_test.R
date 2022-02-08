@@ -146,8 +146,6 @@ run_stress_test_iteration <- function(args_list) {
   return(out)
 }
 
-# Avoid R CMD check NOTE: "Undefined global functions or variables"
-globalVariables(c(names(formals(run_stress_test)), "iter_var"))
 read_and_process_and_calc <- function(args_list) {
   list2env(args_list, envir = rlang::current_env())
 
