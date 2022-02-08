@@ -619,9 +619,9 @@ add_term_to_trajectories <- function(annual_profits, pacta_results) {
 #' @noRd
 check_geography_availability <- function(processed_data_list, requested_geographies) {
   geo_list <- list(
-    unique(processed_list$pacta_results$scenario_geography),
-    unique(processed_list$scenario_data$scenario_geography),
-    unique(processed_list$capacity_factors_power$scenario_geography)
+    unique(processed_data_list$pacta_results$scenario_geography),
+    unique(processed_data_list$scenario_data$scenario_geography),
+    unique(processed_data_list$capacity_factors_power$scenario_geography)
   )
 
   geography_overlap <- Reduce(intersect, geo_list)
