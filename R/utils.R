@@ -222,7 +222,7 @@ report_company_drops <- function(data_list, asset_type, log_path) {
   }
 
   report_dropped_company_names(
-    data_x = data_list$pacta_result,
+    data_x = data_list$pacta_results,
     data_y = data_list$financial_data,
     name_y = "financial data",
     merge_cols = merge_cols,
@@ -230,7 +230,7 @@ report_company_drops <- function(data_list, asset_type, log_path) {
   )
 
   report_dropped_company_names(
-    data_x = data_list$pacta_result,
+    data_x = data_list$pacta_results,
     data_y = data_list$df_price,
     name_y = "price data",
     merge_cols = c("technology", "ald_sector" = "sector", "year"),
