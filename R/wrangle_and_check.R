@@ -597,7 +597,6 @@ cap_terms <- function(data) {
 }
 
 add_term_to_trajectories <- function(annual_profits, pacta_results) {
-
   distinct_company_terms <- pacta_results %>%
     dplyr::select(company_name, term) %>%
     dplyr::distinct_all()
@@ -608,4 +607,32 @@ add_term_to_trajectories <- function(annual_profits, pacta_results) {
     dplyr::inner_join(distinct_company_terms, by = c("company_name"))
 
   return(annual_profits_with_term)
+}
+
+#' Check if requested geographies are available in data
+#'
+#' @param processed_data_list A list of processed stress test data.
+#' @param requested_geographies A vector holding requested geographies.
+#'
+#' @return returns processed_data_list invisibly.
+#' @noRd
+check_geography_availability <- function(processed_data_list, requested_geographies) {
+  geo_list <- list(
+    unique(processed_data_list$pacta_results$scenario_geography),
+    unique(processed_data_list$scenario_data$scenario_geography),
+    unique(processed_data_list$capacity_factors_power$scenario_geography)
+  )
+
+  geography_overlap <- Reduce(intersect, geo_list)
+
+  if (!all(requested_geographies %in% geography_overlap)) {
+    geography_unsupported_collapsed <- paste(dplyr::setdiff(requested_geographies, geography_overlap), collapse = ", ")
+    geography_overlap_collapsed <- paste(geography_overlap, collapse = ", ")
+    rlang::abort(c(
+      glue::glue("Requested unsupported geographies: {geography_unsupported_collapsed}."),
+      x = glue::glue("Supported geographies: {geography_overlap_collapsed}."),
+      i = "Please review the geographies you request?"
+    ))
+  }
+  return(invisible(processed_data_list))
 }

@@ -197,6 +197,9 @@ read_and_process_and_calc <- function(args_list) {
       company_exclusion = company_exclusion,
       fallback_term = fallback_term,
       asset_geographies = asset_geographies
+    ) %>%
+    check_geography_availability(
+      requested_geographies = scenario_geography_filter_lookup
     )
 
   input_data_list <- list(
