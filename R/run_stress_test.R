@@ -37,7 +37,7 @@
 #'   maturity the expected loss should be calculated in the credit risk section
 #'   in case no company level term data are provided via `use_company_terms`.
 #'   For accepted range compare `stress_test_arguments`.
-#' @param asset_geographies Character vector, indicating which geographical
+#' @param scenario_geography Character vector, indicating which geographical
 #'   region(s) (concerning asset location) results shall be calculated for. For
 #'   accepted values compare `stress_test_arguments`. Note that currently only
 #'   the global level is supported.
@@ -62,7 +62,7 @@ run_stress_test <- function(asset_type,
                             div_netprofit_prop_coef = 1,
                             shock_year = 2030,
                             fallback_term = 2,
-                            asset_geographies = "Global",
+                            scenario_geography = "Global",
                             company_exclusion = TRUE,
                             use_company_terms = FALSE,
                             return_results = FALSE) {
@@ -196,10 +196,10 @@ read_and_process_and_calc <- function(args_list) {
       asset_type = asset_type,
       company_exclusion = company_exclusion,
       fallback_term = fallback_term,
-      asset_geographies = asset_geographies
+      scenario_geography = scenario_geography
     ) %>%
     check_geography_availability(
-      requested_geographies = asset_geographies
+      requested_geographies = scenario_geography
     )
 
   input_data_list <- list(

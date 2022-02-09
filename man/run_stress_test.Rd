@@ -16,7 +16,7 @@ run_stress_test(
   div_netprofit_prop_coef = 1,
   shock_year = 2030,
   fallback_term = 2,
-  asset_geographies = "Global",
+  scenario_geography = "Global",
   company_exclusion = TRUE,
   use_company_terms = FALSE,
   return_results = FALSE
@@ -62,7 +62,7 @@ maturity the expected loss should be calculated in the credit risk section
 in case no company level term data are provided via \code{use_company_terms}.
 For accepted range compare \code{stress_test_arguments}.}
 
-\item{asset_geographies}{Character vector, indicating which geographical
+\item{scenario_geography}{Character vector, indicating which geographical
 region(s) (concerning asset location) results shall be calculated for. For
 accepted values compare \code{stress_test_arguments}. Note that currently only
 the global level is supported.}

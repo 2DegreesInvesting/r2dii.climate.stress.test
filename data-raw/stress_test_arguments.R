@@ -10,7 +10,7 @@ stress_test_arguments <- tibble::tribble(
   "div_netprofit_prop_coef",    "double",      "1",                     NA,      "0.8",        "1",
                "shock_year",    "double",   "2030",                     NA,     "2025",     "2035",
             "fallback_term",    "double",      "2",                     NA,        "1",        "5", # NOTE: before changing check cap_terms().
-        "asset_geographies", "character", "Global",               "Global",         NA,         NA,
+       "scenario_geography", "character", "Global",               "Global",         NA,         NA,
         "company_exclusion",   "logical",   "TRUE",          "TRUE, FALSE",         NA,         NA,
         "use_company_terms",   "logical",  "FALSE",          "TRUE, FALSE",         NA,         NA
 )
