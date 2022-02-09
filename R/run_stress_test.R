@@ -199,7 +199,7 @@ read_and_process_and_calc <- function(args_list) {
       asset_geographies = asset_geographies
     ) %>%
     check_geography_availability(
-      requested_geographies = scenario_geography_filter_lookup
+      requested_geographies = asset_geographies
     )
 
   input_data_list <- list(
