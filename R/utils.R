@@ -451,6 +451,13 @@ customise_output_path <- function(output_path, iter_var) {
   return(output_path_custom)
 }
 
+stop_if_empty <- function(data, data_name) {
+  if (nrow(data) == 0) {
+    rlang::abort(glue::glue("Stopping calculation, dataset {data_name} is empty."))
+  }
+  return(invisible(data))
+}
+
 get_start_year <- function(data) {
   out <- min(data$pacta_results$year, na.rm = TRUE)
   return(out)
