@@ -4,7 +4,7 @@
 #'   geom_vline facet_wrap facet_grid theme expand_limits labs
 #'   scale_fill_gradient2 element_text margin
 NULL
-
+# Avoid R CMD check NOTE: "Undefined global functions or variables"
 globalVariables(
   c(
     ".",
