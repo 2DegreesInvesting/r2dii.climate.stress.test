@@ -195,7 +195,8 @@ read_and_process_and_calc <- function(args_list) {
     st_process(
       asset_type = asset_type,
       company_exclusion = company_exclusion,
-      fallback_term = fallback_term
+      fallback_term = fallback_term,
+      asset_geographies = asset_geographies
     )
 
   input_data_list <- list(
