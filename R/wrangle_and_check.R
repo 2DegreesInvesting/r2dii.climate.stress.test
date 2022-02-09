@@ -70,9 +70,7 @@ wrangle_and_check_sector_exposures <- function(sector_exposures, asset_type) {
 #' @param pacta_results Results from PACTA analysis.
 #'
 #' @return Wrangled `pacta_results.`
-wrangle_and_check_pacta_results <- function(pacta_results, start_year, time_horizon,
-                                            scenario_geography_filter, scenarios_filter,
-                                            allocation_method) {
+wrangle_and_check_pacta_results <- function(pacta_results, start_year, time_horizon) {
   wrangled_pacta_results <- pacta_results %>%
     select_sector_scenario_combinations() %>%
     dplyr::mutate(scenario = sub(".*?_", "", scenario)) %>%

@@ -24,10 +24,7 @@ process_pacta_results <- function(data, start_year, end_year, time_horizon,
   data_processed <- data %>%
     wrangle_and_check_pacta_results(
       start_year = start_year,
-      time_horizon = time_horizon,
-      scenario_geography_filter = scenario_geography_filter,
-      scenarios_filter = scenarios_filter,
-      allocation_method = allocation_method
+      time_horizon = time_horizon
     ) %>%
     dplyr::filter(.data$investor_name == investor_name_placeholder) %>%
     dplyr::filter(.data$equity_market == equity_market_filter) %>%
