@@ -44,8 +44,6 @@ end_year_lookup <- 2040
 
 time_horizon_lookup <- 5
 
-scenario_geography_filter_lookup <- "Global"
-
 price_data_version_lookup <- "2021Q1"
 
 #' @rdname lookup
