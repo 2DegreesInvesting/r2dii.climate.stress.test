@@ -106,6 +106,8 @@ present value should be considered to derive the equity value of a company.
 production values of companies to stay in line with carbon budgets.
 * `fallback_term` indicates which maturity the loans in the loan book are
 assumed to have. At this point we assume these are rolled over every year.
+* `asset_geographies` Indicates which geographical region(s) (concerning asset
+location) results shall be calculated for.
 * `company_exclusion` Logical parameter that indicates if certain combinations
 of company and technology should be excluded from the analysis. At this point,
 it is strictly recommended to set this to TRUE (default) because there is not
