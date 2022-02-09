@@ -21,17 +21,18 @@ check_technology_availability <- function(data, expected_technologies) {
 #' Check that required levels of a variable are available in data
 #'
 #' @param data A tibble.
+#' @param data_name Character, holding name of dataset.
 #' @param expected_levels_list List holding variable names along with their
 #'   expected levels. Variables must be present in data.
 #'
 #' @return Returns `data` invisibly.
-check_level_availability <- function(data, expected_levels_list) {
+check_level_availability <- function(data, data_name, expected_levels_list) {
   purrr::iwalk(expected_levels_list, function(levels, var) {
     if (!all(levels %in% unique(get(var, data)))) {
       expected_levels_collapsed <- paste0(levels, collapse = ", ")
       provided_levels_collapsed <- paste0(unique(get(var, data)), collapse = ", ")
       rlang::abort(c(
-        glue::glue("Data must hold all expected levels on variable {var}."),
+        glue::glue("Dataset {data_name} must hold all expected levels on variable {var}."),
         x = glue::glue("Expected levels are {expected_levels_collapsed}, provided levels are {provided_levels_collapsed}."),
         i = "Please check input data."
       ))

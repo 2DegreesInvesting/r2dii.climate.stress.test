@@ -35,6 +35,7 @@ process_pacta_results <- function(data, start_year, end_year, time_horizon,
     dplyr::filter(.data$technology %in% .env$technologies) %>%
     dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$start_year + .env$time_horizon)) %>%
     check_level_availability(
+      data_name = "Pacta Results",
       expected_levels_list =
         list(
           year = start_year:(start_year + time_horizon),
@@ -94,6 +95,7 @@ process_capacity_factors_power <- function(data,
     dplyr::filter(.data$technology %in% .env$technologies) %>%
     dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year)) %>%
     check_level_availability(
+      data_name = "Capacity Factors",
       expected_levels_list =
         list(
           year = start_year:end_year,
@@ -142,6 +144,7 @@ process_df_price <- function(data, technologies, sectors, start_year, end_year) 
     dplyr::filter(.data$technology %in% .env$technologies_lookup) %>%
     dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year)) %>%
     check_level_availability(
+      data_name = "Price Data",
       expected_levels_list =
         list(
           year = start_year:end_year,
@@ -173,6 +176,7 @@ process_scenario_data <- function(data, start_year, end_year, sectors, technolog
     dplyr::filter(.data$technology %in% .env$technologies) %>%
     dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year)) %>%
     check_level_availability(
+      data_name = "Scenario Data",
       expected_levels_list =
         list(
           year = start_year:end_year,
