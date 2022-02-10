@@ -38,7 +38,8 @@ calculate_annual_profits <- function(asset_type, input_data_list, scenario_to_fo
       scenario_data = input_data_list$scenario_data,
       start_analysis = start_year,
       end_analysis = end_year,
-      time_frame = time_horizon
+      time_frame = time_horizon,
+      baseline_scenario = baseline_scenario_lookup
     ) %>%
     set_baseline_trajectory(
       scenario_to_follow_baseline = scenario_to_follow_baseline
