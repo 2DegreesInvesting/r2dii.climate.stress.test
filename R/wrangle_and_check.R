@@ -552,8 +552,8 @@ check_results <- function(wrangled_results_list, sensitivity_analysis_vars) {
     ) %>%
     report_all_duplicate_kinds(
       composite_unique_cols = c(
-        c("investor_name", "portfolio_name", "id", "company_name", "year",
-          "scenario_geography", "ald_sector", "technology"), sensitivity_analysis_vars
+        "investor_name", "portfolio_name", "id", "company_name", "year",
+        "scenario_geography", "ald_sector", "technology", sensitivity_analysis_vars
       )
     )
 
