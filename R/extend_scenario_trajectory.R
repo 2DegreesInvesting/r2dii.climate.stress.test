@@ -212,7 +212,7 @@ extend_scenario_trajectory <- function(data,
       id_cols = c(
         "investor_name", "portfolio_name", "id", "company_name", "year",
         "scenario_geography", "ald_sector", "technology", "plan_tech_prod",
-        "phase_out", "proximity_to_target"
+        "phase_out", "proximity_to_target", "direction"
       ),
       names_from = .data$scenario,
       values_from = .data$scen_tech_prod
@@ -410,7 +410,7 @@ calculate_proximity_to_target <- function(data,
     dplyr::mutate(
       helper_tech_production_target = dplyr::if_else(
         dplyr::between(
-          .data$year, .endv$start_analysis, .env$start_analysis + .env$time_frame
+          .data$year, .env$start_analysis, .env$start_analysis + .env$time_frame
         ),
         .data$scen_tech_prod,
         0
