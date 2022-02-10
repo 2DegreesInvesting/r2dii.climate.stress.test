@@ -97,7 +97,7 @@
 <div class="section level3">
 <h3 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h3>
-<p>There are six output files that the user can expect when running the stress test for a given set of parameters.</p>
+<p>There are eight output files that the user can expect when running the stress test for a given set of parameters.</p>
 <p>They can loosely be grouped in files that contain estimates of the market risk of companies in the portfolio and of the credit risk of said companies in a corporate loan book. Depending on the use case, one or the other may contain more relevant information. In addition, a log file is written to the results directory. It holds an overview on holdings that could not be considered in the analysis.</p>
 <div class="section level4">
 <h4 id="market-risk">Market Risk<a class="anchor" aria-label="anchor" href="#market-risk"></a>
@@ -112,7 +112,9 @@
 </h4>
 <ul>
 <li>loans_company_expected_loss_&lt;suffix&gt;.csv</li>
+<li>loans_company_pd_changes_annual_&lt;suffix&gt;.csv</li>
 <li>loans_sector_pd_changes_annual_&lt;suffix&gt;.csv</li>
+<li>loans_company_pd_changes_overall_&lt;suffix&gt;.csv</li>
 <li>loans_sector_pd_changes_overall_&lt;suffix&gt;.csv</li>
 </ul>
 </div>
@@ -243,6 +245,11 @@
 </ul>
 </div>
 <div class="section level4">
+<h4 id="loans_company_pd_changes_annual_suffix">loans_company_pd_changes_annual_&lt;suffix&gt;<a class="anchor" aria-label="anchor" href="#loans_company_pd_changes_annual_suffix"></a>
+</h4>
+<p>To be continued.</p>
+</div>
+<div class="section level4">
 <h4 id="loans_sector_pd_changes_annual_suffix">loans_sector_pd_changes_annual_&lt;suffix&gt;<a class="anchor" aria-label="anchor" href="#loans_sector_pd_changes_annual_suffix"></a>
 </h4>
 <p>This file contains an overview on the sector level of how annual probabilities of default change relative to the baseline scenario after the shock year.</p>
@@ -265,6 +272,11 @@
 </div>
 <div class="section level4">
 <h4 id="loans_sector_pd_changes_overall_suffix">loans_sector_pd_changes_overall_&lt;suffix&gt;<a class="anchor" aria-label="anchor" href="#loans_sector_pd_changes_overall_suffix"></a>
+</h4>
+<p>To be continued.</p>
+</div>
+<div class="section level4">
+<h4 id="loans_sector_pd_changes_overall_suffix-1">loans_sector_pd_changes_overall_&lt;suffix&gt;<a class="anchor" aria-label="anchor" href="#loans_sector_pd_changes_overall_suffix-1"></a>
 </h4>
 <p>This file contains an overview on the sector level of how overall probabilities of default change depending on the maturities of the underlying loans.</p>
 <ul>
