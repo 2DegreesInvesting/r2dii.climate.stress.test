@@ -81,7 +81,7 @@ join_net_profit_margins <- function(df, net_profit_margins) {
     dplyr::inner_join(net_profit_margins, by = "technology")
 }
 
-calculate_net_profits <- function(df) {
+calculate_net_profits_old <- function(df) {
   # Calculates annual net profits
   # Input: dataframe that has the baseline & LS production, prices and technoogy net profit margins
   df %>%

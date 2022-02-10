@@ -345,7 +345,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
       equity_annual_profits <- equity_annual_profits %>%
         join_price_data(df_prices = df_prices) %>%
         join_net_profit_margins(net_profit_margins = net_profit_margins) %>%
-        calculate_net_profits() %>%
+        calculate_net_profits_old() %>%
         dcf_model_techlevel(discount_rate = discount_rate)
 
       plan_carsten_equity <- pacta_equity_results %>%
@@ -484,7 +484,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
       bonds_annual_profits <- bonds_annual_profits %>%
         join_price_data(df_prices = df_prices) %>%
         join_net_profit_margins(net_profit_margins = net_profit_margins) %>%
-        calculate_net_profits() %>%
+        calculate_net_profits_old() %>%
         dcf_model_techlevel(discount_rate = discount_rate)
 
       plan_carsten_bonds <- pacta_bonds_results %>%
