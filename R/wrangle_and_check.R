@@ -306,6 +306,7 @@ check_valid_financial_data_values <- function(financial_data, asset_type) {
 wrangle_results <- function(results_list, sensitivity_analysis_vars) {
   sensitivity_analysis_vars <- paste0(sensitivity_analysis_vars, "_arg")
 
+  # value changes -----------------------------------------------------------
   validate_data_has_expected_cols(
     data = results_list$company_value_changes,
     expected_columns = c(
@@ -360,6 +361,7 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
     dplyr::distinct_all() %>%
     dplyr::arrange(.data$year_of_shock, .data$ald_sector, .data$technology)
 
+  # expected loss -----------------------------------------------------------
   company_expected_loss <- results_list$company_expected_loss %>%
     dplyr::select(
       .data$scenario_name, .data$scenario_geography, .data$investor_name,
@@ -371,6 +373,18 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
     dplyr::arrange(
       .data$scenario_geography, .data$scenario_name, .data$investor_name,
       .data$portfolio_name, .data$company_name, .data$ald_sector
+    )
+
+  # pd changes --------------------------------------------------------------
+  company_pd_changes_annual <- results_list$company_pd_changes_annual %>%
+    dplyr::select(
+      .data$scenario_name, .data$scenario_geography, .data$investor_name,
+      .data$portfolio_name, .data$company_name, .data$ald_sector, .data$year,
+      .data$PD_change, !!!rlang::syms(sensitivity_analysis_vars)
+    ) %>%
+    dplyr::arrange(
+      .data$scenario_geography, .data$scenario_name, .data$investor_name,
+      .data$portfolio_name, .data$company_name, .data$ald_sector, .data$year
     )
 
   sector_pd_changes_annual <- results_list$company_pd_changes_annual %>%
@@ -390,6 +404,17 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
       .data$portfolio_name, .data$ald_sector, .data$year
     )
 
+  company_pd_changes_overall <- results_list$company_pd_changes_overall %>%
+    dplyr::select(
+      .data$scenario_name, .data$scenario_geography, .data$investor_name,
+      .data$portfolio_name, .data$company_name, .data$ald_sector, .data$term, .data$PD_change,
+      !!!rlang::syms(sensitivity_analysis_vars)
+    ) %>%
+    dplyr::arrange(
+      .data$scenario_geography, .data$scenario_name, .data$investor_name,
+      .data$portfolio_name, .data$company_name, .data$ald_sector, .data$term
+    )
+
   sector_pd_changes_overall <- results_list$company_pd_changes_overall %>%
     dplyr::group_by(
       .data$scenario_name, .data$scenario_geography, .data$investor_name,
@@ -407,7 +432,7 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
       .data$portfolio_name, .data$ald_sector, .data$term
     )
 
-
+  # company trajectories ----------------------------------------------------
   company_trajectories <- results_list$company_trajectories %>%
     dplyr::rename(baseline_price = Baseline_price)
 
@@ -415,7 +440,9 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
     company_value_changes = company_value_changes,
     portfolio_value_changes = portfolio_value_changes,
     company_expected_loss = company_expected_loss,
+    company_pd_changes_annual = company_pd_changes_annual,
     sector_pd_changes_annual = sector_pd_changes_annual,
+    company_pd_changes_overall = company_pd_changes_overall,
     sector_pd_changes_overall = sector_pd_changes_overall,
     company_trajectories = company_trajectories
   ))
@@ -432,9 +459,10 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
 check_results <- function(wrangled_results_list, sensitivity_analysis_vars) {
   sensitivity_analysis_vars <- paste0(sensitivity_analysis_vars, "_arg")
 
+  # value changes -----------------------------------------------------------
   wrangled_results_list$company_value_changes %>%
     report_missings(
-      name_data = "Stress test results - Company level"
+      name_data = "Value changes - Company level"
     ) %>%
     report_all_duplicate_kinds(
       composite_unique_cols = c(
@@ -446,7 +474,7 @@ check_results <- function(wrangled_results_list, sensitivity_analysis_vars) {
 
   wrangled_results_list$portfolio_value_changes %>%
     report_missings(
-      name_data = "Stress test results - Portfolios level"
+      name_data = "Value changes - Portfolios level"
     ) %>%
     report_all_duplicate_kinds(
       composite_unique_cols = c(
@@ -456,9 +484,10 @@ check_results <- function(wrangled_results_list, sensitivity_analysis_vars) {
       )
     )
 
+  # expected loss -----------------------------------------------------------
   wrangled_results_list$company_expected_loss %>%
     report_missings(
-      name_data = "Expected loss"
+      name_data = "Expected loss - Company level"
     ) %>%
     report_all_duplicate_kinds(
       composite_unique_cols = c(
@@ -468,9 +497,21 @@ check_results <- function(wrangled_results_list, sensitivity_analysis_vars) {
       )
     )
 
+  # pd changes --------------------------------------------------------------
+  wrangled_results_list$company_pd_changes_annual %>%
+    report_missings(
+      name_data = "Annual PD changes - Company level"
+    ) %>%
+    report_all_duplicate_kinds(
+      composite_unique_cols = c(
+        "scenario_name", "scenario_geography", "investor_name", "portfolio_name",
+        "ald_sector", "year", "company_name", sensitivity_analysis_vars
+      )
+    )
+
   wrangled_results_list$sector_pd_changes_annual %>%
     report_missings(
-      name_data = "Annual PD changes sector"
+      name_data = "Annual PD changes - Sector level"
     ) %>%
     report_all_duplicate_kinds(
       composite_unique_cols = c(
@@ -479,14 +520,37 @@ check_results <- function(wrangled_results_list, sensitivity_analysis_vars) {
       )
     )
 
+  wrangled_results_list$company_pd_changes_overall %>%
+    report_missings(
+      name_data = "Overall PD changes - Company level"
+    ) %>%
+    report_all_duplicate_kinds(
+      composite_unique_cols = c(
+        "scenario_name", "scenario_geography", "investor_name", "portfolio_name",
+        "ald_sector", "term", "company_name", sensitivity_analysis_vars
+      )
+    )
+
   wrangled_results_list$sector_pd_changes_overall %>%
     report_missings(
-      name_data = "Overall PD changes sector"
+      name_data = "Overall PD changes - Sector level"
     ) %>%
     report_all_duplicate_kinds(
       composite_unique_cols = c(
         "scenario_name", "scenario_geography", "investor_name", "portfolio_name",
         "ald_sector", "term", sensitivity_analysis_vars
+      )
+    )
+
+  # company trajectories ----------------------------------------------------
+  wrangled_results_list$company_trajectories %>%
+    report_missings(
+      name_data = "Company Trajectories"
+    ) %>%
+    report_all_duplicate_kinds(
+      composite_unique_cols = c(
+        "investor_name", "portfolio_name", "id", "company_name", "year",
+        "scenario_geography", "ald_sector", "technology", sensitivity_analysis_vars
       )
     )
 

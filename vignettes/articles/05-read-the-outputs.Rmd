@@ -17,7 +17,7 @@ proceeds to explain in depth how to read the data in each of the files.
 
 ## Overview
 
-There are six output files that the user can expect when running the stress
+There are eight output files that the user can expect when running the stress
 test for a given set of parameters.
 
 They can loosely be grouped in files that contain estimates of the market risk
@@ -35,7 +35,9 @@ analysis.
 ### Credit Risk
 
 * loans_company_expected_loss_\<suffix\>.csv
+* loans_company_pd_changes_annual_\<suffix\>.csv
 * loans_sector_pd_changes_annual_\<suffix\>.csv
+* loans_company_pd_changes_overall_\<suffix\>.csv
 * loans_sector_pd_changes_overall_\<suffix\>.csv
 
 ### TBC
@@ -201,6 +203,9 @@ the analyzed portfolio or loan book based on the exposure to that company under
 a shock scenario (here: a late and sudden climate transition policy). This is
 calculated as: `(pd + PD_change) * lgd * exposure_at_default`.
 
+### loans_company_pd_changes_annual_\<suffix\>
+To be continued.
+
 ### loans_sector_pd_changes_annual_\<suffix\>
 
 This file contains an overview on the sector level of how annual probabilities
@@ -221,6 +226,9 @@ portfolio or loan book, aggregated to the sector level. This PD change assumes a
 loan of one year maturity at the point in time indicated by `year`.
 Specifically, it shows how the probability of default of such a loan that is
 rolled over every year after the policy shock will change over time.
+
+### loans_sector_pd_changes_overall_\<suffix\>
+To be continued.
 
 ### loans_sector_pd_changes_overall_\<suffix\>
 
