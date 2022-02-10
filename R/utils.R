@@ -222,7 +222,7 @@ report_company_drops <- function(data_list, asset_type, log_path) {
   }
 
   report_dropped_company_names(
-    data_x = data_list$pacta_result,
+    data_x = data_list$pacta_results,
     data_y = data_list$financial_data,
     name_y = "financial data",
     merge_cols = merge_cols,
@@ -230,7 +230,7 @@ report_company_drops <- function(data_list, asset_type, log_path) {
   )
 
   report_dropped_company_names(
-    data_x = data_list$pacta_result,
+    data_x = data_list$pacta_results,
     data_y = data_list$df_price,
     name_y = "price data",
     merge_cols = c("technology", "ald_sector" = "sector", "year"),
@@ -449,6 +449,13 @@ customise_output_path <- function(output_path, iter_var) {
   paste_write("Starting analysis.", log_path = file.path(output_path_custom, paste0("log_file_", iter_var, ".txt")))
 
   return(output_path_custom)
+}
+
+stop_if_empty <- function(data, data_name) {
+  if (nrow(data) == 0) {
+    rlang::abort(glue::glue("Stopping calculation, dataset {data_name} is empty."))
+  }
+  return(invisible(data))
 }
 
 get_start_year <- function(data) {

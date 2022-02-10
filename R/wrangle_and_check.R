@@ -70,9 +70,7 @@ wrangle_and_check_sector_exposures <- function(sector_exposures, asset_type) {
 #' @param pacta_results Results from PACTA analysis.
 #'
 #' @return Wrangled `pacta_results.`
-wrangle_and_check_pacta_results <- function(pacta_results, start_year, time_horizon,
-                                            scenario_geography_filter, scenarios_filter,
-                                            allocation_method) {
+wrangle_and_check_pacta_results <- function(pacta_results, start_year, time_horizon) {
   wrangled_pacta_results <- pacta_results %>%
     select_sector_scenario_combinations() %>%
     dplyr::mutate(scenario = sub(".*?_", "", scenario)) %>%
@@ -672,32 +670,4 @@ add_term_to_trajectories <- function(annual_profits, pacta_results) {
     dplyr::inner_join(distinct_company_terms, by = c("company_name"))
 
   return(annual_profits_with_term)
-}
-
-#' Check if requested geographies are available in data
-#'
-#' @param processed_data_list A list of processed stress test data.
-#' @param requested_geographies A vector holding requested geographies.
-#'
-#' @return returns processed_data_list invisibly.
-#' @noRd
-check_geography_availability <- function(processed_data_list, requested_geographies) {
-  geo_list <- list(
-    unique(processed_data_list$pacta_results$scenario_geography),
-    unique(processed_data_list$scenario_data$scenario_geography),
-    unique(processed_data_list$capacity_factors_power$scenario_geography)
-  )
-
-  geography_overlap <- Reduce(intersect, geo_list)
-
-  if (!all(requested_geographies %in% geography_overlap)) {
-    geography_unsupported_collapsed <- paste(dplyr::setdiff(requested_geographies, geography_overlap), collapse = ", ")
-    geography_overlap_collapsed <- paste(geography_overlap, collapse = ", ")
-    rlang::abort(c(
-      glue::glue("Requested unsupported geographies: {geography_unsupported_collapsed}."),
-      x = glue::glue("Supported geographies: {geography_overlap_collapsed}."),
-      i = "Please review the geographies you request?"
-    ))
-  }
-  return(invisible(processed_data_list))
 }

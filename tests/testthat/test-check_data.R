@@ -14,6 +14,7 @@ test_that("informative error is thrown if levels are missing", {
       a = c("A1", "A2"),
       b = c("B1", "B2")
     ),
+    data_name = "some data",
     expected_levels_list = list(
       a = c("A1"),
       b = c("B1", "B2", "B3")

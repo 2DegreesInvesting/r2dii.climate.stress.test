@@ -4,14 +4,7 @@
 \alias{wrangle_and_check_pacta_results}
 \title{Wrangle and check PACTA results}
 \usage{
-wrangle_and_check_pacta_results(
-  pacta_results,
-  start_year,
-  time_horizon,
-  scenario_geography_filter,
-  scenarios_filter,
-  allocation_method
-)
+wrangle_and_check_pacta_results(pacta_results, start_year, time_horizon)
 }
 \arguments{
 \item{pacta_results}{Results from PACTA analysis.}
@@ -19,15 +12,6 @@ wrangle_and_check_pacta_results(
 \item{start_year}{Numeric, holding start year of analysis.}
 
 \item{time_horizon}{Numeric, holding time horizon of analysis.}
-
-\item{scenario_geography_filter}{Character. A vector of length 1 that
-indicates which geographic scenario to apply in the analysis.}
-
-\item{scenarios_filter}{Vector holding baseline and shock scenario name.}
-
-\item{allocation_method}{Character. A vector of length 1 indicating the
-set of PACTA data to be used in the analysis, based on the choice of an
-allocation rule.}
 }
 \value{
 Wrangled \code{pacta_results.}
