@@ -63,3 +63,38 @@ test_that("Error is thrown if terms are provided as decimals", {
     ), "whole number"
   )
 })
+
+# check_geography_availability --------------------------------------------
+test_that("input is returned if all requested geographies are present", {
+  test_data_list <- list(
+    pacta_results = tibble::tibble(scenario_geography = c("berlin", "global", "south_east_asia")),
+    scenario_data = tibble::tibble(scenario_geography = c("berlin", "global")),
+    capacity_factors_power = tibble::tibble(scenario_geography = c("berlin", "global"))
+  )
+
+  checked_list <- check_geography_availability(
+    processed_data_list = test_data_list,
+    requested_geographies = c("berlin")
+  )
+
+  expect_equal(test_data_list[[1]], checked_list[[1]])
+  expect_equal(test_data_list[[2]], checked_list[[2]])
+  expect_equal(test_data_list[[3]], checked_list[[3]])
+})
+
+
+test_that("error is thrown if requested geographies are missing", {
+  test_data_list <- list(
+    pacta_results = tibble::tibble(scenario_geography = c("berlin", "global", "south_east_asia")),
+    scenario_data = tibble::tibble(scenario_geography = c("berlin", "global")),
+    capacity_factors_power = tibble::tibble(scenario_geography = c("berlin", "global"))
+  )
+
+  expect_error(
+    check_geography_availability(
+      processed_data_list = test_data_list,
+      requested_geographies = c("berlin", "europe", "africa")
+    ),
+    "unsupported geographies: europe, africa"
+  )
+})
