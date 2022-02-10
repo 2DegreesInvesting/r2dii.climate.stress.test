@@ -329,7 +329,7 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
       .data$investor_name, .data$portfolio_name, .data$company_name,
       .data$scenario_geography, .data$scenario_name, .data$year_of_shock,
       .data$duration_of_shock, .data$ald_sector, .data$technology,
-      .data$production_shock_perc, .data$asset_portfolio_value,
+       .data$asset_portfolio_value,
       .data$tech_company_exposure, .data$VaR_tech_company,
       .data$tech_company_value_change, .data$company_exposure,
       .data$VaR_company, .data$company_value_change, .data$technology_exposure,
@@ -347,7 +347,7 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
     dplyr::select(
       .data$investor_name, .data$portfolio_name, .data$scenario_geography,
       .data$scenario_name, .data$year_of_shock, .data$duration_of_shock,
-      .data$ald_sector, .data$technology, .data$production_shock_perc,
+      .data$ald_sector, .data$technology,
       .data$asset_portfolio_value, .data$technology_exposure,
       .data$VaR_technology, .data$technology_value_change,
       .data$sector_exposure, .data$VaR_sector, .data$sector_value_change,
