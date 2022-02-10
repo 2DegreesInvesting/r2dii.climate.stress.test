@@ -197,9 +197,6 @@ read_and_process_and_calc <- function(args_list) {
       company_exclusion = company_exclusion,
       fallback_term = fallback_term,
       scenario_geography = scenario_geography
-    ) %>%
-    check_geography_availability(
-      requested_geographies = scenario_geography
     )
 
   input_data_list <- list(

@@ -24,10 +24,7 @@ process_pacta_results <- function(data, start_year, end_year, time_horizon,
   data_processed <- data %>%
     wrangle_and_check_pacta_results(
       start_year = start_year,
-      time_horizon = time_horizon,
-      scenario_geography_filter = scenario_geography_filter,
-      scenarios_filter = scenarios_filter,
-      allocation_method = allocation_method
+      time_horizon = time_horizon
     ) %>%
     dplyr::filter(.data$investor_name == investor_name_placeholder) %>%
     dplyr::filter(.data$equity_market == equity_market_filter) %>%
@@ -37,7 +34,9 @@ process_pacta_results <- function(data, start_year, end_year, time_horizon,
     dplyr::filter(.data$ald_sector %in% .env$sectors) %>%
     dplyr::filter(.data$technology %in% .env$technologies) %>%
     dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$start_year + .env$time_horizon)) %>%
+    stop_if_empty(data_name = "Pacta Results") %>%
     check_level_availability(
+      data_name = "Pacta Results",
       expected_levels_list =
         list(
           year = start_year:(start_year + time_horizon),
@@ -73,6 +72,7 @@ process_pacta_results <- function(data, start_year, end_year, time_horizon,
 process_sector_exposures <- function(data, asset_type) {
   data_processed <- data %>%
     wrangle_and_check_sector_exposures(asset_type = asset_type) %>%
+    stop_if_empty(data_name = "Sector Exposures") %>%
     report_all_duplicate_kinds(composite_unique_cols = cuc_sector_exposures) %>%
     report_missings(name_data = "sector exposures", throw_error = TRUE)
 
@@ -96,7 +96,9 @@ process_capacity_factors_power <- function(data,
     dplyr::filter(.data$scenario_geography %in% .env$scenario_geography_filter) %>%
     dplyr::filter(.data$technology %in% .env$technologies) %>%
     dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year)) %>%
+    stop_if_empty(data_name = "Capacity Factors") %>%
     check_level_availability(
+      data_name = "Capacity Factors",
       expected_levels_list =
         list(
           year = start_year:end_year,
@@ -144,7 +146,9 @@ process_df_price <- function(data, technologies, sectors, start_year, end_year) 
     check_sector_tech_mapping(sector_col = "sector") %>%
     dplyr::filter(.data$technology %in% .env$technologies_lookup) %>%
     dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year)) %>%
+    stop_if_empty(data_name = "Price Data") %>%
     check_level_availability(
+      data_name = "Price Data",
       expected_levels_list =
         list(
           year = start_year:end_year,
@@ -172,10 +176,13 @@ process_scenario_data <- function(data, start_year, end_year, sectors, technolog
     dplyr::filter(.data$scenario %in% .env$scenarios_filter) %>%
     dplyr::filter(.data$scenario_geography %in% .env$scenario_geography_filter) %>%
     dplyr::filter(.data$ald_sector %in% .env$sectors) %>%
+    stop_if_empty(data_name = "Scenario Data") %>%
     check_sector_tech_mapping() %>%
     dplyr::filter(.data$technology %in% .env$technologies) %>%
     dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year)) %>%
+    stop_if_empty(data_name = "Scenario Data") %>%
     check_level_availability(
+      data_name = "Scenario Data",
       expected_levels_list =
         list(
           year = start_year:end_year,
@@ -201,6 +208,7 @@ process_scenario_data <- function(data, start_year, end_year, sectors, technolog
 #' @noRd
 process_financial_data <- function(data, asset_type) {
   data_processed <- data %>%
+    stop_if_empty(data_name = "Financial Data") %>%
     check_financial_data(asset_type = asset_type) %>%
     report_all_duplicate_kinds(composite_unique_cols = cuc_financial_data) %>%
     report_missings(name_data = "financial data", throw_error = TRUE)
