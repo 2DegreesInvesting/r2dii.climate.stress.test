@@ -96,9 +96,6 @@ and the end year of the analysis.
 * `ald_sector`: Sector of the production assets analyzed.
 * `technology`: The technology can be understood as a sub sector. These must be in
 line with the technologies, for which the scenarios provide production pathways.
-* `production_shock_perc`: Percentage points of annual production change in case
-the shock is set manually, not via the Carbon budget mechanism. This is
-currently not supported and therefore contains NA values.
 * `asset_portfolio_value`: Value of all holdings of the given asset type in the
 analysed portfolio.
 * `tech_company_exposure`: Exposure of the portfolio or loan book to the
