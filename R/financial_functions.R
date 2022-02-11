@@ -22,7 +22,7 @@ calculate_net_profits <- function(data) {
         .data$late_sudden * .data$late_sudden_price * .data$net_profit_margin,
         .data$late_sudden * .data$late_sudden_price * .data$net_profit_margin -
           .data$production_compensation * .data$late_sudden_price * .data$net_profit_margin * (1 - .data$proximity_to_target)
-        # TODO: should the market size penalty only be applied to laggards?
+        # TODO: ADO4109 - should the market size penalty only be applied to laggards?
       )
     )
 }
