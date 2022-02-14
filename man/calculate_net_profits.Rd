@@ -6,11 +6,15 @@
 baseline and late and sudden scenarios. Climate laggards which need to build
 out their production in increasing technologies to compensate for their
 missed targets, are "punished" by adjusting the net profit margin on their
-additional build out based on their proximity to target and market share within
-the given technology. This ensures that late build out will not
-proportionally translate into increased profits. The adjustment for the
-market share of the company accounts for the fact that companies of different
-size will face different degrees of difficulty catching up.}
+additional build out based on their proximity to target within the given
+technology. Specifically, we measure the ratio of how much of the required
+build out or reduction in a technology the company will have done at the end
+of the forecast period. If the technology has an increasing target and the
+ratio of completion is below one, the net_profit_margin on the additional
+production build out is multiplied with the proximity to the target. This
+approximates the additional capital investment such a company would have to
+make in a short time, which leads to added costs. This ensures that late
+build out will not proportionally translate into increased profits.}
 \usage{
 calculate_net_profits(data)
 }
@@ -25,9 +29,13 @@ Calculates annual net profits on the company-technology level for the
 baseline and late and sudden scenarios. Climate laggards which need to build
 out their production in increasing technologies to compensate for their
 missed targets, are "punished" by adjusting the net profit margin on their
-additional build out based on their proximity to target and market share within
-the given technology. This ensures that late build out will not
-proportionally translate into increased profits. The adjustment for the
-market share of the company accounts for the fact that companies of different
-size will face different degrees of difficulty catching up.
+additional build out based on their proximity to target within the given
+technology. Specifically, we measure the ratio of how much of the required
+build out or reduction in a technology the company will have done at the end
+of the forecast period. If the technology has an increasing target and the
+ratio of completion is below one, the net_profit_margin on the additional
+production build out is multiplied with the proximity to the target. This
+approximates the additional capital investment such a company would have to
+make in a short time, which leads to added costs. This ensures that late
+build out will not proportionally translate into increased profits.
 }
