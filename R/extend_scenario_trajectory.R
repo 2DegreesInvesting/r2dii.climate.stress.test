@@ -401,14 +401,10 @@ calculate_proximity_to_target <- function(data,
                                           start_analysis,
                                           time_frame,
                                           baseline_scenario) {
-  data <- data %>%
-    dplyr::mutate(
-      helper_tech_production_target = dplyr::if_else(
-        dplyr::between(
-          .data$year, .env$start_analysis, .env$start_analysis + .env$time_frame
-        ),
-        .data$scen_tech_prod,
-        0
+  production_changes <- data %>%
+    dplyr::filter(
+      dplyr::between(
+        .data$year, .env$start_analysis, .env$start_analysis + .env$time_frame
       )
     ) %>%
     dplyr::group_by(
@@ -416,26 +412,25 @@ calculate_proximity_to_target <- function(data,
       .data$ald_sector, .data$technology, .data$scenario, .data$allocation,
       .data$scenario_geography
     ) %>%
-    dplyr::arrange(
-      .data$investor_name, .data$portfolio_name, .data$id, .data$company_name,
-      .data$ald_sector, .data$technology, .data$scenario, .data$allocation,
-      .data$scenario_geography, .data$year
-    ) %>%
     dplyr::mutate(
-      required_change = dplyr::if_else(
-        dplyr::between(
-          .data$year, .env$start_analysis, .env$start_analysis + .env$time_frame
-        ),
-        .data$helper_tech_production_target - .data$initial_technology_production,
-        0
-      ),
+      required_change = .data$scen_tech_prod - .data$initial_technology_production,
       realised_change = .data$plan_tech_prod - .data$initial_technology_production
     ) %>%
-    dplyr::mutate(
+    dplyr::summarise(
       sum_required_change = sum(.data$required_change, na.rm = TRUE),
-      sum_realised_change = sum(.data$realised_change, na.rm = TRUE)
+      sum_realised_change = sum(.data$realised_change, na.rm = TRUE),
+      .groups = "drop"
     ) %>%
-    dplyr::ungroup() %>%
+    dplyr::ungroup()
+
+  data <- data %>%
+    dplyr::inner_join(
+      production_changes,
+      by = c(
+        "investor_name", "portfolio_name", "id", "company_name", "ald_sector",
+        "technology", "scenario", "allocation", "scenario_geography"
+      )
+    ) %>%
     dplyr::mutate(
       ratio_realised_required = .data$sum_realised_change / .data$sum_required_change,
       proximity_to_target = dplyr::case_when(
@@ -445,9 +440,8 @@ calculate_proximity_to_target <- function(data,
       )
     ) %>%
     dplyr::select(
-      -c(.data$helper_tech_production_target, .data$required_change,
-         .data$realised_change, .data$sum_required_change,
-         .data$sum_realised_change, .data$ratio_realised_required)
+      -c(.data$sum_required_change, .data$sum_realised_change,
+         .data$ratio_realised_required)
     )
 
   data <- data %>%
@@ -466,5 +460,10 @@ calculate_proximity_to_target <- function(data,
     dplyr::mutate(
       proximity_to_target = max(.data$proximity_to_target, na.rm = TRUE)
     ) %>%
-    dplyr::ungroup()
+    dplyr::ungroup() %>%
+    dplyr::arrange(
+      .data$investor_name, .data$portfolio_name, .data$company_name,
+      .data$ald_sector, .data$technology, .data$scenario, .data$allocation,
+      .data$scenario_geography, .data$year
+    )
 }
