@@ -139,16 +139,11 @@ extend_scenario_trajectory_old <- function(data,
 
 #' @noRd
 extend_scenario_trajectory <- function(data,
-                                       scenario_data = NULL,
-                                       start_analysis = NULL,
-                                       end_analysis = NULL,
-                                       time_frame = NULL,
+                                       scenario_data,
+                                       start_analysis,
+                                       end_analysis,
+                                       time_frame,
                                        baseline_scenario) {
-  force(data)
-  scenario_data %||% stop("Must provide input for 'scenario_data'", call. = FALSE)
-  start_analysis %||% stop("Must provide input for 'start_analysis'", call. = FALSE)
-  end_analysis %||% stop("Must provide input for 'end_analysis'", call. = FALSE)
-  time_frame %||% stop("Must provide input for 'time_frame'", call. = FALSE)
 
   validate_data_has_expected_cols(
     data = data,
