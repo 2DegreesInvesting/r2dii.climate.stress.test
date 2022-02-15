@@ -1,5 +1,5 @@
 ---
-title: "03 - Run transition risk stress test on corporate loan books"
+title: "04 - Run transition risk stress test on corporate loan books"
 ---
 
 ```{r, include = FALSE}
@@ -106,8 +106,6 @@ present value should be considered to derive the equity value of a company.
 production values of companies to stay in line with carbon budgets.
 * `fallback_term` indicates which maturity the loans in the loan book are
 assumed to have. At this point we assume these are rolled over every year.
-* `scenario_geography` Indicates which geographical region(s) (concerning asset
-location) results shall be calculated for.
 * `company_exclusion` Logical parameter that indicates if certain combinations
 of company and technology should be excluded from the analysis. At this point,
 it is strictly recommended to set this to TRUE (default) because there is not
@@ -230,7 +228,13 @@ run_stress_test(
 so that it is always possible to understand which parameters were used in any
 given calculation.
 
+## Advanced custom data configuration
+
+Detailed explanations of how an analysis can be configured further by
+providing custom input information can be found in the vignette:
+["Improve stress test by providing further project specific data"](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/05-advanced-data-settings.html).
+
 ## Interpretation of the output files
 
 Detailed explanations of the result files can be found in the vignette:
-["Understand the output files of the transition risk stress test"](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/04-read-the-outputs.html).
+["Understand the output files of the transition risk stress test"](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/06-read-the-outputs.html).

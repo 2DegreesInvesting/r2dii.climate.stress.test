@@ -1,0 +1,77 @@
+---
+title: "01 - Prerequisites and Installation of the Package"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This vignette describes in detail, how to set up the directories that point to
+the input files and will contain the output files of running a climate
+transition risk stress test for loans, using `r2dii.cliamte.stress.test`.
+
+## Assumptions
+
+In order to keep this vignette concise, we assume the following has been done:
+
+1. R and RStudio are installed.
+2. All required R packages are installed, specifically
+`r2dii.climate.stress.test`. Note that this may require installing additional
+packages. You will be prompted to install these in case any are missing.
+3. The user has successfully run at least the matching part of PACTA for Banks
+to produce the relevant project-specific raw input files.
+4. The user has obtained all relevant input files as described in the pdf manual.
+
+## Prerequisites
+
+Hardware requirements:
+
+* Operating system: Linux, Mac, Unix, or Windows. Must be 64-bit.
+* RAM: 8GB or more.
+* Hard Drive Space: 5GB or more.
+
+Software Requirements:
+
+2DII climate transition stress testing analysis is performed using R packages. R is a programming language in which the source code is written. To use R, it is easiest to use an Integrated Development Environment (IDE), in this case RStudio. It is recommended for the person performing the analysis to have basic coding skills.
+
+Programming language:
+
+R - version must be 3.5 or higher (it is best practice to download the most recent version of R). This can be downloaded for Windows from https://cran.studio.com/bin/windows/base
+
+In most cases, this will be downloadable from the bank's internal software repository server subject to approval by the bank's IT department.
+
+Integrated Development Environment (IDE):
+
+RStudio - This can be downloaded at https://rstudio.com/products/rstudio/download/
+
+Again, in most cases this will be downloadable from the bank's internal system, subject to approval.
+
+PACTA for Banks matching:
+
+The development version or the climate transition stress test requires that the use has successfully run at least the matching part of PACTA for Banks (https://www.transitionmonitor.com/pacta-for-banks-2020/)
+to produce the relevant project-specific raw input files. The full methodology document outlining PACTA for Banks can be found here: https://www.transitionmonitor.com/wp-content/uploads/2021/07/PACTA-for-Banks-Methodology-document-02-07-2021_v1.2.0_v4.pdf
+
+## Installation
+
+Install the development version of r2dii.climate.stress.test from GitHub as well as all other necessary R packages with:
+
+```r
+# install.packages("devtools")
+devtools::install_github("2DegreesInvesting/r2dii.climate.stress.test")
+```
+
+You may be prompted by R to confirm the packages you would like to install - please select 'ALL' in every instance.
+
+## Loading the package
+* Use `library()` to attach the package
+```{r}
+library(r2dii.climate.stress.test)
+```
+
+After successfully completing the prerequisites and the installation, follow these vignettes on how to run the analysis:
+
+* ["Set up project directories for climate transition risk stress test"](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-setup-project-directories.html)
+* ["Preparing the intermediate inputs for stress testing loans"](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/03-prepare-loans-inputs.html)

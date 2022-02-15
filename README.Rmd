@@ -31,57 +31,12 @@ custom data. For more information about the methodology and inquiries on running
 a pilot of the stress test in cooperation with 2DII, please contact
 <jacob@2degrees-investing.org>.
 
-## Installation
-
-Install the development version of r2dii.climate.stress.test from GitHub with:
-
-```r
-# install.packages("devtools")
-devtools::install_github("2DegreesInvesting/r2dii.climate.stress.test")
-```
-
-## Example
-* Use `library()` to attach the package
-```{r}
-library(r2dii.climate.stress.test)
-```
-
-* Stress tests for corporate loans require a preparatory step for input data
-preparation for initial application of stress testing on a loan book
-```{r, eval=FALSE}
-run_prep_calculation_loans(
-  input_path_project_specific = "/path/to/specific/data",
-  input_path_project_agnostic = "/path/to/agnostic/data",
-  data_prep_output_path = "/path/to/specific/data"
-)
-
-```
-
-* Run climate stress tests
-```{r, eval=FALSE}
-## run stress testing for assets of type corporate loans using default parameters
-run_stress_test(
-  asset_type = "loans",
-  input_path_project_specific = "/path/to/specific/data",
-  input_path_project_agnostic = "/path/to/agnostic/data",
-  output_path = "/path/to/output/directory"
-)
-
-## run stress testing for asset of type corporate loans using various risk_free_rates to analyse sensitivities
-run_stress_test(
-  asset_type = "loans",
-  input_path_project_specific = "/path/to/specific/data",
-  input_path_project_agnostic = "/path/to/agnostic/data",
-  output_path = "/path/to/output/directory",
-  risk_free_rate = c(0.01, 0.03)
-)
-
-```
-
 ## Details
 
-To actually run an analysis...
+To run the analysis...
 
+* the prerequisites must be fulfilled,
+* the package must be installed,
 * the project directories must be set up,
 * input data must be prepared and
 * the detailed options available for running the functions ought to be understood.
