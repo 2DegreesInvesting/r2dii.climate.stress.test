@@ -485,6 +485,19 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
 
   # company trajectories ----------------------------------------------------
   company_trajectories <- results_list$company_trajectories %>%
+    dplyr::select(
+      .data$investor_name, .data$portfolio_name, .data$scenario_name, .data$id,
+      .data$company_name, .data$year, .data$scenario_geography, .data$ald_sector,
+      .data$technology, .data$plan_tech_prod, .data$phase_out, .data$baseline,
+      .data$scen_to_follow_aligned,	.data$late_sudden,
+      .data$scenario_change_aligned, .data$company_id, .data$pd,
+      .data$net_profit_margin, .data$debt_equity_ratio, .data$volatility,
+      .data$sector_unit_ds, .data$price_unit_iea, .data$price_unit_etr,
+      .data$Baseline_price, .data$baseline_source, .data$late_sudden_price,
+      .data$net_profits_baseline, .data$net_profits_ls,
+      .data$discounted_net_profit_baseline, .data$discounted_net_profit_ls,
+      !!!rlang::syms(sensitivity_analysis_vars)
+    ) %>%
     dplyr::rename(
       production_plan_company_technology = .data$plan_tech_prod,
       # TODO: add once ADO3530 is merged
