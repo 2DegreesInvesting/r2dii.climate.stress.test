@@ -285,4 +285,60 @@ the variation of the impact on PDs by different maturities on the sector level.
 
 
 ### company_trajectories_\<suffix\>
-To be continued.
+
+This file contains an in detail overview of cash flow projections on the 
+company-technology level for the baseline and the shock scenarios.
+
+* `investor_name`: Name of the investor or bank for which the analysis was run.
+* `portfolio_name`: Name of the portfolio or loan book managed by the investor
+or bank for which the analysis was run.
+* `scenario_name`: Name that highlights the use of the Carbon budget.
+* `id`: internal id related to the company in the loan book or portfolio
+* `company_name`: Name of the company that was analyzed.
+* `year`: Calendar year.
+* `scenario_geography`: Region for which the analysis was run. This refers to
+the location of assets considered as well as the regionality of scenario targets
+used.
+* `ald_sector`: Sector of the production assets analyzed.
+* `technology`: The technology can be understood as a sub sector. These must be
+in line with the technologies, for which the scenarios provide production
+pathways.
+* `production_plan_company_technology`: Five year forward looking production
+plans, by company, technology and year.
+* `phase_out`: Logical indicator, showing if the given company phases out its
+production of the indicated technology during the production forecast period.
+* `production_baseline_scenario`: Production plan for the combination of company
+and technology under the baseline scenario.
+* `production_target_scenario`: Production plan for the combination of company
+and technology under the target scenario.
+* `production_shock_scenario`: Production plan for the combination of company
+and technology under the shock scenario.
+* `production_change_target_scenario`: Year by year required absolute changes of
+production for the combination of company and technology under the target
+scenario.
+* `company_id`: Internal company identifier.
+* `pd`: Probability of default under the baseline scenario.
+* `net_profit_margin`: Net profit margin of the company.
+* `debt_equity_ratio`: Debt to equity ratio of the company.
+* `volatility`: Volatility of the asset price of the company.
+* `production_unit`: Unit of the real production associated with the given
+combination of company and technology.
+* `price_unit_iea`: Unit of the market price for the given technology for IEA
+scenarios.
+* `price_unit_etr`: Unit of the market price for the given technology for ETR
+scenarios.
+* `price_baseline_scenario`: Market price for the given year and technology
+under the baseline scenario.
+* `baseline_source`: Source of the baseline scenario.
+* `price_shock_scenario`: Market price for the given year and technology under
+the shock scenario.
+* `net_profits_baseline_scenario`: Annual projected net profits of the given
+combination of company and technology under the baseline scenario.
+* `net_profits_shock_scenario`: Annual projected net profits of the given
+combination of company and technology under the shock scenario.
+* `discounted_net_profits_baseline_scenario`: Annual projected discounted net
+profits of the given combination of company and technology under the baseline
+scenario.
+* `discounted_net_profits_shock_scenario`: Annual projected discounted net
+profits of the given combination of company and technology under the shock
+scenario.
