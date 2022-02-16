@@ -101,7 +101,8 @@ dcf_model_techlevel <- function(data, discount_rate) {
       discounted_net_profit_baseline = net_profits_baseline / (1 + discount_rate)^t_calc,
       discounted_net_profit_ls = net_profits_ls / (1 + discount_rate)^t_calc
     ) %>%
-    dplyr::select(-t_calc)
+    dplyr::select(-t_calc) %>%
+    dplyr::ungroup()
 }
 
 # run basic portfolio data consistency checks that are required for further data processing
