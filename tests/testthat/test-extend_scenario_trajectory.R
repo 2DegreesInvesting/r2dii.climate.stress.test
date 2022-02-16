@@ -82,7 +82,7 @@ test_that("company-technology target production after extension equals SMSP for
   test_start <- 2020
   test_end <- 2040
   test_horizon <- 5
-  test_baseline_scenario <- "NPS"
+  test_target_scenario <- "SDS"
 
   test_results <- extend_scenario_trajectory(
     data = test_data,
@@ -90,7 +90,7 @@ test_that("company-technology target production after extension equals SMSP for
     start_analysis = test_start,
     end_analysis = test_end,
     time_frame = test_horizon,
-    baseline_scenario = test_baseline_scenario
+    target_scenario = test_target_scenario
   )
 
   verify_technology <- "Electric"
@@ -155,7 +155,7 @@ test_that("company-technology target production after extension equals TMSR for
   test_start <- 2020
   test_end <- 2040
   test_horizon <- 5
-  test_baseline_scenario <- "NPS"
+  test_target_scenario <- "SDS"
 
   test_results <- extend_scenario_trajectory(
     data = test_data,
@@ -163,7 +163,7 @@ test_that("company-technology target production after extension equals TMSR for
     start_analysis = test_start,
     end_analysis = test_end,
     time_frame = test_horizon,
-    baseline_scenario = test_baseline_scenario
+    target_scenario = test_target_scenario
   )
 
   verify_technology <- "Coal"
