@@ -134,7 +134,7 @@ extend_scenario_trajectory_old <- function(data,
 #'   year of the analysis.
 #' @param time_frame Numeric. A vector of length 1 indicating the number of
 #'   years for which forward looking production data is considered.
-#' @param baseline_scenario Character. A vector of length 1 indicating baseline
+#' @param target_scenario Character. A vector of length 1 indicating target
 #'   scenario
 
 #' @noRd
@@ -143,7 +143,7 @@ extend_scenario_trajectory <- function(data,
                                        start_analysis,
                                        end_analysis,
                                        time_frame,
-                                       baseline_scenario) {
+                                       target_scenario) {
 
   validate_data_has_expected_cols(
     data = data,
@@ -199,7 +199,7 @@ extend_scenario_trajectory <- function(data,
     calculate_proximity_to_target(
       start_analysis = start_analysis,
       time_frame = time_frame,
-      baseline_scenario = baseline_scenario
+      target_scenario = target_scenario
     )
 
   data <- data %>%
@@ -393,23 +393,24 @@ handle_phase_out_and_negative_targets <- function(data) {
 #'   year of the analysis.
 #' @param time_frame Numeric. A vector of length 1 indicating the number of
 #'   years for which forward looking production data is considered.
-#' @param baseline_scenario Character. A vector of length 1 indicating baseline
+#' @param target_scenario Character. A vector of length 1 indicating target
 #'   scenario
 #'
 #' @noRd
 calculate_proximity_to_target <- function(data,
                                           start_analysis,
                                           time_frame,
-                                          baseline_scenario) {
+                                          target_scenario) {
   production_changes <- data %>%
     dplyr::filter(
       dplyr::between(
         .data$year, .env$start_analysis, .env$start_analysis + .env$time_frame
-      )
+      ),
+      .data$scenario == .env$target_scenario
     ) %>%
     dplyr::group_by(
       .data$investor_name, .data$portfolio_name, .data$id, .data$company_name,
-      .data$ald_sector, .data$technology, .data$scenario, .data$allocation,
+      .data$ald_sector, .data$technology, .data$allocation,
       .data$scenario_geography
     ) %>%
     dplyr::mutate(
@@ -421,16 +422,7 @@ calculate_proximity_to_target <- function(data,
       sum_realised_change = sum(.data$realised_change, na.rm = TRUE),
       .groups = "drop"
     ) %>%
-    dplyr::ungroup()
-
-  data <- data %>%
-    dplyr::inner_join(
-      production_changes,
-      by = c(
-        "investor_name", "portfolio_name", "id", "company_name", "ald_sector",
-        "technology", "scenario", "allocation", "scenario_geography"
-      )
-    ) %>%
+    dplyr::ungroup() %>%
     dplyr::mutate(
       ratio_realised_required = .data$sum_realised_change / .data$sum_required_change,
       proximity_to_target = dplyr::case_when(
@@ -445,25 +437,11 @@ calculate_proximity_to_target <- function(data,
     )
 
   data <- data %>%
-    dplyr::mutate(
-      proximity_to_target = dplyr::if_else(
-        .data$scenario == .env$baseline_scenario,
-        NA_real_,
-        .data$proximity_to_target
+    dplyr::inner_join(
+      production_changes,
+      by = c(
+        "investor_name", "portfolio_name", "id", "company_name", "ald_sector",
+        "technology", "allocation", "scenario_geography"
       )
-    ) %>%
-    dplyr::group_by(
-      .data$investor_name, .data$portfolio_name, .data$id, .data$company_name,
-      .data$ald_sector, .data$technology, .data$allocation,
-      .data$scenario_geography
-    ) %>%
-    dplyr::mutate(
-      proximity_to_target = max(.data$proximity_to_target, na.rm = TRUE)
-    ) %>%
-    dplyr::ungroup() %>%
-    dplyr::arrange(
-      .data$investor_name, .data$portfolio_name, .data$company_name,
-      .data$ald_sector, .data$technology, .data$scenario, .data$allocation,
-      .data$scenario_geography, .data$year
     )
 }
