@@ -165,45 +165,43 @@
 <li>
 <code>technology</code>: The technology can be understood as a sub sector. These must be in line with the technologies, for which the scenarios provide production pathways.</li>
 <li>
-<code>production_shock_perc</code>: Percentage points of annual production change in case the shock is set manually, not via the Carbon budget mechanism. This is currently not supported and therefore contains NA values.</li>
-<li>
 <code>asset_portfolio_value</code>: Value of all holdings of the given asset type in the analysed portfolio.</li>
 <li>
-<code>tech_company_exposure</code>: Exposure of the portfolio or loan book to the company_technology level. This is approximated by multiplying the company production technology share with the overall company exposure.</li>
+<code>company_technology_exposure</code>: Exposure of the portfolio or loan book to the company_technology level. This is approximated by multiplying the company production technology share with the overall company exposure.</li>
 <li>
-<code>VaR_tech_company</code>: Relative potential value change due to the policy shock on the company-technology level for the portfolio or loan book at hand. Value in percentage points, i.e. a value of -2.5 indicates a potential loss of 2.5% points for the given combination.</li>
+<code>company_technology_percent_value_change</code>: Relative potential value change due to the policy shock on the company-technology level for the portfolio or loan book at hand. Value in percentage points, i.e. a value of -2.5 indicates a potential loss of 2.5% points for the given combination.</li>
 <li>
-<code>tech_company_value_change</code>: Potential absolute value change of the portfolio or loan book on the company-technology level indicated. Calculated as <code>tech_company_exposure * VaR_tech_company</code>.</li>
+<code>company_technology_absolute_value_change</code>: Potential absolute value change of the portfolio or loan book on the company-technology level indicated. Calculated as <code>company_technology_exposure * company_technology_absolute_value_change</code>.</li>
 <li>
 <code>company_exposure</code>: Exposure of the portfolio or loan book to the company indicated.</li>
 <li>
-<code>VaR_company</code>: Relative potential value change due to the policy shock on the company level for the portfolio or loan book at hand. Value in percentage points.</li>
+<code>company_percent_value_change</code>: Relative potential value change due to the policy shock on the company level for the portfolio or loan book at hand. Value in percentage points.</li>
 <li>
-<code>company_value_change</code>: Potential absolute value change of the portfolio or loan book on the company level indicated. Calculated as <code>company_exposure * VaR_company</code>.</li>
+<code>company_absolute_value_change</code>: Potential absolute value change of the portfolio or loan book on the company level indicated. Calculated as <code>company_exposure * company_percent_value_change</code>.</li>
 <li>
 <code>technology_exposure</code>: Exposure of the portfolio or loan book to the technology indicated. This is an aggregate of the technology exposure across all companies with production in the given technology.</li>
 <li>
-<code>VaR_technology</code>: Relative potential value change of the sub sector indicated by the technology across all companies with production in the given technology. Value in percentage points.</li>
+<code>technology_percent_value_change</code>: Relative potential value change of the sub sector indicated by the technology across all companies with production in the given technology. Value in percentage points.</li>
 <li>
-<code>technology_value_change</code>: Potential absolute value change of the portfolio or loan book on the technology level indicated. Calculated as <code>technology_exposure * VaR_technology</code>.</li>
+<code>technology_absolute_value_change</code>: Potential absolute value change of the portfolio or loan book on the technology level indicated. Calculated as <code>technology_exposure * technology_percent_value_change</code>.</li>
 <li>
 <code>sector_exposure</code>: Exposure of the portfolio or loan book to the sector indicated. This is an aggregate of the sector exposure across all companies with production in the given sector.</li>
 <li>
-<code>VaR_sector</code>: Relative potential value change of the sector indicated across all companies with production in the given sector. Value in percentage points.</li>
+<code>sector_percent_value_change</code>: Relative potential value change of the sector indicated across all companies with production in the given sector. Value in percentage points.</li>
 <li>
-<code>sector_value_change</code>: Potential absolute value change of the portfolio or loan book on the sector level indicated. Calculated as <code>sector_exposure * VaR_sector</code>.</li>
+<code>sector_absolute_value_change</code>: Potential absolute value change of the portfolio or loan book on the sector level indicated. Calculated as <code>sector_exposure * sector_percent_value_change</code>.</li>
 <li>
-<code>analysed_sectors_exposure</code>: Exposure of the portfolio or loan book to all sectors in scope of the analysis. This is an aggregate of the exposure across all companies with production in the sectors that are in scope.</li>
+<code>analysed_portfolio_exposure</code>: Exposure of the portfolio or loan book to all sectors in scope of the analysis. This is an aggregate of the exposure across all companies with production in the sectors that are in scope.</li>
 <li>
-<code>VaR_analysed_sectors</code>: Relative potential value change of portfolio or loan book across all companies with production in the in-scope sectors. Value in percentage points.</li>
+<code>analysed_portfolio_percent_value_change</code>: Relative potential value change of portfolio or loan book across all companies with production in the in-scope sectors. Value in percentage points.</li>
 <li>
-<code>analysed_sectors_value_change</code>: Potential absolute value change of the portfolio or loan book on the level of in scope sectors. Calculated as <code>analysed_sectors_exposure * VaR_analysed_sectors</code>.</li>
+<code>analysed_portfolio_absolute_value_change</code>: Potential absolute value change of the portfolio or loan book on the level of in scope sectors. Calculated as <code>analysed_portfolio_exposure * analysed_portfolio_percent_value_change</code>.</li>
 <li>
-<code>portfolio_aum</code>: Total absolute value of the assets under management for the given asset type.</li>
+<code>total_portfolio_exposure</code>: Total absolute value of the assets under management for the given asset type.</li>
 <li>
-<code>portfolio_value_change_perc</code>: Relative potential value change of portfolio or loan book across all companies relative to the total portfolio value. Note that this does not cover potential losses for companies operating in sectors that are out of scope. Value in percentage points.</li>
+<code>total_portfolio_percent_value_change</code>: Relative potential value change of portfolio or loan book across all companies relative to the total portfolio value. Note that this does not cover potential losses for companies operating in sectors that are out of scope. Value in percentage points.</li>
 <li>
-<code>portfolio_value_change</code>: Potential absolute value change of the portfolio or loan book. Calculated as <code>portfolio_aum * portfolio_value_change_perc</code>.</li>
+<code>total_portfolio_absolute_value_change</code>: Potential absolute value change of the portfolio or loan book. Calculated as <code>total_portfolio_exposure * total_portfolio_percent_value_change</code>.</li>
 <li>
 <code>exclude</code>: Logical indicator that shows if the given combination of company and technology was excluded from the shock because the production forecast indicated a phase out in production.</li>
 </ul>
@@ -231,23 +229,41 @@
 <li>
 <code>ald_sector</code>: Sector of the production assets analyzed.</li>
 <li>
-<code>pd</code>: Starting point probability of default for loans to the given company in the loan book in percentage points.</li>
+<code>pd_baseline</code>: Starting point probability of default for loans to the given company in the loan book in percentage points.</li>
 <li>
-<code>PD_change</code>: Change in probability of default of the given company, based on the Merton credit risk model and a climate transition policy shock as indicated. in <code>scenario_name</code>. In percentage points. Notice: A positive number indicates the probability of default increases, hence the expected loss also increases.</li>
+<code>pd_change_shock</code>: Change in probability of default of the given company, based on the Merton credit risk model and a climate transition policy shock as indicated in <code>scenario_name</code>. In percentage points. Notice: A positive number indicates the probability of default increases, hence the expected loss also increases.</li>
 <li>
 <code>lgd</code>: Loss given default applied in the calculation of the expected loss. Depending on which asset type was analyzed, this will reflect the setting of either <code>lgd_senior_claims_arg</code> or <code>lgd_subordinated_claims_arg</code>. For corporate loan books, this reflects senior claims.</li>
 <li>
 <code>exposure_at_default</code>: The absolute amount of exposure to a company in the given portfolio or loan book. For loan books, this is the sum of outstanding loans (or alternatively of the credit limit) to a company.</li>
 <li>
-<code>expected_loss_baseline</code>: The expected loss of the holdings of a company in the analyzed portfolio or loan book based on the exposure to that company under a baseline (commonly business as usual) scenario. This is calculated as: <code>pd * lgd * exposure_at_default</code>.</li>
+<code>expected_loss_baseline</code>: The expected loss of the holdings of a company in the analyzed portfolio or loan book based on the exposure to that company under a baseline (commonly business as usual) scenario. This is calculated as: <code>pd_baseline * lgd * exposure_at_default</code>.</li>
 <li>
-<code>expected_loss_late_sudden</code>: The expected loss of the holdings of a company in the analyzed portfolio or loan book based on the exposure to that company under a shock scenario (here: a late and sudden climate transition policy). This is calculated as: <code>(pd + PD_change) * lgd * exposure_at_default</code>.</li>
+<code>expected_loss_shock</code>: The expected loss of the holdings of a company in the analyzed portfolio or loan book based on the exposure to that company under a shock scenario (here: a late and sudden climate transition policy). This is calculated as: <code>(pd_baseline + pd_change_shock) * lgd * exposure_at_default</code>.</li>
 </ul>
 </div>
 <div class="section level4">
 <h4 id="loans_company_pd_changes_annual_suffix">loans_company_pd_changes_annual_&lt;suffix&gt;<a class="anchor" aria-label="anchor" href="#loans_company_pd_changes_annual_suffix"></a>
 </h4>
-<p>To be continued.</p>
+<p>This file contains an overview on the company level of how annual probabilities of default change relative to the baseline scenario after the shock year.</p>
+<ul>
+<li>
+<code>scenario_name</code>: Name that highlights the use of the Carbon budget. compensation mechanism and the year of the introduction of a transition policy.</li>
+<li>
+<code>scenario_geography</code>: Region for which the analysis was run. This refers to the location of assets considered as well as the regionality of scenario targets used.</li>
+<li>
+<code>investor_name</code>: Name of the investor or bank for which the analysis was run.</li>
+<li>
+<code>portfolio_name</code>: Name of the portfolio or loan book managed by the investor or bank for which the analysis was run.</li>
+<li>
+<code>company_name</code>: Name of the company that was analyzed.</li>
+<li>
+<code>ald_sector</code>: Sector of the production assets analyzed.</li>
+<li>
+<code>year</code>: Calendar year.</li>
+<li>
+<code>pd_change_shock</code>: Change in probability of default of the the companies in the portfolio or loan book. This PD change assumes a loan of one year maturity at the point in time indicated by <code>year</code>. Specifically, it shows how the probability of default of such a loan that is rolled over every year after the policy shock will change over time.</li>
+</ul>
 </div>
 <div class="section level4">
 <h4 id="loans_sector_pd_changes_annual_suffix">loans_sector_pd_changes_annual_&lt;suffix&gt;<a class="anchor" aria-label="anchor" href="#loans_sector_pd_changes_annual_suffix"></a>
@@ -267,16 +283,34 @@
 <li>
 <code>year</code>: Calendar year.</li>
 <li>
-<code>PD_change</code>: Change in probability of default of the the companies in the portfolio or loan book, aggregated to the sector level. This PD change assumes a loan of one year maturity at the point in time indicated by <code>year</code>. Specifically, it shows how the probability of default of such a loan that is rolled over every year after the policy shock will change over time.</li>
+<code>pd_change_shock</code>: Change in probability of default of the the companies in the portfolio or loan book, aggregated to the sector level. This PD change assumes a loan of one year maturity at the point in time indicated by <code>year</code>. Specifically, it shows how the probability of default of such a loan that is rolled over every year after the policy shock will change over time.</li>
+</ul>
+</div>
+<div class="section level4">
+<h4 id="loans_company_pd_changes_overall_suffix">loans_company_pd_changes_overall_&lt;suffix&gt;<a class="anchor" aria-label="anchor" href="#loans_company_pd_changes_overall_suffix"></a>
+</h4>
+<p>This file contains an overview on the company level of how overall probabilities of default change depending on the maturities of the underlying loans.</p>
+<ul>
+<li>
+<code>scenario_name</code>: Name that highlights the use of the Carbon budget.</li>
+<li>
+<code>scenario_geography</code>: Region for which the analysis was run. This refers to the location of assets considered as well as the regionality of scenario targets used.</li>
+<li>
+<code>investor_name</code>: Name of the investor or bank for which the analysis was run.</li>
+<li>
+<code>portfolio_name</code>: Name of the portfolio or loan book managed by the investor or bank for which the analysis was run.</li>
+<li>
+<code>company_name</code>: Name of the company that was analyzed.</li>
+<li>
+<code>ald_sector</code>: Sector of the production assets analyzed.</li>
+<li>
+<code>term</code>: Years to maturity of the loans.</li>
+<li>
+<code>pd_change_shock</code>: Change in probability of default of the the companies in the portfolio or loan book. This PD change shows the variation of the impact on PDs by different maturities on the sector level.</li>
 </ul>
 </div>
 <div class="section level4">
 <h4 id="loans_sector_pd_changes_overall_suffix">loans_sector_pd_changes_overall_&lt;suffix&gt;<a class="anchor" aria-label="anchor" href="#loans_sector_pd_changes_overall_suffix"></a>
-</h4>
-<p>To be continued.</p>
-</div>
-<div class="section level4">
-<h4 id="loans_sector_pd_changes_overall_suffix-1">loans_sector_pd_changes_overall_&lt;suffix&gt;<a class="anchor" aria-label="anchor" href="#loans_sector_pd_changes_overall_suffix-1"></a>
 </h4>
 <p>This file contains an overview on the sector level of how overall probabilities of default change depending on the maturities of the underlying loans.</p>
 <ul>
@@ -293,13 +327,71 @@
 <li>
 <code>term</code>: Years to maturity of the loans.</li>
 <li>
-<code>PD_change</code>: Change in probability of default of the the companies in the portfolio or loan book, aggregated to the sector level. This PD change shows variation of the impact on PDs by different maturities on the sector level.</li>
+<code>pd_change_shock</code>: Change in probability of default of the the companies in the portfolio or loan book, aggregated to the sector level. This PD change shows the variation of the impact on PDs by different maturities on the sector level.</li>
 </ul>
 </div>
 <div class="section level4">
 <h4 id="company_trajectories_suffix">company_trajectories_&lt;suffix&gt;<a class="anchor" aria-label="anchor" href="#company_trajectories_suffix"></a>
 </h4>
-<p>To be continued.</p>
+<p>This file contains an in detail overview of cash flow projections on the company-technology level for the baseline and the shock scenarios.</p>
+<ul>
+<li>
+<code>investor_name</code>: Name of the investor or bank for which the analysis was run.</li>
+<li>
+<code>portfolio_name</code>: Name of the portfolio or loan book managed by the investor or bank for which the analysis was run.</li>
+<li>
+<code>scenario_name</code>: Name that highlights the use of the Carbon budget.</li>
+<li>
+<code>company_name</code>: Name of the company that was analyzed.</li>
+<li>
+<code>year</code>: Calendar year.</li>
+<li>
+<code>scenario_geography</code>: Region for which the analysis was run. This refers to the location of assets considered as well as the regionality of scenario targets used.</li>
+<li>
+<code>ald_sector</code>: Sector of the production assets analyzed.</li>
+<li>
+<code>technology</code>: The technology can be understood as a sub sector. These must be in line with the technologies, for which the scenarios provide production pathways.</li>
+<li>
+<code>production_plan_company_technology</code>: Five year forward looking production plans, by company, technology and year.</li>
+<li>
+<code>phase_out</code>: Logical indicator, showing if the given company phases out its production of the indicated technology during the production forecast period.</li>
+<li>
+<code>production_baseline_scenario</code>: Production plan for the combination of company and technology under the baseline scenario.</li>
+<li>
+<code>production_target_scenario</code>: Production plan for the combination of company and technology under the target scenario.</li>
+<li>
+<code>production_shock_scenario</code>: Production plan for the combination of company and technology under the shock scenario.</li>
+<li>
+<code>production_change_target_scenario</code>: Year by year required absolute changes of production for the combination of company and technology under the target scenario.</li>
+<li>
+<code>company_id</code>: Internal company identifier.</li>
+<li>
+<code>pd</code>: Probability of default under the baseline scenario.</li>
+<li>
+<code>net_profit_margin</code>: Net profit margin of the company.</li>
+<li>
+<code>debt_equity_ratio</code>: Debt to equity ratio of the company.</li>
+<li>
+<code>volatility</code>: Volatility of the asset price of the company.</li>
+<li>
+<code>production_unit</code>: Unit of the real production associated with the given combination of company and technology.</li>
+<li>
+<code>price_unit_iea</code>: Unit of the market price for the given technology for IEA scenarios.</li>
+<li>
+<code>price_unit_etr</code>: Unit of the market price for the given technology for ETR scenarios.</li>
+<li>
+<code>price_baseline_scenario</code>: Market price for the given year and technology under the baseline scenario.</li>
+<li>
+<code>price_shock_scenario</code>: Market price for the given year and technology under the shock scenario.</li>
+<li>
+<code>net_profits_baseline_scenario</code>: Annual projected net profits of the given combination of company and technology under the baseline scenario.</li>
+<li>
+<code>net_profits_shock_scenario</code>: Annual projected net profits of the given combination of company and technology under the shock scenario.</li>
+<li>
+<code>discounted_net_profits_baseline_scenario</code>: Annual projected discounted net profits of the given combination of company and technology under the baseline scenario.</li>
+<li>
+<code>discounted_net_profits_shock_scenario</code>: Annual projected discounted net profits of the given combination of company and technology under the shock scenario.</li>
+</ul>
 </div>
 </div>
 </div>
