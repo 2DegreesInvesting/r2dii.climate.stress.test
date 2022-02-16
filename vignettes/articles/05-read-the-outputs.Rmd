@@ -209,7 +209,7 @@ This file contains an overview on the company level of how annual probabilities
 of default change relative to the baseline scenario after the shock year.
 
 * `scenario_name`: Name that highlights the use of the Carbon budget.
-compensation mechanism and the Year of the introduction of a transition policy.
+compensation mechanism and the year of the introduction of a transition policy.
 * `scenario_geography`: Region for which the analysis was run. This refers to
 the location of assets considered as well as the regionality of scenario targets
 used.
@@ -293,7 +293,6 @@ company-technology level for the baseline and the shock scenarios.
 * `portfolio_name`: Name of the portfolio or loan book managed by the investor
 or bank for which the analysis was run.
 * `scenario_name`: Name that highlights the use of the Carbon budget.
-* `id`: internal id related to the company in the loan book or portfolio
 * `company_name`: Name of the company that was analyzed.
 * `year`: Calendar year.
 * `scenario_geography`: Region for which the analysis was run. This refers to
@@ -329,7 +328,6 @@ scenarios.
 scenarios.
 * `price_baseline_scenario`: Market price for the given year and technology
 under the baseline scenario.
-* `baseline_source`: Source of the baseline scenario.
 * `price_shock_scenario`: Market price for the given year and technology under
 the shock scenario.
 * `net_profits_baseline_scenario`: Annual projected net profits of the given
