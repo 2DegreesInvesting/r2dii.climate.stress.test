@@ -111,5 +111,9 @@ read_price_data_old2 <- function(path) {
     )
   )
 
+  data <- data %>%
+    dplyr::select(-B2DS, -b2ds_source)
+
+
   return(data)
 }
