@@ -14,7 +14,7 @@ calc_late_sudden_prices <- function(price_data, baseline_scenario, transition_sc
     dplyr::mutate(Baseline = !!rlang::sym(baseline_scenario)) %>%
     dplyr::rename(
       year = year, ald_sector = sector, technology = technology, NPS_price = NPS,
-      SDS_price = SDS, Baseline_price = Baseline, B2DS_price = B2DS
+      SDS_price = SDS, Baseline_price = Baseline
     ) %>%
     dplyr::group_by(ald_sector, technology) %>%
     dplyr::mutate(
