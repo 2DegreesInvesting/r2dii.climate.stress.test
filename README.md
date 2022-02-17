@@ -24,17 +24,10 @@ contact <jacob@2degrees-investing.org>.
 
 ## Prerequisites
 
-We assume the following has been done:
-
-1.  R and RStudio are installed.
-2.  All required R packages are installed, specifically
-    `r2dii.climate.stress.test`. Note that this may require installing
-    additional packages. You will be prompted to install these in case
-    any are missing.
-3.  The user has successfully run at least the matching part of PACTA
-    for Banks to produce the relevant project-specific raw input files.
-
-For a complete overview of the necessary prerequisites please see
+We assume the user has successfully run at least the matching part of
+PACTA for Banks to produce the relevant project-specific raw input
+files. For a complete overview of the necessary prerequisites (including
+technical setup) please see:
 
   - [“Prerequisites”](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/00-prerequisites.html)
 
