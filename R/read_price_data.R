@@ -105,7 +105,7 @@ read_price_data_old2 <- function(path) {
 
   cols <- c(
     "year", "sector", "technology", "sector_unit_ds", "price_unit_iea",
-    "price_unit_etr", "NPS", "SDS", "Baseline"
+    "price_unit_etr", "NPS", "SDS"
   )
 
   validate_data_has_expected_cols(
