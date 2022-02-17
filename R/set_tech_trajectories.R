@@ -148,9 +148,9 @@ calc_future_prod_follows_scen <- function(planned_prod = .data$plan_tech_prod,
 #'
 #' @return data frame
 set_ls_trajectory <- function(data,
-                              scenario_to_follow_ls = "SDS",
+                              scenario_to_follow_ls,
                               shock_scenario,
-                              scenario_to_follow_ls_aligned = "SDS",
+                              scenario_to_follow_ls_aligned,
                               start_year = 2020,
                               end_year = 2040,
                               analysis_time_frame = NULL,
@@ -350,9 +350,9 @@ calc_late_sudden_traj <- function(start_year, end_year, year_of_shock, duration_
   }
 
   # integral/overshoot compensation method
-  # If the company production plans are already aligned (or outperforming SDS),
-  # we do not need to compensate production capacity, and we set
-  # the LS trajectory equal to the SDS trajectory
+  # If the company production plans are already aligned
+  # we do not need to compensate production capacity, and set LS trajectory to follow
+  # the scenario indicated as late & sudden aligned
   if (
     (overshoot_direction == "Decreasing" & sum(scen_to_follow[1:time_frame]) < sum(late_and_sudden[1:time_frame])) |
       (overshoot_direction == "Increasing" & sum(scen_to_follow[1:time_frame]) > sum(late_and_sudden[1:time_frame]))
