@@ -24,7 +24,7 @@ This vignette describes the necessary prerequisites for installing `r2dii.climat
 
 Programming language:
 
-R - version must be 3.5 or higher (it is best practice to download the most recent version of R). This can be downloaded for Windows from https://cran.studio.com/bin/windows/base
+R - version must be 3.4 or higher (it is best practice to download the most recent version of R). This can be downloaded for Windows from https://cran.studio.com/bin/windows/base
 
 In most cases, this will be downloadable from the bank's internal software repository server subject to approval by the bank's IT department.
 
@@ -50,6 +50,7 @@ r2dii.data manual: https://2degreesinvesting.github.io/r2dii.data/
 r2dii.match manual: https://2degreesinvesting.github.io/r2dii.match/
 r2dii.analysis manual: https://2degreesinvesting.github.io/r2dii.analysis/
 
+## Next steps
 
 After successfully completing the prerequisites, see the Readme on how to install the packege followed by the below-mentioned vignettes on how to run the analysis:
 
