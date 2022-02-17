@@ -31,6 +31,12 @@ custom data. For more information about the methodology and inquiries on running
 a pilot of the stress test in cooperation with 2DII, please contact
 <jacob@2degrees-investing.org>.
 
+## Prerequisites
+
+We assume the user has successfully run at least the matching part of PACTA for Banks to produce the relevant project-specific raw input files. For a complete overview of the necessary prerequisites (including technical setup) please see:
+
+* ["Prerequisites"](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/00-prerequisites.html)
+
 ## Installation
 
 Install the development version of r2dii.climate.stress.test from GitHub with:
