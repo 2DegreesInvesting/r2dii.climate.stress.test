@@ -132,19 +132,18 @@ extend_scenario_trajectory_old <- function(data,
 #'   year of the analysis.
 #' @param end_analysis Numeric. A vector of length 1 indicating the end
 #'   year of the analysis.
-#' @param time_frame Numeric. A vector of length 1 indicating the number of years
-#'   for which forward looking production data is considered.
+#' @param time_frame Numeric. A vector of length 1 indicating the number of
+#'   years for which forward looking production data is considered.
+#' @param target_scenario Character. A vector of length 1 indicating target
+#'   scenario
+
 #' @noRd
 extend_scenario_trajectory <- function(data,
-                                       scenario_data = NULL,
-                                       start_analysis = NULL,
-                                       end_analysis = NULL,
-                                       time_frame = NULL) {
-  force(data)
-  scenario_data %||% stop("Must provide input for 'scenario_data'", call. = FALSE)
-  start_analysis %||% stop("Must provide input for 'start_analysis'", call. = FALSE)
-  end_analysis %||% stop("Must provide input for 'end_analysis'", call. = FALSE)
-  time_frame %||% stop("Must provide input for 'time_frame'", call. = FALSE)
+                                       scenario_data,
+                                       start_analysis,
+                                       end_analysis,
+                                       time_frame,
+                                       target_scenario) {
 
   validate_data_has_expected_cols(
     data = data,
@@ -197,10 +196,18 @@ extend_scenario_trajectory <- function(data,
     handle_phase_out_and_negative_targets()
 
   data <- data %>%
+    calculate_proximity_to_target(
+      start_analysis = start_analysis,
+      time_frame = time_frame,
+      target_scenario = target_scenario
+    )
+
+  data <- data %>%
     tidyr::pivot_wider(
       id_cols = c(
         "investor_name", "portfolio_name", "id", "company_name", "year",
-        "scenario_geography", "ald_sector", "technology", "plan_tech_prod", "phase_out"
+        "scenario_geography", "ald_sector", "technology", "plan_tech_prod",
+        "phase_out", "proximity_to_target", "direction"
       ),
       names_from = .data$scenario,
       values_from = .data$scen_tech_prod
@@ -369,6 +376,72 @@ handle_phase_out_and_negative_targets <- function(data) {
         .data$scen_tech_prod < 0 ~ 0,
         .data$phase_out == TRUE ~ 0,
         TRUE ~ .data$scen_tech_prod
+      )
+    )
+}
+
+#' Calculate the ratio of the required change in technology that each company
+#' has achieved per technology at the end of the production forecast period.
+#' This ratio will later serve to adjust the net profit margin for companies
+#' that have not built out enough production capacity in increasing technologies
+#' and hence need to scale up production to compensate for their lag in buildout.
+#'
+#' @param data A data frame containing the production forecasts of companies
+#'   (in the portfolio). Pre-processed to fit analysis parameters and after
+#'   conversion of power capacity to generation.
+#' @param start_analysis Numeric. A vector of length 1 indicating the start
+#'   year of the analysis.
+#' @param time_frame Numeric. A vector of length 1 indicating the number of
+#'   years for which forward looking production data is considered.
+#' @param target_scenario Character. A vector of length 1 indicating target
+#'   scenario
+#'
+#' @noRd
+calculate_proximity_to_target <- function(data,
+                                          start_analysis,
+                                          time_frame,
+                                          target_scenario) {
+  production_changes <- data %>%
+    dplyr::filter(
+      dplyr::between(
+        .data$year, .env$start_analysis, .env$start_analysis + .env$time_frame
+      ),
+      .data$scenario == .env$target_scenario
+    ) %>%
+    dplyr::group_by(
+      .data$investor_name, .data$portfolio_name, .data$id, .data$company_name,
+      .data$ald_sector, .data$technology, .data$allocation,
+      .data$scenario_geography
+    ) %>%
+    dplyr::mutate(
+      required_change = .data$scen_tech_prod - .data$initial_technology_production,
+      realised_change = .data$plan_tech_prod - .data$initial_technology_production
+    ) %>%
+    dplyr::summarise(
+      sum_required_change = sum(.data$required_change, na.rm = TRUE),
+      sum_realised_change = sum(.data$realised_change, na.rm = TRUE),
+      .groups = "drop"
+    ) %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(
+      ratio_realised_required = .data$sum_realised_change / .data$sum_required_change,
+      proximity_to_target = dplyr::case_when(
+        .data$ratio_realised_required < 0 ~ 0,
+        .data$ratio_realised_required > 1 ~ 1,
+        TRUE ~ .data$ratio_realised_required
+      )
+    ) %>%
+    dplyr::select(
+      -c(.data$sum_required_change, .data$sum_realised_change,
+         .data$ratio_realised_required)
+    )
+
+  data <- data %>%
+    dplyr::inner_join(
+      production_changes,
+      by = c(
+        "investor_name", "portfolio_name", "id", "company_name", "ald_sector",
+        "technology", "allocation", "scenario_geography"
       )
     )
 }
