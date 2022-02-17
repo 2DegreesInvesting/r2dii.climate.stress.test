@@ -8,7 +8,7 @@ calculate_annual_profits(
   asset_type,
   input_data_list,
   scenario_to_follow_baseline,
-  scenario_to_follow_ls,
+  scenario_to_follow_shock,
   transition_scenario,
   start_year,
   end_year,
@@ -26,7 +26,7 @@ calculate_annual_profits(
 of the scenarios included in the analysis should be used to set the
 baseline technology trajectories.}
 
-\item{scenario_to_follow_ls}{Character. A string that indicates which
+\item{scenario_to_follow_shock}{Character. A string that indicates which
 of the scenarios included in the analysis should be used to set the
 late & sudden technology trajectories.}
 

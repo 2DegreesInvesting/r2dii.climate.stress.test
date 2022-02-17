@@ -233,7 +233,7 @@ read_and_process_and_calc <- function(args_list) {
     asset_type = asset_type,
     input_data_list = input_data_list,
     scenario_to_follow_baseline = baseline_scenario_lookup,
-    scenario_to_follow_ls = shock_scenario_lookup,
+    scenario_to_follow_shock = shock_scenario_lookup,
     transition_scenario = transition_scenario,
     start_year = start_year,
     end_year = end_year_lookup,
@@ -247,7 +247,7 @@ read_and_process_and_calc <- function(args_list) {
     input_data_list = input_data_list,
     start_year = start_year,
     time_horizon = time_horizon_lookup,
-    scenario_to_follow_ls = shock_scenario_lookup,
+    scenario_to_follow_shock = shock_scenario_lookup,
     log_path = log_path
   )
 
