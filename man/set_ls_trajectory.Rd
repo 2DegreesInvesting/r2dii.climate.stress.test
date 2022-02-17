@@ -7,9 +7,9 @@ stress test.}
 \usage{
 set_ls_trajectory(
   data,
-  scenario_to_follow_ls = "SDS",
+  scenario_to_follow_ls,
   shock_scenario,
-  scenario_to_follow_ls_aligned = "SDS",
+  scenario_to_follow_ls_aligned,
   start_year = 2020,
   end_year = 2040,
   analysis_time_frame = NULL,
