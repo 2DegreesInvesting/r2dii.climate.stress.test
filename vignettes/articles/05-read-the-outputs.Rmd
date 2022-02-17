@@ -320,12 +320,6 @@ scenario.
 * `net_profit_margin`: Net profit margin of the company.
 * `debt_equity_ratio`: Debt to equity ratio of the company.
 * `volatility`: Volatility of the asset price of the company.
-* `production_unit`: Unit of the real production associated with the given
-combination of company and technology.
-* `price_unit_iea`: Unit of the market price for the given technology for IEA
-scenarios.
-* `price_unit_etr`: Unit of the market price for the given technology for ETR
-scenarios.
 * `price_baseline_scenario`: Market price for the given year and technology
 under the baseline scenario.
 * `price_shock_scenario`: Market price for the given year and technology under

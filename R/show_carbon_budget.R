@@ -29,7 +29,7 @@ show_carbon_budget <- function(data,
     expected_columns = c(
       "investor_name", "portfolio_name", "id", "company_name", "scenario_name",
       "year", "scenario_geography", "ald_sector", "technology", "late_sudden",
-      "sector_unit_ds", "year_of_shock"
+      "year_of_shock"
     )
   )
 
@@ -60,8 +60,7 @@ show_carbon_budget <- function(data,
     ) %>%
     dplyr::group_by(
       .data$scenario_name, .data$year, .data$scenario_geography,
-      .data$ald_sector, .data$technology, .data$sector_unit_ds,
-      .data$year_of_shock
+      .data$ald_sector, .data$technology, .data$year_of_shock
     ) %>%
     dplyr::summarise(
       late_sudden = sum(.data$late_sudden, na.rm = TRUE),
