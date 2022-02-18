@@ -12,8 +12,7 @@ company_asset_value_at_risk(
   div_netprofit_prop_coef = NULL,
   plan_carsten = NULL,
   port_aum = NULL,
-  flat_multiplier = NULL,
-  exclusion = NULL
+  flat_multiplier = NULL
 )
 }
 \arguments{
@@ -38,10 +37,6 @@ the asset type at hand}
 
 \item{flat_multiplier}{Numeric. A ratio that determines for the asset type
 if how strongly the DCF should propagate to value changes.}
-
-\item{exclusion}{A dataframe with two character columns, "company_name" and
-"technology", that lists which technologies from which companies should be
-set to 0 in the remainder of the analysis.}
 }
 \description{
 Calculate percentage value change between scenarios for equity (and

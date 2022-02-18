@@ -259,12 +259,6 @@ st_process <- function(data, asset_type, company_exclusion, fallback_term,
     end_year = end_year_lookup
   )
 
-  # excluded_companies <- process_excluded_companies(
-  #   data$excluded_companies,
-  #   company_exclusion = company_exclusion,
-  #   technologies = technologies_lookup
-  # )
-
   df_price <- process_df_price(
     data$df_price,
     technologies = technologies_lookup,
@@ -312,7 +306,6 @@ st_process <- function(data, asset_type, company_exclusion, fallback_term,
     pacta_results = pacta_results,
     sector_exposures = sector_exposures,
     capacity_factors_power = capacity_factors_power,
-    # excluded_companies = excluded_companies,
     df_price = df_price,
     scenario_data = scenario_data,
     financial_data = financial_data,

@@ -1,7 +1,6 @@
 #' Calculate percentage value change between scenarios for equity (and
 #' temporarily other asset types) on the company-technology level
 #'
-#' @inheritParams exclude_companies
 #' @param data A dataframe containing the (discounted) annual profits
 #' @param terminal_value Numeric. A ratio to determine the share of the
 #'   discounted value used in the terminal value calculation beyond the
@@ -23,8 +22,7 @@ company_asset_value_at_risk <- function(data,
                                         div_netprofit_prop_coef = NULL,
                                         plan_carsten = NULL,
                                         port_aum = NULL,
-                                        flat_multiplier = NULL,
-                                        exclusion = NULL) {
+                                        flat_multiplier = NULL) {
   force(data)
   terminal_value %||% stop("Must provide input for 'terminal_value'", call. = FALSE)
   shock_scenario %||% stop("Must provide input for 'shock_scenario'", call. = FALSE)
@@ -82,46 +80,6 @@ company_asset_value_at_risk <- function(data,
         .data$total_disc_npv_baseline
     ) %>%
     dplyr::select(-c(.data$total_disc_npv_ls, .data$total_disc_npv_baseline))
-
-  if (!is.null(exclusion)) {
-    validate_data_has_expected_cols(
-      data = exclusion,
-      expected_columns = c(
-        "company_name", "technology"
-      )
-    )
-
-    exclusion <- exclusion %>%
-      dplyr::mutate(exclude = TRUE)
-
-    data <- data %>%
-      # ADO 1945: we opt for a left join and a flag rather than an anti join so
-      # that we know which values were removed in the final outcome. This
-      # mechanism should be revisited as part of an overhaul of the compensation.
-      dplyr::left_join(
-        exclusion,
-        by = c("company_name", "technology")
-      ) %>%
-      dplyr::mutate(
-        exclude = dplyr::if_else(
-          is.na(.data$exclude),
-          FALSE,
-          .data$exclude
-        )
-      )
-
-    data <- data %>%
-      dplyr::mutate(
-        VaR_tech_company = dplyr::if_else(
-          .data$exclude == TRUE & is.nan(.data$VaR_tech_company),
-          0,
-          .data$VaR_tech_company
-        )
-      )
-  } else {
-    data <- data %>%
-      dplyr::mutate(exclude = FALSE)
-  }
 
   data <- data %>%
     # TODO: 3384 this is where increasing technologies with zero start value are removed

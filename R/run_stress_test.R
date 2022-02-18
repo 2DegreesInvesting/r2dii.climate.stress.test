@@ -60,7 +60,6 @@ run_stress_test <- function(asset_type,
                             shock_year = 2030,
                             fallback_term = 2,
                             scenario_geography = "Global",
-                            # company_exclusion = TRUE,
                             use_company_terms = FALSE,
                             return_results = FALSE) {
   cat("-- Running transition risk stress test. \n\n\n")
@@ -80,7 +79,6 @@ run_stress_test <- function(asset_type,
     div_netprofit_prop_coef = div_netprofit_prop_coef,
     shock_year = shock_year,
     fallback_term = fallback_term,
-    # company_exclusion = company_exclusion,
     use_company_terms = use_company_terms,
     asset_type = asset_type
   )
@@ -199,7 +197,6 @@ read_and_process_and_calc <- function(args_list) {
   input_data_list <- list(
     pacta_results = processed$pacta_results,
     capacity_factors_power = processed$capacity_factors_power,
-    # excluded_companies = processed$excluded_companies,
     sector_exposures = processed$sector_exposures,
     scenario_data = processed$scenario_data,
     df_price = processed$df_price,
@@ -255,8 +252,7 @@ read_and_process_and_calc <- function(args_list) {
     div_netprofit_prop_coef = div_netprofit_prop_coef,
     plan_carsten = exposure_by_technology_and_company,
     port_aum = port_aum,
-    flat_multiplier = flat_multiplier#,
-    # exclusion = input_data_list$excluded_companies
+    flat_multiplier = flat_multiplier
   )
 
   cat("-- Calculating credit risk. \n\n\n")
