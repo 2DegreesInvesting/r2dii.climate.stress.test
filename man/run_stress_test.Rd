@@ -17,7 +17,6 @@ run_stress_test(
   shock_year = 2030,
   fallback_term = 2,
   scenario_geography = "Global",
-  company_exclusion = TRUE,
   use_company_terms = FALSE,
   return_results = FALSE
 )
@@ -66,10 +65,6 @@ For accepted range compare \code{stress_test_arguments}.}
 region(s) (concerning asset location) results shall be calculated for. For
 accepted values compare \code{stress_test_arguments}. Note that currently only
 the global level is supported.}
-
-\item{company_exclusion}{Boolean, indicating if companies provided in dataset
-excluded_companies.csv shall be excluded. For accepted values compare
-\code{stress_test_arguments}.}
 
 \item{use_company_terms}{Boolean, indicating if term values for individual
 companies are to be used. For accepted values compare

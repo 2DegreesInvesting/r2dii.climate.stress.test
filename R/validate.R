@@ -11,7 +11,8 @@ validate_input_values <- function(lgd_senior_claims, lgd_subordinated_claims,
                                   company_exclusion, use_company_terms, asset_type) {
   input_args <- mget(names(formals()), sys.frame(sys.nframe()))
 
-  c("company_exclusion", "asset_type", "use_company_terms") %>%
+  c("asset_type", "use_company_terms") %>%
+    # c("company_exclusion", "asset_type", "use_company_terms") %>%
     purrr::walk(validate_values_in_values, args_list = input_args)
 
   c(
