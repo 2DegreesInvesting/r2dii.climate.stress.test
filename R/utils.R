@@ -233,7 +233,7 @@ report_company_drops <- function(data_list, asset_type, log_path) {
     data_x = data_list$pacta_results,
     data_y = data_list$df_price,
     name_y = "price data",
-    merge_cols = c("technology", "ald_sector" = "sector", "year"),
+    merge_cols = c("technology", "ald_sector", "year"),
     log_path = log_path
   )
 

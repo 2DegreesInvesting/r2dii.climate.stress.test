@@ -148,8 +148,8 @@ process_price_data <- function(data, technologies, sectors, start_year, end_year
   validate_data_has_expected_cols(data, paste0(c(baseline_scenario, shock_scenario), "_price"))
 
   data_processed <- data %>%
-    dplyr::filter(.data$sector %in% .env$sectors_lookup) %>%
-    check_sector_tech_mapping(sector_col = "sector") %>%
+    dplyr::filter(.data$ald_sector %in% .env$sectors_lookup) %>%
+    check_sector_tech_mapping(sector_col = "ald_sector") %>%
     dplyr::filter(.data$technology %in% .env$technologies_lookup) %>%
     dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year)) %>%
     stop_if_empty(data_name = "Price Data") %>%
@@ -158,7 +158,7 @@ process_price_data <- function(data, technologies, sectors, start_year, end_year
       expected_levels_list =
         list(
           year = start_year:end_year,
-          sector = sectors,
+          ald_sector = sectors,
           technology = technologies
         )
     ) %>%
