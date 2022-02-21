@@ -12,7 +12,6 @@ validate_input_values(
   div_netprofit_prop_coef,
   shock_year,
   fallback_term,
-  company_exclusion,
   use_company_terms,
   asset_type
 )
