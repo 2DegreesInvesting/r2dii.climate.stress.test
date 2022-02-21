@@ -12,17 +12,20 @@
 #' @param shock_scenario String holding name of the shock scenario.
 #' @param transition_scenario Tibble with 1 row holding at least variables
 #'   `year_of_shock` and `duration_of_shock`.
+#' @param start_year Start_year of analysis
 #'
 #' @return A tibble holding late_and_sudden_prices
-calc_scenario_prices <- function(price_data, baseline_scenario, shock_scenario, transition_scenario) {
+calc_scenario_prices <- function(price_data, baseline_scenario, shock_scenario,
+                                 transition_scenario, start_year) {
 
   data <- price_data %>%
-    dplyr::mutate(Baseline = !!rlang::sym(paste0(baseline_scenario, "_price"))) %>%
+    dplyr::mutate(baseline_price = !!rlang::sym(paste0(baseline_scenario, "_price"))) %>%
+    dplyr::mutate(shock_price = !!rlang::sym(paste0(shock_scenario, "_price"))) %>%
     dplyr::group_by(ald_sector, technology) %>%
     dplyr::mutate(
       late_sudden_price = late_sudden_prices(
-        SDS_price = SDS_price,
-        Baseline_price = Baseline_price,
+        shock_price = shock_price,
+        baseline_price = baseline_price,
         year_of_shock = transition_scenario$year_of_shock,
         start_year = start_year,
         duration_of_shock = transition_scenario$duration_of_shock

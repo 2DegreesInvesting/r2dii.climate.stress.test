@@ -15,22 +15,19 @@ f <- function(shock_strength_calc) {
 
 # LATE AND SUDDEN PRICES ----------------------------------------
 
-late_sudden_prices <- function(SDS_price,
-                               Baseline_price,
+late_sudden_prices <- function(shock_price,
+                               baseline_price,
                                year_of_shock,
                                start_year,
                                duration_of_shock) {
-  # input:
-  # vector with SDS and Baseline (NPS) prices
-  # Calculates late and sudden prices based on these two vectors
-  # At the moment LS prices follow SDS prices until price shock, then LS prices linearly reach NPS prices during the shock period. After shock period, LS prices follow SDS prices
+
   position_shock_year <- year_of_shock - start_year + 1
-  ls_price <- Baseline_price
+  ls_price <- baseline_price
 
-  baseline_price_at_shock <- Baseline_price[0 + position_shock_year]
-  SDS_price_end_shockperiod <- SDS_price[duration_of_shock + position_shock_year - 1]
+  baseline_price_at_shock <- baseline_price[0 + position_shock_year]
+  shock_price_end_shockperiod <- shock_price[duration_of_shock + position_shock_year - 1]
 
-  ls_price[position_shock_year:(position_shock_year + duration_of_shock - 1)] <- zoo::na.approx(c(baseline_price_at_shock, rep(NA, duration_of_shock - 2), SDS_price_end_shockperiod))
+  ls_price[position_shock_year:(position_shock_year + duration_of_shock - 1)] <- zoo::na.approx(c(baseline_price_at_shock, rep(NA, duration_of_shock - 2), shock_price_end_shockperiod))
 
   return(ls_price)
 }

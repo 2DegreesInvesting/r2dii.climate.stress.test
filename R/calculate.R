@@ -26,7 +26,8 @@ calculate_annual_profits <- function(asset_type, input_data_list, scenario_to_fo
     calc_scenario_prices(
       baseline_scenario = scenario_to_follow_baseline,
       shock_scenario = scenario_to_follow_shock,
-      transition_scenario = transition_scenario
+      transition_scenario = transition_scenario,
+      start_year = start_year
     )
 
   extended_pacta_results <- input_data_list$pacta_results %>%
