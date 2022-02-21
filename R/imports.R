@@ -67,6 +67,7 @@ globalVariables(
     "scen_to_follow",
     "sector",
     "sector_ald",
+    "shock_price",
     "stress_test_arguments",
     "t_calc",
     "tech_roadmap_sectors",
