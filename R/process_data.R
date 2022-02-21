@@ -145,6 +145,8 @@ process_excluded_companies <- function(data, company_exclusion, technologies) {
 process_price_data <- function(data, technologies, sectors, start_year, end_year,
                                baseline_scenario, shock_scenario) {
 
+  validate_data_has_expected_cols(data, paste0(c(baseline_scenario, shock_scenario), "_price"))
+
   data_processed <- data %>%
     dplyr::filter(.data$sector %in% .env$sectors_lookup) %>%
     check_sector_tech_mapping(sector_col = "sector") %>%
