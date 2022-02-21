@@ -39,7 +39,6 @@ test_create_target_directory <- function(path = NULL,
 #'
 #' get_st_argument("fallback_term", "min")
 #'
-#' typeof(get_st_argument("company_exclusion"))
 #' typeof(get_st_argument("asset_type"))
 #' @noRd
 get_st_argument <- function(name,
