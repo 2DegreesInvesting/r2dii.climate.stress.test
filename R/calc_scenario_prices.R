@@ -20,11 +20,11 @@ calc_scenario_prices <- function(price_data, baseline_scenario, shock_scenario,
   data <- price_data %>%
     dplyr::mutate(Baseline_price = !!rlang::sym(paste0(baseline_scenario, "_price"))) %>%
     # NOTE: deviating from lower snake case here due legacy functions
-    dplyr::mutate(shock_price = !!rlang::sym(paste0(shock_scenario, "_price"))) %>%
+    dplyr::mutate(target_price = !!rlang::sym(paste0(shock_scenario, "_price"))) %>%
     dplyr::group_by(ald_sector, technology) %>%
     dplyr::mutate(
       late_sudden_price = late_sudden_prices(
-        shock_price = .data$shock_price,
+        target_price = .data$target_price,
         baseline_price = .data$Baseline_price,
         year_of_shock = transition_scenario$year_of_shock,
         start_year = start_year,
@@ -32,7 +32,7 @@ calc_scenario_prices <- function(price_data, baseline_scenario, shock_scenario,
       )
     ) %>%
     dplyr::ungroup() %>%
-    dplyr::select(year, ald_sector, technology, Baseline_price, shock_price, late_sudden_price)
+    dplyr::select(year, ald_sector, technology, Baseline_price, late_sudden_price)
 
   return(data)
 }

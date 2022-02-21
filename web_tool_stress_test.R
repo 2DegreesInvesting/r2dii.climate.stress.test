@@ -312,7 +312,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
         #### OPEN: Potentially a problem with the LS price calculation. Concerning warning
         dplyr::mutate(
           late_sudden_price = late_sudden_prices(
-            shock_price = SDS_price,
+            target_price = SDS_price,
             baseline_price = Baseline_price,
             year_of_shock = transition_scenario_i$year_of_shock,
             start_year = start_year,
@@ -452,7 +452,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
         dplyr::group_by(ald_sector, technology) %>%
         dplyr::mutate(
           late_sudden_price = late_sudden_prices(
-            shock_price = SDS_price,
+            target_price = SDS_price,
             baseline_price = Baseline_price,
             year_of_shock = transition_scenario_i$year_of_shock,
             start_year = start_year,
