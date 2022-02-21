@@ -1,15 +1,20 @@
-#' Calculate late and sudden prices
+#' Calculate scenario prices
 #'
-#' Wrapper function around call to late_sudden_prices.
+#' Function generates prices for baseline and late and sudden shock scenario.
+#' Price for baseline scenario correspond to prices of `baseline_scenario`.
+#' Prices for the late sudden scenario also correspond to `baseline_scenario`
+#' until the `year_of_shock`. From then on they linearly approach the price
+#' level of the `shock_scenario` during the `duration_of_shock`.
+#'
 #'
 #' @param price_data A tibble holding price data.
 #' @param baseline_scenario String holding name of the baseline scenario.
+#' @param shock_scenario String holding name of the shock scenario.
 #' @param transition_scenario Tibble with 1 row holding at least variables
 #'   `year_of_shock` and `duration_of_shock`.
-#' @param start_year Numeric, holding start year of analysis.
 #'
 #' @return A tibble holding late_and_sudden_prices
-calc_late_sudden_prices <- function(price_data, baseline_scenario, transition_scenario, start_year) {
+calc_scenario_prices <- function(price_data, baseline_scenario, shock_scenario, transition_scenario) {
   late_sudden_prices_data <- price_data %>%
     dplyr::mutate(Baseline = !!rlang::sym(baseline_scenario)) %>%
     dplyr::rename(

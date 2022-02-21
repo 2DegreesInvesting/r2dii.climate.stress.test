@@ -23,10 +23,10 @@ calculate_annual_profits <- function(asset_type, input_data_list, scenario_to_fo
                                      scenario_to_follow_shock, transition_scenario, start_year,
                                      end_year, time_horizon, discount_rate, log_path) {
   price_data <- input_data_list$df_price %>%
-    calc_late_sudden_prices(
+    calc_scenario_prices(
       baseline_scenario = scenario_to_follow_baseline,
-      transition_scenario = transition_scenario,
-      start_year = start_year
+      shock_scenario = scenario_to_follow_shock,
+      transition_scenario = transition_scenario
     )
 
   extended_pacta_results <- input_data_list$pacta_results %>%
