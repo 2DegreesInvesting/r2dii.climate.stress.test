@@ -17,10 +17,10 @@ proceeds to explain in depth how to read the data in each of the files.
 
 ## Overview
 
-The source code generates nine files after completing the stress test for a 
-given set of parameters. They chiefly contain estimates of the market risk of 
-companies in the portfolio and of the credit risk of said companies in a 
-corporate loan book. The source code additionally outputs a file with 
+The source code generates nine result (output) files after completing the 
+stress test for a given set of parameters. They principally contain estimates of the
+market risk of companies in the portfolio and of the credit risk of said companies
+in a corporate loan book. The source code additionally outputs a file with 
 company-level scenario production trajectories and log file which holds 
 information on the settings of current the stress test run.
 
@@ -47,63 +47,76 @@ information on the settings of current the stress test run.
 
 ## Content of output files
 
-In this section, we look at the output files and what each of the variables they
-contain mean.
+In this section, we look at each result file and what each of the variables they
+contain mean. The set of input parameters, common to all result files, is 
+described at the end of the following list. Special attention at the end 
+is also dedicated to the slight differences in the format of results created from
+a sensitivity analysis.
 
-#### Shared Outputs: Model Parameters
+### log_file_\<suffix\>
 
-All result files discussed below contain the values of the input parameters in the
-stress testing model. The information on all model input parameters [is described here](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/03-run-stress-test.html#understanding-the-input-arguments). The result files contain
-the following set of input parameters.
+This is a text file that contains information on the settings of the stress
+test run that created the results files. The user can check on the:
 
-* `asset_type_arg` is the type of the analysed financial asset in the portfolio. 
-* `lgd_senior_claims_arg` is the loss given default used in the expected loss
-calculation of loans for senior claims (notably for corporate loans, so this is
-a potentially important parameter in this calculation)
-* `lgd_subordinated_claims_arg` is the loss given default used in the expected loss
-calculation of loans for subordinated claims (notably for corporate bonds. Not
-of relevance in the loans calculation)
-* `risk_free_rate_arg` the risk free interest rate. Input parameter to the Merton
-credit risk model.
-* `discount_rate_arg` the annual rate at which future cash flows are discounted when
-calculating the net present value of companies in the loan book. Since the net
-present values are indirect inputs into the Merton credit risk model, this
-parameter my be relevant.
-* `div_netprofit_prop_coef_arg` Coefficient that indicates what share of the net
-present value should be considered to derive the equity value of a company.
-* `shock_year_arg` year in which the policy is introduced, that adjusts the
-production values of companies to stay in line with carbon budgets.
-* `fallback_term_arg` indicates which maturity the loans in the loan book are
-assumed to have. At this point we assume these are rolled over every year.
-* `scenario_geography_arg` Indicates which geographical region(s) (concerning asset
-location) results shall be calculated for.
-* `company_exclusion_arg` Logical parameter that indicates if certain combinations
-of company and technology should be excluded from the analysis. At this point,
-it is strictly recommended to set this to TRUE (default) because there is not
-yet a dedicated mechanism in place that handles companies which are phasing out
-certain technologies within the time frame of the production forecast.
-* `use_company_terms_arg` Logical parameter, indicating if individually provided
-terms for companies as configured in company_terms.csv shall be used instead of
-fallback as provided in `fallback_term`. The default is FALSE. For more details
-compare [Advanced data
-settings](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/04-advanced-data-settings.html).
+* `asset_type` the type of the analysed financial asset in the portfolio/loanbook. 
+This would `loans` for the current version of the stress test.
+* the paths to the input (`input_path_project_specific`, `input_path_project_agnostic`)
+and output (`output_path`) directories.
+* next, a full list of the values of the input parameters for the stress test analysis
+[as described here](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/03-run-stress-test.html#understanding-the-input-arguments). 
+* finally, information on the companies that were excluded from the analysis due 
+to not being able to match PACTA results on company financial data.
 
-While there may be some redundancy to this information, it is there to ensure 
-the results remain reproducible and straight forward for the user
-to understand given magnitudes in the model results. In the standard run of the 
-stress test, with single value set for each input parameter, this implies that the 
-argument columns just contain one value each (as opposed to sensitivity analysis
-where the user can set multiples values of input parameters).
+### loans_company_trajectories_\<suffix\>
 
-#### Sensitivity Analyses
+This file contains an in detail overview of cash flow projections on the 
+company-technology level for the baseline and the shock scenarios.
 
-Running a sensitivity analysis produces as many sets of results as they are input
-parameter values selected. To make the ensuing analysis easy and to avoid clutter 
-in the output directory, analysis outputs will use the name of the variable that
-is varied as the suffix and simply contain the results of multiple runs in one file. 
-The variation can be seen by looking at the argument column of the variable 
-was iterated over.Instead of just one value, it will contain values for every 
-iteration of the sensitivity analysis.
+* `investor_name`: Name of the investor or bank for which the analysis was run.
+* `portfolio_name`: Name of the portfolio or loan book managed by the investor
+or bank for which the analysis was run.
+* `scenario_name`: Name that highlights the use of the Carbon budget.
+* `company_name`: Name of the company that was analyzed.
+* `year`: Calendar year.
+* `scenario_geography`: Region for which the analysis was run. This refers to
+the location of assets considered as well as the regional break down of the 
+scenario targets used.
+* `ald_sector`: Sector of the production assets analyzed.
+* `technology`: The technology can be understood as a sub sector. These must be
+in line with the technologies, for which the scenarios provide production
+pathways.
+* `production_plan_company_technology`: Five year forward looking production
+plans, by company, technology and year.
+* `phase_out`: Logical indicator, showing if the given company phases out its
+production of the indicated technology during the production forecast period.
+* `production_baseline_scenario`: Production plan for the combination of company
+and technology under the baseline scenario.
+* `production_target_scenario`: Production plan for the combination of company
+and technology under the target scenario.
+* `production_shock_scenario`: Production plan for the combination of company
+and technology under the shock scenario.
+* `production_change_target_scenario`: Year by year required absolute changes of
+production for the combination of company and technology under the target
+scenario.
+* `company_id`: Internal company identifier.
+* `pd`: Probability of default under the baseline scenario.
+* `net_profit_margin`: Net profit margin of the company.
+* `debt_equity_ratio`: Debt to equity ratio of the company.
+* `volatility`: Volatility of the asset price of the company.
+* `price_baseline_scenario`: Market price for the given year and technology
+under the baseline scenario.
+* `price_shock_scenario`: Market price for the given year and technology under
+the shock scenario.
+* `net_profits_baseline_scenario`: Annual projected net profits of the given
+combination of company and technology under the baseline scenario.
+* `net_profits_shock_scenario`: Annual projected net profits of the given
+combination of company and technology under the shock scenario.
+* `discounted_net_profits_baseline_scenario`: Annual projected discounted net
+profits of the given combination of company and technology under the baseline
+scenario.
+* `discounted_net_profits_shock_scenario`: Annual projected discounted net
+profits of the given combination of company and technology under the shock
+scenario.
 
 ### loans_company_value_changes_\<suffix\>
 
@@ -120,7 +133,8 @@ or bank for which the analysis was run. (Currently this is hard coded to "Meta
 Investor" internally)
 * `company_name`: Name of the company that was analyzed.
 * `scenario_geography`: Region for which the analysis was run. This refers to the
-location of assets considered as well as the regionality of scenario targets used.
+location of assets considered as well as the regional break down of the 
+scenario targets used.
 * `scenario_name`: Name that highlights the use of the Carbon budget compensation
 mechanism and the year of the introduction of a transition policy.
 * `year_of_shock`: Year the transition policy is first introduced.
@@ -195,11 +209,11 @@ indicated a phase out in production.
 
 This result file contains relative expected value changes on the portfolio level,
 based on the DCF model to calculate market risk. It additionally contains
-aggregations on the technology, sector and total levels. The columns and rows in
-this file are a subset of the ones included in the company level output.
-The user can refer to the explanations above for reference.
+aggregations on the technology, sector and total levels using exposure weighting.
+The columns and rows in this file are a subset of the ones included in the 
+company level output. The user can refer to the explanations above for reference.
 
-### loans_company_expcted_loss_\<suffix\>
+### loans_company_expected_loss_\<suffix\>
 
 This result file contains expected changes in the probability of default and in
 expected losses. The company level pd changes are used to derive loan book level
@@ -208,8 +222,8 @@ changes in expected loss.
 * `scenario_name`: Name that highlights the use of the Carbon budget.
 compensation mechanism and the Year of the introduction of a transition policy.
 * `scenario_geography`: Region for which the analysis was run. This refers to
-the location of assets considered as well as the regionality of scenario targets
-used.
+the location of assets considered as well as the regional break down of the 
+scenario targets used.
 * `investor_name`: Name of the investor or bank for which the analysis was run.
 * `portfolio_name`: Name of the portfolio or loan book managed by the investor
 or bank for which the analysis was run.
@@ -232,22 +246,23 @@ loans (or alternatively of the credit limit) to a company.
 * `expected_loss_baseline`: The expected loss of the holdings of a company in
 the analyzed portfolio or loan book based on the exposure to that company under
 a baseline (commonly business as usual) scenario. This is calculated as:
-`pd_baseline * lgd * exposure_at_default`.
+`expected_loss_baseline = pd_baseline * lgd * exposure_at_default`.
 * `expected_loss_shock`: The expected loss of the holdings of a company in
 the analyzed portfolio or loan book based on the exposure to that company under
 a shock scenario (here: a late and sudden climate transition policy). This is
-calculated as: `(pd_baseline + pd_change_shock) * lgd * exposure_at_default`.
+calculated as:
+`expected_loss_shock = (pd_baseline + pd_change_shock) * lgd * exposure_at_default`.
 
 ### loans_company_pd_changes_annual_\<suffix\>
 
-This file contains an overview on the company level of how annual probabilities
-of default change relative to the baseline scenario after the shock year.
+This file contains an overview of the changes of the company-level annual probabilities
+of default relative to the baseline scenario for each year of analysis.
 
 * `scenario_name`: Name that highlights the use of the Carbon budget.
 compensation mechanism and the year of the introduction of a transition policy.
 * `scenario_geography`: Region for which the analysis was run. This refers to
-the location of assets considered as well as the regionality of scenario targets
-used.
+the location of assets considered as well as the regional break down of the 
+scenario targets used.
 * `investor_name`: Name of the investor or bank for which the analysis was run.
 * `portfolio_name`: Name of the portfolio or loan book managed by the investor
 or bank for which the analysis was run.
@@ -262,14 +277,15 @@ policy shock will change over time.
 
 ### loans_sector_pd_changes_annual_\<suffix\>
 
-This file contains an overview on the sector level of how annual probabilities
-of default change relative to the baseline scenario after the shock year.
+This file contains an overview of the changes of annual probabilities of default 
+aggregated to the sector level by company exposure weight relative to the baseline
+scenario for each year of the analysis.
 
 * `scenario_name`: Name that highlights the use of the Carbon budget.
 compensation mechanism and the Year of the introduction of a transition policy.
 * `scenario_geography`: Region for which the analysis was run. This refers to
-the location of assets considered as well as the regionality of scenario targets
-used.
+the location of assets considered as well as the regional break down of the 
+scenario targets used.
 * `investor_name`: Name of the investor or bank for which the analysis was run.
 * `portfolio_name`: Name of the portfolio or loan book managed by the investor
 or bank for which the analysis was run.
@@ -283,13 +299,13 @@ rolled over every year after the policy shock will change over time.
 
 ### loans_company_pd_changes_overall_\<suffix\>
 
-This file contains an overview on the company level of how overall probabilities
-of default change depending on the maturities of the underlying loans.
+This file contains an overview of the company level overall probabilities
+of default change for the maturities of the underlying loans.
 
 * `scenario_name`: Name that highlights the use of the Carbon budget.
 * `scenario_geography`: Region for which the analysis was run. This refers to
-the location of assets considered as well as the regionality of scenario targets
-used.
+the location of assets considered as well as the regional break down of the 
+scenario targets used.
 * `investor_name`: Name of the investor or bank for which the analysis was run.
 * `portfolio_name`: Name of the portfolio or loan book managed by the investor
 or bank for which the analysis was run.
@@ -302,13 +318,13 @@ PDs by different maturities on the sector level.
 
 ### loans_sector_pd_changes_overall_\<suffix\>
 
-This file contains an overview on the sector level of how overall probabilities
-of default change depending on the maturities of the underlying loans.
+This file contains an overview on the overall probabilities
+of default change for the maturities of the underlying loans.
 
 * `scenario_name`: Name that highlights the use of the Carbon budget.
 * `scenario_geography`: Region for which the analysis was run. This refers to
-the location of assets considered as well as the regionality of scenario targets
-used.
+the location of assets considered as well as the regional break down of the 
+scenario targets used.
 * `investor_name`: Name of the investor or bank for which the analysis was run.
 * `portfolio_name`: Name of the portfolio or loan book managed by the investor
 or bank for which the analysis was run.
@@ -318,54 +334,61 @@ or bank for which the analysis was run.
 the portfolio or loan book, aggregated to the sector level. This PD change shows
 the variation of the impact on PDs by different maturities on the sector level.
 
+### Model Parameter Argument Columns: common to all results files
 
-### company_trajectories_\<suffix\>
+All result files discussed below contain the values of the input parameters in the
+stress testing model. The information on all model input parameters [is described here](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/03-run-stress-test.html#understanding-the-input-arguments). The result files contain
+the following set of input parameters:
 
-This file contains an in detail overview of cash flow projections on the 
-company-technology level for the baseline and the shock scenarios.
+* `asset_type_arg` is the type of the analysed financial asset in the portfolio. 
+* `lgd_senior_claims_arg` is the loss given default used in the expected loss
+calculation of loans for senior claims (notably for corporate loans, so this is
+a potentially important parameter in this calculation)
+* `lgd_subordinated_claims_arg` is the loss given default used in the expected loss
+calculation of loans for subordinated claims (notably for corporate bonds. Not
+of relevance in the loans calculation)
+* `risk_free_rate_arg` the risk free interest rate. Input parameter to the Merton
+credit risk model.
+* `discount_rate_arg` the annual rate at which future cash flows are discounted when
+calculating the net present value of companies in the loan book. Since the net
+present values are indirect inputs into the Merton credit risk model, this
+parameter my be relevant.
+* `div_netprofit_prop_coef_arg` Coefficient that indicates what share of the net
+present value should be considered to derive the equity value of a company.
+* `shock_year_arg` year in which the policy is introduced, that adjusts the
+production values of companies to stay in line with carbon budgets.
+* `fallback_term_arg` indicates which maturity the loans in the loan book are
+assumed to have. At this point we assume these are rolled over every year.
+* `scenario_geography_arg` Indicates which geographical region(s) (concerning asset
+location) results shall be calculated for.
+* `company_exclusion_arg` Logical parameter that indicates if certain combinations
+of company and technology should be excluded from the analysis. At this point,
+it is strictly recommended to set this to TRUE (default) because there is not
+yet a dedicated mechanism in place that handles companies which are phasing out
+certain technologies within the time frame of the production forecast.
+* `use_company_terms_arg` Logical parameter, indicating if individually provided
+terms for companies as configured in company_terms.csv shall be used instead of
+fallback as provided in `fallback_term`. The default is FALSE. For more details
+compare [Advanced data
+settings](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/04-advanced-data-settings.html).
 
-* `investor_name`: Name of the investor or bank for which the analysis was run.
-* `portfolio_name`: Name of the portfolio or loan book managed by the investor
-or bank for which the analysis was run.
-* `scenario_name`: Name that highlights the use of the Carbon budget.
-* `company_name`: Name of the company that was analyzed.
-* `year`: Calendar year.
-* `scenario_geography`: Region for which the analysis was run. This refers to
-the location of assets considered as well as the regionality of scenario targets
-used.
-* `ald_sector`: Sector of the production assets analyzed.
-* `technology`: The technology can be understood as a sub sector. These must be
-in line with the technologies, for which the scenarios provide production
-pathways.
-* `production_plan_company_technology`: Five year forward looking production
-plans, by company, technology and year.
-* `phase_out`: Logical indicator, showing if the given company phases out its
-production of the indicated technology during the production forecast period.
-* `production_baseline_scenario`: Production plan for the combination of company
-and technology under the baseline scenario.
-* `production_target_scenario`: Production plan for the combination of company
-and technology under the target scenario.
-* `production_shock_scenario`: Production plan for the combination of company
-and technology under the shock scenario.
-* `production_change_target_scenario`: Year by year required absolute changes of
-production for the combination of company and technology under the target
-scenario.
-* `company_id`: Internal company identifier.
-* `pd`: Probability of default under the baseline scenario.
-* `net_profit_margin`: Net profit margin of the company.
-* `debt_equity_ratio`: Debt to equity ratio of the company.
-* `volatility`: Volatility of the asset price of the company.
-* `price_baseline_scenario`: Market price for the given year and technology
-under the baseline scenario.
-* `price_shock_scenario`: Market price for the given year and technology under
-the shock scenario.
-* `net_profits_baseline_scenario`: Annual projected net profits of the given
-combination of company and technology under the baseline scenario.
-* `net_profits_shock_scenario`: Annual projected net profits of the given
-combination of company and technology under the shock scenario.
-* `discounted_net_profits_baseline_scenario`: Annual projected discounted net
-profits of the given combination of company and technology under the baseline
-scenario.
-* `discounted_net_profits_shock_scenario`: Annual projected discounted net
-profits of the given combination of company and technology under the shock
-scenario.
+While there may be some redundancy to this information, it is there to ensure 
+the results remain reproducible and straight forward for the user
+to understand given magnitudes in the model results. In the standard run of the 
+stress test, with single value set for each input parameter, this implies that the 
+argument columns just contain one value each (as opposed to sensitivity analysis
+where the user can set multiples values of input parameters).
+
+### Sensitivity Analyses
+
+Running a sensitivity analysis produces as many sets of results as they are input
+parameter values selected. To make the ensuing analysis easy,
+the results files are named with a suffix indicating the parameter that was 
+varied in the particular run and saved in a new output folder. 
+Apart from the indicative naming suffix the sensitivity analysis results files 
+produced have the same format as described below but contain the results of 
+multiple runs in a single file. 
+
+The variation is observed in the argument column of the parameter that 
+was iterated over. Instead of just one value, it will contain values for every 
+iteration of the sensitivity analysis, be it two or more.
