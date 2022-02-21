@@ -189,7 +189,6 @@ read_and_process_and_calc <- function(args_list) {
   processed <- data %>%
     st_process(
       asset_type = asset_type,
-      company_exclusion = company_exclusion,
       fallback_term = fallback_term,
       scenario_geography = scenario_geography,
       baseline_scenario = baseline_scenario_lookup,
