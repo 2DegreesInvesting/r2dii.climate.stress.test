@@ -137,10 +137,14 @@ process_excluded_companies <- function(data, company_exclusion, technologies) {
 #' Process data of type indicated by function name
 #'
 #' @inheritParams process_pacta_results
+#' @param baseline_scenario String holding name of baseline scenario.
+#' @param shock_scenario String holding name of shock scenario.
 #'
 #' @return A tibble of data as indicated by function name.
 #' @noRd
-process_df_price <- function(data, technologies, sectors, start_year, end_year) {
+process_price_data <- function(data, technologies, sectors, start_year, end_year,
+                               baseline_scenario, shock_scenario) {
+
   data_processed <- data %>%
     dplyr::filter(.data$sector %in% .env$sectors_lookup) %>%
     check_sector_tech_mapping(sector_col = "sector") %>%
@@ -241,7 +245,7 @@ process_company_terms <- function(data, fallback_term) {
 }
 
 st_process <- function(data, asset_type, company_exclusion, fallback_term,
-                       scenario_geography) {
+                       scenario_geography, baseline_scenario, shock_scenario) {
   start_year <- get_start_year(data)
   scenarios_filter <- scenarios_filter()
 
@@ -265,12 +269,14 @@ st_process <- function(data, asset_type, company_exclusion, fallback_term,
     technologies = technologies_lookup
   )
 
-  df_price <- process_df_price(
+  df_price <- process_price_data(
     data$df_price,
     technologies = technologies_lookup,
     sectors = sectors_lookup,
     start_year = start_year,
-    end_year = end_year_lookup
+    end_year = end_year_lookup,
+    baseline_scenario = baseline_scenario,
+    shock_scenario = shock_scenario
   )
 
   scenario_data <- process_scenario_data(
