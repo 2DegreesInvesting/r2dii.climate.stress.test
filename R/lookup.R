@@ -128,7 +128,7 @@ cuc_sector_exposures <- c("financial_sector", "investor_name", "portfolio_name")
 
 cuc_capacity_factors_power <- c("scenario", "scenario_geography", "technology", "year")
 cuc_company_exclusion <- c("company_name", "technology")
-cuc_price_data <- c("year", "sector", "technology")
+cuc_price_data <- c("year", "ald_sector", "technology")
 cuc_financial_data <- c("company_name", "company_id")
 cuc_scenario_data <- c("scenario_geography", "scenario", "ald_sector", "technology", "year")
 cuc_company_terms <- c("company_name")

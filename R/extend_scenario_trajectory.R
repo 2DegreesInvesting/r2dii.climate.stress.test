@@ -144,7 +144,6 @@ extend_scenario_trajectory <- function(data,
                                        end_analysis,
                                        time_frame,
                                        target_scenario) {
-
   validate_data_has_expected_cols(
     data = data,
     expected_columns = c(
@@ -432,8 +431,10 @@ calculate_proximity_to_target <- function(data,
       )
     ) %>%
     dplyr::select(
-      -c(.data$sum_required_change, .data$sum_realised_change,
-         .data$ratio_realised_required)
+      -c(
+        .data$sum_required_change, .data$sum_realised_change,
+        .data$ratio_realised_required
+      )
     )
 
   data <- data %>%

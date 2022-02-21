@@ -9,7 +9,7 @@ calculate_exposure_by_technology_and_company(
   input_data_list,
   start_year,
   time_horizon,
-  scenario_to_follow_ls,
+  scenario_to_follow_shock,
   log_path
 )
 }
@@ -22,7 +22,7 @@ calculate_exposure_by_technology_and_company(
 
 \item{time_horizon}{Considered timeframe for PACTA analysis.}
 
-\item{scenario_to_follow_ls}{Character. A string that indicates which
+\item{scenario_to_follow_shock}{Character. A string that indicates which
 of the scenarios included in the analysis should be used to set the
 late & sudden technology trajectories.}
 

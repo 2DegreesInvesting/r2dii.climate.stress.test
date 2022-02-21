@@ -191,7 +191,9 @@ read_and_process_and_calc <- function(args_list) {
       asset_type = asset_type,
       company_exclusion = company_exclusion,
       fallback_term = fallback_term,
-      scenario_geography = scenario_geography
+      scenario_geography = scenario_geography,
+      baseline_scenario = baseline_scenario_lookup,
+      shock_scenario = shock_scenario_lookup
     )
 
   input_data_list <- list(
@@ -218,7 +220,7 @@ read_and_process_and_calc <- function(args_list) {
   transition_scenario <- generate_transition_shocks(
     start_of_analysis = start_year,
     end_of_analysis = end_year_lookup,
-    shock_years = shock_year
+    shock_year = shock_year
   )
 
   cat("-- Calculating market risk. \n")
@@ -227,7 +229,7 @@ read_and_process_and_calc <- function(args_list) {
     asset_type = asset_type,
     input_data_list = input_data_list,
     scenario_to_follow_baseline = baseline_scenario_lookup,
-    scenario_to_follow_ls = shock_scenario_lookup,
+    scenario_to_follow_shock = shock_scenario_lookup,
     transition_scenario = transition_scenario,
     start_year = start_year,
     end_year = end_year_lookup,
@@ -241,7 +243,7 @@ read_and_process_and_calc <- function(args_list) {
     input_data_list = input_data_list,
     start_year = start_year,
     time_horizon = time_horizon_lookup,
-    scenario_to_follow_ls = shock_scenario_lookup,
+    scenario_to_follow_shock = shock_scenario_lookup,
     log_path = log_path
   )
 
