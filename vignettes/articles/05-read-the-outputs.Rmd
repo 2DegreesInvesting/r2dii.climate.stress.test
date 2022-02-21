@@ -17,58 +17,93 @@ proceeds to explain in depth how to read the data in each of the files.
 
 ## Overview
 
-There are eight output files that the user can expect when running the stress
-test for a given set of parameters.
+The source code generates nine files after completing the stress test for a 
+given set of parameters. They chiefly contain estimates of the market risk of 
+companies in the portfolio and of the credit risk of said companies in a 
+corporate loan book. The source code additionally outputs a file with 
+company-level scenario production trajectories and log file which holds 
+information on the settings of current the stress test run.
 
-They can loosely be grouped in files that contain estimates of the market risk
-of companies in the portfolio and of the credit risk of said companies in a
-corporate loan book. Depending on the use case, one or the other may contain
-more relevant information. In addition, a log file is written to the results
-directory. It holds an overview on holdings that could not be considered in the
-analysis.
+**Log file**
 
-### Market Risk
+* log_file_\<suffix\>.txt
+
+**Production trajectory data**
+
+* loans_company_trajectories_\<suffix\>.csv
+
+**Market Risk**
 
 * loans_company_value_changes_\<suffix\>.csv
 * loans_portfolio_value_changes_\<suffix\>.csv
 
-### Credit Risk
+**Credit Risk**
 
 * loans_company_expected_loss_\<suffix\>.csv
 * loans_company_pd_changes_annual_\<suffix\>.csv
-* loans_sector_pd_changes_annual_\<suffix\>.csv
 * loans_company_pd_changes_overall_\<suffix\>.csv
+* loans_sector_pd_changes_annual_\<suffix\>.csv
 * loans_sector_pd_changes_overall_\<suffix\>.csv
 
-### TBC
-* loans_company_trajectories_\<suffix\>.csv
-
-## Details
+## Content of output files
 
 In this section, we look at the output files and what each of the variables they
 contain mean.
 
-### Shared Outputs: Model Parameters
+#### Shared Outputs: Model Parameters
 
-All result files discussed below contain information on the settings of the
-stress testing model. This means each one of them contains information on all
-model input variables, [as described here](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/03-run-stress-test.html#understanding-the-input-arguments).
+All result files discussed below contain the values of the input parameters in the
+stress testing model. The information on all model input parameters [is described here](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/03-run-stress-test.html#understanding-the-input-arguments). The result files contain
+the following set of input parameters.
 
-While there is some redundancy to this information, it is the easiest way to
-ensure the results remain reproducible and a straight forward way for the user
-to understand given magnitudes in the model results. In the standard case this
-implies that the argument columns each just contain one value.
+* `asset_type_arg` is the type of the analysed financial asset in the portfolio. 
+* `lgd_senior_claims_arg` is the loss given default used in the expected loss
+calculation of loans for senior claims (notably for corporate loans, so this is
+a potentially important parameter in this calculation)
+* `lgd_subordinated_claims_arg` is the loss given default used in the expected loss
+calculation of loans for subordinated claims (notably for corporate bonds. Not
+of relevance in the loans calculation)
+* `risk_free_rate_arg` the risk free interest rate. Input parameter to the Merton
+credit risk model.
+* `discount_rate_arg` the annual rate at which future cash flows are discounted when
+calculating the net present value of companies in the loan book. Since the net
+present values are indirect inputs into the Merton credit risk model, this
+parameter my be relevant.
+* `div_netprofit_prop_coef_arg` Coefficient that indicates what share of the net
+present value should be considered to derive the equity value of a company.
+* `shock_year_arg` year in which the policy is introduced, that adjusts the
+production values of companies to stay in line with carbon budgets.
+* `fallback_term_arg` indicates which maturity the loans in the loan book are
+assumed to have. At this point we assume these are rolled over every year.
+* `scenario_geography_arg` Indicates which geographical region(s) (concerning asset
+location) results shall be calculated for.
+* `company_exclusion_arg` Logical parameter that indicates if certain combinations
+of company and technology should be excluded from the analysis. At this point,
+it is strictly recommended to set this to TRUE (default) because there is not
+yet a dedicated mechanism in place that handles companies which are phasing out
+certain technologies within the time frame of the production forecast.
+* `use_company_terms_arg` Logical parameter, indicating if individually provided
+terms for companies as configured in company_terms.csv shall be used instead of
+fallback as provided in `fallback_term`. The default is FALSE. For more details
+compare [Advanced data
+settings](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/04-advanced-data-settings.html).
+
+While there may be some redundancy to this information, it is there to ensure 
+the results remain reproducible and straight forward for the user
+to understand given magnitudes in the model results. In the standard run of the 
+stress test, with single value set for each input parameter, this implies that the 
+argument columns just contain one value each (as opposed to sensitivity analysis
+where the user can set multiples values of input parameters).
 
 #### Sensitivity Analyses
 
-Running a sensitivity analysis produces as many sets of results as parameter
-values are passed to the variable the analysis is iterated over. To make the
-ensuing analysis easy and avoid clutter in the output directory, analysis
-outputs will use the name of the variable that is varied as the suffix and
-simply contain the results of multiple runs in one file. The variation can be
-seen by looking at the argument column of the variable that was iterated over.
-Instead of just one value, it will contain values for every iteration of the
-sensitivity analysis.
+Running a sensitivity analysis produces as many sets of results as they are input
+parameter values selected. To make the ensuing analysis easy and to avoid clutter 
+in the output directory, analysis outputs will use the name of the variable that
+is varied as the suffix and simply contain the results of multiple runs in one file. 
+The variation can be seen by looking at the argument column of the variable 
+was iterated over.Instead of just one value, it will contain values for every 
+iteration of the sensitivity analysis.
 
 ### loans_company_value_changes_\<suffix\>
 
@@ -115,7 +150,7 @@ policy shock on the company level for the portfolio or loan book at hand. Value
 in percentage points.
 * `company_absolute_value_change`: Potential absolute value change of the
 portfolio or loan book on the company level indicated. Calculated as
-`company_exposure * company_percent_value_change`.
+`company_absolute_value_change = company_exposure * company_percent_value_change`.
 * `technology_exposure`: Exposure of the portfolio or loan book to the
 technology indicated. This is an aggregate of the technology exposure across all
 companies with production in the given technology.
@@ -124,7 +159,7 @@ sector indicated by the technology across all companies with production in the
 given technology. Value in percentage points.
 * `technology_absolute_value_change`: Potential absolute value change of the
 portfolio or loan book on the technology level indicated. Calculated as
-`technology_exposure * technology_percent_value_change`.
+`technology_absolute_value_change = technology_exposure * technology_percent_value_change`.
 * `sector_exposure`: Exposure of the portfolio or loan book to the sector
 indicated. This is an aggregate of the sector exposure across all companies with
 production in the given sector.
@@ -133,7 +168,7 @@ indicated across all companies with production in the given sector. Value in
 percentage points.
 * `sector_absolute_value_change`: Potential absolute value change of the
 portfolio or loan book on the sector level indicated. Calculated as
-`sector_exposure * sector_percent_value_change`.
+`sector_absolute_value_change = sector_exposure * sector_percent_value_change`.
 * `analysed_portfolio_exposure`: Exposure of the portfolio or loan book to all
 sectors in scope of the analysis. This is an aggregate of the exposure across
 all companies with production in the sectors that are in scope.
@@ -142,7 +177,7 @@ portfolio or loan book across all companies with production in the in-scope
 sectors. Value in percentage points.
 * `analysed_portfolio_absolute_value_change`: Potential absolute value change of
 the portfolio or loan book on the level of in scope sectors. Calculated as
-`analysed_portfolio_exposure * analysed_portfolio_percent_value_change`.
+`analysed_portfolio_absolute_value_change = analysed_portfolio_exposure * analysed_portfolio_percent_value_change`.
 * `total_portfolio_exposure`: Total absolute value of the assets under
 management for the given asset type.
 * `total_portfolio_percent_value_change`: Relative potential value change of
@@ -151,7 +186,7 @@ value. Note that this does not cover potential losses for companies operating in
 sectors that are out of scope. Value in percentage points.
 * `total_portfolio_absolute_value_change`: Potential absolute value change of
 the portfolio or loan book. Calculated as
-`total_portfolio_exposure * total_portfolio_percent_value_change`.
+`total_portfolio_absolute_value_chang = total_portfolio_exposure * total_portfolio_percent_value_change`.
 * `exclude`: Logical indicator that shows if the given combination of company
 and technology was excluded from the shock because the production forecast
 indicated a phase out in production.
