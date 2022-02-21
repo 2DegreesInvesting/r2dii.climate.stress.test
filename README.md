@@ -27,9 +27,8 @@ contact <jacob@2degrees-investing.org>.
 We assume the user has successfully run at least the matching part of
 PACTA for Banks to produce the relevant project-specific raw input
 files. For a complete overview of the necessary prerequisites (including
-technical setup) please see:
-
-  - [“Prerequisites”](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/00-prerequisites.html)
+technical setup) please see
+[Prerequisites](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/00-prerequisites.html)
 
 ## Installation
 
@@ -98,10 +97,8 @@ To actually run an analysis…
     understood.
 
 Detailed information for all these steps and on interpreting the
-outcomes can be found in the articles linked below.
-
-[Further
-Information](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/).
+outcomes can be found in the articles linked
+[here](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/).
 
 ## Funding
 
