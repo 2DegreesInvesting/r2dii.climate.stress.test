@@ -113,7 +113,8 @@ read_price_data_old2 <- function(path) {
   )
 
   data <- data %>%
-    dplyr::select(!!cols)
+    dplyr::select(!!cols) %>%
+    dplyr::rename("NPS_price" = NPS, "SDS_price" = SDS)
 
 
   return(data)
