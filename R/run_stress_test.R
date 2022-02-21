@@ -224,7 +224,7 @@ read_and_process_and_calc <- function(args_list) {
   transition_scenario <- generate_transition_shocks(
     start_of_analysis = start_year,
     end_of_analysis = end_year_lookup,
-    shock_years = shock_year
+    shock_year = shock_year
   )
 
   cat("-- Calculating market risk. \n")

@@ -2,35 +2,22 @@
 % Please edit documentation in R/read_transition_scenarios.R
 \name{generate_transition_shocks}
 \alias{generate_transition_shocks}
-\title{Generate transition scenario shocks from a range of start years that
-represent different years of when a large scale climate transition policy is
-deployed.}
+\title{Generate transition scenario shock from a start year that represents when a
+large scale climate transition policy is deployed.}
 \usage{
-generate_transition_shocks(start_of_analysis, end_of_analysis, shock_years)
+generate_transition_shocks(start_of_analysis, end_of_analysis, shock_year)
 }
 \arguments{
 \item{start_of_analysis}{A numeric vector of length one that indicates the
-start year of the analysis}
+start year of the analysis.}
 
 \item{end_of_analysis}{A numeric vector of length one that indicates the
-end year of the analysis}
+end year of the analysis.}
 
-\item{shock_years}{A numeric vector that provides a set of start years for
-the shocks to be used in the analysis}
+\item{shock_year}{A numeric vector of length 1 that provides the start year
+of the shock to be used in the analysis.}
 }
 \description{
-Generate transition scenario shocks from a range of start years that
-represent different years of when a large scale climate transition policy is
-deployed.
+Generate transition scenario shock from a start year that represents when a
+large scale climate transition policy is deployed.
 }
-\seealso{
-Other import functions: 
-\code{\link{read_capacity_factors_old}()},
-\code{\link{read_capacity_factors}()},
-\code{\link{read_financial_data}()},
-\code{\link{read_ngfs_carbon_tax}()},
-\code{\link{read_pacta_results_wt}()},
-\code{\link{read_pacta_results}()},
-\code{\link{read_transition_scenarios}()}
-}
-\concept{import functions}
