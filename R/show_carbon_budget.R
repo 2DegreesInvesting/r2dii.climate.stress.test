@@ -21,9 +21,6 @@ show_carbon_budget <- function(data,
                                target_scenario = NULL,
                                scenario_name_qa = "Carbon balance 2030",
                                cumulative = FALSE) {
-  scenarios <- scenarios %||% .env$scenario_data
-  target_scenario <- target_scenario %||% .env$scenario_to_follow_ls
-
   validate_data_has_expected_cols(
     data = data,
     expected_columns = c(

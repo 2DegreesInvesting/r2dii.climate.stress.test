@@ -9,7 +9,7 @@
 #' @param scenario_to_follow_baseline Character. A string that indicates which
 #'   of the scenarios included in the analysis should be used to set the
 #'   baseline technology trajectories.
-#' @param scenario_to_follow_ls Character. A string that indicates which
+#' @param scenario_to_follow_shock Character. A string that indicates which
 #'   of the scenarios included in the analysis should be used to set the
 #'   late & sudden technology trajectories.
 #' @param transition_scenario Tibble with 1 row holding at least variables
@@ -20,11 +20,12 @@
 #'
 #' @return A tibble holding annual profits
 calculate_annual_profits <- function(asset_type, input_data_list, scenario_to_follow_baseline,
-                                     scenario_to_follow_ls, transition_scenario, start_year,
+                                     scenario_to_follow_shock, transition_scenario, start_year,
                                      end_year, time_horizon, discount_rate, log_path) {
   price_data <- input_data_list$df_price %>%
-    calc_late_sudden_prices(
+    calc_scenario_prices(
       baseline_scenario = scenario_to_follow_baseline,
+      shock_scenario = scenario_to_follow_shock,
       transition_scenario = transition_scenario,
       start_year = start_year
     )
@@ -45,9 +46,9 @@ calculate_annual_profits <- function(asset_type, input_data_list, scenario_to_fo
       scenario_to_follow_baseline = scenario_to_follow_baseline
     ) %>%
     set_ls_trajectory(
-      scenario_to_follow_ls = scenario_to_follow_ls,
+      scenario_to_follow_ls = scenario_to_follow_shock,
       shock_scenario = transition_scenario,
-      scenario_to_follow_ls_aligned = scenario_to_follow_ls,
+      scenario_to_follow_ls_aligned = scenario_to_follow_shock,
       start_year = start_year,
       end_year = end_year,
       analysis_time_frame = time_horizon,
@@ -56,7 +57,7 @@ calculate_annual_profits <- function(asset_type, input_data_list, scenario_to_fo
     exclude_companies(
       exclusion = input_data_list$excluded_companies,
       scenario_baseline = scenario_to_follow_baseline,
-      scenario_ls = scenario_to_follow_ls
+      scenario_ls = scenario_to_follow_shock
     )
 
   if (asset_type == "bonds") {
@@ -94,7 +95,7 @@ calculate_exposure_by_technology_and_company <- function(asset_type,
                                                          input_data_list,
                                                          start_year,
                                                          time_horizon,
-                                                         scenario_to_follow_ls,
+                                                         scenario_to_follow_shock,
                                                          log_path) {
   if (asset_type == "bonds") {
     subset_cols <- c("company_name", "corporate_bond_ticker", "pd")
@@ -113,7 +114,7 @@ calculate_exposure_by_technology_and_company <- function(asset_type,
   exposure_by_technology_and_company <- input_data_list$pacta_results %>%
     dplyr::filter(
       .data$year == .env$start_year + .env$time_horizon,
-      .data$scenario %in% .env$scenario_to_follow_ls
+      .data$scenario %in% .env$scenario_to_follow_shock
     ) %>%
     dplyr::inner_join(
       y = financial_data_subset,
