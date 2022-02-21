@@ -28,20 +28,6 @@ test_that("Error is thrown if input values are of incorrect type", {
 })
 
 test_that("Error is thrown if input values are of incorrect type for input values of length > 1", {
-  # logical
-  expect_error(validate_input_values(
-    lgd_senior_claims = 0.45,
-    lgd_subordinated_claims = 0.75,
-    risk_free_rate = 0,
-    discount_rate = 0.07,
-    div_netprofit_prop_coef = 1,
-    shock_year = 2030,
-    fallback_term = 4,
-    company_exclusion = c("TRUE", "FALSE"),
-    use_company_terms = FALSE,
-    asset_type = "loans"
-  ), "logical")
-
   # numeric
   expect_error(validate_input_values(
     lgd_senior_claims = 0.45,
