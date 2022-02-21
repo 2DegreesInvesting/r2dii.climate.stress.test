@@ -144,7 +144,6 @@ process_excluded_companies <- function(data, company_exclusion, technologies) {
 #' @noRd
 process_price_data <- function(data, technologies, sectors, start_year, end_year,
                                baseline_scenario, shock_scenario) {
-
   validate_data_has_expected_cols(data, paste0(c(baseline_scenario, shock_scenario), "_price"))
 
   data_processed <- data %>%

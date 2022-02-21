@@ -20,7 +20,6 @@ late_sudden_prices <- function(shock_price,
                                year_of_shock,
                                start_year,
                                duration_of_shock) {
-
   position_shock_year <- year_of_shock - start_year + 1
   ls_price <- baseline_price
 
