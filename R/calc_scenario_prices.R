@@ -17,15 +17,15 @@
 #' @return A tibble holding late_and_sudden_prices
 calc_scenario_prices <- function(price_data, baseline_scenario, shock_scenario,
                                  transition_scenario, start_year) {
-
   data <- price_data %>%
-    dplyr::mutate(Baseline_price = !!rlang::sym(paste0(baseline_scenario, "_price"))) %>% # NOTE: deviating from lower snake case here due legacy functions
+    dplyr::mutate(Baseline_price = !!rlang::sym(paste0(baseline_scenario, "_price"))) %>%
+    # NOTE: deviating from lower snake case here due legacy functions
     dplyr::mutate(shock_price = !!rlang::sym(paste0(shock_scenario, "_price"))) %>%
     dplyr::group_by(ald_sector, technology) %>%
     dplyr::mutate(
       late_sudden_price = late_sudden_prices(
-        shock_price = shock_price,
-        baseline_price = Baseline_price,
+        shock_price = .data$shock_price,
+        baseline_price = .data$Baseline_price,
         year_of_shock = transition_scenario$year_of_shock,
         start_year = start_year,
         duration_of_shock = transition_scenario$duration_of_shock
