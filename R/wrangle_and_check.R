@@ -492,7 +492,6 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
       .data$scen_to_follow_aligned, .data$late_sudden,
       .data$scenario_change_aligned, .data$company_id, .data$pd,
       .data$net_profit_margin, .data$debt_equity_ratio, .data$volatility,
-      .data$sector_unit_ds, .data$price_unit_iea, .data$price_unit_etr,
       .data$Baseline_price, .data$late_sudden_price, .data$net_profits_baseline,
       .data$net_profits_ls, .data$discounted_net_profit_baseline,
       .data$discounted_net_profit_ls, !!!rlang::syms(sensitivity_analysis_vars)
@@ -505,7 +504,6 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
       production_target_scenario = .data$scen_to_follow_aligned,
       production_shock_scenario = .data$late_sudden,
       production_change_target_scenario = .data$scenario_change_aligned,
-      production_unit = .data$sector_unit_ds,
       price_baseline_scenario = .data$Baseline_price,
       price_shock_scenario = .data$late_sudden_price,
       net_profits_baseline_scenario = .data$net_profits_baseline,
