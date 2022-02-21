@@ -9,7 +9,7 @@ test_that("Error is thrown if input values are of incorrect type", {
     div_netprofit_prop_coef = 1,
     shock_year = 2030,
     fallback_term = 4,
-    use_company_terms = FALSE,
+    use_company_terms = "FALSE",
     asset_type = "loans"
   ), "logical")
 
