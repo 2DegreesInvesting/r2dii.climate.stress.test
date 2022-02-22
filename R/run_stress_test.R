@@ -247,7 +247,7 @@ read_and_process_and_calc <- function(args_list) {
     input_data_list = input_data_list,
     start_year = start_year,
     time_horizon = time_horizon_lookup,
-    scenario_to_follow_shock = shock_scenario_lookup,
+    scenario_to_follow_shock = shock_scenario,
     log_path = log_path
   )
 
