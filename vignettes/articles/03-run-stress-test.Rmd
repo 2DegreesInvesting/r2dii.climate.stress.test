@@ -88,6 +88,9 @@ stress_test_arguments
 ### Understanding the input arguments
 The meaning of each of the detail arguments is as follows:
 
+* `baseline_scenario` holding the name of the baseline scenario.
+* `shock_scenario` holding the name of the scenario that companies are shocked 
+with.
 * `lgd_senior_claims` is the loss given default used in the expected loss
 calculation of loans for senior claims (notably for corporate loans, so this is
 a potentially important parameter in this calculation)
