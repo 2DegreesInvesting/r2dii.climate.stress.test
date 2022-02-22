@@ -229,7 +229,7 @@ process_company_terms <- function(data, fallback_term) {
 st_process <- function(data, asset_type, fallback_term,
                        scenario_geography, baseline_scenario, shock_scenario) {
   start_year <- get_start_year(data)
-  scenarios_filter <- scenarios_filter()
+  scenarios_filter <- c(baseline_scenario, shock_scenario)
 
   sector_exposures <- process_sector_exposures(
     data$sector_exposures,
