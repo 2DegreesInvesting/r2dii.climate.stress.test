@@ -52,6 +52,8 @@ run_stress_test <- function(asset_type,
                             input_path_project_specific,
                             input_path_project_agnostic,
                             output_path,
+                            baseline_scenario = "NPS",
+                            shock_scenario = "SDS",
                             lgd_senior_claims = 0.45,
                             lgd_subordinated_claims = 0.75,
                             risk_free_rate = 0.02,
@@ -72,6 +74,9 @@ run_stress_test <- function(asset_type,
   cat("-- Validating input arguments. \n")
 
   validate_input_values(
+    baseline_scenario = baseline_scenario,
+    shock_scenario = shock_scenario,
+    scenario_geography = scenario_geography,
     lgd_senior_claims = lgd_senior_claims,
     lgd_subordinated_claims = lgd_subordinated_claims,
     risk_free_rate = risk_free_rate,
@@ -191,8 +196,8 @@ read_and_process_and_calc <- function(args_list) {
       asset_type = asset_type,
       fallback_term = fallback_term,
       scenario_geography = scenario_geography,
-      baseline_scenario = baseline_scenario_lookup,
-      shock_scenario = shock_scenario_lookup
+      baseline_scenario = baseline_scenario,
+      shock_scenario = shock_scenario
     )
 
   input_data_list <- list(
@@ -227,8 +232,8 @@ read_and_process_and_calc <- function(args_list) {
   company_annual_profits <- calculate_annual_profits(
     asset_type = asset_type,
     input_data_list = input_data_list,
-    scenario_to_follow_baseline = baseline_scenario_lookup,
-    scenario_to_follow_shock = shock_scenario_lookup,
+    scenario_to_follow_baseline = baseline_scenario,
+    scenario_to_follow_shock = shock_scenario,
     transition_scenario = transition_scenario,
     start_year = start_year,
     end_year = end_year_lookup,
