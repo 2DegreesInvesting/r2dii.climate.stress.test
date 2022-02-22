@@ -2,6 +2,9 @@
 test_that("Error is thrown if input values are of incorrect type", {
   # logical
   expect_error(validate_input_values(
+    baseline_scenario = "NPS",
+    shock_scenario = "SDS",
+    scenario_geography = "Global",
     lgd_senior_claims = 0.45,
     lgd_subordinated_claims = 0.75,
     risk_free_rate = 0,
@@ -15,6 +18,9 @@ test_that("Error is thrown if input values are of incorrect type", {
 
   # numeric
   expect_error(validate_input_values(
+    baseline_scenario = "NPS",
+    shock_scenario = "SDS",
+    scenario_geography = "Global",
     lgd_senior_claims = 0.45,
     lgd_subordinated_claims = 0.75,
     risk_free_rate = 0,
@@ -30,6 +36,9 @@ test_that("Error is thrown if input values are of incorrect type", {
 test_that("Error is thrown if input values are of incorrect type for input values of length > 1", {
   # numeric
   expect_error(validate_input_values(
+    baseline_scenario = "NPS",
+    shock_scenario = "SDS",
+    scenario_geography = "Global",
     lgd_senior_claims = 0.45,
     lgd_subordinated_claims = 0.75,
     risk_free_rate = 0,
@@ -47,6 +56,9 @@ test_that("Error is thrown if an input value is out of bounds", {
 
   # length = 1
   expect_error(validate_input_values(
+    baseline_scenario = "NPS",
+    shock_scenario = "SDS",
+    scenario_geography = "Global",
     lgd_senior_claims = 0.45,
     lgd_subordinated_claims = 0.75,
     risk_free_rate = -1,
@@ -60,6 +72,9 @@ test_that("Error is thrown if an input value is out of bounds", {
 
   # length > 1
   expect_error(validate_input_values(
+    baseline_scenario = "NPS",
+    shock_scenario = "SDS",
+    scenario_geography = "Global",
     lgd_senior_claims = 0.45,
     lgd_subordinated_claims = 0.75,
     risk_free_rate = c(-1, 0, 100),
@@ -76,6 +91,9 @@ test_that("Error is thrown if a character input value is out of bounds", {
 
   # length = 1
   expect_error(validate_input_values(
+    baseline_scenario = "NPS",
+    shock_scenario = "SDS",
+    scenario_geography = "Global",
     lgd_senior_claims = 0.45,
     lgd_subordinated_claims = 0.75,
     risk_free_rate = 1,
@@ -89,6 +107,9 @@ test_that("Error is thrown if a character input value is out of bounds", {
 
   # length > 1
   expect_error(validate_input_values(
+    baseline_scenario = "NPS",
+    shock_scenario = "SDS",
+    scenario_geography = "Global",
     lgd_senior_claims = 0.45,
     lgd_subordinated_claims = 0.75,
     risk_free_rate = 1,
@@ -103,6 +124,9 @@ test_that("Error is thrown if a character input value is out of bounds", {
 
 test_that("Error is thrown if term is not an integer", {
   expect_error(validate_input_values(
+    baseline_scenario = "NPS",
+    shock_scenario = "SDS",
+    scenario_geography = "Global",
     lgd_senior_claims = 0.45,
     lgd_subordinated_claims = 0.75,
     risk_free_rate = 0.02,
@@ -117,6 +141,9 @@ test_that("Error is thrown if term is not an integer", {
 
 test_that("No error is thrown if an input value equals a bound", {
   expect_null(validate_input_values(
+    baseline_scenario = "NPS",
+    shock_scenario = "SDS",
+    scenario_geography = "Global",
     lgd_senior_claims = 0.45,
     lgd_subordinated_claims = 0.75,
     risk_free_rate = 0,
