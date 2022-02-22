@@ -134,7 +134,7 @@
 <p>Specifications on the detail arguments are summarized in the following overview. The defaults that are used if the argument is not adjusted when calling <code><a href="../reference/run_stress_test.html">run_stress_test()</a></code> can be found in column <code>default</code>. The user may change any detail argument by explicitly passing it to the function. Note that there are allowed values for each of the inputs. For logical or character variables refer to column <code>allowed</code>, for numeric variables the allowed values are the range from <code>min</code> (inclusive) to <code>max</code> (inclusive).</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">stress_test_arguments</span>
-<span class="co">#&gt; <span style="color: #949494;"># A tibble: 11 × 6</span></span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 10 × 6</span></span>
 <span class="co">#&gt;    name                    type      default allowed              min   max  </span>
 <span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
 <span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> asset_type              character <span style="color: #BB0000;">NA</span>      equity, bonds, loans <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span>
@@ -146,8 +146,7 @@
 <span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> shock_year              double    2030    <span style="color: #BB0000;">NA</span>                   2025  2035 </span>
 <span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> fallback_term           double    2       <span style="color: #BB0000;">NA</span>                   1     5    </span>
 <span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> scenario_geography      character Global  Global               <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">10</span> company_exclusion       logical   TRUE    TRUE, FALSE          <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">11</span> use_company_terms       logical   FALSE   TRUE, FALSE          <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span></span></code></pre></div>
+<span class="co">#&gt; <span style="color: #BCBCBC;">10</span> use_company_terms       logical   FALSE   TRUE, FALSE          <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="understanding-the-input-arguments">Understanding the input arguments<a class="anchor" aria-label="anchor" href="#understanding-the-input-arguments"></a>
@@ -170,8 +169,6 @@
 <code>fallback_term</code> indicates which maturity the loans in the loan book are assumed to have. At this point we assume these are rolled over every year.</li>
 <li>
 <code>scenario_geography</code> Indicates which geographical region(s) (concerning asset location) results shall be calculated for.</li>
-<li>
-<code>company_exclusion</code> Logical parameter that indicates if certain combinations of company and technology should be excluded from the analysis. At this point, it is strictly recommended to set this to TRUE (default) because there is not yet a dedicated mechanism in place that handles companies which are phasing out certain technologies within the time frame of the production forecast.</li>
 <li>
 <code>use_company_terms</code> Logical parameter, indicating if individually provided terms for companies as configured in company_terms.csv shall be used instead of fallback as provided in <code>fallback_term</code>. The default is FALSE. For more details compare <a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/04-advanced-data-settings.html">“Advanced data settings”</a>.</li>
 <li>
