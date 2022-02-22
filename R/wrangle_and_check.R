@@ -338,7 +338,7 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
       .data$analysed_sectors_exposure, .data$VaR_analysed_sectors,
       .data$analysed_sectors_value_change, .data$portfolio_aum,
       .data$portfolio_value_change_perc, .data$portfolio_value_change,
-      .data$exclude, !!!rlang::syms(sensitivity_analysis_vars)
+      !!!rlang::syms(sensitivity_analysis_vars)
     ) %>%
     dplyr::rename(
       company_technology_exposure = .data$tech_company_exposure,

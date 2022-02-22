@@ -41,9 +41,6 @@
 #'   region(s) (concerning asset location) results shall be calculated for. For
 #'   accepted values compare `stress_test_arguments`. Note that currently only
 #'   the global level is supported.
-#' @param company_exclusion Boolean, indicating if companies provided in dataset
-#'   excluded_companies.csv shall be excluded. For accepted values compare
-#'   `stress_test_arguments`.
 #' @param use_company_terms Boolean, indicating if term values for individual
 #'   companies are to be used. For accepted values compare
 #'   `stress_test_arguments`. Note that currently this functionality is not
@@ -63,7 +60,6 @@ run_stress_test <- function(asset_type,
                             shock_year = 2030,
                             fallback_term = 2,
                             scenario_geography = "Global",
-                            company_exclusion = TRUE,
                             use_company_terms = FALSE,
                             return_results = FALSE) {
   cat("-- Running transition risk stress test. \n\n\n")
@@ -83,7 +79,6 @@ run_stress_test <- function(asset_type,
     div_netprofit_prop_coef = div_netprofit_prop_coef,
     shock_year = shock_year,
     fallback_term = fallback_term,
-    company_exclusion = company_exclusion,
     use_company_terms = use_company_terms,
     asset_type = asset_type
   )
@@ -194,7 +189,6 @@ read_and_process_and_calc <- function(args_list) {
   processed <- data %>%
     st_process(
       asset_type = asset_type,
-      company_exclusion = company_exclusion,
       fallback_term = fallback_term,
       scenario_geography = scenario_geography,
       baseline_scenario = baseline_scenario_lookup,
@@ -204,7 +198,6 @@ read_and_process_and_calc <- function(args_list) {
   input_data_list <- list(
     pacta_results = processed$pacta_results,
     capacity_factors_power = processed$capacity_factors_power,
-    excluded_companies = processed$excluded_companies,
     sector_exposures = processed$sector_exposures,
     scenario_data = processed$scenario_data,
     df_price = processed$df_price,
@@ -260,8 +253,7 @@ read_and_process_and_calc <- function(args_list) {
     div_netprofit_prop_coef = div_netprofit_prop_coef,
     plan_carsten = exposure_by_technology_and_company,
     port_aum = port_aum,
-    flat_multiplier = flat_multiplier,
-    exclusion = input_data_list$excluded_companies
+    flat_multiplier = flat_multiplier
   )
 
   cat("-- Calculating credit risk. \n\n\n")

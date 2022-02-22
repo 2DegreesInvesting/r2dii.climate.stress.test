@@ -64,7 +64,6 @@ A recommended structure for the project-agnostic data would look like this:
     * `scenario_2020.csv`
     * `Scenario_AnalysisInput_2020.csv`
     * `prewrangled_capacity_factors_WEO_2020.csv`
-    * `exclude-companies.csv`
     * `2021-07-15_AR2020Q4_PACTA-Data (3).xlsx`
 
 After completing the setup, follow the vignettes on how to run the analysis:

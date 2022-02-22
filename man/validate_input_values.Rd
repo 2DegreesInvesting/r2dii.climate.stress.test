@@ -12,7 +12,6 @@ validate_input_values(
   div_netprofit_prop_coef,
   shock_year,
   fallback_term,
-  company_exclusion,
   use_company_terms,
   asset_type
 )
@@ -42,10 +41,6 @@ range compare \code{stress_test_arguments}.}
 maturity the expected loss should be calculated in the credit risk section
 in case no company level term data are provided via \code{use_company_terms}.
 For accepted range compare \code{stress_test_arguments}.}
-
-\item{company_exclusion}{Boolean, indicating if companies provided in dataset
-excluded_companies.csv shall be excluded. For accepted values compare
-\code{stress_test_arguments}.}
 
 \item{use_company_terms}{Boolean, indicating if term values for individual
 companies are to be used. For accepted values compare

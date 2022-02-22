@@ -15,11 +15,6 @@ capacity_factor_file <- function(dir) {
   return(out)
 }
 
-excluded_companies_file <- function(dir) {
-  out <- file.path(dir, "exclude-companies.csv")
-  return(out)
-}
-
 price_data_file <- function(dir) {
   file <- paste0("prices_data_", price_data_version_lookup, ".csv")
   out <- file.path(dir, file)

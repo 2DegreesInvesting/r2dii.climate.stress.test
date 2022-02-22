@@ -108,11 +108,6 @@ production values of companies to stay in line with carbon budgets.
 assumed to have. At this point we assume these are rolled over every year.
 * `scenario_geography` Indicates which geographical region(s) (concerning asset
 location) results shall be calculated for.
-* `company_exclusion` Logical parameter that indicates if certain combinations
-of company and technology should be excluded from the analysis. At this point,
-it is strictly recommended to set this to TRUE (default) because there is not
-yet a dedicated mechanism in place that handles companies which are phasing out
-certain technologies within the time frame of the production forecast.
 * `use_company_terms` Logical parameter, indicating if individually provided
 terms for companies as configured in company_terms.csv shall be used instead of
 fallback as provided in `fallback_term`. The default is FALSE. For more details

@@ -114,25 +114,6 @@ process_capacity_factors_power <- function(data,
   return(data_processed)
 }
 
-#' Process data of type indicated by function name
-#'
-#' @inheritParams process_pacta_results
-#' @inheritParams run_stress_test
-#'
-#' @return A tibble of data as indicated by function name.
-#' @noRd
-process_excluded_companies <- function(data, company_exclusion, technologies) {
-  if (!company_exclusion) {
-    return(NULL)
-  }
-
-  data_processed <- data %>%
-    dplyr::filter(.data$technology %in% .env$technologies) %>%
-    report_all_duplicate_kinds(composite_unique_cols = cuc_company_exclusion) %>%
-    report_missings(name_data = "company exclusion", throw_error = TRUE)
-
-  return(data_processed)
-}
 
 #' Process data of type indicated by function name
 #'
@@ -245,7 +226,7 @@ process_company_terms <- function(data, fallback_term) {
   return(data_processed)
 }
 
-st_process <- function(data, asset_type, company_exclusion, fallback_term,
+st_process <- function(data, asset_type, fallback_term,
                        scenario_geography, baseline_scenario, shock_scenario) {
   start_year <- get_start_year(data)
   scenarios_filter <- scenarios_filter()
@@ -262,12 +243,6 @@ st_process <- function(data, asset_type, company_exclusion, fallback_term,
     technologies = technologies_lookup,
     start_year = start_year,
     end_year = end_year_lookup
-  )
-
-  excluded_companies <- process_excluded_companies(
-    data$excluded_companies,
-    company_exclusion = company_exclusion,
-    technologies = technologies_lookup
   )
 
   df_price <- process_price_data(
@@ -319,7 +294,6 @@ st_process <- function(data, asset_type, company_exclusion, fallback_term,
     pacta_results = pacta_results,
     sector_exposures = sector_exposures,
     capacity_factors_power = capacity_factors_power,
-    excluded_companies = excluded_companies,
     df_price = df_price,
     scenario_data = scenario_data,
     financial_data = financial_data,

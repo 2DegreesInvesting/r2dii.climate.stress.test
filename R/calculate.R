@@ -53,11 +53,6 @@ calculate_annual_profits <- function(asset_type, input_data_list, scenario_to_fo
       end_year = end_year,
       analysis_time_frame = time_horizon,
       log_path = log_path
-    ) %>%
-    exclude_companies(
-      exclusion = input_data_list$excluded_companies,
-      scenario_baseline = scenario_to_follow_baseline,
-      scenario_ls = scenario_to_follow_shock
     )
 
   if (asset_type == "bonds") {
