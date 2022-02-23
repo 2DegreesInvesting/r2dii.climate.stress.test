@@ -33,7 +33,7 @@ read_price_data <- function(path) {
     # doing hardcoded filtering directly upon import as we currently do not
     # differentiate scenario_geographies for price data
     dplyr::filter(scenario_geography == "Global") %>%
-    dplyr::select(year, scenario, ald_sector = sector, technology, price)
+    dplyr::select(.data$year, .data$scenario, ald_sector = .data$sector, .data$technology, .data$price)
 
   return(data)
 }
@@ -43,6 +43,7 @@ read_price_data <- function(path) {
 #' This function reads in price data using the old wide data format.
 #'
 #' @inheritParams read_price_data
+#' @param expected_technologies String vector holding expected technologies.
 #'
 #' @return A tibble holding price data in long format.
 read_price_data_old <- function(path, expected_technologies) {

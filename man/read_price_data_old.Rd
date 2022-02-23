@@ -9,6 +9,8 @@ read_price_data_old(path, expected_technologies)
 \arguments{
 \item{path}{A string that points to the location of the file containing the
 price data}
+
+\item{expected_technologies}{String vector holding expected technologies.}
 }
 \value{
 A tibble holding price data in long format.

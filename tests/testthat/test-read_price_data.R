@@ -2,9 +2,9 @@
 test_that("with valid arguments set, read_price_data returns
           data.frame", {
   test_data_prices <- tibble::tribble(
-    ~year, ~source, ~scenario, ~scenario_geography, ~technology, ~indicator, ~unit, ~price,
-    2020, "WEO2020", "SDS", "United States", "Gas", "price", "usd/Mbtu", 10,
-    2030, "WEO2020", "SDS", "United States", "RenewablesCap", "LCOE", "$/MWh", 10
+    ~year, ~source, ~scenario, ~scenario_geography, ~technology, ~sector, ~indicator, ~unit, ~price,
+    2020, "WEO2020", "SDS", "United States", "Gas", "some_sector", "price", "usd/Mbtu", 10,
+    2030, "WEO2020", "SDS", "United States", "RenewablesCap", "some_sector", "LCOE", "$/MWh", 10
   )
 
   test_data_prices %>%
