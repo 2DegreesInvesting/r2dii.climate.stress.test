@@ -5,9 +5,8 @@
 #'
 #' @param path A string that points to the location of the file containing the
 #'   price data
-#' @param expected_technologies A vector holding names of expected technologies.
 #' @return A tibble holding price data in long format.
-read_price_data <- function(path, expected_technologies) {
+read_price_data <- function(path) {
   data <- validate_file_exists(path) %>%
     readr::read_csv(
       col_types = readr::cols(
@@ -30,6 +29,12 @@ read_price_data <- function(path, expected_technologies) {
     )
   )
 
+  data <- data %>%
+    # doing hardcoded filtering directly upon import as we currently do not
+    # differentiate scenario_geographies for price data
+    dplyr::filter(scenario_geography == "Global") %>%
+    dplyr::select(.data$year, .data$scenario, ald_sector = .data$sector, .data$technology, .data$price)
+
   return(data)
 }
 
@@ -38,6 +43,7 @@ read_price_data <- function(path, expected_technologies) {
 #' This function reads in price data using the old wide data format.
 #'
 #' @inheritParams read_price_data
+#' @param expected_technologies String vector holding expected technologies.
 #'
 #' @return A tibble holding price data in long format.
 read_price_data_old <- function(path, expected_technologies) {
@@ -70,52 +76,6 @@ read_price_data_old <- function(path, expected_technologies) {
       "sds_source", "Baseline", "baseline_source"
     )
   )
-
-  return(data)
-}
-
-#' Read in price data
-#'
-#' This function reads in price data using the old wide data format.
-#'
-#' @inheritParams read_price_data
-#'
-#' @return A tibble holding price data in long format.
-read_price_data_old2 <- function(path) {
-  data <- validate_file_exists(path) %>%
-    readr::read_csv(
-      col_types = readr::cols(
-        year = "d",
-        sector = "c",
-        technology = "c",
-        sector_unit_ds = "c",
-        price_unit_iea = "c",
-        price_unit_etr = "c",
-        B2DS = "d",
-        b2ds_source = "c",
-        NPS = "d",
-        nps_source = "c",
-        SDS = "d",
-        sds_source = "c",
-        Baseline = "d",
-        baseline_source = "c"
-      )
-    )
-
-
-  cols <- c(
-    "year", "sector", "technology", "NPS", "SDS"
-  )
-
-  validate_data_has_expected_cols(
-    data = data,
-    expected_columns = cols
-  )
-
-  data <- data %>%
-    dplyr::select(!!cols) %>%
-    dplyr::rename(ald_sector = sector, NPS_price = NPS, SDS_price = SDS)
-
 
   return(data)
 }

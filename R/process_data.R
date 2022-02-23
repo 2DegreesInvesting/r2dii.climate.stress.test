@@ -118,19 +118,16 @@ process_capacity_factors_power <- function(data,
 #' Process data of type indicated by function name
 #'
 #' @inheritParams process_pacta_results
-#' @param baseline_scenario String holding name of baseline scenario.
-#' @param shock_scenario String holding name of shock scenario.
 #'
 #' @return A tibble of data as indicated by function name.
 #' @noRd
 process_price_data <- function(data, technologies, sectors, start_year, end_year,
-                               baseline_scenario, shock_scenario) {
-  validate_data_has_expected_cols(data, paste0(c(baseline_scenario, shock_scenario), "_price"))
-
+                               scenarios_filter) {
   data_processed <- data %>%
     dplyr::filter(.data$ald_sector %in% .env$sectors_lookup) %>%
     check_sector_tech_mapping(sector_col = "ald_sector") %>%
     dplyr::filter(.data$technology %in% .env$technologies_lookup) %>%
+    dplyr::filter(.data$scenario %in% .env$scenarios_filter) %>%
     dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year)) %>%
     stop_if_empty(data_name = "Price Data") %>%
     check_level_availability(
@@ -139,12 +136,14 @@ process_price_data <- function(data, technologies, sectors, start_year, end_year
         list(
           year = start_year:end_year,
           ald_sector = sectors,
-          technology = technologies
+          technology = technologies,
+          scenario = scenarios_filter
         )
     ) %>%
-    report_missing_col_combinations(col_names = c("technology", "year")) %>%
-    report_all_duplicate_kinds(composite_unique_cols = cuc_price_data)
-  # TODO: add reporting on missing after switching to long price data
+    report_missing_col_combinations(col_names = c("scenario", "technology", "year")) %>%
+    report_all_duplicate_kinds(composite_unique_cols = cuc_price_data)  %>%
+    report_missings(name_data = "price data", throw_error = TRUE) %>%
+    tidyr::pivot_wider(names_from = "scenario", values_from = "price", names_prefix = "price_")
 
   return(data_processed)
 }
@@ -251,8 +250,7 @@ st_process <- function(data, asset_type, fallback_term,
     sectors = sectors_lookup,
     start_year = start_year,
     end_year = end_year_lookup,
-    baseline_scenario = baseline_scenario,
-    shock_scenario = shock_scenario
+    scenarios_filter = scenarios_filter
   )
 
   scenario_data <- process_scenario_data(
