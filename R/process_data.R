@@ -142,7 +142,8 @@ process_price_data <- function(data, technologies, sectors, start_year, end_year
     ) %>%
     report_missing_col_combinations(col_names = c("scenario", "technology", "year")) %>%
     report_all_duplicate_kinds(composite_unique_cols = cuc_price_data)  %>%
-    report_missings(name_data = "price data", throw_error = TRUE)
+    report_missings(name_data = "price data", throw_error = TRUE) %>%
+    tidyr::pivot_wider(names_from = "scenario", values_from = "price", names_prefix = "price_")
 
   return(data_processed)
 }
