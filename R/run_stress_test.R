@@ -19,6 +19,10 @@
 #'   NOTE: Results and logs per run are saved to a subdirectory of output_path
 #'   that will be generated automatically. The name of the subdirectory is the
 #'   timestamp of the run of the analysis.
+#' @param baseline_scenario Holds the name of the baseline scenario to be used
+#'   in the stress test, for accepted value range check `stress_test_arguments`.
+#' @param shock_scenario Holds the name of the shock scenario to be used in the
+#'   stress test, for accepted value range check `stress_test_arguments`.
 #' @param lgd_senior_claims Numeric, holding the loss given default for senior
 #'   claims, for accepted value range check `stress_test_arguments`.
 #' @param lgd_subordinated_claims Numeric, holding the loss given default for
