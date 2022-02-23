@@ -18,9 +18,9 @@
 calc_scenario_prices <- function(price_data, baseline_scenario, shock_scenario,
                                  transition_scenario, start_year) {
   data <- price_data %>%
-    dplyr::mutate(Baseline_price = !!rlang::sym(paste0(baseline_scenario, "_price"))) %>%
+    dplyr::mutate(Baseline_price = !!rlang::sym(paste0("price_", baseline_scenario))) %>%
     # NOTE: deviating from lower snake case here due legacy functions
-    dplyr::mutate(target_price = !!rlang::sym(paste0(shock_scenario, "_price"))) %>%
+    dplyr::mutate(target_price = !!rlang::sym(paste0("price_", shock_scenario))) %>%
     dplyr::group_by(ald_sector, technology) %>%
     dplyr::mutate(
       late_sudden_price = late_sudden_prices(

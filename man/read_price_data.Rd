@@ -4,13 +4,11 @@
 \alias{read_price_data}
 \title{Read in price data}
 \usage{
-read_price_data(path, expected_technologies)
+read_price_data(path)
 }
 \arguments{
 \item{path}{A string that points to the location of the file containing the
 price data}
-
-\item{expected_technologies}{A vector holding names of expected technologies.}
 }
 \value{
 A tibble holding price data in long format.
