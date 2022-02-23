@@ -17,8 +17,7 @@ test_that("with valid arguments set, read_price_data returns
   )
 
   test_data <- read_price_data(
-    path = test_input_path,
-    expected_technologies = c("RenewablesCap", "Gas")
+    path = test_input_path
   )
 
   testthat::expect_s3_class(test_data, "data.frame")
