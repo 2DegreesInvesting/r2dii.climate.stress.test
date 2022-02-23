@@ -8,22 +8,17 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
-
-This vignette describes in detail, how to set up the directories that point to
-the input files and will contain the output files of running a climate
-transition risk stress test for loans, using `r2dii.climate.stress.test`.
-
 ## Assumptions
 
 In order to keep this vignette concise, we assume the following has been done:
 
 1. R and RStudio are installed.
-2. All required R packages are installed, specifically
+2. All required R packages are installed, specifically.
 `r2dii.climate.stress.test`. Note that this may require installing additional
 packages. You will be prompted to install these in case any are missing.
-1. The user has obtained all relevant input files as described in the pdf manual.
-1. The user has successfully run at least the matching part of PACTA for Banks
+3. The user has successfully run at least the matching part of PACTA for Banks
 to produce the relevant project-specific raw input files.
+4. The user has obtained all relevant input files as described in the pdf manual.
 
 ## Project-Specific files
 
@@ -64,9 +59,12 @@ A recommended structure for the project-agnostic data would look like this:
     * `scenario_2020.csv`
     * `Scenario_AnalysisInput_2020.csv`
     * `prewrangled_capacity_factors_WEO_2020.csv`
+    * `exclude-companies.csv`
     * `2021-07-15_AR2020Q4_PACTA-Data (3).xlsx`
+
+## Next steps
 
 After completing the setup, follow the vignettes on how to run the analysis:
 
-* ["Preparing the intermediate inputs for stress testing loans"](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-prepare-loans-inputs.html)
-* ["Run transition risk stress test"](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/03-run-stress-test.html)
+* [Preparing the intermediate inputs for stress testing loans](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-prepare-loans-inputs.html)
+* [Run transition risk stress test](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/03-run-stress-test.html)

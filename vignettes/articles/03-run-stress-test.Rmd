@@ -21,12 +21,13 @@ In order to keep this vignette concise, we assume the following has been set up:
 2. All required R packages are installed, specifically.
 `r2dii.climate.stress.test`. Note that this may require installing additional
 packages. You will be prompted to install these in case any are missing.
-1. The user has obtained all relevant input files as described in the pdf manual.
-1. The user has successfully run at least the matching part of PACTA for Banks
+3. The user has successfully run at least the matching part of PACTA for Banks
 to produce the relevant project-specific raw input files.
-1. The input files are organized in a folder structure consistent with the one
+4. The user has obtained all relevant input files as described in the pdf manual.
+to produce the relevant project-specific raw input files.
+5. The input files are organized in a folder structure consistent with the one
 described in the vignette ["Set up project directories"](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/01-setup-project-directories.html).
-1. The user has successfully run the function `run_prep_calculation_loans()` to
+6. The user has successfully run the function `run_prep_calculation_loans()` to
 generate the intermediate input files for the main stress test function in the
 required format. Refer to the [corresponding vignette](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-prepare-loans-inputs.html)
 for details on how to do this.
@@ -108,7 +109,12 @@ production values of companies to stay in line with carbon budgets.
 assumed to have. At this point we assume these are rolled over every year.
 * `scenario_geography` Indicates which geographical region(s) (concerning asset
 location) results shall be calculated for.
-* `use_company_terms` Logical parameter, indicating if individually provided
+* `company_exclusion` Logical parameter that indicates if certain combinations
+of company and technology should be excluded from the analysis. At this point,
+it is strictly recommended to set this to TRUE (default) because there is not
+yet a dedicated mechanism in place that handles companies which are phasing out
+certain technologies within the time frame of the production forecast.
+* `use_company_terms_arg` Logical parameter, indicating if individually provided
 terms for companies as configured in company_terms.csv shall be used instead of
 fallback as provided in `fallback_term`. The default is FALSE. For more details
 compare ["Advanced data
@@ -157,12 +163,14 @@ will be generated automatically, this way we ensure that no existing results are
 overwritten.
 
 * `log_file_standard.txt`
+* `loans_company_trajectories_\<suffix\>.csv`
 * `loans_portfolio_value_changes_standard.csv`
 * `loans_company_value_changes__standard.csv`
 * `loans_company_expected_loss_standard.csv`
 * `loans_sector_pd_changes_annual_standard.csv`
 * `loans_sector_pd_changes_overall_standard.csv`
-
+* `loans_company_pd_changes_annual_\<suffix\>.csv`
+* `loans_company_pd_changes_overall_\<suffix\>.csv`
 
 ## Running a Sensitivity Analysis for the Stress Test
 

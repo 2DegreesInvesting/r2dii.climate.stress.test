@@ -8,7 +8,6 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
-## Prerequisites
 
 This vignette describes the necessary prerequisites for installing `r2dii.climate.stress.test` and performing the stress testing analysis.
 
@@ -22,17 +21,15 @@ This vignette describes the necessary prerequisites for installing `r2dii.climat
 
 2DII climate transition stress testing analysis is performed using R packages. R is a programming language in which the source code is written. To use R, it is easiest to use an Integrated Development Environment (IDE), in this case RStudio. It is recommended for the person performing the analysis to have basic coding skills.
 
-Programming language:
+**Programming language**
 
-R - version must be 3.4 or higher (it is best practice to download the most recent version of R). This can be downloaded for Windows from https://cran.studio.com/bin/windows/base
+* R - version must be 3.4 or higher (it is best practice to download the most recent version of R). This can be downloaded for Windows from https://cran.studio.com/bin/windows/base
+* In most cases, this will be downloadable from the bank's internal software repository server subject to approval by the bank's IT department.
 
-In most cases, this will be downloadable from the bank's internal software repository server subject to approval by the bank's IT department.
+**Integrated Development Environment (IDE)**
 
-Integrated Development Environment (IDE):
-
-RStudio - This can be downloaded at https://rstudio.com/products/rstudio/download/
-
-Again, in most cases this will be downloadable from the bank's internal system, subject to approval.
+* RStudio - This can be downloaded at https://rstudio.com/products/rstudio/download/
+* Again, in most cases this will be downloadable from the bank's internal system, subject to approval.
 
 ## PACTA for Banks
 
@@ -44,16 +41,16 @@ Helpful links for understanding PACTA for Banks and guidance material to help ru
 
 * PACTA for Banks overview:
 https://www.transitionmonitor.com/pacta-for-banks-2020/
-* PACTA for Banks MethodologyÖ https://www.transitionmonitor.com/wp-content/uploads/2021/07/PACTA-for-Banks-Methodology-document-02-07-2021_v1.2.0_v4.pdf
-* The PACTA for Banks R packages can be obtained from CRAN or GitHub. The material below describes in step by step how to use them
-r2dii.data manual: https://2degreesinvesting.github.io/r2dii.data/
-r2dii.match manual: https://2degreesinvesting.github.io/r2dii.match/
-r2dii.analysis manual: https://2degreesinvesting.github.io/r2dii.analysis/
+* PACTA for Banks Methodology: https://www.transitionmonitor.com/wp-content/uploads/2021/07/PACTA-for-Banks-Methodology-document-02-07-2021_v1.2.0_v4.pdf
+* The PACTA for Banks R packages can be obtained from CRAN or GitHub. The material below describes in step by step how to use them:
+  + r2dii.data manual: https://2degreesinvesting.github.io/r2dii.data/
+  + r2dii.match manual: https://2degreesinvesting.github.io/r2dii.match/
+  + r2dii.analysis manual: https://2degreesinvesting.github.io/r2dii.analysis/
 
 ## Next steps
 
 After successfully completing the prerequisites, see the Readme on how to install the packege followed by the below-mentioned vignettes on how to run the analysis:
 
-* ["Readme with installation procedure"](https://2degreesinvesting.github.io/r2dii.climate.stress.test/index.html)
-* ["Set up project directories for climate transition risk stress test"](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-setup-project-directories.html)
-* ["Preparing the intermediate inputs for stress testing loans"](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/03-prepare-loans-inputs.html)
+* [Readme file with installation procedure](https://2degreesinvesting.github.io/r2dii.climate.stress.test/index.html)
+* [Set up project directories for climate transition risk stress test](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-setup-project-directories.html)
+* [Preparing the intermediate inputs for stress testing loans](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/03-prepare-loans-inputs.html)
