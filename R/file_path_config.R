@@ -16,7 +16,7 @@ capacity_factor_file <- function(dir) {
 }
 
 price_data_file <- function(dir) {
-  file <- paste0("prices_data_", price_data_version_lookup, ".csv")
+  file <- paste0("price_data_long_", price_data_version_lookup, ".csv")
   out <- file.path(dir, file)
   return(out)
 }
