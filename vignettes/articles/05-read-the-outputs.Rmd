@@ -219,7 +219,7 @@ This result file contains expected changes in the probability of default and in
 expected losses. The company level pd changes are used to derive loan book level
 changes in expected loss.
 
-* `scenario_name`: Name that highlights the use of the Carbon budget.
+* `scenario_name`: Name that highlights the use of the carbon budget.
 compensation mechanism and the Year of the introduction of a transition policy.
 * `scenario_geography`: Region for which the analysis was run. This refers to
 the location of assets considered as well as the regional break down of the 
@@ -259,7 +259,7 @@ This file contains an overview of the changes of the company-level annual
 probabilities of default relative to the baseline scenario for each year 
 of the analysis after the shock year.
 
-* `scenario_name`: Name that highlights the use of the Carbon budget.
+* `scenario_name`: Name that highlights the use of the carbon budget.
 compensation mechanism and the year of the introduction of a transition policy.
 * `scenario_geography`: Region for which the analysis was run. This refers to
 the location of assets considered as well as the regional break down of the 
@@ -282,7 +282,7 @@ This file contains an overview of the changes of annual probabilities of default
 aggregated to the sector level by company exposure weight relative to the 
 baseline scenario for each year of the analysis after the shock year.
 
-* `scenario_name`: Name that highlights the use of the Carbon budget.
+* `scenario_name`: Name that highlights the use of the carbon budget.
 compensation mechanism and the Year of the introduction of a transition policy.
 * `scenario_geography`: Region for which the analysis was run. This refers to
 the location of assets considered as well as the regional break down of the 
@@ -303,7 +303,7 @@ rolled over every year after the policy shock will change over time.
 This file contains an overview of the company level overall probabilities
 of default change for the maturities of the underlying loans.
 
-* `scenario_name`: Name that highlights the use of the Carbon budget.
+* `scenario_name`: Name that highlights the use of the carbon budget.
 * `scenario_geography`: Region for which the analysis was run. This refers to
 the location of assets considered as well as the regional break down of the 
 scenario targets used.
