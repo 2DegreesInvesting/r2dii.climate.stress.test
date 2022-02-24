@@ -69,5 +69,5 @@ install the package followed by the below-mentioned vignettes on how to run
 the analysis:
 
 * [Readme document with installation procedure](https://2degreesinvesting.github.io/r2dii.climate.stress.test/index.html)
-* [Set up project directories for climate transition risk stress test](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-setup-project-directories.html)
-* [Preparing the intermediate inputs for stress testing loans](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/03-prepare-loans-inputs.html)
+* [Set up project directories for climate transition risk stress test](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/01-setup-project-directories.html)
+* [Preparing the intermediate inputs for stress testing loans](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-prepare-loans-inputs.html)
