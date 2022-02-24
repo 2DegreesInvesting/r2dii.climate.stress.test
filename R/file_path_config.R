@@ -11,7 +11,7 @@ sector_exposures_file <- function(dir) {
 }
 
 capacity_factor_file <- function(dir) {
-  out <- file.path(dir, "prewrangled_capacity_factors_WEO_2020.csv")
+  out <- file.path(dir, "prewrangled_capacity_factors_WEO_2019.csv")
   return(out)
 }
 
