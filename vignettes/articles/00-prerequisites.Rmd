@@ -28,7 +28,7 @@ to have basic coding skills.
 **Programming language**
 
 * R - version must be 3.4 or higher (it is best practice to download the most 
-recent version of R). This can be downloaded for Windows from https://cran.studio.com/bin/windows/base
+recent version of R). This can be downloaded for Windows from https://cran.r-project.org/bin/windows/base/
 * In most cases, this should be downloadable from the financial institution's
 software repository but may be subject to internal approval
 
