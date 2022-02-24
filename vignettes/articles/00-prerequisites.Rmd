@@ -24,12 +24,12 @@ This vignette describes the necessary prerequisites for installing `r2dii.climat
 **Programming language**
 
 * R - version must be 3.4 or higher (it is best practice to download the most recent version of R). This can be downloaded for Windows from https://cran.studio.com/bin/windows/base
-* In most cases, this will be downloadable from the bank's internal software repository server subject to approval by the bank's IT department.
+* In most cases, this should be downloadable from the financial institution's software repository but may be subject to internal approval
 
 **Integrated Development Environment (IDE)**
 
 * RStudio - This can be downloaded at https://rstudio.com/products/rstudio/download/
-* Again, in most cases this will be downloadable from the bank's internal system, subject to approval.
+* Again, this should be downloadable from the financial institution's software repository but may be subject to internal approval
 
 ## PACTA for Banks
 
@@ -49,8 +49,8 @@ https://www.transitionmonitor.com/pacta-for-banks-2020/
 
 ## Next steps
 
-After successfully completing the prerequisites, see the Readme on how to install the packege followed by the below-mentioned vignettes on how to run the analysis:
+After successfully completing the prerequisites, see the Readme on how to install the package followed by the below-mentioned vignettes on how to run the analysis:
 
-* [Readme file with installation procedure](https://2degreesinvesting.github.io/r2dii.climate.stress.test/index.html)
+* [Readme document with installation procedure](https://2degreesinvesting.github.io/r2dii.climate.stress.test/index.html)
 * [Set up project directories for climate transition risk stress test](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-setup-project-directories.html)
 * [Preparing the intermediate inputs for stress testing loans](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/03-prepare-loans-inputs.html)

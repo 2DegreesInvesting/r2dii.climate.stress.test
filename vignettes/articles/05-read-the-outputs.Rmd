@@ -82,7 +82,7 @@ or bank for which the analysis was run.
 the location of assets considered as well as the regional break down of the 
 scenario targets used.
 * `ald_sector`: Sector of the production assets analyzed.
-* `technology`: The technology can be understood as a sub sector. These must be
+* `technology`: The technology can be understood as a sub-sector. These must be
 in line with the technologies, for which the scenarios provide production
 pathways.
 * `production_plan_company_technology`: Five year forward looking production
@@ -143,7 +143,7 @@ previous misalignment of their production plans relative to scenario targets.
 When using a Carbon budget approach, this is the period between the shock year
 and the end year of the analysis.
 * `ald_sector`: Sector of the production assets analyzed.
-* `technology`: The technology can be understood as a sub sector. These must be in
+* `technology`: The technology can be understood as a sub-sector. These must be in
 line with the technologies, for which the scenarios provide production pathways.
 * `asset_portfolio_value`: Value of all holdings of the given asset type in the
 analysed portfolio.
@@ -361,11 +361,6 @@ production values of companies to stay in line with carbon budgets.
 assumed to have. At this point we assume these are rolled over every year.
 * `scenario_geography_arg` Indicates which geographical region(s) (concerning asset
 location) results shall be calculated for.
-* `company_exclusion_arg` Logical parameter that indicates if certain combinations
-of company and technology should be excluded from the analysis. At this point,
-it is strictly recommended to set this to TRUE (default) because there is not
-yet a dedicated mechanism in place that handles companies which are phasing out
-certain technologies within the time frame of the production forecast.
 * `use_company_terms_arg` Logical parameter, indicating if individually provided
 terms for companies as configured in company_terms.csv shall be used instead of
 fallback as provided in `fallback_term`. The default is FALSE. For more details
@@ -373,21 +368,21 @@ compare [Advanced data
 settings](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/04-advanced-data-settings.html).
 
 While there may be some redundancy to this information, it is there to ensure 
-the results remain reproducible and straight forward for the user
+the results remain reproducible and straightforward for the user
 to understand given magnitudes in the model results. In the standard run of the 
-stress test, with single value set for each input parameter, this implies that the 
+stress test, with a single value specified for each input parameter, this implies that the 
 argument columns just contain one value each (as opposed to sensitivity analysis
 where the user can set multiples values of input parameters).
 
 ### Sensitivity Analyses
 
-Running a sensitivity analysis produces as many sets of results as they are input
-parameter values selected. To make the ensuing analysis easy,
-the results files are named with a suffix indicating the parameter that was 
-varied in the particular run and saved in a new output folder. 
-Apart from the indicative naming suffix the sensitivity analysis results files 
-produced have the same format as described below but contain the results of 
-multiple runs in a single file. 
+Running a sensitivity analysis produces as many sets of results as the number 
+of input parameters selected for the variable of interest.To keep the ensuing 
+analysis as simple as possible, the results files are named with a suffix 
+indicating the parameter that was varied in the particular run and saved in a 
+new output folder. Apart from the indicative naming suffix the sensitivity 
+analysis results files produced have the same format as described above but 
+contain the results of multiple runs in a single file. 
 
 The variation is observed in the argument column of the parameter that 
 was iterated over. Instead of just one value, it will contain values for every 
