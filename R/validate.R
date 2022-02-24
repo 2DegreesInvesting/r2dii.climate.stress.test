@@ -5,13 +5,14 @@
 #' @inheritParams run_stress_test
 #'
 #' @return NULL
-validate_input_values <- function(lgd_senior_claims, lgd_subordinated_claims,
+validate_input_values <- function(baseline_scenario, shock_scenario, scenario_geography,
+                                  lgd_senior_claims, lgd_subordinated_claims,
                                   risk_free_rate, discount_rate,
                                   div_netprofit_prop_coef, shock_year,
                                   fallback_term, use_company_terms, asset_type) {
   input_args <- mget(names(formals()), sys.frame(sys.nframe()))
 
-  c("asset_type", "use_company_terms") %>%
+  c("baseline_scenario", "shock_scenario", "scenario_geography", "asset_type", "use_company_terms") %>%
     purrr::walk(validate_values_in_values, args_list = input_args)
 
   c(
