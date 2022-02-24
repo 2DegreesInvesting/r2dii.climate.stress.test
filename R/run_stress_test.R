@@ -19,6 +19,10 @@
 #'   NOTE: Results and logs per run are saved to a subdirectory of output_path
 #'   that will be generated automatically. The name of the subdirectory is the
 #'   timestamp of the run of the analysis.
+#' @param baseline_scenario Holds the name of the baseline scenario to be used
+#'   in the stress test, for accepted value range check `stress_test_arguments`.
+#' @param shock_scenario Holds the name of the shock scenario to be used in the
+#'   stress test, for accepted value range check `stress_test_arguments`.
 #' @param lgd_senior_claims Numeric, holding the loss given default for senior
 #'   claims, for accepted value range check `stress_test_arguments`.
 #' @param lgd_subordinated_claims Numeric, holding the loss given default for
@@ -52,6 +56,8 @@ run_stress_test <- function(asset_type,
                             input_path_project_specific,
                             input_path_project_agnostic,
                             output_path,
+                            baseline_scenario = "NPS",
+                            shock_scenario = "SDS",
                             lgd_senior_claims = 0.45,
                             lgd_subordinated_claims = 0.75,
                             risk_free_rate = 0.02,
@@ -72,6 +78,9 @@ run_stress_test <- function(asset_type,
   cat("-- Validating input arguments. \n")
 
   validate_input_values(
+    baseline_scenario = baseline_scenario,
+    shock_scenario = shock_scenario,
+    scenario_geography = scenario_geography,
     lgd_senior_claims = lgd_senior_claims,
     lgd_subordinated_claims = lgd_subordinated_claims,
     risk_free_rate = risk_free_rate,
@@ -191,8 +200,8 @@ read_and_process_and_calc <- function(args_list) {
       asset_type = asset_type,
       fallback_term = fallback_term,
       scenario_geography = scenario_geography,
-      baseline_scenario = baseline_scenario_lookup,
-      shock_scenario = shock_scenario_lookup
+      baseline_scenario = baseline_scenario,
+      shock_scenario = shock_scenario
     )
 
   input_data_list <- list(
@@ -227,8 +236,8 @@ read_and_process_and_calc <- function(args_list) {
   company_annual_profits <- calculate_annual_profits(
     asset_type = asset_type,
     input_data_list = input_data_list,
-    scenario_to_follow_baseline = baseline_scenario_lookup,
-    scenario_to_follow_shock = shock_scenario_lookup,
+    scenario_to_follow_baseline = baseline_scenario,
+    scenario_to_follow_shock = shock_scenario,
     transition_scenario = transition_scenario,
     start_year = start_year,
     end_year = end_year_lookup,
@@ -242,7 +251,7 @@ read_and_process_and_calc <- function(args_list) {
     input_data_list = input_data_list,
     start_year = start_year,
     time_horizon = time_horizon_lookup,
-    scenario_to_follow_shock = shock_scenario_lookup,
+    scenario_to_follow_shock = shock_scenario,
     log_path = log_path
   )
 

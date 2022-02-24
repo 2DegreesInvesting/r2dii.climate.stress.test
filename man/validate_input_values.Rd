@@ -5,6 +5,9 @@
 \title{Check that input values are valid}
 \usage{
 validate_input_values(
+  baseline_scenario,
+  shock_scenario,
+  scenario_geography,
   lgd_senior_claims,
   lgd_subordinated_claims,
   risk_free_rate,
@@ -17,6 +20,17 @@ validate_input_values(
 )
 }
 \arguments{
+\item{baseline_scenario}{Holds the name of the baseline scenario to be used
+in the stress test, for accepted value range check \code{stress_test_arguments}.}
+
+\item{shock_scenario}{Holds the name of the shock scenario to be used in the
+stress test, for accepted value range check \code{stress_test_arguments}.}
+
+\item{scenario_geography}{Character vector, indicating which geographical
+region(s) (concerning asset location) results shall be calculated for. For
+accepted values compare \code{stress_test_arguments}. Note that currently only
+the global level is supported.}
+
 \item{lgd_senior_claims}{Numeric, holding the loss given default for senior
 claims, for accepted value range check \code{stress_test_arguments}.}
 
