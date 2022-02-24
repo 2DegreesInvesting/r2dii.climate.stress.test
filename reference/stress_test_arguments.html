@@ -74,25 +74,27 @@
 
     <div id="format">
     <h2>Format</h2>
-    <p>An object of class <code>tbl_df</code> (inherits from <code>tbl</code>, <code>data.frame</code>) with 10 rows and 6 columns.</p>
+    <p>An object of class <code>tbl_df</code> (inherits from <code>tbl</code>, <code>data.frame</code>) with 12 rows and 6 columns.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">stress_test_arguments</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10 × 6</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 12 × 6</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    name                    type      default allowed              min   max  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> asset_type              character <span style="color: #BB0000;">NA</span>      equity, bonds, loans <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> lgd_senior_claims       double    0.45    <span style="color: #BB0000;">NA</span>                   0.3   0.6  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> lgd_subordinated_claims double    0.75    <span style="color: #BB0000;">NA</span>                   0.6   0.9  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> risk_free_rate          double    0.02    <span style="color: #BB0000;">NA</span>                   0     0.05 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> discount_rate           double    0.07    <span style="color: #BB0000;">NA</span>                   -0.01 0.1  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> div_netprofit_prop_coef double    1       <span style="color: #BB0000;">NA</span>                   0.8   1    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> shock_year              double    2030    <span style="color: #BB0000;">NA</span>                   2025  2035 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> fallback_term           double    2       <span style="color: #BB0000;">NA</span>                   1     5    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> scenario_geography      character Global  Global               <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> use_company_terms       logical   FALSE   TRUE, FALSE          <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> baseline_scenario       character NPS     NPS                  <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> shock_scenario          character SDS     SDS                  <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> lgd_senior_claims       double    0.45    <span style="color: #BB0000;">NA</span>                   0.3   0.6  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> lgd_subordinated_claims double    0.75    <span style="color: #BB0000;">NA</span>                   0.6   0.9  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> risk_free_rate          double    0.02    <span style="color: #BB0000;">NA</span>                   0     0.05 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> discount_rate           double    0.07    <span style="color: #BB0000;">NA</span>                   -0.01 0.1  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> div_netprofit_prop_coef double    1       <span style="color: #BB0000;">NA</span>                   0.8   1    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> shock_year              double    2030    <span style="color: #BB0000;">NA</span>                   2025  2035 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> fallback_term           double    2       <span style="color: #BB0000;">NA</span>                   1     5    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span> scenario_geography      character Global  Global               <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">12</span> use_company_terms       logical   FALSE   TRUE, FALSE          <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span>
 </code></pre></div>
     </div>
   </div>
