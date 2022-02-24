@@ -76,7 +76,7 @@ company-technology level for the baseline and the shock scenarios.
 * `investor_name`: Name of the investor or bank for which the analysis was run.
 * `portfolio_name`: Name of the portfolio or loan book managed by the investor
 or bank for which the analysis was run.
-* `scenario_name`: Name that highlights the use of the Carbon budget.
+* `scenario_name`: Name that highlights the use of the carbon budget.
 * `company_name`: Name of the company that was analyzed.
 * `year`: Calendar year.
 * `scenario_geography`: Region for which the analysis was run. This refers to
@@ -136,12 +136,12 @@ Investor" internally)
 * `scenario_geography`: Region for which the analysis was run. This refers to the
 location of assets considered as well as the regional break down of the 
 scenario targets used.
-* `scenario_name`: Name that highlights the use of the Carbon budget compensation
+* `scenario_name`: Name that highlights the use of the carbon budget compensation
 mechanism and the year of the introduction of a transition policy.
 * `year_of_shock`: Year the transition policy is first introduced.
 * `duration_of_shock`: Number of years the companies have to compensate for any
 previous misalignment of their production plans relative to scenario targets.
-When using a Carbon budget approach, this is the period between the shock year
+When using a carbon budget approach, this is the period between the shock year
 and the end year of the analysis.
 * `ald_sector`: Sector of the production assets analyzed.
 * `technology`: The technology can be understood as a sub-sector. These must be in
@@ -320,7 +320,7 @@ PDs by different maturities on the sector level.
 This file contains an overview on the overall probabilities
 of default change for the maturities of the underlying loans.
 
-* `scenario_name`: Name that highlights the use of the Carbon budget.
+* `scenario_name`: Name that highlights the use of the carbon budget.
 * `scenario_geography`: Region for which the analysis was run. This refers to
 the location of assets considered as well as the regional break down of the 
 scenario targets used.
