@@ -60,7 +60,7 @@ A recommended structure for the project-agnostic data would look like this:
 
 * `analysis_input_files/`
     * `prewrangled_financial_data_stress_test.csv`
-    * `prices_data_2021Q1.csv`
+    * `price_data_long_WEO2019.csv`
     * `scenario_2020.csv`
     * `Scenario_AnalysisInput_2020.csv`
     * `prewrangled_capacity_factors_WEO_2020.csv`

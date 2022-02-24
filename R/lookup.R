@@ -42,8 +42,6 @@ end_year_lookup <- 2040
 
 time_horizon_lookup <- 5
 
-price_data_version_lookup <- "2021Q1"
-
 #' @rdname lookup
 #' @export
 credit_type_lookup <- c("outstanding", "credit_limit")
