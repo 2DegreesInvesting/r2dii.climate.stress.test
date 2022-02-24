@@ -36,8 +36,6 @@ sector_scenarios_mapping_lookup <- tibble::tibble(
   )
 )
 
-baseline_scenario_lookup <- "NPS"
-shock_scenario_lookup <- "SDS"
 calculation_level_lookup <- "company"
 
 end_year_lookup <- 2040
