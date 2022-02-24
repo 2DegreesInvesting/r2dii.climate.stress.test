@@ -17,18 +17,18 @@ proceeds to explain in depth how to read the data in each of the files.
 
 ## Overview
 
-The source code generates nine result (output) files after completing the 
+The source code generates nine result (output) files after completing the transition risk
 stress test for a given set of parameters. They principally contain estimates of the
 market risk of companies in the portfolio and of the credit risk of said companies
 in a corporate loan book. The source code additionally outputs a file with 
-company-level scenario production trajectories and log file which holds 
-information on the settings of current the stress test run.
+company-level scenario production trajectories and a log file which holds 
+information on the settings of the current stress test run.
 
 **Log file**
 
 * log_file_\<suffix\>.txt
 
-**Production trajectory data**
+**Company cash flow trajectory data**
 
 * loans_company_trajectories_\<suffix\>.csv
 
@@ -58,14 +58,14 @@ a sensitivity analysis.
 This is a text file that contains information on the settings of the stress
 test run that created the results files. The user can check on the:
 
-* `asset_type` the type of the analysed financial asset in the portfolio/loanbook. 
-This would `loans` for the current version of the stress test.
+* `asset_type` the type of the analysed financial asset in the portfolio/loan book. 
+For the for the version of the stress test described here, this would always be `loans`.
 * the paths to the input (`input_path_project_specific`, `input_path_project_agnostic`)
 and output (`output_path`) directories.
 * next, a full list of the values of the input parameters for the stress test analysis
 [as described here](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/03-run-stress-test.html#understanding-the-input-arguments). 
 * finally, information on the companies that were excluded from the analysis due 
-to not being able to match PACTA results on company financial data.
+to cases of unsuccessful matching of PACTA results on the company financial data.
 
 ### loans_company_trajectories_\<suffix\>
 
@@ -255,8 +255,9 @@ calculated as:
 
 ### loans_company_pd_changes_annual_\<suffix\>
 
-This file contains an overview of the changes of the company-level annual probabilities
-of default relative to the baseline scenario for each year of analysis.
+This file contains an overview of the changes of the company-level annual 
+probabilities of default relative to the baseline scenario for each year 
+of the analysis after the shock year.
 
 * `scenario_name`: Name that highlights the use of the Carbon budget.
 compensation mechanism and the year of the introduction of a transition policy.
@@ -278,8 +279,8 @@ policy shock will change over time.
 ### loans_sector_pd_changes_annual_\<suffix\>
 
 This file contains an overview of the changes of annual probabilities of default 
-aggregated to the sector level by company exposure weight relative to the baseline
-scenario for each year of the analysis.
+aggregated to the sector level by company exposure weight relative to the 
+baseline scenario for each year of the analysis after the shock year.
 
 * `scenario_name`: Name that highlights the use of the Carbon budget.
 compensation mechanism and the Year of the introduction of a transition policy.
@@ -344,23 +345,23 @@ the following set of input parameters:
 * `lgd_senior_claims_arg` is the loss given default used in the expected loss
 calculation of loans for senior claims (notably for corporate loans, so this is
 a potentially important parameter in this calculation)
-* `lgd_subordinated_claims_arg` is the loss given default used in the expected loss
-calculation of loans for subordinated claims (notably for corporate bonds. Not
-of relevance in the loans calculation)
+* `lgd_subordinated_claims_arg` is the loss given default used in the expected 
+loss calculation of loans for subordinated claims (notably for corporate bonds.
+Not of relevance in the loans calculation)
 * `risk_free_rate_arg` the risk free interest rate. Input parameter to the Merton
 credit risk model.
-* `discount_rate_arg` the annual rate at which future cash flows are discounted when
-calculating the net present value of companies in the loan book. Since the net
-present values are indirect inputs into the Merton credit risk model, this
-parameter my be relevant.
+* `discount_rate_arg` the annual rate at which future cash flows are discounted
+when calculating the net present value of companies in the loan book. Since 
+the net present values are indirect inputs into the Merton credit risk model, 
+this parameter my be relevant.
 * `div_netprofit_prop_coef_arg` Coefficient that indicates what share of the net
 present value should be considered to derive the equity value of a company.
 * `shock_year_arg` year in which the policy is introduced, that adjusts the
 production values of companies to stay in line with carbon budgets.
 * `fallback_term_arg` indicates which maturity the loans in the loan book are
 assumed to have. At this point we assume these are rolled over every year.
-* `scenario_geography_arg` Indicates which geographical region(s) (concerning asset
-location) results shall be calculated for.
+* `scenario_geography_arg` Indicates which geographical region(s) (concerning 
+asset location) results shall be calculated for.
 * `use_company_terms_arg` Logical parameter, indicating if individually provided
 terms for companies as configured in company_terms.csv shall be used instead of
 fallback as provided in `fallback_term`. The default is FALSE. For more details
@@ -370,9 +371,10 @@ settings](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles
 While there may be some redundancy to this information, it is there to ensure 
 the results remain reproducible and straightforward for the user
 to understand given magnitudes in the model results. In the standard run of the 
-stress test, with a single value specified for each input parameter, this implies that the 
-argument columns just contain one value each (as opposed to sensitivity analysis
-where the user can set multiples values of input parameters).
+stress test, with a single value specified for each input parameter, this
+implies that the argument columns just contain one value each 
+(as opposed to sensitivity analysis where the user can set multiples values 
+of input parameters).
 
 ### Sensitivity Analyses
 
