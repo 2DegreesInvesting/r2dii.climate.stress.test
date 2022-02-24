@@ -100,10 +100,10 @@
 <p>In order to keep this vignette concise, we assume the following has been set up:</p>
 <ol style="list-style-type: decimal">
 <li>R and RStudio are installed.</li>
-<li>All required R packages are installed, specifically. <code>r2dii.climate.stress.test</code>. Note that this may require installing additional packages. You will be prompted to install these in case any are missing.</li>
-<li>The user has obtained all relevant input files as described in the pdf manual.</li>
+<li>All required R packages are installed, specifically <code>r2dii.climate.stress.test</code>. Note that this may require installing additional packages. You will be prompted to install these in case any are missing.</li>
 <li>The user has successfully run at least the matching part of PACTA for Banks to produce the relevant project-specific raw input files.</li>
-<li>The input files are organized in a folder structure consistent with the one described in the vignette <a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/01-setup-project-directories.html">“Set up project directories”</a>.</li>
+<li>The user has obtained all relevant input files as described in the pdf manual.</li>
+<li>The input files are organized in a folder structure consistent with the one described in the vignette <a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/01-setup-project-directories.html">Set up project directories</a>.</li>
 <li>The user has successfully run the function <code><a href="../reference/run_prep_calculation_loans.html">run_prep_calculation_loans()</a></code> to generate the intermediate input files for the main stress test function in the required format. Refer to the <a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-prepare-loans-inputs.html">corresponding vignette</a> for details on how to do this.</li>
 </ol>
 </div>
@@ -176,7 +176,7 @@
 <li>
 <code>scenario_geography</code> Indicates which geographical region(s) (concerning asset location) results shall be calculated for.</li>
 <li>
-<code>use_company_terms</code> Logical parameter, indicating if individually provided terms for companies as configured in company_terms.csv shall be used instead of fallback as provided in <code>fallback_term</code>. The default is FALSE. For more details compare <a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/04-advanced-data-settings.html">“Advanced data settings”</a>.</li>
+<code>use_company_terms_arg</code> Logical parameter, indicating if individually provided terms for companies as configured in company_terms.csv shall be used instead of fallback as provided in <code>fallback_term</code>. The default is FALSE. For more details compare <a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/04-advanced-data-settings.html">“Advanced data settings”</a>.</li>
 <li>
 <code>return_results</code> Logical parameter that indicates if the outputs of the analysis should be directly written to the indicated output path or simply returned as a list of results within the running session. The default is FALSE, which writes the outputs to the target directory and does not return them as a list object in R.</li>
 </ul>
@@ -202,11 +202,14 @@
 <p>The output files are written into a sub directory of the path indicated as <code>output_path</code> in the function call. The name of the sub directory is created from the time stamp of the analysis and a suffix. The suffix <code>_standard</code> is used when each argument uses a single parameter value. If a sensitivity analysis (see below) is run the name of the varied detail variable is used. The sub directory will be generated automatically, this way we ensure that no existing results are overwritten.</p>
 <ul>
 <li><code>log_file_standard.txt</code></li>
+<li><code>loans_company_trajectories_\&lt;suffix\&gt;.csv</code></li>
 <li><code>loans_portfolio_value_changes_standard.csv</code></li>
 <li><code>loans_company_value_changes__standard.csv</code></li>
 <li><code>loans_company_expected_loss_standard.csv</code></li>
 <li><code>loans_sector_pd_changes_annual_standard.csv</code></li>
 <li><code>loans_sector_pd_changes_overall_standard.csv</code></li>
+<li><code>loans_company_pd_changes_annual_\&lt;suffix\&gt;.csv</code></li>
+<li><code>loans_company_pd_changes_overall_\&lt;suffix\&gt;.csv</code></li>
 </ul>
 </div>
 </div>
@@ -250,7 +253,7 @@
 <div class="section level2">
 <h2 id="interpretation-of-the-output-files">Interpretation of the output files<a class="anchor" aria-label="anchor" href="#interpretation-of-the-output-files"></a>
 </h2>
-<p>Detailed explanations of the result files can be found in the vignette: <a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/04-read-the-outputs.html">“Understand the output files of the transition risk stress test”</a>.</p>
+<p>Detailed explanations of the result files can be found in the vignette: <a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/05-read-the-outputs.html">Understand the output files of the transition risk stress test</a>.</p>
 </div>
   </div>
 
