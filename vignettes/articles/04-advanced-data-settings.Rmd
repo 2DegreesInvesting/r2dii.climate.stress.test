@@ -27,7 +27,7 @@ to produce the relevant project-specific raw input files.
 4. The user has obtained all relevant input files as described in the pdf manual.
 to produce the relevant project-specific raw input files.
 5. The input files are organized in a folder structure consistent with the one
-described in the vignette ["Set up project directories"](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/01-setup-project-directories.html).
+described in the vignette [Set up project directories](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/01-setup-project-directories.html).
 6. The user has successfully run the function `run_prep_calculation_loans()` to
 generate the intermediate input files for the main stress test function in the
 required format. Refer to the [corresponding vignette](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-prepare-loans-inputs.html)
@@ -214,4 +214,4 @@ If the respective dataset as provided by 2DII already exists there make sure to
 replace it with your custom file.
 
 ### Running the Stress Test with provided financial data
-You can now run the stress test as described in vignette ["Run stress test"](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/03-run-stress-test.html).
+You can now run the stress test as described in vignette [Run stress test](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/03-run-stress-test.html).

@@ -236,4 +236,4 @@ given calculation.
 ## Interpretation of the output files
 
 Detailed explanations of the result files can be found in the vignette:
-["Understand the output files of the transition risk stress test"](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/04-read-the-outputs.html).
+[Understand the output files of the transition risk stress test](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/04-read-the-outputs.html).
