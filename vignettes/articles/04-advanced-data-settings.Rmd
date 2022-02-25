@@ -35,10 +35,10 @@ for details on how to do this.
 
 ## Prerequisites
 In order to keep this vignette concise, we assume that you have successfully
-completed all preparation steps described in the vignettes ["Set up project
-directories"](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/01-setup-project-directories.html)
-and ["prepare loans
-inputs"](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-prepare-loans-inputs.html).
+completed all preparation steps described in the vignettes [Set up project
+directories](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/01-setup-project-directories.html)
+and [prepare loans
+inputs](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-prepare-loans-inputs.html).
 
 
 ## Company - term data
@@ -52,8 +52,8 @@ holds the columns `company_name` (character, holding the name of analysed
 companies) and term (numeric, indicates which maturity the loans to respective
 companies is assumed to have in years). In column `company_name` include all
 unique company names from `Loans_results_company.rda`, which you generated in
-["prepare loans
-inputs"](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-prepare-loans-inputs.html).
+[prepare loans
+inputs](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-prepare-loans-inputs.html).
 If you want to use R to obtain this column you can take the following steps.
 
 ```{r, eval = FALSE}
@@ -108,8 +108,8 @@ analysis place it in
 * `example_folder/`
     * `inputs/`
     
-as set up in ["Set up project
-directories"](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/01-setup-project-directories.html).
+as set up in [Set up project
+directories](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/01-setup-project-directories.html).
 
 ### Running the Stress Test with provided company - term data
 In order to include the company - term data in your analysis set argument
@@ -208,8 +208,8 @@ in
 
 * `analysis_input_files/`  
     
-as set up in ["Set up project
-directories"](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/01-setup-project-directories.html).
+as set up in [Set up project
+directories](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/01-setup-project-directories.html).
 If the respective dataset as provided by 2DII already exists there make sure to 
 replace it with your custom file.
 
