@@ -86,8 +86,6 @@ NOTE: if <code>return_results</code> is TRUE results will not be written to <cod
   <span class="va">input_path_project_specific</span>,
   <span class="va">input_path_project_agnostic</span>,
   <span class="va">output_path</span>,
-  baseline_scenario <span class="op">=</span> <span class="st">"NPS"</span>,
-  shock_scenario <span class="op">=</span> <span class="st">"SDS"</span>,
   lgd_senior_claims <span class="op">=</span> <span class="fl">0.45</span>,
   lgd_subordinated_claims <span class="op">=</span> <span class="fl">0.75</span>,
   risk_free_rate <span class="op">=</span> <span class="fl">0.02</span>,
@@ -117,12 +115,6 @@ data.</p></dd>
 NOTE: Results and logs per run are saved to a subdirectory of output_path
 that will be generated automatically. The name of the subdirectory is the
 timestamp of the run of the analysis.</p></dd>
-<dt>baseline_scenario</dt>
-<dd><p>Holds the name of the baseline scenario to be used
-in the stress test, for accepted value range check <code>stress_test_arguments</code>.</p></dd>
-<dt>shock_scenario</dt>
-<dd><p>Holds the name of the shock scenario to be used in the
-stress test, for accepted value range check <code>stress_test_arguments</code>.</p></dd>
 <dt>lgd_senior_claims</dt>
 <dd><p>Numeric, holding the loss given default for senior
 claims, for accepted value range check <code>stress_test_arguments</code>.</p></dd>
