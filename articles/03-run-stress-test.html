@@ -100,10 +100,10 @@
 <p>In order to keep this vignette concise, we assume the following has been set up:</p>
 <ol style="list-style-type: decimal">
 <li>R and RStudio are installed.</li>
-<li>All required R packages are installed, specifically. <code>r2dii.climate.stress.test</code>. Note that this may require installing additional packages. You will be prompted to install these in case any are missing.</li>
-<li>The user has obtained all relevant input files as described in the pdf manual.</li>
+<li>All required R packages are installed, specifically <code>r2dii.climate.stress.test</code>. Note that this may require installing additional packages. You will be prompted to install these in case any are missing.</li>
 <li>The user has successfully run at least the matching part of PACTA for Banks to produce the relevant project-specific raw input files.</li>
-<li>The input files are organized in a folder structure consistent with the one described in the vignette <a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/01-setup-project-directories.html">“Set up project directories”</a>.</li>
+<li>The user has obtained all relevant input files as described in the pdf manual.</li>
+<li>The input files are organized in a folder structure consistent with the one described in the vignette <a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/01-setup-project-directories.html">Set up project directories</a>.</li>
 <li>The user has successfully run the function <code><a href="../reference/run_prep_calculation_loans.html">run_prep_calculation_loans()</a></code> to generate the intermediate input files for the main stress test function in the required format. Refer to the <a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-prepare-loans-inputs.html">corresponding vignette</a> for details on how to do this.</li>
 </ol>
 </div>
@@ -134,25 +134,31 @@
 <p>Specifications on the detail arguments are summarized in the following overview. The defaults that are used if the argument is not adjusted when calling <code><a href="../reference/run_stress_test.html">run_stress_test()</a></code> can be found in column <code>default</code>. The user may change any detail argument by explicitly passing it to the function. Note that there are allowed values for each of the inputs. For logical or character variables refer to column <code>allowed</code>, for numeric variables the allowed values are the range from <code>min</code> (inclusive) to <code>max</code> (inclusive).</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">stress_test_arguments</span>
-<span class="co">#&gt; <span style="color: #949494;"># A tibble: 10 × 6</span></span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 12 × 6</span></span>
 <span class="co">#&gt;    name                    type      default allowed              min   max  </span>
 <span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
 <span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> asset_type              character <span style="color: #BB0000;">NA</span>      equity, bonds, loans <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> lgd_senior_claims       double    0.45    <span style="color: #BB0000;">NA</span>                   0.3   0.6  </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> lgd_subordinated_claims double    0.75    <span style="color: #BB0000;">NA</span>                   0.6   0.9  </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> risk_free_rate          double    0.02    <span style="color: #BB0000;">NA</span>                   0     0.05 </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> discount_rate           double    0.07    <span style="color: #BB0000;">NA</span>                   -0.01 0.1  </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> div_netprofit_prop_coef double    1       <span style="color: #BB0000;">NA</span>                   0.8   1    </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> shock_year              double    2030    <span style="color: #BB0000;">NA</span>                   2025  2035 </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> fallback_term           double    2       <span style="color: #BB0000;">NA</span>                   1     5    </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> scenario_geography      character Global  Global               <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">10</span> use_company_terms       logical   FALSE   TRUE, FALSE          <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span></span></code></pre></div>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> baseline_scenario       character NPS     NPS                  <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> shock_scenario          character SDS     SDS                  <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> lgd_senior_claims       double    0.45    <span style="color: #BB0000;">NA</span>                   0.3   0.6  </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> lgd_subordinated_claims double    0.75    <span style="color: #BB0000;">NA</span>                   0.6   0.9  </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> risk_free_rate          double    0.02    <span style="color: #BB0000;">NA</span>                   0     0.05 </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> discount_rate           double    0.07    <span style="color: #BB0000;">NA</span>                   -0.01 0.1  </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> div_netprofit_prop_coef double    1       <span style="color: #BB0000;">NA</span>                   0.8   1    </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> shock_year              double    2030    <span style="color: #BB0000;">NA</span>                   2025  2035 </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">10</span> fallback_term           double    2       <span style="color: #BB0000;">NA</span>                   1     5    </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">11</span> scenario_geography      character Global  Global               <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">12</span> use_company_terms       logical   FALSE   TRUE, FALSE          <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="understanding-the-input-arguments">Understanding the input arguments<a class="anchor" aria-label="anchor" href="#understanding-the-input-arguments"></a>
 </h3>
 <p>The meaning of each of the detail arguments is as follows:</p>
 <ul>
+<li>
+<code>baseline_scenario</code> holds the name of the baseline scenario to be used in the stress test. We use a business-as-usual scenario for the baseline.</li>
+<li>
+<code>shock_scenario</code> holds the name of the scenario that companies are forced to transition to via a late and sudden shock. We use an ambitious transition scenario as the shock scenario.</li>
 <li>
 <code>lgd_senior_claims</code> is the loss given default used in the expected loss calculation of loans for senior claims (notably for corporate loans, so this is a potentially important parameter in this calculation)</li>
 <li>
@@ -170,7 +176,7 @@
 <li>
 <code>scenario_geography</code> Indicates which geographical region(s) (concerning asset location) results shall be calculated for.</li>
 <li>
-<code>use_company_terms</code> Logical parameter, indicating if individually provided terms for companies as configured in company_terms.csv shall be used instead of fallback as provided in <code>fallback_term</code>. The default is FALSE. For more details compare <a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/04-advanced-data-settings.html">“Advanced data settings”</a>.</li>
+<code>use_company_terms_arg</code> Logical parameter, indicating if individually provided terms for companies as configured in company_terms.csv shall be used instead of fallback as provided in <code>fallback_term</code>. The default is FALSE. For more details compare <a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/04-advanced-data-settings.html">“Advanced data settings”</a>.</li>
 <li>
 <code>return_results</code> Logical parameter that indicates if the outputs of the analysis should be directly written to the indicated output path or simply returned as a list of results within the running session. The default is FALSE, which writes the outputs to the target directory and does not return them as a list object in R.</li>
 </ul>
@@ -196,11 +202,14 @@
 <p>The output files are written into a sub directory of the path indicated as <code>output_path</code> in the function call. The name of the sub directory is created from the time stamp of the analysis and a suffix. The suffix <code>_standard</code> is used when each argument uses a single parameter value. If a sensitivity analysis (see below) is run the name of the varied detail variable is used. The sub directory will be generated automatically, this way we ensure that no existing results are overwritten.</p>
 <ul>
 <li><code>log_file_standard.txt</code></li>
+<li><code>loans_company_trajectories_\&lt;suffix\&gt;.csv</code></li>
 <li><code>loans_portfolio_value_changes_standard.csv</code></li>
 <li><code>loans_company_value_changes__standard.csv</code></li>
 <li><code>loans_company_expected_loss_standard.csv</code></li>
 <li><code>loans_sector_pd_changes_annual_standard.csv</code></li>
 <li><code>loans_sector_pd_changes_overall_standard.csv</code></li>
+<li><code>loans_company_pd_changes_annual_\&lt;suffix\&gt;.csv</code></li>
+<li><code>loans_company_pd_changes_overall_\&lt;suffix\&gt;.csv</code></li>
 </ul>
 </div>
 </div>
@@ -244,7 +253,7 @@
 <div class="section level2">
 <h2 id="interpretation-of-the-output-files">Interpretation of the output files<a class="anchor" aria-label="anchor" href="#interpretation-of-the-output-files"></a>
 </h2>
-<p>Detailed explanations of the result files can be found in the vignette: <a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/04-read-the-outputs.html">“Understand the output files of the transition risk stress test”</a>.</p>
+<p>Detailed explanations of the result files can be found in the vignette: <a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/05-read-the-outputs.html">Understand the output files of the transition risk stress test</a>.</p>
 </div>
   </div>
 

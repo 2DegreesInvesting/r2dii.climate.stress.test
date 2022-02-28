@@ -70,6 +70,9 @@
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">validate_input_values</span><span class="op">(</span>
+  <span class="va">baseline_scenario</span>,
+  <span class="va">shock_scenario</span>,
+  <span class="va">scenario_geography</span>,
   <span class="va">lgd_senior_claims</span>,
   <span class="va">lgd_subordinated_claims</span>,
   <span class="va">risk_free_rate</span>,
@@ -84,7 +87,18 @@
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>lgd_senior_claims</dt>
+    <dl><dt>baseline_scenario</dt>
+<dd><p>Holds the name of the baseline scenario to be used
+in the stress test, for accepted value range check <code>stress_test_arguments</code>.</p></dd>
+<dt>shock_scenario</dt>
+<dd><p>Holds the name of the shock scenario to be used in the
+stress test, for accepted value range check <code>stress_test_arguments</code>.</p></dd>
+<dt>scenario_geography</dt>
+<dd><p>Character vector, indicating which geographical
+region(s) (concerning asset location) results shall be calculated for. For
+accepted values compare <code>stress_test_arguments</code>. Note that currently only
+the global level is supported.</p></dd>
+<dt>lgd_senior_claims</dt>
 <dd><p>Numeric, holding the loss given default for senior
 claims, for accepted value range check <code>stress_test_arguments</code>.</p></dd>
 <dt>lgd_subordinated_claims</dt>
