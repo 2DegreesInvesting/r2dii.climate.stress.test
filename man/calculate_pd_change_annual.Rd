@@ -18,7 +18,8 @@ calculate_pd_change_annual(
   data,
   shock_year = NULL,
   end_of_analysis = NULL,
-  risk_free_interest_rate = NULL
+  risk_free_interest_rate = NULL,
+  exposure_at_default = NULL
 )
 }
 \arguments{
@@ -32,6 +33,11 @@ which year the analysis runs}
 
 \item{risk_free_interest_rate}{A numeric vector of length one that indicates
 the risk free rate of interest}
+
+\item{exposure_at_default}{A dataframe that contains the share of the
+portfolio value of each company-technology combination. Used to quantify
+the impact of the company-tech level shock on higher levels of aggregation
+in the portfolio}
 }
 \description{
 Calculate change in probabilities of default (PDs) of loans connected to

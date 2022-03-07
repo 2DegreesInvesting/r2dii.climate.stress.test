@@ -429,25 +429,22 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
       pd_change_shock = .data$PD_change
     )
 
-  sector_pd_changes_annual <- results_list$company_pd_changes_annual %>%
-    dplyr::group_by(
+  portfolio_pd_changes_annual <- results_list$company_pd_changes_annual %>%
+    dplyr::select(
       .data$scenario_name, .data$scenario_geography, .data$investor_name,
-      .data$portfolio_name, .data$ald_sector, .data$year,
+      .data$portfolio_name, .data$company_name, .data$ald_sector, .data$year,
+      .data$PD_change, .data$PD_change_sector,
       !!!rlang::syms(sensitivity_analysis_vars)
     ) %>%
-    dplyr::summarise(
-      # ADO 2312 - weight the PD change by baseline equity because this represents the original exposure better
-      PD_change = weighted.mean(x = .data$PD_change, w = .data$equity_t_baseline, na.rm = TRUE),
-      .groups = "drop"
-    ) %>%
-    dplyr::ungroup() %>%
     dplyr::arrange(
       .data$scenario_geography, .data$scenario_name, .data$investor_name,
-      .data$portfolio_name, .data$ald_sector, .data$year
+      .data$portfolio_name, .data$company_name, .data$ald_sector, .data$year
     ) %>%
     dplyr::rename(
-      pd_change_shock = .data$PD_change
-    )
+      pd_change_shock = .data$PD_change,
+      pd_change_sector_shock = .data$PD_change_sector
+    ) %>%
+    dplyr::distinct_all()
 
   company_pd_changes_overall <- results_list$company_pd_changes_overall %>%
     dplyr::select(
@@ -463,25 +460,22 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
       pd_change_shock = .data$PD_change
     )
 
-  sector_pd_changes_overall <- results_list$company_pd_changes_overall %>%
-    dplyr::group_by(
+  portfolio_pd_changes_overall <- results_list$company_pd_changes_overall %>%
+    dplyr::select(
       .data$scenario_name, .data$scenario_geography, .data$investor_name,
-      .data$portfolio_name, .data$ald_sector, .data$term,
+      .data$portfolio_name, .data$company_name, .data$ald_sector, .data$term,
+      .data$PD_change, .data$PD_change_sector,
       !!!rlang::syms(sensitivity_analysis_vars)
     ) %>%
-    dplyr::summarise(
-      # ADO 2312 - weight the PD change by baseline equity because this represents the original exposure better
-      PD_change = weighted.mean(x = .data$PD_change, w = .data$equity_0_baseline, na.rm = TRUE),
-      .groups = "drop"
-    ) %>%
-    dplyr::ungroup() %>%
     dplyr::arrange(
       .data$scenario_geography, .data$scenario_name, .data$investor_name,
-      .data$portfolio_name, .data$ald_sector, .data$term
+      .data$portfolio_name, .data$company_name, .data$ald_sector, .data$term
     ) %>%
     dplyr::rename(
-      pd_change_shock = .data$PD_change
-    )
+      pd_change_shock = .data$PD_change,
+      pd_change_sector_shock = .data$PD_change_sector
+    ) %>%
+    dplyr::distinct_all()
 
   # company trajectories ----------------------------------------------------
   company_trajectories <- results_list$company_trajectories %>%
@@ -517,9 +511,11 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
     portfolio_value_changes = portfolio_value_changes,
     company_expected_loss = company_expected_loss,
     company_pd_changes_annual = company_pd_changes_annual,
-    sector_pd_changes_annual = sector_pd_changes_annual,
+    # sector_pd_changes_annual = sector_pd_changes_annual,
+    portfolio_pd_changes_annual = portfolio_pd_changes_annual,
     company_pd_changes_overall = company_pd_changes_overall,
-    sector_pd_changes_overall = sector_pd_changes_overall,
+    # sector_pd_changes_overall = sector_pd_changes_overall,
+    portfolio_pd_changes_overall = portfolio_pd_changes_overall,
     company_trajectories = company_trajectories
   ))
 }
@@ -585,14 +581,14 @@ check_results <- function(wrangled_results_list, sensitivity_analysis_vars) {
       )
     )
 
-  wrangled_results_list$sector_pd_changes_annual %>%
+  wrangled_results_list$portfolio_pd_changes_annual %>%
     report_missings(
-      name_data = "Annual PD changes - Sector level"
+      name_data = "Annual PD changes - Portfolio level"
     ) %>%
     report_all_duplicate_kinds(
       composite_unique_cols = c(
         "scenario_name", "scenario_geography", "investor_name", "portfolio_name",
-        "ald_sector", "year", sensitivity_analysis_vars
+        "ald_sector", "year", "company_name", sensitivity_analysis_vars
       )
     )
 
@@ -607,14 +603,14 @@ check_results <- function(wrangled_results_list, sensitivity_analysis_vars) {
       )
     )
 
-  wrangled_results_list$sector_pd_changes_overall %>%
+  wrangled_results_list$portfolio_pd_changes_overall %>%
     report_missings(
-      name_data = "Overall PD changes - Sector level"
+      name_data = "Overall PD changes - Portfolio level"
     ) %>%
     report_all_duplicate_kinds(
       composite_unique_cols = c(
         "scenario_name", "scenario_geography", "investor_name", "portfolio_name",
-        "ald_sector", "term", sensitivity_analysis_vars
+        "ald_sector", "term", "company_name", sensitivity_analysis_vars
       )
     )
 

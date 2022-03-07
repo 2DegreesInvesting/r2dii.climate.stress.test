@@ -271,7 +271,8 @@ read_and_process_and_calc <- function(args_list) {
     calculate_pd_change_overall(
       shock_year = transition_scenario$year_of_shock,
       end_of_analysis = end_year_lookup,
-      risk_free_interest_rate = risk_free_rate
+      risk_free_interest_rate = risk_free_rate,
+      exposure_at_default = exposure_by_technology_and_company
     )
 
   # TODO: ADO 879 - note which companies produce missing results due to
@@ -291,7 +292,8 @@ read_and_process_and_calc <- function(args_list) {
     data = company_annual_profits,
     shock_year = transition_scenario$year_of_shock,
     end_of_analysis = end_year_lookup,
-    risk_free_interest_rate = risk_free_rate
+    risk_free_interest_rate = risk_free_rate,
+    exposure_at_default = exposure_by_technology_and_company
   )
 
   # TODO: ADO 879 - note which companies produce missing results due to

@@ -17,10 +17,15 @@
 #'   which year the analysis runs
 #' @param risk_free_interest_rate A numeric vector of length one that indicates
 #'   the risk free rate of interest
+#' @param exposure_at_default A dataframe that contains the share of the
+#'   portfolio value of each company-technology combination. Used to quantify
+#'   the impact of the company-tech level shock on higher levels of aggregation
+#'   in the portfolio
 calculate_pd_change_annual <- function(data,
                                        shock_year = NULL,
                                        end_of_analysis = NULL,
-                                       risk_free_interest_rate = NULL) {
+                                       risk_free_interest_rate = NULL,
+                                       exposure_at_default = NULL) {
   force(data)
   shock_year %||% stop("Must provide input for 'shock_year'", call. = FALSE)
   end_of_analysis %||% stop("Must provide input for 'end_of_analysis'", call. = FALSE)
@@ -33,6 +38,15 @@ calculate_pd_change_annual <- function(data,
       "scenario_geography", "ald_sector", "technology",
       "scenario_name", "discounted_net_profit_ls",
       "discounted_net_profit_baseline", "debt_equity_ratio", "volatility"
+    )
+  )
+
+  validate_data_has_expected_cols(
+    data = exposure_at_default,
+    expected_columns = c(
+      "investor_name", "portfolio_name", "company_name", "year",
+      "scenario_geography", "ald_sector", "technology",
+      "plan_carsten", "plan_sec_carsten", "term", "pd"
     )
   )
 
@@ -105,6 +119,40 @@ calculate_pd_change_annual <- function(data,
       PD_late_sudden = 1 - .data$Survival_late_sudden,
       PD_change = .data$PD_late_sudden - .data$PD_baseline
     )
+
+  exposure_at_default <- exposure_at_default %>%
+    # distinct in order to remove unused technology level information, the
+    # trivial year and the unneeded financial info
+    dplyr::distinct(
+      .data$investor_name, .data$portfolio_name, .data$company_name,
+      .data$ald_sector, .data$scenario_geography, .data$plan_sec_carsten
+    )
+
+  #TODO: needs a check which lines have been removed
+  results <- results %>%
+    dplyr::inner_join(
+      exposure_at_default,
+      by = c("investor_name", "portfolio_name", "company_name",
+             "scenario_geography", "ald_sector")
+    )
+
+  results <- results %>%
+    dplyr::group_by(
+      .data$investor_name, .data$portfolio_name, .data$ald_sector,
+      .data$scenario_geography, .data$year
+    ) %>%
+    dplyr::mutate(
+      PD_baseline_sector = stats::weighted.mean(
+        .data$PD_baseline, w = .data$plan_sec_carsten, na.rm = TRUE
+      ),
+      PD_late_sudden_sector = stats::weighted.mean(
+        .data$PD_late_sudden, w = .data$plan_sec_carsten, na.rm = TRUE
+      ),
+      PD_change_sector = stats::weighted.mean(
+        .data$PD_change, w = .data$plan_sec_carsten, na.rm = TRUE
+      )
+    ) %>%
+    dplyr::ungroup()
 
   return(results)
 }
