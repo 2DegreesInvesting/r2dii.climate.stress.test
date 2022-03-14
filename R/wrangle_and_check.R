@@ -511,10 +511,8 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
     portfolio_value_changes = portfolio_value_changes,
     company_expected_loss = company_expected_loss,
     company_pd_changes_annual = company_pd_changes_annual,
-    # sector_pd_changes_annual = sector_pd_changes_annual,
     portfolio_pd_changes_annual = portfolio_pd_changes_annual,
     company_pd_changes_overall = company_pd_changes_overall,
-    # sector_pd_changes_overall = sector_pd_changes_overall,
     portfolio_pd_changes_overall = portfolio_pd_changes_overall,
     company_trajectories = company_trajectories
   ))
