@@ -12,10 +12,10 @@
 #' @param flat_multiplier Numeric. A ratio that determines for the asset type
 #'   if how strongly the DCF should propagate to value changes.
 company_technology_asset_value_at_risk <- function(data,
-                                        terminal_value = NULL,
-                                        shock_scenario = NULL,
-                                        div_netprofit_prop_coef = NULL,
-                                        flat_multiplier = NULL) {
+                                                   terminal_value = NULL,
+                                                   shock_scenario = NULL,
+                                                   div_netprofit_prop_coef = NULL,
+                                                   flat_multiplier = NULL) {
   force(data)
   terminal_value %||% stop("Must provide input for 'terminal_value'", call. = FALSE)
   shock_scenario %||% stop("Must provide input for 'shock_scenario'", call. = FALSE)
