@@ -11,21 +11,22 @@
 #' only after the shock, we get diverging starting points.
 #'
 #' @param data A dataframe containing the (discounted) annual profits
+#' @param exposure_at_default A dataframe that contains the share of the
+#'   portfolio value of each company-technology combination. Used to quantify
+#'   the impact of the company-tech level shock on higher levels of aggregation
+#'   in the portfolio
 #' @param shock_year A numeric vector of length one that indicates in which year
 #'   the policy shock strikes in a given scenario
 #' @param end_of_analysis A numeric vector of length one that indicates until
 #'   which year the analysis runs
 #' @param risk_free_interest_rate A numeric vector of length one that indicates
 #'   the risk free rate of interest
-#' @param exposure_at_default A dataframe that contains the share of the
-#'   portfolio value of each company-technology combination. Used to quantify
-#'   the impact of the company-tech level shock on higher levels of aggregation
-#'   in the portfolio
+
 calculate_pd_change_annual <- function(data,
+                                       exposure_at_default,
                                        shock_year = NULL,
                                        end_of_analysis = NULL,
-                                       risk_free_interest_rate = NULL,
-                                       exposure_at_default = NULL) {
+                                       risk_free_interest_rate = NULL) {
   force(data)
   shock_year %||% stop("Must provide input for 'shock_year'", call. = FALSE)
   end_of_analysis %||% stop("Must provide input for 'end_of_analysis'", call. = FALSE)

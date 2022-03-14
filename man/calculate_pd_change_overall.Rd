@@ -12,14 +12,19 @@ level.}
 \usage{
 calculate_pd_change_overall(
   data,
+  exposure_at_default,
   shock_year = NULL,
   end_of_analysis = NULL,
-  risk_free_interest_rate = NULL,
-  exposure_at_default = NULL
+  risk_free_interest_rate = NULL
 )
 }
 \arguments{
 \item{data}{A dataframe containing the (discounted) annual profits}
+
+\item{exposure_at_default}{A dataframe that contains the share of the
+portfolio value of each company-technology combination. Used to quantify
+the impact of the company-tech level shock on higher levels of aggregation
+in the portfolio}
 
 \item{shock_year}{A numeric vector of length one that indicates in which year
 the policy shock strikes in a given scenario}
@@ -29,11 +34,6 @@ which year the analysis runs}
 
 \item{risk_free_interest_rate}{A numeric vector of length one that indicates
 the risk free rate of interest}
-
-\item{exposure_at_default}{A dataframe that contains the share of the
-portfolio value of each company-technology combination. Used to quantify
-the impact of the company-tech level shock on higher levels of aggregation
-in the portfolio}
 }
 \description{
 Calculate change in probabilities of default (PDs) of loans connected to

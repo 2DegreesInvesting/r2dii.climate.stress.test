@@ -8,6 +8,12 @@ test_that("without specified arguments, function throws error", {
 test_that("with missing argument for shock_year, calculate_pd_change_annual
           throws error", {
   test_data <- read_test_data("loanbook_annual_profits.csv")
+  test_exposure <- tibble::tribble(
+    ~investor_name, ~portfolio_name, ~company_name, ~year, ~scenario_geography, ~ald_sector, ~technology, ~plan_carsten, ~plan_sec_carsten, ~term, ~pd,
+    "Meta Investor", "Meta Investor", "company_1", 2025, "Global", "Power", "NuclearCap", 0.01, 0.01, 1, 0.01,
+    "Meta Investor", "Meta Investor", "company_2", 2025, "Global", "Oil&gas", "Oil", 0.01, 0.01, 1, 0.01,
+    "Meta Investor", "Meta Investor", "Power Company", 2025, "Global", "Power", "NuclearCap", 0.01, 0.01, 1, 0.01,
+  )
 
   test_end_of_analysis <- 2040
   test_risk_free_rate <- 0.05
@@ -15,6 +21,7 @@ test_that("with missing argument for shock_year, calculate_pd_change_annual
   testthat::expect_error(
     calculate_pd_change_annual(
       data = test_data,
+      exposure_at_default = test_exposure,
       end_of_analysis = test_end_of_analysis,
       risk_free_interest_rate = test_risk_free_rate
     ),
@@ -59,10 +66,10 @@ test_that("PD_changes point in expected direction", {
 
   test_results <- calculate_pd_change_annual(
     data = test_data,
+    exposure_at_default = test_exposure,
     shock_year = test_shock_year,
     end_of_analysis = test_end_of_analysis,
-    risk_free_interest_rate = test_risk_free_rate,
-    exposure_at_default = test_exposure
+    risk_free_interest_rate = test_risk_free_rate
   )
 
   results_direction <- test_results %>%
