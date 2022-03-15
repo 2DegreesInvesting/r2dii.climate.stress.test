@@ -11,7 +11,7 @@
 aggregate_results <- function(results_list, sensitivity_analysis_vars) {
   sensitivity_analysis_vars <- paste0(sensitivity_analysis_vars, "_arg")
 
-  # value changes -----------------------------------------------------------
+  # validate value changes on company technology level -------------------------
   validate_data_has_expected_cols(
     data = results_list$company_technology_value_changes,
     expected_columns = c(
@@ -21,93 +21,33 @@ aggregate_results <- function(results_list, sensitivity_analysis_vars) {
     )
   )
 
+  # join exposure on most granular value changes
   data <- results_list$company_technology_value_changes %>%
-    # TODO: 3384 this is where increasing technologies with zero start value are removed
-    dplyr::inner_join(
-      results_list$exposure_by_technology_and_company,
-      by = c(
-        "investor_name", "portfolio_name", "company_name",
-        "technology", "ald_sector", "scenario_geography", sensitivity_analysis_vars
-      )
+    join_exposure_on_value_changes(
+      exposure = results_list$exposure_by_technology_and_company,
+      assets_under_management = results_list$port_aum,
+      sensitivity_analysis_vars = sensitivity_analysis_vars
     )
 
-  data <- data %>%
-    dplyr::inner_join(
-      results_list$port_aum,
-      by = c("investor_name", "portfolio_name", sensitivity_analysis_vars)
-    )
+  # apply value changes to granular exposures in given portfolio
+  data <- data %>% apply_value_change_to_exposure()
 
+  # aggregate value changes to company level in given portfolio
   data <- data %>%
-    dplyr::mutate(
-      tech_company_exposure = .data$asset_portfolio_value * .data$plan_carsten,
-      tech_company_value_change = .data$tech_company_exposure * .data$VaR_tech_company / 100
-    ) %>%
-    dplyr::group_by(
-      .data$investor_name, .data$portfolio_name, .data$company_name,
-      .data$scenario_geography
-    ) %>%
-    dplyr::mutate(
-      VaR_company = sum(.data$VaR_tech_company * .data$plan_carsten, na.rm = TRUE) /
-        sum(.data$plan_carsten, na.rm = TRUE),
-      company_exposure = .data$asset_portfolio_value *
-        sum(.data$plan_carsten, na.rm = TRUE),
-      company_value_change = .data$company_exposure * .data$VaR_company / 100
-    ) %>%
-    dplyr::ungroup() %>%
-    dplyr::group_by(
-      .data$investor_name, .data$portfolio_name, .data$ald_sector,
-      .data$technology, .data$scenario_geography
-    ) %>%
-    dplyr::mutate(
-      VaR_technology = sum(.data$VaR_tech_company * .data$plan_carsten, na.rm = TRUE) /
-        sum(.data$plan_carsten, na.rm = TRUE),
-      technology_exposure = .data$asset_portfolio_value *
-        sum(.data$plan_carsten, na.rm = TRUE),
-      technology_value_change = .data$technology_exposure * .data$VaR_technology / 100
-    ) %>%
-    dplyr::ungroup() %>%
-    dplyr::group_by(
-      .data$investor_name, .data$portfolio_name, .data$ald_sector,
-      .data$scenario_geography
-    ) %>%
-    dplyr::mutate(
-      VaR_sector = sum(.data$VaR_technology * .data$plan_carsten, na.rm = TRUE) /
-        sum(.data$plan_carsten, na.rm = TRUE),
-      sector_exposure = .data$asset_portfolio_value *
-        sum(.data$plan_carsten, na.rm = TRUE),
-      sector_value_change = .data$sector_exposure * .data$VaR_sector / 100
-    ) %>%
-    dplyr::ungroup() %>%
-    dplyr::group_by(
-      .data$investor_name, .data$portfolio_name, .data$scenario_geography
-    ) %>%
-    dplyr::mutate(
-      VaR_analysed_sectors = sum(.data$VaR_tech_company * .data$plan_carsten, na.rm = TRUE) /
-        sum(.data$plan_carsten, na.rm = TRUE),
-      analysed_sectors_exposure = .data$asset_portfolio_value *
-        sum(.data$plan_carsten, na.rm = TRUE),
-      analysed_sectors_value_change = .data$analysed_sectors_exposure *
-        .data$VaR_analysed_sectors / 100,
-      portfolio_aum = .data$asset_portfolio_value,
-      # setting portfolio_value_change = analysed_sectors_value_change will
-      # underestimate overall impact on portfolio as there can of course be
-      # impacts on companies in the portfolio that operate in other sectors
-      portfolio_value_change = .data$analysed_sectors_value_change,
-      portfolio_value_change_perc = sum(.data$VaR_tech_company * .data$tech_company_exposure, na.rm = TRUE) /
-        .data$portfolio_aum
-    ) %>%
-    dplyr::ungroup()
+    aggregate_value_change_to_company_level() %>%
+    # aggregate value changes in portfolio to technology level
+    aggregate_value_change_to_technology_level() %>%
+    # aggregate value changes to sector level in given portfolio
+    aggregate_value_change_to_sector_level() %>%
+    # aggregate value changes to portfolio level and all covered sectors
+    aggregate_value_change_to_analysed_sectors_and_portfolio()
 
   company_value_changes <- data %>%
     dplyr::select(-c(.data$plan_carsten, .data$plan_sec_carsten, .data$year))
 
+  # prepare exposure data for credit risk results
   exposure_at_default_credit <- results_list$exposure_by_technology_and_company %>%
-    # distinct in order to remove unused technology level information, the
-    # trivial year and the unneeded financial info
-    dplyr::distinct(
-      .data$investor_name, .data$portfolio_name, .data$company_name,
-      .data$ald_sector, .data$scenario_geography, .data$plan_sec_carsten
-    )
+    prepare_exposure_for_credit_risk_format()
 
   # TODO: needs a check which lines have been removed
   company_pd_changes_annual <- results_list$company_pd_changes_annual %>%
@@ -178,4 +118,128 @@ aggregate_results <- function(results_list, sensitivity_analysis_vars) {
     company_pd_changes_overall = company_pd_changes_overall,
     company_trajectories = results_list$company_trajectories
   ))
+}
+
+join_exposure_on_value_changes <- function(data,
+                                           exposure,
+                                           assets_under_management,
+                                           sensitivity_analysis_vars) {
+  data <- data %>%
+    # TODO: 3384 this is where increasing technologies with zero start value are removed
+    dplyr::inner_join(
+      exposure,
+      by = c(
+        "investor_name", "portfolio_name", "company_name",
+        "technology", "ald_sector", "scenario_geography", sensitivity_analysis_vars
+      )
+    )
+
+  data <- data %>%
+    dplyr::inner_join(
+      assets_under_management,
+      by = c("investor_name", "portfolio_name", sensitivity_analysis_vars)
+    )
+
+  return(data)
+}
+
+apply_value_change_to_exposure <- function(data) {
+  data <- data %>%
+    dplyr::mutate(
+      tech_company_exposure = .data$asset_portfolio_value * .data$plan_carsten,
+      tech_company_value_change = .data$tech_company_exposure * .data$VaR_tech_company / 100
+    )
+
+  return(data)
+}
+
+aggregate_value_change_to_company_level <- function(data) {
+  data <- data %>%
+    dplyr::group_by(
+      .data$investor_name, .data$portfolio_name, .data$company_name,
+      .data$scenario_geography
+    ) %>%
+    dplyr::mutate(
+      VaR_company = sum(.data$VaR_tech_company * .data$plan_carsten, na.rm = TRUE) /
+        sum(.data$plan_carsten, na.rm = TRUE),
+      company_exposure = .data$asset_portfolio_value *
+        sum(.data$plan_carsten, na.rm = TRUE),
+      company_value_change = .data$company_exposure * .data$VaR_company / 100
+    ) %>%
+    dplyr::ungroup()
+
+  return(data)
+}
+
+aggregate_value_change_to_technology_level <- function(data) {
+  data <- data %>%
+    dplyr::group_by(
+      .data$investor_name, .data$portfolio_name, .data$ald_sector,
+      .data$technology, .data$scenario_geography
+    ) %>%
+    dplyr::mutate(
+      VaR_technology = sum(.data$VaR_tech_company * .data$plan_carsten, na.rm = TRUE) /
+        sum(.data$plan_carsten, na.rm = TRUE),
+      technology_exposure = .data$asset_portfolio_value *
+        sum(.data$plan_carsten, na.rm = TRUE),
+      technology_value_change = .data$technology_exposure * .data$VaR_technology / 100
+    ) %>%
+    dplyr::ungroup()
+
+  return(data)
+}
+
+aggregate_value_change_to_sector_level <- function(data) {
+  data <- data %>%
+    dplyr::group_by(
+      .data$investor_name, .data$portfolio_name, .data$ald_sector,
+      .data$scenario_geography
+    ) %>%
+    dplyr::mutate(
+      VaR_sector = sum(.data$VaR_technology * .data$plan_carsten, na.rm = TRUE) /
+        sum(.data$plan_carsten, na.rm = TRUE),
+      sector_exposure = .data$asset_portfolio_value *
+        sum(.data$plan_carsten, na.rm = TRUE),
+      sector_value_change = .data$sector_exposure * .data$VaR_sector / 100
+    ) %>%
+    dplyr::ungroup()
+
+  return(data)
+}
+
+aggregate_value_change_to_analysed_sectors_and_portfolio <- function(data) {
+  data <- data %>%
+    dplyr::group_by(
+      .data$investor_name, .data$portfolio_name, .data$scenario_geography
+    ) %>%
+    dplyr::mutate(
+      VaR_analysed_sectors = sum(.data$VaR_tech_company * .data$plan_carsten, na.rm = TRUE) /
+        sum(.data$plan_carsten, na.rm = TRUE),
+      analysed_sectors_exposure = .data$asset_portfolio_value *
+        sum(.data$plan_carsten, na.rm = TRUE),
+      analysed_sectors_value_change = .data$analysed_sectors_exposure *
+        .data$VaR_analysed_sectors / 100,
+      portfolio_aum = .data$asset_portfolio_value,
+      # setting portfolio_value_change = analysed_sectors_value_change will
+      # underestimate overall impact on portfolio as there can of course be
+      # impacts on companies in the portfolio that operate in other sectors
+      portfolio_value_change = .data$analysed_sectors_value_change,
+      portfolio_value_change_perc = sum(.data$VaR_tech_company * .data$tech_company_exposure, na.rm = TRUE) /
+        .data$portfolio_aum
+    ) %>%
+    dplyr::ungroup()
+
+  return(data)
+}
+
+prepare_exposure_for_credit_risk_format <- function(data) {
+  # distinct in order to remove unused technology level information, the
+  # trivial year and the unneeded financial info
+  data <- data %>%
+    dplyr::distinct(
+      .data$investor_name, .data$portfolio_name, .data$company_name,
+      .data$ald_sector, .data$scenario_geography, .data$plan_sec_carsten
+    )
+
+  return(data)
 }
