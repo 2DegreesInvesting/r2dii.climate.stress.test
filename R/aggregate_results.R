@@ -21,6 +21,7 @@ aggregate_results <- function(results_list, sensitivity_analysis_vars) {
     )
   )
 
+  # Market Risk
   # join exposure on most granular value changes
   data <- results_list$company_technology_value_changes %>%
     join_exposure_on_value_changes(
@@ -45,71 +46,24 @@ aggregate_results <- function(results_list, sensitivity_analysis_vars) {
   company_value_changes <- data %>%
     dplyr::select(-c(.data$plan_carsten, .data$plan_sec_carsten, .data$year))
 
+  # Credit Risk
   # prepare exposure data for credit risk results
   exposure_at_default_credit <- results_list$exposure_by_technology_and_company %>%
     prepare_exposure_for_credit_risk_format()
 
   # TODO: needs a check which lines have been removed
   company_pd_changes_annual <- results_list$company_pd_changes_annual %>%
-    dplyr::inner_join(
-      exposure_at_default_credit,
-      by = c(
-        "investor_name", "portfolio_name", "company_name",
-        "scenario_geography", "ald_sector"
-      )
-    )
+    join_credit_exposure_on_pd_changes(exposure_at_default_credit)
 
   company_pd_changes_annual <- company_pd_changes_annual %>%
-    dplyr::group_by(
-      .data$investor_name, .data$portfolio_name, .data$ald_sector,
-      .data$scenario_geography, .data$year
-    ) %>%
-    dplyr::mutate(
-      PD_baseline_sector = stats::weighted.mean(
-        .data$PD_baseline,
-        w = .data$plan_sec_carsten, na.rm = TRUE
-      ),
-      PD_late_sudden_sector = stats::weighted.mean(
-        .data$PD_late_sudden,
-        w = .data$plan_sec_carsten, na.rm = TRUE
-      ),
-      PD_change_sector = stats::weighted.mean(
-        .data$PD_change,
-        w = .data$plan_sec_carsten, na.rm = TRUE
-      )
-    ) %>%
-    dplyr::ungroup()
+    aggregate_pd_change_to_sector_level(horizon = "annual")
 
   # TODO: needs a check which lines have been removed
   company_pd_changes_overall <- results_list$company_pd_changes_overall %>%
-    dplyr::inner_join(
-      exposure_at_default_credit,
-      by = c(
-        "investor_name", "portfolio_name", "company_name",
-        "scenario_geography", "ald_sector"
-      )
-    )
+    join_credit_exposure_on_pd_changes(exposure_at_default_credit)
 
   company_pd_changes_overall <- company_pd_changes_overall %>%
-    dplyr::group_by(
-      .data$investor_name, .data$portfolio_name, .data$ald_sector,
-      .data$scenario_geography, .data$term
-    ) %>%
-    dplyr::mutate(
-      PD_baseline_sector = stats::weighted.mean(
-        .data$PD_baseline,
-        w = .data$plan_sec_carsten, na.rm = TRUE
-      ),
-      PD_late_sudden_sector = stats::weighted.mean(
-        .data$PD_late_sudden,
-        w = .data$plan_sec_carsten, na.rm = TRUE
-      ),
-      PD_change_sector = stats::weighted.mean(
-        .data$PD_change,
-        w = .data$plan_sec_carsten, na.rm = TRUE
-      )
-    ) %>%
-    dplyr::ungroup()
+    aggregate_pd_change_to_sector_level(horizon = "overall")
 
   return(list(
     company_value_changes = company_value_changes,
@@ -240,6 +194,47 @@ prepare_exposure_for_credit_risk_format <- function(data) {
       .data$investor_name, .data$portfolio_name, .data$company_name,
       .data$ald_sector, .data$scenario_geography, .data$plan_sec_carsten
     )
+
+  return(data)
+}
+
+join_credit_exposure_on_pd_changes <- function(data,
+                                               exposure) {
+  data <- data %>%
+    dplyr::inner_join(
+      exposure,
+      by = c(
+        "investor_name", "portfolio_name", "company_name",
+        "scenario_geography", "ald_sector"
+      )
+    )
+
+  return(data)
+}
+
+aggregate_pd_change_to_sector_level <- function(data,
+                                                horizon = c("annual", "overall")) {
+  horizon_group <- if (horizon == "annual") {"year"} else {"term"}
+  data <- data %>%
+    dplyr::group_by(
+      .data$investor_name, .data$portfolio_name, .data$ald_sector,
+      .data$scenario_geography, !!rlang::sym(horizon_group)
+    ) %>%
+    dplyr::mutate(
+      PD_baseline_sector = stats::weighted.mean(
+        .data$PD_baseline,
+        w = .data$plan_sec_carsten, na.rm = TRUE
+      ),
+      PD_late_sudden_sector = stats::weighted.mean(
+        .data$PD_late_sudden,
+        w = .data$plan_sec_carsten, na.rm = TRUE
+      ),
+      PD_change_sector = stats::weighted.mean(
+        .data$PD_change,
+        w = .data$plan_sec_carsten, na.rm = TRUE
+      )
+    ) %>%
+    dplyr::ungroup()
 
   return(data)
 }
