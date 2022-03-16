@@ -105,6 +105,18 @@ format_loanbook_st <- function(data,
       .data$plan_sec_prod, .data$plan_sec_carsten
     )
 
+  # custom formatting to adapt to P4I style scenanrio data
+  results_loanbook <- results_loanbook %>%
+    dplyr::mutate(scenario_geography = gsub(" ", "", region, fixed = TRUE)) %>%
+    dplyr::mutate(scenario_geography = case_when(
+      scenario_geography == "CentralAndSouthAmerica" ~ "CentralandSouthAmerica",
+      scenario_geography == "EuropeanUnion" ~ "EU",
+      scenario_geography == "NonOecd" ~ "NonOECD",
+      scenario_geography == "Oecd" ~ "OECD",
+      scenario_geography == "UnitedStates" ~ "US",
+      TRUE ~ scenario_geography
+    ))
+
   plan <- results_loanbook %>%
     # scenario == "projected" corresponds to company production plans in P4B
     dplyr::filter(.data$scenario == "projected") %>%
