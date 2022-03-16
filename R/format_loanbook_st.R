@@ -109,12 +109,12 @@ format_loanbook_st <- function(data,
   results_loanbook <- results_loanbook %>%
     dplyr::mutate(scenario_geography = gsub(" ", "", scenario_geography, fixed = TRUE)) %>%
     dplyr::mutate(scenario_geography = dplyr::case_when(
-      scenario_geography == "CentralAndSouthAmerica" ~ "CentralandSouthAmerica",
-      scenario_geography == "EuropeanUnion" ~ "EU",
-      scenario_geography == "NonOecd" ~ "NonOECD",
-      scenario_geography == "Oecd" ~ "OECD",
-      scenario_geography == "UnitedStates" ~ "US",
-      TRUE ~ scenario_geography
+      .data$scenario_geography == "CentralAndSouthAmerica" ~ "CentralandSouthAmerica",
+      .data$scenario_geography == "EuropeanUnion" ~ "EU",
+      .data$scenario_geography == "NonOecd" ~ "NonOECD",
+      .data$scenario_geography == "Oecd" ~ "OECD",
+      .data$scenario_geography == "UnitedStates" ~ "US",
+      TRUE ~ .data$scenario_geography
     ))
 
   plan <- results_loanbook %>%
