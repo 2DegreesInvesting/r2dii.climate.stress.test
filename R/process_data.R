@@ -1,6 +1,7 @@
 #' Process data of type indicated by function name
 #'
 #' @inheritParams run_stress_test
+#' @inheritParams report_company_drops
 #' @param data A tibble of data of type indicated by function name.
 #' @param start_year Numeric, holding start year of analysis.
 #' @param end_year Numeric, holding end year of analysis.
@@ -20,7 +21,7 @@
 process_pacta_results <- function(data, start_year, end_year, time_horizon,
                                   scenario_geography_filter, scenarios_filter,
                                   equity_market_filter, sectors, technologies,
-                                  allocation_method, asset_type) {
+                                  allocation_method, asset_type, log_path) {
   data_processed <- data %>%
     wrangle_and_check_pacta_results(
       start_year = start_year,
@@ -34,7 +35,11 @@ process_pacta_results <- function(data, start_year, end_year, time_horizon,
     dplyr::filter(.data$ald_sector %in% .env$sectors) %>%
     dplyr::filter(.data$technology %in% .env$technologies) %>%
     dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$start_year + .env$time_horizon)) %>%
-    remove_companies_with_missing_exposures() %>%
+    remove_companies_with_missing_exposures(
+      start_year = start_year,
+      time_horizon = time_horizon,
+      log_path = log_path
+    ) %>%
     stop_if_empty(data_name = "Pacta Results") %>%
     check_level_availability(
       data_name = "Pacta Results",
@@ -63,26 +68,55 @@ process_pacta_results <- function(data, start_year, end_year, time_horizon,
   return(data_processed)
 }
 
-remove_companies_with_missing_exposures <- function(data) {
-  data <- data %>%
-    dplyr::group_by(
-      .data$investor_name, .data$portfolio_name, .data$equity_market,
-      .data$ald_sector, .data$technology, .data$scenario, .data$allocation,
-      .data$scenario_geography, .data$company_name
-    ) %>%
-    dplyr::arrange(.data$year) %>%
-    dplyr::mutate(
-      plan_carsten_missing = dplyr::if_else(
-        is.na(dplyr::last(.data$plan_carsten)),
-        TRUE,
-        FALSE
-      )
-    ) %>%
-    dplyr::ungroup() %>%
-    dplyr::filter(!.data$plan_carsten_missing) %>%
-    dplyr::select(-.data$plan_carsten_missing)
+#' Remove rows from PACTA results that belong to company-technology combinations
+#' for which there is no information on the exposure in the portfolio
+#'
+#' @inheritParams calculate_annual_profits
+#' @inheritParams report_company_drops
+#' @param data tibble containing filtered PACTA results
+#'
+#' @return A tibble of data without rows with no exposure info
+#' @noRd
+remove_companies_with_missing_exposures <- function(data,
+                                                    start_year,
+                                                    time_horizon,
+                                                    log_path) {
+  n_companies_pre <- length(unique(data$company_name))
 
-  return(data)
+  companies_missing_exposure_value <- data %>%
+    dplyr::filter(.data$year == .env$start_year + .env$time_horizon) %>%
+    dplyr::filter(is.na(.data$plan_carsten)) #%>%
+
+  data_filtered <- data %>%
+    dplyr::anti_join(
+      companies_missing_exposure_value,
+      by = c("company_name", "technology")
+    )
+
+  n_companies_post <- length(unique(data_filtered$company_name))
+
+  if (n_companies_pre > n_companies_post) {
+    percent_loss <- (n_companies_pre - n_companies_post) * 100 / n_companies_pre
+    affected_companies <- sort(
+      setdiff(
+        data$company_name,
+        data_filtered$company_name
+      )
+    )
+    paste_write(
+      format_indent_1(), "When filtering out holdings with exposures missing value, dropped rows for",
+      n_companies_pre - n_companies_post, "out of", n_companies_pre, "companies",
+      log_path = log_path
+    )
+    paste_write(format_indent_2(), "percent loss:", percent_loss, log_path = log_path)
+    paste_write(format_indent_2(), "affected companies:", log_path = log_path)
+    purrr::walk(affected_companies, function(company) {
+      paste_write(format_indent_2(), company, log_path = log_path)
+    })
+  }
+
+
+  return(data_filtered)
 }
 
 #' Process data of type indicated by function name
@@ -249,7 +283,8 @@ process_company_terms <- function(data, fallback_term) {
 }
 
 st_process <- function(data, asset_type, fallback_term,
-                       scenario_geography, baseline_scenario, shock_scenario) {
+                       scenario_geography, baseline_scenario, shock_scenario,
+                       log_path) {
   start_year <- get_start_year(data)
   scenarios_filter <- c(baseline_scenario, shock_scenario)
 
@@ -307,7 +342,8 @@ st_process <- function(data, asset_type, fallback_term,
     sectors = sectors_lookup,
     technologies = technologies_lookup,
     allocation_method = allocation_method_lookup,
-    asset_type = asset_type
+    asset_type = asset_type,
+    log_path = log_path
   ) %>%
     add_terms(company_terms = company_terms, fallback_term = fallback_term)
 
