@@ -201,7 +201,8 @@ read_and_process_and_calc <- function(args_list) {
       fallback_term = fallback_term,
       scenario_geography = scenario_geography,
       baseline_scenario = baseline_scenario,
-      shock_scenario = shock_scenario
+      shock_scenario = shock_scenario,
+      log_path = log_path
     )
 
   input_data_list <- list(

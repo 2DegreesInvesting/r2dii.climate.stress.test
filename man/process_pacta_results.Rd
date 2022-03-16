@@ -15,7 +15,8 @@ process_pacta_results(
   sectors,
   technologies,
   allocation_method,
-  asset_type
+  asset_type,
+  log_path
 )
 }
 \arguments{
@@ -45,6 +46,8 @@ allocation rule.}
 
 \item{asset_type}{String holding asset_type. For accepted values compare
 \code{stress_test_arguments}.}
+
+\item{log_path}{String holding path to log file.}
 }
 \value{
 A tibble of data as indicated by function name.
