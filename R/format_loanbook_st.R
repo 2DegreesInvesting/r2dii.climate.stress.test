@@ -107,7 +107,7 @@ format_loanbook_st <- function(data,
 
   # custom formatting to adapt to P4I style scenanrio data
   results_loanbook <- results_loanbook %>%
-    dplyr::mutate(scenario_geography = gsub(" ", "", region, fixed = TRUE)) %>%
+    dplyr::mutate(scenario_geography = gsub(" ", "", scenario_geography, fixed = TRUE)) %>%
     dplyr::mutate(scenario_geography = case_when(
       scenario_geography == "CentralAndSouthAmerica" ~ "CentralandSouthAmerica",
       scenario_geography == "EuropeanUnion" ~ "EU",
