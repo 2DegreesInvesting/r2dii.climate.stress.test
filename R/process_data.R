@@ -85,9 +85,12 @@ remove_companies_with_missing_exposures <- function(data,
                                                     log_path) {
   n_companies_pre <- length(unique(data$company_name))
 
+  # we merge the exposure of the last year of the forecast on the company
+  # results for the aggregation, to get the closest picture to the shock year.
+  # Hence start_year + time_horizon
   companies_missing_exposure_value <- data %>%
     dplyr::filter(.data$year == .env$start_year + .env$time_horizon) %>%
-    dplyr::filter(is.na(.data$plan_carsten)) #%>%
+    dplyr::filter(is.na(.data$plan_carsten))
 
   data_filtered <- data %>%
     dplyr::anti_join(
