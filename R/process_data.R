@@ -69,7 +69,9 @@ process_pacta_results <- function(data, start_year, end_year, time_horizon,
 }
 
 #' Remove rows from PACTA results that belong to company-technology combinations
-#' for which there is no information on the exposure in the portfolio
+#' for which there is no information on the exposure in the portfolio. We join
+#' company results on the portfolio exposure based on the last available year of
+#' the production forecast. Hence we filter for missings in that year.
 #'
 #' @inheritParams calculate_annual_profits
 #' @inheritParams report_company_drops
