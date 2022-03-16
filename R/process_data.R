@@ -34,6 +34,7 @@ process_pacta_results <- function(data, start_year, end_year, time_horizon,
     dplyr::filter(.data$ald_sector %in% .env$sectors) %>%
     dplyr::filter(.data$technology %in% .env$technologies) %>%
     dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$start_year + .env$time_horizon)) %>%
+    remove_companies_with_missing_exposures() %>%
     stop_if_empty(data_name = "Pacta Results") %>%
     check_level_availability(
       data_name = "Pacta Results",
@@ -60,6 +61,28 @@ process_pacta_results <- function(data, start_year, end_year, time_horizon,
   }
 
   return(data_processed)
+}
+
+remove_companies_with_missing_exposures <- function(data) {
+  data <- data %>%
+    dplyr::group_by(
+      .data$investor_name, .data$portfolio_name, .data$equity_market,
+      .data$ald_sector, .data$technology, .data$scenario, .data$allocation,
+      .data$scenario_geography, .data$company_name
+    ) %>%
+    dplyr::arrange(.data$year) %>%
+    dplyr::mutate(
+      plan_carsten_missing = dplyr::if_else(
+        is.na(dplyr::last(.data$plan_carsten)),
+        TRUE,
+        FALSE
+      )
+    ) %>%
+    dplyr::ungroup() %>%
+    dplyr::filter(!.data$plan_carsten_missing) %>%
+    dplyr::select(-.data$plan_carsten_missing)
+
+  return(data)
 }
 
 #' Process data of type indicated by function name
@@ -141,7 +164,7 @@ process_price_data <- function(data, technologies, sectors, start_year, end_year
         )
     ) %>%
     report_missing_col_combinations(col_names = c("scenario", "technology", "year")) %>%
-    report_all_duplicate_kinds(composite_unique_cols = cuc_price_data)  %>%
+    report_all_duplicate_kinds(composite_unique_cols = cuc_price_data) %>%
     report_missings(name_data = "price data", throw_error = TRUE) %>%
     tidyr::pivot_wider(names_from = "scenario", values_from = "price", names_prefix = "price_")
 
