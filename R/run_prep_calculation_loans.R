@@ -302,7 +302,6 @@ run_prep_calculation_loans <- function(input_path_project_specific,
   p4b_tms_results_loan_share <- p4b_tms_results %>%
     # TODO why left_join?
     dplyr::left_join(loan_share, by = c("sector" = "sector_ald", "name_ald")) %>%
-    dplyr::filter(.data$region == "global") %>%
     dplyr::select(
       -c(
         .data$comp_loan_size_outstanding, .data$comp_loan_size_credit_limit,
