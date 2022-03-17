@@ -46,10 +46,12 @@ function also calculates relative exposures. Hence, after completing the steps
 of matching and prioritizing the loan book, all prioritized files should be
 combined into one file, before running this function.
 
-Supported sectors are:
+The supported sectors depend on the `scenario_geography` (i.e.the geographical
+region (concerning asset location) results shall be calculated for). Compare
+level `Global` for the maximum number of supported sectors.
   
 ```{r}
-sectors_lookup
+print(scenario_geography_x_ald_sector, n = 100)
 ```
 
 Beside the file paths, the only argument that can be set is `credit_type`, which
