@@ -19,6 +19,8 @@
 aggregate_results <- function(results_list, sensitivity_analysis_vars) {
   sensitivity_analysis_vars <- paste0(sensitivity_analysis_vars, "_arg")
 
+  # Aggregate Market Risk results -----
+
   # validate value changes on company technology level -------------------------
   validate_data_has_expected_cols(
     data = results_list$company_technology_value_changes,
@@ -29,7 +31,6 @@ aggregate_results <- function(results_list, sensitivity_analysis_vars) {
     )
   )
 
-  # Aggregate Market Risk results -----
   # join exposure on most granular value changes
   company_technology_value_changes <- results_list$company_technology_value_changes %>%
     join_exposure_on_value_changes(
@@ -56,6 +57,7 @@ aggregate_results <- function(results_list, sensitivity_analysis_vars) {
     dplyr::select(-c(.data$plan_carsten, .data$plan_sec_carsten, .data$year))
 
   # Aggregate Credit Risk Results -----
+
   # prepare exposure data for credit risk results
   exposure_at_default_credit <- results_list$exposure_by_technology_and_company %>%
     prepare_exposure_for_credit_risk_format()
