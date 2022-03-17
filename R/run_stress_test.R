@@ -207,6 +207,8 @@ read_and_process_and_calc <- function(args_list) {
       scenario_geography = scenario_geography,
       baseline_scenario = baseline_scenario,
       shock_scenario = shock_scenario,
+      sectors = sectors_lookup,
+      technologies = technologies_lookup,
       log_path = log_path
     )
 

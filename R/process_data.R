@@ -154,6 +154,7 @@ process_capacity_factors_power <- function(data,
                                            start_year,
                                            end_year) {
   data_processed <- data %>%
+    harmonise_cap_fac_geo_names() %>%
     dplyr::filter(.data$scenario %in% .env$scenarios_filter) %>%
     dplyr::filter(.data$scenario_geography %in% .env$scenario_geography_filter) %>%
     dplyr::filter(.data$technology %in% .env$technologies) %>%
@@ -176,6 +177,20 @@ process_capacity_factors_power <- function(data,
   return(data_processed)
 }
 
+harmonise_cap_fac_geo_names <- function(data) {
+
+  data <- data %>%
+    # hardcoded adjustments are needed here for compatibility with P4I
+    dplyr::mutate(scenario_geography = gsub(" ", "", scenario_geography, fixed = TRUE)) %>%
+    dplyr::mutate(scenario_geography = dplyr::case_when(
+      scenario_geography == "EuropeanUnion" ~ "EU",
+      scenario_geography == "Non-OECD" ~ "NonOECD",
+      scenario_geography == "UnitedStates" ~ "US",
+      TRUE ~ scenario_geography
+    ))
+  return(data)
+}
+
 
 #' Process data of type indicated by function name
 #'
@@ -186,9 +201,9 @@ process_capacity_factors_power <- function(data,
 process_price_data <- function(data, technologies, sectors, start_year, end_year,
                                scenarios_filter) {
   data_processed <- data %>%
-    dplyr::filter(.data$ald_sector %in% .env$sectors_lookup) %>%
+    dplyr::filter(.data$ald_sector %in% .env$sectors) %>%
     check_sector_tech_mapping(sector_col = "ald_sector") %>%
-    dplyr::filter(.data$technology %in% .env$technologies_lookup) %>%
+    dplyr::filter(.data$technology %in% .env$technologies) %>%
     dplyr::filter(.data$scenario %in% .env$scenarios_filter) %>%
     dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year)) %>%
     stop_if_empty(data_name = "Price Data") %>%
@@ -197,8 +212,8 @@ process_price_data <- function(data, technologies, sectors, start_year, end_year
       expected_levels_list =
         list(
           year = start_year:end_year,
-          ald_sector = sectors,
-          technology = technologies,
+          ald_sector = .env$sectors,
+          technology = .env$technologies,
           scenario = scenarios_filter
         )
     ) %>%
@@ -289,6 +304,7 @@ process_company_terms <- function(data, fallback_term) {
 
 st_process <- function(data, asset_type, fallback_term,
                        scenario_geography, baseline_scenario, shock_scenario,
+                       sectors, technologies,
                        log_path) {
   start_year <- get_start_year(data)
   scenarios_filter <- c(baseline_scenario, shock_scenario)
@@ -302,15 +318,15 @@ st_process <- function(data, asset_type, fallback_term,
     data$capacity_factors,
     scenarios_filter = scenarios_filter,
     scenario_geography_filter = scenario_geography,
-    technologies = technologies_lookup,
+    technologies = technologies,
     start_year = start_year,
     end_year = end_year_lookup
   )
 
   df_price <- process_price_data(
     data$df_price,
-    technologies = technologies_lookup,
-    sectors = sectors_lookup,
+    technologies = technologies,
+    sectors = sectors,
     start_year = start_year,
     end_year = end_year_lookup,
     scenarios_filter = scenarios_filter
@@ -320,8 +336,8 @@ st_process <- function(data, asset_type, fallback_term,
     data$scenario_data,
     start_year = start_year,
     end_year = end_year_lookup,
-    sectors = sectors_lookup,
-    technologies = technologies_lookup,
+    sectors = sectors,
+    technologies = technologies,
     scenario_geography_filter = scenario_geography,
     scenarios_filter = scenarios_filter
   )
@@ -344,8 +360,8 @@ st_process <- function(data, asset_type, fallback_term,
     scenario_geography_filter = scenario_geography,
     scenarios_filter = scenarios_filter,
     equity_market_filter = equity_market_filter_lookup,
-    sectors = sectors_lookup,
-    technologies = technologies_lookup,
+    sectors = sectors,
+    technologies = technologies,
     allocation_method = allocation_method_lookup,
     asset_type = asset_type,
     log_path = log_path
