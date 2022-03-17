@@ -43,8 +43,7 @@
 #'   For accepted range compare `stress_test_arguments`.
 #' @param scenario_geography Character vector, indicating which geographical
 #'   region(s) (concerning asset location) results shall be calculated for. For
-#'   accepted values compare `stress_test_arguments`. Note that currently only
-#'   the global level is supported.
+#'   accepted values compare `stress_test_arguments`.
 #' @param use_company_terms Boolean, indicating if term values for individual
 #'   companies are to be used. For accepted values compare
 #'   `stress_test_arguments`. Note that currently this functionality is not
