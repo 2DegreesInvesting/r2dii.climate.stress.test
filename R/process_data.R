@@ -178,13 +178,16 @@ process_capacity_factors_power <- function(data,
 }
 
 harmonise_cap_fac_geo_names <- function(data) {
+
   data <- data %>%
     # hardcoded adjustments are needed here for compatibility with P4I
     dplyr::mutate(scenario_geography = gsub(" ", "", scenario_geography, fixed = TRUE)) %>%
-    dplyr::mutate(scenario_geography = case_when(scenario_geography == "EuropeanUnion" ~ "EU",
-                                                 scenario_geography == "Non-OECD" ~ "NonOECD",
-                                                 scenario_geography == "UnitedStates" ~ "US",
-                                                 TRUE ~ scenario_geography))
+    dplyr::mutate(scenario_geography = dplyr::case_when(
+      scenario_geography == "EuropeanUnion" ~ "EU",
+      scenario_geography == "Non-OECD" ~ "NonOECD",
+      scenario_geography == "UnitedStates" ~ "US",
+      TRUE ~ scenario_geography
+    ))
   return(data)
 }
 
