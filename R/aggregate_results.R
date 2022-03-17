@@ -60,14 +60,12 @@ aggregate_results <- function(results_list, sensitivity_analysis_vars) {
   exposure_at_default_credit <- results_list$exposure_by_technology_and_company %>%
     prepare_exposure_for_credit_risk_format()
 
-  # TODO: needs a check which lines have been removed
   company_pd_changes_annual <- results_list$company_pd_changes_annual %>%
     join_credit_exposure_on_pd_changes(exposure_at_default_credit)
 
   company_pd_changes_annual <- company_pd_changes_annual %>%
     aggregate_pd_change_to_sector_level(horizon = "annual")
 
-  # TODO: needs a check which lines have been removed
   company_pd_changes_overall <- results_list$company_pd_changes_overall %>%
     join_credit_exposure_on_pd_changes(exposure_at_default_credit)
 
