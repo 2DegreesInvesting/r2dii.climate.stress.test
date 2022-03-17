@@ -13,9 +13,17 @@ aggregate_results(results_list, sensitivity_analysis_vars)
 arguments.}
 }
 \value{
-A list of including basic and aggregated results.
+A list including basic and aggregated results.
 }
 \description{
-Function aggregates results to the expected levels. List element entry
-\code{results} is split into market risk results for company and portfolio level.
+Function aggregates results to the expected levels. For market risk, the most
+granular level company-technology value changes are aggregated to (1) the
+company level and then (2) the portfolio level with splits by technology,
+sector, all analyzed sectors and overall portfolio impact. For the credit
+risk results, the most granular level already starts at company level. Here,
+we additionally aggregate to the portfolio level, providing a sector split of
+the credit risk impact on the portfolio. In all cases, the aggregation to the
+portfolio level is done weighting the holdings in the given companies by
+exposure. List element entry \code{results} is split into market risk and credit
+risk results for company and portfolio level.
 }

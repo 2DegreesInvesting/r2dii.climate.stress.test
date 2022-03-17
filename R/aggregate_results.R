@@ -15,7 +15,7 @@
 #' @param sensitivity_analysis_vars  String vector holding names of iteration
 #'   arguments.
 #'
-#' @return A list of including basic and aggregated results.
+#' @return A list including basic and aggregated results.
 aggregate_results <- function(results_list, sensitivity_analysis_vars) {
   sensitivity_analysis_vars <- paste0(sensitivity_analysis_vars, "_arg")
 
