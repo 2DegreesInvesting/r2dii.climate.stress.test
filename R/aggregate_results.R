@@ -31,7 +31,7 @@ aggregate_results <- function(results_list, sensitivity_analysis_vars) {
 
   # Market Risk
   # join exposure on most granular value changes
-  data <- results_list$company_technology_value_changes %>%
+  company_technology_value_changes <- results_list$company_technology_value_changes %>%
     join_exposure_on_value_changes(
       exposure = results_list$exposure_by_technology_and_company,
       assets_under_management = results_list$port_aum,
@@ -39,10 +39,11 @@ aggregate_results <- function(results_list, sensitivity_analysis_vars) {
     )
 
   # apply value changes to granular exposures in given portfolio
-  data <- data %>% apply_value_change_to_exposure()
+  company_technology_value_changes <- company_technology_value_changes %>%
+    apply_value_change_to_exposure()
 
   # aggregate value changes to company level in given portfolio
-  data <- data %>%
+  company_value_changes <- company_technology_value_changes %>%
     aggregate_value_change_to_company_level() %>%
     # aggregate value changes in portfolio to technology level
     aggregate_value_change_to_technology_level() %>%
@@ -51,7 +52,7 @@ aggregate_results <- function(results_list, sensitivity_analysis_vars) {
     # aggregate value changes to portfolio level and all covered sectors
     aggregate_value_change_to_analysed_sectors_and_portfolio()
 
-  company_value_changes <- data %>%
+  company_value_changes <- company_value_changes %>%
     dplyr::select(-c(.data$plan_carsten, .data$plan_sec_carsten, .data$year))
 
   # Credit Risk
