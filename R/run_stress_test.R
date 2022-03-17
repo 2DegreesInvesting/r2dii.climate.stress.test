@@ -194,6 +194,9 @@ read_and_process_and_calc <- function(args_list) {
   )
 
   cat("-- Processing input data. \n")
+
+  sectors_and_technologies_list <- infer_sectors_and_technologies(scenario_geography)
+
   processed <- data %>%
     st_process(
       asset_type = asset_type,
@@ -201,8 +204,8 @@ read_and_process_and_calc <- function(args_list) {
       scenario_geography = scenario_geography,
       baseline_scenario = baseline_scenario,
       shock_scenario = shock_scenario,
-      sectors = sectors_lookup,
-      technologies = technologies_lookup,
+      sectors = sectors_and_technologies_list$sectors,
+      technologies = sectors_and_technologies_list$technologies,
       log_path = log_path
     )
 
