@@ -29,7 +29,7 @@ aggregate_results <- function(results_list, sensitivity_analysis_vars) {
     )
   )
 
-  # Market Risk
+  # Aggregate Market Risk results -----
   # join exposure on most granular value changes
   company_technology_value_changes <- results_list$company_technology_value_changes %>%
     join_exposure_on_value_changes(
@@ -55,7 +55,7 @@ aggregate_results <- function(results_list, sensitivity_analysis_vars) {
   company_value_changes <- company_value_changes %>%
     dplyr::select(-c(.data$plan_carsten, .data$plan_sec_carsten, .data$year))
 
-  # Credit Risk
+  # Aggregate Credit Risk Results -----
   # prepare exposure data for credit risk results
   exposure_at_default_credit <- results_list$exposure_by_technology_and_company %>%
     prepare_exposure_for_credit_risk_format()
@@ -88,7 +88,8 @@ join_exposure_on_value_changes <- function(data,
                                            assets_under_management,
                                            sensitivity_analysis_vars) {
   data <- data %>%
-    # TODO: 3384 this is where increasing technologies with zero start value are removed
+    # Info re ADO 3384: this is where increasing technologies with zero start
+    # value are removed (by now it should be zero production in t5)
     dplyr::inner_join(
       exposure,
       by = c(
