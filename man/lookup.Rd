@@ -4,17 +4,12 @@
 \name{lookup}
 \alias{lookup}
 \alias{credit_type_lookup}
-\alias{sectors_lookup}
 \title{Lookup valid values}
 \format{
 An object of class \code{character} of length 2.
-
-An object of class \code{character} of length 4.
 }
 \usage{
 credit_type_lookup
-
-sectors_lookup
 }
 \description{
 Lookup valid values
