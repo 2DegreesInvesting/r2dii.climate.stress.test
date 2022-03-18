@@ -43,8 +43,7 @@
 #'   For accepted range compare `stress_test_arguments`.
 #' @param scenario_geography Character vector, indicating which geographical
 #'   region(s) (concerning asset location) results shall be calculated for. For
-#'   accepted values compare `stress_test_arguments`. Note that currently only
-#'   the global level is supported.
+#'   accepted values compare `stress_test_arguments`.
 #' @param use_company_terms Boolean, indicating if term values for individual
 #'   companies are to be used. For accepted values compare
 #'   `stress_test_arguments`. Note that currently this functionality is not
@@ -200,6 +199,9 @@ read_and_process_and_calc <- function(args_list) {
   )
 
   cat("-- Processing input data. \n")
+
+  sectors_and_technologies_list <- infer_sectors_and_technologies(scenario_geography)
+
   processed <- data %>%
     st_process(
       asset_type = asset_type,
@@ -207,8 +209,8 @@ read_and_process_and_calc <- function(args_list) {
       scenario_geography = scenario_geography,
       baseline_scenario = baseline_scenario,
       shock_scenario = shock_scenario,
-      sectors = sectors_lookup,
-      technologies = technologies_lookup,
+      sectors = sectors_and_technologies_list$sectors,
+      technologies = sectors_and_technologies_list$technologies,
       log_path = log_path
     )
 

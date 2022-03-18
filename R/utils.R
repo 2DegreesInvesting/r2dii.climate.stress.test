@@ -462,3 +462,16 @@ get_start_year <- function(data) {
   out <- min(data$pacta_results$year, na.rm = TRUE)
   return(out)
 }
+
+infer_sectors_and_technologies <- function(scenario_geography) {
+
+  sectors <- scenario_geography_x_ald_sector %>%
+    dplyr::filter(.data$scenario_geography == !!scenario_geography) %>%
+    dplyr::pull(.data$ald_sector)
+
+  technologies <- p4i_p4b_sector_technology_lookup %>%
+    dplyr::filter(.data$sector_p4i %in% !!sectors) %>%
+    dplyr::pull(.data$technology_p4i)
+
+  return(list(sectors = sectors, technologies = technologies))
+}

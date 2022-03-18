@@ -28,8 +28,7 @@ stress test, for accepted value range check \code{stress_test_arguments}.}
 
 \item{scenario_geography}{Character vector, indicating which geographical
 region(s) (concerning asset location) results shall be calculated for. For
-accepted values compare \code{stress_test_arguments}. Note that currently only
-the global level is supported.}
+accepted values compare \code{stress_test_arguments}.}
 
 \item{lgd_senior_claims}{Numeric, holding the loss given default for senior
 claims, for accepted value range check \code{stress_test_arguments}.}

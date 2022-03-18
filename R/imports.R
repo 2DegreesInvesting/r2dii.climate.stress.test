@@ -64,6 +64,7 @@ globalVariables(
     "scenario_data",
     "scenario_geography",
     "scenario_name",
+    "scenario_geography_x_ald_sector",
     "scen_to_follow",
     "sector",
     "sector_ald",

@@ -5,7 +5,6 @@
 #' @examples
 #'
 #' credit_type_lookup
-#' sectors_lookup
 NULL
 
 # An investor name is needed for legacy reasons currently there is no
@@ -45,18 +44,6 @@ time_horizon_lookup <- 5
 #' @rdname lookup
 #' @export
 credit_type_lookup <- c("outstanding", "credit_limit")
-
-#' @rdname lookup
-#' @export
-sectors_lookup <- c("Power", "Oil&Gas", "Coal", "Automotive")
-
-# vector holding considered technologies in stress testing
-technologies_lookup <- c(
-  "Electric", "Hybrid", "ICE",
-  "CoalCap", "GasCap", "RenewablesCap", "NuclearCap", "HydroCap", "OilCap",
-  "Oil", "Gas",
-  "Coal"
-)
 
 # holding allocation method used for stress testing
 allocation_method_lookup <- "portfolio_weight"

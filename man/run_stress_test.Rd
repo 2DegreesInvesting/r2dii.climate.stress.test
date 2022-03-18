@@ -71,8 +71,7 @@ For accepted range compare \code{stress_test_arguments}.}
 
 \item{scenario_geography}{Character vector, indicating which geographical
 region(s) (concerning asset location) results shall be calculated for. For
-accepted values compare \code{stress_test_arguments}. Note that currently only
-the global level is supported.}
+accepted values compare \code{stress_test_arguments}.}
 
 \item{use_company_terms}{Boolean, indicating if term values for individual
 companies are to be used. For accepted values compare

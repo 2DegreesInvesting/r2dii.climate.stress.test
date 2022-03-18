@@ -27,6 +27,7 @@ process_pacta_results <- function(data, start_year, end_year, time_horizon,
       start_year = start_year,
       time_horizon = time_horizon
     ) %>%
+    is_scenario_geography_in_pacta_results(scenario_geography_filter) %>%
     dplyr::filter(.data$investor_name == investor_name_placeholder) %>%
     dplyr::filter(.data$equity_market == equity_market_filter) %>%
     dplyr::filter(.data$allocation == allocation_method) %>%
@@ -66,6 +67,14 @@ process_pacta_results <- function(data, start_year, end_year, time_horizon,
   }
 
   return(data_processed)
+}
+
+is_scenario_geography_in_pacta_results <- function(data, scenario_geography_filter) {
+  if (!scenario_geography_filter %in% unique(data$scenario_geography)) {
+    stop(paste0("Did not find PACTA results for scenario_geography level ", scenario_geography_filter,
+               ". Please check PACTA results or pick another scenario_geography."))
+  }
+  invisible(data)
 }
 
 #' Remove rows from PACTA results that belong to company-technology combinations
