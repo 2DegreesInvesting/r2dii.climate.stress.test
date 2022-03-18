@@ -467,11 +467,11 @@ infer_sectors_and_technologies <- function(scenario_geography) {
 
   sectors <- scenario_geography_x_ald_sector %>%
     dplyr::filter(.data$scenario_geography == !!scenario_geography) %>%
-    dplyr::pull(ald_sector)
+    dplyr::pull(.data$ald_sector)
 
   technologies <- p4i_p4b_sector_technology_lookup %>%
     dplyr::filter(.data$sector_p4i %in% !!sectors) %>%
-    dplyr::pull(technology_p4i)
+    dplyr::pull(.data$technology_p4i)
 
   return(list(sectors = sectors, technologies = technologies))
 }
