@@ -70,7 +70,7 @@ process_pacta_results <- function(data, start_year, end_year, time_horizon,
 }
 
 is_scenario_geography_in_pacta_results <- function(data, scenario_geography_filter) {
-  if (!scenario_geography_filter %in% data$scenario_geography) {
+  if (!scenario_geography_filter %in% unique(data$scenario_geography)) {
     stop(paste0("Did not find PACTA results for scenario_geography level ", scenario_geography_filter,
                ". Please check PACTA results or pick another scenario_geography."))
   }
