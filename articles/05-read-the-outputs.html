@@ -319,7 +319,7 @@
 </ul>
 </div>
 <div class="section level4">
-<h4 id="loans_sector_pd_changes_annual_suffix">loans_sector_pd_changes_annual_&lt;suffix&gt;<a class="anchor" aria-label="anchor" href="#loans_sector_pd_changes_annual_suffix"></a>
+<h4 id="loans_portfolio_pd_changes_annual_suffix">loans_portfolio_pd_changes_annual_&lt;suffix&gt;<a class="anchor" aria-label="anchor" href="#loans_portfolio_pd_changes_annual_suffix"></a>
 </h4>
 <p>This file contains an overview of the changes of annual probabilities of default aggregated to the sector level by company exposure weight relative to the baseline scenario for each year of the analysis after the shock year.</p>
 <ul>
@@ -332,11 +332,15 @@
 <li>
 <code>portfolio_name</code>: Name of the portfolio or loan book managed by the investor or bank for which the analysis was run.</li>
 <li>
+<code>company_name</code>: Name of the company that was analyzed.</li>
+<li>
 <code>ald_sector</code>: Sector of the production assets analyzed.</li>
 <li>
 <code>year</code>: Calendar year.</li>
 <li>
-<code>pd_change_shock</code>: Change in probability of default of the the companies in the portfolio or loan book, aggregated to the sector level. This PD change assumes a loan of one year maturity at the point in time indicated by <code>year</code>. Specifically, it shows how the probability of default of such a loan that is rolled over every year after the policy shock will change over time.</li>
+<code>pd_change_shock</code>: Change in probability of default of the the companies in the portfolio or loan book. This PD change assumes a loan of one year maturity at the point in time indicated by <code>year</code>. Specifically, it shows how the probability of default of such a loan that is rolled over every year after the policy shock will change over time.</li>
+<li>
+<code>pd_change_sector_shock</code>: Change in probability of default of the the companies in the portfolio or loan book, aggregated to the sector level, weighted by the exposure of the relevant counterparties in the loan book.</li>
 </ul>
 </div>
 <div class="section level4">
@@ -363,7 +367,7 @@
 </ul>
 </div>
 <div class="section level4">
-<h4 id="loans_sector_pd_changes_overall_suffix">loans_sector_pd_changes_overall_&lt;suffix&gt;<a class="anchor" aria-label="anchor" href="#loans_sector_pd_changes_overall_suffix"></a>
+<h4 id="loans_portfolio_pd_changes_overall_suffix">loans_portfolio_pd_changes_overall_&lt;suffix&gt;<a class="anchor" aria-label="anchor" href="#loans_portfolio_pd_changes_overall_suffix"></a>
 </h4>
 <p>This file contains an overview on the overall probabilities of default change for the maturities of the underlying loans.</p>
 <ul>
@@ -380,7 +384,9 @@
 <li>
 <code>term</code>: Years to maturity of the loans.</li>
 <li>
-<code>pd_change_shock</code>: Change in probability of default of the the companies in the portfolio or loan book, aggregated to the sector level. This PD change shows the variation of the impact on PDs by different maturities on the sector level.</li>
+<code>pd_change_shock</code>: Change in probability of default of the the companies in the portfolio or loan book. This PD change shows the variation of the impact on PDs by different maturities on the sector level.</li>
+<li>
+<code>pd_change_sector_shock</code>: Change in probability of default of the the companies in the portfolio or loan book, aggregated to the sector level, aggregated to the sector level, weighted by the exposure of the relevant counterparties in the loan book.</li>
 </ul>
 </div>
 <div class="section level4">
