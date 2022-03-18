@@ -274,7 +274,7 @@ at the point in time indicated by `year`. Specifically, it shows how the
 probability of default of such a loan that is rolled over every year after the
 policy shock will change over time.
 
-### loans_sector_pd_changes_annual_\<suffix\>
+### loans_portfolio_pd_changes_annual_\<suffix\>
 
 This file contains an overview of the changes of annual probabilities of default 
 aggregated to the sector level by company exposure weight relative to the 
@@ -288,13 +288,17 @@ scenario targets used.
 * `investor_name`: Name of the investor or bank for which the analysis was run.
 * `portfolio_name`: Name of the portfolio or loan book managed by the investor
 or bank for which the analysis was run.
+* `company_name`: Name of the company that was analyzed.
 * `ald_sector`: Sector of the production assets analyzed.
 * `year`: Calendar year.
 * `pd_change_shock`: Change in probability of default of the the companies in
-the portfolio or loan book, aggregated to the sector level. This PD change
-assumes a loan of one year maturity at the point in time indicated by `year`.
-Specifically, it shows how the probability of default of such a loan that is
-rolled over every year after the policy shock will change over time.
+the portfolio or loan book. This PD change assumes a loan of one year maturity
+at the point in time indicated by `year`. Specifically, it shows how the
+probability of default of such a loan that is rolled over every year after the
+policy shock will change over time.
+* `pd_change_sector_shock`: Change in probability of default of the the
+companies in the portfolio or loan book, aggregated to the sector level,
+weighted by the exposure of the relevant counterparties in the loan book.
 
 ### loans_company_pd_changes_overall_\<suffix\>
 
@@ -315,7 +319,7 @@ or bank for which the analysis was run.
 the portfolio or loan book. This PD change shows the variation of the impact on
 PDs by different maturities on the sector level.
 
-### loans_sector_pd_changes_overall_\<suffix\>
+### loans_portfolio_pd_changes_overall_\<suffix\>
 
 This file contains an overview on the overall probabilities
 of default change for the maturities of the underlying loans.
@@ -330,8 +334,12 @@ or bank for which the analysis was run.
 * `ald_sector`: Sector of the production assets analyzed.
 * `term`: Years to maturity of the loans.
 * `pd_change_shock`: Change in probability of default of the the companies in
-the portfolio or loan book, aggregated to the sector level. This PD change shows
-the variation of the impact on PDs by different maturities on the sector level.
+the portfolio or loan book. This PD change shows the variation of the impact on
+PDs by different maturities on the sector level.
+* `pd_change_sector_shock`: Change in probability of default of the the
+companies in the portfolio or loan book, aggregated to the sector level,
+aggregated to the sector level, weighted by the exposure of the relevant
+counterparties in the loan book.
 
 ### Model Parameter Argument Columns: common to all results files
 
