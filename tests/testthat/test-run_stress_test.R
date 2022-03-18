@@ -72,6 +72,7 @@ test_that("with equity, without iteration, using maximum values of input argumen
       input_path_project_specific = in_specific,
       input_path_project_agnostic = in_agnostic,
       output_path = out,
+      scenario_geography = "OECD",
       lgd_senior_claims = get_st_argument("lgd_senior_claims", "max"),
       lgd_subordinated_claims = get_st_argument("lgd_subordinated_claims", "max"),
       risk_free_rate = get_st_argument("risk_free_rate", "max"),
