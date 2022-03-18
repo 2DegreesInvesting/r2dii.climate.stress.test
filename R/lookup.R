@@ -106,7 +106,7 @@ terminal_value_lookup <- 0
 countries_for_regions_mapper_lookup <- tibble::tibble(
   region = c("brazil", "brazil", "india", "india", "japan", "japan", "russia", "russia", "south africa", "south africa", "us", "us"),
   isos = c("br", "br", "in", "in", "jp", "jp", "ru", "ru", "za", "za", "us", "us"),
-  source = rep(c("WEO_2019", "WEO_2020"), 6)
+  source = rep(c("weo_2019", "weo_2020"), 6)
 )
 
 cuc_pacta_results <- c(
