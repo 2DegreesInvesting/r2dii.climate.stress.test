@@ -104,7 +104,7 @@ setup_vars_lookup <- c("input_path_project_agnostic", "input_path_project_specif
 terminal_value_lookup <- 0
 
 countries_for_regions_mapper_lookup <- tibble::tibble(
-  region = c("brazil", "brazil", "india", "india", "japan", "japan", "russia", "russia", "south africa", "south africa", "us", "us"),
+  region = c("brazil", "brazil", "india", "india", "japan", "japan", "russia", "russia", "south africa", "south africa", "united states", "united states"),
   isos = c("br", "br", "in", "in", "jp", "jp", "ru", "ru", "za", "za", "us", "us"),
   source = rep(c("weo_2019", "weo_2020"), 6)
 )
