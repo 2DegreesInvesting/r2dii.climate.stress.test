@@ -92,7 +92,7 @@ format_loanbook_st <- function(data,
         .data$production_unweighted, .data$technology_share
       )
     ) %>%
-    dplyr::group_by(!!!rlang::syms(group_vars)) %>%
+    dplyr::group_by(!!!rlang::syms(group_vars[group_vars != "technology"])) %>%
     dplyr::mutate(
       scenario_geography = stringr::str_to_title(.data$scenario_geography),
       plan_sec_prod = sum(.data$plan_tech_prod, na.rm = TRUE),
