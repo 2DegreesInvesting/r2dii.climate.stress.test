@@ -106,8 +106,13 @@ run_stress_test <- function(asset_type,
     }) %>%
     purrr::set_names(result_names)
 
-  st_results_wrangled_and_checked <- wrangle_results(
+  st_results_aggregated <- aggregate_results(
     results_list = st_results,
+    sensitivity_analysis_vars = names(args_list)[!names(args_list) %in% setup_vars_lookup]
+  )
+
+  st_results_wrangled_and_checked <- wrangle_results(
+    results_list = st_results_aggregated,
     sensitivity_analysis_vars = names(args_list)[!names(args_list) %in% setup_vars_lookup]
   ) %>%
     check_results(
@@ -258,15 +263,13 @@ read_and_process_and_calc <- function(args_list) {
     log_path = log_path
   )
 
-  company_value_changes <- company_asset_value_at_risk(
-    data = company_annual_profits,
-    terminal_value = terminal_value_lookup,
-    shock_scenario = transition_scenario,
-    div_netprofit_prop_coef = div_netprofit_prop_coef,
-    plan_carsten = exposure_by_technology_and_company,
-    port_aum = port_aum,
-    flat_multiplier = flat_multiplier
-  )
+  company_technology_value_changes <- company_annual_profits %>%
+    company_technology_asset_value_at_risk(
+      terminal_value = terminal_value_lookup,
+      shock_scenario = transition_scenario,
+      div_netprofit_prop_coef = div_netprofit_prop_coef,
+      flat_multiplier = flat_multiplier
+    )
 
   cat("-- Calculating credit risk. \n\n\n")
 
@@ -307,7 +310,9 @@ read_and_process_and_calc <- function(args_list) {
 
   return(
     list(
-      company_value_changes = company_value_changes,
+      port_aum = port_aum,
+      exposure_by_technology_and_company = exposure_by_technology_and_company,
+      company_technology_value_changes = company_technology_value_changes,
       company_expected_loss = company_expected_loss,
       company_pd_changes_annual = company_pd_changes_annual,
       company_pd_changes_overall = company_pd_changes_overall,
