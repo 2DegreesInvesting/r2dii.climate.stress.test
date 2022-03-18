@@ -103,6 +103,12 @@ setup_vars_lookup <- c("input_path_project_agnostic", "input_path_project_specif
 
 terminal_value_lookup <- 0
 
+countries_for_regions_mapper_lookup <- tibble::tibble(
+  region = c("brazil", "brazil", "india", "india", "japan", "japan", "russia", "russia", "south africa", "south africa", "us", "us"),
+  isos = c("br", "br", "in", "in", "jp", "jp", "ru", "ru", "za", "za", "us", "us"),
+  source = rep(c("WEO_2019", "WEO_2020"), 6)
+)
+
 cuc_pacta_results <- c(
   "year", "equity_market", "ald_sector", "technology", "scenario", "allocation",
   "scenario_geography", "company_name", "id", "investor_name", "portfolio_name"

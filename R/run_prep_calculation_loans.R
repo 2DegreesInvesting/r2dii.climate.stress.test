@@ -86,7 +86,8 @@ run_prep_calculation_loans <- function(input_path_project_specific,
     )
 
   # region iso mapping
-  regions <- r2dii.data::region_isos
+  regions <- r2dii.data::region_isos %>%
+    dplyr::bind_rows(countries_for_regions_mapper_lookup)
 
   # Production forecast data
   production_forecast_data <- validate_file_exists(file.path(input_path_project_agnostic, "2021-07-15_AR_2020Q4_PACTA-Data (3).xlsx")) %>%
