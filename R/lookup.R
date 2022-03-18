@@ -5,7 +5,6 @@
 #' @examples
 #'
 #' credit_type_lookup
-#' sectors_lookup
 NULL
 
 # An investor name is needed for legacy reasons currently there is no

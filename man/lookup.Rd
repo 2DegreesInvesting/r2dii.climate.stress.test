@@ -17,6 +17,5 @@ Lookup valid values
 \examples{
 
 credit_type_lookup
-sectors_lookup
 }
 \keyword{datasets}
