@@ -19,14 +19,6 @@ nesting_vars_lookup <- c(
 
 asset_types_lookup <- c("equity", "bonds", "loans")
 
-# vector holding scenarios to filter PACTA results by for stresstesting
-scenarios_lookup <- c(
-  "ETP2017_NPS",
-  "ETP2017_SDS",
-  "WEO2019_NPS",
-  "WEO2019_SDS"
-)
-
 sector_scenarios_mapping_lookup <- tibble::tibble(
   ald_sector = c("Power", "Power", "Oil&Gas", "Oil&Gas", "Coal", "Coal", "Automotive", "Automotive"),
   scenario = c(
