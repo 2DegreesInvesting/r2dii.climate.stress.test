@@ -221,8 +221,8 @@ process_price_data <- function(data, technologies, sectors, start_year, end_year
       expected_levels_list =
         list(
           year = start_year:end_year,
-          ald_sector = .env$sectors,
-          technology = .env$technologies,
+          ald_sector = sectors,
+          technology = technologies,
           scenario = scenarios_filter
         )
     ) %>%
