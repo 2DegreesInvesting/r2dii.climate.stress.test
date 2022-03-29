@@ -90,67 +90,39 @@ The meaning of each of the detail arguments is as follows:
 
 * `baseline_scenario` holds the name of the baseline scenario to be used in the
 stress test. We use a business-as-usual scenario for the baseline.
-  + Default set to: `NPS`
-  + Possible values: `NPS`
 * `shock_scenario` holds the name of the scenario that companies are forced to
 transition to via a late and sudden shock. We use an ambitious transition
 scenario as the shock scenario.
-  + Default set to: `SDS`
-  + Possible values: `SDS`
 * `lgd_senior_claims` is the loss given default used in the expected loss
 calculation of loans for senior claims (notably for corporate loans, so this is
 a potentially important parameter in this calculation)
-  + Default set to: `0.45`
-  + Possible values in the interval: `c(0.3, 0.6)`
 * `lgd_subordinated_claims` is the loss given default used in the expected loss
 calculation of loans for subordinated claims (notably for corporate bonds. Not
 of relevance in the loans calculation)
-  + Default set to: `0.75`
-  + Possible values in the interval: `c(0.6, 0.9)`
 * `risk_free_rate` the risk free interest rate. Input parameter to the Merton
 credit risk model.
-  + Default set to: `0.02` 
-  + Possible values in the interval: `c(0, 0.05)`
 * `discount_rate` the annual rate at which future cash flows are discounted when
 calculating the net present value of companies in the loan book. Since the net
 present values are indirect inputs into the Merton credit risk model, this
 parameter my be relevant.
-  + Default set to: `0.07`
-  + Possible values in the interval: `c(-0.01, 0.1)`
 * `div_netprofit_prop_coef` Coefficient that indicates what share of the net
 present value should be considered to derive the equity value of a company.
-  + Default set to: `1`
-  + Possible values in the interval: `c(0.8, 1)`
 * `shock_year` year in which the policy is introduced, that adjusts the
 production values of companies to stay in line with carbon budgets.
-  + Default set to: `2030`
-  + Possible values in the interval: `c(2025, 2035)` 
 * `fallback_term` indicates which maturity the loans in the loan book are
 assumed to have. At this point we assume these are rolled over every year.
-  + Default set to: `2`
-  + Possible values in the interval: `c(1, 5)` 
 * `scenario_geography` Indicates which geographical region(s) (concerning asset
 location) results shall be calculated for.
-  + Default set to: `"Global"`
-  + Possible values: `c("Global", "AdvancedEconomies", "Africa", "AsiaPacific",` 
-  `"Brazil", "CentralandSouthAmerica", "China", "DevelopingEconomies", "Eurasia",` 
-  `"Europe", "EU", "India", "Japan", "MiddleEast",  "NonOECD", "NorthAmerica",` 
-  `"OECD", "Russia", "SouthAfrica", "US")`
 * `use_company_terms_arg` Logical parameter, indicating if individually provided
 terms for companies as configured in company_terms.csv shall be used instead of
-fallback as provided in `fallback_term`. 
-  + Default set to: `FALSE`
-  + Possible values: `TRUE, FALSE`
-  + For more details
-  compare ["Advanced data
-  settings"](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/04-advanced   -data-settings.html).
+fallback as provided in `fallback_term`. The default is FALSE. For more details
+compare ["Advanced data
+settings"](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/04-advanced-data-settings.html).
 * `return_results` Logical parameter that indicates if the outputs of the
 analysis should be directly written to the indicated output path or simply
 returned as a list of results within the running session. The default is FALSE,
 which writes the outputs to the target directory and does not return them as a
 list object in R.
-  + Default set to: `FALSE`
-  + Possible values: `TRUE, FALSE`
 
 ### Adjusting the input arguments
 The user may want to run a stress test that is tailored to their assumptions
