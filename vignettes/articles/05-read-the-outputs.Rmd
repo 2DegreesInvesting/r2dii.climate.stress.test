@@ -25,6 +25,14 @@ additionally outputs a file with company-level cash-flow trajectories
 and a log file which holds information on the settings of the current 
 transition risk stress test run.
 
+If the user follows the recommended data folder structure the output files will
+be found here:
+
+* `example_project/`
+    * `output`
+
+The output files are:
+
 **Log file**
 
 * log_file_\<suffix\>.txt

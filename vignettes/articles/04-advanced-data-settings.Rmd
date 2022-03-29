@@ -60,13 +60,13 @@ If you want to use R to obtain this column you can take the following steps.
 library(readr)
 library(r2dii.climate.stress.test)
 
-loans_results_company_file_path <- file.path("/path/to/specific/data/inputs", "Loans_results_company.rda")
+loans_results_company_file_path <- file.path("/example_project/project_specific_input", "Loans_results_company.rda")
 validate_file_exists(loans_results_company_file_path)
 data <- readr::read_rds(loans_results_company_file_path)
 unique_companies <- data %>%
   dplyr::select(company_name) %>%
   dplyr::distinct()
-readr::write_csv(unique_companies, file.path("/path/to/specific/data/inputs", "company_terms.csv"))
+readr::write_csv(unique_companies, file.path("/example_project/project_specific_input", "company_terms.csv"))
 
 ```
 
@@ -94,7 +94,7 @@ messages in case problems are detected.
 library(readr)
 library(r2dii.climate.stress.test)
 
-company_terms_path <- file.path("/path/to/file")
+company_terms_path <- file.path("/example_project/project_specific_input", "company_terms.csv")
 validate_file_exists(company_terms_path)
 data <- readr::read_csv(company_terms_path)
 validate_data_has_expected_cols(data = data, expected_columns = c("company_name", "term"))
@@ -105,8 +105,8 @@ check_company_terms(data = data, interactive_mode = TRUE)
 In order to make sure your version of `company_terms.csv` is used in the
 analysis place it in
 
-* `example_folder/`
-    * `inputs/`
+* `example_project/`
+    * `project_specific_input`
     
 as set up in [Set up project
 directories](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/01-setup-project-directories.html).
@@ -117,9 +117,9 @@ In order to include the company - term data in your analysis set argument
 ```{r, eval = FALSE}
 run_stress_test(
   asset_type = "loans",
-  input_path_project_specific = "/path/to/specific/data/inputs",
-  input_path_project_agnostic = "/path/to/agnostic/data",
-  output_path = "/path/to/output/directory",
+  input_path_project_specific = "/example_project/project_specific_input",
+  input_path_project_agnostic = "/example_project/project_agnostic_input/",
+  output_path = "/example_project/output",
   use_company_terms = TRUE
 )
 ```
@@ -164,7 +164,7 @@ placeholder id, all other columns are empty.
 library(readr)
 library(r2dii.climate.stress.test)
 
-loans_results_company_file_path <- file.path("/path/to/specific/data/inputs", "Loans_results_company.rda")
+loans_results_company_file_path <- file.path("/example_project/project_specific_input", "Loans_results_company.rda")
 validate_file_exists(loans_results_company_file_path)
 data <- readr::read_rds(loans_results_company_file_path)
 fin_companies <- data %>%
@@ -177,7 +177,7 @@ fin_companies <- data %>%
     net_profit_margin = NA,
     debt_equity_ratio = NA,
     volatility = NA)
-readr::write_csv(fin_companies, file.path("/path/to/agnostic/data", "prewrangled_financial_data_stress_test.csv")) # NOTE that this will overwrite financial data currently stored at the location if available
+readr::write_csv(fin_companies, file.path("/example_project/project_agnostic_input", "prewrangled_financial_data_stress_test.csv")) # NOTE that this will overwrite financial data currently stored at the location if available
 ```
 
 You can now open this file in a tool of your choice and fill in values for the
@@ -194,7 +194,8 @@ messages in case problems are detected.
 library(readr)
 library(r2dii.climate.stress.test)
 
-financial_data_path <- file.path("/path/to/file")
+financial_data_path <- file.path("/example_project/project_agnostic_input",
+                                 "prewrangled_financial_data_stress_test.csv")
 validate_file_exists(financial_data_path)
 data <- readr::read_csv(financial_data_path)
 check_financial_data(financial_data = data, asset_type = "loans", interactive_mode = TRUE)
