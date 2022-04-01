@@ -56,7 +56,7 @@ preparation for initial application of stress testing on a loan book
 run_prep_calculation_loans(
   input_path_project_specific = "/example_project/project_specific_input/",
   input_path_project_agnostic = "/example_project/project_agnostic_input/",
-  output_path = "/example_project/output",
+  data_prep_output_path = "/example_project/output",
 )
 
 ```
