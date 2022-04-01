@@ -207,7 +207,7 @@ In order to make sure your version
 of `prewrangled_financial_data_stress_test.csv` is used in the analysis place it
 in
 
-* `analysis_input_files/`  
+* `project_agnostic_input/`  
     
 as set up in [Set up project
 directories](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/01-setup-project-directories.html).
