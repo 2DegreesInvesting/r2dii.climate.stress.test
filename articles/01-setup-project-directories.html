@@ -105,33 +105,38 @@
 </ol>
 </div>
 <div class="section level2">
-<h2 id="project-specific-files">Project-Specific files<a class="anchor" aria-label="anchor" href="#project-specific-files"></a>
+<h2 id="project-input-and-output-data-structure">Project input and output data structure<a class="anchor" aria-label="anchor" href="#project-input-and-output-data-structure"></a>
 </h2>
 <p>The analysis builds on project-specific input files that contain information on the loan book to be analyzed and project-agnostic input files that contain auxiliary information required for the stress test. Detailed information about these files can be obtained from the pdf user manual. In case you need this document, please contact <a href="mailto:jacob@2degrees-investing.org" class="email">jacob@2degrees-investing.org</a>.</p>
-<p>We recommend setting up one directory that contains project-specific files and a separate one that contains project-agnostic files.</p>
+<p>We recommend setting up one directory that contains project-specific input files and a separate one that contains project-agnostic input files.</p>
 <p>The exact names and locations of these directories can be chosen by the user, but we recommend choosing directories, from which the software can read and to which it is allowed to write data. It is also generally recommended to avoid special characters and white spaces in the name.</p>
-<p>The user will also have to determine an output directory. We recommend setting this up as a sub directory of the project-specific directory.</p>
+<p>The user will also have to determine an output data directory. We recommend setting this up as a sub directory of the project directory.</p>
 <p><strong>NOTE:</strong> It is required to set up an output directory prior to running the analysis. If the software cannot find the directory that the user is pointing it to, it will fail with an error.</p>
-<p>A recommended structure for the project-specific data would look like this:</p>
+<p>A recommended structure for the climate transition stress test project data folder would look like this:</p>
 <ul>
 <li>
-<code>example_folder/</code>
+<code>example_project/</code>
+<ul>
+<li><code>project_specific_input</code></li>
+<li><code>project_agnostic_input</code></li>
+<li><code>output</code></li>
+</ul>
+</li>
+</ul>
+<p>The project-specific input data folder would look like this:</p>
 <ul>
 <li>
-<code>inputs/</code>
+<code>project_specific_input/</code>
 <ul>
 <li><code>raw_loanbook.csv</code></li>
 <li><code>matched_loan_book.csv</code></li>
 </ul>
 </li>
-<li><code>outputs/</code></li>
 </ul>
-</li>
-</ul>
-<p>A recommended structure for the project-agnostic data would look like this:</p>
+<p>The project-agnostic input data folder would look like this:</p>
 <ul>
 <li>
-<code>analysis_input_files/</code>
+<code>project_agnostic_input/</code>
 <ul>
 <li><code>prewrangled_financial_data_stress_test.csv</code></li>
 <li><code>price_data_long_WEO2019.csv</code></li>

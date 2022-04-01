@@ -178,17 +178,17 @@
 <p>It will then perform all calculations and wrangling required and write the intermediate input files <code>Loans_results_company.rda</code> and <code>overview_portfolio.rda</code> to the indicated <code>data_prep_output_path</code>. <strong>NOTE:</strong> Data generated with this workflow will serve as inputs for the subsequent stress test. Thus it is advisable to set <code>data_prep_output_path</code> to the same path as <code>input_path_project_specific</code> so that the generated data is written there.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/run_prep_calculation_loans.html">run_prep_calculation_loans</a></span><span class="op">(</span>
-  input_path_project_specific <span class="op">=</span> <span class="st">"/path/to/specific/data/inputs"</span>,
-  input_path_project_agnostic <span class="op">=</span> <span class="st">"/path/to/agnostic/data"</span>,
-  data_prep_output_path <span class="op">=</span> <span class="st">"/path/to/specific/data/inputs"</span>
+  input_path_project_specific <span class="op">=</span> <span class="st">"/example_project/project_specific_input/"</span>,
+  input_path_project_agnostic <span class="op">=</span> <span class="st">"/example_project/project_agnostic_input/"</span>,
+  data_prep_output_path <span class="op">=</span> <span class="st">"/example_project/project_specific_input/"</span>,
 <span class="op">)</span></code></pre></div>
 <p>Since the argument credit_type has a default value, it is not required to set it, in case the user wants to run the stress test on the outstanding credit values in the loan book.</p>
 <p>However, it is also possible to run the analysis on the credit limits of the loans, in case these have been provided in the raw and matched loan books. To achieve this, instead of the previous command, simply run:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/run_prep_calculation_loans.html">run_prep_calculation_loans</a></span><span class="op">(</span>
-  input_path_project_specific <span class="op">=</span> <span class="st">"/path/to/specific/data/inputs"</span>,
-  input_path_project_agnostic <span class="op">=</span> <span class="st">"/path/to/agnostic/data"</span>,
-  data_prep_output_path <span class="op">=</span> <span class="st">"/path/to/specific/data/inputs"</span>,
+  input_path_project_specific <span class="op">=</span> <span class="st">"/example_project/project_specific_input/"</span>,
+  input_path_project_agnostic <span class="op">=</span> <span class="st">"/example_project/project_agnostic_input/"</span>,
+  data_prep_output_path <span class="op">=</span> <span class="st">"/example_project/project_specific_input/"</span>,
   credit_type <span class="op">=</span> <span class="st">"credit_limit"</span>
 <span class="op">)</span></code></pre></div>
 </div>
