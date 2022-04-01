@@ -90,9 +90,9 @@ written there.
 
 ```{r, eval=FALSE}
 run_prep_calculation_loans(
-  input_path_project_specific = "/path/to/specific/data/inputs",
-  input_path_project_agnostic = "/path/to/agnostic/data",
-  data_prep_output_path = "/path/to/specific/data/inputs"
+  input_path_project_specific = "/example_project/project_specific_input/",
+  input_path_project_agnostic = "/example_project/project_agnostic_input/",
+  data_prep_output_path = "/example_project/project_specific_input/",
 )
 ```
 
@@ -106,9 +106,9 @@ achieve this, instead of the previous command, simply run:
 
 ```{r, eval=FALSE}
 run_prep_calculation_loans(
-  input_path_project_specific = "/path/to/specific/data/inputs",
-  input_path_project_agnostic = "/path/to/agnostic/data",
-  data_prep_output_path = "/path/to/specific/data/inputs",
+  input_path_project_specific = "/example_project/project_specific_input/",
+  input_path_project_agnostic = "/example_project/project_agnostic_input/",
+  data_prep_output_path = "/example_project/project_specific_input/",
   credit_type = "credit_limit"
 )
 ```

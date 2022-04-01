@@ -137,7 +137,7 @@ prod_baseline_target_ls <- show_prod_baseline_target_ls_pf(
 
 # check the value technology share (plan carsten) of each asset type
 # in the portfolio
-# expectation: In sum, these should be well below 1, but must be greater than 0
+# expectation: In sum these should be well below 1, but must be greater than 0
 # TODO: currently not possibe because input file is unavailable
 tech_share_eq <- show_pf_technology_shares(data = plan_carsten)
 

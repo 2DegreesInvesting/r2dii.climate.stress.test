@@ -20,7 +20,7 @@ packages. You will be prompted to install these in case any are missing.
 to produce the relevant project-specific raw input files.
 4. The user has obtained all relevant input files as described in the pdf manual.
 
-## Project-Specific files
+## Project input and output data structure
 
 The analysis builds on project-specific input files that contain information on
 the loan book to be analyzed and project-agnostic input files that contain
@@ -28,32 +28,38 @@ auxiliary information required for the stress test. Detailed information about
 these files can be obtained from the pdf user manual. In case you need this
 document, please contact <jacob@2degrees-investing.org>.
 
-We recommend setting up one directory that contains project-specific files and
-a separate one that contains project-agnostic files.
+We recommend setting up one directory that contains project-specific input files and
+a separate one that contains project-agnostic input files.
 
 The exact names and locations of these directories can be chosen by the user,
 but we recommend choosing directories, from which the software can read and to
 which it is allowed to write data. It is also generally recommended to avoid
 special characters and white spaces in the name.
 
-The user will also have to determine an output directory. We recommend setting
-this up as a sub directory of the project-specific directory.
+The user will also have to determine an output data directory. We recommend setting
+this up as a sub directory of the project directory.
 
 **NOTE:** It is required to set up an output directory prior to running the
 analysis. If the software cannot find the directory that the user is pointing it
 to, it will fail with an error.
 
-A recommended structure for the project-specific data would look like this:
+A recommended structure for the climate transition stress test project data 
+folder would look like this:
 
-* `example_folder/`
-    * `inputs/`
-        * `raw_loanbook.csv`
-        * `matched_loan_book.csv`
-    * `outputs/`
+* `example_project/`
+    * `project_specific_input`
+    * `project_agnostic_input`
+    * `output`
 
-A recommended structure for the project-agnostic data would look like this:
+The project-specific input data folder would look like this:
 
-* `analysis_input_files/`
+* `project_specific_input/`
+    * `raw_loanbook.csv`
+    * `matched_loan_book.csv`
+
+The project-agnostic input data folder would look like this:
+
+* `project_agnostic_input/`
     * `prewrangled_financial_data_stress_test.csv`
     * `price_data_long_WEO2019.csv`
     * `scenario_2020.csv`
