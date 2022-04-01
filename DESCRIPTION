@@ -1,7 +1,7 @@
 Package: r2dii.climate.stress.test
 Title: Climate Stress Test for Listed Equity, Corporate Bond and Corporate
     Loan Portfolios
-Version: 0.0.0.9002
+Version: 0.0.0.9003
 Authors@R: c(
     person("Jacob", "Kastl", , "jacob@2degrees-investing.org", role = c("aut", "cre")),
     person("2 Degrees Investing Initiative", , , "contact@2degrees-investing.org", role = c("cph", "fnd"))
