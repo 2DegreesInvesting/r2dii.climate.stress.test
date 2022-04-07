@@ -35,7 +35,8 @@ wrangle_and_check_sector_exposures <- function(sector_exposures, asset_type) {
 
   report_missings(
     data = sector_exposures,
-    name_data = "sector exposures"
+    name_data = "sector exposures",
+    throw_error = TRUE
   )
 
   report_all_duplicate_kinds(
