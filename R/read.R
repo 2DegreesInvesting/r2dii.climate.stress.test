@@ -10,7 +10,7 @@ st_read_specific <- function(dir, asset_type, use_company_terms) {
 
 st_read_agnostic <- function(dir, start_year) {
   out <- list(
-    capacity_factors = read_capacity_factors(capacity_factor_file(dir)),
+    capacity_factors_power = read_capacity_factors_power(capacity_factor_file(dir)),
     df_price = read_price_data(price_data_file(dir)),
     scenario_data = read_scenario_data(scenario_data_file(dir, start_year)),
     financial_data = read_financial_data(financial_data_file(dir))

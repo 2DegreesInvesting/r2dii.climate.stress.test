@@ -324,7 +324,7 @@ st_process <- function(data, asset_type, fallback_term,
   )
 
   capacity_factors_power <- process_capacity_factors_power(
-    data$capacity_factors,
+    data$capacity_factors_power,
     scenarios_filter = scenarios_filter,
     scenario_geography_filter = scenario_geography,
     technologies = technologies,
