@@ -44,9 +44,7 @@ process_pacta_results <- function(data, start_year, end_year, time_horizon,
       start_year = start_year,
       time_horizon = time_horizon,
       log_path = log_path
-    )
-
-  data_processed %>%
+    ) %>%
     stop_if_empty(data_name = "Pacta Results") %>%
     check_level_availability(
       data_name = "Pacta Results",
