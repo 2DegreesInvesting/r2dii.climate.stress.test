@@ -4,7 +4,7 @@
 #' @param path A string that points to the location of the file containing the
 #'   capacity factors.
 #' @family import functions
-read_capacity_factors <- function(path = NULL) {
+read_capacity_factors_power <- function(path = NULL) {
   path %||% stop("Must provide 'path'")
 
   data <- validate_file_exists(path) %>%
