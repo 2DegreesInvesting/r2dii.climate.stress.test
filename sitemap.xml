@@ -124,6 +124,9 @@
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/company_expected_loss.html</loc>
   </url>
   <url>
+    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/company_technology_asset_value_at_risk.html</loc>
+  </url>
+  <url>
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/convert_cap_to_generation.html</loc>
   </url>
   <url>
@@ -196,10 +199,10 @@
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/process_pacta_results.html</loc>
   </url>
   <url>
-    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/read_capacity_factors.html</loc>
+    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/read_capacity_factors_old.html</loc>
   </url>
   <url>
-    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/read_capacity_factors_old.html</loc>
+    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/read_capacity_factors_power.html</loc>
   </url>
   <url>
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/read_company_terms.html</loc>
