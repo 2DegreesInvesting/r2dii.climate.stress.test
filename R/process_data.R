@@ -27,6 +27,10 @@ process_pacta_results <- function(data, start_year, end_year, time_horizon,
       start_year = start_year,
       time_horizon = time_horizon
     ) %>%
+    set_initial_plan_carsten_missings_to_zero(
+      start_year = start_year,
+      time_horizon = time_horizon
+    ) %>%
     is_scenario_geography_in_pacta_results(scenario_geography_filter) %>%
     dplyr::filter(.data$investor_name == investor_name_placeholder) %>%
     dplyr::filter(.data$equity_market == equity_market_filter) %>%
@@ -40,7 +44,9 @@ process_pacta_results <- function(data, start_year, end_year, time_horizon,
       start_year = start_year,
       time_horizon = time_horizon,
       log_path = log_path
-    ) %>%
+    )
+
+  data_processed %>%
     stop_if_empty(data_name = "Pacta Results") %>%
     check_level_availability(
       data_name = "Pacta Results",
@@ -55,7 +61,6 @@ process_pacta_results <- function(data, start_year, end_year, time_horizon,
     ) %>%
     report_missing_col_combinations(col_names = c("allocation", "equity_market", "scenario", "scenario_geography", "technology", "year")) %>%
     report_all_duplicate_kinds(composite_unique_cols = cuc_pacta_results)
-  # TODO: Add missingness check once pacta results input is overhauled
 
   if (asset_type == "bonds") {
     data_processed %>%
@@ -66,13 +71,18 @@ process_pacta_results <- function(data, start_year, end_year, time_horizon,
       check_company_ticker_mapping()
   }
 
+  data_processed %>%
+    report_missings(name_data = "pacta data", throw_error = TRUE)
+
   return(data_processed)
 }
 
 is_scenario_geography_in_pacta_results <- function(data, scenario_geography_filter) {
   if (!scenario_geography_filter %in% unique(data$scenario_geography)) {
-    stop(paste0("Did not find PACTA results for scenario_geography level ", scenario_geography_filter,
-               ". Please check PACTA results or pick another scenario_geography."))
+    stop(paste0(
+      "Did not find PACTA results for scenario_geography level ", scenario_geography_filter,
+      ". Please check PACTA results or pick another scenario_geography."
+    ))
   }
   invisible(data)
 }
@@ -133,6 +143,40 @@ remove_companies_with_missing_exposures <- function(data,
   return(data_filtered)
 }
 
+#' Rows that have no information on the exposure before the end of the
+#' production forecast, should get a zero exposure value. This allows keeping
+#' the information for cases where production is only being built out toward the
+#' end of the forecast period.
+#'
+#' @inheritParams calculate_annual_profits
+#' @inheritParams report_company_drops
+#' @param data tibble containing filtered PACTA results
+#'
+#' @return A tibble of data without rows with no exposure info
+#' @noRd
+set_initial_plan_carsten_missings_to_zero <- function(data,
+                                                      start_year,
+                                                      time_horizon) {
+  companies_missing_exposure_value <- data %>%
+    dplyr::filter(.data$year < .env$start_year + .env$time_horizon) %>%
+    dplyr::filter(is.na(.data$plan_carsten)) %>%
+    dplyr::mutate(plan_carsten = 0)
+
+  data_replaced <- data %>%
+    dplyr::filter(
+      !(.data$year < .env$start_year + .env$time_horizon &
+        is.na(.data$plan_carsten))
+    ) %>%
+    dplyr::bind_rows(companies_missing_exposure_value) %>%
+    dplyr::arrange(
+      .data$investor_name, .data$portfolio_name, .data$company_name,
+      .data$scenario, .data$scenario_geography, .data$ald_sector,
+      .data$technology, .data$year
+    )
+
+  return(data_replaced)
+}
+
 #' Process data of type indicated by function name
 #'
 #' @inheritParams process_pacta_results
@@ -187,7 +231,6 @@ process_capacity_factors_power <- function(data,
 }
 
 harmonise_cap_fac_geo_names <- function(data) {
-
   data <- data %>%
     # hardcoded adjustments are needed here for compatibility with P4I
     dplyr::mutate(scenario_geography = gsub(" ", "", scenario_geography, fixed = TRUE)) %>%
