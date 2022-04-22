@@ -27,6 +27,10 @@ process_pacta_results <- function(data, start_year, end_year, time_horizon,
       start_year = start_year,
       time_horizon = time_horizon
     ) %>%
+    set_initial_plan_carsten_missings_to_zero(
+      start_year = start_year,
+      time_horizon = time_horizon
+    ) %>%
     is_scenario_geography_in_pacta_results(scenario_geography_filter) %>%
     dplyr::filter(.data$investor_name == investor_name_placeholder) %>%
     dplyr::filter(.data$equity_market == equity_market_filter) %>%
@@ -55,7 +59,6 @@ process_pacta_results <- function(data, start_year, end_year, time_horizon,
     ) %>%
     report_missing_col_combinations(col_names = c("allocation", "equity_market", "scenario", "scenario_geography", "technology", "year")) %>%
     report_all_duplicate_kinds(composite_unique_cols = cuc_pacta_results)
-  # TODO: Add missingness check once pacta results input is overhauled
 
   if (asset_type == "bonds") {
     data_processed %>%
@@ -66,13 +69,26 @@ process_pacta_results <- function(data, start_year, end_year, time_horizon,
       check_company_ticker_mapping()
   }
 
+  # since pacta for loans returns only NA values for id, we ignore the
+  # column when checking for missing values
+  if (asset_type == "loans") {
+    data_processed %>%
+      dplyr::select(-.data$id) %>%
+      report_missings(name_data = "pacta data", throw_error = TRUE)
+  } else {
+    data_processed %>%
+      report_missings(name_data = "pacta data", throw_error = TRUE)
+  }
+
   return(data_processed)
 }
 
 is_scenario_geography_in_pacta_results <- function(data, scenario_geography_filter) {
   if (!scenario_geography_filter %in% unique(data$scenario_geography)) {
-    stop(paste0("Did not find PACTA results for scenario_geography level ", scenario_geography_filter,
-               ". Please check PACTA results or pick another scenario_geography."))
+    stop(paste0(
+      "Did not find PACTA results for scenario_geography level ", scenario_geography_filter,
+      ". Please check PACTA results or pick another scenario_geography."
+    ))
   }
   invisible(data)
 }
@@ -133,6 +149,38 @@ remove_companies_with_missing_exposures <- function(data,
   return(data_filtered)
 }
 
+#' Rows that have no information on the exposure before the end of the
+#' production forecast, should get a zero exposure value. This allows keeping
+#' the information for cases where production is only being built out toward the
+#' end of the forecast period.
+#'
+#' @inheritParams calculate_annual_profits
+#' @inheritParams report_company_drops
+#' @param data tibble containing filtered PACTA results
+#'
+#' @return A tibble of data without rows with no exposure info
+#' @noRd
+set_initial_plan_carsten_missings_to_zero <- function(data,
+                                                      start_year,
+                                                      time_horizon) {
+  data <- data %>%
+    dplyr::mutate(
+      plan_carsten = dplyr::if_else(
+        .data$year < .env$start_year + .env$time_horizon &
+          is.na(.data$plan_carsten),
+        0,
+        .data$plan_carsten
+      )
+    ) %>%
+    dplyr::arrange(
+      .data$investor_name, .data$portfolio_name, .data$company_name,
+      .data$scenario, .data$scenario_geography, .data$ald_sector,
+      .data$technology, .data$year
+    )
+
+  return(data)
+}
+
 #' Process data of type indicated by function name
 #'
 #' @inheritParams process_pacta_results
@@ -187,7 +235,6 @@ process_capacity_factors_power <- function(data,
 }
 
 harmonise_cap_fac_geo_names <- function(data) {
-
   data <- data %>%
     # hardcoded adjustments are needed here for compatibility with P4I
     dplyr::mutate(scenario_geography = gsub(" ", "", scenario_geography, fixed = TRUE)) %>%
@@ -324,7 +371,7 @@ st_process <- function(data, asset_type, fallback_term,
   )
 
   capacity_factors_power <- process_capacity_factors_power(
-    data$capacity_factors,
+    data$capacity_factors_power,
     scenarios_filter = scenarios_filter,
     scenario_geography_filter = scenario_geography,
     technologies = technologies,

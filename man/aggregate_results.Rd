@@ -4,13 +4,16 @@
 \alias{aggregate_results}
 \title{Aggregate results}
 \usage{
-aggregate_results(results_list, sensitivity_analysis_vars)
+aggregate_results(results_list, sensitivity_analysis_vars, iter_var)
 }
 \arguments{
 \item{results_list}{A list of results.}
 
 \item{sensitivity_analysis_vars}{String vector holding names of iteration
 arguments.}
+
+\item{iter_var}{String vector holding the variable over which to iterate in
+sensitivity analysis}
 }
 \value{
 A list including basic and aggregated results.
