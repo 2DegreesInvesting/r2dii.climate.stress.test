@@ -69,8 +69,16 @@ process_pacta_results <- function(data, start_year, end_year, time_horizon,
       check_company_ticker_mapping()
   }
 
-  data_processed %>%
-    report_missings(name_data = "pacta data", throw_error = TRUE)
+  # since pacta for loans returns only NA values for id, we ignore the
+  # column when checking for missing values
+  if (asset_type == "loans") {
+    data_processed %>%
+      dplyr::select(-.data$id) %>%
+      report_missings(name_data = "pacta data", throw_error = TRUE)
+  } else {
+    data_processed %>%
+      report_missings(name_data = "pacta data", throw_error = TRUE)
+  }
 
   return(data_processed)
 }
