@@ -14,9 +14,11 @@
 #' @param results_list A list of results.
 #' @param sensitivity_analysis_vars  String vector holding names of iteration
 #'   arguments.
+#' @param iter_var String vector holding the variable over which to iterate in
+#'   sensitivity analysis
 #'
 #' @return A list including basic and aggregated results.
-aggregate_results <- function(results_list, sensitivity_analysis_vars) {
+aggregate_results <- function(results_list, sensitivity_analysis_vars, iter_var) {
   sensitivity_analysis_vars <- paste0(sensitivity_analysis_vars, "_arg")
 
   # Aggregate Market Risk results -----
@@ -45,13 +47,13 @@ aggregate_results <- function(results_list, sensitivity_analysis_vars) {
 
   # aggregate value changes to company level in given portfolio
   company_value_changes <- company_technology_value_changes %>%
-    aggregate_value_change_to_company_level() %>%
+    aggregate_value_change_to_company_level(iter_var = iter_var) %>%
     # aggregate value changes in portfolio to technology level
-    aggregate_value_change_to_technology_level() %>%
+    aggregate_value_change_to_technology_level(iter_var = iter_var) %>%
     # aggregate value changes to sector level in given portfolio
-    aggregate_value_change_to_sector_level() %>%
+    aggregate_value_change_to_sector_level(iter_var = iter_var) %>%
     # aggregate value changes to portfolio level and all covered sectors
-    aggregate_value_change_to_analysed_sectors_and_portfolio()
+    aggregate_value_change_to_analysed_sectors_and_portfolio(iter_var = iter_var)
 
   company_value_changes <- company_value_changes %>%
     dplyr::select(-c(.data$plan_carsten, .data$plan_sec_carsten, .data$year))
@@ -66,13 +68,13 @@ aggregate_results <- function(results_list, sensitivity_analysis_vars) {
     join_credit_exposure_on_pd_changes(exposure_at_default_credit)
 
   company_pd_changes_annual <- company_pd_changes_annual %>%
-    aggregate_pd_change_to_sector_level(horizon = "annual")
+    aggregate_pd_change_to_sector_level(horizon = "annual", iter_var = iter_var)
 
   company_pd_changes_overall <- results_list$company_pd_changes_overall %>%
     join_credit_exposure_on_pd_changes(exposure_at_default_credit)
 
   company_pd_changes_overall <- company_pd_changes_overall %>%
-    aggregate_pd_change_to_sector_level(horizon = "overall")
+    aggregate_pd_change_to_sector_level(horizon = "overall", iter_var = iter_var)
 
   return(list(
     company_value_changes = company_value_changes,
@@ -117,12 +119,17 @@ apply_value_change_to_exposure <- function(data) {
   return(data)
 }
 
-aggregate_value_change_to_company_level <- function(data) {
+aggregate_value_change_to_company_level <- function(data, iter_var) {
+  aggregation_vars <- c(
+    "investor_name", "portfolio_name", "company_name", "scenario_geography"
+  )
+
+  if (iter_var != "standard") {
+    aggregation_vars <- c(aggregation_vars, glue::glue("{iter_var}_arg"))
+  }
+
   data <- data %>%
-    dplyr::group_by(
-      .data$investor_name, .data$portfolio_name, .data$company_name,
-      .data$scenario_geography
-    ) %>%
+    dplyr::group_by(!!!rlang::syms(aggregation_vars)) %>%
     dplyr::mutate(
       VaR_company = sum(.data$VaR_tech_company * .data$plan_carsten, na.rm = TRUE) /
         sum(.data$plan_carsten, na.rm = TRUE),
@@ -135,12 +142,18 @@ aggregate_value_change_to_company_level <- function(data) {
   return(data)
 }
 
-aggregate_value_change_to_technology_level <- function(data) {
+aggregate_value_change_to_technology_level <- function(data, iter_var) {
+  aggregation_vars <- c(
+    "investor_name", "portfolio_name", "ald_sector", "technology",
+    "scenario_geography"
+  )
+
+  if (iter_var != "standard") {
+    aggregation_vars <- c(aggregation_vars, glue::glue("{iter_var}_arg"))
+  }
+
   data <- data %>%
-    dplyr::group_by(
-      .data$investor_name, .data$portfolio_name, .data$ald_sector,
-      .data$technology, .data$scenario_geography
-    ) %>%
+    dplyr::group_by(!!!rlang::syms(aggregation_vars)) %>%
     dplyr::mutate(
       VaR_technology = sum(.data$VaR_tech_company * .data$plan_carsten, na.rm = TRUE) /
         sum(.data$plan_carsten, na.rm = TRUE),
@@ -153,12 +166,17 @@ aggregate_value_change_to_technology_level <- function(data) {
   return(data)
 }
 
-aggregate_value_change_to_sector_level <- function(data) {
+aggregate_value_change_to_sector_level <- function(data, iter_var) {
+  aggregation_vars <- c(
+    "investor_name", "portfolio_name", "ald_sector", "scenario_geography"
+  )
+
+  if (iter_var != "standard") {
+    aggregation_vars <- c(aggregation_vars, glue::glue("{iter_var}_arg"))
+  }
+
   data <- data %>%
-    dplyr::group_by(
-      .data$investor_name, .data$portfolio_name, .data$ald_sector,
-      .data$scenario_geography
-    ) %>%
+    dplyr::group_by(!!!rlang::syms(aggregation_vars)) %>%
     dplyr::mutate(
       VaR_sector = sum(.data$VaR_technology * .data$plan_carsten, na.rm = TRUE) /
         sum(.data$plan_carsten, na.rm = TRUE),
@@ -171,11 +189,18 @@ aggregate_value_change_to_sector_level <- function(data) {
   return(data)
 }
 
-aggregate_value_change_to_analysed_sectors_and_portfolio <- function(data) {
+aggregate_value_change_to_analysed_sectors_and_portfolio <- function(data,
+                                                                     iter_var) {
+  aggregation_vars <- c(
+    "investor_name", "portfolio_name", "scenario_geography"
+  )
+
+  if (iter_var != "standard") {
+    aggregation_vars <- c(aggregation_vars, glue::glue("{iter_var}_arg"))
+  }
+
   data <- data %>%
-    dplyr::group_by(
-      .data$investor_name, .data$portfolio_name, .data$scenario_geography
-    ) %>%
+    dplyr::group_by(!!!rlang::syms(aggregation_vars)) %>%
     dplyr::mutate(
       VaR_analysed_sectors = sum(.data$VaR_tech_company * .data$plan_carsten, na.rm = TRUE) /
         sum(.data$plan_carsten, na.rm = TRUE),
@@ -223,13 +248,22 @@ join_credit_exposure_on_pd_changes <- function(data,
 }
 
 aggregate_pd_change_to_sector_level <- function(data,
-                                                horizon = c("annual", "overall")) {
+                                                horizon = c("annual", "overall"),
+                                                iter_var) {
   horizon_group <- if (horizon == "annual") {"year"} else {"term"}
+
+  aggregation_vars <- c(
+    "investor_name", "portfolio_name", "ald_sector", "scenario_geography",
+    horizon_group
+  )
+
+  if (iter_var != "standard") {
+    aggregation_vars <- c(aggregation_vars, glue::glue("{iter_var}_arg"))
+  }
+
+
   data <- data %>%
-    dplyr::group_by(
-      .data$investor_name, .data$portfolio_name, .data$ald_sector,
-      .data$scenario_geography, !!rlang::sym(horizon_group)
-    ) %>%
+    dplyr::group_by(!!!rlang::syms(aggregation_vars)) %>%
     dplyr::mutate(
       PD_baseline_sector = stats::weighted.mean(
         .data$PD_baseline,
