@@ -155,24 +155,22 @@ remove_companies_with_missing_exposures <- function(data,
 set_initial_plan_carsten_missings_to_zero <- function(data,
                                                       start_year,
                                                       time_horizon) {
-  companies_missing_exposure_value <- data %>%
-    dplyr::filter(.data$year < .env$start_year + .env$time_horizon) %>%
-    dplyr::filter(is.na(.data$plan_carsten)) %>%
-    dplyr::mutate(plan_carsten = 0)
-
-  data_replaced <- data %>%
-    dplyr::filter(
-      !(.data$year < .env$start_year + .env$time_horizon &
-        is.na(.data$plan_carsten))
+  data <- data %>%
+    dplyr::mutate(
+      plan_carsten = dplyr::if_else(
+        .data$year < .env$start_year + .env$time_horizon &
+          is.na(.data$plan_carsten),
+        0,
+        .data$plan_carsten
+      )
     ) %>%
-    dplyr::bind_rows(companies_missing_exposure_value) %>%
     dplyr::arrange(
       .data$investor_name, .data$portfolio_name, .data$company_name,
       .data$scenario, .data$scenario_geography, .data$ald_sector,
       .data$technology, .data$year
     )
 
-  return(data_replaced)
+  return(data)
 }
 
 #' Process data of type indicated by function name
