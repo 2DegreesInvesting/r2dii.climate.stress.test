@@ -74,9 +74,11 @@ process_pacta_results <- function(data, start_year, end_year, time_horizon,
   if (asset_type == "loans") {
     data_processed %>%
       dplyr::select(-.data$id) %>%
+      dplyr::select(-c(.data$plan_emission_factor, .data$plan_emission_factor)) %>%
       report_missings(name_data = "pacta data", throw_error = TRUE)
   } else {
     data_processed %>%
+      dplyr::select(-c(.data$plan_emission_factor, .data$plan_emission_factor)) %>%
       report_missings(name_data = "pacta data", throw_error = TRUE)
   }
 

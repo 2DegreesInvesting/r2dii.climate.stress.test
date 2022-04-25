@@ -88,7 +88,7 @@ convert_power_cap_to_generation <- function(data,
       "year", "investor_name", "portfolio_name", "equity_market", "ald_sector",
       "technology", "scenario", "allocation", "scenario_geography",
       "plan_tech_prod", "plan_carsten", "scen_tech_prod", "plan_sec_prod",
-      "plan_sec_carsten", "id", "company_name"
+      "plan_sec_carsten", "id", "company_name", "plan_emission_factor"
     )
   )
 

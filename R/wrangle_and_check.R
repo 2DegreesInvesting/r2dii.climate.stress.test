@@ -484,7 +484,7 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
     dplyr::select(
       .data$investor_name, .data$portfolio_name, .data$scenario_name,
       .data$company_name, .data$year, .data$scenario_geography, .data$ald_sector,
-      .data$technology, .data$plan_tech_prod, .data$phase_out, .data$baseline,
+      .data$technology, .data$plan_tech_prod, .data$plan_emission_factor, .data$phase_out, .data$baseline,
       .data$scen_to_follow_aligned, .data$late_sudden,
       .data$scenario_change_aligned, .data$company_id, .data$pd,
       .data$net_profit_margin, .data$debt_equity_ratio, .data$volatility,
@@ -494,6 +494,7 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
     ) %>%
     dplyr::rename(
       production_plan_company_technology = .data$plan_tech_prod,
+      emission_factor = .data$plan_emission_factor,
       # TODO: add once ADO3530 is merged
       # direction_of_target = .data$direction,
       production_baseline_scenario = .data$baseline,

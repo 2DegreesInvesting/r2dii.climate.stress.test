@@ -206,7 +206,7 @@ extend_scenario_trajectory <- function(data,
       id_cols = c(
         "investor_name", "portfolio_name", "id", "company_name", "year",
         "scenario_geography", "ald_sector", "technology", "plan_tech_prod",
-        "phase_out", "proximity_to_target", "direction"
+        "phase_out", "proximity_to_target", "direction", "plan_emission_factor"
       ),
       names_from = .data$scenario,
       values_from = .data$scen_tech_prod
@@ -234,7 +234,7 @@ summarise_production_technology_forecasts <- function(data,
       .data$investor_name, .data$portfolio_name, .data$id, .data$company_name,
       .data$ald_sector, .data$technology, .data$scenario_geography,
       .data$allocation, .data$year, .data$scenario, .data$plan_tech_prod,
-      .data$scen_tech_prod
+      .data$scen_tech_prod, .data$plan_emission_factor
     ) %>%
     dplyr::filter(.data$year <= .env$start_analysis + .env$time_frame) %>%
     dplyr::group_by(
@@ -251,7 +251,8 @@ summarise_production_technology_forecasts <- function(data,
       initial_technology_production = dplyr::first(.data$plan_tech_prod),
       initial_technology_target = dplyr::first(.data$scen_tech_prod),
       final_technology_production = dplyr::last(.data$plan_tech_prod),
-      sum_production_forecast = sum(.data$plan_tech_prod, na.rm = TRUE)
+      sum_production_forecast = sum(.data$plan_tech_prod, na.rm = TRUE),
+      final_technology_emission_factor = dplyr::last(.data$plan_emission_factor)
     ) %>%
     dplyr::ungroup()
 }
@@ -307,8 +308,10 @@ extend_to_full_analysis_timeframe <- function(data,
       .data$initial_technology_production,
       .data$initial_technology_target,
       .data$final_technology_production,
-      .data$phase_out
-    )
+      .data$phase_out,
+      .data$final_technology_emission_factor
+    ) %>%
+    dplyr::mutate(plan_emission_factor = .data$final_technology_emission_factor)
 }
 
 #' Summarise the forecasts for company-sector level production within the five
