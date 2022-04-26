@@ -208,8 +208,7 @@ remove_sectors_with_missing_production <- function(data,
   companies_missing_sector_production <- data %>%
     dplyr::filter(.data$year == .env$start_year + .env$time_horizon) %>%
     dplyr::group_by(
-      .data$investor_name, .data$portfolio_name, .data$company_name,
-      .data$scenario, .data$scenario_geography, .data$ald_sector
+      .data$company_name, .data$scenario, .data$ald_sector
     ) %>%
     dplyr::summarise(
       sector_prod = sum(.data$plan_tech_prod, na.rm = TRUE),
@@ -221,7 +220,7 @@ remove_sectors_with_missing_production <- function(data,
   data_filtered <- data %>%
     dplyr::anti_join(
       companies_missing_sector_production,
-      by = c("company_name", "ald_sector")
+      by = c("company_name", "scenario", "ald_sector")
     )
 
   n_companies_post <- length(unique(data_filtered$company_name))
