@@ -217,6 +217,10 @@ remove_sectors_with_missing_production <- function(data,
     dplyr::ungroup() %>%
     dplyr::filter(.data$sector_prod <= 0)
 
+  # while this technically removes problematic cases for only certain scenarios
+  # for a company, this will in practice not lead to one scenario being removed
+  # and another remaining in the data because the production plans are the same
+  # across scenarios.
   data_filtered <- data %>%
     dplyr::anti_join(
       companies_missing_sector_production,
