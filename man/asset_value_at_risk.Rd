@@ -7,7 +7,6 @@ temporarily other asset types) on the portfolio level}
 \usage{
 asset_value_at_risk(
   data,
-  terminal_value = NULL,
   shock_scenario = NULL,
   div_netprofit_prop_coef = NULL,
   plan_carsten = NULL,
@@ -16,11 +15,7 @@ asset_value_at_risk(
 )
 }
 \arguments{
-\item{data}{A dataframe containing the (discounted) annual profits}
-
-\item{terminal_value}{Numeric. A ratio to determine the share of the
-discounted value used in the terminal value calculation beyond the
-projected time frame.}
+\item{data}{A dataframe containing the (discounted) annual profits.}
 
 \item{shock_scenario}{A dataframe containing the specification of the
 shock scenario at hand}

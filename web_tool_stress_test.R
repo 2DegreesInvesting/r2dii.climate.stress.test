@@ -129,7 +129,6 @@ scenarios_filter <- unique(
 
 discount_rate <- cfg_mod$financials$discount_rate # Discount rate
 ##### OPEN: this needs to be estimated based on data
-terminal_value <- cfg_mod$financials$terminal_value
 div_netprofit_prop_coef <- cfg_mod$financials$div_netprofit_prop_coef # determine this value using bloomberg data
 
 # technology net profit margins
@@ -362,7 +361,6 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
         equity_results,
         asset_value_at_risk(
           data = equity_annual_profits,
-          terminal_value = terminal_value,
           shock_scenario = transition_scenario_i,
           div_netprofit_prop_coef = div_netprofit_prop_coef,
           plan_carsten = plan_carsten_equity,
@@ -501,7 +499,6 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
         bonds_results,
         asset_value_at_risk(
           data = bonds_annual_profits,
-          terminal_value = terminal_value,
           shock_scenario = transition_scenario_i,
           div_netprofit_prop_coef = div_netprofit_prop_coef,
           plan_carsten = plan_carsten_bonds,
