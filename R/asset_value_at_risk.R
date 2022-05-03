@@ -1,10 +1,7 @@
 #' Calculate percentage value change between scenarios for equity (and
 #' temporarily other asset types) on the portfolio level
 #'
-#' @param data A dataframe containing the (discounted) annual profits
-#' @param terminal_value Numeric. A ratio to determine the share of the
-#'   discounted value used in the terminal value calculation beyond the
-#'   projected time frame.
+#' @param data A dataframe containing the (discounted) annual profits.
 #' @param shock_scenario A dataframe containing the specification of the
 #'   shock scenario at hand
 #' @param div_netprofit_prop_coef Numeric. A coefficient that determines how
@@ -18,14 +15,12 @@
 #'   if how strongly the DCF should propagate to value changes.
 
 asset_value_at_risk <- function(data,
-                                terminal_value = NULL,
                                 shock_scenario = NULL,
                                 div_netprofit_prop_coef = NULL,
                                 plan_carsten = NULL,
                                 port_aum = NULL,
                                 flat_multiplier = NULL) {
   force(data)
-  terminal_value %||% stop("Must provide input for 'terminal_value'", call. = FALSE)
   shock_scenario %||% stop("Must provide input for 'shock_scenario'", call. = FALSE)
   div_netprofit_prop_coef %||% stop("Must provide input for 'div_netprofit_prop_coef'", call. = FALSE)
   plan_carsten %||% stop("Must provide input for 'plan_carsten'", call. = FALSE)
@@ -67,10 +62,8 @@ asset_value_at_risk <- function(data,
       .data$technology, .data$scenario_geography
     ) %>%
     dplyr::summarise(
-      total_disc_npv_ls = sum(.data$discounted_net_profit_ls, na.rm = TRUE) *
-        (1 + .env$terminal_value),
-      total_disc_npv_baseline = sum(.data$discounted_net_profit_baseline, na.rm = TRUE) *
-        (1 + .env$terminal_value),
+      total_disc_npv_ls = sum(.data$discounted_net_profit_ls, na.rm = TRUE),
+      total_disc_npv_baseline = sum(.data$discounted_net_profit_baseline, na.rm = TRUE),
       .groups = "drop_last"
     ) %>%
     dplyr::ungroup() %>%
