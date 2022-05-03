@@ -76,7 +76,6 @@ temporarily other asset types) on the company-technology level</p>
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">company_technology_asset_value_at_risk</span><span class="op">(</span>
   <span class="va">data</span>,
-  terminal_value <span class="op">=</span> <span class="cn">NULL</span>,
   shock_scenario <span class="op">=</span> <span class="cn">NULL</span>,
   div_netprofit_prop_coef <span class="op">=</span> <span class="cn">NULL</span>,
   flat_multiplier <span class="op">=</span> <span class="cn">NULL</span>
@@ -87,10 +86,6 @@ temporarily other asset types) on the company-technology level</p>
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>A dataframe containing the (discounted) annual profits</p></dd>
-<dt>terminal_value</dt>
-<dd><p>Numeric. A ratio to determine the share of the
-discounted value used in the terminal value calculation beyond the
-projected time frame.</p></dd>
 <dt>shock_scenario</dt>
 <dd><p>A dataframe containing the specification of the
 shock scenario at hand</p></dd>
