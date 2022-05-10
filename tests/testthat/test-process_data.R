@@ -1,4 +1,4 @@
-test_that("company with positive exposure and production value is not removed", {
+test_that("company with positive exposure and production value in final year is not removed", {
   test_data <- tibble::tribble(
     ~year, ~investor_name, ~portfolio_name, ~ald_sector, ~technology, ~scenario, ~scenario_geography, ~company_name, ~plan_tech_prod, ~plan_carsten,
     2020, "investor", "portfolio", "Automotive", "Electric", "scenario_a", "Global", "company_x", 1, 0.01,
@@ -23,7 +23,7 @@ test_that("company with positive exposure and production value is not removed", 
   unlink(test_log_path)
 })
 
-test_that("company with positive exposure and zero production value is removed", {
+test_that("company with positive exposure and zero production value in final year is removed", {
   test_data <- tibble::tribble(
     ~year, ~ald_sector, ~technology, ~scenario, ~company_name, ~plan_tech_prod, ~plan_carsten,
     2020, "Automotive", "Electric", "scenario_a", "company_x", 0, 0.01,
@@ -42,6 +42,67 @@ test_that("company with positive exposure and zero production value is removed",
     remove_sectors_with_missing_production_end_of_forecast(
       start_year = test_start_year,
       time_horizon = test_time_horizon,
+      log_path = test_log_path
+    )
+  testthat::expect_equal(nrow(removed), 0)
+
+  unlink(test_log_path)
+})
+
+test_that("company with positive production value in the start year in at least
+          one technology of a sector is not removed", {
+  test_data <- tibble::tribble(
+    ~year, ~investor_name, ~portfolio_name, ~ald_sector, ~technology, ~scenario, ~scenario_geography, ~company_name, ~plan_tech_prod, ~plan_carsten,
+    2020, "investor", "portfolio", "Automotive", "Electric", "scenario_a", "Global", "company_x", 0, 0,
+    2021, "investor", "portfolio", "Automotive", "Electric", "scenario_a", "Global", "company_x", 1, 0.01,
+    2022, "investor", "portfolio", "Automotive", "Electric", "scenario_a", "Global", "company_x", 1, 0.01,
+    2023, "investor", "portfolio", "Automotive", "Electric", "scenario_a", "Global", "company_x", 1, 0.01,
+    2024, "investor", "portfolio", "Automotive", "Electric", "scenario_a", "Global", "company_x", 1, 0.01,
+    2025, "investor", "portfolio", "Automotive", "Electric", "scenario_a", "Global", "company_x", 1, 0.01,
+    2020, "investor", "portfolio", "Automotive", "ICE", "scenario_a", "Global", "company_x", 1, 0.01,
+    2021, "investor", "portfolio", "Automotive", "ICE", "scenario_a", "Global", "company_x", 1, 0.01,
+    2022, "investor", "portfolio", "Automotive", "ICE", "scenario_a", "Global", "company_x", 1, 0.01,
+    2023, "investor", "portfolio", "Automotive", "ICE", "scenario_a", "Global", "company_x", 1, 0.01,
+    2024, "investor", "portfolio", "Automotive", "ICE", "scenario_a", "Global", "company_x", 1, 0.01,
+    2025, "investor", "portfolio", "Automotive", "ICE", "scenario_a", "Global", "company_x", 1, 0.01
+  )
+  test_start_year <- 2020
+  test_log_path <- file.path(tempdir(), "log.txt")
+
+  not_removed <- test_data %>%
+    remove_sectors_with_missing_production_start_year(
+      start_year = test_start_year,
+      log_path = test_log_path
+    )
+  testthat::expect_equal(nrow(not_removed), nrow(test_data))
+
+  unlink(test_log_path)
+})
+
+test_that("company with zero production value in the start year across all given
+          technologies of a sector is removed", {
+  test_data <- tibble::tribble(
+    ~year, ~ald_sector, ~technology, ~scenario, ~company_name, ~plan_tech_prod, ~plan_carsten,
+    2020, "Automotive", "Electric", "scenario_a", "company_x", 0, 0,
+    2021, "Automotive", "Electric", "scenario_a", "company_x", 1, 0.01,
+    2022, "Automotive", "Electric", "scenario_a", "company_x", 1, 0.01,
+    2023, "Automotive", "Electric", "scenario_a", "company_x", 1, 0.01,
+    2024, "Automotive", "Electric", "scenario_a", "company_x", 1, 0.01,
+    2025, "Automotive", "Electric", "scenario_a", "company_x", 1, 0.01,
+    2020, "Automotive", "ICE", "scenario_a", "company_x", 0, 0,
+    2021, "Automotive", "ICE", "scenario_a", "company_x", 1, 0.01,
+    2022, "Automotive", "ICE", "scenario_a", "company_x", 1, 0.01,
+    2023, "Automotive", "ICE", "scenario_a", "company_x", 1, 0.01,
+    2024, "Automotive", "ICE", "scenario_a", "company_x", 1, 0.01,
+    2025, "Automotive", "ICE", "scenario_a", "company_x", 1, 0.01
+  )
+
+  test_start_year <- 2020
+  test_log_path <- file.path(tempdir(), "log.txt")
+
+  removed <- test_data %>%
+    remove_sectors_with_missing_production_start_year(
+      start_year = test_start_year,
       log_path = test_log_path
     )
   testthat::expect_equal(nrow(removed), 0)
