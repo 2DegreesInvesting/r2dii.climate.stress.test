@@ -13,7 +13,7 @@ test_that("company with positive exposure and production value is not removed", 
   test_log_path <- file.path(tempdir(), "log.txt")
 
   not_removed <- test_data %>%
-    remove_sectors_with_missing_production(
+    remove_sectors_with_missing_production_end_of_forecast(
       start_year = test_start_year,
       time_horizon = test_time_horizon,
       log_path = test_log_path
@@ -39,7 +39,7 @@ test_that("company with positive exposure and zero production value is removed",
   test_log_path <- file.path(tempdir(), "log.txt")
 
   removed <- test_data %>%
-    remove_sectors_with_missing_production(
+    remove_sectors_with_missing_production_end_of_forecast(
       start_year = test_start_year,
       time_horizon = test_time_horizon,
       log_path = test_log_path
