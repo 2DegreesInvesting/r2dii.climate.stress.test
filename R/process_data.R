@@ -209,9 +209,9 @@ set_initial_plan_carsten_missings_to_zero <- function(data,
 #' @return A tibble of data without rows with no exposure info
 #' @noRd
 remove_sectors_with_missing_production_end_of_forecast <- function(data,
-                                                   start_year,
-                                                   time_horizon,
-                                                   log_path) {
+                                                                   start_year,
+                                                                   time_horizon,
+                                                                   log_path) {
   n_companies_pre <- length(unique(data$company_name))
 
   companies_missing_sector_production <- data %>%
@@ -276,8 +276,8 @@ remove_sectors_with_missing_production_end_of_forecast <- function(data,
 #' @return A tibble of data without rows with no exposure info
 #' @noRd
 remove_sectors_with_missing_production_start_year <- function(data,
-                                                                   start_year,
-                                                                   log_path) {
+                                                              start_year,
+                                                              log_path) {
   n_companies_pre <- length(unique(data$company_name))
 
   companies_missing_sector_production_start_year <- data %>%
@@ -342,9 +342,9 @@ remove_sectors_with_missing_production_start_year <- function(data,
 #' @return A tibble of data without rows with no exposure info
 #' @noRd
 remove_high_carbon_tech_with_missing_production <- function(data,
-                                                   start_year,
-                                                   time_horizon,
-                                                   log_path) {
+                                                            start_year,
+                                                            time_horizon,
+                                                            log_path) {
   n_companies_pre <- length(unique(data$company_name))
 
   companies_missing_high_carbon_tech_production <- data %>%
