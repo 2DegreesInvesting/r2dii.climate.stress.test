@@ -1,12 +1,12 @@
 test_that("company with positive exposure and production value in final year is not removed", {
   test_data <- tibble::tribble(
-    ~year, ~investor_name, ~portfolio_name, ~ald_sector, ~technology, ~scenario, ~scenario_geography, ~company_name, ~plan_tech_prod, ~plan_carsten,
-    2020, "investor", "portfolio", "Automotive", "Electric", "scenario_a", "Global", "company_x", 1, 0.01,
-    2021, "investor", "portfolio", "Automotive", "Electric", "scenario_a", "Global", "company_x", 1, 0.01,
-    2022, "investor", "portfolio", "Automotive", "Electric", "scenario_a", "Global", "company_x", 1, 0.01,
-    2023, "investor", "portfolio", "Automotive", "Electric", "scenario_a", "Global", "company_x", 1, 0.01,
-    2024, "investor", "portfolio", "Automotive", "Electric", "scenario_a", "Global", "company_x", 1, 0.01,
-    2025, "investor", "portfolio", "Automotive", "Electric", "scenario_a", "Global", "company_x", 1, 0.01,
+    ~year, ~ald_sector, ~technology, ~scenario, ~company_name, ~plan_tech_prod, ~plan_carsten,
+    2020, "Automotive", "Electric", "scenario_a", "company_x", 1, 0.01,
+    2021, "Automotive", "Electric", "scenario_a", "company_x", 1, 0.01,
+    2022, "Automotive", "Electric", "scenario_a", "company_x", 1, 0.01,
+    2023, "Automotive", "Electric", "scenario_a", "company_x", 1, 0.01,
+    2024, "Automotive", "Electric", "scenario_a", "company_x", 1, 0.01,
+    2025, "Automotive", "Electric", "scenario_a", "company_x", 1, 0.01,
   )
   test_start_year <- 2020
   test_time_horizon <- 5
@@ -52,19 +52,19 @@ test_that("company with positive exposure and zero production value in final yea
 test_that("company with positive production value in the start year in at least
           one technology of a sector is not removed", {
   test_data <- tibble::tribble(
-    ~year, ~investor_name, ~portfolio_name, ~ald_sector, ~technology, ~scenario, ~scenario_geography, ~company_name, ~plan_tech_prod, ~plan_carsten,
-    2020, "investor", "portfolio", "Automotive", "Electric", "scenario_a", "Global", "company_x", 0, 0,
-    2021, "investor", "portfolio", "Automotive", "Electric", "scenario_a", "Global", "company_x", 1, 0.01,
-    2022, "investor", "portfolio", "Automotive", "Electric", "scenario_a", "Global", "company_x", 1, 0.01,
-    2023, "investor", "portfolio", "Automotive", "Electric", "scenario_a", "Global", "company_x", 1, 0.01,
-    2024, "investor", "portfolio", "Automotive", "Electric", "scenario_a", "Global", "company_x", 1, 0.01,
-    2025, "investor", "portfolio", "Automotive", "Electric", "scenario_a", "Global", "company_x", 1, 0.01,
-    2020, "investor", "portfolio", "Automotive", "ICE", "scenario_a", "Global", "company_x", 1, 0.01,
-    2021, "investor", "portfolio", "Automotive", "ICE", "scenario_a", "Global", "company_x", 1, 0.01,
-    2022, "investor", "portfolio", "Automotive", "ICE", "scenario_a", "Global", "company_x", 1, 0.01,
-    2023, "investor", "portfolio", "Automotive", "ICE", "scenario_a", "Global", "company_x", 1, 0.01,
-    2024, "investor", "portfolio", "Automotive", "ICE", "scenario_a", "Global", "company_x", 1, 0.01,
-    2025, "investor", "portfolio", "Automotive", "ICE", "scenario_a", "Global", "company_x", 1, 0.01
+    ~year, ~ald_sector, ~technology, ~scenario, ~company_name, ~plan_tech_prod, ~plan_carsten,
+    2020, "Automotive", "Electric", "scenario_a", "company_x", 0, 0,
+    2021, "Automotive", "Electric", "scenario_a", "company_x", 1, 0.01,
+    2022, "Automotive", "Electric", "scenario_a", "company_x", 1, 0.01,
+    2023, "Automotive", "Electric", "scenario_a", "company_x", 1, 0.01,
+    2024, "Automotive", "Electric", "scenario_a", "company_x", 1, 0.01,
+    2025, "Automotive", "Electric", "scenario_a", "company_x", 1, 0.01,
+    2020, "Automotive", "ICE", "scenario_a", "company_x", 1, 0.01,
+    2021, "Automotive", "ICE", "scenario_a", "company_x", 1, 0.01,
+    2022, "Automotive", "ICE", "scenario_a", "company_x", 1, 0.01,
+    2023, "Automotive", "ICE", "scenario_a", "company_x", 1, 0.01,
+    2024, "Automotive", "ICE", "scenario_a", "company_x", 1, 0.01,
+    2025, "Automotive", "ICE", "scenario_a", "company_x", 1, 0.01
   )
   test_start_year <- 2020
   test_log_path <- file.path(tempdir(), "log.txt")
