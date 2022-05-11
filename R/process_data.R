@@ -345,7 +345,6 @@ remove_high_carbon_tech_with_missing_production <- function(data,
                                                             start_year,
                                                             time_horizon,
                                                             log_path) {
-
   companies_missing_high_carbon_tech_production <- data %>%
     dplyr::filter(.data$technology %in% high_carbon_tech_lookup) %>%
     dplyr::group_by(
@@ -388,9 +387,8 @@ remove_high_carbon_tech_with_missing_production <- function(data,
 
     affected_company_sector_tech_overview %>%
       purrr::pwalk(function(company_name, ald_sector, technology) {
-
-      paste_write(format_indent_2(), "company name:", company_name, "sector:", ald_sector, "technology:", technology, log_path = log_path)
-    })
+        paste_write(format_indent_2(), "company name:", company_name, "sector:", ald_sector, "technology:", technology, log_path = log_path)
+      })
   }
 
   return(data_filtered)
