@@ -616,14 +616,17 @@ check_results <- function(wrangled_results_list, sensitivity_analysis_vars) {
 
   # company trajectories ----------------------------------------------------
   wrangled_results_list$company_trajectories %>%
-    report_missings(
-      name_data = "Company Trajectories"
-    ) %>%
     report_all_duplicate_kinds(
       composite_unique_cols = c(
         "investor_name", "portfolio_name", "company_name", "year",
         "scenario_geography", "ald_sector", "technology", sensitivity_analysis_vars
       )
+    ) %>%
+    # not considering those two variables when checking for missings because
+    # acceptable missing pattern is checked in ADO 4919
+    dplyr::select(-c(production_plan_company_technology, production_change_target_scenario)) %>%
+    report_missings(
+      name_data = "Company Trajectories"
     )
 
   return(invisible(wrangled_results_list))
