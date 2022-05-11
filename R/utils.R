@@ -291,17 +291,21 @@ report_dropped_company_names <- function(data_x, data_y, name_y, merge_cols, nam
 #'
 #' @return input `data`.
 report_missings <- function(data, name_data, throw_error = FALSE) {
-  missings <- purrr::map_df(data, function(x) sum(is.na(x)))
+  missings_per_col <- purrr::map_df(data, function(x) sum(is.na(x)))
 
-  if (is_verbose_log_env()) {
+  has_missings <- rowSums(missings_per_col)
+
+  if (has_missings) {
     cat("Reporting missings on dataset:", name_data, "\n")
-    purrr::iwalk(missings, function(n_na, name) {
-      cat("Counted", n_na, "missings on column", name, "\n")
+    purrr::iwalk(as.list(missings_per_col), function(n_na, name) {
+      if (n_na > 0) {
+        cat("Counted", n_na, "missings on column", name, "\n")
+      }
     })
     cat("\n\n")
   }
 
-  if (throw_error && rowSums(missings) > 0) {
+  if (throw_error && has_missings) {
     stop(paste0("Missings detected on ", name_data, ", please check dataset."), call. = FALSE)
   }
 
