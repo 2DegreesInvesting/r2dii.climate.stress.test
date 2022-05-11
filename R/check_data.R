@@ -105,7 +105,7 @@ check_company_ticker_mapping <- function(data) {
 #' @return Returns input invisibly.
 check_expected_missings <- function(data) {
   n_missings_production_plan_company_technology <- sum(is.na(data$production_plan_company_technology))
-  expected_n_missings_production_plan_company_technology <- nrow(data) * (length(unique(data$year)) - length(seq(min(data$year), min(data$year) + time_horizon_lookup)) / length(unique(data$year)))
+  expected_n_missings_production_plan_company_technology <- nrow(data) * ((length(unique(data$year)) - length(seq(min(data$year), min(data$year) + time_horizon_lookup))) / length(unique(data$year)))
 
   if (n_missings_production_plan_company_technology != expected_n_missings_production_plan_company_technology) {
     cat("-- Company Trajectories: Detected unexpected missings on variable production_plan_company_technology. \n")
