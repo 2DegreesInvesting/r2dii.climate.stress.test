@@ -348,7 +348,7 @@ remove_high_carbon_tech_with_missing_production <- function(data,
   n_companies_pre <- length(unique(data$company_name))
 
   companies_missing_high_carbon_tech_production <- data %>%
-    dplyr::filter(.data$technology %in% c("ICE", "Coal", "Oil", "Gas", "CoalCap", "GasCap", "OilCap")) %>%
+    dplyr::filter(.data$technology %in% high_carbon_tech_lookup) %>%
     dplyr::group_by(
       .data$company_name, .data$scenario, .data$ald_sector, .data$technology
     ) %>%

@@ -93,6 +93,8 @@ p4b_scenarios_lookup <- c(
 # holds names of input arguments to run_stress_test that are not model parameters
 setup_vars_lookup <- c("input_path_project_agnostic", "input_path_project_specific", "output_path", "iter_var", "return_results")
 
+high_carbon_tech_lookup <- c("ICE", "Coal", "Oil", "Gas", "CoalCap", "GasCap", "OilCap")
+
 countries_for_regions_mapper_lookup <- tibble::tibble(
   region = c("brazil", "brazil", "india", "india", "japan", "japan", "russia", "russia", "south africa", "south africa", "united states", "united states"),
   isos = c("br", "br", "in", "in", "jp", "jp", "ru", "ru", "za", "za", "us", "us"),
