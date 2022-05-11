@@ -45,7 +45,16 @@ process_pacta_results <- function(data, start_year, end_year, time_horizon,
       time_horizon = time_horizon,
       log_path = log_path
     ) %>%
-    remove_sectors_with_missing_production(
+    remove_sectors_with_missing_production_end_of_forecast(
+      start_year = start_year,
+      time_horizon = time_horizon,
+      log_path = log_path
+    ) %>%
+    remove_sectors_with_missing_production_start_year(
+      start_year = start_year,
+      log_path = log_path
+    ) %>%
+    remove_high_carbon_tech_with_missing_production(
       start_year = start_year,
       time_horizon = time_horizon,
       log_path = log_path
@@ -199,10 +208,10 @@ set_initial_plan_carsten_missings_to_zero <- function(data,
 #'
 #' @return A tibble of data without rows with no exposure info
 #' @noRd
-remove_sectors_with_missing_production <- function(data,
-                                                   start_year,
-                                                   time_horizon,
-                                                   log_path) {
+remove_sectors_with_missing_production_end_of_forecast <- function(data,
+                                                                   start_year,
+                                                                   time_horizon,
+                                                                   log_path) {
   n_companies_pre <- length(unique(data$company_name))
 
   companies_missing_sector_production <- data %>%
@@ -249,6 +258,138 @@ remove_sectors_with_missing_production <- function(data,
     })
   }
 
+
+  return(data_filtered)
+}
+
+#' Remove rows from PACTA results that belong to company-sector combinations
+#' for which there is no positive production value in the relevant start year.
+#' This handles the edge case that a company may have a green technology with
+#' zero initial production that should grow over time, but since the overall
+#' sector production is also zero in the start year, the SMSP is unable to
+#' calculate positive targets.
+#'
+#' @inheritParams calculate_annual_profits
+#' @inheritParams report_company_drops
+#' @param data tibble containing filtered PACTA results
+#'
+#' @return A tibble of data without rows with no exposure info
+#' @noRd
+remove_sectors_with_missing_production_start_year <- function(data,
+                                                              start_year,
+                                                              log_path) {
+  n_companies_pre <- length(unique(data$company_name))
+
+  companies_missing_sector_production_start_year <- data %>%
+    dplyr::filter(.data$year == .env$start_year) %>%
+    dplyr::group_by(
+      .data$company_name, .data$scenario, .data$ald_sector
+    ) %>%
+    dplyr::summarise(
+      sector_prod = sum(.data$plan_tech_prod, na.rm = TRUE),
+      .groups = "drop"
+    ) %>%
+    dplyr::ungroup() %>%
+    dplyr::filter(.data$sector_prod <= 0)
+
+  # while this technically removes problematic cases for only certain scenarios
+  # for a company, this will in practice not lead to one scenario being removed
+  # and another remaining in the data because the production plans are the same
+  # across scenarios.
+  data_filtered <- data %>%
+    dplyr::anti_join(
+      companies_missing_sector_production_start_year,
+      by = c("company_name", "scenario", "ald_sector")
+    )
+
+  n_companies_post <- length(unique(data_filtered$company_name))
+
+  if (n_companies_pre > n_companies_post) {
+    percent_loss <- (n_companies_pre - n_companies_post) * 100 / n_companies_pre
+    affected_companies <- sort(
+      setdiff(
+        data$company_name,
+        data_filtered$company_name
+      )
+    )
+    paste_write(
+      format_indent_1(), "When filtering out holdings with 0 production in
+      relevant sector in the start year of the analysis, dropped rows for",
+      n_companies_pre - n_companies_post, "out of", n_companies_pre, "companies",
+      log_path = log_path
+    )
+    paste_write(format_indent_2(), "percent loss:", percent_loss, log_path = log_path)
+    paste_write(format_indent_2(), "affected companies:", log_path = log_path)
+    purrr::walk(affected_companies, function(company) {
+      paste_write(format_indent_2(), company, log_path = log_path)
+    })
+  }
+
+
+  return(data_filtered)
+}
+
+#' Remove rows from PACTA results that belong to company-technology combinations
+#' for which there is 0 production in a high carbon technology over the entire
+#' forecast. Since this technology would need to decrease in its targets, the
+#' production remains zero and creates missing values later on. The combination
+#' is therefore removed.
+#'
+#' @inheritParams calculate_annual_profits
+#' @inheritParams report_company_drops
+#' @param data tibble containing filtered PACTA results
+#'
+#' @return A tibble of data without rows with no exposure info
+#' @noRd
+remove_high_carbon_tech_with_missing_production <- function(data,
+                                                            start_year,
+                                                            time_horizon,
+                                                            log_path) {
+  companies_missing_high_carbon_tech_production <- data %>%
+    dplyr::filter(.data$technology %in% high_carbon_tech_lookup) %>%
+    dplyr::group_by(
+      .data$company_name, .data$scenario, .data$ald_sector, .data$technology
+    ) %>%
+    dplyr::summarise(
+      technology_prod = sum(.data$plan_tech_prod, na.rm = TRUE),
+      .groups = "drop"
+    ) %>%
+    dplyr::ungroup() %>%
+    dplyr::filter(.data$technology_prod <= 0)
+
+  # while this technically removes problematic cases for only certain scenarios
+  # for a company, this will in practice not lead to one scenario being removed
+  # and another remaining in the data because the production plans are the same
+  # across scenarios.
+  data_filtered <- data %>%
+    dplyr::anti_join(
+      companies_missing_high_carbon_tech_production,
+      by = c("company_name", "scenario", "ald_sector", "technology")
+    )
+
+  if (nrow(companies_missing_high_carbon_tech_production) > 0) {
+
+    # information on companies for which at least 1 technology is lost
+    affected_company_sector_tech_overview <- companies_missing_high_carbon_tech_production %>%
+      dplyr::select(.data$company_name, .data$ald_sector, .data$technology) %>%
+      dplyr::distinct_all()
+
+    percent_affected_companies <- (length(unique(affected_company_sector_tech_overview$company_name)) * 100) / length(unique(data$company_name))
+    affected_companies <- affected_company_sector_tech_overview$company_name
+
+    paste_write(
+      format_indent_1(), "When filtering out holdings with 0 production in given high-carbon technology, dropped rows for",
+      length(affected_companies), "out of", length(unique(data$company_name)), "companies",
+      log_path = log_path
+    )
+    paste_write(format_indent_2(), "percent loss:", percent_affected_companies, log_path = log_path)
+    paste_write(format_indent_2(), "affected company-sector-technology combinations:", log_path = log_path)
+
+    affected_company_sector_tech_overview %>%
+      purrr::pwalk(function(company_name, ald_sector, technology) {
+        paste_write(format_indent_2(), "company name:", company_name, "sector:", ald_sector, "technology:", technology, log_path = log_path)
+      })
+  }
 
   return(data_filtered)
 }

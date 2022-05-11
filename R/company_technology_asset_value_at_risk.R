@@ -2,9 +2,6 @@
 #' temporarily other asset types) on the company-technology level
 #'
 #' @param data A dataframe containing the (discounted) annual profits
-#' @param terminal_value Numeric. A ratio to determine the share of the
-#'   discounted value used in the terminal value calculation beyond the
-#'   projected time frame.
 #' @param shock_scenario A dataframe containing the specification of the
 #'   shock scenario at hand
 #' @param div_netprofit_prop_coef Numeric. A coefficient that determines how
@@ -12,12 +9,10 @@
 #' @param flat_multiplier Numeric. A ratio that determines for the asset type
 #'   if how strongly the DCF should propagate to value changes.
 company_technology_asset_value_at_risk <- function(data,
-                                                   terminal_value = NULL,
                                                    shock_scenario = NULL,
                                                    div_netprofit_prop_coef = NULL,
                                                    flat_multiplier = NULL) {
   force(data)
-  terminal_value %||% stop("Must provide input for 'terminal_value'", call. = FALSE)
   shock_scenario %||% stop("Must provide input for 'shock_scenario'", call. = FALSE)
   div_netprofit_prop_coef %||% stop("Must provide input for 'div_netprofit_prop_coef'", call. = FALSE)
   flat_multiplier %||% stop("Must provide input for 'flat_multiplier'", call. = FALSE)
@@ -48,10 +43,8 @@ company_technology_asset_value_at_risk <- function(data,
       .data$ald_sector, .data$technology, .data$scenario_geography
     ) %>%
     dplyr::summarise(
-      total_disc_npv_ls = sum(.data$discounted_net_profit_ls) *
-        (1 + .env$terminal_value),
-      total_disc_npv_baseline = sum(.data$discounted_net_profit_baseline) *
-        (1 + .env$terminal_value),
+      total_disc_npv_ls = sum(.data$discounted_net_profit_ls),
+      total_disc_npv_baseline = sum(.data$discounted_net_profit_baseline),
       .groups = "drop_last"
     ) %>%
     dplyr::ungroup() %>%

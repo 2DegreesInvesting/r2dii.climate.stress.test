@@ -268,7 +268,6 @@ read_and_process_and_calc <- function(args_list) {
 
   company_technology_value_changes <- company_annual_profits %>%
     company_technology_asset_value_at_risk(
-      terminal_value = terminal_value_lookup,
       shock_scenario = transition_scenario,
       div_netprofit_prop_coef = div_netprofit_prop_coef,
       flat_multiplier = flat_multiplier

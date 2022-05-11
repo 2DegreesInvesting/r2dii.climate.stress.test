@@ -7,7 +7,6 @@ temporarily other asset types) on the company-technology level}
 \usage{
 company_technology_asset_value_at_risk(
   data,
-  terminal_value = NULL,
   shock_scenario = NULL,
   div_netprofit_prop_coef = NULL,
   flat_multiplier = NULL
@@ -15,10 +14,6 @@ company_technology_asset_value_at_risk(
 }
 \arguments{
 \item{data}{A dataframe containing the (discounted) annual profits}
-
-\item{terminal_value}{Numeric. A ratio to determine the share of the
-discounted value used in the terminal value calculation beyond the
-projected time frame.}
 
 \item{shock_scenario}{A dataframe containing the specification of the
 shock scenario at hand}
