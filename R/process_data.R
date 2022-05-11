@@ -345,7 +345,6 @@ remove_high_carbon_tech_with_missing_production <- function(data,
                                                             start_year,
                                                             time_horizon,
                                                             log_path) {
-  n_companies_pre <- length(unique(data$company_name))
 
   companies_missing_high_carbon_tech_production <- data %>%
     dplyr::filter(.data$technology %in% high_carbon_tech_lookup) %>%
@@ -369,28 +368,30 @@ remove_high_carbon_tech_with_missing_production <- function(data,
       by = c("company_name", "scenario", "ald_sector", "technology")
     )
 
-  n_companies_post <- length(unique(data_filtered$company_name))
+  if (nrow(companies_missing_high_carbon_tech_production) > 0) {
 
-  if (n_companies_pre > n_companies_post) {
-    percent_loss <- (n_companies_pre - n_companies_post) * 100 / n_companies_pre
-    affected_companies <- sort(
-      setdiff(
-        data$company_name,
-        data_filtered$company_name
-      )
-    )
+    # information on companies for which at least 1 technology is lost
+    affected_company_sector_tech_overview <- companies_missing_high_carbon_tech_production %>%
+      dplyr::select(.data$company_name, .data$ald_sector, .data$technology) %>%
+      dplyr::distinct_all()
+
+    percent_affected_companies <- (length(unique(affected_company_sector_tech_overview$company_name)) * 100) / length(unique(data$company_name))
+    affected_companies <- affected_company_sector_tech_overview$company_name
+
     paste_write(
       format_indent_1(), "When filtering out holdings with 0 production in given high-carbon technology, dropped rows for",
-      n_companies_pre - n_companies_post, "out of", n_companies_pre, "companies",
+      length(affected_companies), "out of", length(unique(data$company_name)), "companies",
       log_path = log_path
     )
-    paste_write(format_indent_2(), "percent loss:", percent_loss, log_path = log_path)
-    paste_write(format_indent_2(), "affected companies:", log_path = log_path)
-    purrr::walk(affected_companies, function(company) {
-      paste_write(format_indent_2(), company, log_path = log_path)
+    paste_write(format_indent_2(), "percent loss:", percent_affected_companies, log_path = log_path)
+    paste_write(format_indent_2(), "affected company-sector-technology combinations:", log_path = log_path)
+
+    affected_company_sector_tech_overview %>%
+      purrr::pwalk(function(company_name, ald_sector, technology) {
+
+      paste_write(format_indent_2(), "company name:", company_name, "sector:", ald_sector, "technology:", technology, log_path = log_path)
     })
   }
-
 
   return(data_filtered)
 }
