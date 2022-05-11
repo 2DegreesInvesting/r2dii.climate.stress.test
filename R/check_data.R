@@ -108,14 +108,14 @@ check_expected_missings <- function(data) {
   expected_n_missings_production_plan_company_technology <- nrow(data) * (length(unique(data$year)) - length(seq(min(data$year), min(data$year) + time_horizon_lookup)) / length(unique(data$year)))
 
   if (n_missings_production_plan_company_technology != expected_n_missings_production_plan_company_technology) {
-    cat("Company Trajectories: Detected unexpected missings on variable production_plan_company_technology. \n")
+    cat("-- Company Trajectories: Detected unexpected missings on variable production_plan_company_technology. \n")
   }
 
   n_missings_production_change_target_scenario <- sum(is.na(data$production_change_target_scenario))
   expected_n_missings_production_change_target_scenario <- nrow(data) / length(unique(data$year))
 
   if (n_missings_production_change_target_scenario != expected_n_missings_production_change_target_scenario) {
-    cat("Company Trajectories: Detected unexpected missings on variable production_change_target_scenario. \n")
+    cat("-- Company Trajectories: Detected unexpected missings on variable production_change_target_scenario. \n")
   }
 
   return(invisible(data))
