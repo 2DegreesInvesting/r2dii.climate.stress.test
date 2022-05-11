@@ -93,3 +93,30 @@ check_company_ticker_mapping <- function(data) {
   }
   return(invisible(data))
 }
+
+#' Check expected missing patterns
+#'
+#' On certain variables missings appear that are not problematic but are
+#' expected. Here it is checked whether those missings adher to expected
+#' patterns.
+#'
+#' @param data Data that expected missings are checked on.
+#'
+#' @return Returns input invisibly.
+check_expected_missings <- function(data) {
+  n_missings_production_plan_company_technology <- sum(is.na(data$production_plan_company_technology))
+  expected_n_missings_production_plan_company_technology <- nrow(data) * ((length(unique(data$year)) - (time_horizon_lookup + 1)) / length(unique(data$year)))
+
+  if (n_missings_production_plan_company_technology != expected_n_missings_production_plan_company_technology) {
+    cat("-- Company Trajectories: Detected unexpected missings on variable production_plan_company_technology. \n")
+  }
+
+  n_missings_production_change_target_scenario <- sum(is.na(data$production_change_target_scenario))
+  expected_n_missings_production_change_target_scenario <- nrow(data) / length(unique(data$year))
+
+  if (n_missings_production_change_target_scenario != expected_n_missings_production_change_target_scenario) {
+    cat("-- Company Trajectories: Detected unexpected missings on variable production_change_target_scenario. \n")
+  }
+
+  return(invisible(data))
+}

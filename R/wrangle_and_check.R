@@ -616,6 +616,7 @@ check_results <- function(wrangled_results_list, sensitivity_analysis_vars) {
 
   # company trajectories ----------------------------------------------------
   wrangled_results_list$company_trajectories %>%
+    check_expected_missings() %>%
     report_all_duplicate_kinds(
       composite_unique_cols = c(
         "investor_name", "portfolio_name", "company_name", "year",
