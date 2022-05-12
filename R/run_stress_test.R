@@ -32,6 +32,9 @@
 #'   For accepted range compare `stress_test_arguments`.
 #' @param discount_rate Numeric, that holds the discount rate of dividends per
 #'   year in the DCF. For accepted range compare `stress_test_arguments`.
+#' @param growth_rate Numeric, that holds the terminal growth rate of profits
+#'   beyond the final year in the DCF. For accepted range compare
+#'   `stress_test_arguments`.
 #' @param div_netprofit_prop_coef Numeric. A coefficient that determines how
 #'   strongly the future dividends propagate to the company value. For accepted
 #'   range compare `stress_test_arguments`.
@@ -61,6 +64,7 @@ run_stress_test <- function(asset_type,
                             lgd_subordinated_claims = 0.75,
                             risk_free_rate = 0.02,
                             discount_rate = 0.07,
+                            growth_rate = 0.03,
                             div_netprofit_prop_coef = 1,
                             shock_year = 2030,
                             fallback_term = 2,
@@ -254,6 +258,7 @@ read_and_process_and_calc <- function(args_list) {
     end_year = end_year_lookup,
     time_horizon = time_horizon_lookup,
     discount_rate = discount_rate,
+    growth_rate = growth_rate,
     log_path = log_path
   )
 
