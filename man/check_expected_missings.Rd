@@ -14,6 +14,6 @@ Returns input invisibly.
 }
 \description{
 On certain variables missings appear that are not problematic but are
-expected. Here it is checked whether those missings adher to expected
+expected. Here it is checked whether those missings adhere to expected
 patterns.
 }
