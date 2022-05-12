@@ -97,7 +97,7 @@ check_company_ticker_mapping <- function(data) {
 #' Check expected missing patterns
 #'
 #' On certain variables missings appear that are not problematic but are
-#' expected. Here it is checked whether those missings adher to expected
+#' expected. Here it is checked whether those missings adhere to expected
 #' patterns.
 #'
 #' @param data Data that expected missings are checked on.
