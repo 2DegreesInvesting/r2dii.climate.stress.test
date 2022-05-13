@@ -275,6 +275,9 @@ run_prep_calculation_loans <- function(input_path_project_specific,
     use_credit_limit <- FALSE
   }
   p4b_tms_results <- matched_non_negative %>%
+    # hardcoded renaming for compatibility with r2dii::analysis 0.2.0
+    dplyr::rename(sector_abcd = .data$sector_ald,
+                  name_abcd = .data$name_ald) %>%
     r2dii.analysis::target_market_share(
       abcd = production_forecast_data,
       scenario = scenario_data_market_share,
@@ -283,6 +286,7 @@ run_prep_calculation_loans <- function(input_path_project_specific,
       by_company = TRUE,
       weight_production = FALSE
     ) %>%
+    dplyr::rename(name_ald = .data$name_abcd) %>%
     # TODO remove hard coded filtering in ADO 3129
     dplyr::filter(
       (.data$sector == "automotive" & .data$scenario_source == "etp_2017") |
