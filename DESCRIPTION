@@ -27,7 +27,7 @@ Imports:
     glue,
     magrittr,
     purrr,
-    r2dii.analysis,
+    r2dii.analysis (>= 0.3.0),
     r2dii.data,
     readr,
     readxl,
