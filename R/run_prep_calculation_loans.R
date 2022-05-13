@@ -276,7 +276,7 @@ run_prep_calculation_loans <- function(input_path_project_specific,
   }
   p4b_tms_results <- matched_non_negative %>%
     r2dii.analysis::target_market_share(
-      ald = production_forecast_data,
+      abcd = production_forecast_data,
       scenario = scenario_data_market_share,
       region_isos = regions,
       use_credit_limit = use_credit_limit,
