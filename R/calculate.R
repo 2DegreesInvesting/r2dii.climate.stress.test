@@ -167,6 +167,8 @@ calculate_terminal_value <- function(data,
                                      end_year,
                                      growth_rate,
                                      discount_rate) {
+  # the calculation follows the formula described in the 2DII paper "Limited
+  # Visibility", available under https://2degrees-investing.org/resource/limited-visibility-the-current-state-of-corporate-disclosure-on-long-term-risks/
   terminal_value <- data %>%
     dplyr::filter(.data$year == .env$end_year) %>%
     dplyr::group_by(
