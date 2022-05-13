@@ -18,7 +18,7 @@
 #' @param end_year Numeric, holding end year of analysis.
 #' @param time_horizon Considered timeframe for PACTA analysis.
 #' @param growth_rate Numeric, that holds the terminal growth rate of profits
-#'   beyond the final year in the DCF.
+#'   beyond the `end_year` in the DCF.
 #'
 #' @return A tibble holding annual profits
 calculate_annual_profits <- function(asset_type, input_data_list, scenario_to_follow_baseline,

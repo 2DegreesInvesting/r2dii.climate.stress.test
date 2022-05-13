@@ -44,7 +44,7 @@ late & sudden technology trajectories.}
 year in the DCF. For accepted range compare \code{stress_test_arguments}.}
 
 \item{growth_rate}{Numeric, that holds the terminal growth rate of profits
-beyond the final year in the DCF.}
+beyond the \code{end_year} in the DCF.}
 
 \item{log_path}{String holding path to log file.}
 }
