@@ -171,6 +171,11 @@ calculate_terminal_value <- function(data,
   # Visibility", available under https://2degrees-investing.org/resource/limited-visibility-the-current-state-of-corporate-disclosure-on-long-term-risks/
   terminal_value <- data %>%
     dplyr::filter(.data$year == .env$end_year) %>%
+    # ADO 3112: the calculation below does not technically have to be a grouped
+    # operation. The grouping is performed so that all values that remain
+    # constant over time are retained for the terminal value row. Using a mutate
+    # and setting the relevant time varying columns to NA would be a viable
+    # alternative.
     dplyr::group_by(
       .data$investor_name, .data$portfolio_name, .data$id,
       .data$scenario_geography, .data$company_name, .data$ald_sector,
