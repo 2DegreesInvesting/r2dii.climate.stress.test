@@ -7,7 +7,7 @@
 #' @return NULL
 validate_input_values <- function(baseline_scenario, shock_scenario, scenario_geography,
                                   lgd_senior_claims, lgd_subordinated_claims,
-                                  risk_free_rate, discount_rate,
+                                  risk_free_rate, discount_rate, growth_rate,
                                   div_netprofit_prop_coef, shock_year,
                                   fallback_term, use_company_terms, asset_type) {
   input_args <- mget(names(formals()), sys.frame(sys.nframe()))
@@ -17,7 +17,8 @@ validate_input_values <- function(baseline_scenario, shock_scenario, scenario_ge
 
   c(
     "lgd_senior_claims", "lgd_subordinated_claims", "risk_free_rate",
-    "discount_rate", "div_netprofit_prop_coef", "shock_year", "fallback_term"
+    "discount_rate", "growth_rate", "div_netprofit_prop_coef", "shock_year",
+    "fallback_term"
   ) %>%
     purrr::walk(validate_values_in_range, args_list = input_args)
 
