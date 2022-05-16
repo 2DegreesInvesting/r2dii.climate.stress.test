@@ -31,6 +31,10 @@ validate_input_values <- function(baseline_scenario, shock_scenario, scenario_ge
   if (!all(fallback_term %% 1 == 0)) {
     stop("Argument fallback_term must be a whole number")
   }
+
+  if (!(growth_rate < discount_rate)) {
+    stop("Growth rate needs to be strictly smaller than discount rate")
+  }
 }
 
 #'  Validate that values are in within values
