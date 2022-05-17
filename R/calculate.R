@@ -189,9 +189,7 @@ calculate_terminal_value <- function(data,
     # columns that are time invariant are kept.
     dplyr::mutate(
       !!rlang::sym(baseline_scenario) := NA_real_,
-      # NPS = NA_real_,
       !!rlang::sym(shock_scenario) := NA_real_,
-      # SDS = NA_real_,
       baseline = NA_real_,
       scen_to_follow_aligned = NA_real_,
       late_sudden = NA_real_,
