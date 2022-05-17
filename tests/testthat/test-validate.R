@@ -6,7 +6,7 @@ test_that("Error is thrown if input values are of incorrect type", {
     shock_scenario = "SDS",
     scenario_geography = "Global",
     lgd_senior_claims = 0.45,
-    lgd_subordinated_claims = 0.75,
+    lgd_subordinated_claims = 0.74,
     risk_free_rate = 0,
     discount_rate = 0.07,
     div_netprofit_prop_coef = 1,
