@@ -84,7 +84,7 @@ calculate_pd_change_overall <- function(data,
     )) %>%
     dplyr::mutate(Survival_late_sudden = calc_survival_probability_merton(
       L = .data$debt,
-      V0 = .data$equity_0_late_sudden + data$debt,
+      V0 = .data$equity_0_late_sudden + .data$debt,
       sigma = .data$volatility,
       r = .data$risk_free_rate,
       t = .data$term
