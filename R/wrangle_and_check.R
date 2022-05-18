@@ -616,6 +616,11 @@ check_results <- function(wrangled_results_list, sensitivity_analysis_vars) {
 
   # company trajectories ----------------------------------------------------
   wrangled_results_list$company_trajectories %>%
+    # ADO 3112 - the last year contains the terminal value, which has no
+    # production values hence that year contains multiple NAs and is ignored
+    # here. Since this also affects the number of rows, we exclude the terminal
+    # value year in the check for expected missingness already
+    dplyr::filter(.data$year != max(.data$year, na.rm = TRUE)) %>%
     check_expected_missings() %>%
     report_all_duplicate_kinds(
       composite_unique_cols = c(
@@ -625,7 +630,7 @@ check_results <- function(wrangled_results_list, sensitivity_analysis_vars) {
     ) %>%
     # not considering those two variables when checking for missings because
     # acceptable missing pattern is checked in ADO 4919
-    dplyr::select(-c(production_plan_company_technology, production_change_target_scenario)) %>%
+    dplyr::select(-c(.data$production_plan_company_technology, .data$production_change_target_scenario)) %>%
     report_missings(
       name_data = "Company Trajectories"
     )

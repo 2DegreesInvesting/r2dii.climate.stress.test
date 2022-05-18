@@ -12,6 +12,7 @@ validate_input_values(
   lgd_subordinated_claims,
   risk_free_rate,
   discount_rate,
+  growth_rate,
   div_netprofit_prop_coef,
   shock_year,
   fallback_term,
@@ -42,6 +43,10 @@ For accepted range compare \code{stress_test_arguments}.}
 
 \item{discount_rate}{Numeric, that holds the discount rate of dividends per
 year in the DCF. For accepted range compare \code{stress_test_arguments}.}
+
+\item{growth_rate}{Numeric, that holds the terminal growth rate of profits
+beyond the final year in the DCF. For accepted range compare
+\code{stress_test_arguments}.}
 
 \item{div_netprofit_prop_coef}{Numeric. A coefficient that determines how
 strongly the future dividends propagate to the company value. For accepted

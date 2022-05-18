@@ -7,7 +7,7 @@
 #' @return NULL
 validate_input_values <- function(baseline_scenario, shock_scenario, scenario_geography,
                                   lgd_senior_claims, lgd_subordinated_claims,
-                                  risk_free_rate, discount_rate,
+                                  risk_free_rate, discount_rate, growth_rate,
                                   div_netprofit_prop_coef, shock_year,
                                   fallback_term, use_company_terms, asset_type) {
   input_args <- mget(names(formals()), sys.frame(sys.nframe()))
@@ -17,7 +17,8 @@ validate_input_values <- function(baseline_scenario, shock_scenario, scenario_ge
 
   c(
     "lgd_senior_claims", "lgd_subordinated_claims", "risk_free_rate",
-    "discount_rate", "div_netprofit_prop_coef", "shock_year", "fallback_term"
+    "discount_rate", "growth_rate", "div_netprofit_prop_coef", "shock_year",
+    "fallback_term"
   ) %>%
     purrr::walk(validate_values_in_range, args_list = input_args)
 
@@ -29,6 +30,10 @@ validate_input_values <- function(baseline_scenario, shock_scenario, scenario_ge
   # maturity of a portfolio, this check will need to be removed
   if (!all(fallback_term %% 1 == 0)) {
     stop("Argument fallback_term must be a whole number")
+  }
+
+  if (!(growth_rate < discount_rate)) {
+    stop("Growth rate needs to be strictly smaller than discount rate")
   }
 }
 

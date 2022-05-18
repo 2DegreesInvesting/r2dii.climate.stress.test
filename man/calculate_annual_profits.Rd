@@ -14,6 +14,7 @@ calculate_annual_profits(
   end_year,
   time_horizon,
   discount_rate,
+  growth_rate,
   log_path
 )
 }
@@ -41,6 +42,9 @@ late & sudden technology trajectories.}
 
 \item{discount_rate}{Numeric, that holds the discount rate of dividends per
 year in the DCF. For accepted range compare \code{stress_test_arguments}.}
+
+\item{growth_rate}{Numeric, that holds the terminal growth rate of profits
+beyond the \code{end_year} in the DCF.}
 
 \item{log_path}{String holding path to log file.}
 }
