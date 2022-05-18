@@ -92,6 +92,7 @@ NOTE: if <code>return_results</code> is TRUE results will not be written to <cod
   lgd_subordinated_claims <span class="op">=</span> <span class="fl">0.75</span>,
   risk_free_rate <span class="op">=</span> <span class="fl">0.02</span>,
   discount_rate <span class="op">=</span> <span class="fl">0.07</span>,
+  growth_rate <span class="op">=</span> <span class="fl">0.03</span>,
   div_netprofit_prop_coef <span class="op">=</span> <span class="fl">1</span>,
   shock_year <span class="op">=</span> <span class="fl">2030</span>,
   fallback_term <span class="op">=</span> <span class="fl">2</span>,
@@ -136,6 +137,10 @@ For accepted range compare <code>stress_test_arguments</code>.</p></dd>
 <dt>discount_rate</dt>
 <dd><p>Numeric, that holds the discount rate of dividends per
 year in the DCF. For accepted range compare <code>stress_test_arguments</code>.</p></dd>
+<dt>growth_rate</dt>
+<dd><p>Numeric, that holds the terminal growth rate of profits
+beyond the final year in the DCF. For accepted range compare
+<code>stress_test_arguments</code>.</p></dd>
 <dt>div_netprofit_prop_coef</dt>
 <dd><p>Numeric. A coefficient that determines how
 strongly the future dividends propagate to the company value. For accepted

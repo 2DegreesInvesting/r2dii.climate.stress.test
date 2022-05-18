@@ -134,7 +134,7 @@
 <p>Specifications on the detail arguments are summarized in the following overview. The defaults that are used if the argument is not adjusted when calling <code><a href="../reference/run_stress_test.html">run_stress_test()</a></code> can be found in column <code>default</code>. The user may change any detail argument by explicitly passing it to the function. Note that there are allowed values for each of the inputs. For logical or character variables refer to column <code>allowed</code>, for numeric variables the allowed values are the range from <code>min</code> (inclusive) to <code>max</code> (inclusive).</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">stress_test_arguments</span>
-<span class="co">#&gt; <span style="color: #949494;"># A tibble: 12 × 6</span></span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 13 × 6</span></span>
 <span class="co">#&gt;    name                    type      default allowed                 min   max  </span>
 <span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
 <span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> asset_type              character <span style="color: #BB0000;">NA</span>      equity, bonds, loans    <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span>
@@ -143,12 +143,13 @@
 <span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> lgd_senior_claims       double    0.45    <span style="color: #BB0000;">NA</span>                      0.3   0.6  </span>
 <span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> lgd_subordinated_claims double    0.75    <span style="color: #BB0000;">NA</span>                      0.6   0.9  </span>
 <span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> risk_free_rate          double    0.02    <span style="color: #BB0000;">NA</span>                      0     0.05 </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> discount_rate           double    0.07    <span style="color: #BB0000;">NA</span>                      -0.01 0.1  </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> div_netprofit_prop_coef double    1       <span style="color: #BB0000;">NA</span>                      0.8   1    </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> shock_year              double    2030    <span style="color: #BB0000;">NA</span>                      2025  2035 </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">10</span> fallback_term           double    2       <span style="color: #BB0000;">NA</span>                      1     5    </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">11</span> scenario_geography      character Global  AdvancedEconomies, Afr… <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">12</span> use_company_terms       logical   FALSE   TRUE, FALSE             <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span></span></code></pre></div>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> discount_rate           double    0.07    <span style="color: #BB0000;">NA</span>                      0.015 0.1  </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> growth_rate             double    0.03    <span style="color: #BB0000;">NA</span>                      0.01  0.99 </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> div_netprofit_prop_coef double    1       <span style="color: #BB0000;">NA</span>                      0.8   1    </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">10</span> shock_year              double    2030    <span style="color: #BB0000;">NA</span>                      2025  2035 </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">11</span> fallback_term           double    2       <span style="color: #BB0000;">NA</span>                      1     5    </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">12</span> scenario_geography      character Global  AdvancedEconomies, Afr… <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">13</span> use_company_terms       logical   FALSE   TRUE, FALSE             <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="understanding-the-input-arguments">Understanding the input arguments<a class="anchor" aria-label="anchor" href="#understanding-the-input-arguments"></a>
