@@ -105,6 +105,9 @@ credit risk model.
 calculating the net present value of companies in the loan book. Since the net
 present values are indirect inputs into the Merton credit risk model, this
 parameter my be relevant.
+* `growth_rate` the perpetual 'economic' growth rate used in the discounted 
+cashflow model for the calculation of terminal value of each firm in end_year + 1.
+Must be positive and strictly smaller than discount_rate.
 * `div_netprofit_prop_coef` Coefficient that indicates what share of the net
 present value should be considered to derive the equity value of a company.
 * `shock_year` year in which the policy is introduced, that adjusts the
