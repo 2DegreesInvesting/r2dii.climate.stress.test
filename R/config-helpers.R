@@ -34,7 +34,7 @@ geographies_for_sector <- function(sector, overview = scenario_geography_x_ald_s
   }
 
   valid_scenario_geographies <- overview %>%
-    dplyr::filter(.data$ald_sector == sector) %>%
+    dplyr::filter(.data$ald_sector == !!sector) %>%
     dplyr::pull(.data$scenario_geography) %>%
     unique()
 
@@ -92,10 +92,10 @@ scenario_x_source_for_sector_x_geography <- function(sector, scenario_geography,
   }
 
   sector_x_geography <- overview %>%
-    dplyr::filter(.data$ald_sector == sector & .data$scenario_geography == scenario_geography) %>%
+    dplyr::filter(.data$ald_sector == !!sector & .data$scenario_geography == !!scenario_geography) %>%
     dplyr::select(.data$scenario, .data$source)
 
-  if (nrow(sector_x_geography) > 0) {
+  if (nrow(sector_x_geography) == 0) {
     rlang::abort(c(
       "Provided combination of sector and scenario_geography is not available.",
       x = "Provided combination of sector and scenario_geography is not available.",
