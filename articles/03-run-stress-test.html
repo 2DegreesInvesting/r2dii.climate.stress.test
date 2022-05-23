@@ -169,15 +169,17 @@
 <li>
 <code>discount_rate</code> the annual rate at which future cash flows are discounted when calculating the net present value of companies in the loan book. Since the net present values are indirect inputs into the Merton credit risk model, this parameter my be relevant.</li>
 <li>
-<code>div_netprofit_prop_coef</code> Coefficient that indicates what share of the net present value should be considered to derive the equity value of a company.</li>
+<code>growth_rate</code> the perpetual ‘economic’ growth rate used in the discounted cash flow model for the calculation of terminal value of each firm in end_year + 1. Must be positive and strictly smaller than discount_rate.</li>
+<li>
+<code>div_netprofit_prop_coef</code> coefficient that indicates what share of the net present value should be considered to derive the equity value of a company.</li>
 <li>
 <code>shock_year</code> year in which the policy is introduced, that adjusts the production values of companies to stay in line with carbon budgets.</li>
 <li>
 <code>fallback_term</code> indicates which maturity the loans in the loan book are assumed to have. At this point we assume these are rolled over every year.</li>
 <li>
-<code>scenario_geography</code> Indicates which geographical region(s) (concerning asset location) results shall be calculated for.</li>
+<code>scenario_geography</code> indicates which geographical region(s) (concerning asset location) results shall be calculated for.</li>
 <li>
-<code>use_company_terms_arg</code> Logical parameter, indicating if individually provided terms for companies as configured in company_terms.csv shall be used instead of fallback as provided in <code>fallback_term</code>. The default is FALSE. For more details compare <a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/04-advanced-data-settings.html">“Advanced data settings”</a>.</li>
+<code>use_company_terms_arg</code> logical parameter, indicating if individually provided terms for companies as configured in company_terms.csv shall be used instead of fallback as provided in <code>fallback_term</code>. The default is FALSE. For more details compare <a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/04-advanced-data-settings.html">“Advanced data settings”</a>.</li>
 <li>
 <code>return_results</code> Logical parameter that indicates if the outputs of the analysis should be directly written to the indicated output path or simply returned as a list of results within the running session. The default is FALSE, which writes the outputs to the target directory and does not return them as a list object in R.</li>
 </ul>
