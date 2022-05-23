@@ -12,6 +12,7 @@
 #' @export
 #'
 #' @examples
+#' geographies_for_sector("Coal")
 geographies_for_sector <- function(sector, overview = scenario_geography_x_ald_sector) {
   if (length(sector) > 1) {
     rlang::abort(c(
