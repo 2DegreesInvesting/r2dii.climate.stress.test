@@ -114,69 +114,36 @@
 <p>The raw and matched loan book files need to be run through PACTA for banks and wrangled into the specific input format required by <code>r2dii.climate.stress.test</code>. To make this process as easy as possible for the user, we provide a function, <code><a href="../reference/run_prep_calculation_loans.html">run_prep_calculation_loans()</a></code>, which takes care of all relevant steps with minimal input from the user.</p>
 <p><strong>NOTE:</strong> We strongly recommend providing the matched and prioritized loan book in one file for the entire raw loan book to be analyzed. In PACTA for banks, it can sometimes be advantageous for matching to split the loan book into separate files for each sector (or other splits). This should be avoided here, since the function also calculates relative exposures. Hence, after completing the steps of matching and prioritizing the loan book, all prioritized files should be combined into one file, before running this function.</p>
 <p>The r2dii.climate.stress.test currently supports a number of scenario geographies and four of the PACTA for Banks sectors of company production. They are the following:</p>
-<p><code>Power, Coal, Oil&amp;Gas, Automotive</code></p>
-<p>Note that the supported sectors do depend on the <code>scenario_geography</code> (i.e.the geographical region (concerning asset location) results shall be calculated for). Compare level <code>Global</code> for the maximum number of supported sectors. All supported scenario geographies are the following:</p>
-<p><code>Global, AdvancedEconomies, Africa, AsiaPacific,</code> <code>Brazil, CentralandSouthAmerica, China, DevelopingEconomies, Eurasia,</code> <code>Europe, EU, India, Japan, MiddleEast",  "NonOECD, NorthAmerica,</code> <code>OECD, Russia, SouthAfrica, US</code></p>
-<p>You can use the following command see the complete sector and scenario geography coverage</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">scenario_geography_x_ald_sector</span>, n <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>
-<span class="co">#&gt; <span style="color: #949494;"># A tibble: 46 × 2</span></span>
-<span class="co">#&gt;    scenario_geography     ald_sector</span>
-<span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> AdvancedEconomies      Coal      </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> AdvancedEconomies      Oil&amp;Gas   </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> AdvancedEconomies      Power     </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> Africa                 Power     </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> Africa                 Coal      </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> Africa                 Oil&amp;Gas   </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> AsiaPacific            Power     </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> AsiaPacific            Coal      </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> AsiaPacific            Oil&amp;Gas   </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">10</span> Brazil                 Power     </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">11</span> CentralandSouthAmerica Power     </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">12</span> CentralandSouthAmerica Coal      </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">13</span> CentralandSouthAmerica Oil&amp;Gas   </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">14</span> China                  Power     </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">15</span> DevelopingEconomies    Coal      </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">16</span> DevelopingEconomies    Oil&amp;Gas   </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">17</span> DevelopingEconomies    Power     </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">18</span> EU                     Power     </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">19</span> EU                     Oil&amp;Gas   </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">20</span> Eurasia                Power     </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">21</span> Eurasia                Coal      </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">22</span> Eurasia                Oil&amp;Gas   </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">23</span> Europe                 Power     </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">24</span> Europe                 Coal      </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">25</span> Europe                 Oil&amp;Gas   </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">26</span> Global                 Automotive</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">27</span> Global                 Power     </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">28</span> Global                 Coal      </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">29</span> Global                 Oil&amp;Gas   </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">30</span> India                  Power     </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">31</span> Japan                  Power     </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">32</span> MiddleEast             Power     </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">33</span> MiddleEast             Coal      </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">34</span> MiddleEast             Oil&amp;Gas   </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">35</span> NonOECD                Power     </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">36</span> NonOECD                Coal      </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">37</span> NonOECD                Oil&amp;Gas   </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">38</span> NorthAmerica           Power     </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">39</span> NorthAmerica           Coal      </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">40</span> NorthAmerica           Oil&amp;Gas   </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">41</span> OECD                   Power     </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">42</span> OECD                   Coal      </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">43</span> OECD                   Oil&amp;Gas   </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">44</span> Russia                 Power     </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">45</span> SouthAfrica            Power     </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">46</span> US                     Power</span></code></pre></div>
+<code class="sourceCode R"><span class="va">sectors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">scenario_geography_x_ald_sector</span><span class="op">$</span><span class="va">ald_sector</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">sectors</span><span class="op">)</span>
+<span class="co">#&gt; [1] "Coal"       "Oil&amp;Gas"    "Power"      "Automotive"</span></code></pre></div>
+<p>Note that the supported sectors do depend on the <code>scenario_geography</code> (i.e. the geographical region (concerning asset location) results shall be calculated for). All supported scenario geographies are the following:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">scenario_geographies</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">scenario_geography_x_ald_sector</span><span class="op">$</span><span class="va">scenario_geography</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">scenario_geographies</span><span class="op">)</span>
+<span class="co">#&gt;  [1] "AdvancedEconomies"      "Africa"                 "AsiaPacific"           </span>
+<span class="co">#&gt;  [4] "Brazil"                 "CentralandSouthAmerica" "China"                 </span>
+<span class="co">#&gt;  [7] "DevelopingEconomies"    "EU"                     "Eurasia"               </span>
+<span class="co">#&gt; [10] "Europe"                 "Global"                 "India"                 </span>
+<span class="co">#&gt; [13] "Japan"                  "MiddleEast"             "NonOECD"               </span>
+<span class="co">#&gt; [16] "NorthAmerica"           "OECD"                   "Russia"                </span>
+<span class="co">#&gt; [19] "SouthAfrica"            "US"</span></code></pre></div>
+<p>You can use a helper function to obtain the supported scenario_geographies for a sector as follows:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/geographies_for_sector.html">geographies_for_sector</a></span><span class="op">(</span><span class="st">"Coal"</span><span class="op">)</span>
+<span class="co">#&gt;  [1] "AdvancedEconomies"      "Africa"                 "AsiaPacific"           </span>
+<span class="co">#&gt;  [4] "CentralandSouthAmerica" "DevelopingEconomies"    "Eurasia"               </span>
+<span class="co">#&gt;  [7] "Europe"                 "Global"                 "MiddleEast"            </span>
+<span class="co">#&gt; [10] "NonOECD"                "NorthAmerica"           "OECD"</span></code></pre></div>
 <p>Beside the file paths, the only argument that can be set is <code>credit_type</code>, which defaults to <code>"outstanding"</code> if the user passes no argument.</p>
 <p>View other options by running:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">credit_type_lookup</span>
 <span class="co">#&gt; [1] "outstanding"  "credit_limit"</span></code></pre></div>
 <p>If everything has been set up correctly, simply running the following command in R will read the raw and matched loan books from the indicated project-specific inputs directory and auxiliary data from the project-agnostic data directory.</p>
 <p>It will then perform all calculations and wrangling required and write the intermediate input files <code>Loans_results_company.rda</code> and <code>overview_portfolio.rda</code> to the indicated <code>data_prep_output_path</code>. <strong>NOTE:</strong> Data generated with this workflow will serve as inputs for the subsequent stress test. Thus it is advisable to set <code>data_prep_output_path</code> to the same path as <code>input_path_project_specific</code> so that the generated data is written there.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/run_prep_calculation_loans.html">run_prep_calculation_loans</a></span><span class="op">(</span>
   input_path_project_specific <span class="op">=</span> <span class="st">"/example_project/project_specific_input/"</span>,
   input_path_project_agnostic <span class="op">=</span> <span class="st">"/example_project/project_agnostic_input/"</span>,
@@ -184,7 +151,7 @@
 <span class="op">)</span></code></pre></div>
 <p>Since the argument credit_type has a default value, it is not required to set it, in case the user wants to run the stress test on the outstanding credit values in the loan book.</p>
 <p>However, it is also possible to run the analysis on the credit limits of the loans, in case these have been provided in the raw and matched loan books. To achieve this, instead of the previous command, simply run:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/run_prep_calculation_loans.html">run_prep_calculation_loans</a></span><span class="op">(</span>
   input_path_project_specific <span class="op">=</span> <span class="st">"/example_project/project_specific_input/"</span>,
   input_path_project_agnostic <span class="op">=</span> <span class="st">"/example_project/project_agnostic_input/"</span>,
