@@ -55,7 +55,7 @@ print(sectors)
 ```
 
 Note that the supported sectors do depend on the `scenario_geography` 
-(i.e.the geographical region (concerning asset location) results shall be 
+(i.e. the geographical region (concerning asset location) results shall be 
 calculated for).
 All supported scenario geographies are the following:
 ```{r}

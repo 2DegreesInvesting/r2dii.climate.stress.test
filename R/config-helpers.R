@@ -17,7 +17,7 @@ geographies_for_sector <- function(sector, overview = scenario_geography_x_ald_s
   if (length(sector) > 1) {
     rlang::abort(c(
       "Sector must be of length 1.",
-      x = "Sector is of lenth > 1.",
+      x = "Sector is of length > 1.",
       i = "Did you set argument `sector` correctly?"
     ))
   }
