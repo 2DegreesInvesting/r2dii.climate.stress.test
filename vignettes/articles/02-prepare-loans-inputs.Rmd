@@ -49,22 +49,25 @@ combined into one file, before running this function.
 The r2dii.climate.stress.test currently supports a number of scenario geographies 
 and four of the PACTA for Banks sectors of company production. They are the following:
 
-`Power, Coal, Oil&Gas, Automotive`
+```{r}
+sectors <- unique(scenario_geography_x_ald_sector$ald_sector)
+print(sectors)
+```
 
 Note that the supported sectors do depend on the `scenario_geography` 
-(i.e.the geographical region (concerning asset location) results shall be 
-calculated for). Compare level `Global` for the maximum number of supported sectors.
+(i.e. the geographical region (concerning asset location) results shall be 
+calculated for).
 All supported scenario geographies are the following:
+```{r}
+scenario_geographies <- unique(scenario_geography_x_ald_sector$scenario_geography)
+print(scenario_geographies)
+```
 
-`Global, AdvancedEconomies, Africa, AsiaPacific,` 
-`Brazil, CentralandSouthAmerica, China, DevelopingEconomies, Eurasia,` 
-`Europe, EU, India, Japan, MiddleEast",  "NonOECD, NorthAmerica,` 
-`OECD, Russia, SouthAfrica, US`
-
-You can use the following command see the complete sector and scenario geography coverage
+You can use a helper function to obtain the supported scenario_geographies for
+a sector as follows:
   
 ```{r}
-print(scenario_geography_x_ald_sector, n = 100)
+geographies_for_sector("Coal")
 ```
 
 Beside the file paths, the only argument that can be set is `credit_type`, which
