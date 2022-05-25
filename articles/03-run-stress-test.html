@@ -150,6 +150,15 @@
 <span class="co">#&gt; <span style="color: #BCBCBC;">11</span> fallback_term           double    2       <span style="color: #BB0000;">NA</span>                      1     5    </span>
 <span class="co">#&gt; <span style="color: #BCBCBC;">12</span> scenario_geography      character Global  AdvancedEconomies, Afr… <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span>
 <span class="co">#&gt; <span style="color: #BCBCBC;">13</span> use_company_terms       logical   FALSE   TRUE, FALSE             <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span></span></code></pre></div>
+<p>Note that special special rules apply for the variables <code>baseline_scenario</code> and <code>shock_scenario</code>. Baseline and shock scenarios can in principle be selected from the following:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">source_x_scenario</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">scenario_geography_x_ald_sector</span><span class="op">$</span><span class="va">source_x_scenario</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">source_x_scenario</span><span class="op">)</span>
+<span class="co">#&gt; [1] "WEO_2019_NPS" "ETP_2017_NPS" "WEO_2019_SDS" "ETP_2017_SDS"</span></code></pre></div>
+<p>Which scenarios are supported however depends on the analysed <code>sector</code> and <code>scenario_geography</code>. In <a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-prepare-loans-inputs.html">the vignette on loan book preparation</a> we explained how to infer which combinations of <code>sector</code> and <code>scenario_geography</code> are supported by the stress test. To infer which scenarios are supported for these combinations you can use the following helper function:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/scenario_x_source_for_sector_x_geography.html">scenario_x_source_for_sector_x_geography</a></span><span class="op">(</span><span class="st">"Coal"</span>, <span class="st">"Europe"</span><span class="op">)</span>
+<span class="co">#&gt; [1] "WEO_2019_NPS" "WEO_2019_SDS"</span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="understanding-the-input-arguments">Understanding the input arguments<a class="anchor" aria-label="anchor" href="#understanding-the-input-arguments"></a>
@@ -188,7 +197,7 @@
 <h3 id="adjusting-the-input-arguments">Adjusting the input arguments<a class="anchor" aria-label="anchor" href="#adjusting-the-input-arguments"></a>
 </h3>
 <p>The user may want to run a stress test that is tailored to their assumptions about a plausible transition risk shock scenario. For example, the user could decide to set a lower <code>risk_free_rate</code> and shock the companies earlier than by default, using:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/run_stress_test.html">run_stress_test</a></span><span class="op">(</span>
   asset_type <span class="op">=</span> <span class="st">"loans"</span>,
   input_path_project_specific <span class="op">=</span> <span class="st">"/example_project/project_specific_input/"</span>,
@@ -223,7 +232,7 @@
 <p>In order to do that, one simply passes a vector of allowed values for one (and only one) of the detail arguments when running the stress test function. This will lead to the model iterating over the set of values passed for the chosen argument, while keeping all other input arguments constant.</p>
 <p><strong>NOTE:</strong> It is not possible to iterate over <code>asset_type</code> and <code>term</code>.</p>
 <p>If the user wishes to understand the impact of the <code>shock_year</code> on the results for example, they can run the following:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/run_stress_test.html">run_stress_test</a></span><span class="op">(</span>
   asset_type <span class="op">=</span> <span class="st">"loans"</span>,
   input_path_project_specific <span class="op">=</span> <span class="st">"/example_project/project_specific_input/"</span>,
@@ -242,7 +251,7 @@
 <p><strong>NOTE:</strong> The suffix of the files is now changed to mirror which variable was iterated over. This enables the user to run multiple different sensitivity analyses for a project and easily navigate these.</p>
 <p>When running a sensitivity analysis one one input, the user can still use other values than the default parameters for the other input arguments.</p>
 <p>For example, when iterating over the <code>shock_year</code>, it is still possible to use a <code>risk_free_rate</code> lower than the default like so:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/run_stress_test.html">run_stress_test</a></span><span class="op">(</span>
   asset_type <span class="op">=</span> <span class="st">"loans"</span>,
   input_path_project_specific <span class="op">=</span> <span class="st">"/example_project/project_specific_input/"</span>,
