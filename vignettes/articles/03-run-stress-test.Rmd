@@ -89,8 +89,8 @@ Note that special special rules apply for the variables `baseline_scenario` and 
 Baseline and shock scenarios can in principle be selected from the following:
 
 ```{r}
-source_x_scenario <- unique(scenario_geography_x_ald_sector$source_x_scenario)
-print(source_x_scenario)
+scenarios <- unique(scenario_geography_x_ald_sector$scenario)
+print(scenarios)
 ```
 
 Which scenarios are supported however depends on the analysed `sector` and

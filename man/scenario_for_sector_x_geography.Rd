@@ -19,15 +19,14 @@ scenario_for_sector_x_geography(
 and \code{ald_sector}.}
 }
 \value{
-A string holding valid source_x_scenario names.
+A string holding valid scenario names.
 }
 \description{
-Function returns a vector holding names of source_x_scenarios for a provided
-\code{sector} and \code{scenario_geography}. To identify valid \code{sector} x
-\code{scenario_geography} combinations refer to \code{\link[=geographies_for_sector]{geographies_for_sector()}}. Source
-of truth is the \code{overview} \code{scenario_geography_x_ald_sector} per default. In
-case combination of \code{sector} and \code{scenario_geography} is not available an
-error is thrown.
+Function returns a vector holding names of scenarios for a provided \code{sector}
+and \code{scenario_geography}. To identify valid \code{sector} x \code{scenario_geography}
+combinations refer to \code{\link[=geographies_for_sector]{geographies_for_sector()}}. Source of truth is the
+\code{overview} \code{scenario_geography_x_ald_sector} per default. In case combination
+of \code{sector} and \code{scenario_geography} is not available an error is thrown.
 }
 \examples{
 scenario_for_sector_x_geography("Coal", "Europe")

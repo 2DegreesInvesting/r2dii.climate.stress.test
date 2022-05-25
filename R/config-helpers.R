@@ -43,17 +43,16 @@ geographies_for_sector <- function(sector, overview = scenario_geography_x_ald_s
 
 #' Obtain available scenario_x_source for geography - sector combinations
 #'
-#' Function returns a vector holding names of source_x_scenarios for a provided
-#' `sector` and `scenario_geography`. To identify valid `sector` x
-#' `scenario_geography` combinations refer to [geographies_for_sector()]. Source
-#' of truth is the `overview` `scenario_geography_x_ald_sector` per default. In
-#' case combination of `sector` and `scenario_geography` is not available an
-#' error is thrown.
+#' Function returns a vector holding names of scenarios for a provided `sector`
+#' and `scenario_geography`. To identify valid `sector` x `scenario_geography`
+#' combinations refer to [geographies_for_sector()]. Source of truth is the
+#' `overview` `scenario_geography_x_ald_sector` per default. In case combination
+#' of `sector` and `scenario_geography` is not available an error is thrown.
 #'
 #' @inheritParams geographies_for_sector
 #' @param scenario_geography String of length 1 holding sector name.
 #'
-#' @return A string holding valid source_x_scenario names.
+#' @return A string holding valid scenario names.
 #' @export
 #'
 #' @examples scenario_for_sector_x_geography("Coal", "Europe")
@@ -98,17 +97,17 @@ scenario_for_sector_x_geography <- function(sector, scenario_geography,
     ))
   }
 
-  valid_source_x_scenario <- overview %>%
+  valid_scenario <- overview %>%
     dplyr::filter(.data$ald_sector == !!sector & .data$scenario_geography == !!scenario_geography) %>%
-    dplyr::pull(.data$source_x_scenario)
+    dplyr::pull(.data$scenario)
 
-  if (length(valid_source_x_scenario) == 0) {
+  if (length(valid_scenario) == 0) {
     rlang::abort(c(
       "Provided combination of sector and scenario_geography is not available.",
       x = "Provided combination of sector and scenario_geography is not available.",
       i = "Use function `geographies_for_sector` to obtain valid combinations"
     ))
   } else {
-    return(valid_source_x_scenario)
+    return(valid_scenario)
   }
 }
