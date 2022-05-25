@@ -206,7 +206,11 @@ read_and_process_and_calc <- function(args_list) {
 
   cat("-- Processing input data. \n")
 
-  sectors_and_technologies_list <- infer_sectors_and_technologies(scenario_geography)
+  sectors_and_technologies_list <- infer_sectors_and_technologies(
+    baseline_scenario = baseline_scenario,
+    shock_scenario = shock_scenario,
+    scenario_geography = scenario_geography
+  )
 
   processed <- data %>%
     st_process(

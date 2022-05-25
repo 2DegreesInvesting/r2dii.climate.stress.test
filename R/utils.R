@@ -467,15 +467,31 @@ get_start_year <- function(data) {
   return(out)
 }
 
-infer_sectors_and_technologies <- function(scenario_geography) {
+infer_sectors_and_technologies <- function(baseline_scenario, shock_scenario, scenario_geography) {
 
-  sectors <- scenario_geography_x_ald_sector %>%
-    dplyr::filter(.data$scenario_geography == !!scenario_geography) %>%
+  sectors_baseline <- scenario_geography_x_ald_sector %>%
+    dplyr::filter(.data$source_x_scenario == !!baseline_scenario & .data$scenario_geography == !!scenario_geography) %>%
     dplyr::pull(.data$ald_sector)
 
+  sectors_shock <- scenario_geography_x_ald_sector %>%
+    dplyr::filter(.data$source_x_scenario == !!shock_scenario & .data$scenario_geography == !!scenario_geography) %>%
+    dplyr::pull(.data$ald_sector)
+
+  shared_sectors <- dplyr::intersect(sectors_baseline, sectors_shock)
+
+  if (length(shared_sectors) == 0) {
+    rlang::abort(
+      c(
+        "Could not find sectors that are supported for baseline and shock scenario for selected scenario_geography.",
+        x = glue::glue("baseline scenario: {baseline_scenario}, shock_scenario: {shock_scenario}, scenario_geography: {scenario_geography}"),
+        i = "Please use function scenario_for_sector_x_geography to identify a valid combination."
+      )
+    )
+  }
+
   technologies <- p4i_p4b_sector_technology_lookup %>%
-    dplyr::filter(.data$sector_p4i %in% !!sectors) %>%
+    dplyr::filter(.data$sector_p4i %in% !!shared_sectors) %>%
     dplyr::pull(.data$technology_p4i)
 
-  return(list(sectors = sectors, technologies = technologies))
+  return(list(sectors = shared_sectors, technologies = technologies))
 }
