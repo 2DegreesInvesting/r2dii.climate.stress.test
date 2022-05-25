@@ -44,9 +44,11 @@ geographies_for_sector <- function(sector, overview = scenario_geography_x_ald_s
 #' Obtain available scenario_x_source for geography - sector combinations
 #'
 #' Function returns a vector holding names of source_x_scenarios for a provided
-#' `sector` and `scenario_geography`. Source of truth is the `overview`
-#' `scenario_geography_x_ald_sector` per default. In case combination of
-#' `sector` and `scenario_geography` is not available an error is thrown.
+#' `sector` and `scenario_geography`. To identify valid `sector` x
+#' `scenario_geography` combinations refer to [geographies_for_sector()]. Source
+#' of truth is the `overview` `scenario_geography_x_ald_sector` per default. In
+#' case combination of `sector` and `scenario_geography` is not available an
+#' error is thrown.
 #'
 #' @inheritParams geographies_for_sector
 #' @param scenario_geography String of length 1 holding sector name.
@@ -54,9 +56,9 @@ geographies_for_sector <- function(sector, overview = scenario_geography_x_ald_s
 #' @return A string holding valid source_x_scenario names.
 #' @export
 #'
-#' @examples scenario_x_source_for_sector_x_geography("Coal", "Europe")
-scenario_x_source_for_sector_x_geography <- function(sector, scenario_geography,
-                                                     overview = scenario_geography_x_ald_sector) {
+#' @examples scenario_for_sector_x_geography("Coal", "Europe")
+scenario_for_sector_x_geography <- function(sector, scenario_geography,
+                                            overview = scenario_geography_x_ald_sector) {
 
   if (length(sector) > 1) {
     rlang::abort(c(

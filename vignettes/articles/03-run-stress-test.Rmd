@@ -99,7 +99,7 @@ we explained how to infer which combinations of `sector` and
 `scenario_geography` are supported by the stress test. To infer which scenarios 
 are supported for these combinations you can use the following helper function:
 ```{r}
-scenario_x_source_for_sector_x_geography("Coal", "Europe")
+scenario_for_sector_x_geography("Coal", "Europe")
 ```
 
 ### Understanding the input arguments
