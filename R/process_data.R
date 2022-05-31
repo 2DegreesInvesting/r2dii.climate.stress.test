@@ -583,18 +583,6 @@ st_process <- function(data, asset_type, fallback_term,
     asset_type = asset_type
   )
 
-  # capacity_factors are only needed for power sector
-  if ("Power" %in% sectors) {
-    capacity_factors_power <- process_capacity_factors_power(
-      data$capacity_factors_power,
-      scenarios_filter = scenarios_filter,
-      scenario_geography_filter = scenario_geography,
-      technologies = technologies,
-      start_year = start_year,
-      end_year = end_year_lookup
-    )
-  }
-
   df_price <- process_price_data(
     data$df_price,
     technologies = technologies,
@@ -639,6 +627,24 @@ st_process <- function(data, asset_type, fallback_term,
     log_path = log_path
   ) %>%
     add_terms(company_terms = company_terms, fallback_term = fallback_term)
+
+  # capacity_factors are only applied  for power sector
+  if ("Power" %in% sectors) {
+    capacity_factors_power <- process_capacity_factors_power(
+      data$capacity_factors_power,
+      scenarios_filter = scenarios_filter,
+      scenario_geography_filter = scenario_geography,
+      technologies = technologies,
+      start_year = start_year,
+      end_year = end_year_lookup
+    )
+
+    pacta_results <- convert_power_cap_to_generation(
+      data = pacta_results,
+      capacity_factors_power = input_data_list$capacity_factors_power,
+      baseline_scenario = scenario_to_follow_baseline
+    )
+  }
 
   out <- list(
     pacta_results = pacta_results,
