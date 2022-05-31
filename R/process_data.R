@@ -641,7 +641,7 @@ st_process <- function(data, asset_type, fallback_term,
 
     pacta_results <- convert_power_cap_to_generation(
       data = pacta_results,
-      capacity_factors_power = input_data_list$capacity_factors_power,
+      capacity_factors_power = capacity_factors_power,
       baseline_scenario = scenario_to_follow_baseline
     )
   }
