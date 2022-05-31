@@ -583,14 +583,17 @@ st_process <- function(data, asset_type, fallback_term,
     asset_type = asset_type
   )
 
-  capacity_factors_power <- process_capacity_factors_power(
-    data$capacity_factors_power,
-    scenarios_filter = scenarios_filter,
-    scenario_geography_filter = scenario_geography,
-    technologies = technologies,
-    start_year = start_year,
-    end_year = end_year_lookup
-  )
+  # capacity_factors are only needed for power sector
+  if ("Power" %in% sectors) {
+    capacity_factors_power <- process_capacity_factors_power(
+      data$capacity_factors_power,
+      scenarios_filter = scenarios_filter,
+      scenario_geography_filter = scenario_geography,
+      technologies = technologies,
+      start_year = start_year,
+      end_year = end_year_lookup
+    )
+  }
 
   df_price <- process_price_data(
     data$df_price,
