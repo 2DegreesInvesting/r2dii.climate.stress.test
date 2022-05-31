@@ -467,8 +467,18 @@ get_start_year <- function(data) {
   return(out)
 }
 
+
+#' Infer supported sectors and technologies
+#'
+#' Function returns supported sectors and technologies for provided combination
+#' of `baseline_scenario`, `shock_scenario` and `scenario_geography`.
+#'
+#' @inheritParams run_stress_test
+#'
+#' @return A list with entries sectors and technologies
+#' @noRd
 infer_sectors_and_technologies <- function(baseline_scenario, shock_scenario, scenario_geography) {
-browser()
+
   sectors_baseline <- scenario_geography_x_ald_sector %>%
     dplyr::filter(.data$scenario == !!baseline_scenario & .data$scenario_geography == !!scenario_geography) %>%
     dplyr::pull(.data$ald_sector)
