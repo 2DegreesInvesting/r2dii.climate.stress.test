@@ -89,8 +89,8 @@ Note that special special rules apply for the variables `baseline_scenario` and 
 Baseline and shock scenarios can in principle be selected from the following:
 
 ```{r}
-source_x_scenario <- unique(scenario_geography_x_ald_sector$source_x_scenario)
-print(source_x_scenario)
+scenarios <- unique(scenario_geography_x_ald_sector$scenario)
+print(scenarios)
 ```
 
 Which scenarios are supported however depends on the analysed `sector` and
@@ -99,7 +99,7 @@ we explained how to infer which combinations of `sector` and
 `scenario_geography` are supported by the stress test. To infer which scenarios 
 are supported for these combinations you can use the following helper function:
 ```{r}
-scenario_x_source_for_sector_x_geography("Coal", "Europe")
+scenario_for_sector_x_geography("Coal", "Europe")
 ```
 
 ### Understanding the input arguments
