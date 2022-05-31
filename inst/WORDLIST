@@ -20,6 +20,7 @@ analysed
 args
 aum
 calc
+counterparties
 csv
 dii
 dii's
@@ -36,11 +37,13 @@ lifecycle
 lsot
 magrittr
 merton
+NFCs
 pacta
 params
 prewrangled
 qa
 rda
+README
 regionality
 repo
 stresstesting
