@@ -468,13 +468,13 @@ get_start_year <- function(data) {
 }
 
 infer_sectors_and_technologies <- function(baseline_scenario, shock_scenario, scenario_geography) {
-
+browser()
   sectors_baseline <- scenario_geography_x_ald_sector %>%
-    dplyr::filter(.data$source == !!baseline_scenario & .data$scenario_geography == !!scenario_geography) %>%
+    dplyr::filter(.data$scenario == !!baseline_scenario & .data$scenario_geography == !!scenario_geography) %>%
     dplyr::pull(.data$ald_sector)
 
   sectors_shock <- scenario_geography_x_ald_sector %>%
-    dplyr::filter(.data$source == !!shock_scenario & .data$scenario_geography == !!scenario_geography) %>%
+    dplyr::filter(.data$scenario == !!shock_scenario & .data$scenario_geography == !!scenario_geography) %>%
     dplyr::pull(.data$ald_sector)
 
   shared_sectors <- dplyr::intersect(sectors_baseline, sectors_shock)
