@@ -53,7 +53,7 @@ aggregate_results <- function(results_list, sensitivity_analysis_vars, iter_var)
     # aggregate value changes to sector level in given portfolio
     aggregate_value_change_to_sector_level(iter_var = iter_var) %>%
     # aggregate value changes to portfolio level and all covered sectors
-    aggregate_value_change_to_analysed_sectors_and_portfolio(iter_var = iter_var)
+    aggregate_value_change_to_analysed_sectors(iter_var = iter_var)
 
   company_value_changes <- company_value_changes %>%
     dplyr::select(-c(.data$plan_carsten, .data$plan_sec_carsten, .data$year))
@@ -189,7 +189,7 @@ aggregate_value_change_to_sector_level <- function(data, iter_var) {
   return(data)
 }
 
-aggregate_value_change_to_analysed_sectors_and_portfolio <- function(data,
+aggregate_value_change_to_analysed_sectors <- function(data,
                                                                      iter_var) {
   aggregation_vars <- c(
     "investor_name", "portfolio_name", "scenario_geography"
@@ -207,14 +207,7 @@ aggregate_value_change_to_analysed_sectors_and_portfolio <- function(data,
       analysed_sectors_exposure = .data$asset_portfolio_value *
         sum(.data$plan_carsten, na.rm = TRUE),
       analysed_sectors_value_change = .data$analysed_sectors_exposure *
-        .data$VaR_analysed_sectors / 100,
-      portfolio_aum = .data$asset_portfolio_value,
-      # setting portfolio_value_change = analysed_sectors_value_change will
-      # underestimate overall impact on portfolio as there can of course be
-      # impacts on companies in the portfolio that operate in other sectors
-      portfolio_value_change = .data$analysed_sectors_value_change,
-      portfolio_value_change_perc = sum(.data$VaR_tech_company * .data$tech_company_exposure, na.rm = TRUE) /
-        .data$portfolio_aum
+        .data$VaR_analysed_sectors / 100
     ) %>%
     dplyr::ungroup()
 
