@@ -13,7 +13,7 @@
        5 lgd_subordinated_claims double    0.75    <NA>                    0.6   0.9  
        6 risk_free_rate          double    0.02    <NA>                    0     0.05 
        7 discount_rate           double    0.07    <NA>                    0.015 0.1  
-       8 growth_rate             double    0.03    <NA>                    0.01  0.99 
+       8 growth_rate             double    0.03    <NA>                    0.01  0.099
        9 div_netprofit_prop_coef double    1       <NA>                    0.8   1    
       10 shock_year              double    2030    <NA>                    2025  2035 
       11 fallback_term           double    2       <NA>                    1     5    
