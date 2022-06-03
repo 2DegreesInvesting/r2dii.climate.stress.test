@@ -123,7 +123,7 @@ format_loanbook_st <- function(data,
     dplyr::select(-.data$scen_tech_prod)
 
   scen <- results_loanbook %>%
-    dplyr::filter(.data$scenario %in% p4b_scenarios_lookup) %>%
+    dplyr::filter(stringr::str_detect(.data$scenario, "target_")) %>%
     dplyr::select(
       -c(
         .data$plan_tech_prod, .data$plan_carsten,
@@ -143,9 +143,10 @@ format_loanbook_st <- function(data,
       .data$plan_tech_prod, .data$plan_carsten, .data$scen_tech_prod,
       .data$plan_sec_prod, .data$plan_sec_carsten
     ) %>%
-    dplyr::inner_join(p4i_p4b_scenario_lookup, by = c("scenario" = "scenario_p4b")) %>%
     dplyr::mutate(
-      scenario = .data$scenario_p4i,
+      scenario = stringr::str_to_upper(
+        stringr::str_remove(.data$scenario, "target_")
+      ),
       scenario_source = stringr::str_to_upper(
         stringr::str_remove(.data$scenario_source, "_")
       )
