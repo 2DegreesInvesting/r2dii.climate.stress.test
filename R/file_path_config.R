@@ -21,7 +21,7 @@ price_data_file <- function(dir) {
 }
 
 scenario_data_file <- function(dir, start_year) {
-  out <- file.path(dir, paste0("Scenarios_AnalysisInput_", start_year, ".csv"))
+  out <- file.path(dir, glue::glue("Scenarios_AnalysisInput_{start_year}.csv"))
   return(out)
 }
 
