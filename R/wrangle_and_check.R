@@ -229,8 +229,7 @@ wrangle_scenario_data <- function(scenario_data, start_year, end_year) {
     dplyr::filter(.data$source %in% c("ETP2017", "WEO2019")) %>%
     dplyr::filter(!(.data$source == "ETP2017" & .data$ald_sector == "Power")) %>%
     dplyr::mutate(scenario = ifelse(stringr::str_detect(.data$scenario, "_"), stringr::str_extract(.data$scenario, "[^_]*$"), .data$scenario)) %>%
-    check_scenario_timeframe(start_year = start_year, end_year = end_year) %>%
-    correct_automotive_scendata(interpolation_years = c(2031:2034, 2036:2039))
+    check_scenario_timeframe(start_year = start_year, end_year = end_year)
   return(scenario_data_wrangled)
 }
 
