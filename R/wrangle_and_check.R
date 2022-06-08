@@ -229,8 +229,7 @@ wrangle_scenario_data <- function(scenario_data, start_year, end_year) {
     dplyr::filter(.data$source %in% c("ETP2017", "WEO2019")) %>%
     dplyr::filter(!(.data$source == "ETP2017" & .data$ald_sector == "Power")) %>%
     dplyr::mutate(scenario = ifelse(stringr::str_detect(.data$scenario, "_"), stringr::str_extract(.data$scenario, "[^_]*$"), .data$scenario)) %>%
-    check_scenario_timeframe(start_year = start_year, end_year = end_year) %>%
-    correct_automotive_scendata(interpolation_years = c(2031:2034, 2036:2039))
+    check_scenario_timeframe(start_year = start_year, end_year = end_year)
   return(scenario_data_wrangled)
 }
 
@@ -319,8 +318,7 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
       "technology_exposure", "VaR_technology", "technology_value_change",
       "sector_exposure", "VaR_sector", "sector_value_change",
       "analysed_sectors_exposure", "VaR_analysed_sectors",
-      "analysed_sectors_value_change", "portfolio_aum",
-      "portfolio_value_change_perc", "portfolio_value_change", sensitivity_analysis_vars
+      "analysed_sectors_value_change", sensitivity_analysis_vars
     )
   )
 
@@ -337,8 +335,7 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
       .data$VaR_technology, .data$technology_value_change,
       .data$sector_exposure, .data$VaR_sector, .data$sector_value_change,
       .data$analysed_sectors_exposure, .data$VaR_analysed_sectors,
-      .data$analysed_sectors_value_change, .data$portfolio_aum,
-      .data$portfolio_value_change_perc, .data$portfolio_value_change,
+      .data$analysed_sectors_value_change,
       !!!rlang::syms(sensitivity_analysis_vars)
     ) %>%
     dplyr::rename(
@@ -356,10 +353,7 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
       sector_absolute_value_change = .data$sector_value_change,
       analysed_portfolio_exposure = .data$analysed_sectors_exposure,
       analysed_portfolio_percent_value_change = .data$VaR_analysed_sectors,
-      analysed_portfolio_absolute_value_change = .data$analysed_sectors_value_change,
-      total_portfolio_exposure = .data$portfolio_aum,
-      total_portfolio_percent_value_change = .data$portfolio_value_change_perc,
-      total_portfolio_absolute_value_change = .data$portfolio_value_change
+      analysed_portfolio_absolute_value_change = .data$analysed_sectors_value_change
     )
 
   portfolio_value_changes <- results_list$company_value_changes %>%
@@ -373,8 +367,7 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
       .data$VaR_technology, .data$technology_value_change,
       .data$sector_exposure, .data$VaR_sector, .data$sector_value_change,
       .data$analysed_sectors_exposure, .data$VaR_analysed_sectors,
-      .data$analysed_sectors_value_change, .data$portfolio_aum,
-      .data$portfolio_value_change_perc, .data$portfolio_value_change,
+      .data$analysed_sectors_value_change,
       !!!rlang::syms(sensitivity_analysis_vars)
     ) %>%
     # ADO 2549 - all numeric variables should be unique across the CUC variables
@@ -390,10 +383,7 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
       sector_absolute_value_change = .data$sector_value_change,
       analysed_portfolio_exposure = .data$analysed_sectors_exposure,
       analysed_portfolio_percent_value_change = .data$VaR_analysed_sectors,
-      analysed_portfolio_absolute_value_change = .data$analysed_sectors_value_change,
-      total_portfolio_exposure = .data$portfolio_aum,
-      total_portfolio_percent_value_change = .data$portfolio_value_change_perc,
-      total_portfolio_absolute_value_change = .data$portfolio_value_change
+      analysed_portfolio_absolute_value_change = .data$analysed_sectors_value_change
     )
 
   # expected loss -----------------------------------------------------------

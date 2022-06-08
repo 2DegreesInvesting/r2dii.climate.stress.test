@@ -34,10 +34,6 @@ calculate_annual_profits <- function(asset_type, input_data_list, scenario_to_fo
     )
 
   extended_pacta_results <- input_data_list$pacta_results %>%
-    convert_power_cap_to_generation(
-      capacity_factors_power = input_data_list$capacity_factors_power,
-      baseline_scenario = scenario_to_follow_baseline
-    ) %>%
     extend_scenario_trajectory(
       scenario_data = input_data_list$scenario_data,
       start_analysis = start_year,
