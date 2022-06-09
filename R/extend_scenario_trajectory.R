@@ -174,7 +174,6 @@ extend_scenario_trajectory <- function(data,
     )
 
   data <- data %>%
-    # ADO 2393 - The join cols should be extended to cover the source
     dplyr::inner_join(
       scenario_data,
       by = c("ald_sector", "technology", "scenario_geography", "scenario", "year")
