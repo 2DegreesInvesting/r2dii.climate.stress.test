@@ -48,6 +48,7 @@ equity_market_filter_lookup <- "GlobalMarket"
 p4i_p4b_sector_technology_lookup <- tibble::tribble(
   ~sector_p4b,   ~technology_p4b,             ~sector_p4i,    ~technology_p4i,
   "automotive",  "electric",                 "Automotive",   "Electric",
+  "automotive",  "fuelcell",                 "Automotive",   "FuelCell",
   "automotive",  "hybrid",                   "Automotive",   "Hybrid",
   "automotive",  "ice",                      "Automotive",   "ICE",
   "coal",        "coal",                     "Coal",         "Coal",
