@@ -19,14 +19,6 @@ nesting_vars_lookup <- c(
 
 asset_types_lookup <- c("equity", "bonds", "loans")
 
-sector_scenarios_mapping_lookup <- tibble::tibble(
-  ald_sector = c("Power", "Power", "Oil&Gas", "Oil&Gas", "Coal", "Coal", "Automotive", "Automotive"),
-  scenario = c(
-    rep(c("WEO2019_NPS", "WEO2019_SDS"), 3),
-    c("ETP2017_NPS", "ETP2017_SDS")
-  )
-)
-
 calculation_level_lookup <- "company"
 
 end_year_lookup <- 2040

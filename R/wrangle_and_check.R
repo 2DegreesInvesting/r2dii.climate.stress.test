@@ -74,7 +74,6 @@ wrangle_and_check_sector_exposures <- function(sector_exposures, asset_type) {
 wrangle_and_check_pacta_results <- function(pacta_results, start_year, time_horizon) {
 
   wrangled_pacta_results <- pacta_results %>%
-    select_sector_scenario_combinations() %>%
     tidyr::complete(
       year = seq(start_year, start_year + time_horizon),
       tidyr::nesting(!!!rlang::syms(nesting_vars_lookup))
@@ -606,60 +605,6 @@ check_results <- function(wrangled_results_list, sensitivity_analysis_vars) {
 
   return(invisible(wrangled_results_list))
 }
-
-#' Select required sector scenario combinations
-#'
-#' Function:
-#' 1. Checks that for all supported sectors contained in `pacta_results`
-#' required scenarios are available.
-#' 1. Filters so that only required scenarios are kept.
-#'
-#' @param pacta_results A tibble holding pacta results.
-#'
-#' @return Tibble `pacta_results` holding only required sector - scenario
-#'   combinations.
-select_sector_scenario_combinations <- function(pacta_results) {
-  pacta_results_filtered_by_sectors <- pacta_results %>%
-    dplyr::filter(ald_sector %in% unique(sector_scenarios_mapping_lookup$ald_sector))
-
-  if (nrow(pacta_results_filtered_by_sectors) == 0) {
-    stop("No sectors that are supported by stresstesting are included in provided portfolio.")
-  }
-
-  sector_scenarios_mapping_lookup_filtered_by_available_sectors <- sector_scenarios_mapping_lookup %>%
-    dplyr::filter(ald_sector %in% unique(pacta_results_filtered_by_sectors$ald_sector))
-
-  scenario_availability_check_data <- pacta_results_filtered_by_sectors %>%
-    dplyr::select(scenario, ald_sector) %>%
-    # adding an indicator column that is reliably not NA before join
-    dplyr::mutate(indicator_col = dplyr::row_number()) %>%
-    dplyr::right_join(
-      sector_scenarios_mapping_lookup_filtered_by_available_sectors,
-      by = c("ald_sector", "scenario")
-    )
-
-  if (any(is.na(scenario_availability_check_data$indicator_col))) {
-    missing_combinations <- scenario_availability_check_data %>%
-      dplyr::filter(is.na(.data$indicator_col)) %>%
-      dplyr::mutate(missings = paste(.data$scenario, .data$ald_sector, sep = ": ")) %>%
-      dplyr::pull(.data$missings) %>%
-      paste0(collapse = ", ")
-
-    rlang::abort(c(
-      "Detected missing sector scenario combination",
-      x = glue::glue("Missing combinations: {missing_combinations}."),
-      i = "Please check sector scenario combinations in PACTA results?."
-    ))
-  }
-
-  selected_sector_scenario_combinations <- dplyr::inner_join(
-    pacta_results, sector_scenarios_mapping_lookup,
-    by = c("ald_sector", "scenario")
-  )
-
-  return(selected_sector_scenario_combinations)
-}
-
 
 #' Fill missing terms with fallback_term
 #'
