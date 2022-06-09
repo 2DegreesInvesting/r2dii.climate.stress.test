@@ -157,7 +157,7 @@ extend_scenario_trajectory <- function(data,
   validate_data_has_expected_cols(
     data = scenario_data,
     expected_columns = c(
-      "source", "technology", "scenario_geography", "ald_sector", "units",
+      "technology", "scenario_geography", "ald_sector", "units",
       "scenario", "year", "direction", "fair_share_perc"
     )
   )
@@ -183,7 +183,7 @@ extend_scenario_trajectory <- function(data,
       composite_unique_cols = c(
         "year", "investor_name", "portfolio_name", "id", "company_name",
         "ald_sector", "technology", "scenario", "allocation",
-        "scenario_geography", "source", "units"
+        "scenario_geography", "units"
       )
     )
 
@@ -323,7 +323,7 @@ summarise_production_sector_forecasts <- function(data) {
     dplyr::group_by(
       .data$investor_name, .data$portfolio_name, .data$id, .data$company_name,
       .data$ald_sector, .data$scenario, .data$allocation,
-      .data$scenario_geography, .data$source, .data$units, .data$year
+      .data$scenario_geography, .data$units, .data$year
     ) %>%
     dplyr::mutate(
       plan_sec_prod = sum(.data$plan_tech_prod, na.rm = TRUE),
@@ -334,7 +334,7 @@ summarise_production_sector_forecasts <- function(data) {
     dplyr::group_by(
       .data$investor_name, .data$portfolio_name, .data$id, .data$company_name,
       .data$ald_sector, .data$scenario, .data$allocation,
-      .data$scenario_geography, .data$source, .data$units
+      .data$scenario_geography, .data$units
     ) %>%
     dplyr::mutate(
       initial_sector_production = dplyr::first(.data$plan_sec_prod),
