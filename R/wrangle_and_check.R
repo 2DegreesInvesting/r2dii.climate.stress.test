@@ -72,9 +72,9 @@ wrangle_and_check_sector_exposures <- function(sector_exposures, asset_type) {
 #'
 #' @return Wrangled `pacta_results.`
 wrangle_and_check_pacta_results <- function(pacta_results, start_year, time_horizon) {
+
   wrangled_pacta_results <- pacta_results %>%
     select_sector_scenario_combinations() %>%
-    dplyr::mutate(scenario = sub(".*?_", "", scenario)) %>%
     tidyr::complete(
       year = seq(start_year, start_year + time_horizon),
       tidyr::nesting(!!!rlang::syms(nesting_vars_lookup))
