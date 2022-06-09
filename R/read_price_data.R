@@ -24,8 +24,8 @@ read_price_data <- function(path) {
   validate_data_has_expected_cols(
     data = data,
     expected_columns = c(
-      "year", "source", "scenario", "scenario_geography", "technology",
-      "indicator", "unit", "price"
+      "year", "scenario", "scenario_geography", "technology", "indicator",
+      "unit", "price"
     )
   )
 
