@@ -67,6 +67,8 @@ process_pacta_results <- function(data, start_year, end_year, time_horizon,
           year = start_year:(start_year + time_horizon),
           allocation = allocation_method,
           equity_market = equity_market_filter,
+          ald_sector = sectors,
+          technology = technologies,
           scenario = scenarios_filter,
           scenario_geography = scenario_geography_filter
         )
