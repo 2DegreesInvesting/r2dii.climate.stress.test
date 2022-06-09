@@ -213,26 +213,6 @@ check_company_terms <- function(data, interactive_mode = FALSE) {
   return(invisible(data))
 }
 
-
-#' Wrangle scenario data
-#'
-#' Function applies custom wrangling to scenario data.
-#'
-#' @param scenario_data A tibble holding scenario data.
-#' @param start_year Start year of analysis.
-#' @param end_year End year of analysis.
-#'
-#' @return A tibble holding wrangled scenario_data.
-wrangle_scenario_data <- function(scenario_data, start_year, end_year) {
-  scenario_data_wrangled <- scenario_data %>%
-    dplyr::rename(source = .data$scenario_source) %>%
-    dplyr::filter(.data$source %in% c("ETP2017", "WEO2019")) %>%
-    dplyr::filter(!(.data$source == "ETP2017" & .data$ald_sector == "Power")) %>%
-    dplyr::mutate(scenario = ifelse(stringr::str_detect(.data$scenario, "_"), stringr::str_extract(.data$scenario, "[^_]*$"), .data$scenario))
-  return(scenario_data_wrangled)
-}
-
-
 #' Fill missing values on annual_profits
 #'
 #' Function fill missing rows on cols company_id, pd, net_profit_margin,
