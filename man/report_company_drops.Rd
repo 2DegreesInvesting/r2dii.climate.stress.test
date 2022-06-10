@@ -4,7 +4,7 @@
 \alias{report_company_drops}
 \title{Report dropped companies}
 \usage{
-report_company_drops(data_list, asset_type, log_path)
+report_company_drops(data_list, asset_type, sectors, log_path)
 }
 \arguments{
 \item{data_list}{A list of imported stress test input data.}
@@ -13,6 +13,8 @@ report_company_drops(data_list, asset_type, log_path)
 \code{stress_test_arguments}.}
 
 \item{log_path}{String holding path to log file.}
+
+\item{sector}{String vector holdinf names of supported sectors.}
 }
 \description{
 Wrapper to report companies for which all results, or results for some technologies

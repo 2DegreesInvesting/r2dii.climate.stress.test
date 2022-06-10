@@ -241,6 +241,7 @@ read_and_process_and_calc <- function(args_list) {
   report_company_drops(
     data_list = input_data_list,
     asset_type = asset_type,
+    sectors = sectors_and_technologies_list$sectors,
     log_path = log_path
   )
 

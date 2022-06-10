@@ -210,11 +210,12 @@ report_duplicates <- function(data, cols, throw_error = TRUE) {
 #' are lsot due to a missing match in financial_data or price_data.
 #'
 #' @param data_list A list of imported stress test input data.
+#' @param sector String vector holdinf names of supported sectors.
 #' @param log_path String holding path to log file.
 #' @inheritParams validate_input_values
 #'
 #' @return NULL
-report_company_drops <- function(data_list, asset_type, log_path) {
+report_company_drops <- function(data_list, asset_type, sectors, log_path) {
   if (asset_type == "bonds") {
     merge_cols <- c("company_name", "id" = "corporate_bond_ticker")
   } else {
@@ -229,13 +230,16 @@ report_company_drops <- function(data_list, asset_type, log_path) {
     log_path = log_path
   )
 
-  report_dropped_company_names(
-    data_x = data_list$pacta_results,
-    data_y = data_list$df_price,
-    name_y = "price data",
-    merge_cols = c("technology", "ald_sector", "year"),
-    log_path = log_path
-  )
+  # price data are NULL is automotive is the only requested sector
+  if (length(setdiff(sectors, "Automotive")) > 0) {
+    report_dropped_company_names(
+      data_x = data_list$pacta_results,
+      data_y = data_list$df_price,
+      name_y = "price data",
+      merge_cols = c("technology", "ald_sector", "year"),
+      log_path = log_path
+    )
+  }
 
   invisible()
 }
