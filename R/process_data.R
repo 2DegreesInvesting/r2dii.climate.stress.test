@@ -628,7 +628,7 @@ st_process <- function(data, asset_type, fallback_term,
     add_terms(company_terms = company_terms, fallback_term = fallback_term)
 
   # price data are NULL is automotive is the only requested sector
-  if (length(setdiff(sectors, "Automotive")) > 0)  {
+  if (length(setdiff(sectors, "Automotive")) > 0) {
     df_price <- process_price_data(
       data$df_price,
       technologies = technologies,

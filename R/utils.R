@@ -482,7 +482,6 @@ get_start_year <- function(data) {
 #' @return A list with entries sectors and technologies
 #' @noRd
 infer_sectors_and_technologies <- function(baseline_scenario, shock_scenario, scenario_geography) {
-
   sectors_baseline <- scenario_geography_x_ald_sector %>%
     dplyr::filter(.data$scenario == !!baseline_scenario & .data$scenario_geography == !!scenario_geography) %>%
     dplyr::pull(.data$ald_sector)
@@ -520,7 +519,6 @@ infer_sectors_and_technologies <- function(baseline_scenario, shock_scenario, sc
 #'
 #' @return Tibble `pacta_and_fin` holding additionally price_data
 add_price_data <- function(pacta_and_fin, price_data) {
-
   automotive <- pacta_and_fin %>%
     dplyr::filter(ald_sector == "Automotive") %>%
     dplyr::mutate(Baseline_price = 1, late_sudden_price = 1)
@@ -528,12 +526,11 @@ add_price_data <- function(pacta_and_fin, price_data) {
   other_sectors <- pacta_and_fin %>%
     dplyr::filter(ald_sector != "Automotive")
 
-  if (nrow(other_sectors ) > 0) {
+  if (nrow(other_sectors) > 0) {
     other_sectors <- other_sectors %>%
       dplyr::inner_join(price_data, by = c("technology", "ald_sector", "year"))
   }
 
   combined <- dplyr::bind_rows(other_sectors, automotive)
   return(combined)
-
 }
