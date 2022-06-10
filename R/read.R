@@ -17,9 +17,16 @@ st_read_agnostic <- function(dir, start_year, sectors) {
     capacity_factors_power <- NULL
   }
 
+  # if automotive is the only sector we do not need price data
+  if (length(setdiff(sectors, "Automotive")) > 0) {
+    df_price <- read_price_data(price_data_file(dir))
+  } else {
+    df_price <- NULL
+  }
+
   out <- list(
     capacity_factors_power = capacity_factors_power,
-    df_price = read_price_data(price_data_file(dir)),
+    df_price = df_price,
     scenario_data = read_scenario_data(scenario_data_file(dir, start_year)),
     financial_data = read_financial_data(financial_data_file(dir))
   )
