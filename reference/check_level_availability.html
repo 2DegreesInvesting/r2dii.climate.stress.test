@@ -69,7 +69,12 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">check_level_availability</span><span class="op">(</span><span class="va">data</span>, <span class="va">data_name</span>, <span class="va">expected_levels_list</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">check_level_availability</span><span class="op">(</span>
+  <span class="va">data</span>,
+  <span class="va">data_name</span>,
+  <span class="va">expected_levels_list</span>,
+  throw_error <span class="op">=</span> <span class="cn">TRUE</span>
+<span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -81,6 +86,9 @@
 <dt>expected_levels_list</dt>
 <dd><p>List holding variable names along with their
 expected levels. Variables must be present in data.</p></dd>
+<dt>throw_error</dt>
+<dd><p>Boolean indicating if to throw error. If FALSE warning is
+signaled instead.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
