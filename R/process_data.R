@@ -591,15 +591,6 @@ st_process <- function(data, asset_type, fallback_term,
     asset_type = asset_type
   )
 
-  df_price <- process_price_data(
-    data$df_price,
-    technologies = technologies,
-    sectors = sectors,
-    start_year = start_year,
-    end_year = end_year_lookup,
-    scenarios_filter = scenarios_filter
-  )
-
   scenario_data <- process_scenario_data(
     data$scenario_data,
     start_year = start_year,
@@ -636,6 +627,20 @@ st_process <- function(data, asset_type, fallback_term,
   ) %>%
     add_terms(company_terms = company_terms, fallback_term = fallback_term)
 
+  # price data are NULL is automotive is the only requested sector
+  if (length(setdiff(sectors, "Automotive")) > 0)  {
+    df_price <- process_price_data(
+      data$df_price,
+      technologies = technologies,
+      sectors = sectors,
+      start_year = start_year,
+      end_year = end_year_lookup,
+      scenarios_filter = scenarios_filter
+    )
+  } else {
+    df_price <- data$df_price
+  }
+
   # capacity_factors are only applied  for power sector
   if ("Power" %in% sectors) {
     capacity_factors_power <- process_capacity_factors_power(
@@ -652,6 +657,8 @@ st_process <- function(data, asset_type, fallback_term,
       capacity_factors_power = capacity_factors_power,
       baseline_scenario = baseline_scenario
     )
+  } else {
+    capacity_factors_power <- data$capacity_factors_power
   }
 
   out <- list(
