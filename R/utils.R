@@ -210,7 +210,7 @@ report_duplicates <- function(data, cols, throw_error = TRUE) {
 #' are lsot due to a missing match in financial_data or price_data.
 #'
 #' @param data_list A list of imported stress test input data.
-#' @param sector String vector holdinf names of supported sectors.
+#' @param sectors String vector holding names of supported sectors.
 #' @param log_path String holding path to log file.
 #' @inheritParams validate_input_values
 #'

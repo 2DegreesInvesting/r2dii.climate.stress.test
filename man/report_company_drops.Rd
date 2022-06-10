@@ -12,9 +12,9 @@ report_company_drops(data_list, asset_type, sectors, log_path)
 \item{asset_type}{String holding asset_type. For accepted values compare
 \code{stress_test_arguments}.}
 
-\item{log_path}{String holding path to log file.}
+\item{sectors}{String vector holding names of supported sectors.}
 
-\item{sector}{String vector holdinf names of supported sectors.}
+\item{log_path}{String holding path to log file.}
 }
 \description{
 Wrapper to report companies for which all results, or results for some technologies
