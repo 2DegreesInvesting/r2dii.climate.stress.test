@@ -58,8 +58,8 @@ run_stress_test <- function(asset_type,
                             input_path_project_specific,
                             input_path_project_agnostic,
                             output_path,
-                            baseline_scenario = "NPS",
-                            shock_scenario = "SDS",
+                            baseline_scenario = "WEO2019_NPS",
+                            shock_scenario = "WEO2019_SDS",
                             lgd_senior_claims = 0.45,
                             lgd_subordinated_claims = 0.75,
                             risk_free_rate = 0.02,
@@ -188,7 +188,11 @@ read_and_process_and_calc <- function(args_list) {
     lgd_subordinated_claims = lgd_subordinated_claims
   )
 
-  sectors_and_technologies_list <- infer_sectors_and_technologies(scenario_geography)
+  sectors_and_technologies_list <- infer_sectors_and_technologies(
+    baseline_scenario = baseline_scenario,
+    shock_scenario = shock_scenario,
+    scenario_geography = scenario_geography
+  )
 
   cat("-- Reading input data from designated input path. \n")
 

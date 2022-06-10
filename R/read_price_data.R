@@ -11,7 +11,6 @@ read_price_data <- function(path) {
     readr::read_csv(
       col_types = readr::cols(
         year = "d",
-        source = "c",
         scenario = "c",
         scenario_geography = "c",
         technology = "c",
@@ -24,7 +23,7 @@ read_price_data <- function(path) {
   validate_data_has_expected_cols(
     data = data,
     expected_columns = c(
-      "year", "source", "scenario", "scenario_geography", "technology",
+      "year", "scenario", "scenario_geography", "technology",
       "indicator", "unit", "price"
     )
   )
