@@ -75,7 +75,7 @@ calculate_annual_profits <- function(asset_type, input_data_list, scenario_to_fo
     fill_annual_profit_cols()
 
   annual_profits <- extended_pacta_results_with_financials %>%
-    join_price_data(df_prices = price_data) %>%
+    add_price_data(price_data = price_data) %>%
     calculate_net_profits() %>%
     dcf_model_techlevel(discount_rate = discount_rate) %>%
     # TODO: ADO 879 - note rows with zero profits/NPVs will produce NaN in the Merton model
@@ -92,6 +92,7 @@ calculate_annual_profits <- function(asset_type, input_data_list, scenario_to_fo
 
   return(annual_profits)
 }
+
 
 #' Calculate exposure_by_technology_and_company
 #'

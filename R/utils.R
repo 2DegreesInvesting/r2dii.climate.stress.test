@@ -509,3 +509,31 @@ infer_sectors_and_technologies <- function(baseline_scenario, shock_scenario, sc
 
   return(list(sectors = shared_sectors, technologies = technologies))
 }
+
+#' Augment pacta and fin data with price data
+#'
+#' Joins `price_data` to `pacta_and_fin` and adds artificial price_data (1) for
+#' automotive sector, for which to data no price data are available.
+#'
+#' @param pacta_and_fin Tibble holding pacta results and fin data.
+#' @param price_data Tibble holding price data or NULL for
+#'
+#' @return Tibble `pacta_and_fin` holding additionally price_data
+add_price_data <- function(pacta_and_fin, price_data) {
+
+  automotive <- pacta_and_fin %>%
+    dplyr::filter(ald_sector == "Automotive") %>%
+    dplyr::mutate(Baseline_price = 1, late_sudden_price = 1)
+
+  other_sectors <- pacta_and_fin %>%
+    dplyr::filter(ald_sector != "Automotive")
+
+  if (nrow(other_sectors ) > 0) {
+    other_sectors <- other_sectors %>%
+      dplyr::inner_join(price_data, by = c("technology", "ald_sector", "year"))
+  }
+
+  combined <- dplyr::bind_rows(other_sectors, automotive)
+  return(combined)
+
+}
