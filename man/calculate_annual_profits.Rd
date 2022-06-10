@@ -15,6 +15,7 @@ calculate_annual_profits(
   time_horizon,
   discount_rate,
   growth_rate,
+  sectors,
   log_path
 )
 }
@@ -45,6 +46,8 @@ year in the DCF. For accepted range compare \code{stress_test_arguments}.}
 
 \item{growth_rate}{Numeric, that holds the terminal growth rate of profits
 beyond the \code{end_year} in the DCF.}
+
+\item{sectors}{String vector holding names of supported sectors.}
 
 \item{log_path}{String holding path to log file.}
 }

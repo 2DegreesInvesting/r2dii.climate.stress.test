@@ -265,7 +265,8 @@ read_and_process_and_calc <- function(args_list) {
     time_horizon = time_horizon_lookup,
     discount_rate = discount_rate,
     growth_rate = growth_rate,
-    log_path = log_path
+    log_path = log_path,
+    sectors = sectors_and_technologies_list$sectors
   )
 
   exposure_by_technology_and_company <- calculate_exposure_by_technology_and_company(

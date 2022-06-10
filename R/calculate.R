@@ -19,19 +19,26 @@
 #' @param time_horizon Considered timeframe for PACTA analysis.
 #' @param growth_rate Numeric, that holds the terminal growth rate of profits
 #'   beyond the `end_year` in the DCF.
+#' @param sectors String vector holding names of supported sectors.
 #'
 #' @return A tibble holding annual profits
 calculate_annual_profits <- function(asset_type, input_data_list, scenario_to_follow_baseline,
                                      scenario_to_follow_shock, transition_scenario, start_year,
                                      end_year, time_horizon, discount_rate,
-                                     growth_rate, log_path) {
-  price_data <- input_data_list$df_price %>%
-    calc_scenario_prices(
-      baseline_scenario = scenario_to_follow_baseline,
-      shock_scenario = scenario_to_follow_shock,
-      transition_scenario = transition_scenario,
-      start_year = start_year
-    )
+                                     growth_rate, sectors, log_path) {
+
+  # price data are NULL is automotive is the only requested sector
+  if (length(setdiff(sectors, "Automotive")) > 0) {
+    price_data <- input_data_list$df_price %>%
+      calc_scenario_prices(
+        baseline_scenario = scenario_to_follow_baseline,
+        shock_scenario = scenario_to_follow_shock,
+        transition_scenario = transition_scenario,
+        start_year = start_year
+      )
+  } else {
+    price_data <- input_data_list$df_price
+  }
 
   extended_pacta_results <- input_data_list$pacta_results %>%
     extend_scenario_trajectory(
