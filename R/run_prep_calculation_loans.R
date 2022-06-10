@@ -99,7 +99,8 @@ run_prep_calculation_loans <- function(input_path_project_specific,
     )
 
   # Scenario data - market share
-  scenario_data_market_share <- validate_file_exists(file.path(input_path_project_agnostic, "scenario_2020.csv")) %>%
+  # scenario_data_market_share <- validate_file_exists(file.path(input_path_project_agnostic, "scenario_2020.csv")) %>%
+  scenario_data_market_share <- validate_file_exists(file.path(input_path_project_agnostic, "scenario_2021.csv")) %>%
     readr::read_csv(
       col_types = readr::cols(
         scenario_source = "c",
@@ -288,12 +289,12 @@ run_prep_calculation_loans <- function(input_path_project_specific,
     ) %>%
     dplyr::rename(name_ald = .data$name_abcd) %>%
     # TODO remove hard coded filtering in ADO 3129
-    dplyr::filter(
-      (.data$sector == "automotive" & .data$scenario_source == "etp_2017") |
-        (.data$sector == "coal" & .data$scenario_source == "weo_2019") |
-        (.data$sector == "oil and gas" & .data$scenario_source == "weo_2019") |
-        (.data$sector == "power" & .data$scenario_source == "weo_2019")
-    ) %>%
+    # dplyr::filter(
+    #   (.data$sector == "automotive" & .data$scenario_source == "etp_2017") |
+    #     (.data$sector == "coal" & .data$scenario_source == "weo_2019") |
+    #     (.data$sector == "oil and gas" & .data$scenario_source == "weo_2019") |
+    #     (.data$sector == "power" & .data$scenario_source == "weo_2019")
+    # ) %>%
     dplyr::rename(
       production_unweighted = .data$production
     ) %>%
