@@ -4,7 +4,12 @@
 \alias{check_level_availability}
 \title{Check that required levels of a variable are available in data}
 \usage{
-check_level_availability(data, data_name, expected_levels_list)
+check_level_availability(
+  data,
+  data_name,
+  expected_levels_list,
+  throw_error = TRUE
+)
 }
 \arguments{
 \item{data}{A tibble.}
@@ -13,6 +18,9 @@ check_level_availability(data, data_name, expected_levels_list)
 
 \item{expected_levels_list}{List holding variable names along with their
 expected levels. Variables must be present in data.}
+
+\item{throw_error}{Boolean indicating if to throw error. If FALSE warning is
+signaled instead.}
 }
 \value{
 Returns \code{data} invisibly.

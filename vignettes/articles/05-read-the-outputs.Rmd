@@ -203,13 +203,6 @@ the portfolio or loan book on the level of in scope sectors. Calculated as
 `analysed_portfolio_absolute_value_change = analysed_portfolio_exposure * analysed_portfolio_percent_value_change`.
 * `total_portfolio_exposure`: Total absolute value of the assets under
 management for the given asset type.
-* `total_portfolio_percent_value_change`: Relative potential value change of
-portfolio or loan book across all companies relative to the total portfolio
-value. Note that this does not cover potential losses for companies operating in
-sectors that are out of scope. Value in percentage points.
-* `total_portfolio_absolute_value_change`: Potential absolute value change of
-the portfolio or loan book. Calculated as
-`total_portfolio_absolute_value_chang = total_portfolio_exposure * total_portfolio_percent_value_change`.
 
 ### loans_portfolio_value_changes_\<suffix\>
 

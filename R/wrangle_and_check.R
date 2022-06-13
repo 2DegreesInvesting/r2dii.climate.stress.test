@@ -72,9 +72,8 @@ wrangle_and_check_sector_exposures <- function(sector_exposures, asset_type) {
 #'
 #' @return Wrangled `pacta_results.`
 wrangle_and_check_pacta_results <- function(pacta_results, start_year, time_horizon) {
+
   wrangled_pacta_results <- pacta_results %>%
-    select_sector_scenario_combinations() %>%
-    dplyr::mutate(scenario = sub(".*?_", "", scenario)) %>%
     tidyr::complete(
       year = seq(start_year, start_year + time_horizon),
       tidyr::nesting(!!!rlang::syms(nesting_vars_lookup))
@@ -213,28 +212,6 @@ check_company_terms <- function(data, interactive_mode = FALSE) {
   return(invisible(data))
 }
 
-
-#' Wrangle scenario data
-#'
-#' Function applies custom wrangling to scenario data.
-#'
-#' @param scenario_data A tibble holding scenario data.
-#' @param start_year Start year of analysis.
-#' @param end_year End year of analysis.
-#'
-#' @return A tibble holding wrangled scenario_data.
-wrangle_scenario_data <- function(scenario_data, start_year, end_year) {
-  scenario_data_wrangled <- scenario_data %>%
-    dplyr::rename(source = .data$scenario_source) %>%
-    dplyr::filter(.data$source %in% c("ETP2017", "WEO2019")) %>%
-    dplyr::filter(!(.data$source == "ETP2017" & .data$ald_sector == "Power")) %>%
-    dplyr::mutate(scenario = ifelse(stringr::str_detect(.data$scenario, "_"), stringr::str_extract(.data$scenario, "[^_]*$"), .data$scenario)) %>%
-    check_scenario_timeframe(start_year = start_year, end_year = end_year) %>%
-    correct_automotive_scendata(interpolation_years = c(2031:2034, 2036:2039))
-  return(scenario_data_wrangled)
-}
-
-
 #' Fill missing values on annual_profits
 #'
 #' Function fill missing rows on cols company_id, pd, net_profit_margin,
@@ -319,8 +296,7 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
       "technology_exposure", "VaR_technology", "technology_value_change",
       "sector_exposure", "VaR_sector", "sector_value_change",
       "analysed_sectors_exposure", "VaR_analysed_sectors",
-      "analysed_sectors_value_change", "portfolio_aum",
-      "portfolio_value_change_perc", "portfolio_value_change", sensitivity_analysis_vars
+      "analysed_sectors_value_change", sensitivity_analysis_vars
     )
   )
 
@@ -337,8 +313,7 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
       .data$VaR_technology, .data$technology_value_change,
       .data$sector_exposure, .data$VaR_sector, .data$sector_value_change,
       .data$analysed_sectors_exposure, .data$VaR_analysed_sectors,
-      .data$analysed_sectors_value_change, .data$portfolio_aum,
-      .data$portfolio_value_change_perc, .data$portfolio_value_change,
+      .data$analysed_sectors_value_change,
       !!!rlang::syms(sensitivity_analysis_vars)
     ) %>%
     dplyr::rename(
@@ -356,10 +331,7 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
       sector_absolute_value_change = .data$sector_value_change,
       analysed_portfolio_exposure = .data$analysed_sectors_exposure,
       analysed_portfolio_percent_value_change = .data$VaR_analysed_sectors,
-      analysed_portfolio_absolute_value_change = .data$analysed_sectors_value_change,
-      total_portfolio_exposure = .data$portfolio_aum,
-      total_portfolio_percent_value_change = .data$portfolio_value_change_perc,
-      total_portfolio_absolute_value_change = .data$portfolio_value_change
+      analysed_portfolio_absolute_value_change = .data$analysed_sectors_value_change
     )
 
   portfolio_value_changes <- results_list$company_value_changes %>%
@@ -373,8 +345,7 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
       .data$VaR_technology, .data$technology_value_change,
       .data$sector_exposure, .data$VaR_sector, .data$sector_value_change,
       .data$analysed_sectors_exposure, .data$VaR_analysed_sectors,
-      .data$analysed_sectors_value_change, .data$portfolio_aum,
-      .data$portfolio_value_change_perc, .data$portfolio_value_change,
+      .data$analysed_sectors_value_change,
       !!!rlang::syms(sensitivity_analysis_vars)
     ) %>%
     # ADO 2549 - all numeric variables should be unique across the CUC variables
@@ -390,10 +361,7 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
       sector_absolute_value_change = .data$sector_value_change,
       analysed_portfolio_exposure = .data$analysed_sectors_exposure,
       analysed_portfolio_percent_value_change = .data$VaR_analysed_sectors,
-      analysed_portfolio_absolute_value_change = .data$analysed_sectors_value_change,
-      total_portfolio_exposure = .data$portfolio_aum,
-      total_portfolio_percent_value_change = .data$portfolio_value_change_perc,
-      total_portfolio_absolute_value_change = .data$portfolio_value_change
+      analysed_portfolio_absolute_value_change = .data$analysed_sectors_value_change
     )
 
   # expected loss -----------------------------------------------------------
@@ -637,60 +605,6 @@ check_results <- function(wrangled_results_list, sensitivity_analysis_vars) {
 
   return(invisible(wrangled_results_list))
 }
-
-#' Select required sector scenario combinations
-#'
-#' Function:
-#' 1. Checks that for all supported sectors contained in `pacta_results`
-#' required scenarios are available.
-#' 1. Filters so that only required scenarios are kept.
-#'
-#' @param pacta_results A tibble holding pacta results.
-#'
-#' @return Tibble `pacta_results` holding only required sector - scenario
-#'   combinations.
-select_sector_scenario_combinations <- function(pacta_results) {
-  pacta_results_filtered_by_sectors <- pacta_results %>%
-    dplyr::filter(ald_sector %in% unique(sector_scenarios_mapping_lookup$ald_sector))
-
-  if (nrow(pacta_results_filtered_by_sectors) == 0) {
-    stop("No sectors that are supported by stresstesting are included in provided portfolio.")
-  }
-
-  sector_scenarios_mapping_lookup_filtered_by_available_sectors <- sector_scenarios_mapping_lookup %>%
-    dplyr::filter(ald_sector %in% unique(pacta_results_filtered_by_sectors$ald_sector))
-
-  scenario_availability_check_data <- pacta_results_filtered_by_sectors %>%
-    dplyr::select(scenario, ald_sector) %>%
-    # adding an indicator column that is reliably not NA before join
-    dplyr::mutate(indicator_col = dplyr::row_number()) %>%
-    dplyr::right_join(
-      sector_scenarios_mapping_lookup_filtered_by_available_sectors,
-      by = c("ald_sector", "scenario")
-    )
-
-  if (any(is.na(scenario_availability_check_data$indicator_col))) {
-    missing_combinations <- scenario_availability_check_data %>%
-      dplyr::filter(is.na(.data$indicator_col)) %>%
-      dplyr::mutate(missings = paste(.data$scenario, .data$ald_sector, sep = ": ")) %>%
-      dplyr::pull(.data$missings) %>%
-      paste0(collapse = ", ")
-
-    rlang::abort(c(
-      "Detected missing sector scenario combination",
-      x = glue::glue("Missing combinations: {missing_combinations}."),
-      i = "Please check sector scenario combinations in PACTA results?."
-    ))
-  }
-
-  selected_sector_scenario_combinations <- dplyr::inner_join(
-    pacta_results, sector_scenarios_mapping_lookup,
-    by = c("ald_sector", "scenario")
-  )
-
-  return(selected_sector_scenario_combinations)
-}
-
 
 #' Fill missing terms with fallback_term
 #'

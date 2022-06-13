@@ -87,18 +87,18 @@ calculate_pd_change_annual <- function(data,
 
   results <- data %>%
     dplyr::mutate(Survival_baseline = calc_survival_probability_merton(
-      L = data$debt,
-      V0 = data$equity_t_baseline + data$debt,
-      sigma = data$volatility,
-      r = data$risk_free_rate,
-      t = data$term
+      L = .data$debt,
+      V0 = .data$equity_t_baseline + .data$debt,
+      sigma = .data$volatility,
+      r = .data$risk_free_rate,
+      t = .data$term
     )) %>%
     dplyr::mutate(Survival_late_sudden = calc_survival_probability_merton(
-      L = data$debt,
-      V0 = data$equity_t_late_sudden + data$debt,
-      sigma = data$volatility,
-      r = data$risk_free_rate,
-      t = data$term
+      L = .data$debt,
+      V0 = .data$equity_t_late_sudden + .data$debt,
+      sigma = .data$volatility,
+      r = .data$risk_free_rate,
+      t = .data$term
     )) %>%
     dplyr::mutate(
       PD_baseline = 1 - .data$Survival_baseline,

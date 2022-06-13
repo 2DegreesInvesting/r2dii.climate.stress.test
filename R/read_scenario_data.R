@@ -9,7 +9,6 @@ read_scenario_data <- function(path) {
   scenario_data <- validate_file_exists(path) %>%
     readr::read_csv(
       col_types = readr::cols(
-        scenario_source = "c",
         scenario_geography = "c",
         scenario = "c",
         ald_sector = "c",
@@ -24,10 +23,11 @@ read_scenario_data <- function(path) {
   validate_data_has_expected_cols(
     data = scenario_data,
     expected_columns = c(
-      "scenario_source", "scenario_geography", "scenario",
+      "scenario_geography", "scenario",
       "ald_sector", "units", "technology", "year",
       "direction", "fair_share_perc"
     )
   )
+
   return(scenario_data)
 }

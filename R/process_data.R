@@ -71,6 +71,15 @@ process_pacta_results <- function(data, start_year, end_year, time_horizon,
           scenario_geography = scenario_geography_filter
         )
     ) %>%
+    check_level_availability(
+      data_name = "Pacta Results",
+      expected_levels_list =
+        list(
+          ald_sector = sectors,
+          technology = technologies
+        ),
+      throw_error = FALSE
+    ) %>%
     report_missing_col_combinations(col_names = c("allocation", "equity_market", "scenario", "scenario_geography", "technology", "year")) %>%
     report_all_duplicate_kinds(composite_unique_cols = cuc_pacta_results)
 
@@ -503,7 +512,6 @@ process_price_data <- function(data, technologies, sectors, start_year, end_year
 process_scenario_data <- function(data, start_year, end_year, sectors, technologies,
                                   scenario_geography_filter, scenarios_filter) {
   data_processed <- data %>%
-    wrangle_scenario_data(start_year = start_year, end_year = end_year) %>%
     dplyr::filter(.data$scenario %in% .env$scenarios_filter) %>%
     dplyr::filter(.data$scenario_geography %in% .env$scenario_geography_filter) %>%
     dplyr::filter(.data$ald_sector %in% .env$sectors) %>%
@@ -583,15 +591,6 @@ st_process <- function(data, asset_type, fallback_term,
     asset_type = asset_type
   )
 
-  capacity_factors_power <- process_capacity_factors_power(
-    data$capacity_factors_power,
-    scenarios_filter = scenarios_filter,
-    scenario_geography_filter = scenario_geography,
-    technologies = technologies,
-    start_year = start_year,
-    end_year = end_year_lookup
-  )
-
   df_price <- process_price_data(
     data$df_price,
     technologies = technologies,
@@ -636,6 +635,24 @@ st_process <- function(data, asset_type, fallback_term,
     log_path = log_path
   ) %>%
     add_terms(company_terms = company_terms, fallback_term = fallback_term)
+
+  # capacity_factors are only applied  for power sector
+  if ("Power" %in% sectors) {
+    capacity_factors_power <- process_capacity_factors_power(
+      data$capacity_factors_power,
+      scenarios_filter = scenarios_filter,
+      scenario_geography_filter = scenario_geography,
+      technologies = technologies,
+      start_year = start_year,
+      end_year = end_year_lookup
+    )
+
+    pacta_results <- convert_power_cap_to_generation(
+      data = pacta_results,
+      capacity_factors_power = capacity_factors_power,
+      baseline_scenario = baseline_scenario
+    )
+  }
 
   out <- list(
     pacta_results = pacta_results,
