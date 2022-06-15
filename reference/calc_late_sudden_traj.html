@@ -106,26 +106,38 @@ method applied is the overshoot/carbon budget method.</p>
     <dl><dt>start_year</dt>
 <dd><p>Numeric. A numeric vector of length 1 that contains the
 start year of the analysis.</p></dd>
+
+
 <dt>end_year</dt>
 <dd><p>Numeric. A numeric vector of length 1 that contains the
 end year of the analysis.</p></dd>
+
+
 <dt>year_of_shock</dt>
 <dd><p>Numeric. A numeric vector of length 1 that contains the
 year in which the policy shock first hits.</p></dd>
+
+
 <dt>duration_of_shock</dt>
 <dd><p>Numeric. A numeric vector of length 1 that contains
 the duration of the shock in years. I.e. the number of years it takes until
 the trajectory of the company/sector reaches a new equilibrium pathway.</p></dd>
+
+
 <dt>shock_strength</dt>
 <dd><p>Numeric. A numeric vector that contains the shock
 size for the given company/technology at hand, in case shock size is not
 calculated endogenously by using the overshoot/carbon budget method.
 TODO: (move to data argument)</p></dd>
+
+
 <dt>scen_to_follow</dt>
 <dd><p>Numeric. A numeric vector that contains the production
 trajectory of the scenario indicated to use as the target for the
 company/technology at hand.
 TODO: (move to data argument)</p></dd>
+
+
 <dt>planned_prod</dt>
 <dd><p>Numeric vector that includes the production plans for a
 company or (aggregated) technology to be included. The length of the vector
@@ -133,39 +145,54 @@ for each company is from the start year of the analysis to the end year of
 the analysis, which means that in most cases, this vector will include NAs
 after the final forecast year. This usually comes from a PACTA analysis.
 TODO: (move to data argument)</p></dd>
+
+
 <dt>late_and_sudden</dt>
 <dd><p>Numeric. A numeric vector that contains the
 late &amp; sudden production trajectory for the company/technology at hand.
 Before applying the shock, this follows the baseline scenario.
 TODO: (move to data argument)</p></dd>
+
+
 <dt>scenario_change</dt>
 <dd><p>Numeric. A numeric vector that contains the
 absolute changes of the target scenario in yearly steps for the
 company/technology at hand.
 TODO: (move to data argument)</p></dd>
+
+
 <dt>scenario_change_baseline</dt>
 <dd><p>Numeric. A numeric vector that contains the
 absolute changes of the baseline scenario in yearly steps for the
 company/technology at hand.
 TODO: (move to data argument)</p></dd>
+
+
 <dt>scenario_change_aligned</dt>
 <dd><p>Numeric. A numeric vector that contains the
 absolute changes of the aligned target scenario in yearly steps for the
 company/technology at hand, in case the company/technology is aligned
 with the target after the forecast period.
 TODO: (move to data argument)</p></dd>
+
+
 <dt>overshoot_direction</dt>
 <dd><p>Character. A character vector that indicates if
 the technology at hand is increasing or decreasing over the time frame of
 the analysis.
 TODO: (move to data argument)</p></dd>
+
+
 <dt>time_frame</dt>
 <dd><p>Numeric. A vector of length 1 indicating the number of years
 for which forward looking production data is considered.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>numeric vector</p>
+    
+
+<p>numeric vector</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -187,7 +214,7 @@ for which forward looking production data is considered.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

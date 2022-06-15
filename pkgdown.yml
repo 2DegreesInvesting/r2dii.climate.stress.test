@@ -1,5 +1,5 @@
 pandoc: 2.7.3
-pkgdown: 2.0.3
+pkgdown: 2.0.4
 pkgdown_sha: ~
 articles:
   00-prerequisites: 00-prerequisites.html
@@ -8,7 +8,7 @@ articles:
   03-run-stress-test: 03-run-stress-test.html
   04-advanced-data-settings: 04-advanced-data-settings.html
   05-read-the-outputs: 05-read-the-outputs.html
-last_built: 2022-06-10T13:01Z
+last_built: 2022-06-15T12:56Z
 urls:
   reference: https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference
   article: https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles
