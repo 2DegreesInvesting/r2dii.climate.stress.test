@@ -478,6 +478,29 @@ harmonise_cap_fac_geo_names <- function(data) {
 #' @noRd
 process_price_data <- function(data, technologies, sectors, start_year, end_year,
                                scenarios_filter) {
+
+  # adding dummy unit price data for automotive data
+  if ("Automotive" %in% sectors) {
+
+    auto_tech <- p4i_p4b_sector_technology_lookup %>%
+      dplyr::filter(.data$sector_p4i == "Automotive") %>%
+      dplyr::pull(.data$technology_p4i)
+
+    automotive_data <- tidyr::expand_grid(
+      year = min(data$year):max(data$year),
+      scenario = scenarios_filter,
+      ald_sector = "Automotive",
+      technology = auto_tech,
+      price = 1
+    )
+
+    data <- data %>%
+      dplyr::bind_rows(automotive_data) %>%
+      dplyr::arrange(
+        .data$scenario, .data$ald_sector, .data$technology, .data$year
+      )
+  }
+
   data_processed <- data %>%
     dplyr::filter(.data$ald_sector %in% .env$sectors) %>%
     check_sector_tech_mapping(sector_col = "ald_sector") %>%
@@ -636,7 +659,7 @@ st_process <- function(data, asset_type, fallback_term,
   ) %>%
     add_terms(company_terms = company_terms, fallback_term = fallback_term)
 
-  # capacity_factors are only applied  for power sector
+  # capacity_factors are only applied for power sector
   if ("Power" %in% sectors) {
     capacity_factors_power <- process_capacity_factors_power(
       data$capacity_factors_power,
@@ -652,6 +675,8 @@ st_process <- function(data, asset_type, fallback_term,
       capacity_factors_power = capacity_factors_power,
       baseline_scenario = baseline_scenario
     )
+  } else {
+    capacity_factors_power <- data$capacity_factors_power
   }
 
   out <- list(
