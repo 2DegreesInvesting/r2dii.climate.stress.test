@@ -98,7 +98,10 @@ scenario_geography_x_ald_sector <- tibble::tribble(
   "Global",    "Oil&Gas",     "WEO2020_SPS",
   "Global",      "Power",     "WEO2020_SDS",
   "Global",       "Coal",     "WEO2020_SDS",
-  "Global",    "Oil&Gas",     "WEO2020_SDS"
+  "Global",    "Oil&Gas",     "WEO2020_SDS",
+  "Global", "Automotive",     "GECO2019_ref",
+  "Global", "Automotive",     "GECO2019_2c_m",
+  "Global", "Automotive",     "GECO2019_1.5c"
 
 )
 # styler: on
