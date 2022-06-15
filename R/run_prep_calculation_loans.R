@@ -93,9 +93,9 @@ run_prep_calculation_loans <- function(input_path_project_specific,
     dplyr::distinct_all()
 
   # Production forecast data
-  production_forecast_data <- validate_file_exists(file.path(input_path_project_agnostic, "2021-07-15_AR_2020Q4_PACTA-Data (3).xlsx")) %>%
+  production_forecast_data <- validate_file_exists(file.path(input_path_project_agnostic, "2022-04-07_AR_2021Q4_Free Dataset-PACTA for Banks-Equity Ownership Consolidation.xlsx")) %>%
     readxl::read_xlsx(
-      sheet = "Company Indicators - PACTA"
+      sheet = "Company Indicators - PACTA Comp"
     )
 
   # Scenario data - market share
