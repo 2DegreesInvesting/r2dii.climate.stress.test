@@ -483,8 +483,8 @@ process_price_data <- function(data, technologies, sectors, start_year, end_year
   if ("Automotive" %in% sectors) {
 
     auto_tech <- p4i_p4b_sector_technology_lookup %>%
-      dplyr::filter(sector_p4i == "Automotive") %>%
-      dplyr::pull(technology_p4i)
+      dplyr::filter(.data$sector_p4i == "Automotive") %>%
+      dplyr::pull(.data$technology_p4i)
 
     automotive_data <- tidyr::expand_grid(
       year = min(data$year):max(data$year),
