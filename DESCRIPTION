@@ -7,10 +7,6 @@ Authors@R: c(
            family = "Kastl",
            role = c("aut", "cre"),
            email = "jacob.kastl@gmail.com"),
-    person(given = "Mirja",
-           family = "Hollmann",
-           role = c("aut"),
-           email = "mirja@2degrees-investing.org"),
     person(given = "2 Degrees Investing Initiative",
            role = c("cph", "fnd"),
            email = "contact@2degrees-investing.org"))
