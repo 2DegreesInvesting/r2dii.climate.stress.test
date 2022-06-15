@@ -41,6 +41,8 @@ test_that("with loans, without iteration, using minimum values of input argument
       input_path_project_specific = in_specific,
       input_path_project_agnostic = in_agnostic,
       output_path = out,
+      baseline_scenario = "ETP2017_NPS",
+      shock_scenario = "ETP2017_SDS",
       lgd_senior_claims = get_st_argument("lgd_senior_claims", "min"),
       lgd_subordinated_claims = get_st_argument("lgd_subordinated_claims", "min"),
       risk_free_rate = get_st_argument("risk_free_rate", "min"),
