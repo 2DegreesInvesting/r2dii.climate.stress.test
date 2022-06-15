@@ -479,7 +479,7 @@ harmonise_cap_fac_geo_names <- function(data) {
 process_price_data <- function(data, technologies, sectors, start_year, end_year,
                                scenarios_filter) {
 
-  # adding dummy unit price data for automotive data.
+  # adding dummy unit price data for automotive data
   if ("Automotive" %in% sectors) {
 
     auto_tech <- p4i_p4b_sector_technology_lookup %>%
