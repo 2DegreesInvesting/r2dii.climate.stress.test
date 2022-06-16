@@ -20,7 +20,7 @@ Transition Assessment (PACTA) tool, but can in principle be adapted to
 other settings. Application of the code requires availability of custom
 data. For more information about the methodology and inquiries on
 running a pilot of the stress test in cooperation with 2DII, please
-contact <jacob@2degrees-investing.org>.
+contact <stresstest@2degrees-investing.org>.
 
 ## Prerequisites
 

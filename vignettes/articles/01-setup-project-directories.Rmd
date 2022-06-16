@@ -26,7 +26,7 @@ The analysis builds on project-specific input files that contain information on
 the loan book to be analyzed and project-agnostic input files that contain
 auxiliary information required for the stress test. Detailed information about
 these files can be obtained from the pdf user manual. In case you need this
-document, please contact <jacob@2degrees-investing.org>.
+document, please contact <stresstest@2degrees-investing.org>.
 
 We recommend setting up one directory that contains project-specific input files and
 a separate one that contains project-agnostic input files.
