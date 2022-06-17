@@ -123,6 +123,8 @@ format_loanbook_st <- function(data,
     dplyr::select(-.data$scen_tech_prod)
 
   scen <- results_loanbook %>%
+    # values that are prefixed with "target_" denote scenario targets, whereas
+    # other entries are wither production forecast or benchmark values
     dplyr::filter(stringr::str_detect(.data$scenario, "target_")) %>%
     dplyr::select(
       -c(
