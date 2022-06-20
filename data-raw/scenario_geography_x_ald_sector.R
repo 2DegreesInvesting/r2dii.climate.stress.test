@@ -117,8 +117,6 @@ scenario_geography_x_ald_sector <- tibble::tribble(
                               "Europe",       "Coal",   "WEO2020_SPS",
                               "Europe",    "Oil&Gas",   "WEO2020_SPS",
                               "Europe",      "Power",   "WEO2020_SPS",
-                              "Global", "Automotive",   "ETP2017_NPS",
-                              "Global", "Automotive",   "ETP2017_SDS",
                               "Global", "Automotive", "GECO2019_1.5c",
                               "Global", "Automotive", "GECO2019_2c_m",
                               "Global", "Automotive",  "GECO2019_ref",
