@@ -93,13 +93,13 @@ run_prep_calculation_loans <- function(input_path_project_specific,
     dplyr::distinct_all()
 
   # Production forecast data
-  production_forecast_data <- validate_file_exists(file.path(input_path_project_agnostic, "2021-07-15_AR_2020Q4_PACTA-Data (3).xlsx")) %>%
+  production_forecast_data <- validate_file_exists(file.path(input_path_project_agnostic, "2022-04-07_AR_2021Q4_Free Dataset-PACTA for Banks-Equity Ownership Consolidation.xlsx")) %>%
     readxl::read_xlsx(
-      sheet = "Company Indicators - PACTA"
+      sheet = "Company Indicators - PACTA Comp"
     )
 
   # Scenario data - market share
-  scenario_data_market_share <- validate_file_exists(file.path(input_path_project_agnostic, "scenario_2020.csv")) %>%
+  scenario_data_market_share <- validate_file_exists(file.path(input_path_project_agnostic, "scenario_2021.csv")) %>%
     readr::read_csv(
       col_types = readr::cols(
         scenario_source = "c",
@@ -287,13 +287,6 @@ run_prep_calculation_loans <- function(input_path_project_specific,
       weight_production = FALSE
     ) %>%
     dplyr::rename(name_ald = .data$name_abcd) %>%
-    # TODO remove hard coded filtering in ADO 3129
-    dplyr::filter(
-      (.data$sector == "automotive" & .data$scenario_source == "etp_2017") |
-        (.data$sector == "coal" & .data$scenario_source == "weo_2019") |
-        (.data$sector == "oil and gas" & .data$scenario_source == "weo_2019") |
-        (.data$sector == "power" & .data$scenario_source == "weo_2019")
-    ) %>%
     dplyr::rename(
       production_unweighted = .data$production
     ) %>%

@@ -40,6 +40,7 @@ equity_market_filter_lookup <- "GlobalMarket"
 p4i_p4b_sector_technology_lookup <- tibble::tribble(
   ~sector_p4b,   ~technology_p4b,             ~sector_p4i,    ~technology_p4i,
   "automotive",  "electric",                 "Automotive",   "Electric",
+  "automotive",  "fuelcell",                 "Automotive",   "FuelCell",
   "automotive",  "hybrid",                   "Automotive",   "Hybrid",
   "automotive",  "ice",                      "Automotive",   "ICE",
   "coal",        "coal",                     "Coal",         "Coal",
@@ -61,26 +62,7 @@ p4i_p4b_sector_technology_lookup <- tibble::tribble(
   "steel",       "open hearth meltshop",     "Steel",        "Open Hearth Meltshop"
 )
 
-# scenario mapping between P4I and P4B
-# TODO: ADO 3129 - Implicit mapping of successor scenarios (SPS to NPS) should
-# be removed
-p4i_p4b_scenario_lookup <- tibble::tribble(
-  ~scenario_p4b,   ~scenario_p4i,
-  "target_cps",   "CPS",
-  "target_rts",   "NPS",
-  "target_sps",   "NPS",
-  "target_steps", "NPS",
-  "target_2ds",   "SDS",
-  "target_sds",   "SDS",
-  "target_b2ds",  "B2DS",
-)
 # styler: on
-
-# P4B scenario list
-p4b_scenarios_lookup <- c(
-  "target_b2ds", "target_cps", "target_rts", "target_sps", "target_steps",
-  "target_2ds", "target_sds"
-)
 
 # holds names of input arguments to run_stress_test that are not model parameters
 setup_vars_lookup <- c("input_path_project_agnostic", "input_path_project_specific", "output_path", "iter_var", "return_results")
