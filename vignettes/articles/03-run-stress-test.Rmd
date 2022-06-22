@@ -109,7 +109,10 @@ The meaning of each of the detail arguments is as follows:
 stress test. We use a business-as-usual scenario for the baseline.
 * `shock_scenario` holds the name of the scenario that companies are forced to
 transition to via a late and sudden shock. We use an ambitious transition
-scenario as the shock scenario.
+scenario as the shock scenario. (**NOTE:** In almost all use cases, it is
+advisable to use baseline and shock scenarios from the same scenario source. We
+do not recommend deviating from that, if you do not have a very particular
+reason to do so.)
 * `lgd_senior_claims` is the loss given default used in the expected loss
 calculation of loans for senior claims (notably for corporate loans, so this is
 a potentially important parameter in this calculation)
