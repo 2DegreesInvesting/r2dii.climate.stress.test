@@ -115,15 +115,15 @@ check_company_ticker_mapping <- function(data) {
 #'
 #' @return Returns input invisibly.
 check_expected_missings <- function(data) {
-  n_missings_production_plan_company_technology <- as.integer(sum(is.na(data$production_plan_company_technology)))
-  expected_n_missings_production_plan_company_technology <- as.integer(nrow(data) * as.integer((length(unique(data$year)) - (time_horizon_lookup + 1))) / as.integer(length(unique(data$year))))
+  n_missings_production_plan_company_technology <- sum(is.na(data$production_plan_company_technology))
+  expected_n_missings_production_plan_company_technology <- as.integer(nrow(data) * (length(unique(data$year)) - (time_horizon_lookup + 1)) / length(unique(data$year)))
 
   if (n_missings_production_plan_company_technology != expected_n_missings_production_plan_company_technology) {
     cat("-- Company Trajectories: Detected unexpected missings on variable production_plan_company_technology. \n")
   }
 
   n_missings_production_change_target_scenario <- sum(is.na(data$production_change_target_scenario))
-  expected_n_missings_production_change_target_scenario <- nrow(data) / length(unique(data$year))
+  expected_n_missings_production_change_target_scenario <- as.integer(nrow(data) / length(unique(data$year)))
 
   if (n_missings_production_change_target_scenario != expected_n_missings_production_change_target_scenario) {
     cat("-- Company Trajectories: Detected unexpected missings on variable production_change_target_scenario. \n")
