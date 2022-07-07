@@ -121,16 +121,16 @@
 </h3>
 <p>The data that needs to be created is a csv file named <code>company_terms.csv</code>. It holds the columns <code>company_name</code> (character, holding the name of analysed companies) and term (numeric, indicates which maturity the loans to respective companies is assumed to have in years). In column <code>company_name</code> include all unique company names from <code>Loans_results_company.rda</code>, which you generated in <a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-prepare-loans-inputs.html">prepare loans inputs</a>. If you want to use R to obtain this column you can take the following steps.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://readr.tidyverse.org" class="external-link">readr</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test">r2dii.climate.stress.test</a></span><span class="op">)</span>
-
-<span class="va">loans_results_company_file_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"/example_project/project_specific_input"</span>, <span class="st">"Loans_results_company.rda"</span><span class="op">)</span>
-<span class="fu"><a href="../reference/validate_file_exists.html">validate_file_exists</a></span><span class="op">(</span><span class="va">loans_results_company_file_path</span><span class="op">)</span>
-<span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">read_rds</a></span><span class="op">(</span><span class="va">loans_results_company_file_path</span><span class="op">)</span>
-<span class="va">unique_companies</span> <span class="op">&lt;-</span> <span class="va">data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
-  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">company_name</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
-  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="op">)</span>
-<span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/write_delim.html" class="external-link">write_csv</a></span><span class="op">(</span><span class="va">unique_companies</span>, <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"/example_project/project_specific_input"</span>, <span class="st">"company_terms.csv"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://readr.tidyverse.org" class="external-link">readr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test">r2dii.climate.stress.test</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">loans_results_company_file_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"/example_project/project_specific_input"</span>, <span class="st">"Loans_results_company.rda"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/validate_file_exists.html">validate_file_exists</a></span><span class="op">(</span><span class="va">loans_results_company_file_path</span><span class="op">)</span></span>
+<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">read_rds</a></span><span class="op">(</span><span class="va">loans_results_company_file_path</span><span class="op">)</span></span>
+<span><span class="va">unique_companies</span> <span class="op">&lt;-</span> <span class="va">data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">company_name</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/write_delim.html" class="external-link">write_csv</a></span><span class="op">(</span><span class="va">unique_companies</span>, <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"/example_project/project_specific_input"</span>, <span class="st">"company_terms.csv"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>You can now open this file in a tool of your choice, and add second column named term. In column <code>term</code> add the terms per company. Please make sure to save the result as a csv file again. Make sure that file is saved in folder holding project specific data.</p>
 <p><strong>NOTE:</strong></p>
 <ul>
@@ -144,14 +144,14 @@
 </h3>
 <p>Before including the file in your analysis you may want to validate that your file complies with requirements concerning structure and content. You may verify by executing the following lines of code. You will receive warning/error messages in case problems are detected.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://readr.tidyverse.org" class="external-link">readr</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test">r2dii.climate.stress.test</a></span><span class="op">)</span>
-
-<span class="va">company_terms_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"/example_project/project_specific_input"</span>, <span class="st">"company_terms.csv"</span><span class="op">)</span>
-<span class="fu"><a href="../reference/validate_file_exists.html">validate_file_exists</a></span><span class="op">(</span><span class="va">company_terms_path</span><span class="op">)</span>
-<span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span><span class="va">company_terms_path</span><span class="op">)</span>
-<span class="fu"><a href="../reference/validate_data_has_expected_cols.html">validate_data_has_expected_cols</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data</span>, expected_columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"company_name"</span>, <span class="st">"term"</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="../reference/check_company_terms.html">check_company_terms</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data</span>, interactive_mode <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://readr.tidyverse.org" class="external-link">readr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test">r2dii.climate.stress.test</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">company_terms_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"/example_project/project_specific_input"</span>, <span class="st">"company_terms.csv"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/validate_file_exists.html">validate_file_exists</a></span><span class="op">(</span><span class="va">company_terms_path</span><span class="op">)</span></span>
+<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span><span class="va">company_terms_path</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/validate_data_has_expected_cols.html">validate_data_has_expected_cols</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data</span>, expected_columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"company_name"</span>, <span class="st">"term"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/check_company_terms.html">check_company_terms</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data</span>, interactive_mode <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="placing-file-in-folder-structure">Placing file in folder structure<a class="anchor" aria-label="anchor" href="#placing-file-in-folder-structure"></a>
@@ -172,13 +172,13 @@
 </h3>
 <p>In order to include the company - term data in your analysis set argument <code>use_company_terms</code> to TRUE in the call to <code>run_stress_test</code>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/run_stress_test.html">run_stress_test</a></span><span class="op">(</span>
-  asset_type <span class="op">=</span> <span class="st">"loans"</span>,
-  input_path_project_specific <span class="op">=</span> <span class="st">"/example_project/project_specific_input"</span>,
-  input_path_project_agnostic <span class="op">=</span> <span class="st">"/example_project/project_agnostic_input/"</span>,
-  output_path <span class="op">=</span> <span class="st">"/example_project/output"</span>,
-  use_company_terms <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/run_stress_test.html">run_stress_test</a></span><span class="op">(</span></span>
+<span>  asset_type <span class="op">=</span> <span class="st">"loans"</span>,</span>
+<span>  input_path_project_specific <span class="op">=</span> <span class="st">"/example_project/project_specific_input"</span>,</span>
+<span>  input_path_project_agnostic <span class="op">=</span> <span class="st">"/example_project/project_agnostic_input/"</span>,</span>
+<span>  output_path <span class="op">=</span> <span class="st">"/example_project/output"</span>,</span>
+<span>  use_company_terms <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -208,23 +208,23 @@
 <p><strong>NOTE</strong>: No column, except for corporate_bond_ticker, may have missing values.</p>
 <p>In column <code>company_name</code> include all unique company names from <code>Loans_results_company.rda</code>, which you generated in <a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-prepare-loans-inputs.html">prepare loans inputs</a>. Running the following code will generate a dataset with all required columns. Column <code>campany_name</code> includes the unique company names, <code>company_id</code> includes a placeholder id, all other columns are empty.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://readr.tidyverse.org" class="external-link">readr</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test">r2dii.climate.stress.test</a></span><span class="op">)</span>
-
-<span class="va">loans_results_company_file_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"/example_project/project_specific_input"</span>, <span class="st">"Loans_results_company.rda"</span><span class="op">)</span>
-<span class="fu"><a href="../reference/validate_file_exists.html">validate_file_exists</a></span><span class="op">(</span><span class="va">loans_results_company_file_path</span><span class="op">)</span>
-<span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">read_rds</a></span><span class="op">(</span><span class="va">loans_results_company_file_path</span><span class="op">)</span>
-<span class="va">fin_companies</span> <span class="op">&lt;-</span> <span class="va">data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
-  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">company_name</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
-  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
-  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>
-    company_id <span class="op">=</span> <span class="fl">999</span>, 
-    corporate_bond_ticker <span class="op">=</span> <span class="cn">NA</span>,
-    pd <span class="op">=</span> <span class="cn">NA</span>,
-    net_profit_margin <span class="op">=</span> <span class="cn">NA</span>,
-    debt_equity_ratio <span class="op">=</span> <span class="cn">NA</span>,
-    volatility <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>
-<span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/write_delim.html" class="external-link">write_csv</a></span><span class="op">(</span><span class="va">fin_companies</span>, <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"/example_project/project_agnostic_input"</span>, <span class="st">"prewrangled_financial_data_stress_test.csv"</span><span class="op">)</span><span class="op">)</span> <span class="co"># NOTE that this will overwrite financial data currently stored at the location if available</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://readr.tidyverse.org" class="external-link">readr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test">r2dii.climate.stress.test</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">loans_results_company_file_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"/example_project/project_specific_input"</span>, <span class="st">"Loans_results_company.rda"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/validate_file_exists.html">validate_file_exists</a></span><span class="op">(</span><span class="va">loans_results_company_file_path</span><span class="op">)</span></span>
+<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">read_rds</a></span><span class="op">(</span><span class="va">loans_results_company_file_path</span><span class="op">)</span></span>
+<span><span class="va">fin_companies</span> <span class="op">&lt;-</span> <span class="va">data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">company_name</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
+<span>    company_id <span class="op">=</span> <span class="fl">999</span>, </span>
+<span>    corporate_bond_ticker <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>    pd <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>    net_profit_margin <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>    debt_equity_ratio <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>    volatility <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span></span>
+<span><span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/write_delim.html" class="external-link">write_csv</a></span><span class="op">(</span><span class="va">fin_companies</span>, <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"/example_project/project_agnostic_input"</span>, <span class="st">"prewrangled_financial_data_stress_test.csv"</span><span class="op">)</span><span class="op">)</span> <span class="co"># NOTE that this will overwrite financial data currently stored at the location if available</span></span></code></pre></div>
 <p>You can now open this file in a tool of your choice and fill in values for the remaining variables. For column <code>company_id</code> keep using a placeholder value (999 in example) and leave entries for <code>corporate_bond_ticker</code>as NA. Please make sure to save the result as a csv file again.</p>
 </div>
 <div class="section level3">
@@ -232,14 +232,14 @@
 </h3>
 <p>Before including the file in your analysis you may want to validate that your file complies with requirements concerning structure and content. You may verify by executing the following lines of code. You will receive warning/error messages in case problems are detected.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://readr.tidyverse.org" class="external-link">readr</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test">r2dii.climate.stress.test</a></span><span class="op">)</span>
-
-<span class="va">financial_data_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"/example_project/project_agnostic_input"</span>,
-                                 <span class="st">"prewrangled_financial_data_stress_test.csv"</span><span class="op">)</span>
-<span class="fu"><a href="../reference/validate_file_exists.html">validate_file_exists</a></span><span class="op">(</span><span class="va">financial_data_path</span><span class="op">)</span>
-<span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span><span class="va">financial_data_path</span><span class="op">)</span>
-<span class="fu"><a href="../reference/check_financial_data.html">check_financial_data</a></span><span class="op">(</span>financial_data <span class="op">=</span> <span class="va">data</span>, asset_type <span class="op">=</span> <span class="st">"loans"</span>, interactive_mode <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://readr.tidyverse.org" class="external-link">readr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test">r2dii.climate.stress.test</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">financial_data_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"/example_project/project_agnostic_input"</span>,</span>
+<span>                                 <span class="st">"prewrangled_financial_data_stress_test.csv"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/validate_file_exists.html">validate_file_exists</a></span><span class="op">(</span><span class="va">financial_data_path</span><span class="op">)</span></span>
+<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span><span class="va">financial_data_path</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/check_financial_data.html">check_financial_data</a></span><span class="op">(</span>financial_data <span class="op">=</span> <span class="va">data</span>, asset_type <span class="op">=</span> <span class="st">"loans"</span>, interactive_mode <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="placing-file-in-folder-structure-1">Placing file in folder structure<a class="anchor" aria-label="anchor" href="#placing-file-in-folder-structure-1"></a>
@@ -275,7 +275,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer>

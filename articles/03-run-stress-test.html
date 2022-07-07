@@ -113,19 +113,19 @@
 <p>The climate transition risk stress test can be run for a single set of parameters with one value per input argument or as a sensitivity analysis, where one of the input arguments is iterated over and gets a vector of parameters and all other arguments get one input value each. We will look at both cases.</p>
 <p>Use <code><a href="https://rdrr.io/r/base/library.html" class="external-link">library()</a></code> to attach the package</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test">r2dii.climate.stress.test</a></span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test">r2dii.climate.stress.test</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="running-the-stress-test-for-one-scenario">Running the Stress Test for one scenario<a class="anchor" aria-label="anchor" href="#running-the-stress-test-for-one-scenario"></a>
 </h2>
 <p>In order to run a stress test for loans on one set of parameters, the user needs to pass exactly one value per input argument to the function <code><a href="../reference/run_stress_test.html">run_stress_test()</a></code>. The only arguments that do not have a default value and must be set by the user are <code>asset_type</code> and the file paths. In this case, we want to run the stress test for loans, so the easiest way to obtain results is by running:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/run_stress_test.html">run_stress_test</a></span><span class="op">(</span>
-  asset_type <span class="op">=</span> <span class="st">"loans"</span>,
-  input_path_project_specific <span class="op">=</span> <span class="st">"/example_project/project_specific_input/"</span>,
-  input_path_project_agnostic <span class="op">=</span> <span class="st">"/example_project/project_agnostic_input/"</span>,
-  output_path <span class="op">=</span> <span class="st">"/example_project/output"</span>,
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/run_stress_test.html">run_stress_test</a></span><span class="op">(</span></span>
+<span>  asset_type <span class="op">=</span> <span class="st">"loans"</span>,</span>
+<span>  input_path_project_specific <span class="op">=</span> <span class="st">"/example_project/project_specific_input/"</span>,</span>
+<span>  input_path_project_agnostic <span class="op">=</span> <span class="st">"/example_project/project_agnostic_input/"</span>,</span>
+<span>  output_path <span class="op">=</span> <span class="st">"/example_project/output"</span>,</span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>This will calculate the stress test for loans and write the results along with a log file into the designated output directory, using the default values for all detail arguments.</p>
 <p><strong>NOTE:</strong> The default mode will <strong>not return</strong> any objects within the R session. We find this is the easiest and most user friendly way to obtain results. We alternatively provide the option that the function returns a list holding the result objects. This allows the user to inspect and further analyze the data directly in R.</p>
 <div class="section level3">
@@ -133,32 +133,32 @@
 </h3>
 <p>Specifications on the detail arguments are summarized in the following overview. The defaults that are used if the argument is not adjusted when calling <code><a href="../reference/run_stress_test.html">run_stress_test()</a></code> can be found in column <code>default</code>. The user may change any detail argument by explicitly passing it to the function. Note that there are allowed values for each of the inputs. For logical or character variables refer to column <code>allowed</code>, for numeric variables the allowed values are the range from <code>min</code> (inclusive) to <code>max</code> (inclusive).</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">stress_test_arguments</span>
-<span class="co">#&gt; <span style="color: #949494;"># A tibble: 13 × 6</span></span>
-<span class="co">#&gt;    name                    type      default     allowed             min   max  </span>
-<span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> asset_type              character <span style="color: #BB0000;">NA</span>          equity, bonds, loa… <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> baseline_scenario       character WEO2019_NPS WEO2019_NPS, ETP20… <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> shock_scenario          character WEO2019_SDS WEO2019_SDS, ETP20… <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> lgd_senior_claims       double    0.45        <span style="color: #BB0000;">NA</span>                  0.3   0.6  </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> lgd_subordinated_claims double    0.75        <span style="color: #BB0000;">NA</span>                  0.6   0.9  </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> risk_free_rate          double    0.02        <span style="color: #BB0000;">NA</span>                  0     0.05 </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> discount_rate           double    0.07        <span style="color: #BB0000;">NA</span>                  0.015 0.1  </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> growth_rate             double    0.03        <span style="color: #BB0000;">NA</span>                  0.01  0.099</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> div_netprofit_prop_coef double    1           <span style="color: #BB0000;">NA</span>                  0.8   1    </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">10</span> shock_year              double    2030        <span style="color: #BB0000;">NA</span>                  2025  2035 </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">11</span> fallback_term           double    2           <span style="color: #BB0000;">NA</span>                  1     5    </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">12</span> scenario_geography      character Global      AdvancedEconomies,… <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">13</span> use_company_terms       logical   FALSE       TRUE, FALSE         <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">stress_test_arguments</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 13 × 6</span></span></span>
+<span><span class="co">#&gt;    name                    type      default     allowed             min   max  </span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> asset_type              character <span style="color: #BB0000;">NA</span>          equity, bonds, loa… <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> baseline_scenario       character WEO2019_NPS WEO2019_NPS, ETP20… <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> shock_scenario          character WEO2019_SDS WEO2019_SDS, ETP20… <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> lgd_senior_claims       double    0.45        <span style="color: #BB0000;">NA</span>                  0.3   0.6  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> lgd_subordinated_claims double    0.75        <span style="color: #BB0000;">NA</span>                  0.6   0.9  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> risk_free_rate          double    0.02        <span style="color: #BB0000;">NA</span>                  0     0.05 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> discount_rate           double    0.07        <span style="color: #BB0000;">NA</span>                  0.015 0.1  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> growth_rate             double    0.03        <span style="color: #BB0000;">NA</span>                  0.01  0.099</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> div_netprofit_prop_coef double    1           <span style="color: #BB0000;">NA</span>                  0.8   1    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> shock_year              double    2030        <span style="color: #BB0000;">NA</span>                  2025  2035 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> fallback_term           double    2           <span style="color: #BB0000;">NA</span>                  1     5    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> scenario_geography      character Global      AdvancedEconomies,… <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">13</span> use_company_terms       logical   FALSE       TRUE, FALSE         <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span></span></span></code></pre></div>
 <p>Note that special special rules apply for the variables <code>baseline_scenario</code> and <code>shock_scenario</code>. Baseline and shock scenarios can in principle be selected from the following:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">scenarios</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">scenario_geography_x_ald_sector</span><span class="op">$</span><span class="va">scenario</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">scenarios</span><span class="op">)</span>
-<span class="co">#&gt; [1] "WEO2019_NPS" "ETP2017_NPS" "WEO2019_SDS" "ETP2017_SDS"</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">scenarios</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">scenario_geography_x_ald_sector</span><span class="op">$</span><span class="va">scenario</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">scenarios</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "WEO2019_NPS" "ETP2017_NPS" "WEO2019_SDS" "ETP2017_SDS"</span></span></code></pre></div>
 <p>Which scenarios are supported however depends on the analysed <code>sector</code> and <code>scenario_geography</code>. In <a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-prepare-loans-inputs.html">the vignette on loan book preparation</a> we explained how to infer which combinations of <code>sector</code> and <code>scenario_geography</code> are supported by the stress test. To infer which scenarios are supported for these combinations you can use the following helper function:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/scenario_for_sector_x_geography.html">scenario_for_sector_x_geography</a></span><span class="op">(</span><span class="st">"Coal"</span>, <span class="st">"Europe"</span><span class="op">)</span>
-<span class="co">#&gt; [1] "WEO2019_NPS" "WEO2019_SDS"</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/scenario_for_sector_x_geography.html">scenario_for_sector_x_geography</a></span><span class="op">(</span><span class="st">"Coal"</span>, <span class="st">"Europe"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "WEO2019_NPS" "WEO2019_SDS"</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="understanding-the-input-arguments">Understanding the input arguments<a class="anchor" aria-label="anchor" href="#understanding-the-input-arguments"></a>
@@ -198,14 +198,14 @@
 </h3>
 <p>The user may want to run a stress test that is tailored to their assumptions about a plausible transition risk shock scenario. For example, the user could decide to set a lower <code>risk_free_rate</code> and shock the companies earlier than by default, using:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/run_stress_test.html">run_stress_test</a></span><span class="op">(</span>
-  asset_type <span class="op">=</span> <span class="st">"loans"</span>,
-  input_path_project_specific <span class="op">=</span> <span class="st">"/example_project/project_specific_input/"</span>,
-  input_path_project_agnostic <span class="op">=</span> <span class="st">"/example_project/project_agnostic_input/"</span>,
-  output_path <span class="op">=</span> <span class="st">"/example_project/output"</span>,
-  risk_free_rate <span class="op">=</span> <span class="fl">0.01</span>,
-  shock_year <span class="op">=</span> <span class="fl">2028</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/run_stress_test.html">run_stress_test</a></span><span class="op">(</span></span>
+<span>  asset_type <span class="op">=</span> <span class="st">"loans"</span>,</span>
+<span>  input_path_project_specific <span class="op">=</span> <span class="st">"/example_project/project_specific_input/"</span>,</span>
+<span>  input_path_project_agnostic <span class="op">=</span> <span class="st">"/example_project/project_agnostic_input/"</span>,</span>
+<span>  output_path <span class="op">=</span> <span class="st">"/example_project/output"</span>,</span>
+<span>  risk_free_rate <span class="op">=</span> <span class="fl">0.01</span>,</span>
+<span>  shock_year <span class="op">=</span> <span class="fl">2028</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p><strong>NOTE:</strong> One important input argument that affects the behavior of where the results are written, is the argument <code>return_results</code>. Per default it is set to <code>FALSE</code>, which means that results are written as csv files to a sub directory in the <code>output_path</code> and the user must open these files to view the results. If the user wants to view the results directly in R, they can set the argument to <code>TRUE</code> which will return them as a list of data frames in the R session. This means they are not written to the designated <code>output_path</code> however, so the user must do this by themselves if the results ought to be kept. In this case, the user must still provide an output path though, as every calculation will write a log file.</p>
 </div>
 <div class="section level3">
@@ -233,13 +233,13 @@
 <p><strong>NOTE:</strong> It is not possible to iterate over <code>asset_type</code> and <code>term</code>.</p>
 <p>If the user wishes to understand the impact of the <code>shock_year</code> on the results for example, they can run the following:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/run_stress_test.html">run_stress_test</a></span><span class="op">(</span>
-  asset_type <span class="op">=</span> <span class="st">"loans"</span>,
-  input_path_project_specific <span class="op">=</span> <span class="st">"/example_project/project_specific_input/"</span>,
-  input_path_project_agnostic <span class="op">=</span> <span class="st">"/example_project/project_agnostic_input/"</span>,
-  output_path <span class="op">=</span> <span class="st">"/example_project/output"</span>,
-  shock_year <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2025</span>, <span class="fl">2028</span>, <span class="fl">2032</span>, <span class="fl">2035</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/run_stress_test.html">run_stress_test</a></span><span class="op">(</span></span>
+<span>  asset_type <span class="op">=</span> <span class="st">"loans"</span>,</span>
+<span>  input_path_project_specific <span class="op">=</span> <span class="st">"/example_project/project_specific_input/"</span>,</span>
+<span>  input_path_project_agnostic <span class="op">=</span> <span class="st">"/example_project/project_agnostic_input/"</span>,</span>
+<span>  output_path <span class="op">=</span> <span class="st">"/example_project/output"</span>,</span>
+<span>  shock_year <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2025</span>, <span class="fl">2028</span>, <span class="fl">2032</span>, <span class="fl">2035</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>This will yield outputs with four versions of the stress test, one for each of the shock years indicated. All the results will be written into one file per output type for ease of use, e.g.:</p>
 <ul>
 <li><code>loans_portfolio_value_changes_shock_year.csv</code></li>
@@ -252,14 +252,14 @@
 <p>When running a sensitivity analysis one one input, the user can still use other values than the default parameters for the other input arguments.</p>
 <p>For example, when iterating over the <code>shock_year</code>, it is still possible to use a <code>risk_free_rate</code> lower than the default like so:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/run_stress_test.html">run_stress_test</a></span><span class="op">(</span>
-  asset_type <span class="op">=</span> <span class="st">"loans"</span>,
-  input_path_project_specific <span class="op">=</span> <span class="st">"/example_project/project_specific_input/"</span>,
-  input_path_project_agnostic <span class="op">=</span> <span class="st">"/example_project/project_agnostic_input/"</span>,
-  output_path <span class="op">=</span> <span class="st">"/example_project/output"</span>,
-  risk_free_rate <span class="op">=</span> <span class="fl">0.01</span>,
-  shock_year <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2025</span>, <span class="fl">2028</span>, <span class="fl">2032</span>, <span class="fl">2035</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/run_stress_test.html">run_stress_test</a></span><span class="op">(</span></span>
+<span>  asset_type <span class="op">=</span> <span class="st">"loans"</span>,</span>
+<span>  input_path_project_specific <span class="op">=</span> <span class="st">"/example_project/project_specific_input/"</span>,</span>
+<span>  input_path_project_agnostic <span class="op">=</span> <span class="st">"/example_project/project_agnostic_input/"</span>,</span>
+<span>  output_path <span class="op">=</span> <span class="st">"/example_project/output"</span>,</span>
+<span>  risk_free_rate <span class="op">=</span> <span class="fl">0.01</span>,</span>
+<span>  shock_year <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2025</span>, <span class="fl">2028</span>, <span class="fl">2032</span>, <span class="fl">2035</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p><strong>NOTE</strong> that the selected detail arguments will be written to the result files so that it is always possible to understand which parameters were used in any given calculation.</p>
 </div>
 <div class="section level2">
@@ -286,7 +286,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer>
