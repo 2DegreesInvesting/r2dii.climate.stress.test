@@ -138,8 +138,8 @@
 <span><span class="co">#&gt;    name                    type      default     allowed             min   max  </span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> asset_type              character <span style="color: #BB0000;">NA</span>          equity, bonds, loa… <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> baseline_scenario       character WEO2019_NPS WEO2019_NPS, ETP20… <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> shock_scenario          character WEO2019_SDS WEO2019_SDS, ETP20… <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> baseline_scenario       character WEO2020_SPS WEO2019_SPS, WEO20… <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> shock_scenario          character WEO2020_SDS WEO2019_SDS, WEO20… <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> lgd_senior_claims       double    0.45        <span style="color: #BB0000;">NA</span>                  0.3   0.6  </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> lgd_subordinated_claims double    0.75        <span style="color: #BB0000;">NA</span>                  0.6   0.9  </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> risk_free_rate          double    0.02        <span style="color: #BB0000;">NA</span>                  0     0.05 </span></span>
@@ -154,11 +154,13 @@
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">scenarios</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">scenario_geography_x_ald_sector</span><span class="op">$</span><span class="va">scenario</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">scenarios</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "WEO2019_NPS" "ETP2017_NPS" "WEO2019_SDS" "ETP2017_SDS"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "WEO2019_SDS"   "WEO2019_SPS"   "WEO2020_SDS"   "WEO2020_SPS"  </span></span>
+<span><span class="co">#&gt; [5] "GECO2019_1.5c" "GECO2019_2c_m" "GECO2019_ref"</span></span></code></pre></div>
 <p>Which scenarios are supported however depends on the analysed <code>sector</code> and <code>scenario_geography</code>. In <a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-prepare-loans-inputs.html">the vignette on loan book preparation</a> we explained how to infer which combinations of <code>sector</code> and <code>scenario_geography</code> are supported by the stress test. To infer which scenarios are supported for these combinations you can use the following helper function:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/scenario_for_sector_x_geography.html">scenario_for_sector_x_geography</a></span><span class="op">(</span><span class="st">"Coal"</span>, <span class="st">"Europe"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "WEO2019_NPS" "WEO2019_SDS"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "WEO2019_SDS" "WEO2019_SPS" "WEO2020_SDS" "WEO2020_SPS"</span></span></code></pre></div>
+<p><strong>NOTE:</strong> It is <strong>strongly recommended</strong> to select a <code>baseline_scenario</code> and a <code>shock_scenario</code> from the same scenario source, as indicated by the part of the scenario name in front of the underscore symbol.</p>
 </div>
 <div class="section level3">
 <h3 id="understanding-the-input-arguments">Understanding the input arguments<a class="anchor" aria-label="anchor" href="#understanding-the-input-arguments"></a>
@@ -168,7 +170,7 @@
 <li>
 <code>baseline_scenario</code> holds the name of the baseline scenario to be used in the stress test. We use a business-as-usual scenario for the baseline.</li>
 <li>
-<code>shock_scenario</code> holds the name of the scenario that companies are forced to transition to via a late and sudden shock. We use an ambitious transition scenario as the shock scenario.</li>
+<code>shock_scenario</code> holds the name of the scenario that companies are forced to transition to via a late and sudden shock. We use an ambitious transition scenario as the shock scenario. (<strong>NOTE:</strong> In almost all use cases, it is advisable to use baseline and shock scenarios from the same scenario source. We do not recommend deviating from that, if you do not have a very particular reason to do so.)</li>
 <li>
 <code>lgd_senior_claims</code> is the loss given default used in the expected loss calculation of loans for senior claims (notably for corporate loans, so this is a potentially important parameter in this calculation)</li>
 <li>
