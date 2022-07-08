@@ -5,7 +5,7 @@
 \alias{scenario_geography_x_ald_sector}
 \title{A dataset describing valid combinations of scenario_geography and sector}
 \format{
-An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 92 rows and 3 columns.
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 184 rows and 3 columns.
 }
 \usage{
 scenario_geography_x_ald_sector
