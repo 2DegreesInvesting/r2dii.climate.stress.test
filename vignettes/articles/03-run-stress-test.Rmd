@@ -102,6 +102,10 @@ are supported for these combinations you can use the following helper function:
 scenario_for_sector_x_geography("Coal", "Europe")
 ```
 
+**NOTE:** It is **strongly recommended** to select a `baseline_scenario` and a
+`shock_scenario` from the same scenario source, as indicated by the part of the
+scenario name in front of the underscore symbol.
+
 ### Understanding the input arguments
 The meaning of each of the detail arguments is as follows:
 
