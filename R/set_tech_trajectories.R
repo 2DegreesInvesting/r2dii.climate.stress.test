@@ -430,3 +430,197 @@ filter_negative_late_and_sudden <- function(data_with_late_and_sudden, log_path)
 
   return(data_with_late_and_sudden)
 }
+
+#' Defines which scenario values to use for the production trajectory after a
+#' litigation event in the LRISK stress test.
+#'
+#' @description
+#' Picks the corresponding values from the original scenario
+#' column indicated in the input and has the option to include PACTA based
+#' production forecast for the first few years of the late & sudden
+#' trajectory. Similarly, it is possible to define another input scenario
+#' in case the company is already aligned after the production forecast.
+#' If the production forecast is included, the trajectory after the end of
+#' the production forecast is offset by the initial production forecast
+#' so that the remainder of the late & sudden trajectory now is a parallel
+#' shift of the original scenario values. If not included, the trajectories
+#' replicate externally provided scenario trajectories at least until the
+#' year of the policy shock.
+#' Trajectories are calculated for each company by sector, scenario_geography,
+#' technology, year.
+#' If no "id" or "company_name" are provided, the calculation switches to
+#' portfolio/technology level.
+#' @inheritParams report_company_drops
+#' @param data A dataframe that contains the scenario data prepared until the
+#'   step after the baseline trajectories are calculated.
+#' @param litigation_scenario Character. A string that indicates which
+#'   of the scenarios included in the analysis should be used to set the
+#'   technology trajectories post litigation event.
+#' @param shock_scenario A dataframe that contains information about the
+#'   transition scenario, specifically the shock year and, duration of the
+#'   shock and the name of the shock scenario
+#' @param litigation_scenario_aligned Character. A string that indicates which
+#'   of the scenarios included in the analysis should be used to set the
+#'   technology trajectories post litigation event in case the company is
+#'   aligned after the forecast period.
+#' @param start_year Numeric. A numeric vector of length 1 that contains the
+#'   start year of the analysis.
+#' @param end_year Numeric. A numeric vector of length 1 that contains the
+#'   end year of the analysis.
+#' @param analysis_time_frame Numeric. A vector of length 1 indicating the number
+#'   of years for which forward looking production data is considered.
+#'
+#' @return data frame
+set_litigation_trajectory <- function(data,
+                              litigation_scenario,
+                              shock_scenario,
+                              litigation_scenario_aligned,
+                              start_year = 2020,
+                              end_year = 2040,
+                              analysis_time_frame = NULL,
+                              log_path = NULL) {
+  analysis_time_frame %||% stop("Must provide input for 'time_frame'", call. = FALSE)
+
+  if (!"id" %in% names(data)) {
+    data$id <- "PortfolioLevel"
+  }
+  if (!"company_name" %in% names(data)) {
+    data$company_name <- "PortfolioLevel"
+  }
+
+  validate_data_has_expected_cols(
+    data = data,
+    expected_columns = c(
+      "investor_name", "portfolio_name", "id", "company_name",
+      "ald_sector", "technology", "scenario_geography",
+      "plan_tech_prod", "plan_emission_factor", "baseline",
+      litigation_scenario, litigation_scenario_aligned
+    )
+  )
+
+  validate_data_has_expected_cols(
+    data = shock_scenario,
+    expected_columns = c(
+      "year_of_shock", "duration_of_shock", "scenario_name"
+    )
+  )
+
+  scenario_name <- shock_scenario$scenario_name
+  year_of_shock <- shock_scenario$year_of_shock
+  duration_of_shock <- shock_scenario$duration_of_shock
+
+  # In LRISK, companies are forced to follow the scenario targets post
+  # litigation event. Hence no compensation mechanism is built in. A potential
+  # previous overshoot is compensated by paying the litigation cost.
+  # We also currently only penalize companies for breaching the carbon budget on
+  # declining types of capital stock or technologies. They are not sued for not
+  # building out increasing technologies fast enough.
+  data <- data %>%
+    dplyr::group_by(
+      .data$investor_name,
+      .data$portfolio_name,
+      .data$id,
+      .data$company_name,
+      .data$ald_sector,
+      .data$technology,
+      .data$scenario_geography
+    ) %>%
+    dplyr::mutate(
+      scenario_name = .env$scenario_name,
+      scen_to_follow = !!rlang::sym(litigation_scenario),
+      scen_to_follow_aligned = !!rlang::sym(litigation_scenario_aligned),
+      scen_to_follow_change = .data$scen_to_follow - dplyr::lag(.data$scen_to_follow),
+      scen_to_follow_aligned_change = .data$scen_to_follow_aligned - dplyr::lag(.data$scen_to_follow_aligned),
+      baseline_scenario_change = .data$baseline - dplyr::lag(.data$baseline),
+      late_sudden = .data$plan_tech_prod
+    ) %>%
+    dplyr::ungroup()
+
+  reference_production <- data %>%
+    dplyr::filter(.data$year == .env$start_year + .env$analysis_time_frame) %>%
+    dplyr::select(
+      .data$investor_name,
+      .data$portfolio_name,
+      .data$id,
+      .data$company_name,
+      .data$ald_sector,
+      .data$technology,
+      .data$scenario_geography,
+      .data$plan_tech_prod
+    ) %>%
+    dplyr::rename(
+      reference_tech_prod = .data$plan_tech_prod
+    )
+
+  data <- data %>%
+    dplyr::group_by(
+      .data$investor_name,
+      .data$portfolio_name,
+      .data$id,
+      .data$company_name,
+      .data$ald_sector,
+      .data$technology,
+      .data$scenario_geography
+    ) %>%
+    dplyr::mutate(
+      aligned = dplyr::if_else(
+        .data$direction == "declining" &
+          sum(.data$scen_to_follow[1:.env$analysis_time_frame], na.rm = TRUE) <
+          sum(.data$late_sudden[1:.env$analysis_time_frame], na.rm = TRUE) |
+          .data$direction == "increasing" &
+          sum(.data$scen_to_follow[1:.env$analysis_time_frame], na.rm = TRUE) >
+          sum(.data$late_sudden[1:.env$analysis_time_frame], na.rm = TRUE),
+        FALSE,
+        TRUE
+      )
+    ) %>%
+    dplyr::ungroup()
+
+  data <- data %>%
+    dplyr::inner_join(
+      reference_production,
+      by = c(
+        "investor_name", "portfolio_name", "id", "company_name", "ald_sector",
+        "technology", "scenario_geography"
+      )
+    )
+
+  data_extended <- data %>%
+    dplyr::filter(.data$year > .env$start_year + .env$analysis_time_frame) %>%
+    dplyr::group_by(
+      .data$investor_name,
+      .data$portfolio_name,
+      .data$id,
+      .data$company_name,
+      .data$ald_sector,
+      .data$technology,
+      .data$scenario_geography
+    ) %>%
+    dplyr::mutate(
+      late_sudden = dplyr::if_else(
+        .data$aligned,
+        .data$reference_tech_prod + cumsum(scen_to_follow_aligned_change),
+        .data$reference_tech_prod + cumsum(baseline_scenario_change)
+      )
+    ) %>%
+    dplyr::ungroup()
+
+  data_forecast <- data %>%
+    dplyr::filter(.data$year <= .env$start_year + .env$analysis_time_frame)
+
+  data <- data_forecast %>%
+    dplyr::bind_rows(data_extended) %>%
+    dplyr::arrange(
+      .data$investor_name,
+      .data$portfolio_name,
+      .data$id,
+      .data$company_name,
+      .data$scenario_geography,
+      .data$ald_sector,
+      .data$technology
+    )
+
+  data <- filter_negative_late_and_sudden(data, log_path = log_path)
+
+  return(data)
+}

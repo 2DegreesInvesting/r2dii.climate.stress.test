@@ -274,11 +274,11 @@ browser()
     set_baseline_trajectory(
       scenario_to_follow_baseline = tolower(baseline_scenario)
     ) %>%
-    # TODO: what should be the mechanism for the late_sudden/shock scenario?
-    set_ls_trajectory(
-      scenario_to_follow_ls = tolower(shock_scenario),
+    # TODO: also extend plan_emission_factor somehow
+    set_litigation_trajectory(
+      litigation_scenario = tolower(shock_scenario),
       shock_scenario = transition_scenario,
-      scenario_to_follow_ls_aligned = tolower(shock_scenario),
+      litigation_scenario_aligned = tolower(shock_scenario),
       start_year = start_year,
       end_year = end_year_lookup,
       analysis_time_frame = time_horizon_lookup,
