@@ -257,7 +257,10 @@ run_lrisk <- function(asset_type,
       late_sudden_price = !!rlang::sym(glue::glue("price_{shock_scenario}"))
     )
 browser()
-  # TODO: how to extend the emission factors of the scenario? is this provided by raw scenario?
+  # setting emission_factors = TRUE will make the function extend the EF targets
+  # by applying the TMSR to the initial EF value (current solution in PACTA)
+  # this should at some point be replaced with a proper SDA function for targets
+  # for emission factors, but this is not yet implemented.
   extended_pacta_results <- input_data_list$pacta_results %>%
     extend_scenario_trajectory(
       scenario_data = input_data_list$scenario_data,
