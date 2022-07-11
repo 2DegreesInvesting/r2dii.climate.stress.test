@@ -93,7 +93,7 @@ run_lrisk <- function(asset_type,
 
   # browser()
 
-  cat("-- Running transition risk stress test. \n\n\n")
+  cat("-- Running litigation risk stress test. \n\n\n")
 
   args_list <- mget(names(formals()), sys.frame(sys.nframe())) %>%
     fail_if_input_args_are_missing()
@@ -210,7 +210,7 @@ run_lrisk <- function(asset_type,
     log_path = log_path
   )
 
-  browser()
+  # browser()
 
   port_aum <- calculate_aum(input_data_list$sector_exposures)
 
@@ -256,7 +256,7 @@ run_lrisk <- function(asset_type,
       Baseline_price = !!rlang::sym(glue::glue("price_{baseline_scenario}")),
       late_sudden_price = !!rlang::sym(glue::glue("price_{shock_scenario}"))
     )
-
+browser()
   # TODO: how to extend the emission factors of the scenario? is this provided by raw scenario?
   extended_pacta_results <- input_data_list$pacta_results %>%
     extend_scenario_trajectory(
@@ -264,21 +264,25 @@ run_lrisk <- function(asset_type,
       start_analysis = start_year,
       end_analysis = end_year_lookup,
       time_frame = time_horizon_lookup,
-      target_scenario = shock_scenario
+      baseline_scenario = baseline_scenario,
+      target_scenario = shock_scenario,
+      emission_factors = TRUE
     ) %>%
     set_baseline_trajectory(
-      scenario_to_follow_baseline = baseline_scenario
+      scenario_to_follow_baseline = tolower(baseline_scenario)
     ) %>%
+    # TODO: what should be the mechanism for the late_sudden/shock scenario?
     set_ls_trajectory(
-      scenario_to_follow_ls = shock_scenario,
+      scenario_to_follow_ls = tolower(shock_scenario),
       shock_scenario = transition_scenario,
-      scenario_to_follow_ls_aligned = shock_scenario,
+      scenario_to_follow_ls_aligned = tolower(shock_scenario),
       start_year = start_year,
       end_year = end_year_lookup,
       analysis_time_frame = time_horizon_lookup,
       log_path = log_path
     )
 
+  # TODO: Calculate costs not just as diff to production trajectory, but add the SCC penalty
 
 
 }
