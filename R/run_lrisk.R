@@ -59,7 +59,7 @@
 #' @param reset_post_settlement bla
 #' @param exp_share_damages_paid bla
 #' @param scc bla
-#' @param timeframe_emissions_overshoot bla
+#' @param years_to_litigation_event bla
 #' @param return_results Boolean, indicating if results shall be exported.
 #' @return NULL
 #' @export
@@ -88,7 +88,7 @@ run_lrisk <- function(asset_type,
                             exp_share_damages_paid = 0.027,
                             scc = 40L,
                       # TODO: can this ever deviate from the forward looking horizon?
-                            timeframe_emissions_overshoot = 5L,
+                            years_to_litigation_event = 5L,
                             return_results = FALSE) {
 
   # browser()
@@ -157,7 +157,7 @@ run_lrisk <- function(asset_type,
     scenario_geography = scenario_geography
   )
 
-  years_to_litigation_event <- years_to_litigation_event_lookup
+  # years_to_litigation_event <- years_to_litigation_event_lookup
 
   #---- read data
 
@@ -214,15 +214,22 @@ run_lrisk <- function(asset_type,
 
   port_aum <- calculate_aum(input_data_list$sector_exposures)
 
-  transition_scenario <- generate_transition_shocks(
+  # transition_scenario <- generate_transition_shocks(
+  #   start_of_analysis = start_year,
+  #   end_of_analysis = end_year_lookup,
+  #   shock_year = shock_year
+  # )
+
+  litigation_scenario <- tibble::tibble(
+    scenario_name = glue::glue("SCC_{year_litigation_event}"),
+    model = "SCC",
+    exp_share_damages_paid = exp_share_damages_paid,
+    scc = scc,
+    # timeframe_emissions_overshoot = timeframe_emissions_overshoot,
     start_of_analysis = start_year,
     end_of_analysis = end_year_lookup,
-    shock_year = shock_year
-  )
-
-  litigation_scenario <- tibble::tribble(
-    ~litigation_scenario, ~model, ~exp_share_damages_paid, ~scc, ~timeframe_emissions_overshoot,
-    glue::glue("SCC_{year_litigation_event}"),  "SCC",  exp_share_damages_paid,  exp_share_damages_paid,  timeframe_emissions_overshoot
+    # shock_year = year_litigation_event
+    year_of_shock = year_litigation_event
   )
 
   cat("-- Calculating market risk. \n")
@@ -256,7 +263,7 @@ run_lrisk <- function(asset_type,
       Baseline_price = !!rlang::sym(glue::glue("price_{baseline_scenario}")),
       late_sudden_price = !!rlang::sym(glue::glue("price_{shock_scenario}"))
     )
-browser()
+# browser()
   # setting emission_factors = TRUE will make the function extend the EF targets
   # by applying the TMSR to the initial EF value (current solution in PACTA)
   # this should at some point be replaced with a proper SDA function for targets
@@ -274,16 +281,87 @@ browser()
     set_baseline_trajectory(
       scenario_to_follow_baseline = tolower(baseline_scenario)
     ) %>%
-    # TODO: also extend plan_emission_factor somehow
+    # we currently assume that production levels and emission factors of
+    # misaligned company-technology combinations are forced onto the target
+    # scenario trajectory directly after the litigation shock.
+    # This may not be perfectly realistic and may be refined in the future.
     set_litigation_trajectory(
       litigation_scenario = tolower(shock_scenario),
-      shock_scenario = transition_scenario,
+      shock_scenario = litigation_scenario,
       litigation_scenario_aligned = tolower(shock_scenario),
       start_year = start_year,
       end_year = end_year_lookup,
       analysis_time_frame = time_horizon_lookup,
       log_path = log_path
+    ) %>%
+    dplyr::mutate(
+      actual_emissions = .data$late_sudden * .data$late_sudden_ef,
+      allowed_emissions = !!rlang::sym(tolower(shock_scenario)) * .data$scen_to_follow_aligned_ef,
+      overshoot_emissions = dplyr::if_else(
+        .data$actual_emissions - .data$allowed_emissions < 0,
+        0,
+        .data$actual_emissions - .data$allowed_emissions
+      )
     )
+
+  if (asset_type == "bonds") {
+    merge_cols <- c("company_name", "id" = "corporate_bond_ticker")
+  } else {
+    merge_cols <- c("company_name")
+  }
+
+  extended_pacta_results_with_financials <- extended_pacta_results %>%
+    dplyr::inner_join(
+      y = input_data_list$financial_data,
+      by = merge_cols
+    ) %>%
+    fill_annual_profit_cols()
+browser()
+  annual_profits <- extended_pacta_results_with_financials %>%
+    join_price_data(df_prices = price_data) %>%
+    calculate_net_profits()
+
+  # TODO: aligned companies still get litigation costs... check prior calcs
+  annual_profits1 <- annual_profits %>%
+    # scc_company_i <- company_carbon_budgets %>%
+    dplyr::mutate(
+      scc_liability =
+        .data$overshoot_emissions * litigation_scenario$scc *
+        litigation_scenario$exp_share_damages_paid
+    ) %>%
+    dplyr::group_by(company_name, ald_sector, technology) %>%
+    dplyr::mutate(
+      settlement = sum(.data$scc_liability, na.rm = TRUE) * settlement_factor
+    ) %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(
+      net_profits_ls = dplyr::if_else(
+        year == litigation_scenario$year_of_shock,
+        .data$net_profits_ls - .data$settlement,
+        .data$net_profits_ls
+      )
+    )
+
+
+
+  annual_profits <- annual_profits %>%
+    # TODO: calculate the litigation penalty
+    # TODO: profit in litigation year = profit minus penalty
+    dcf_model_techlevel(discount_rate = discount_rate) %>%
+    # TODO: ADO 879 - note rows with zero profits/NPVs will produce NaN in the Merton model
+    dplyr::filter(!is.na(company_id))
+
+
+
+  annual_profits <- annual_profits %>%
+    calculate_terminal_value(
+      end_year = end_year,
+      growth_rate = growth_rate,
+      discount_rate = discount_rate,
+      baseline_scenario = scenario_to_follow_baseline,
+      shock_scenario = scenario_to_follow_shock
+    )
+
 
   # TODO: Calculate costs not just as diff to production trajectory, but add the SCC penalty
 

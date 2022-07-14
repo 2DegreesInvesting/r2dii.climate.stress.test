@@ -40,7 +40,8 @@ set_baseline_trajectory <- function(data,
     expected_columns = c(
       "investor_name", "portfolio_name", "id", "company_name",
       "ald_sector", "technology", "scenario_geography",
-      "plan_tech_prod", scenario_to_follow_baseline
+      "plan_tech_prod", "plan_emission_factor", scenario_to_follow_baseline,
+      glue::glue("target_ef_{scenario_to_follow_baseline}")
     )
   )
 
@@ -55,13 +56,19 @@ set_baseline_trajectory <- function(data,
       .data$scenario_geography
     ) %>%
     dplyr::mutate(
-      scen_to_follow = !!rlang::sym(scenario_to_follow_baseline)
+      scen_to_follow = !!rlang::sym(scenario_to_follow_baseline),
+      scen_to_follow_ef = !!rlang::sym(glue::glue("target_ef_{scenario_to_follow_baseline}"))
     ) %>%
     dplyr::mutate(
       scenario_change = .data$scen_to_follow - dplyr::lag(.data$scen_to_follow),
       baseline = calc_future_prod_follows_scen(
         planned_prod = .data$plan_tech_prod,
         change_scen_prod = .data$scenario_change
+      ),
+      scenario_change_ef = .data$scen_to_follow_ef - dplyr::lag(.data$scen_to_follow_ef),
+      baseline_ef = calc_future_ef_follows_scen(
+        planned_ef = .data$plan_emission_factor,
+        change_scen_ef = .data$scenario_change_ef
       )
     ) %>%
     dplyr::ungroup() %>%
@@ -102,6 +109,17 @@ calc_future_prod_follows_scen <- function(planned_prod = .data$plan_tech_prod,
   }
 
   planned_prod
+}
+
+calc_future_ef_follows_scen <- function(planned_ef = .data$plan_tech_emission_factor,
+                                          change_scen_ef = .data$scenario_change_ef) {
+  first_ef_na <- which(is.na(planned_ef))[1]
+
+  for (i in seq(first_ef_na, length(planned_ef))) {
+    planned_ef[i] <- planned_ef[i - 1] + change_scen_ef[i]
+  }
+
+  planned_ef
 }
 
 
@@ -494,20 +512,21 @@ set_litigation_trajectory <- function(data,
       "investor_name", "portfolio_name", "id", "company_name",
       "ald_sector", "technology", "scenario_geography",
       "plan_tech_prod", "plan_emission_factor", "baseline",
-      litigation_scenario, litigation_scenario_aligned
+      litigation_scenario, litigation_scenario_aligned,
+      glue::glue("target_ef_{litigation_scenario}")
     )
   )
 
   validate_data_has_expected_cols(
     data = shock_scenario,
     expected_columns = c(
-      "year_of_shock", "duration_of_shock", "scenario_name"
+      "year_of_shock", "scenario_name"
     )
   )
 
   scenario_name <- shock_scenario$scenario_name
   year_of_shock <- shock_scenario$year_of_shock
-  duration_of_shock <- shock_scenario$duration_of_shock
+  # duration_of_shock <- shock_scenario$duration_of_shock
 
   # In LRISK, companies are forced to follow the scenario targets post
   # litigation event. Hence no compensation mechanism is built in. A potential
@@ -526,17 +545,23 @@ set_litigation_trajectory <- function(data,
       .data$scenario_geography
     ) %>%
     dplyr::mutate(
-      scenario_name = .env$scenario_name,
+      scenario_name = shock_scenario$scenario_name,
       scen_to_follow = !!rlang::sym(litigation_scenario),
       scen_to_follow_aligned = !!rlang::sym(litigation_scenario_aligned),
       scen_to_follow_change = .data$scen_to_follow - dplyr::lag(.data$scen_to_follow),
       scen_to_follow_aligned_change = .data$scen_to_follow_aligned - dplyr::lag(.data$scen_to_follow_aligned),
       baseline_scenario_change = .data$baseline - dplyr::lag(.data$baseline),
-      late_sudden = .data$plan_tech_prod
+      late_sudden = .data$plan_tech_prod,
+      scen_to_follow_ef = !!rlang::sym(glue::glue("target_ef_{litigation_scenario}")),
+      scen_to_follow_aligned_ef = !!rlang::sym(glue::glue("target_ef_{litigation_scenario_aligned}")),
+      scen_to_follow_change_ef = .data$scen_to_follow_ef - dplyr::lag(.data$scen_to_follow_ef),
+      scen_to_follow_aligned_change_ef = .data$scen_to_follow_aligned_ef - dplyr::lag(.data$scen_to_follow_aligned_ef),
+      baseline_scenario_change_ef = .data$baseline_ef - dplyr::lag(.data$baseline_ef),
+      late_sudden_ef = .data$plan_emission_factor
     ) %>%
     dplyr::ungroup()
 
-  reference_production <- data %>%
+  reference <- data %>%
     dplyr::filter(.data$year == .env$start_year + .env$analysis_time_frame) %>%
     dplyr::select(
       .data$investor_name,
@@ -546,10 +571,12 @@ set_litigation_trajectory <- function(data,
       .data$ald_sector,
       .data$technology,
       .data$scenario_geography,
-      .data$plan_tech_prod
+      .data$plan_tech_prod,
+      .data$plan_emission_factor
     ) %>%
     dplyr::rename(
-      reference_tech_prod = .data$plan_tech_prod
+      reference_tech_prod = .data$plan_tech_prod,
+      reference_emission_factor = .data$plan_emission_factor
     )
 
   data <- data %>%
@@ -578,7 +605,7 @@ set_litigation_trajectory <- function(data,
 
   data <- data %>%
     dplyr::inner_join(
-      reference_production,
+      reference,
       by = c(
         "investor_name", "portfolio_name", "id", "company_name", "ald_sector",
         "technology", "scenario_geography"
@@ -601,6 +628,11 @@ set_litigation_trajectory <- function(data,
         .data$aligned,
         .data$reference_tech_prod + cumsum(scen_to_follow_aligned_change),
         .data$reference_tech_prod + cumsum(baseline_scenario_change)
+      ),
+      late_sudden_ef = dplyr::if_else(
+        .data$aligned,
+        .data$reference_emission_factor + cumsum(scen_to_follow_aligned_change_ef),
+        .data$reference_emission_factor + cumsum(baseline_scenario_change_ef)
       )
     ) %>%
     dplyr::ungroup()
@@ -618,6 +650,20 @@ set_litigation_trajectory <- function(data,
       .data$scenario_geography,
       .data$ald_sector,
       .data$technology
+    )
+
+  data <- data %>%
+    dplyr::mutate(
+      late_sudden = dplyr::if_else(
+        !.data$aligned & .data$year > shock_scenario$year_of_shock,
+        .data$scen_to_follow,
+        .data$late_sudden
+      ),
+      late_sudden_ef = dplyr::if_else(
+        !.data$aligned & .data$year > shock_scenario$year_of_shock,
+        .data$scen_to_follow_aligned_ef,
+        .data$late_sudden_ef
+      )
     )
 
   data <- filter_negative_late_and_sudden(data, log_path = log_path)
