@@ -51,9 +51,16 @@
 #'   companies are to be used. For accepted values compare
 #'   `stress_test_arguments`. Note that currently this functionality is not
 #'   available for asset_type bonds.
-#' @param settlement_factor bla
-#' @param exp_share_damages_paid bla
-#' @param scc bla
+#' @param settlement_factor Catch all factor (ratio) that can be used to adjust the
+#'   expected payout of the settlement due to further data gaps. Set to 1 by
+#'   default.
+#' @param exp_share_damages_paid Numeric. Ratio that defines the expected share
+#'   of the calculated social cost of carbon that is considered in the liability.
+#'   This can follow historical precendents such as the Tobacco Master
+#'   Settlement that had a an expected share of 2.7% of the damages paid.
+#' @param scc Numeric. Social cost of carbon per excess ton of CO2 emitted. This
+#'   is the price for each surplus ton of CO2 that goes into the calculation of
+#'   the carbon liability of a company.
 #' @param return_results Boolean, indicating if results shall be exported.
 #' @return NULL
 #' @export
