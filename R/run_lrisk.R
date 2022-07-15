@@ -64,35 +64,32 @@
 #' @return NULL
 #' @export
 run_lrisk <- function(asset_type,
-                            input_path_project_specific,
-                            input_path_project_agnostic,
-                            output_path,
-                            baseline_scenario = "WEO2020_SPS",
-                            shock_scenario = "WEO2020_SDS",
-                            lgd_senior_claims = 0.45,
-                            lgd_subordinated_claims = 0.75,
-                            risk_free_rate = 0.02,
-                            discount_rate = 0.07,
-                            growth_rate = 0.03,
-                            div_netprofit_prop_coef = 1,
-                            shock_year = 2030,
-                            fallback_term = 2,
-                            scenario_geography = "Global",
-                            use_company_terms = FALSE,
-                            chance_within_target = 0.66,
-                            settlement_factor = 1,
-                            percentage_in_terminal_value = 0.1,
-                            percentage_rev_transition_sectors = 1,
-                            net_profit_margin = 0.1,
-                            reset_post_settlement = "start",
-                            exp_share_damages_paid = 0.027,
-                            scc = 40L,
+                      input_path_project_specific,
+                      input_path_project_agnostic,
+                      output_path,
+                      baseline_scenario = "WEO2020_SPS",
+                      shock_scenario = "WEO2020_SDS",
+                      lgd_senior_claims = 0.45,
+                      lgd_subordinated_claims = 0.75,
+                      risk_free_rate = 0.02,
+                      discount_rate = 0.07,
+                      growth_rate = 0.03,
+                      div_netprofit_prop_coef = 1,
+                      shock_year = 2030,
+                      fallback_term = 2,
+                      scenario_geography = "Global",
+                      use_company_terms = FALSE,
+                      chance_within_target = 0.66,
+                      settlement_factor = 1,
+                      percentage_in_terminal_value = 0.1,
+                      percentage_rev_transition_sectors = 1,
+                      net_profit_margin = 0.1,
+                      reset_post_settlement = "start",
+                      exp_share_damages_paid = 0.027,
+                      scc = 40L,
                       # TODO: can this ever deviate from the forward looking horizon?
-                            years_to_litigation_event = 5L,
-                            return_results = FALSE) {
-
-  # browser()
-
+                      years_to_litigation_event = 5L,
+                      return_results = FALSE) {
   cat("-- Running litigation risk stress test. \n\n\n")
 
   args_list <- mget(names(formals()), sys.frame(sys.nframe())) %>%
@@ -123,33 +120,124 @@ run_lrisk <- function(asset_type,
     iter_var = iter_var
   )
 
+  st_results_list <- run_lrisk_iteration(args_list)
+
+  result_names <- names(st_results_list[[1]])
+  st_results <- result_names %>%
+    purrr::map(function(tib) {
+      purrr::map_dfr(st_results_list, `[[`, tib)
+    }) %>%
+    purrr::set_names(result_names)
+
+  st_results_aggregated <- aggregate_results(
+    results_list = st_results,
+    sensitivity_analysis_vars = names(args_list)[!names(args_list) %in% setup_vars_lookup],
+    iter_var = iter_var
+  )
+
+  st_results_wrangled_and_checked <- wrangle_results(
+    results_list = st_results_aggregated,
+    sensitivity_analysis_vars = names(args_list)[!names(args_list) %in% setup_vars_lookup]
+  ) %>%
+    check_results(
+      sensitivity_analysis_vars = names(args_list)[!names(args_list) %in% setup_vars_lookup]
+    )
+
+  if (return_results) {
+    return(st_results_wrangled_and_checked)
+  }
+
+  write_stress_test_results(
+    results_list = st_results_wrangled_and_checked,
+    asset_type = asset_type,
+    iter_var = iter_var,
+    output_path = args_list$output_path
+  )
+
+  cat("-- Exported results to designated output path. \n")
+}
+
+run_lrisk_iteration <- function(args_list) {
+  run_stress_test_iteration_once <- function(arg_tibble_row) {
+    arg_list_row <- arg_tibble_row %>%
+      dplyr::select(-.data$return_results) %>%
+      as.list()
+
+    arg_tibble_row <- arg_tibble_row %>%
+      dplyr::select(-dplyr::all_of(setup_vars_lookup)) %>%
+      dplyr::rename_with(~ paste0(.x, "_arg"))
+
+    st_result <- read_and_process_and_calc_lrisk(arg_list_row) %>%
+      purrr::map(dplyr::bind_cols, data_y = arg_tibble_row)
+
+    return(st_result)
+  }
+
+  iter_var <- get_iter_var(args_list)
+  args_tibble <- tibble::as_tibble(args_list) %>%
+    dplyr::mutate(iter_var = .env$iter_var)
+
+  out <- iteration_sequence(args_list) %>%
+    purrr::map(~ dplyr::slice(args_tibble, .x)) %>%
+    purrr::map(run_stress_test_iteration_once)
+
+  return(out)
+}
+
+# Avoid R CMD check NOTE: "Undefined global functions or variables"
+globalVariables(c(names(formals(run_lrisk)), "iter_var"))
+
+read_and_process_and_calc_lrisk <- function(args_list) {
+
+  # cat("-- Running litigation risk stress test. \n\n\n")
+  #
+  # args_list <- mget(names(formals()), sys.frame(sys.nframe())) %>%
+  #   fail_if_input_args_are_missing()
+  #
+  # iter_var <- get_iter_var(args_list)
+
+  # cat("-- Validating input arguments. \n")
+  #
+  # validate_input_values(
+  #   baseline_scenario = baseline_scenario,
+  #   shock_scenario = shock_scenario,
+  #   scenario_geography = scenario_geography,
+  #   lgd_senior_claims = lgd_senior_claims,
+  #   lgd_subordinated_claims = lgd_subordinated_claims,
+  #   risk_free_rate = risk_free_rate,
+  #   discount_rate = discount_rate,
+  #   growth_rate = growth_rate,
+  #   div_netprofit_prop_coef = div_netprofit_prop_coef,
+  #   shock_year = shock_year,
+  #   fallback_term = fallback_term,
+  #   use_company_terms = use_company_terms,
+  #   asset_type = asset_type
+  # )
+  #
+  # args_list$output_path <- customise_output_path(
+  #   output_path = args_list$output_path,
+  #   iter_var = iter_var
+  # )
+
   #---- set params
+  list2env(args_list, envir = rlang::current_env())
+
   log_path <- file.path(output_path, paste0("log_file_", iter_var, ".txt"))
 
-  # cfg_litigation_params <- config::get(file = "params_litigation_risk.yml")
+  paste_write("\n\nIteration with parameter settings:", log_path = log_path)
+  purrr::walk(names(args_list), function(name) {
+    paste(name, magrittr::extract2(args_list, name), sep = ": ") %>%
+      paste_write(log_path = log_path)
+  })
+  paste_write("\n", log_path = log_path)
 
-  # ADO 1540 - set variables for reading company level PACTA results
-  investor_name <- investor_name_placeholder
-  portfolio_name <- investor_name_placeholder
+  cat("-- Configuring analysis settings. \n")
+
   flat_multiplier <- assign_flat_multiplier(asset_type = asset_type)
-  # TODO: currency needed?
-  target_currency <- target_currency_lookup
-
-  # ADO 1540 - use for filters
-  horizon <- time_horizon_lookup
-
-  scenario_geography_filter <- scenario_geography
-  # scenario
-  baseline_scenario = baseline_scenario
-  shock_scenario = shock_scenario
-
-
-  allocation_method <- allocation_method_lookup
-  equity_market_filter <- equity_market_filter_lookup
-
-  # TODO: use as in trisk
-  # sectors <- cfg_litigation_params$large_universe_filter$sector_filter
-  # technologies <- cfg_litigation_params$lists$technology_list
+  lgd <- assign_lgd(
+    asset_type = asset_type, lgd_senior_claims = lgd_senior_claims,
+    lgd_subordinated_claims = lgd_subordinated_claims
+  )
 
   sectors_and_technologies_list <- infer_sectors_and_technologies(
     baseline_scenario = baseline_scenario,
@@ -157,9 +245,19 @@ run_lrisk <- function(asset_type,
     scenario_geography = scenario_geography
   )
 
+  year_litigation_event <- shock_year
+
+  # investor_name <- investor_name_placeholder
+  # portfolio_name <- investor_name_placeholder
+  # allocation_method <- allocation_method_lookup
+  # equity_market_filter <- equity_market_filter_lookup
   # years_to_litigation_event <- years_to_litigation_event_lookup
 
-  #---- read data
+  cat("-- Reading input data from designated input path. \n")
+
+  if (use_company_terms) {
+    paste_write("Using user - configured company - term data. \n", log_path = log_path)
+  }
 
   data <- st_read_specific(
     input_path_project_specific,
@@ -170,11 +268,6 @@ run_lrisk <- function(asset_type,
   data <- append(
     data, st_read_agnostic(input_path_project_agnostic, start_year = start_year, sectors = sectors_and_technologies_list$sectors)
   )
-
-  # TODO: this should use the shock_year argument instead
-  year_litigation_event <- start_year + years_to_litigation_event
-
-  litigation_risk_scenarios <- litigation_risk_scenarios_lookup
 
   cat("-- Processing input data. \n")
 
@@ -210,31 +303,22 @@ run_lrisk <- function(asset_type,
     log_path = log_path
   )
 
-  # browser()
-
   port_aum <- calculate_aum(input_data_list$sector_exposures)
-
-  # transition_scenario <- generate_transition_shocks(
-  #   start_of_analysis = start_year,
-  #   end_of_analysis = end_year_lookup,
-  #   shock_year = shock_year
-  # )
 
   litigation_scenario <- tibble::tibble(
     scenario_name = glue::glue("SCC_{year_litigation_event}"),
     model = "SCC",
     exp_share_damages_paid = exp_share_damages_paid,
     scc = scc,
-    # timeframe_emissions_overshoot = timeframe_emissions_overshoot,
     start_of_analysis = start_year,
     end_of_analysis = end_year_lookup,
-    # shock_year = year_litigation_event
-    year_of_shock = year_litigation_event
+    year_of_shock = year_litigation_event,
+    duration_of_shock = end_year_lookup - year_litigation_event
   )
 
   cat("-- Calculating market risk. \n")
 
-  # disentagle
+  # TODO: maybe wrap the below into something like calculate_annual_profits_lr()
   # company_annual_profits <- calculate_annual_profits(
   #   asset_type = asset_type,
   #   input_data_list = input_data_list,
@@ -263,7 +347,7 @@ run_lrisk <- function(asset_type,
       Baseline_price = !!rlang::sym(glue::glue("price_{baseline_scenario}")),
       late_sudden_price = !!rlang::sym(glue::glue("price_{shock_scenario}"))
     )
-browser()
+
   # setting emission_factors = TRUE will make the function extend the EF targets
   # by applying the TMSR to the initial EF value (current solution in PACTA)
   # this should at some point be replaced with a proper SDA function for targets
@@ -316,7 +400,7 @@ browser()
       by = merge_cols
     ) %>%
     fill_annual_profit_cols()
-# browser()
+
   annual_profits <- extended_pacta_results_with_financials %>%
     join_price_data(df_prices = price_data) %>%
     calculate_net_profits()
@@ -346,7 +430,7 @@ browser()
     # TODO: ADO 879 - note rows with zero profits/NPVs will produce NaN in the Merton model
     dplyr::filter(!is.na(company_id))
 
-  annual_profits <- annual_profits %>%
+  company_annual_profits <- annual_profits %>%
     calculate_terminal_value(
       end_year = end_year_lookup,
       growth_rate = growth_rate,
@@ -355,8 +439,78 @@ browser()
       shock_scenario = shock_scenario
     )
 
+  exposure_by_technology_and_company <- calculate_exposure_by_technology_and_company(
+    asset_type = asset_type,
+    input_data_list = input_data_list,
+    start_year = start_year,
+    time_horizon = time_horizon_lookup,
+    scenario_to_follow_shock = shock_scenario,
+    log_path = log_path
+  )
 
-  # TODO: Calculate costs not just as diff to production trajectory, but add the SCC penalty
+  company_technology_value_changes <- company_annual_profits %>%
+    company_technology_asset_value_at_risk(
+      shock_scenario = litigation_scenario,
+      div_netprofit_prop_coef = div_netprofit_prop_coef,
+      flat_multiplier = flat_multiplier
+    )
 
+  cat("-- Calculating credit risk. \n\n\n")
 
+  company_pd_changes_overall <- company_annual_profits %>%
+    calculate_pd_change_overall(
+      shock_year = litigation_scenario$year_of_shock,
+      end_of_analysis = end_year_lookup,
+      risk_free_interest_rate = risk_free_rate
+    )
+
+  # TODO: ADO 879 - note which companies produce missing results due to
+  # insufficient input information (e.g. NAs for financials or 0 equity value)
+
+  company_expected_loss <- company_expected_loss(
+    data = company_pd_changes_overall,
+    loss_given_default = lgd,
+    exposure_at_default = exposure_by_technology_and_company,
+    port_aum = port_aum
+  )
+
+  # TODO: ADO 879 - note which companies produce missing results due to
+  # insufficient output from overall pd changes or related financial data inputs
+
+  company_pd_changes_annual <- calculate_pd_change_annual(
+    data = company_annual_profits,
+    shock_year = litigation_scenario$year_of_shock,
+    end_of_analysis = end_year_lookup,
+    risk_free_interest_rate = risk_free_rate
+  )
+
+  # TODO: ADO 879 - note which companies produce missing results due to
+  # insufficient input information (e.g. NAs for financials or 0 equity value)
+
+  company_trajectories <- add_term_to_trajectories(
+    annual_profits = company_annual_profits,
+    pacta_results = input_data_list$pacta_results
+  )
+
+  return(
+    list(
+      port_aum = port_aum,
+      exposure_by_technology_and_company = exposure_by_technology_and_company,
+      company_technology_value_changes = company_technology_value_changes,
+      company_expected_loss = company_expected_loss,
+      company_pd_changes_annual = company_pd_changes_annual,
+      company_pd_changes_overall = company_pd_changes_overall,
+      company_trajectories = company_trajectories
+    )
+  )
 }
+
+iteration_sequence <- function(args_list) {
+  iter_var <- get_iter_var(args_list)
+  if (identical(iter_var, "standard")) {
+    return(1L)
+  } else {
+    return(seq_along(args_list[[iter_var]]))
+  }
+}
+

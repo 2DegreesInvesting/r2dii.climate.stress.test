@@ -91,34 +91,8 @@ cuc_company_terms <- c("company_name")
 #litigation risk
 
 target_currency_lookup <- "USD"
+
 years_to_litigation_event_lookup <- 5
-
-# large_universe_filter:
-#   sector_filter:
-#   - Power
-# - Oil&Gas
-# - Coal
-# - Automotive
-# - Steel
-# - Cement
-#
-# lists:
-#   scenario_geography_list:
-#   - Global
-# technology_list:
-#   - Electric
-# - Hybrid
-# - ICE
-# - CoalCap
-# - GasCap
-# - HydroCap
-# - NuclearCap
-# - OilCap
-# - RenewablesCap
-# - Oil
-# - Gas
-# - Coal
-
 
 litigation_risk_scenarios_lookup <- tibble::tribble(
   ~litigation_scenario, ~model, ~exp_share_damages_paid, ~scc, ~timeframe_emissions_overshoot,
