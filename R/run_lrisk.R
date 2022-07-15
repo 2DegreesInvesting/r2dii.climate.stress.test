@@ -263,7 +263,7 @@ run_lrisk <- function(asset_type,
       Baseline_price = !!rlang::sym(glue::glue("price_{baseline_scenario}")),
       late_sudden_price = !!rlang::sym(glue::glue("price_{shock_scenario}"))
     )
-# browser()
+browser()
   # setting emission_factors = TRUE will make the function extend the EF targets
   # by applying the TMSR to the initial EF value (current solution in PACTA)
   # this should at some point be replaced with a proper SDA function for targets
@@ -316,14 +316,13 @@ run_lrisk <- function(asset_type,
       by = merge_cols
     ) %>%
     fill_annual_profit_cols()
-browser()
+# browser()
   annual_profits <- extended_pacta_results_with_financials %>%
     join_price_data(df_prices = price_data) %>%
     calculate_net_profits()
 
-  # TODO: aligned companies still get litigation costs... check prior calcs
-  annual_profits1 <- annual_profits %>%
-    # scc_company_i <- company_carbon_budgets %>%
+  # TODO: validate this section in detail
+  annual_profits <- annual_profits %>%
     dplyr::mutate(
       scc_liability =
         .data$overshoot_emissions * litigation_scenario$scc *
@@ -342,24 +341,18 @@ browser()
       )
     )
 
-
-
   annual_profits <- annual_profits %>%
-    # TODO: calculate the litigation penalty
-    # TODO: profit in litigation year = profit minus penalty
     dcf_model_techlevel(discount_rate = discount_rate) %>%
     # TODO: ADO 879 - note rows with zero profits/NPVs will produce NaN in the Merton model
     dplyr::filter(!is.na(company_id))
 
-
-
   annual_profits <- annual_profits %>%
     calculate_terminal_value(
-      end_year = end_year,
+      end_year = end_year_lookup,
       growth_rate = growth_rate,
       discount_rate = discount_rate,
-      baseline_scenario = scenario_to_follow_baseline,
-      shock_scenario = scenario_to_follow_shock
+      baseline_scenario = baseline_scenario,
+      shock_scenario = shock_scenario
     )
 
 

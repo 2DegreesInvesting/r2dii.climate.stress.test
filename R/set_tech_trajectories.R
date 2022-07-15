@@ -592,13 +592,15 @@ set_litigation_trajectory <- function(data,
     dplyr::mutate(
       aligned = dplyr::if_else(
         .data$direction == "declining" &
-          sum(.data$scen_to_follow[1:.env$analysis_time_frame], na.rm = TRUE) <
-          sum(.data$late_sudden[1:.env$analysis_time_frame], na.rm = TRUE) |
+          .data$late_sudden[.env$analysis_time_frame] <= .data$scen_to_follow[.env$analysis_time_frame] &
+          sum(.data$late_sudden[1:.env$analysis_time_frame], na.rm = TRUE) <=
+          sum(.data$scen_to_follow[1:.env$analysis_time_frame], na.rm = TRUE) |
           .data$direction == "increasing" &
-          sum(.data$scen_to_follow[1:.env$analysis_time_frame], na.rm = TRUE) >
-          sum(.data$late_sudden[1:.env$analysis_time_frame], na.rm = TRUE),
-        FALSE,
-        TRUE
+          .data$late_sudden[.env$analysis_time_frame] >= .data$scen_to_follow[.env$analysis_time_frame] &
+          sum(.data$late_sudden[1:.env$analysis_time_frame], na.rm = TRUE) >=
+          sum(.data$scen_to_follow[1:.env$analysis_time_frame], na.rm = TRUE),
+        TRUE,
+        FALSE
       )
     ) %>%
     dplyr::ungroup()
@@ -652,6 +654,14 @@ set_litigation_trajectory <- function(data,
       .data$technology
     )
 
+  # TODO: unsure about handling of emission factors. In order to ensure that
+  # companies that are aligned in terms of production do not build up an
+  # emissions overshoot, we have to enforce the ef to follow the target scenario
+  # post shock, regardless of whether that may lead to a sudden jump or not.
+  # Conversely, this could lead to slight increases in ef for companies that
+  # already have an emissions factor below the scenario target.
+  # This should be refined. Likely better way to handle this: distinguish between
+  # production alignment and ef alignment and adjust based on both separately.
   data <- data %>%
     dplyr::mutate(
       late_sudden = dplyr::if_else(
@@ -660,7 +670,7 @@ set_litigation_trajectory <- function(data,
         .data$late_sudden
       ),
       late_sudden_ef = dplyr::if_else(
-        !.data$aligned & .data$year > shock_scenario$year_of_shock,
+        .data$year > shock_scenario$year_of_shock,
         .data$scen_to_follow_aligned_ef,
         .data$late_sudden_ef
       )
