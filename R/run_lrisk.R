@@ -51,15 +51,9 @@
 #'   companies are to be used. For accepted values compare
 #'   `stress_test_arguments`. Note that currently this functionality is not
 #'   available for asset_type bonds.
-#' @param chance_within_target bla
 #' @param settlement_factor bla
-#' @param percentage_in_terminal_value bla
-#' @param percentage_rev_transition_sectors bla
-#' @param net_profit_margin bla
-#' @param reset_post_settlement bla
 #' @param exp_share_damages_paid bla
 #' @param scc bla
-#' @param years_to_litigation_event bla
 #' @param return_results Boolean, indicating if results shall be exported.
 #' @return NULL
 #' @export
@@ -79,16 +73,9 @@ run_lrisk <- function(asset_type,
                       fallback_term = 2,
                       scenario_geography = "Global",
                       use_company_terms = FALSE,
-                      chance_within_target = 0.66,
                       settlement_factor = 1,
-                      percentage_in_terminal_value = 0.1,
-                      percentage_rev_transition_sectors = 1,
-                      net_profit_margin = 0.1,
-                      reset_post_settlement = "start",
                       exp_share_damages_paid = 0.027,
                       scc = 40L,
-                      # TODO: can this ever deviate from the forward looking horizon?
-                      years_to_litigation_event = 5L,
                       return_results = FALSE) {
   cat("-- Running litigation risk stress test. \n\n\n")
 
@@ -251,7 +238,6 @@ read_and_process_and_calc_lrisk <- function(args_list) {
   # portfolio_name <- investor_name_placeholder
   # allocation_method <- allocation_method_lookup
   # equity_market_filter <- equity_market_filter_lookup
-  # years_to_litigation_event <- years_to_litigation_event_lookup
 
   cat("-- Reading input data from designated input path. \n")
 

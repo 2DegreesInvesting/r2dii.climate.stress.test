@@ -628,13 +628,13 @@ set_litigation_trajectory <- function(data,
     dplyr::mutate(
       late_sudden = dplyr::if_else(
         .data$aligned,
-        .data$reference_tech_prod + cumsum(scen_to_follow_aligned_change),
-        .data$reference_tech_prod + cumsum(baseline_scenario_change)
+        .data$reference_tech_prod + cumsum(.data$scen_to_follow_aligned_change),
+        .data$reference_tech_prod + cumsum(.data$baseline_scenario_change)
       ),
       late_sudden_ef = dplyr::if_else(
         .data$aligned,
-        .data$reference_emission_factor + cumsum(scen_to_follow_aligned_change_ef),
-        .data$reference_emission_factor + cumsum(baseline_scenario_change_ef)
+        .data$reference_emission_factor + cumsum(.data$scen_to_follow_aligned_change_ef),
+        .data$reference_emission_factor + cumsum(.data$baseline_scenario_change_ef)
       )
     ) %>%
     dplyr::ungroup()
