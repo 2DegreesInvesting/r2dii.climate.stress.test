@@ -44,7 +44,9 @@ format_loanbook_st <- function(data,
     "production_unweighted",
     "technology_share",
     "loan_share_outstanding",
-    "loan_share_credit_limit"
+    "loan_share_credit_limit",
+    "tmsr",
+    "smsp"
   ) %in% colnames(data))
 
   stopifnot(data_has_required_cols)
@@ -102,7 +104,7 @@ format_loanbook_st <- function(data,
     dplyr::select(
       !!!rlang::syms(group_vars),
       .data$plan_tech_prod, .data$plan_carsten, .data$scen_tech_prod,
-      .data$plan_sec_prod, .data$plan_sec_carsten
+      .data$plan_sec_prod, .data$plan_sec_carsten, .data$tmsr, .data$smsp
     )
 
   # custom formatting to adapt to P4I style scenanrio data
@@ -138,8 +140,12 @@ format_loanbook_st <- function(data,
       plan,
       by = c(group_vars[group_vars != "scenario"])
     ) %>%
-    dplyr::select(-.data$scenario.y) %>%
-    dplyr::rename(scenario = .data$scenario.x) %>%
+    dplyr::select(-c(.data$scenario.y, .data$tmsr.y, .data$smsp.y)) %>%
+    dplyr::rename(
+      scenario = .data$scenario.x,
+      tmsr = .data$tmsr.x,
+      smsp = .data$smsp.x
+    ) %>%
     dplyr::relocate(
       !!!rlang::syms(group_vars),
       .data$plan_tech_prod, .data$plan_carsten, .data$scen_tech_prod,
@@ -172,7 +178,7 @@ format_loanbook_st <- function(data,
       .data$allocation, .data$id, .data$company_name, .data$equity_market,
       .data$scenario_geography, .data$year, .data$ald_sector, .data$technology,
       .data$plan_tech_prod, .data$plan_carsten, .data$scen_tech_prod,
-      .data$plan_sec_prod, .data$plan_sec_carsten
+      .data$plan_sec_prod, .data$plan_sec_carsten, .data$tmsr, .data$smsp
     )
 
   output_has_required_cols <- all(c(
@@ -191,7 +197,9 @@ format_loanbook_st <- function(data,
     "plan_carsten",
     "scen_tech_prod",
     "plan_sec_prod",
-    "plan_sec_carsten"
+    "plan_sec_carsten",
+    "tmsr",
+    "smsp"
   ) %in% colnames(results_loanbook))
 
   stopifnot(output_has_required_cols)

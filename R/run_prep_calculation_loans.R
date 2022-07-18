@@ -8,13 +8,15 @@
 #'   path as `input_path_project_specific`.
 #' @param credit_type Type of credit. For accepted values please compare
 #'   `credit_type_lookup`.
+#' @param risk_type Type of risk. Currently supports "trisk" and "lrisk".
 #'
 #' @return NULL
 #' @export
 run_prep_calculation_loans <- function(input_path_project_specific,
                                        input_path_project_agnostic,
                                        data_prep_output_path,
-                                       credit_type = "outstanding") {
+                                       credit_type = "outstanding",
+                                       risk_type = "trisk") {
   cat("-- Running data preparation. \n")
 
   #### Validate input-----------------------------------------------------------
@@ -97,6 +99,14 @@ run_prep_calculation_loans <- function(input_path_project_specific,
     readxl::read_xlsx(
       sheet = "Company Indicators - PACTA Comp"
     )
+
+  if (risk_type == "lrisk") {
+    # AR PAMS data for emission factors
+    ar_pams <- validate_file_exists(file.path(input_path_project_agnostic, "2022-02-17_AR_2021Q4_2DII-PAMS-Data.xlsx")) %>%
+      readxl::read_xlsx(
+        sheet = "Company Indicators"
+      )
+  }
 
   # Scenario data - market share
   scenario_data_market_share <- validate_file_exists(file.path(input_path_project_agnostic, "scenario_2021.csv")) %>%
@@ -318,13 +328,119 @@ run_prep_calculation_loans <- function(input_path_project_specific,
 
   # ADO 1933 - for now, this only includes sectors with production pathways
   # in the future, sectors with emissions factors based pathways may follow
+  tmsr <- scenario_data_market_share %>%
+    dplyr::mutate(scenario = glue::glue("target_{scenario}"))
+
   loans_results_company <- p4b_tms_results_loan_share %>%
+    # left join so that production values are not dropped
+    dplyr::left_join(
+      tmsr,
+      by = c("scenario_source", "metric" = "scenario", "sector", "technology", "year", "region")
+    ) %>%
     format_loanbook_st(
       investor_name = investor_name_placeholder,
       portfolio_name = investor_name_placeholder,
       equity_market = equity_market_filter_lookup,
       credit = credit_type
     )
+
+  if (risk_type == "lrisk") {
+    # TODO: company_id should be kept in all cases, generalise
+    loans_results_company <- loans_results_company %>%
+      dplyr::inner_join(
+        production_forecast_data %>% dplyr::distinct(.data$company_id, .data$name_company),
+        by = c("company_name" = "name_company")
+      ) %>%
+      dplyr::select(-.data$id) %>%
+      dplyr::rename(id = .data$company_id)
+
+    # This aggregates AR PAMS to company_technology level to get emission factors
+    # Note that this is done including all assets, i.e. we look at global
+    # emission factors here
+    # TODO: run for each scenario geography
+    ar_pams <- ar_pams %>%
+      dplyr::select(-dplyr::starts_with("Direct")) %>%
+      tidyr::pivot_longer(
+        cols = dplyr::starts_with("Total"),
+        names_to = "year",
+        names_prefix = "Total ",
+        values_to = "ald_production"
+      ) %>%
+      dplyr::rename(
+        id = `Company ID`,
+        company_name = `Company Name`,
+        ald_sector = `Asset Sector`,
+        technology = `Asset Technology`,
+        technology_type = `Asset Technology Type`,
+        ald_location = `Asset Country`,
+        emissions_factor = `Emissions Factor`,
+        emissions_factor_unit = `Emissions Factor Unit`,
+        ald_production_unit = `Activity Unit`
+      ) %>%
+      dplyr::mutate(
+        technology = dplyr::case_when(
+          .data$ald_sector == "Coal" ~ "Coal",
+          .data$technology %in% c("Gas", "Natural Gas Liquids") ~ "Gas",
+          .data$technology == "Oil and Condensate" ~ "Oil",
+          TRUE ~ .data$technology
+        )
+      ) %>%
+      dplyr::group_by(
+        company_name, id , ald_sector, ald_location, technology, year,
+        ald_production_unit, emissions_factor, emissions_factor_unit
+      ) %>%
+      dplyr::summarise(
+        ald_production = sum(ald_production, na.rm = TRUE),
+        .groups = "drop"
+      ) %>%
+      dplyr::ungroup() %>%
+      dplyr::transmute(
+        id = as.numeric(id),
+        company_name = tolower(as.character(company_name)),
+        ald_sector = as.character(ald_sector),
+        ald_location = as.character(ald_location),
+        technology = as.character(technology),
+        year = as.numeric(year),
+        ald_production = as.numeric(ald_production),
+        ald_production = dplyr::if_else(ald_production <= 0, 0, ald_production),
+        ald_production_unit = as.character(ald_production_unit),
+        ald_emissions_factor = as.numeric(emissions_factor),
+        ald_emissions_factor_unit = as.character(emissions_factor_unit)
+      ) %>%
+      dplyr::group_by(
+        id, company_name, ald_sector, technology, year
+      ) %>%
+      dplyr::summarise(
+        # TODO: might introduce NaNs... check what to do here
+        plan_emission_factor = stats::weighted.mean(x = ald_emissions_factor, w = ald_production, na.rm = TRUE),
+        plan_tech_prod = sum(ald_production, na.rm = TRUE),
+        .groups = "drop"
+      ) %>%
+      dplyr::ungroup()
+
+    # scenario_data_market_share
+    # p4i_p4b_sector_technology_lookup
+
+    # Join EFs based on PAMS
+    # FIXME: we are losing rows here, which we should not
+    loans_results_company <- loans_results_company %>%
+      dplyr::inner_join(
+        ar_pams %>% dplyr::distinct(.data$id, .data$company_name, ald_sector, technology, year, plan_emission_factor),
+        by = c("id", "company_name", "ald_sector", "technology", "year")
+      ) %>%
+      dplyr::group_by(.data$id, .data$company_name, ald_sector, technology) %>%
+      dplyr::arrange(.data$id, .data$company_name, ald_sector, technology, .data$year) %>%
+      dplyr::mutate(reference_ef = dplyr::first(plan_emission_factor)) %>%
+      dplyr::mutate(
+        scen_emission_factor = dplyr::if_else(
+          .data$reference_ef == 0 | is.na(.data$reference_ef),
+          0,
+          .data$reference_ef * .data$tmsr
+        )
+      ) %>%
+      dplyr::ungroup() %>%
+      dplyr::select(-c(.data$tmsr, .data$smsp, .data$reference_ef))
+  }
 
   loans_results_company %>%
     saveRDS(

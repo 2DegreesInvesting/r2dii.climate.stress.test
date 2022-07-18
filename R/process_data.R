@@ -100,6 +100,12 @@ process_pacta_results <- function(data, start_year, end_year, time_horizon,
         is.na(.data$plan_emission_factor) & .data$plan_tech_prod == 0,
         0,
         .data$plan_emission_factor
+      ),
+      scen_emission_factor = dplyr::if_else(
+        # should this be planned prod or scen prod?
+        is.na(.data$scen_emission_factor) & .data$plan_tech_prod == 0,
+        0,
+        .data$scen_emission_factor
       )
     )
 
