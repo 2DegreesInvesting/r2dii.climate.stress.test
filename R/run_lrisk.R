@@ -356,7 +356,8 @@ read_and_process_and_calc_lrisk <- function(args_list) {
       emission_factors = TRUE
     ) %>%
     set_baseline_trajectory(
-      scenario_to_follow_baseline = tolower(baseline_scenario)
+      scenario_to_follow_baseline = tolower(baseline_scenario),
+      emission_factors = TRUE
     ) %>%
     # we currently assume that production levels and emission factors of
     # misaligned company-technology combinations are forced onto the target
