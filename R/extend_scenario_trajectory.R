@@ -150,15 +150,20 @@ extend_scenario_trajectory <- function(data,
                                        baseline_scenario,
                                        target_scenario,
                                        emission_factors = FALSE) {
+  data_cols <- c(
+    "year", "investor_name", "portfolio_name", "equity_market", "ald_sector",
+    "technology", "scenario", "allocation", "scenario_geography",
+    "plan_tech_prod", "plan_carsten", "scen_tech_prod", "plan_sec_prod",
+    "plan_sec_carsten", "id", "company_name"
+  )
+
+  if (emission_factors) {
+    data_cols <- c(data_cols, "plan_emission_factor", "scen_emission_factor")
+  }
+
   validate_data_has_expected_cols(
     data = data,
-    expected_columns = c(
-      "year", "investor_name", "portfolio_name", "equity_market", "ald_sector",
-      "technology", "scenario", "allocation", "scenario_geography",
-      "plan_tech_prod", "plan_emission_factor", "plan_carsten", "scen_tech_prod",
-      "scen_emission_factor", "plan_sec_prod", "plan_sec_carsten", "id",
-      "company_name"
-    )
+    expected_columns = data_cols
   )
 
   validate_data_has_expected_cols(
