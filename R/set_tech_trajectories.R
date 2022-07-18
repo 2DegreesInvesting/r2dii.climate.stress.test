@@ -22,12 +22,15 @@
 #' @param scenario_to_follow_baseline Character. A string that indicates which
 #'   of the scenarios included in the analysis should be used to set the
 #'   baseline technology trajectories.
+#' @param emission_factors boolean. also summarise emmision factors? only needed
+#'   for lititgation risk at this point.
 #'
 #' @family scenario definition
 #'
 #' @return dataframe.
 set_baseline_trajectory <- function(data,
-                                    scenario_to_follow_baseline) {
+                                    scenario_to_follow_baseline,
+                                    emission_factors = FALSE) {
   if (!"id" %in% names(data)) {
     data$id <- "PortfolioLevel"
   }
@@ -35,14 +38,22 @@ set_baseline_trajectory <- function(data,
     data$company_name <- "PortfolioLevel"
   }
 
-  validate_data_has_expected_cols(
-    data = data,
-    expected_columns = c(
-      "investor_name", "portfolio_name", "id", "company_name",
-      "ald_sector", "technology", "scenario_geography",
-      "plan_tech_prod", "plan_emission_factor", scenario_to_follow_baseline,
+  data_cals <- c(
+    "investor_name", "portfolio_name", "id", "company_name",
+    "ald_sector", "technology", "scenario_geography",
+    "plan_tech_prod", scenario_to_follow_baseline
+  )
+
+  if (emission_factors) {
+    data_cals <- c(
+      data_cals, "plan_emission_factor",
       glue::glue("target_ef_{scenario_to_follow_baseline}")
     )
+  }
+
+  validate_data_has_expected_cols(
+    data = data,
+    expected_columns = data_cals
   )
 
   data <- data %>%
@@ -56,23 +67,45 @@ set_baseline_trajectory <- function(data,
       .data$scenario_geography
     ) %>%
     dplyr::mutate(
-      scen_to_follow = !!rlang::sym(scenario_to_follow_baseline),
-      scen_to_follow_ef = !!rlang::sym(glue::glue("target_ef_{scenario_to_follow_baseline}"))
+      scen_to_follow = !!rlang::sym(scenario_to_follow_baseline)
     ) %>%
     dplyr::mutate(
       scenario_change = .data$scen_to_follow - dplyr::lag(.data$scen_to_follow),
       baseline = calc_future_prod_follows_scen(
         planned_prod = .data$plan_tech_prod,
         change_scen_prod = .data$scenario_change
-      ),
-      scenario_change_ef = .data$scen_to_follow_ef - dplyr::lag(.data$scen_to_follow_ef),
-      baseline_ef = calc_future_ef_follows_scen(
-        planned_ef = .data$plan_emission_factor,
-        change_scen_ef = .data$scenario_change_ef
       )
     ) %>%
-    dplyr::ungroup() %>%
+    dplyr::ungroup()
+
+  if (emission_factors) {
+    data <- data %>%
+      dplyr::group_by(
+        .data$investor_name,
+        .data$portfolio_name,
+        .data$id,
+        .data$company_name,
+        .data$ald_sector,
+        .data$technology,
+        .data$scenario_geography
+      ) %>%
+      dplyr::mutate(
+        scen_to_follow_ef = !!rlang::sym(glue::glue("target_ef_{scenario_to_follow_baseline}"))
+      ) %>%
+      dplyr::mutate(
+        scenario_change_ef = .data$scen_to_follow_ef - dplyr::lag(.data$scen_to_follow_ef),
+        baseline_ef = calc_future_ef_follows_scen(
+          planned_ef = .data$plan_emission_factor,
+          change_scen_ef = .data$scenario_change_ef
+        )
+      ) %>%
+      dplyr::ungroup()
+  }
+
+  data <- data %>%
     dplyr::select(-c(.data$scenario_change, .data$scen_to_follow))
+
+  return(data)
 }
 
 
