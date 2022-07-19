@@ -183,37 +183,6 @@ globalVariables(c(names(formals(run_lrisk)), "iter_var"))
 
 read_and_process_and_calc_lrisk <- function(args_list) {
 
-  # cat("-- Running litigation risk stress test. \n\n\n")
-  #
-  # args_list <- mget(names(formals()), sys.frame(sys.nframe())) %>%
-  #   fail_if_input_args_are_missing()
-  #
-  # iter_var <- get_iter_var(args_list)
-
-  # cat("-- Validating input arguments. \n")
-  #
-  # validate_input_values(
-  #   baseline_scenario = baseline_scenario,
-  #   shock_scenario = shock_scenario,
-  #   scenario_geography = scenario_geography,
-  #   lgd_senior_claims = lgd_senior_claims,
-  #   lgd_subordinated_claims = lgd_subordinated_claims,
-  #   risk_free_rate = risk_free_rate,
-  #   discount_rate = discount_rate,
-  #   growth_rate = growth_rate,
-  #   div_netprofit_prop_coef = div_netprofit_prop_coef,
-  #   shock_year = shock_year,
-  #   fallback_term = fallback_term,
-  #   use_company_terms = use_company_terms,
-  #   asset_type = asset_type
-  # )
-  #
-  # args_list$output_path <- customise_output_path(
-  #   output_path = args_list$output_path,
-  #   iter_var = iter_var
-  # )
-
-  #---- set params
   list2env(args_list, envir = rlang::current_env())
 
   log_path <- file.path(output_path, paste0("log_file_", iter_var, ".txt"))
