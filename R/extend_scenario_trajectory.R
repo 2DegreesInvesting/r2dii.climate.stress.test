@@ -158,7 +158,7 @@ extend_scenario_trajectory <- function(data,
   )
 
   if (emission_factors) {
-    data_cols <- c(data_cols, "plan_emission_factor", "scen_emission_factor")
+    data_cols <- c(data_cols, "plan_emission_factor")
   }
 
   validate_data_has_expected_cols(
@@ -204,7 +204,7 @@ extend_scenario_trajectory <- function(data,
     summarise_production_sector_forecasts()
 
   data <- data %>%
-    apply_scenario_targets(emission_factors = emission_factors) %>%
+    apply_scenario_targets() %>%
     handle_phase_out_and_negative_targets()
 
   data <- data %>%
@@ -214,44 +214,26 @@ extend_scenario_trajectory <- function(data,
       target_scenario = target_scenario
     )
 
-  # if emission factors are required, the pivoting requires some additional
-  # cleaning up to properly separate all taregt variables
+  # if emission factors are required, pass throught he variable
+  id_cols  <- c(
+    "investor_name", "portfolio_name", "id", "company_name", "year",
+    "scenario_geography", "ald_sector", "technology", "plan_tech_prod",
+    "phase_out", "proximity_to_target", "direction"
+  )
   if (emission_factors) {
-    data <- data %>%
-      tidyr::pivot_wider(
-        id_cols = c(
-          "investor_name", "portfolio_name", "id", "company_name", "year",
-          "scenario_geography", "ald_sector", "technology", "plan_tech_prod",
-          "plan_emission_factor", "phase_out", "proximity_to_target", "direction"
-        ),
-        names_from = .data$scenario,
-        values_from = c(.data$scen_tech_prod, .data$scen_emission_factor)
-      ) %>%
-      dplyr::rename(
-        !!baseline_scenario := !!rlang::sym(glue::glue("scen_tech_prod_{baseline_scenario}")),
-        !!target_scenario := !!rlang::sym(glue::glue("scen_tech_prod_{target_scenario}"))
-      ) %>%
-      dplyr::rename_with(~ tolower(gsub("scen_emission_factor_", "target_ef_", .x, fixed = TRUE))) %>%
-      dplyr::arrange(
-        .data$investor_name, .data$portfolio_name, .data$id, .data$company_name,
-        .data$scenario_geography, .data$ald_sector, .data$technology, .data$year
-      )
-  } else {
-    data <- data %>%
-      tidyr::pivot_wider(
-        id_cols = c(
-          "investor_name", "portfolio_name", "id", "company_name", "year",
-          "scenario_geography", "ald_sector", "technology", "plan_tech_prod",
-          "phase_out", "proximity_to_target", "direction"
-        ),
-        names_from = .data$scenario,
-        values_from = .data$scen_tech_prod
-      ) %>%
-      dplyr::arrange(
-        .data$investor_name, .data$portfolio_name, .data$id, .data$company_name,
-        .data$scenario_geography, .data$ald_sector, .data$technology, .data$year
-      )
+    id_cols <- c(id_cols, "emission_factor")
   }
+
+  data <- data %>%
+    tidyr::pivot_wider(
+      id_cols = .env$id_cols,
+      names_from = .data$scenario,
+      values_from = .data$scen_tech_prod
+    ) %>%
+    dplyr::arrange(
+      .data$investor_name, .data$portfolio_name, .data$id, .data$company_name,
+      .data$scenario_geography, .data$ald_sector, .data$technology, .data$year
+    )
 
   return(data)
 }
@@ -264,7 +246,7 @@ extend_scenario_trajectory <- function(data,
 #'   conversion of power capacity to generation.
 #' @param start_analysis start of the analysis
 #' @param time_frame number of years with forward looking production data
-#' @param emission_factors boolean. also summarise emmision factors? only needed
+#' @param emission_factors boolean. pass through emission factors? only needed
 #'   for lititgation risk at this point.
 #' @noRd
 summarise_production_technology_forecasts <- function(data,
@@ -278,16 +260,10 @@ summarise_production_technology_forecasts <- function(data,
     "scen_tech_prod"
   )
 
-  if (emission_factors) {include_cols <- c(include_cols, "plan_emission_factor", "scen_emission_factor")}
+  if (emission_factors) {include_cols <- c(include_cols, "plan_emission_factor")}
 
   data <- data %>%
-    dplyr::select(
-      !!!rlang::syms(include_cols)
-      # .data$investor_name, .data$portfolio_name, .data$id, .data$company_name,
-      # .data$ald_sector, .data$technology, .data$scenario_geography,
-      # .data$allocation, .data$year, .data$scenario, .data$plan_tech_prod,
-      # .data$scen_tech_prod
-    ) %>%
+    dplyr::select(!!!rlang::syms(include_cols)) %>%
     dplyr::filter(.data$year <= .env$start_analysis + .env$time_frame) %>%
     dplyr::group_by(
       .data$investor_name, .data$portfolio_name, .data$id, .data$company_name,
@@ -306,26 +282,6 @@ summarise_production_technology_forecasts <- function(data,
       sum_production_forecast = sum(.data$plan_tech_prod, na.rm = TRUE)
     ) %>%
     dplyr::ungroup()
-
-  if (emission_factors) {
-    data <- data %>%
-      dplyr::group_by(
-        .data$investor_name, .data$portfolio_name, .data$id, .data$company_name,
-        .data$ald_sector, .data$technology, .data$scenario, .data$allocation,
-        .data$scenario_geography
-      ) %>%
-      dplyr::arrange(
-        .data$investor_name, .data$portfolio_name, .data$id, .data$company_name,
-        .data$ald_sector, .data$technology, .data$scenario, .data$allocation,
-        .data$scenario_geography, .data$year
-      ) %>%
-      dplyr::mutate(
-        initial_technology_production_ef = dplyr::first(.data$plan_emission_factor),
-        initial_technology_target_ef = dplyr::first(.data$scen_emission_factor),
-        final_technology_production_ef = dplyr::last(.data$plan_emission_factor)
-      ) %>%
-      dplyr::ungroup()
-  }
 
   return(data)
 }
@@ -390,10 +346,11 @@ extend_to_full_analysis_timeframe <- function(data,
   if (emission_factors) {
     data <- data %>%
       tidyr::fill(
-        .data$initial_technology_production_ef,
-        .data$initial_technology_target_ef,
-        .data$final_technology_production_ef
-      )
+        .data$plan_emission_factor
+      ) %>%
+    dplyr::rename(
+      emission_factor = .data$plan_emission_factor
+    )
   }
 
   return(data)
@@ -437,11 +394,8 @@ summarise_production_sector_forecasts <- function(data) {
 #' @param data A data frame containing the production forecasts of companies
 #'   (in the portfolio). Pre-processed to fit analysis parameters and after
 #'   conversion of power capacity to generation.
-#' @param emission_factors boolean. also summarise emmision factors? only needed
-#'   for lititgation risk at this point.
 #' @noRd
-apply_scenario_targets <- function(data,
-                                   emission_factors = FALSE) {
+apply_scenario_targets <- function(data) {
   data <- data %>%
     dplyr::mutate(
       scen_tech_prod = dplyr::if_else(
@@ -450,16 +404,6 @@ apply_scenario_targets <- function(data,
         .data$initial_technology_target + (.data$initial_sector_target * .data$fair_share_perc) # smsp
       )
     )
-
-  # from emission factors, we do not have a case distinction, because increasing
-  # technologies have 0 EF anyway and should obviously not increase the emission
-  # intensity over time
-  if (emission_factors) {
-    data <- data %>%
-      dplyr::mutate(
-        scen_emission_factor = .data$initial_technology_target_ef * (1 + .data$fair_share_perc) # tmsr
-      )
-  }
 
   return(data)
 }

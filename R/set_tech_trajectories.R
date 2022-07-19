@@ -38,22 +38,19 @@ set_baseline_trajectory <- function(data,
     data$company_name <- "PortfolioLevel"
   }
 
-  data_cals <- c(
+  data_cols <- c(
     "investor_name", "portfolio_name", "id", "company_name",
     "ald_sector", "technology", "scenario_geography",
     "plan_tech_prod", scenario_to_follow_baseline
   )
 
   if (emission_factors) {
-    data_cals <- c(
-      data_cals, "plan_emission_factor",
-      glue::glue("target_ef_{scenario_to_follow_baseline}")
-    )
+    data_cols <- c(data_cols, "emission_factor")
   }
 
   validate_data_has_expected_cols(
     data = data,
-    expected_columns = data_cals
+    expected_columns = data_cols
   )
 
   data <- data %>%
@@ -77,30 +74,6 @@ set_baseline_trajectory <- function(data,
       )
     ) %>%
     dplyr::ungroup()
-
-  if (emission_factors) {
-    data <- data %>%
-      dplyr::group_by(
-        .data$investor_name,
-        .data$portfolio_name,
-        .data$id,
-        .data$company_name,
-        .data$ald_sector,
-        .data$technology,
-        .data$scenario_geography
-      ) %>%
-      dplyr::mutate(
-        scen_to_follow_ef = !!rlang::sym(glue::glue("target_ef_{scenario_to_follow_baseline}"))
-      ) %>%
-      dplyr::mutate(
-        scenario_change_ef = .data$scen_to_follow_ef - dplyr::lag(.data$scen_to_follow_ef),
-        baseline_ef = calc_future_ef_follows_scen(
-          planned_ef = .data$plan_emission_factor,
-          change_scen_ef = .data$scenario_change_ef
-        )
-      ) %>%
-      dplyr::ungroup()
-  }
 
   data <- data %>%
     dplyr::select(-c(.data$scenario_change, .data$scen_to_follow))
@@ -145,7 +118,7 @@ calc_future_prod_follows_scen <- function(planned_prod = .data$plan_tech_prod,
 }
 
 calc_future_ef_follows_scen <- function(planned_ef = .data$plan_tech_emission_factor,
-                                          change_scen_ef = .data$scenario_change_ef) {
+                                        change_scen_ef = .data$scenario_change_ef) {
   first_ef_na <- which(is.na(planned_ef))[1]
 
   for (i in seq(first_ef_na, length(planned_ef))) {
@@ -523,13 +496,13 @@ filter_negative_late_and_sudden <- function(data_with_late_and_sudden, log_path)
 #'
 #' @return data frame
 set_litigation_trajectory <- function(data,
-                              litigation_scenario,
-                              shock_scenario,
-                              litigation_scenario_aligned,
-                              start_year = 2020,
-                              end_year = 2040,
-                              analysis_time_frame = NULL,
-                              log_path = NULL) {
+                                      litigation_scenario,
+                                      shock_scenario,
+                                      litigation_scenario_aligned,
+                                      start_year = 2020,
+                                      end_year = 2040,
+                                      analysis_time_frame = NULL,
+                                      log_path = NULL) {
   analysis_time_frame %||% stop("Must provide input for 'time_frame'", call. = FALSE)
 
   if (!"id" %in% names(data)) {
@@ -544,9 +517,8 @@ set_litigation_trajectory <- function(data,
     expected_columns = c(
       "investor_name", "portfolio_name", "id", "company_name",
       "ald_sector", "technology", "scenario_geography",
-      "plan_tech_prod", "plan_emission_factor", "baseline",
-      litigation_scenario, litigation_scenario_aligned,
-      glue::glue("target_ef_{litigation_scenario}")
+      "plan_tech_prod", "emission_factor", "baseline",
+      litigation_scenario, litigation_scenario_aligned
     )
   )
 
@@ -559,7 +531,6 @@ set_litigation_trajectory <- function(data,
 
   scenario_name <- shock_scenario$scenario_name
   year_of_shock <- shock_scenario$year_of_shock
-  # duration_of_shock <- shock_scenario$duration_of_shock
 
   # In LRISK, companies are forced to follow the scenario targets post
   # litigation event. Hence no compensation mechanism is built in. A potential
@@ -567,6 +538,9 @@ set_litigation_trajectory <- function(data,
   # We also currently only penalize companies for breaching the carbon budget on
   # declining types of capital stock or technologies. They are not sued for not
   # building out increasing technologies fast enough.
+  # Emissions factors do not need to be adjusted, as they are assumed constant
+  # per technology so that the change in overall emissions is driven by changes
+  # in production levels for all sectors with production pathways.
   data <- data %>%
     dplyr::group_by(
       .data$investor_name,
@@ -584,13 +558,7 @@ set_litigation_trajectory <- function(data,
       scen_to_follow_change = .data$scen_to_follow - dplyr::lag(.data$scen_to_follow),
       scen_to_follow_aligned_change = .data$scen_to_follow_aligned - dplyr::lag(.data$scen_to_follow_aligned),
       baseline_scenario_change = .data$baseline - dplyr::lag(.data$baseline),
-      late_sudden = .data$plan_tech_prod,
-      scen_to_follow_ef = !!rlang::sym(glue::glue("target_ef_{litigation_scenario}")),
-      scen_to_follow_aligned_ef = !!rlang::sym(glue::glue("target_ef_{litigation_scenario_aligned}")),
-      scen_to_follow_change_ef = .data$scen_to_follow_ef - dplyr::lag(.data$scen_to_follow_ef),
-      scen_to_follow_aligned_change_ef = .data$scen_to_follow_aligned_ef - dplyr::lag(.data$scen_to_follow_aligned_ef),
-      baseline_scenario_change_ef = .data$baseline_ef - dplyr::lag(.data$baseline_ef),
-      late_sudden_ef = .data$plan_emission_factor
+      late_sudden = .data$plan_tech_prod
     ) %>%
     dplyr::ungroup()
 
@@ -604,12 +572,10 @@ set_litigation_trajectory <- function(data,
       .data$ald_sector,
       .data$technology,
       .data$scenario_geography,
-      .data$plan_tech_prod,
-      .data$plan_emission_factor
+      .data$plan_tech_prod
     ) %>%
     dplyr::rename(
-      reference_tech_prod = .data$plan_tech_prod,
-      reference_emission_factor = .data$plan_emission_factor
+      reference_tech_prod = .data$plan_tech_prod
     )
 
   data <- data %>%
@@ -627,11 +593,11 @@ set_litigation_trajectory <- function(data,
         .data$direction == "declining" &
           .data$late_sudden[.env$analysis_time_frame] <= .data$scen_to_follow[.env$analysis_time_frame] &
           sum(.data$late_sudden[1:.env$analysis_time_frame], na.rm = TRUE) <=
-          sum(.data$scen_to_follow[1:.env$analysis_time_frame], na.rm = TRUE) |
+            sum(.data$scen_to_follow[1:.env$analysis_time_frame], na.rm = TRUE) |
           .data$direction == "increasing" &
-          .data$late_sudden[.env$analysis_time_frame] >= .data$scen_to_follow[.env$analysis_time_frame] &
-          sum(.data$late_sudden[1:.env$analysis_time_frame], na.rm = TRUE) >=
-          sum(.data$scen_to_follow[1:.env$analysis_time_frame], na.rm = TRUE),
+            .data$late_sudden[.env$analysis_time_frame] >= .data$scen_to_follow[.env$analysis_time_frame] &
+            sum(.data$late_sudden[1:.env$analysis_time_frame], na.rm = TRUE) >=
+              sum(.data$scen_to_follow[1:.env$analysis_time_frame], na.rm = TRUE),
         TRUE,
         FALSE
       )
@@ -663,11 +629,6 @@ set_litigation_trajectory <- function(data,
         .data$aligned,
         .data$reference_tech_prod + cumsum(.data$scen_to_follow_aligned_change),
         .data$reference_tech_prod + cumsum(.data$baseline_scenario_change)
-      ),
-      late_sudden_ef = dplyr::if_else(
-        .data$aligned,
-        .data$reference_emission_factor + cumsum(.data$scen_to_follow_aligned_change_ef),
-        .data$reference_emission_factor + cumsum(.data$baseline_scenario_change_ef)
       )
     ) %>%
     dplyr::ungroup()
@@ -687,25 +648,16 @@ set_litigation_trajectory <- function(data,
       .data$technology
     )
 
-  # TODO: unsure about handling of emission factors. In order to ensure that
-  # companies that are aligned in terms of production do not build up an
-  # emissions overshoot, we have to enforce the ef to follow the target scenario
-  # post shock, regardless of whether that may lead to a sudden jump or not.
-  # Conversely, this could lead to slight increases in ef for companies that
-  # already have an emissions factor below the scenario target.
-  # This should be refined. Likely better way to handle this: distinguish between
-  # production alignment and ef alignment and adjust based on both separately.
+  # only adjusting the late sudden trajectory for misaligned technologies that
+  # need to decline ensures that low carbon technologies that are not built out
+  # sufficiently do not get a boost out of the blue by moving to the increased
+  # trajectory of the target scenario.
   data <- data %>%
     dplyr::mutate(
       late_sudden = dplyr::if_else(
-        !.data$aligned & .data$year > shock_scenario$year_of_shock,
+        !.data$aligned & .data$year > shock_scenario$year_of_shock & .data$direction == "declining",
         .data$scen_to_follow,
         .data$late_sudden
-      ),
-      late_sudden_ef = dplyr::if_else(
-        .data$year > shock_scenario$year_of_shock,
-        .data$scen_to_follow_aligned_ef,
-        .data$late_sudden_ef
       )
     )
 
