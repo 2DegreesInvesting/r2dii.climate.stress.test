@@ -484,7 +484,8 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
     portfolio_pd_changes_annual = portfolio_pd_changes_annual,
     company_pd_changes_overall = company_pd_changes_overall,
     portfolio_pd_changes_overall = portfolio_pd_changes_overall,
-    company_trajectories = company_trajectories
+    company_trajectories = company_trajectories,
+    crispy_output = results_list$crispy_output
   ))
 }
 
@@ -601,6 +602,20 @@ check_results <- function(wrangled_results_list, sensitivity_analysis_vars) {
     dplyr::select(-c(.data$production_plan_company_technology, .data$production_change_target_scenario)) %>%
     report_missings(
       name_data = "Company Trajectories"
+    )
+
+  # crispy results ----------------------------------------------------
+  wrangled_results_list$crispy_output %>%
+    report_missings(
+      name_data = "CRISPY Results"
+    ) %>%
+    report_all_duplicate_kinds(
+      composite_unique_cols = c(
+        "company_name", "id", "id_type", "sector", "business_unit", "asset_type",
+        "scenario_geography", "baseline_scenario", "shock_scenario",
+        "risk_free_rate", "discount_rate", "dividend_rate", "growth_rate",
+        "shock_year", "term"
+      )
     )
 
   return(invisible(wrangled_results_list))
