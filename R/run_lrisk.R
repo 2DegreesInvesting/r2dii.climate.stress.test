@@ -210,11 +210,6 @@ read_and_process_and_calc_lrisk <- function(args_list) {
 
   year_litigation_event <- shock_year
 
-  # investor_name <- investor_name_placeholder
-  # portfolio_name <- investor_name_placeholder
-  # allocation_method <- allocation_method_lookup
-  # equity_market_filter <- equity_market_filter_lookup
-
   cat("-- Reading input data from designated input path. \n")
 
   if (use_company_terms) {
