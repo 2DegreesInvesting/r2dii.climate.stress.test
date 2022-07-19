@@ -9,7 +9,8 @@ company_technology_asset_value_at_risk(
   data,
   shock_scenario = NULL,
   div_netprofit_prop_coef = NULL,
-  flat_multiplier = NULL
+  flat_multiplier = NULL,
+  crispy = FALSE
 )
 }
 \arguments{
@@ -23,6 +24,9 @@ strongly the future dividends propagate to the company value}
 
 \item{flat_multiplier}{Numeric. A ratio that determines for the asset type
 if how strongly the DCF should propagate to value changes.}
+
+\item{crispy}{Boolean. Indicates if the output should be used for the CRISPY
+database or for standard portfolio calculation (default).}
 }
 \description{
 Calculate percentage value change between scenarios for equity (and

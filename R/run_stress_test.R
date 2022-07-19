@@ -283,6 +283,14 @@ read_and_process_and_calc <- function(args_list) {
       flat_multiplier = flat_multiplier
     )
 
+  company_technology_npv <- company_annual_profits %>%
+    company_technology_asset_value_at_risk(
+      shock_scenario = transition_scenario,
+      div_netprofit_prop_coef = div_netprofit_prop_coef,
+      flat_multiplier = flat_multiplier,
+      crispy = TRUE
+    )
+
   cat("-- Calculating credit risk. \n\n\n")
 
   company_pd_changes_overall <- company_annual_profits %>%
@@ -328,7 +336,9 @@ read_and_process_and_calc <- function(args_list) {
       company_expected_loss = company_expected_loss,
       company_pd_changes_annual = company_pd_changes_annual,
       company_pd_changes_overall = company_pd_changes_overall,
-      company_trajectories = company_trajectories
+      company_trajectories = company_trajectories,
+      company_technology_share = company_technology_share,
+      company_technology_npv = company_technology_npv
     )
   )
 }
