@@ -117,18 +117,6 @@ calc_future_prod_follows_scen <- function(planned_prod = .data$plan_tech_prod,
   planned_prod
 }
 
-calc_future_ef_follows_scen <- function(planned_ef = .data$plan_tech_emission_factor,
-                                        change_scen_ef = .data$scenario_change_ef) {
-  first_ef_na <- which(is.na(planned_ef))[1]
-
-  for (i in seq(first_ef_na, length(planned_ef))) {
-    planned_ef[i] <- planned_ef[i - 1] + change_scen_ef[i]
-  }
-
-  planned_ef
-}
-
-
 #' Defines which scenario values to use for the late & sudden trajectory in the
 #' stress test.
 #'
