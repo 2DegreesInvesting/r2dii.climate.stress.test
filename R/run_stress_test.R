@@ -337,7 +337,6 @@ read_and_process_and_calc <- function(args_list) {
       company_pd_changes_annual = company_pd_changes_annual,
       company_pd_changes_overall = company_pd_changes_overall,
       company_trajectories = company_trajectories,
-      company_technology_share = company_technology_share,
       company_technology_npv = company_technology_npv
     )
   )
