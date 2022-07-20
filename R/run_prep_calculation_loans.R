@@ -328,15 +328,10 @@ run_prep_calculation_loans <- function(input_path_project_specific,
 
   # ADO 1933 - for now, this only includes sectors with production pathways
   # in the future, sectors with emissions factors based pathways may follow
-  tmsr <- scenario_data_market_share %>%
-    dplyr::mutate(scenario = glue::glue("target_{scenario}"))
+  # tmsr <- scenario_data_market_share %>%
+  #   dplyr::mutate(scenario = glue::glue("target_{scenario}"))
 
   loans_results_company <- p4b_tms_results_loan_share %>%
-    # left join so that production values are not dropped
-    dplyr::left_join(
-      tmsr,
-      by = c("scenario_source", "metric" = "scenario", "sector", "technology", "year", "region")
-    ) %>%
     format_loanbook_st(
       investor_name = investor_name_placeholder,
       portfolio_name = investor_name_placeholder,
@@ -418,28 +413,13 @@ run_prep_calculation_loans <- function(input_path_project_specific,
       ) %>%
       dplyr::ungroup()
 
-    # scenario_data_market_share
-    # p4i_p4b_sector_technology_lookup
-
     # Join EFs based on PAMS
     # FIXME: we are losing rows here, which we should not
     loans_results_company <- loans_results_company %>%
       dplyr::inner_join(
         ar_pams %>% dplyr::distinct(.data$id, .data$company_name, ald_sector, technology, year, plan_emission_factor),
         by = c("id", "company_name", "ald_sector", "technology", "year")
-      ) %>%
-      dplyr::group_by(.data$id, .data$company_name, ald_sector, technology) %>%
-      dplyr::arrange(.data$id, .data$company_name, ald_sector, technology, .data$year) %>%
-      dplyr::mutate(reference_ef = dplyr::first(plan_emission_factor)) %>%
-      dplyr::mutate(
-        scen_emission_factor = dplyr::if_else(
-          .data$reference_ef == 0 | is.na(.data$reference_ef),
-          0,
-          .data$reference_ef * .data$tmsr
-        )
-      ) %>%
-      dplyr::ungroup() %>%
-      dplyr::select(-c(.data$tmsr, .data$smsp, .data$reference_ef))
+      )
   }
 
   loans_results_company %>%
