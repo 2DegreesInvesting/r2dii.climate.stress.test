@@ -15,8 +15,7 @@ read_pacta_results <- function(path = NULL) {
     "investor_name", "portfolio_name", "scenario", "allocation",
     "equity_market", "scenario_geography", "year", "ald_sector",
     "technology", "plan_tech_prod", "plan_emission_factor", "plan_carsten",
-    "scen_tech_prod", "scen_emission_factor", "plan_sec_prod",
-    "plan_sec_carsten", "id", "company_name"
+    "scen_tech_prod", "plan_sec_prod", "plan_sec_carsten", "id", "company_name"
   )
 
   validate_data_has_expected_cols(
