@@ -39,7 +39,7 @@ format_loanbook_st <- function(data,
     "year",
     "region",
     "scenario_source",
-    "name_ald",
+    "name_abcd",
     "metric",
     "production_unweighted",
     "technology_share",
@@ -82,7 +82,7 @@ format_loanbook_st <- function(data,
       scenario = .data$metric,
       scenario_geography = .data$region,
       ald_sector = .data$sector,
-      company_name = .data$name_ald
+      company_name = .data$name_abcd
     )
 
   results_loanbook <- results_loanbook %>%

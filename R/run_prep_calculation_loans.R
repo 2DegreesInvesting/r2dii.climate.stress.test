@@ -76,9 +76,9 @@ run_prep_calculation_loans <- function(input_path_project_specific,
         id_2dii = "c",
         level = "c",
         sector = "c",
-        sector_ald = "c",
+        sector_abcd = "c",
         name = "c",
-        name_ald = "c",
+        name_abcd = "c",
         score = "d",
         source = "c",
         borderline = "l"
@@ -151,9 +151,9 @@ run_prep_calculation_loans <- function(input_path_project_specific,
   #### Calculate loan-tech level loan book size and value share-----------------
   loan_share <- matched_non_negative %>%
     dplyr::group_by(
-      # ADO 1933 - we choose `name_ald` as this is an internal name that can be
+      # ADO 1933 - we choose `name_abcd` as this is an internal name that can be
       # joined with other 2dii data later on. This is not the case for `name`.
-      .data$name_ald, .data$sector_ald, .data$loan_size_outstanding_currency,
+      .data$name_abcd, .data$sector_abcd, .data$loan_size_outstanding_currency,
       .data$loan_size_credit_limit_currency
     ) %>%
     # ADO 2723 - loan shares calculated against matched loan book, not total loan book
@@ -168,8 +168,8 @@ run_prep_calculation_loans <- function(input_path_project_specific,
     ) %>%
     dplyr::ungroup() %>%
     dplyr::select(
-      .data$name_ald,
-      .data$sector_ald,
+      .data$name_abcd,
+      .data$sector_abcd,
       .data$comp_loan_share_outstanding,
       .data$comp_loan_size_outstanding,
       .data$loan_size_outstanding_currency,
@@ -182,7 +182,8 @@ run_prep_calculation_loans <- function(input_path_project_specific,
 
   sector_share <- matched_non_negative %>%
     dplyr::group_by(
-      .data$sector_ald, .data$loan_size_outstanding_currency,
+      .data$sector_abcd,
+      .data$loan_size_outstanding_currency,
       .data$loan_size_credit_limit_currency
     ) %>%
     dplyr::summarise(
@@ -194,7 +195,7 @@ run_prep_calculation_loans <- function(input_path_project_specific,
     ) %>%
     dplyr::ungroup() %>%
     dplyr::relocate(
-      .data$sector_ald,
+      .data$sector_abcd,
       .data$sector_loan_share_outstanding,
       .data$sector_loan_size_outstanding,
       .data$loan_size_outstanding_currency,
@@ -213,16 +214,16 @@ run_prep_calculation_loans <- function(input_path_project_specific,
     dplyr::inner_join(
       # ADO 2393 - use distinct to only map sectors, not technlogies
       p4i_p4b_sector_technology_lookup %>% dplyr::distinct(.data$sector_p4b, .data$sector_p4i),
-      by = c("sector_ald" = "sector_p4b")
+      by = c("sector_abcd" = "sector_p4b")
     ) %>%
-    dplyr::mutate(sector_ald = .data$sector_p4i) %>%
+    dplyr::mutate(sector_abcd = .data$sector_p4i) %>%
     dplyr::select(
-      .data$sector_ald,
+      .data$sector_abcd,
       !!rlang::sym(sector_credit_type),
       !!rlang::sym(credit_currency)
     ) %>%
     dplyr::rename(
-      financial_sector = .data$sector_ald,
+      financial_sector = .data$sector_abcd,
       valid_value_usd = !!rlang::sym(sector_credit_type),
       currency = !!rlang::sym(credit_currency)
     ) %>%
@@ -275,9 +276,6 @@ run_prep_calculation_loans <- function(input_path_project_specific,
     use_credit_limit <- FALSE
   }
   p4b_tms_results <- matched_non_negative %>%
-    # hardcoded renaming for compatibility with r2dii::analysis 0.2.0
-    dplyr::rename(sector_abcd = .data$sector_ald,
-                  name_abcd = .data$name_ald) %>%
     r2dii.analysis::target_market_share(
       abcd = production_forecast_data,
       scenario = scenario_data_market_share,
@@ -286,14 +284,13 @@ run_prep_calculation_loans <- function(input_path_project_specific,
       by_company = TRUE,
       weight_production = FALSE
     ) %>%
-    dplyr::rename(name_ald = .data$name_abcd) %>%
     dplyr::rename(
       production_unweighted = .data$production
     ) %>%
     dplyr::mutate(technology_share = round(.data$technology_share, 8)) %>%
     report_all_duplicate_kinds(
       composite_unique_cols = c(
-        "sector", "technology", "year", "region", "scenario_source", "name_ald",
+        "sector", "technology", "year", "region", "scenario_source", "name_abcd",
         "metric"
       )
     )
@@ -302,7 +299,7 @@ run_prep_calculation_loans <- function(input_path_project_specific,
 
   p4b_tms_results_loan_share <- p4b_tms_results %>%
     # TODO why left_join?
-    dplyr::left_join(loan_share, by = c("sector" = "sector_ald", "name_ald")) %>%
+    dplyr::left_join(loan_share, by = c("sector" = "sector_abcd", "name_abcd")) %>%
     dplyr::select(
       -c(
         .data$comp_loan_size_outstanding, .data$comp_loan_size_credit_limit,
