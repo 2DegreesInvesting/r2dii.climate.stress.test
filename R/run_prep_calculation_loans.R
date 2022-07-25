@@ -275,15 +275,39 @@ run_prep_calculation_loans <- function(input_path_project_specific,
   } else {
     use_credit_limit <- FALSE
   }
-  p4b_tms_results <- matched_non_negative %>%
-    r2dii.analysis::target_market_share(
-      abcd = production_forecast_data,
-      scenario = scenario_data_market_share,
-      region_isos = regions,
-      use_credit_limit = use_credit_limit,
-      by_company = TRUE,
-      weight_production = FALSE
-    ) %>%
+
+  # running the PACTA analysis by scenario source is necessary because there are
+  # scenarios of the same name across scenario sources. E.g. WEO2020 "SDS" and
+  # WEO2021 "SDS". If the sources are not passed one by one, PACTA will aggregate
+  # results by scenario name across sources, which leads to double counting of
+  # production values
+  scenario_sources <- unique(scenario_data_market_share$scenario_source)
+  p4b_tms_results <- tibble::tibble()
+
+  for (i in scenario_sources) {
+
+    scenario_data_market_share_i <- scenario_data_market_share %>%
+      dplyr::filter(scenario_source == i)
+
+    regions_i <- regions %>%
+      dplyr::filter(source == i)
+
+    p4b_tms_results_i <- matched_non_negative %>%
+      r2dii.analysis::target_market_share(
+        abcd = production_forecast_data,
+        scenario = scenario_data_market_share_i,
+        region_isos = regions_i,
+        use_credit_limit = use_credit_limit,
+        by_company = TRUE,
+        weight_production = FALSE
+      )
+
+    p4b_tms_results <- p4b_tms_results %>%
+      dplyr::bind_rows(p4b_tms_results_i)
+
+  }
+
+  p4b_tms_results <- p4b_tms_results %>%
     dplyr::rename(
       production_unweighted = .data$production
     ) %>%
