@@ -315,7 +315,6 @@ read_and_process_and_calc_lrisk <- function(args_list) {
       start_analysis = start_year,
       end_analysis = end_year_lookup,
       time_frame = time_horizon_lookup,
-      baseline_scenario = baseline_scenario,
       target_scenario = shock_scenario,
       emission_factors = TRUE
     ) %>%

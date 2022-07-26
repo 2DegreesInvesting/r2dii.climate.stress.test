@@ -134,8 +134,6 @@ extend_scenario_trajectory_old <- function(data,
 #'   year of the analysis.
 #' @param time_frame Numeric. A vector of length 1 indicating the number of
 #'   years for which forward looking production data is considered.
-#' @param baseline_scenario Character. A vector of length 1 indicating baseline
-#'   scenario
 #' @param target_scenario Character. A vector of length 1 indicating target
 #'   scenario
 #' @param emission_factors boolean. also summarise emmision factors? only needed
@@ -147,7 +145,6 @@ extend_scenario_trajectory <- function(data,
                                        start_analysis,
                                        end_analysis,
                                        time_frame,
-                                       baseline_scenario,
                                        target_scenario,
                                        emission_factors = FALSE) {
   data_cols <- c(
