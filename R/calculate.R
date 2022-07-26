@@ -190,7 +190,6 @@ calculate_terminal_value <- function(data,
       baseline = NA_real_,
       scen_to_follow_aligned = NA_real_,
       late_sudden = NA_real_,
-      scenario_change_aligned = NA_real_,
       Baseline_price = NA_real_,
       late_sudden_price = NA_real_,
       production_compensation = NA_real_
