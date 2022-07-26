@@ -328,8 +328,6 @@ run_prep_calculation_loans <- function(input_path_project_specific,
 
   # ADO 1933 - for now, this only includes sectors with production pathways
   # in the future, sectors with emissions factors based pathways may follow
-  # tmsr <- scenario_data_market_share %>%
-  #   dplyr::mutate(scenario = glue::glue("target_{scenario}"))
 
   loans_results_company <- p4b_tms_results_loan_share %>%
     format_loanbook_st(
