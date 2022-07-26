@@ -8,8 +8,7 @@ run_prep_calculation_loans(
   input_path_project_specific,
   input_path_project_agnostic,
   data_prep_output_path,
-  credit_type = "outstanding",
-  risk_type = "trisk"
+  credit_type = "outstanding"
 )
 }
 \arguments{
@@ -27,8 +26,6 @@ path as \code{input_path_project_specific}.}
 
 \item{credit_type}{Type of credit. For accepted values please compare
 \code{credit_type_lookup}.}
-
-\item{risk_type}{Type of risk. Currently supports "trisk" and "lrisk".}
 }
 \description{
 Run stress testing data preparation for loans
