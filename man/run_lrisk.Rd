@@ -92,7 +92,7 @@ default.}
 
 \item{exp_share_damages_paid}{Numeric. Ratio that defines the expected share
 of the calculated social cost of carbon that is considered in the liability.
-This can follow historical precendents such as the Tobacco Master
+This can follow historical precedents such as the Tobacco Master
 Settlement that had a an expected share of 2.7\% of the damages paid.}
 
 \item{scc}{Numeric. Social cost of carbon per excess ton of CO2 emitted. This
