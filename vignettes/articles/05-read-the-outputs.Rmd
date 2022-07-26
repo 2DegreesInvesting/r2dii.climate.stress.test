@@ -104,9 +104,6 @@ and technology under the baseline scenario.
 and technology under the target scenario.
 * `production_shock_scenario`: Production plan for the combination of company
 and technology under the shock scenario.
-* `production_change_target_scenario`: Year by year required absolute changes of
-production for the combination of company and technology under the target
-scenario.
 * `company_id`: Internal company identifier.
 * `pd`: Probability of default under the baseline scenario.
 * `net_profit_margin`: Net profit margin of the company.

@@ -262,6 +262,7 @@ set_ls_trajectory <- function(data,
         .data$scen_to_follow,
         .data$scenario_change,
         .data$scenario_change_baseline,
+        .data$scenario_change_aligned,
         .data$overshoot_direction
       )
     )
