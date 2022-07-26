@@ -276,28 +276,7 @@ read_and_process_and_calc_lrisk <- function(args_list) {
   cat("-- Calculating market risk. \n")
 
   # TODO: maybe wrap the below into something like calculate_annual_profits_lr()
-  # company_annual_profits <- calculate_annual_profits(
-  #   asset_type = asset_type,
-  #   input_data_list = input_data_list,
-  #   scenario_to_follow_baseline = baseline_scenario,
-  #   scenario_to_follow_shock = shock_scenario,
-  #   transition_scenario = transition_scenario,
-  #   start_year = start_year,
-  #   end_year = end_year_lookup,
-  #   time_horizon = time_horizon_lookup,
-  #   discount_rate = discount_rate,
-  #   growth_rate = growth_rate,
-  #   log_path = log_path
-  # )
-
   # TODO: decide if a slow change in price trajectory is needed...
-  # price_data <- input_data_list$df_price %>%
-  #   calc_scenario_prices(
-  #     baseline_scenario = baseline_scenario,
-  #     shock_scenario = shock_scenario,
-  #     transition_scenario = transition_scenario,
-  #     start_year = start_year
-  #   )
   # For now, we assume that we just have the standard prices which are renamed to be able to use functions
   price_data <- input_data_list$df_price %>%
     dplyr::rename(
