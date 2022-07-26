@@ -315,12 +315,10 @@ read_and_process_and_calc_lrisk <- function(args_list) {
       start_analysis = start_year,
       end_analysis = end_year_lookup,
       time_frame = time_horizon_lookup,
-      target_scenario = shock_scenario,
-      emission_factors = TRUE
+      target_scenario = shock_scenario
     ) %>%
     set_baseline_trajectory(
-      scenario_to_follow_baseline = baseline_scenario,
-      emission_factors = TRUE
+      scenario_to_follow_baseline = baseline_scenario
     ) %>%
     # we currently assume that production levels and emission factors of
     # misaligned company-technology combinations are forced onto the target

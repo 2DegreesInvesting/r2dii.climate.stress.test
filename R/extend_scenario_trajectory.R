@@ -136,8 +136,6 @@ extend_scenario_trajectory_old <- function(data,
 #'   years for which forward looking production data is considered.
 #' @param target_scenario Character. A vector of length 1 indicating target
 #'   scenario
-#' @param emission_factors boolean. also summarise emmision factors? only needed
-#'   for lititgation risk at this point.
 
 #' @noRd
 extend_scenario_trajectory <- function(data,
@@ -145,22 +143,15 @@ extend_scenario_trajectory <- function(data,
                                        start_analysis,
                                        end_analysis,
                                        time_frame,
-                                       target_scenario,
-                                       emission_factors = FALSE) {
-  data_cols <- c(
-    "year", "investor_name", "portfolio_name", "equity_market", "ald_sector",
-    "technology", "scenario", "allocation", "scenario_geography",
-    "plan_tech_prod", "plan_carsten", "scen_tech_prod", "plan_sec_prod",
-    "plan_sec_carsten", "id", "company_name"
-  )
-
-  if (emission_factors) {
-    data_cols <- c(data_cols, "plan_emission_factor")
-  }
-
+                                       target_scenario) {
   validate_data_has_expected_cols(
     data = data,
-    expected_columns = data_cols
+    expected_columns = c(
+      "year", "investor_name", "portfolio_name", "equity_market", "ald_sector",
+      "technology", "scenario", "allocation", "scenario_geography",
+      "plan_tech_prod", "plan_carsten", "plan_emission_factor",
+      "scen_tech_prod", "plan_sec_prod", "plan_sec_carsten", "id", "company_name"
+    )
   )
 
   validate_data_has_expected_cols(
@@ -174,14 +165,12 @@ extend_scenario_trajectory <- function(data,
   data <- data %>%
     summarise_production_technology_forecasts(
       start_analysis = start_analysis,
-      time_frame = time_frame,
-      emission_factors = emission_factors
+      time_frame = time_frame
     ) %>%
     identify_technology_phase_out() %>%
     extend_to_full_analysis_timeframe(
       start_analysis = start_analysis,
-      end_analysis = end_analysis,
-      emission_factors = emission_factors
+      end_analysis = end_analysis
     )
 
   data <- data %>%
@@ -211,19 +200,13 @@ extend_scenario_trajectory <- function(data,
       target_scenario = target_scenario
     )
 
-  # if emission factors are required, pass throught he variable
-  id_cols  <- c(
-    "investor_name", "portfolio_name", "id", "company_name", "year",
-    "scenario_geography", "ald_sector", "technology", "plan_tech_prod",
-    "phase_out", "proximity_to_target", "direction"
-  )
-  if (emission_factors) {
-    id_cols <- c(id_cols, "emission_factor")
-  }
-
   data <- data %>%
     tidyr::pivot_wider(
-      id_cols = .env$id_cols,
+      id_cols = c(
+        "investor_name", "portfolio_name", "id", "company_name", "year",
+        "scenario_geography", "ald_sector", "technology", "plan_tech_prod",
+        "phase_out", "emission_factor", "proximity_to_target", "direction"
+      ),
       names_from = .data$scenario,
       values_from = .data$scen_tech_prod
     ) %>%
@@ -243,24 +226,17 @@ extend_scenario_trajectory <- function(data,
 #'   conversion of power capacity to generation.
 #' @param start_analysis start of the analysis
 #' @param time_frame number of years with forward looking production data
-#' @param emission_factors boolean. pass through emission factors? only needed
-#'   for lititgation risk at this point.
 #' @noRd
 summarise_production_technology_forecasts <- function(data,
                                                       start_analysis,
-                                                      time_frame,
-                                                      emission_factors = FALSE) {
-  include_cols <- c(
-    "investor_name", "portfolio_name", "id", "company_name",
-    "ald_sector", "technology", "scenario_geography",
-    "allocation", "year", "scenario", "plan_tech_prod",
-    "scen_tech_prod"
-  )
-
-  if (emission_factors) {include_cols <- c(include_cols, "plan_emission_factor")}
-
+                                                      time_frame) {
   data <- data %>%
-    dplyr::select(!!!rlang::syms(include_cols)) %>%
+    dplyr::select(
+      .data$investor_name, .data$portfolio_name, .data$id, .data$company_name,
+      .data$ald_sector, .data$technology, .data$scenario_geography,
+      .data$allocation, .data$year, .data$scenario, .data$plan_tech_prod,
+      .data$plan_emission_factor, .data$scen_tech_prod
+    ) %>%
     dplyr::filter(.data$year <= .env$start_analysis + .env$time_frame) %>%
     dplyr::group_by(
       .data$investor_name, .data$portfolio_name, .data$id, .data$company_name,
@@ -309,13 +285,10 @@ identify_technology_phase_out <- function(data) {
 #'   the summaries fo their forecasts and the phase out indicator.
 #' @param start_analysis start of the analysis
 #' @param end_analysis end of the analysis
-#' @param emission_factors boolean. also summarise emmision factors? only needed
-#'   for lititgation risk at this point.
 #' @noRd
 extend_to_full_analysis_timeframe <- function(data,
                                               start_analysis,
-                                              end_analysis,
-                                              emission_factors = FALSE) {
+                                              end_analysis) {
   data <- data %>%
     tidyr::complete(
       year = seq(.env$start_analysis, .env$end_analysis),
@@ -337,18 +310,12 @@ extend_to_full_analysis_timeframe <- function(data,
       .data$initial_technology_production,
       .data$initial_technology_target,
       .data$final_technology_production,
-      .data$phase_out
-    )
-
-  if (emission_factors) {
-    data <- data %>%
-      tidyr::fill(
-        .data$plan_emission_factor
-      ) %>%
+      .data$phase_out,
+      .data$plan_emission_factor
+    ) %>%
     dplyr::rename(
       emission_factor = .data$plan_emission_factor
     )
-  }
 
   return(data)
 }

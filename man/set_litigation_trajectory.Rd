@@ -10,10 +10,10 @@ set_litigation_trajectory(
   litigation_scenario,
   shock_scenario,
   litigation_scenario_aligned,
-  start_year = 2020,
-  end_year = 2040,
-  analysis_time_frame = NULL,
-  log_path = NULL
+  start_year,
+  end_year,
+  analysis_time_frame,
+  log_path
 )
 }
 \arguments{

@@ -22,15 +22,12 @@
 #' @param scenario_to_follow_baseline Character. A string that indicates which
 #'   of the scenarios included in the analysis should be used to set the
 #'   baseline technology trajectories.
-#' @param emission_factors boolean. also summarise emmision factors? only needed
-#'   for lititgation risk at this point.
 #'
 #' @family scenario definition
 #'
 #' @return dataframe.
 set_baseline_trajectory <- function(data,
-                                    scenario_to_follow_baseline,
-                                    emission_factors = FALSE) {
+                                    scenario_to_follow_baseline) {
   if (!"id" %in% names(data)) {
     data$id <- "PortfolioLevel"
   }
@@ -38,19 +35,13 @@ set_baseline_trajectory <- function(data,
     data$company_name <- "PortfolioLevel"
   }
 
-  data_cols <- c(
-    "investor_name", "portfolio_name", "id", "company_name",
-    "ald_sector", "technology", "scenario_geography",
-    "plan_tech_prod", scenario_to_follow_baseline
-  )
-
-  if (emission_factors) {
-    data_cols <- c(data_cols, "emission_factor")
-  }
-
   validate_data_has_expected_cols(
     data = data,
-    expected_columns = data_cols
+    expected_columns = c(
+      "investor_name", "portfolio_name", "id", "company_name",
+      "ald_sector", "technology", "scenario_geography",
+      "plan_tech_prod", "emission_factor", scenario_to_follow_baseline
+    )
   )
 
   data <- data %>%
