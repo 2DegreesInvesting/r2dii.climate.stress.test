@@ -353,15 +353,15 @@ run_prep_calculation_loans <- function(input_path_project_specific,
       values_to = "ald_production"
     ) %>%
     dplyr::rename(
-      id = `Company ID`,
-      company_name = `Company Name`,
-      ald_sector = `Asset Sector`,
-      technology = `Asset Technology`,
-      technology_type = `Asset Technology Type`,
-      ald_location = `Asset Country`,
-      emissions_factor = `Emissions Factor`,
-      emissions_factor_unit = `Emissions Factor Unit`,
-      ald_production_unit = `Activity Unit`
+      id = .data$`Company ID`,
+      company_name = .data$`Company Name`,
+      ald_sector = .data$`Asset Sector`,
+      technology = .data$`Asset Technology`,
+      technology_type = .data$`Asset Technology Type`,
+      ald_location = .data$`Asset Country`,
+      emissions_factor = .data$`Emissions Factor`,
+      emissions_factor_unit = .data$`Emissions Factor Unit`,
+      ald_production_unit = .data$`Activity Unit`
     ) %>%
     dplyr::mutate(
       technology = dplyr::case_when(
@@ -372,34 +372,37 @@ run_prep_calculation_loans <- function(input_path_project_specific,
       )
     ) %>%
     dplyr::group_by(
-      company_name, id , ald_sector, ald_location, technology, year,
-      ald_production_unit, emissions_factor, emissions_factor_unit
+      .data$company_name, .data$id , .data$ald_sector, .data$ald_location,
+      .data$technology, .data$year, .data$ald_production_unit,
+      .data$emissions_factor, .data$emissions_factor_unit
     ) %>%
     dplyr::summarise(
-      ald_production = sum(ald_production, na.rm = TRUE),
+      ald_production = sum(.data$ald_production, na.rm = TRUE),
       .groups = "drop"
     ) %>%
     dplyr::ungroup() %>%
     dplyr::transmute(
       id = as.numeric(id),
-      company_name = tolower(as.character(company_name)),
-      ald_sector = as.character(ald_sector),
-      ald_location = as.character(ald_location),
-      technology = as.character(technology),
-      year = as.numeric(year),
-      ald_production = as.numeric(ald_production),
-      ald_production = dplyr::if_else(ald_production <= 0, 0, ald_production),
-      ald_production_unit = as.character(ald_production_unit),
-      ald_emissions_factor = as.numeric(emissions_factor),
-      ald_emissions_factor_unit = as.character(emissions_factor_unit)
+      company_name = tolower(as.character(.data$company_name)),
+      ald_sector = as.character(.data$ald_sector),
+      ald_location = as.character(.data$ald_location),
+      technology = as.character(.data$technology),
+      year = as.numeric(.data$year),
+      ald_production = as.numeric(.data$ald_production),
+      ald_production = dplyr::if_else(.data$ald_production <= 0, 0, .data$ald_production),
+      ald_production_unit = as.character(.data$ald_production_unit),
+      ald_emissions_factor = as.numeric(.data$emissions_factor),
+      ald_emissions_factor_unit = as.character(.data$emissions_factor_unit)
     ) %>%
     dplyr::group_by(
-      id, company_name, ald_sector, technology, year
+      .data$id, .data$company_name, .data$ald_sector, .data$technology, .data$year
     ) %>%
     dplyr::summarise(
       # TODO: might introduce NaNs... check what to do here
-      plan_emission_factor = stats::weighted.mean(x = ald_emissions_factor, w = ald_production, na.rm = TRUE),
-      plan_tech_prod = sum(ald_production, na.rm = TRUE),
+      plan_emission_factor = stats::weighted.mean(
+        x = .data$ald_emissions_factor, w = .data$ald_production, na.rm = TRUE
+      ),
+      plan_tech_prod = sum(.data$ald_production, na.rm = TRUE),
       .groups = "drop"
     ) %>%
     dplyr::ungroup()
@@ -408,7 +411,8 @@ run_prep_calculation_loans <- function(input_path_project_specific,
   # FIXME: we are losing rows here, which we should not
   loans_results_company <- loans_results_company %>%
     dplyr::inner_join(
-      ar_pams %>% dplyr::distinct(.data$id, .data$company_name, ald_sector, technology, year, plan_emission_factor),
+      ar_pams %>%
+        dplyr::distinct(.data$id, .data$company_name, .data$ald_sector, .data$technology, .data$year, .data$plan_emission_factor),
       by = c("id", "company_name", "ald_sector", "technology", "year")
     )
 
