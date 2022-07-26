@@ -488,19 +488,10 @@ set_litigation_trajectory <- function(data,
                                       litigation_scenario,
                                       shock_scenario,
                                       litigation_scenario_aligned,
-                                      start_year = 2020,
-                                      end_year = 2040,
-                                      analysis_time_frame = NULL,
-                                      log_path = NULL) {
-  analysis_time_frame %||% stop("Must provide input for 'time_frame'", call. = FALSE)
-
-  if (!"id" %in% names(data)) {
-    data$id <- "PortfolioLevel"
-  }
-  if (!"company_name" %in% names(data)) {
-    data$company_name <- "PortfolioLevel"
-  }
-
+                                      start_year,
+                                      end_year,
+                                      analysis_time_frame,
+                                      log_path) {
   validate_data_has_expected_cols(
     data = data,
     expected_columns = c(
