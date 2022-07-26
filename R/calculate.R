@@ -44,6 +44,7 @@ calculate_annual_profits <- function(asset_type, input_data_list, scenario_to_fo
     set_baseline_trajectory(
       scenario_to_follow_baseline = scenario_to_follow_baseline
     ) %>%
+    # some companies dropped, document
     set_ls_trajectory(
       scenario_to_follow_ls = scenario_to_follow_shock,
       shock_scenario = transition_scenario,
