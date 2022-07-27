@@ -270,7 +270,7 @@ read_and_process_and_calc_lrisk <- function(args_list) {
     start_of_analysis = start_year,
     end_of_analysis = end_year_lookup,
     year_of_shock = year_litigation_event,
-    duration_of_shock = end_year_lookup - year_litigation_event
+    duration_of_shock = end_year_lookup - year_litigation_event + 1
   )
 
   cat("-- Calculating market risk. \n")
