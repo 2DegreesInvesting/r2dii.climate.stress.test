@@ -122,12 +122,5 @@ check_expected_missings <- function(data) {
     cat("-- Company Trajectories: Detected unexpected missings on variable production_plan_company_technology. \n")
   }
 
-  n_missings_production_change_target_scenario <- sum(is.na(data$production_change_target_scenario))
-  expected_n_missings_production_change_target_scenario <- as.integer(round(nrow(data) / length(unique(data$year))))
-
-  if (n_missings_production_change_target_scenario != expected_n_missings_production_change_target_scenario) {
-    cat("-- Company Trajectories: Detected unexpected missings on variable production_change_target_scenario. \n")
-  }
-
   return(invisible(data))
 }

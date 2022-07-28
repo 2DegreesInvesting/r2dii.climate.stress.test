@@ -149,8 +149,8 @@ extend_scenario_trajectory <- function(data,
     expected_columns = c(
       "year", "investor_name", "portfolio_name", "equity_market", "ald_sector",
       "technology", "scenario", "allocation", "scenario_geography",
-      "plan_tech_prod", "plan_carsten", "scen_tech_prod", "plan_sec_prod",
-      "plan_sec_carsten", "id", "company_name"
+      "plan_tech_prod", "plan_carsten", "plan_emission_factor",
+      "scen_tech_prod", "plan_sec_prod", "plan_sec_carsten", "id", "company_name"
     )
   )
 
@@ -205,7 +205,7 @@ extend_scenario_trajectory <- function(data,
       id_cols = c(
         "investor_name", "portfolio_name", "id", "company_name", "year",
         "scenario_geography", "ald_sector", "technology", "plan_tech_prod",
-        "phase_out", "proximity_to_target", "direction"
+        "phase_out", "emission_factor", "proximity_to_target", "direction"
       ),
       names_from = .data$scenario,
       values_from = .data$scen_tech_prod
@@ -214,6 +214,8 @@ extend_scenario_trajectory <- function(data,
       .data$investor_name, .data$portfolio_name, .data$id, .data$company_name,
       .data$scenario_geography, .data$ald_sector, .data$technology, .data$year
     )
+
+  return(data)
 }
 
 #' Summarise the forecasts for company-tech level production within the five
@@ -233,7 +235,7 @@ summarise_production_technology_forecasts <- function(data,
       .data$investor_name, .data$portfolio_name, .data$id, .data$company_name,
       .data$ald_sector, .data$technology, .data$scenario_geography,
       .data$allocation, .data$year, .data$scenario, .data$plan_tech_prod,
-      .data$scen_tech_prod
+      .data$plan_emission_factor, .data$scen_tech_prod
     ) %>%
     dplyr::filter(.data$year <= .env$start_analysis + .env$time_frame) %>%
     dplyr::group_by(
@@ -253,6 +255,8 @@ summarise_production_technology_forecasts <- function(data,
       sum_production_forecast = sum(.data$plan_tech_prod, na.rm = TRUE)
     ) %>%
     dplyr::ungroup()
+
+  return(data)
 }
 
 #' Identify which company technology combination is a phase out and mark as such
@@ -306,8 +310,14 @@ extend_to_full_analysis_timeframe <- function(data,
       .data$initial_technology_production,
       .data$initial_technology_target,
       .data$final_technology_production,
-      .data$phase_out
+      .data$phase_out,
+      .data$plan_emission_factor
+    ) %>%
+    dplyr::rename(
+      emission_factor = .data$plan_emission_factor
     )
+
+  return(data)
 }
 
 #' Summarise the forecasts for company-sector level production within the five
@@ -358,6 +368,8 @@ apply_scenario_targets <- function(data) {
         .data$initial_technology_target + (.data$initial_sector_target * .data$fair_share_perc) # smsp
       )
     )
+
+  return(data)
 }
 
 #' Set scenario targets to zero where companies phase out a technology or the
