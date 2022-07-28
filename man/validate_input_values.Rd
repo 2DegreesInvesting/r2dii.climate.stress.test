@@ -8,8 +8,7 @@ validate_input_values(
   baseline_scenario,
   shock_scenario,
   scenario_geography,
-  lgd_senior_claims,
-  lgd_subordinated_claims,
+  lgd,
   risk_free_rate,
   discount_rate,
   growth_rate,
@@ -31,12 +30,8 @@ stress test, for accepted value range check \code{stress_test_arguments}.}
 region(s) (concerning asset location) results shall be calculated for. For
 accepted values compare \code{stress_test_arguments}.}
 
-\item{lgd_senior_claims}{Numeric, holding the loss given default for senior
-claims, for accepted value range check \code{stress_test_arguments}.}
-
-\item{lgd_subordinated_claims}{Numeric, holding the loss given default for
-subordinated claims, for accepted value range check
-\code{stress_test_arguments}.}
+\item{lgd}{Numeric, holding the loss given default for accepted value range
+check \code{stress_test_arguments}.}
 
 \item{risk_free_rate}{Numeric that indicates the risk free rate of interest.
 For accepted range compare \code{stress_test_arguments}.}
