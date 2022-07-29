@@ -118,7 +118,7 @@ aggregate_results <- function(results_list, sensitivity_analysis_vars, iter_var)
       pd_difference = .data$pd_shock - .data$pd_baseline
     ) %>%
     dplyr::select(
-      .data$company_name, .data$id, .data$sector, .data$business_unit,
+      .data$company_name, .data$sector, .data$business_unit,
       .data$roll_up_type, .data$scenario_geography, .data$baseline_scenario,
       .data$shock_scenario, .data$lgd, .data$risk_free_rate, .data$discount_rate,
       .data$dividend_rate, .data$growth_rate, .data$shock_year,
