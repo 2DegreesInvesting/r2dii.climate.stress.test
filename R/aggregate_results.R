@@ -113,13 +113,18 @@ aggregate_results <- function(results_list, sensitivity_analysis_vars, iter_var)
       pd_baseline = .data$PD_baseline,
       pd_shock = .data$PD_late_sudden
     ) %>%
+    dplyr::mutate(
+      net_present_value_difference = .data$net_present_value_shock - .data$net_present_value_baseline,
+      pd_difference = .data$pd_shock - .data$pd_baseline
+    ) %>%
     dplyr::select(
       .data$company_name, .data$id, .data$sector, .data$business_unit,
       .data$roll_up_type, .data$scenario_geography, .data$baseline_scenario,
       .data$shock_scenario, .data$lgd, .data$risk_free_rate, .data$discount_rate,
       .data$dividend_rate, .data$growth_rate, .data$shock_year,
       .data$net_present_value_baseline, .data$net_present_value_shock,
-      .data$term, .data$pd_baseline, .data$pd_shock
+      .data$net_present_value_difference, .data$term, .data$pd_baseline,
+      .data$pd_shock, .data$pd_difference
     )
 
   return(list(
