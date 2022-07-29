@@ -84,8 +84,7 @@ aggregate_results <- function(results_list, sensitivity_analysis_vars, iter_var)
       by = c(
         "investor_name", "portfolio_name", "scenario_name", "scenario_geography",
         "company_name", "ald_sector", "asset_type_arg", "baseline_scenario_arg",
-        "shock_scenario_arg", "lgd_senior_claims_arg",
-        "lgd_subordinated_claims_arg", "risk_free_rate_arg", "discount_rate_arg",
+        "shock_scenario_arg", "lgd_arg", "risk_free_rate_arg", "discount_rate_arg",
         "growth_rate_arg", "div_netprofit_prop_coef_arg", "shock_year_arg",
         "fallback_term_arg", "use_company_terms_arg"
       )
@@ -93,21 +92,15 @@ aggregate_results <- function(results_list, sensitivity_analysis_vars, iter_var)
 
   crispy_output <- crispy_output %>%
     dplyr::mutate(
-      lgd = dplyr::if_else(
-        asset_type_arg == "loans",
-        lgd_senior_claims_arg,
-        lgd_subordinated_claims_arg
-      ),
-      id_type = dplyr::if_else(
+      roll_up_type = dplyr::if_else(
         asset_type_arg == "bonds",
-        "bond_ticker",
-        "company_id"
+        "financial_control",
+        "equity_ownership"
       )
     ) %>%
     dplyr::rename(
       sector = ald_sector,
       business_unit = technology,
-      asset_type = asset_type_arg,
       baseline_scenario = baseline_scenario_arg,
       shock_scenario = shock_scenario_arg,
       discount_rate = discount_rate_arg,
@@ -120,7 +113,7 @@ aggregate_results <- function(results_list, sensitivity_analysis_vars, iter_var)
       pd_shock = PD_late_sudden
     ) %>%
     dplyr::select(
-      company_name, id, id_type, sector, business_unit, asset_type, scenario_geography,
+      company_name, id, sector, business_unit, roll_up_type, scenario_geography,
       baseline_scenario, shock_scenario, lgd, risk_free_rate, discount_rate,
       dividend_rate, growth_rate, shock_year, net_present_value_baseline,
       net_present_value_shock, term, pd_baseline, pd_shock
