@@ -276,7 +276,7 @@ read_and_process_and_calc <- function(args_list) {
     company_technology_asset_value_at_risk(
       shock_scenario = transition_scenario,
       div_netprofit_prop_coef = div_netprofit_prop_coef,
-      flat_multiplier = flat_multiplier,
+      flat_multiplier = flat_multiplier_lookup,
       crispy = TRUE
     )
 
