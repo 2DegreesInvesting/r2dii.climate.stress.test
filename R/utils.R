@@ -312,19 +312,6 @@ report_missings <- function(data, name_data, throw_error = FALSE) {
   invisible(data)
 }
 
-#' Assign value of lgd
-#'
-#' Assigns value of lgd based on `asset_type`. Can be from `lgd_senior_claims`
-#' or `lgd_subordinated_claims`.
-#'
-#' @inheritParams validate_input_values
-#'
-#' @return A numeric holding value of lgd.
-assign_lgd <- function(asset_type, lgd_senior_claims,
-                       lgd_subordinated_claims) {
-  lgd <- ifelse(asset_type %in% c("equity", "bonds"), lgd_subordinated_claims, lgd_senior_claims)
-  return(lgd)
-}
 
 #' Get name of iterator variable
 #'
