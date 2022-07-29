@@ -59,6 +59,9 @@ calculate_pd_change_annual <- function(data,
     dplyr::group_by(
       .data$scenario_name, .data$scenario_geography, .data$investor_name,
       .data$portfolio_name, .data$id, .data$company_name, .data$ald_sector,
+      # TODO: clarify the appropriate summation for annual PD calculations
+      # grouping by year effectively means the cumsum does nothing, so the
+      # intent should be revisited
       .data$year, .data$debt_equity_ratio, .data$volatility
     ) %>%
     dplyr::mutate(

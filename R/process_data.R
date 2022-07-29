@@ -92,6 +92,17 @@ process_pacta_results <- function(data, start_year, end_year, time_horizon,
       check_company_ticker_mapping()
   }
 
+  # if_plan_emission_factor is NA and plan_tech_prod is zero, set the emission
+  # factor to 0 as well, as it will not contribute to company emissions
+  data_processed <- data_processed %>%
+    dplyr::mutate(
+      plan_emission_factor = dplyr::if_else(
+        is.na(.data$plan_emission_factor) & .data$plan_tech_prod == 0,
+        0,
+        .data$plan_emission_factor
+      )
+    )
+
   # since pacta for loans returns only NA values for id, we ignore the
   # column when checking for missing values
   if (asset_type == "loans") {

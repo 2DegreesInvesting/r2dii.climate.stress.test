@@ -162,7 +162,7 @@ test_that("when technology is aligned, set_ls_trajectory fully replicates
     dplyr::filter(.data$technology == "Electric" & .data$year < year_of_shock) %>%
     dplyr::mutate(
       change_ls = round(.data$late_sudden - dplyr::lag(.data$late_sudden), 7),
-      scenario_change_aligned = round(.data$scenario_change_aligned, 7)
+      scenario_change_aligned = round(.data$scen_to_follow_aligned - dplyr::lag(.data$scen_to_follow_aligned), 7)
     )
 
   forecast_length <- sum(!is.na(ls_trajectory_pre_shock$plan_tech_prod))

@@ -98,6 +98,10 @@ run_prep_calculation_loans <- function(input_path_project_specific,
       sheet = "Company Indicators - PACTA Comp"
     )
 
+  # AR PAMS data for emission factors
+  ar_pams <- validate_file_exists(file.path(input_path_project_agnostic, "2022-02-17_AR_2021Q4_2DII-PAMS-Data.xlsx")) %>%
+    readxl::read_xlsx(sheet = "Company Indicators")
+
   # Scenario data - market share
   scenario_data_market_share <- validate_file_exists(file.path(input_path_project_agnostic, "scenario_2021.csv")) %>%
     readr::read_csv(
@@ -318,6 +322,7 @@ run_prep_calculation_loans <- function(input_path_project_specific,
 
   # ADO 1933 - for now, this only includes sectors with production pathways
   # in the future, sectors with emissions factors based pathways may follow
+
   loans_results_company <- p4b_tms_results_loan_share %>%
     format_loanbook_st(
       investor_name = investor_name_placeholder,
@@ -325,6 +330,134 @@ run_prep_calculation_loans <- function(input_path_project_specific,
       equity_market = equity_market_filter_lookup,
       credit = credit_type
     )
+
+  # join AR PAMS data to obtain information on emission factors
+  loans_results_company <- loans_results_company %>%
+    dplyr::inner_join(
+      production_forecast_data %>% dplyr::distinct(.data$company_id, .data$name_company),
+      by = c("company_name" = "name_company")
+    ) %>%
+    dplyr::select(-.data$id) %>%
+    dplyr::rename(id = .data$company_id)
+
+  # This aggregates AR PAMS to company_technology level to get emission factors
+  # Note that this is done including all assets, i.e. we look at global
+  # emission factors here
+  # TODO: run for each scenario geography. This can be done when decoupling the
+  # stress test from running PACTA, as a similar aggregation step will be needed
+  # for production data
+  ar_pams <- ar_pams %>%
+    dplyr::select(-dplyr::starts_with("Direct")) %>%
+    tidyr::pivot_longer(
+      cols = dplyr::starts_with("Total"),
+      names_to = "year",
+      names_prefix = "Total ",
+      values_to = "ald_production"
+    ) %>%
+    dplyr::rename(
+      id = .data$`Company ID`,
+      company_name = .data$`Company Name`,
+      ald_sector = .data$`Asset Sector`,
+      technology = .data$`Asset Technology`,
+      technology_type = .data$`Asset Technology Type`,
+      ald_location = .data$`Asset Country`,
+      emissions_factor = .data$`Emissions Factor`,
+      emissions_factor_unit = .data$`Emissions Factor Unit`,
+      ald_production_unit = .data$`Activity Unit`
+    ) %>%
+    dplyr::mutate(
+      technology = dplyr::case_when(
+        .data$ald_sector == "Coal" ~ "Coal",
+        .data$technology %in% c("Gas", "Natural Gas Liquids") ~ "Gas",
+        .data$technology == "Oil and Condensate" ~ "Oil",
+        TRUE ~ .data$technology
+      ),
+      ald_sector = dplyr::if_else(
+        .data$ald_sector == "LDV", "Automotive", .data$ald_sector
+      )
+    )
+
+  avg_ef_pams <- ar_pams %>%
+    dplyr::group_by(.data$ald_sector, .data$technology, .data$technology_type, .data$emissions_factor_unit) %>%
+    dplyr::summarise(
+      emissions_factor = stats::weighted.mean(
+        .data$emissions_factor, .data$ald_production, na.rm = TRUE
+        )
+      ) %>%
+    dplyr::ungroup()
+
+  # use avg technology type EFs to fill missing values
+  pams_missing_ef <- ar_pams %>%
+    dplyr::filter(is.na(.data$emissions_factor))
+
+  pams_missing_ef <- pams_missing_ef %>%
+    dplyr::select(-.data$emissions_factor, -.data$emissions_factor_unit) %>%
+    dplyr::inner_join(avg_ef_pams, by = c("ald_sector", "technology", "technology_type"))
+
+  ar_pams <- ar_pams %>%
+    dplyr::filter(!is.na(.data$emissions_factor)) %>%
+    dplyr::bind_rows(pams_missing_ef)
+
+  ar_pams <- ar_pams %>%
+    dplyr::transmute(
+      id = as.numeric(id),
+      company_name = tolower(as.character(.data$company_name)),
+      ald_sector = as.character(.data$ald_sector),
+      ald_location = as.character(.data$ald_location),
+      technology = as.character(.data$technology),
+      year = as.numeric(.data$year),
+      ald_production = as.numeric(.data$ald_production),
+      ald_production = dplyr::if_else(.data$ald_production <= 0, 0, .data$ald_production),
+      ald_production_unit = as.character(.data$ald_production_unit),
+      ald_emissions_factor = as.numeric(.data$emissions_factor),
+      ald_emissions_factor_unit = as.character(.data$emissions_factor_unit)
+    ) %>%
+    dplyr::group_by(
+      .data$id, .data$company_name, .data$ald_sector, .data$technology, .data$year
+    ) %>%
+    dplyr::summarise(
+      # this may introduce NaNs for technologies that were not imputed above.
+      # for all currently featured production pathway sectors, this is not an
+      # issue though
+      plan_emission_factor = stats::weighted.mean(
+        x = .data$ald_emissions_factor, w = .data$ald_production, na.rm = TRUE
+      ),
+      plan_tech_prod = sum(.data$ald_production, na.rm = TRUE),
+      .groups = "drop"
+    ) %>%
+    dplyr::ungroup() %>%
+    # if we get an NaN for the weighted mean of the EF, we set it to 0 in case
+    # the production is also 0. Since we only use the EF in the product of
+    # EF and production, this will have no impact on later calculations of
+    # absolute emissions
+    dplyr::mutate(
+      plan_emission_factor = dplyr::if_else(
+        .data$plan_tech_prod == 0,
+        0,
+        .data$plan_emission_factor
+      )
+    )
+
+  # Left Join EFs based on PAMS
+  # this ensures that low carbon technologies with zero production plans are not
+  # kicked out as they have no information in PAMS. They still need to remain in
+  # the loan book, because the SMSP may require a buildout there
+  loans_results_company <- loans_results_company %>%
+    dplyr::left_join(
+      ar_pams %>%
+        dplyr::distinct(.data$id, .data$company_name, .data$ald_sector, .data$technology, .data$year, .data$plan_emission_factor),
+      by = c("id", "company_name", "ald_sector", "technology", "year")
+    ) %>%
+    # fill missing EFs for low carbon technologies, if their production forecast
+    # is zero
+    dplyr::mutate(
+      plan_emission_factor = dplyr::if_else(
+        .data$plan_tech_prod == 0 & .data$technology %in% c("Electric", "FuelCell", "HydroCap", "NuclearCap", "RenewablesCap"),
+        0,
+        .data$plan_emission_factor
+      )
+    )
+
 
   loans_results_company %>%
     saveRDS(
