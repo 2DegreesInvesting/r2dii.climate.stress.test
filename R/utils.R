@@ -313,18 +313,6 @@ report_missings <- function(data, name_data, throw_error = FALSE) {
 }
 
 
-#' Assign value of flat multiplier
-#'
-#' Assign value of flat multiplier based on `asset_type`.
-#'
-#' @inheritParams validate_input_values
-#'
-#' @return A double holding value of the flat multiplier.
-assign_flat_multiplier <- function(asset_type) {
-  flat_multiplier <- ifelse(asset_type %in% c("loans", "bonds"), 0.15, 1.0)
-  return(flat_multiplier)
-}
-
 #' Get name of iterator variable
 #'
 #' Uses fallback if no iterator is used. Aborts if > 1 iterator is given.

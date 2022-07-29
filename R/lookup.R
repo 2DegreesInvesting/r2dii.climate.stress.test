@@ -25,6 +25,8 @@ end_year_lookup <- 2040
 
 time_horizon_lookup <- 5
 
+flat_multiplier_lookup <- 1
+
 #' @rdname lookup
 #' @export
 credit_type_lookup <- c("outstanding", "credit_limit")
