@@ -20,9 +20,6 @@ test_that("with bonds, with iteration, using default settings output is unchange
   ))
 
   expect_snapshot(lapply(results, as.data.frame))
-
-  have_suffix_arg <- purrr::map_lgl(results, ~ rlang::has_name(.x, "fallback_term_arg"))
-  expect_true(all(have_suffix_arg))
 })
 
 test_that("with loans, without iteration, using minimum values of input arguments output is unchanged", {
