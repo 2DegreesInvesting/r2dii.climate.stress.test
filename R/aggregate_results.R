@@ -108,8 +108,8 @@ aggregate_results <- function(results_list, sensitivity_analysis_vars, iter_var)
       dividend_rate = .data$div_netprofit_prop_coef_arg,
       growth_rate = .data$growth_rate_arg,
       shock_year = .data$shock_year_arg,
-      net_present_value_baseline = .data$total_disc_npv_ls,
-      net_present_value_shock = .data$total_disc_npv_baseline,
+      net_present_value_baseline = .data$total_disc_npv_baseline,
+      net_present_value_shock = .data$total_disc_npv_ls,
       pd_baseline = .data$PD_baseline,
       pd_shock = .data$PD_late_sudden
     ) %>%
