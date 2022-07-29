@@ -18,7 +18,6 @@ company_technology_asset_value_at_risk <- function(data,
   force(data)
   shock_scenario %||% stop("Must provide input for 'shock_scenario'", call. = FALSE)
   div_netprofit_prop_coef %||% stop("Must provide input for 'div_netprofit_prop_coef'", call. = FALSE)
-  # flat_multiplier %||% stop("Must provide input for 'flat_multiplier'", call. = FALSE)
 
   validate_data_has_expected_cols(
     data = data,
