@@ -78,7 +78,8 @@ temporarily other asset types) on the company-technology level</p>
 <span>  <span class="va">data</span>,</span>
 <span>  shock_scenario <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  div_netprofit_prop_coef <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  flat_multiplier <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  flat_multiplier <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  crispy <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -101,6 +102,11 @@ strongly the future dividends propagate to the company value</p></dd>
 <dt>flat_multiplier</dt>
 <dd><p>Numeric. A ratio that determines for the asset type
 if how strongly the DCF should propagate to value changes.</p></dd>
+
+
+<dt>crispy</dt>
+<dd><p>Boolean. Indicates if the output should be used for the CRISPY
+database or for standard portfolio calculation (default).</p></dd>
 
 </dl></div>
 
