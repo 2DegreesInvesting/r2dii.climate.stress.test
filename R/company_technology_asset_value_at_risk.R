@@ -8,14 +8,16 @@
 #'   strongly the future dividends propagate to the company value
 #' @param flat_multiplier Numeric. A ratio that determines for the asset type
 #'   if how strongly the DCF should propagate to value changes.
+#' @param crispy Boolean. Indicates if the output should be used for the CRISPY
+#'   database or for standard portfolio calculation (default).
 company_technology_asset_value_at_risk <- function(data,
                                                    shock_scenario = NULL,
                                                    div_netprofit_prop_coef = NULL,
-                                                   flat_multiplier = NULL) {
+                                                   flat_multiplier = NULL,
+                                                   crispy = FALSE) {
   force(data)
   shock_scenario %||% stop("Must provide input for 'shock_scenario'", call. = FALSE)
   div_netprofit_prop_coef %||% stop("Must provide input for 'div_netprofit_prop_coef'", call. = FALSE)
-  flat_multiplier %||% stop("Must provide input for 'flat_multiplier'", call. = FALSE)
 
   validate_data_has_expected_cols(
     data = data,
@@ -53,8 +55,15 @@ company_technology_asset_value_at_risk <- function(data,
       VaR_tech_company = .env$flat_multiplier * 100 * .env$div_netprofit_prop_coef *
         (.data$total_disc_npv_ls - .data$total_disc_npv_baseline) /
         .data$total_disc_npv_baseline
-    ) %>%
-    dplyr::select(-c(.data$total_disc_npv_ls, .data$total_disc_npv_baseline))
+    )
+
+  if (crispy) {
+    data <- data %>%
+      dplyr::select(-c(.data$VaR_tech_company))
+  } else {
+    data <- data %>%
+      dplyr::select(-c(.data$total_disc_npv_ls, .data$total_disc_npv_baseline))
+  }
 
   data <- data %>%
     dplyr::mutate(

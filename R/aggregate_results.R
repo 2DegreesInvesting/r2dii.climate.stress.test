@@ -76,12 +76,65 @@ aggregate_results <- function(results_list, sensitivity_analysis_vars, iter_var)
   company_pd_changes_overall <- company_pd_changes_overall %>%
     aggregate_pd_change_to_sector_level(horizon = "overall", iter_var = iter_var)
 
+  # Aggregate Crispy Results -----
+
+  crispy_output <- results_list$company_technology_npv %>%
+    dplyr::inner_join(
+      company_pd_changes_overall,
+      by = c(
+        "investor_name", "portfolio_name", "scenario_name", "scenario_geography",
+        "company_name", "ald_sector", "asset_type_arg", "baseline_scenario_arg",
+        "shock_scenario_arg", "lgd_arg", "risk_free_rate_arg", "discount_rate_arg",
+        "growth_rate_arg", "div_netprofit_prop_coef_arg", "shock_year_arg",
+        "fallback_term_arg", "use_company_terms_arg"
+      )
+    )
+
+  crispy_output <- crispy_output %>%
+    dplyr::mutate(
+      roll_up_type = dplyr::if_else(
+        .data$asset_type_arg == "bonds",
+        "financial_control",
+        "equity_ownership"
+      )
+    ) %>%
+    dplyr::rename(
+      sector = .data$ald_sector,
+      business_unit = .data$technology,
+      calculation_type = .data$asset_type_arg,
+      baseline_scenario = .data$baseline_scenario_arg,
+      shock_scenario = .data$shock_scenario_arg,
+      lgd = .data$lgd_arg,
+      discount_rate = .data$discount_rate_arg,
+      dividend_rate = .data$div_netprofit_prop_coef_arg,
+      growth_rate = .data$growth_rate_arg,
+      shock_year = .data$shock_year_arg,
+      net_present_value_baseline = .data$total_disc_npv_baseline,
+      net_present_value_shock = .data$total_disc_npv_ls,
+      pd_baseline = .data$PD_baseline,
+      pd_shock = .data$PD_late_sudden
+    ) %>%
+    dplyr::mutate(
+      net_present_value_difference = .data$net_present_value_shock - .data$net_present_value_baseline,
+      pd_difference = .data$pd_shock - .data$pd_baseline
+    ) %>%
+    dplyr::select(
+      .data$company_name, .data$sector, .data$business_unit,
+      .data$roll_up_type, .data$scenario_geography, .data$calculation_type,
+      .data$baseline_scenario, .data$shock_scenario, .data$lgd,
+      .data$risk_free_rate, .data$discount_rate, .data$dividend_rate,
+      .data$growth_rate, .data$shock_year, .data$net_present_value_baseline,
+      .data$net_present_value_shock, .data$net_present_value_difference,
+      .data$term, .data$pd_baseline, .data$pd_shock, .data$pd_difference
+    )
+
   return(list(
     company_value_changes = company_value_changes,
     company_expected_loss = results_list$company_expected_loss,
     company_pd_changes_annual = company_pd_changes_annual,
     company_pd_changes_overall = company_pd_changes_overall,
-    company_trajectories = results_list$company_trajectories
+    company_trajectories = results_list$company_trajectories,
+    crispy_output = crispy_output
   ))
 }
 
@@ -275,3 +328,4 @@ aggregate_pd_change_to_sector_level <- function(data,
 
   return(data)
 }
+
