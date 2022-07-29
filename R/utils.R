@@ -312,19 +312,6 @@ report_missings <- function(data, name_data, throw_error = FALSE) {
   invisible(data)
 }
 
-
-#' Assign value of flat multiplier
-#'
-#' Assign value of flat multiplier based on `asset_type`.
-#'
-#' @inheritParams validate_input_values
-#'
-#' @return A double holding value of the flat multiplier.
-assign_flat_multiplier <- function(asset_type) {
-  flat_multiplier <- ifelse(asset_type %in% c("loans", "bonds"), 0.15, 1.0)
-  return(flat_multiplier)
-}
-
 #' Assign value of lgd
 #'
 #' Assigns value of lgd based on `asset_type`. Can be from `lgd_senior_claims`
