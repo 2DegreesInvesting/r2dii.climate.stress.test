@@ -196,7 +196,6 @@ read_and_process_and_calc_lrisk <- function(args_list) {
 
   cat("-- Configuring analysis settings. \n")
 
-  flat_multiplier <- assign_flat_multiplier(asset_type = asset_type)
   lgd <- assign_lgd(
     asset_type = asset_type, lgd_senior_claims = lgd_senior_claims,
     lgd_subordinated_claims = lgd_subordinated_claims
@@ -390,7 +389,7 @@ read_and_process_and_calc_lrisk <- function(args_list) {
     company_technology_asset_value_at_risk(
       shock_scenario = litigation_scenario,
       div_netprofit_prop_coef = div_netprofit_prop_coef,
-      flat_multiplier = flat_multiplier
+      flat_multiplier = flat_multiplier_lookup
     )
 
   cat("-- Calculating credit risk. \n\n\n")
