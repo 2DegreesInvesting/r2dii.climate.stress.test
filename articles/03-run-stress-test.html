@@ -134,22 +134,21 @@
 <p>Specifications on the detail arguments are summarized in the following overview. The defaults that are used if the argument is not adjusted when calling <code><a href="../reference/run_stress_test.html">run_stress_test()</a></code> can be found in column <code>default</code>. The user may change any detail argument by explicitly passing it to the function. Note that there are allowed values for each of the inputs. For logical or character variables refer to column <code>allowed</code>, for numeric variables the allowed values are the range from <code>min</code> (inclusive) to <code>max</code> (inclusive).</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">stress_test_arguments</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 13 × 6</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 12 × 6</span></span></span>
 <span><span class="co">#&gt;    name                    type      default     allowed             min   max  </span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> asset_type              character <span style="color: #BB0000;">NA</span>          equity, bonds, loa… <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> baseline_scenario       character WEO2020_SPS WEO2019_SPS, WEO20… <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> shock_scenario          character WEO2020_SDS WEO2019_SDS, WEO20… <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> lgd_senior_claims       double    0.45        <span style="color: #BB0000;">NA</span>                  0.3   0.6  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> lgd_subordinated_claims double    0.75        <span style="color: #BB0000;">NA</span>                  0.6   0.9  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> risk_free_rate          double    0.02        <span style="color: #BB0000;">NA</span>                  0     0.05 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> discount_rate           double    0.07        <span style="color: #BB0000;">NA</span>                  0.015 0.1  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> growth_rate             double    0.03        <span style="color: #BB0000;">NA</span>                  0.01  0.099</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> div_netprofit_prop_coef double    1           <span style="color: #BB0000;">NA</span>                  0.8   1    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> shock_year              double    2030        <span style="color: #BB0000;">NA</span>                  2025  2035 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> fallback_term           double    2           <span style="color: #BB0000;">NA</span>                  1     5    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> scenario_geography      character Global      AdvancedEconomies,… <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">13</span> use_company_terms       logical   FALSE       TRUE, FALSE         <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> lgd                     double    0.45        <span style="color: #BB0000;">NA</span>                  0.3   0.9  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> risk_free_rate          double    0.02        <span style="color: #BB0000;">NA</span>                  0     0.05 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> discount_rate           double    0.07        <span style="color: #BB0000;">NA</span>                  0.015 0.1  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> growth_rate             double    0.03        <span style="color: #BB0000;">NA</span>                  0.01  0.099</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> div_netprofit_prop_coef double    1           <span style="color: #BB0000;">NA</span>                  0.8   1    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> shock_year              double    2030        <span style="color: #BB0000;">NA</span>                  2025  2035 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> fallback_term           double    2           <span style="color: #BB0000;">NA</span>                  1     5    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> scenario_geography      character Global      AdvancedEconomies,… <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> use_company_terms       logical   FALSE       TRUE, FALSE         <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span></span></span></code></pre></div>
 <p>Note that special special rules apply for the variables <code>baseline_scenario</code> and <code>shock_scenario</code>. Baseline and shock scenarios can in principle be selected from the following:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">scenarios</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">scenario_geography_x_ald_sector</span><span class="op">$</span><span class="va">scenario</span><span class="op">)</span></span>
@@ -172,9 +171,7 @@
 <li>
 <code>shock_scenario</code> holds the name of the scenario that companies are forced to transition to via a late and sudden shock. We use an ambitious transition scenario as the shock scenario. (<strong>NOTE:</strong> In almost all use cases, it is advisable to use baseline and shock scenarios from the same scenario source. We do not recommend deviating from that, if you do not have a very particular reason to do so.)</li>
 <li>
-<code>lgd_senior_claims</code> is the loss given default used in the expected loss calculation of loans for senior claims (notably for corporate loans, so this is a potentially important parameter in this calculation)</li>
-<li>
-<code>lgd_subordinated_claims</code> is the loss given default used in the expected loss calculation of loans for subordinated claims (notably for corporate bonds. Not of relevance in the loans calculation)</li>
+<code>lgd</code> is the loss given default used in the expected loss calculation.</li>
 <li>
 <code>risk_free_rate</code> the risk free interest rate. Input parameter to the Merton credit risk model.</li>
 <li>

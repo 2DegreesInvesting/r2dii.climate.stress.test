@@ -290,7 +290,7 @@
 <li>
 <code>pd_change_shock</code>: Change in probability of default of the given company, based on the Merton credit risk model and a climate transition policy shock as indicated in <code>scenario_name</code>. In percentage points. Notice: A positive number indicates the probability of default increases, hence the expected loss also increases.</li>
 <li>
-<code>lgd</code>: Loss given default applied in the calculation of the expected loss. Depending on which asset type was analyzed, this will reflect the setting of either <code>lgd_senior_claims_arg</code> or <code>lgd_subordinated_claims_arg</code>. For corporate loan books, this reflects senior claims.</li>
+<code>lgd</code>: Loss given default applied in the calculation of the expected loss.</li>
 <li>
 <code>exposure_at_default</code>: The absolute amount of exposure to a company in the given portfolio or loan book. For loan books, this is the sum of outstanding loans (or alternatively of the credit limit) to a company.</li>
 <li>
@@ -401,9 +401,7 @@
 <li>
 <code>asset_type_arg</code> is the type of the analysed financial asset in the portfolio.</li>
 <li>
-<code>lgd_senior_claims_arg</code> is the loss given default used in the expected loss calculation of loans for senior claims (notably for corporate loans, so this is a potentially important parameter in this calculation)</li>
-<li>
-<code>lgd_subordinated_claims_arg</code> is the loss given default used in the expected loss calculation of loans for subordinated claims (notably for corporate bonds. Not of relevance in the loans calculation)</li>
+<code>lgd_arg</code> is the loss given default used in the expected loss calculation.</li>
 <li>
 <code>risk_free_rate_arg</code> the risk free interest rate. Input parameter to the Merton credit risk model.</li>
 <li>
