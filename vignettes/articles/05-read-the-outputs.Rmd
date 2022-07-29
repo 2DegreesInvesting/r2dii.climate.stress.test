@@ -343,7 +343,7 @@ stress testing model. The information on all model input parameters [is describe
 the following set of input parameters:
 
 * `asset_type_arg` is the type of the analysed financial asset in the portfolio. 
-* `lgd__arg` is the loss given default used in the expected loss calculation.
+* `lgd_arg` is the loss given default used in the expected loss calculation.
 * `risk_free_rate_arg` the risk free interest rate. Input parameter to the Merton
 credit risk model.
 * `discount_rate_arg` the annual rate at which future cash flows are discounted
