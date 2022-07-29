@@ -93,30 +93,33 @@ aggregate_results <- function(results_list, sensitivity_analysis_vars, iter_var)
   crispy_output <- crispy_output %>%
     dplyr::mutate(
       roll_up_type = dplyr::if_else(
-        asset_type_arg == "bonds",
+        .data$asset_type_arg == "bonds",
         "financial_control",
         "equity_ownership"
       )
     ) %>%
     dplyr::rename(
-      sector = ald_sector,
-      business_unit = technology,
-      baseline_scenario = baseline_scenario_arg,
-      shock_scenario = shock_scenario_arg,
-      discount_rate = discount_rate_arg,
-      dividend_rate = div_netprofit_prop_coef_arg,
-      growth_rate = growth_rate_arg,
-      shock_year = shock_year_arg,
-      net_present_value_baseline = total_disc_npv_ls,
-      net_present_value_shock = total_disc_npv_baseline,
-      pd_baseline = PD_baseline,
-      pd_shock = PD_late_sudden
+      sector = .data$ald_sector,
+      business_unit = .data$technology,
+      baseline_scenario = .data$baseline_scenario_arg,
+      shock_scenario = .data$shock_scenario_arg,
+      lgd = .data$lgd_arg,
+      discount_rate = .data$discount_rate_arg,
+      dividend_rate = .data$div_netprofit_prop_coef_arg,
+      growth_rate = .data$growth_rate_arg,
+      shock_year = .data$shock_year_arg,
+      net_present_value_baseline = .data$total_disc_npv_ls,
+      net_present_value_shock = .data$total_disc_npv_baseline,
+      pd_baseline = .data$PD_baseline,
+      pd_shock = .data$PD_late_sudden
     ) %>%
     dplyr::select(
-      company_name, id, sector, business_unit, roll_up_type, scenario_geography,
-      baseline_scenario, shock_scenario, lgd, risk_free_rate, discount_rate,
-      dividend_rate, growth_rate, shock_year, net_present_value_baseline,
-      net_present_value_shock, term, pd_baseline, pd_shock
+      .data$company_name, .data$id, .data$sector, .data$business_unit,
+      .data$roll_up_type, .data$scenario_geography, .data$baseline_scenario,
+      .data$shock_scenario, .data$lgd, .data$risk_free_rate, .data$discount_rate,
+      .data$dividend_rate, .data$growth_rate, .data$shock_year,
+      .data$net_present_value_baseline, .data$net_present_value_shock,
+      .data$term, .data$pd_baseline, .data$pd_shock
     )
 
   return(list(
