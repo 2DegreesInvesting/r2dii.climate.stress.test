@@ -453,8 +453,7 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
       .data$investor_name, .data$portfolio_name, .data$scenario_name,
       .data$company_name, .data$year, .data$scenario_geography, .data$ald_sector,
       .data$technology, .data$plan_tech_prod, .data$phase_out, .data$baseline,
-      .data$scen_to_follow_aligned, .data$late_sudden,
-      .data$scenario_change_aligned, .data$company_id, .data$pd,
+      .data$scen_to_follow_aligned, .data$late_sudden, .data$company_id, .data$pd,
       .data$net_profit_margin, .data$debt_equity_ratio, .data$volatility,
       .data$Baseline_price, .data$late_sudden_price, .data$net_profits_baseline,
       .data$net_profits_ls, .data$discounted_net_profit_baseline,
@@ -467,7 +466,6 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
       production_baseline_scenario = .data$baseline,
       production_target_scenario = .data$scen_to_follow_aligned,
       production_shock_scenario = .data$late_sudden,
-      production_change_target_scenario = .data$scenario_change_aligned,
       price_baseline_scenario = .data$Baseline_price,
       price_shock_scenario = .data$late_sudden_price,
       net_profits_baseline_scenario = .data$net_profits_baseline,
@@ -599,7 +597,7 @@ check_results <- function(wrangled_results_list, sensitivity_analysis_vars) {
     ) %>%
     # not considering those two variables when checking for missings because
     # acceptable missing pattern is checked in ADO 4919
-    dplyr::select(-c(.data$production_plan_company_technology, .data$production_change_target_scenario)) %>%
+    dplyr::select(-.data$production_plan_company_technology) %>%
     report_missings(
       name_data = "Company Trajectories"
     )
