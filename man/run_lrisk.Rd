@@ -11,8 +11,7 @@ run_lrisk(
   output_path,
   baseline_scenario = "WEO2020_SPS",
   shock_scenario = "WEO2020_SDS",
-  lgd_senior_claims = 0.45,
-  lgd_subordinated_claims = 0.75,
+  lgd = 0.45,
   risk_free_rate = 0.02,
   discount_rate = 0.07,
   growth_rate = 0.03,
@@ -48,12 +47,8 @@ in the stress test, for accepted value range check \code{stress_test_arguments}.
 \item{shock_scenario}{Holds the name of the shock scenario to be used in the
 stress test, for accepted value range check \code{stress_test_arguments}.}
 
-\item{lgd_senior_claims}{Numeric, holding the loss given default for senior
-claims, for accepted value range check \code{stress_test_arguments}.}
-
-\item{lgd_subordinated_claims}{Numeric, holding the loss given default for
-subordinated claims, for accepted value range check
-\code{stress_test_arguments}.}
+\item{lgd}{Numeric, holding the loss given default, for accepted value range
+check \code{stress_test_arguments}.}
 
 \item{risk_free_rate}{Numeric that indicates the risk free rate of interest.
 For accepted range compare \code{stress_test_arguments}.}

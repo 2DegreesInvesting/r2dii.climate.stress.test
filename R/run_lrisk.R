@@ -23,11 +23,8 @@
 #'   in the stress test, for accepted value range check `stress_test_arguments`.
 #' @param shock_scenario Holds the name of the shock scenario to be used in the
 #'   stress test, for accepted value range check `stress_test_arguments`.
-#' @param lgd_senior_claims Numeric, holding the loss given default for senior
-#'   claims, for accepted value range check `stress_test_arguments`.
-#' @param lgd_subordinated_claims Numeric, holding the loss given default for
-#'   subordinated claims, for accepted value range check
-#'   `stress_test_arguments`.
+#' @param lgd Numeric, holding the loss given default, for accepted value range
+#'   check `stress_test_arguments`.
 #' @param risk_free_rate Numeric that indicates the risk free rate of interest.
 #'   For accepted range compare `stress_test_arguments`.
 #' @param discount_rate Numeric, that holds the discount rate of dividends per
@@ -70,8 +67,7 @@ run_lrisk <- function(asset_type,
                       output_path,
                       baseline_scenario = "WEO2020_SPS",
                       shock_scenario = "WEO2020_SDS",
-                      lgd_senior_claims = 0.45,
-                      lgd_subordinated_claims = 0.75,
+                      lgd = 0.45,
                       risk_free_rate = 0.02,
                       discount_rate = 0.07,
                       growth_rate = 0.03,
@@ -97,8 +93,7 @@ run_lrisk <- function(asset_type,
     baseline_scenario = baseline_scenario,
     shock_scenario = shock_scenario,
     scenario_geography = scenario_geography,
-    lgd_senior_claims = lgd_senior_claims,
-    lgd_subordinated_claims = lgd_subordinated_claims,
+    lgd = lgd,
     risk_free_rate = risk_free_rate,
     discount_rate = discount_rate,
     growth_rate = growth_rate,
@@ -195,12 +190,6 @@ read_and_process_and_calc_lrisk <- function(args_list) {
   paste_write("\n", log_path = log_path)
 
   cat("-- Configuring analysis settings. \n")
-
-  flat_multiplier <- assign_flat_multiplier(asset_type = asset_type)
-  lgd <- assign_lgd(
-    asset_type = asset_type, lgd_senior_claims = lgd_senior_claims,
-    lgd_subordinated_claims = lgd_subordinated_claims
-  )
 
   sectors_and_technologies_list <- infer_sectors_and_technologies(
     baseline_scenario = baseline_scenario,
@@ -390,7 +379,7 @@ read_and_process_and_calc_lrisk <- function(args_list) {
     company_technology_asset_value_at_risk(
       shock_scenario = litigation_scenario,
       div_netprofit_prop_coef = div_netprofit_prop_coef,
-      flat_multiplier = flat_multiplier
+      flat_multiplier = flat_multiplier_lookup
     )
 
   cat("-- Calculating credit risk. \n\n\n")

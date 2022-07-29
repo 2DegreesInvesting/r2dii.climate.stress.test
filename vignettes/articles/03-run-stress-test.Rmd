@@ -117,12 +117,8 @@ scenario as the shock scenario. (**NOTE:** In almost all use cases, it is
 advisable to use baseline and shock scenarios from the same scenario source. We
 do not recommend deviating from that, if you do not have a very particular
 reason to do so.)
-* `lgd_senior_claims` is the loss given default used in the expected loss
-calculation of loans for senior claims (notably for corporate loans, so this is
-a potentially important parameter in this calculation)
-* `lgd_subordinated_claims` is the loss given default used in the expected loss
-calculation of loans for subordinated claims (notably for corporate bonds. Not
-of relevance in the loans calculation)
+* `lgd` is the loss given default used in the expected loss
+calculation.
 * `risk_free_rate` the risk free interest rate. Input parameter to the Merton
 credit risk model.
 * `discount_rate` the annual rate at which future cash flows are discounted when

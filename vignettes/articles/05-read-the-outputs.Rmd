@@ -233,9 +233,6 @@ indicated in `scenario_name`. In percentage points. Notice: A positive number
 indicates the probability of default increases, hence the expected loss also
 increases.
 * `lgd`: Loss given default applied in the calculation of the expected loss.
-Depending on which asset type was analyzed, this will reflect the setting of
-either `lgd_senior_claims_arg` or `lgd_subordinated_claims_arg`. For corporate
-loan books, this reflects senior claims.
 * `exposure_at_default`: The absolute amount of exposure to a company in the
 given portfolio or loan book. For loan books, this is the sum of outstanding
 loans (or alternatively of the credit limit) to a company.
@@ -346,12 +343,7 @@ stress testing model. The information on all model input parameters [is describe
 the following set of input parameters:
 
 * `asset_type_arg` is the type of the analysed financial asset in the portfolio. 
-* `lgd_senior_claims_arg` is the loss given default used in the expected loss
-calculation of loans for senior claims (notably for corporate loans, so this is
-a potentially important parameter in this calculation)
-* `lgd_subordinated_claims_arg` is the loss given default used in the expected 
-loss calculation of loans for subordinated claims (notably for corporate bonds.
-Not of relevance in the loans calculation)
+* `lgd_arg` is the loss given default used in the expected loss calculation.
 * `risk_free_rate_arg` the risk free interest rate. Input parameter to the Merton
 credit risk model.
 * `discount_rate_arg` the annual rate at which future cash flows are discounted
