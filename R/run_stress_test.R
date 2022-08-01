@@ -188,12 +188,13 @@ read_and_process_and_calc <- function(args_list) {
   if (use_company_terms) {
     paste_write("Using user - configured company - term data. \n", log_path = log_path)
   }
-
+browser()
   data <- st_read_specific(
     input_path_project_specific,
     asset_type = asset_type,
     use_company_terms = use_company_terms
   )
+  # TODO: start year can't come from portfolio anymore
   start_year <- get_start_year(data)
   data <- append(
     data, st_read_agnostic(input_path_project_agnostic, start_year = start_year, sectors = sectors_and_technologies_list$sectors)
@@ -219,7 +220,8 @@ read_and_process_and_calc <- function(args_list) {
     sector_exposures = processed$sector_exposures,
     scenario_data = processed$scenario_data,
     df_price = processed$df_price,
-    financial_data = processed$financial_data
+    financial_data = processed$financial_data,
+    production_data = processed$production_data
   )
 
   if (asset_type == "loans") {
@@ -227,6 +229,7 @@ read_and_process_and_calc <- function(args_list) {
       dplyr::mutate(company_name = stringr::str_to_lower(.data$company_name))
   }
 
+  # TODO: this may be needed for merging the prod data as well.
   report_company_drops(
     data_list = input_data_list,
     asset_type = asset_type,

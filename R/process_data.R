@@ -670,6 +670,21 @@ st_process <- function(data, asset_type, fallback_term,
   ) %>%
     add_terms(company_terms = company_terms, fallback_term = fallback_term)
 
+  production_data <- process_production_data(
+    data$production_data,
+    start_year = start_year,
+    end_year = end_year_lookup,
+    time_horizon = time_horizon_lookup,
+    scenario_geography_filter = scenario_geography,
+    # TODO: scenarios need to come in later
+    # scenarios_filter = scenarios_filter,
+    sectors = sectors,
+    technologies = technologies,
+    log_path = log_path
+  ) %>%
+    add_terms(company_terms = company_terms, fallback_term = fallback_term)
+
+
   # capacity_factors are only applied for power sector
   if ("Power" %in% sectors) {
     capacity_factors_power <- process_capacity_factors_power(
@@ -686,6 +701,13 @@ st_process <- function(data, asset_type, fallback_term,
       capacity_factors_power = capacity_factors_power,
       baseline_scenario = baseline_scenario
     )
+
+    # TODO: needs scenario independent version
+    production_data <- convert_power_cap_to_generation(
+      data = production_data,
+      capacity_factors_power = capacity_factors_power,
+      baseline_scenario = baseline_scenario
+    )
   } else {
     capacity_factors_power <- data$capacity_factors_power
   }
@@ -697,8 +719,98 @@ st_process <- function(data, asset_type, fallback_term,
     df_price = df_price,
     scenario_data = scenario_data,
     financial_data = financial_data,
-    company_terms = company_terms
+    company_terms = company_terms,
+    production_data = production_data
   )
 
   return(out)
+}
+
+#' Process data of type indicated by function name
+#'
+#' @inheritParams run_stress_test
+#' @inheritParams report_company_drops
+#' @param data A tibble of data of type indicated by function name.
+#' @param start_year Numeric, holding start year of analysis.
+#' @param end_year Numeric, holding end year of analysis.
+#' @param time_horizon Numeric, holding time horizon of analysis.
+#' @param scenario_geography_filter Character. A vector of length 1 that
+#'   indicates which geographic scenario to apply in the analysis.
+#' @param sectors Character vector, holding considered sectors.
+#' @param technologies Character vector, holding considered technologies.
+#'
+#' @return A tibble of data as indicated by function name.
+process_production_data <- function(data, start_year, end_year, time_horizon,
+                                  scenario_geography_filter, sectors,
+                                  technologies, asset_type, log_path) {
+  data_processed <- data %>%
+    # TODO: check if needs adaptation
+    # wrangle_and_check_pacta_results(
+    #   start_year = start_year,
+    #   time_horizon = time_horizon
+    # ) %>%
+    # set_initial_plan_carsten_missings_to_zero(
+    #   start_year = start_year,
+    #   time_horizon = time_horizon
+    # ) %>%
+    is_scenario_geography_in_pacta_results(scenario_geography_filter) %>%
+    # dplyr::filter(.data$scenario %in% .env$scenarios_filter) %>%
+    dplyr::filter(.data$scenario_geography %in% .env$scenario_geography_filter) %>%
+    dplyr::filter(.data$ald_sector %in% .env$sectors) %>%
+    dplyr::filter(.data$technology %in% .env$technologies) %>%
+    dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$start_year + .env$time_horizon)) %>%
+    # TODO: up for debate
+    # remove_sectors_with_missing_production_end_of_forecast(
+    #   start_year = start_year,
+    #   time_horizon = time_horizon,
+    #   log_path = log_path
+    # ) %>%
+    # TODO: keep, adapt
+    # remove_sectors_with_missing_production_start_year(
+    #   start_year = start_year,
+    #   log_path = log_path
+    # ) %>%
+    # TODO: unclear, review, adapt if needed
+    # remove_high_carbon_tech_with_missing_production(
+    #   start_year = start_year,
+    #   time_horizon = time_horizon,
+    #   log_path = log_path
+    # ) %>%
+    stop_if_empty(data_name = "Production Data") %>%
+    check_level_availability(
+      data_name = "Production Data",
+      expected_levels_list =
+        list(
+          year = start_year:(start_year + time_horizon),
+          scenario_geography = scenario_geography_filter
+        )
+    ) %>%
+    check_level_availability(
+      data_name = "Production Data",
+      expected_levels_list =
+        list(
+          ald_sector = sectors,
+          technology = technologies
+        ),
+      throw_error = FALSE
+    ) %>%
+    report_missing_col_combinations(col_names = c("scenario_geography", "technology", "year")) %>%
+    report_all_duplicate_kinds(composite_unique_cols = cuc_production_data)
+
+  # TODO: check if still required
+  # if_plan_emission_factor is NA and plan_tech_prod is zero, set the emission
+  # factor to 0 as well, as it will not contribute to company emissions
+  data_processed <- data_processed %>%
+    dplyr::mutate(
+      plan_emission_factor = dplyr::if_else(
+        is.na(.data$plan_emission_factor) & .data$plan_tech_prod == 0,
+        0,
+        .data$plan_emission_factor
+      )
+    )
+
+  data_processed %>%
+    report_missings(name_data = "production data", throw_error = TRUE)
+
+  return(data_processed)
 }

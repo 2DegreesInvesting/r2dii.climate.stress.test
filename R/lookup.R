@@ -16,6 +16,10 @@ nesting_vars_lookup <- c(
   "investor_name", "portfolio_name", "equity_market", "ald_sector", "technology",
   "scenario", "allocation", "scenario_geography", "company_name"
 )
+prod_nesting_vars_lookup <- c(
+  "ald_sector", "technology", "scenario_geography", "company_name"
+)
+
 
 asset_types_lookup <- c("equity", "bonds", "loans")
 
@@ -88,3 +92,7 @@ cuc_price_data <- c("year", "ald_sector", "technology", "scenario")
 cuc_financial_data <- c("company_name", "company_id")
 cuc_scenario_data <- c("scenario_geography", "scenario", "ald_sector", "technology", "year")
 cuc_company_terms <- c("company_name")
+
+cuc_production_data <- c(
+  "company_name", "id", "year", "ald_sector", "technology", "scenario_geography"
+)

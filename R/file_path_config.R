@@ -34,3 +34,8 @@ company_terms_file <- function(dir) {
   out <- file.path(dir, "company_terms.csv")
   return(out)
 }
+
+production_data_file <- function(dir) {
+  out <- file.path(dir, "abcd_stress_test_input.csv")
+  return(out)
+}
