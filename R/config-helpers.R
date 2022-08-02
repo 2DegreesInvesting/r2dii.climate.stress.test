@@ -58,7 +58,6 @@ geographies_for_sector <- function(sector, overview = scenario_geography_x_ald_s
 #' @examples scenario_for_sector_x_geography("Coal", "Europe")
 scenario_for_sector_x_geography <- function(sector, scenario_geography,
                                             overview = scenario_geography_x_ald_sector) {
-
   if (length(sector) > 1) {
     rlang::abort(c(
       "Sector must be of length 1.",

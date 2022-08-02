@@ -492,7 +492,6 @@ process_price_data <- function(data, technologies, sectors, start_year, end_year
 
   # adding dummy unit price data for automotive data
   if ("Automotive" %in% sectors) {
-
     auto_tech <- p4i_p4b_sector_technology_lookup %>%
       dplyr::filter(.data$sector_p4i == "Automotive") %>%
       dplyr::pull(.data$technology_p4i)

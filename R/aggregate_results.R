@@ -243,7 +243,7 @@ aggregate_value_change_to_sector_level <- function(data, iter_var) {
 }
 
 aggregate_value_change_to_analysed_sectors <- function(data,
-                                                                     iter_var) {
+                                                       iter_var) {
   aggregation_vars <- c(
     "investor_name", "portfolio_name", "scenario_geography"
   )
@@ -296,7 +296,11 @@ join_credit_exposure_on_pd_changes <- function(data,
 aggregate_pd_change_to_sector_level <- function(data,
                                                 horizon = c("annual", "overall"),
                                                 iter_var) {
-  horizon_group <- if (horizon == "annual") {"year"} else {"term"}
+  horizon_group <- if (horizon == "annual") {
+    "year"
+  } else {
+    "term"
+  }
 
   aggregation_vars <- c(
     "investor_name", "portfolio_name", "ald_sector", "scenario_geography",
@@ -328,4 +332,3 @@ aggregate_pd_change_to_sector_level <- function(data,
 
   return(data)
 }
-
