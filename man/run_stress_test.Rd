@@ -20,6 +20,7 @@ run_stress_test(
   fallback_term = 2,
   scenario_geography = "Global",
   use_company_terms = FALSE,
+  start_year = 2021,
   return_results = FALSE
 )
 }
@@ -77,6 +78,11 @@ accepted values compare \code{stress_test_arguments}.}
 companies are to be used. For accepted values compare
 \code{stress_test_arguments}. Note that currently this functionality is not
 available for asset_type bonds.}
+
+\item{start_year}{Numeric, first year in the analysis used as the starting
+point from which production forecasts are compared against scenario targets.
+Must be available in the production data and indicates the first year of
+the scenario data.}
 
 \item{return_results}{Boolean, indicating if results shall be exported.}
 }
