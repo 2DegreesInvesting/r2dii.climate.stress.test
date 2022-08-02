@@ -136,7 +136,7 @@
 <ul>
 <li>Terms need to be whole numbers.</li>
 <li>Only include values up to 5. Higher values will be capped to 5 as for calculations with longer time frames the reliability of the Merton model deteriorates.</li>
-<li>Leave term blank for companies for which you lack respective information. A fallback, as provided as argument <code>fallback_term</code> to <code><a href="../reference/run_stress_test.html">run_stress_test()</a></code> will be used to fill the gaps.</li>
+<li>Leave term blank for companies for which you lack respective information. A fallback, as provided as argument <code>fallback_term</code> to <code><a href="../reference/run_trisk.html">run_trisk()</a></code> will be used to fill the gaps.</li>
 </ul>
 </div>
 <div class="section level3">
@@ -170,9 +170,9 @@
 <div class="section level3">
 <h3 id="running-the-stress-test-with-provided-company---term-data">Running the Stress Test with provided company - term data<a class="anchor" aria-label="anchor" href="#running-the-stress-test-with-provided-company---term-data"></a>
 </h3>
-<p>In order to include the company - term data in your analysis set argument <code>use_company_terms</code> to TRUE in the call to <code>run_stress_test</code>.</p>
+<p>In order to include the company - term data in your analysis set argument <code>use_company_terms</code> to TRUE in the call to <code>run_trisk</code>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/run_stress_test.html">run_stress_test</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/run_trisk.html">run_trisk</a></span><span class="op">(</span></span>
 <span>  asset_type <span class="op">=</span> <span class="st">"loans"</span>,</span>
 <span>  input_path_project_specific <span class="op">=</span> <span class="st">"/example_project/project_specific_input"</span>,</span>
 <span>  input_path_project_agnostic <span class="op">=</span> <span class="st">"/example_project/project_agnostic_input/"</span>,</span>

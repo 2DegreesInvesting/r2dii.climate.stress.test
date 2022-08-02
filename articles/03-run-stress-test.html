@@ -93,7 +93,7 @@
 
     
     
-<p>This vignette describes in detail, how to run a climate transition risk stress test for loans, using the function <code>run_stress_test</code> to calculate the credit risk of a loan book.</p>
+<p>This vignette describes in detail, how to run a climate transition risk stress test for loans, using the function <code>run_trisk</code> to calculate the credit risk of a loan book.</p>
 <div class="section level2">
 <h2 id="assumptions">Assumptions<a class="anchor" aria-label="anchor" href="#assumptions"></a>
 </h2>
@@ -118,9 +118,9 @@
 <div class="section level2">
 <h2 id="running-the-stress-test-for-one-scenario">Running the Stress Test for one scenario<a class="anchor" aria-label="anchor" href="#running-the-stress-test-for-one-scenario"></a>
 </h2>
-<p>In order to run a stress test for loans on one set of parameters, the user needs to pass exactly one value per input argument to the function <code><a href="../reference/run_stress_test.html">run_stress_test()</a></code>. The only arguments that do not have a default value and must be set by the user are <code>asset_type</code> and the file paths. In this case, we want to run the stress test for loans, so the easiest way to obtain results is by running:</p>
+<p>In order to run a stress test for loans on one set of parameters, the user needs to pass exactly one value per input argument to the function <code><a href="../reference/run_trisk.html">run_trisk()</a></code>. The only arguments that do not have a default value and must be set by the user are <code>asset_type</code> and the file paths. In this case, we want to run the stress test for loans, so the easiest way to obtain results is by running:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/run_stress_test.html">run_stress_test</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/run_trisk.html">run_trisk</a></span><span class="op">(</span></span>
 <span>  asset_type <span class="op">=</span> <span class="st">"loans"</span>,</span>
 <span>  input_path_project_specific <span class="op">=</span> <span class="st">"/example_project/project_specific_input/"</span>,</span>
 <span>  input_path_project_agnostic <span class="op">=</span> <span class="st">"/example_project/project_agnostic_input/"</span>,</span>
@@ -131,7 +131,7 @@
 <div class="section level3">
 <h3 id="input-arguments">Input arguments<a class="anchor" aria-label="anchor" href="#input-arguments"></a>
 </h3>
-<p>Specifications on the detail arguments are summarized in the following overview. The defaults that are used if the argument is not adjusted when calling <code><a href="../reference/run_stress_test.html">run_stress_test()</a></code> can be found in column <code>default</code>. The user may change any detail argument by explicitly passing it to the function. Note that there are allowed values for each of the inputs. For logical or character variables refer to column <code>allowed</code>, for numeric variables the allowed values are the range from <code>min</code> (inclusive) to <code>max</code> (inclusive).</p>
+<p>Specifications on the detail arguments are summarized in the following overview. The defaults that are used if the argument is not adjusted when calling <code><a href="../reference/run_trisk.html">run_trisk()</a></code> can be found in column <code>default</code>. The user may change any detail argument by explicitly passing it to the function. Note that there are allowed values for each of the inputs. For logical or character variables refer to column <code>allowed</code>, for numeric variables the allowed values are the range from <code>min</code> (inclusive) to <code>max</code> (inclusive).</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">stress_test_arguments</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 12 × 6</span></span></span>
@@ -197,7 +197,7 @@
 </h3>
 <p>The user may want to run a stress test that is tailored to their assumptions about a plausible transition risk shock scenario. For example, the user could decide to set a lower <code>risk_free_rate</code> and shock the companies earlier than by default, using:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/run_stress_test.html">run_stress_test</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/run_trisk.html">run_trisk</a></span><span class="op">(</span></span>
 <span>  asset_type <span class="op">=</span> <span class="st">"loans"</span>,</span>
 <span>  input_path_project_specific <span class="op">=</span> <span class="st">"/example_project/project_specific_input/"</span>,</span>
 <span>  input_path_project_agnostic <span class="op">=</span> <span class="st">"/example_project/project_agnostic_input/"</span>,</span>
@@ -232,7 +232,7 @@
 <p><strong>NOTE:</strong> It is not possible to iterate over <code>asset_type</code> and <code>term</code>.</p>
 <p>If the user wishes to understand the impact of the <code>shock_year</code> on the results for example, they can run the following:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/run_stress_test.html">run_stress_test</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/run_trisk.html">run_trisk</a></span><span class="op">(</span></span>
 <span>  asset_type <span class="op">=</span> <span class="st">"loans"</span>,</span>
 <span>  input_path_project_specific <span class="op">=</span> <span class="st">"/example_project/project_specific_input/"</span>,</span>
 <span>  input_path_project_agnostic <span class="op">=</span> <span class="st">"/example_project/project_agnostic_input/"</span>,</span>
@@ -251,7 +251,7 @@
 <p>When running a sensitivity analysis one one input, the user can still use other values than the default parameters for the other input arguments.</p>
 <p>For example, when iterating over the <code>shock_year</code>, it is still possible to use a <code>risk_free_rate</code> lower than the default like so:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/run_stress_test.html">run_stress_test</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/run_trisk.html">run_trisk</a></span><span class="op">(</span></span>
 <span>  asset_type <span class="op">=</span> <span class="st">"loans"</span>,</span>
 <span>  input_path_project_specific <span class="op">=</span> <span class="st">"/example_project/project_specific_input/"</span>,</span>
 <span>  input_path_project_agnostic <span class="op">=</span> <span class="st">"/example_project/project_agnostic_input/"</span>,</span>
