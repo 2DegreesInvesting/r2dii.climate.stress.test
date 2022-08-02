@@ -2,7 +2,7 @@
 #'
 #' Function reads in company terms and checks for existence of required columns.
 #'
-#' @inheritParams run_stress_test
+#' @inheritParams run_trisk
 #' @param path Path to dir holding company terms data.
 #'
 #' @return A tibble holding company terms data or NULL

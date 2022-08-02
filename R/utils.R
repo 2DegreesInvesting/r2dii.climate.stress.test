@@ -318,7 +318,7 @@ report_missings <- function(data, name_data, throw_error = FALSE) {
 #' Uses fallback if no iterator is used. Aborts if > 1 iterator is given.
 #'
 #' @param args_list Named list of default and provided arguments in function
-#'   call to [run_stress_test()].
+#'   call to [run_trisk()].
 #'
 #' @return String holding name of iterator variable.
 get_iter_var <- function(args_list) {
@@ -447,7 +447,7 @@ get_start_year <- function(data) {
 #' Function returns supported sectors and technologies for provided combination
 #' of `baseline_scenario`, `shock_scenario` and `scenario_geography`.
 #'
-#' @inheritParams run_stress_test
+#' @inheritParams run_trisk
 #'
 #' @return A list with entries sectors and technologies
 #' @noRd

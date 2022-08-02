@@ -70,7 +70,7 @@ run_prep_calculation_loans(
 
 ``` r
 ## run stress testing for assets of type corporate loans using default parameters
-run_stress_test(
+run_trisk(
   asset_type = "loans",
   input_path_project_specific = "/example_project/project_specific_input/",
   input_path_project_agnostic = "/example_project/project_agnostic_input/",
@@ -78,7 +78,7 @@ run_stress_test(
 )
 
 ## run stress testing for asset of type corporate loans using various risk_free_rates to analyse sensitivities
-run_stress_test(
+run_trisk(
   asset_type = "loans",
   input_path_project_specific = "/example_project/project_specific_input/",
   input_path_project_agnostic = "/example_project/project_agnostic_input/",

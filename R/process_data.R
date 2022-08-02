@@ -1,6 +1,6 @@
 #' Process data of type indicated by function name
 #'
-#' @inheritParams run_stress_test
+#' @inheritParams run_trisk
 #' @inheritParams report_company_drops
 #' @param data A tibble of data of type indicated by function name.
 #' @param start_year Numeric, holding start year of analysis.
@@ -417,7 +417,7 @@ remove_high_carbon_tech_with_missing_production <- function(data,
 #' Process data of type indicated by function name
 #'
 #' @inheritParams process_pacta_results
-#' @inheritParams run_stress_test
+#' @inheritParams run_trisk
 #'
 #' @return A tibble of data as indicated by function name.
 #' @noRd
@@ -575,7 +575,7 @@ process_scenario_data <- function(data, start_year, end_year, sectors, technolog
 #' Process data of type indicated by function name
 #'
 #' @inheritParams process_pacta_results
-#' @inheritParams run_stress_test
+#' @inheritParams run_trisk
 #'
 #' @return A tibble of data as indicated by function name.
 #' @noRd

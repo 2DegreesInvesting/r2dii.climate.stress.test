@@ -8,7 +8,7 @@ get_iter_var(args_list)
 }
 \arguments{
 \item{args_list}{Named list of default and provided arguments in function
-call to \code{\link[=run_stress_test]{run_stress_test()}}.}
+call to \code{\link[=run_trisk]{run_trisk()}}.}
 }
 \value{
 String holding name of iterator variable.
