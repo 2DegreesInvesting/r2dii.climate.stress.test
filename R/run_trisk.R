@@ -51,22 +51,22 @@
 #' @param return_results Boolean, indicating if results shall be exported.
 #' @return NULL
 #' @export
-run_stress_test <- function(asset_type,
-                            input_path_project_specific,
-                            input_path_project_agnostic,
-                            output_path,
-                            baseline_scenario = "WEO2020_SPS",
-                            shock_scenario = "WEO2020_SDS",
-                            lgd = 0.45,
-                            risk_free_rate = 0.02,
-                            discount_rate = 0.07,
-                            growth_rate = 0.03,
-                            div_netprofit_prop_coef = 1,
-                            shock_year = 2030,
-                            fallback_term = 2,
-                            scenario_geography = "Global",
-                            use_company_terms = FALSE,
-                            return_results = FALSE) {
+run_trisk <- function(asset_type,
+                      input_path_project_specific,
+                      input_path_project_agnostic,
+                      output_path,
+                      baseline_scenario = "WEO2020_SPS",
+                      shock_scenario = "WEO2020_SDS",
+                      lgd = 0.45,
+                      risk_free_rate = 0.02,
+                      discount_rate = 0.07,
+                      growth_rate = 0.03,
+                      div_netprofit_prop_coef = 1,
+                      shock_year = 2030,
+                      fallback_term = 2,
+                      scenario_geography = "Global",
+                      use_company_terms = FALSE,
+                      return_results = FALSE) {
   cat("-- Running transition risk stress test. \n\n\n")
 
   args_list <- mget(names(formals()), sys.frame(sys.nframe())) %>%
@@ -161,7 +161,7 @@ run_stress_test_iteration <- function(args_list) {
 }
 
 # Avoid R CMD check NOTE: "Undefined global functions or variables"
-globalVariables(c(names(formals(run_stress_test)), "iter_var"))
+globalVariables(c(names(formals(run_trisk)), "iter_var"))
 
 read_and_process_and_calc <- function(args_list) {
   list2env(args_list, envir = rlang::current_env())
