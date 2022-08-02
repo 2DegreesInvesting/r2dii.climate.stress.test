@@ -42,19 +42,15 @@ devtools::install_github("2DegreesInvesting/r2dii.climate.stress.test")
 
 ## Example
 
-  - Use `library()` to attach the package
-
-<!-- end list -->
+-   Use `library()` to attach the package
 
 ``` r
 library(r2dii.climate.stress.test)
 ```
 
-  - Stress tests for corporate loans require a preparatory step for
+-   Stress tests for corporate loans require a preparatory step for
     input data preparation for initial application of stress testing on
     a loan book
-
-<!-- end list -->
 
 ``` r
 run_prep_calculation_loans(
@@ -64,13 +60,11 @@ run_prep_calculation_loans(
 )
 ```
 
-  - Run climate stress tests
-
-<!-- end list -->
+-   Run climate stress tests
 
 ``` r
 ## run stress testing for assets of type corporate loans using default parameters
-run_stress_test(
+run_trisk(
   asset_type = "loans",
   input_path_project_specific = "/example_project/project_specific_input/",
   input_path_project_agnostic = "/example_project/project_agnostic_input/",
@@ -78,7 +72,7 @@ run_stress_test(
 )
 
 ## run stress testing for asset of type corporate loans using various risk_free_rates to analyse sensitivities
-run_stress_test(
+run_trisk(
   asset_type = "loans",
   input_path_project_specific = "/example_project/project_specific_input/",
   input_path_project_agnostic = "/example_project/project_agnostic_input/",
@@ -91,9 +85,9 @@ run_stress_test(
 
 To actually run an analysis…
 
-  - the project directories must be set up,
-  - input data must be prepared and
-  - the detailed options available for running the functions ought to be
+-   the project directories must be set up,
+-   input data must be prepared and
+-   the detailed options available for running the functions ought to be
     understood.
 
 Detailed information for all these steps and on interpreting the
