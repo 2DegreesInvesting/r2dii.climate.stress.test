@@ -230,6 +230,17 @@ browser()
     production_data = processed$production_data
   )
 
+  # TODO: calculate scenario forecasts for production data
+
+  # extend with scenario targets
+
+  # convert power capacity to generation
+  production_data <- convert_power_cap_to_generation(
+    data = production_data,
+    capacity_factors_power = capacity_factors_power,
+    baseline_scenario = baseline_scenario
+  )
+
   if (asset_type == "loans") {
     input_data_list$financial_data <- input_data_list$financial_data %>%
       dplyr::mutate(company_name = stringr::str_to_lower(.data$company_name))
