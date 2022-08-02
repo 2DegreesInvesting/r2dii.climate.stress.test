@@ -51,7 +51,7 @@
 #' @param return_results Boolean, indicating if results shall be exported.
 #' @return NULL
 #' @export
-run_stress_test <- function(asset_type,
+run_trisk <- function(asset_type,
                             input_path_project_specific,
                             input_path_project_agnostic,
                             output_path,
@@ -161,7 +161,7 @@ run_stress_test_iteration <- function(args_list) {
 }
 
 # Avoid R CMD check NOTE: "Undefined global functions or variables"
-globalVariables(c(names(formals(run_stress_test)), "iter_var"))
+globalVariables(c(names(formals(run_trisk)), "iter_var"))
 
 read_and_process_and_calc <- function(args_list) {
   list2env(args_list, envir = rlang::current_env())

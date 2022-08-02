@@ -1,11 +1,11 @@
 #' Run stress testing data preparation for loans
 #'
-#' @inheritParams run_stress_test
-#' @param data_prep_output_path Path where results are written.
-#'   NOTE: This is a workflow that is needed exclusively in preparation of
-#'   [run_stress_test()] for loan books. It creates input data for the stress
-#'   test. A recommended setting is to set `data_prep_output_path` to to the same
-#'   path as `input_path_project_specific`.
+#' @inheritParams run_trisk
+#' @param data_prep_output_path Path where results are written. NOTE: This is a
+#'   workflow that is needed exclusively in preparation of [run_trisk()] for
+#'   loan books. It creates input data for the stress test. A recommended
+#'   setting is to set `data_prep_output_path` to to the same path as
+#'   `input_path_project_specific`.
 #' @param credit_type Type of credit. For accepted values please compare
 #'   `credit_type_lookup`.
 #'
@@ -162,7 +162,7 @@ run_prep_calculation_loans <- function(input_path_project_specific,
     ) %>%
     # ADO 2723 - loan shares calculated against matched loan book, not total loan book
     # this is to ensure all scaling happens against the same denominator
-    # run_stress_test uses the matched portfolio to scale the overall impact
+    # run_trisk uses the matched portfolio to scale the overall impact
     dplyr::summarise(
       comp_loan_share_outstanding = sum(.data$loan_size_outstanding, na.rm = TRUE) / matched_portfolio_size$matched_portfolio_loan_size_outstanding,
       comp_loan_size_outstanding = sum(.data$loan_size_outstanding, na.rm = TRUE),

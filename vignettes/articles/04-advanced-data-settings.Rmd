@@ -82,7 +82,7 @@ project specific data.
 calculations with longer time frames the reliability of the Merton model
 deteriorates.
 * Leave term blank for companies for which you lack respective information. A
-fallback, as provided as argument `fallback_term` to `run_stress_test()` will be
+fallback, as provided as argument `fallback_term` to `run_trisk()` will be
 used to fill the gaps.
 
 ### Validating company - term data
@@ -113,9 +113,9 @@ directories](https://2degreesinvesting.github.io/r2dii.climate.stress.test/artic
 
 ### Running the Stress Test with provided company - term data
 In order to include the company - term data in your analysis set argument
-`use_company_terms` to TRUE in the call to `run_stress_test`.
+`use_company_terms` to TRUE in the call to `run_trisk`.
 ```{r, eval = FALSE}
-run_stress_test(
+run_trisk(
   asset_type = "loans",
   input_path_project_specific = "/example_project/project_specific_input",
   input_path_project_agnostic = "/example_project/project_agnostic_input/",

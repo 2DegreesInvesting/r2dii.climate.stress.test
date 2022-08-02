@@ -3,7 +3,7 @@
 \docType{data}
 \name{stress_test_arguments}
 \alias{stress_test_arguments}
-\title{A dataset describing the arguments of \code{\link[=run_stress_test]{run_stress_test()}}}
+\title{A dataset describing the arguments of \code{\link[=run_trisk]{run_trisk()}} and \code{\link[=run_lrisk]{run_lrisk()}}}
 \format{
 An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 12 rows and 6 columns.
 }
@@ -11,7 +11,7 @@ An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) w
 stress_test_arguments
 }
 \description{
-A dataset describing the arguments of \code{\link[=run_stress_test]{run_stress_test()}}
+A dataset describing the arguments of \code{\link[=run_trisk]{run_trisk()}} and \code{\link[=run_lrisk]{run_lrisk()}}
 }
 \examples{
 stress_test_arguments

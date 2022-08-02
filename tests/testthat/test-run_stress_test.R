@@ -10,7 +10,7 @@ test_that("with bonds, with iteration, using default settings output is unchange
   fs::dir_create(out)
 
   suppressed_console_output <- suppressWarnings(capture.output(
-    results <- run_stress_test("bonds",
+    results <- run_trisk("bonds",
       input_path_project_specific = in_specific,
       input_path_project_agnostic = in_agnostic,
       output_path = out,
@@ -34,7 +34,7 @@ test_that("with loans, without iteration, using minimum values of input argument
   fs::dir_create(out)
 
   suppressed_console_output <- suppressWarnings(suppressMessages(capture.output(
-    results <- run_stress_test("loans",
+    results <- run_trisk("loans",
       input_path_project_specific = in_specific,
       input_path_project_agnostic = in_agnostic,
       output_path = out,
@@ -65,7 +65,7 @@ test_that("with equity, without iteration, using maximum values of input argumen
   fs::dir_create(out)
 
   suppressed_console_output <- suppressWarnings(suppressMessages(capture.output(
-    results <- run_stress_test("equity",
+    results <- run_trisk("equity",
       input_path_project_specific = in_specific,
       input_path_project_agnostic = in_agnostic,
       output_path = out,

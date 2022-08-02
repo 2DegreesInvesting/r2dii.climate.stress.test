@@ -48,3 +48,4 @@ Desktop.ini
 .Rproj.user
 docs
 tests/testthat/_snaps/run_stress_test*
+tests/testthat/_snaps/run_trisk*

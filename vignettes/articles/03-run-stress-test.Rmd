@@ -10,8 +10,8 @@ knitr::opts_chunk$set(
 ```
 
 This vignette describes in detail, how to run a climate transition risk stress
-test for loans, using the function `run_stress_test` to calculate the credit risk
-of a loan book.
+test for loans, using the function `run_trisk` to calculate the credit risk of a
+loan book.
 
 ## Assumptions
 
@@ -47,13 +47,13 @@ library(r2dii.climate.stress.test)
 ## Running the Stress Test for one scenario
 
 In order to run a stress test for loans on one set of parameters, the user needs
-to pass exactly one value per input argument to the function `run_stress_test()`.
+to pass exactly one value per input argument to the function `run_trisk()`.
 The only arguments that do not have a default value and must be set by the user
 are `asset_type` and the file paths. In this case, we want to run the stress
 test for loans, so the easiest way to obtain results is by running:
 
 ```{r, eval = FALSE}
-run_stress_test(
+run_trisk(
   asset_type = "loans",
   input_path_project_specific = "/example_project/project_specific_input/",
   input_path_project_agnostic = "/example_project/project_agnostic_input/",
@@ -75,10 +75,10 @@ directly in R.
 ### Input arguments
 Specifications on the detail arguments are summarized in the following overview.
 The defaults that are used if the argument is not adjusted when calling
-`run_stress_test()` can be found in column `default`. The user may change any
-detail argument by explicitly passing it to the function. Note that there are
-allowed values for each of the inputs. For logical or character variables refer
-to column `allowed`, for numeric variables the allowed values are the range from
+`run_trisk()` can be found in column `default`. The user may change any detail
+argument by explicitly passing it to the function. Note that there are allowed
+values for each of the inputs. For logical or character variables refer to
+column `allowed`, for numeric variables the allowed values are the range from
 `min` (inclusive) to `max` (inclusive).
 
 ```{r}
@@ -154,7 +154,7 @@ decide to set a lower `risk_free_rate` and shock the companies earlier than by
 default, using:
 
 ```{r, eval = FALSE}
-run_stress_test(
+run_trisk(
   asset_type = "loans",
   input_path_project_specific = "/example_project/project_specific_input/",
   input_path_project_agnostic = "/example_project/project_agnostic_input/",
@@ -211,7 +211,7 @@ If the user wishes to understand the impact of the `shock_year` on the results
 for example, they can run the following:
 
 ```{r, eval = FALSE}
-run_stress_test(
+run_trisk(
   asset_type = "loans",
   input_path_project_specific = "/example_project/project_specific_input/",
   input_path_project_agnostic = "/example_project/project_agnostic_input/",
@@ -241,7 +241,7 @@ For example, when iterating over the `shock_year`, it is still possible to use a
 `risk_free_rate` lower than the default like so:
 
 ```{r, eval = FALSE}
-run_stress_test(
+run_trisk(
   asset_type = "loans",
   input_path_project_specific = "/example_project/project_specific_input/",
   input_path_project_agnostic = "/example_project/project_agnostic_input/",

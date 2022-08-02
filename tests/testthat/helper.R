@@ -30,7 +30,7 @@ test_create_target_directory <- function(path = NULL,
 }
 
 
-#' Get a valid value of an argument of `run_stress_test()`
+#' Get a valid value of an argument of `run_trisk()`
 #'
 #' @examples
 #' get_st_argument("fallback_term")
