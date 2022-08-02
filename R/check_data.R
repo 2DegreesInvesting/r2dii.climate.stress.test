@@ -45,7 +45,6 @@ check_level_availability <- function(data, data_name, expected_levels_list, thro
           x = glue::glue("Expected levels are {expected_levels_collapsed}, provided levels are {provided_levels_collapsed}."),
           i = "Please check input data if this does not match you expectations."
         ))
-
       }
     }
   })

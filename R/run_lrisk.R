@@ -177,7 +177,6 @@ run_lrisk_iteration <- function(args_list) {
 globalVariables(c(names(formals(run_lrisk)), "iter_var"))
 
 read_and_process_and_calc_lrisk <- function(args_list) {
-
   list2env(args_list, envir = rlang::current_env())
 
   log_path <- file.path(output_path, paste0("log_file_", iter_var, ".txt"))
@@ -337,7 +336,7 @@ read_and_process_and_calc_lrisk <- function(args_list) {
     dplyr::mutate(
       scc_liability =
         .data$overshoot_emissions * litigation_scenario$scc *
-        litigation_scenario$exp_share_damages_paid
+          litigation_scenario$exp_share_damages_paid
     ) %>%
     dplyr::group_by(company_name, ald_sector, technology) %>%
     dplyr::mutate(
@@ -449,4 +448,3 @@ iteration_sequence <- function(args_list) {
     return(seq_along(args_list[[iter_var]]))
   }
 }
-

@@ -289,7 +289,6 @@ run_prep_calculation_loans <- function(input_path_project_specific,
   p4b_tms_results <- tibble::tibble()
 
   for (i in scenario_sources) {
-
     scenario_data_market_share_i <- scenario_data_market_share %>%
       dplyr::filter(.data$scenario_source == i)
 
@@ -308,7 +307,6 @@ run_prep_calculation_loans <- function(input_path_project_specific,
 
     p4b_tms_results <- p4b_tms_results %>%
       dplyr::bind_rows(p4b_tms_results_i)
-
   }
 
   p4b_tms_results <- p4b_tms_results %>%
@@ -402,9 +400,10 @@ run_prep_calculation_loans <- function(input_path_project_specific,
     dplyr::group_by(.data$ald_sector, .data$technology, .data$technology_type, .data$emissions_factor_unit) %>%
     dplyr::summarise(
       emissions_factor = stats::weighted.mean(
-        .data$emissions_factor, .data$ald_production, na.rm = TRUE
-        )
-      ) %>%
+        .data$emissions_factor, .data$ald_production,
+        na.rm = TRUE
+      )
+    ) %>%
     dplyr::ungroup()
 
   # use avg technology type EFs to fill missing values
