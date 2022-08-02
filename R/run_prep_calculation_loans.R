@@ -291,7 +291,7 @@ run_prep_calculation_loans <- function(input_path_project_specific,
   for (i in scenario_sources) {
 
     scenario_data_market_share_i <- scenario_data_market_share %>%
-      dplyr::filter(scenario_source == i)
+      dplyr::filter(.data$scenario_source == i)
 
     regions_i <- regions %>%
       dplyr::filter(source == i)
