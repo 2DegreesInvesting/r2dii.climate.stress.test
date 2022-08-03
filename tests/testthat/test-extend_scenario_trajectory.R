@@ -74,9 +74,16 @@ test_that("scenario data after extension equal production in start year times
   testthat::expect_equal(verify_manual_electric, verify_result_electric)
 })
 
+# new_test_data <- test_data %>%
+#   dplyr::distinct(
+#     .data$id, .data$company_name, .data$year, .data$ald_sector, .data$technology,
+#     .data$scenario_geography, .data$plan_tech_prod, .data$plan_emission_factor,
+#     .data$plan_sec_prod
+#   )
+
 test_that("company-technology target production after extension equals SMSP for
           low carbon technology", {
-  test_data <- read_test_data("extend_scenario_trajectories.csv")
+  test_data <- read_test_data("new_extend_scenario_trajectories.csv")
   test_scenario <- read_test_data("scenario_data.csv")
 
   test_start <- 2020
@@ -99,35 +106,31 @@ test_that("company-technology target production after extension equals SMSP for
 
   initial_tech_target_electric <- test_data %>%
     dplyr::filter(
-      .data$year == test_start &
-        .data$technology == verify_technology &
-        .data$scenario == verify_scenario
+      .data$year == test_start,
+      .data$technology == verify_technology
     ) %>%
-    dplyr::pull(.data$scen_tech_prod)
+    dplyr::pull(.data$plan_tech_prod)
 
   initial_sector_target_auto <- test_data %>%
     dplyr::filter(
-      .data$year == test_start &
-        .data$ald_sector == verify_sector &
-        .data$scenario == verify_scenario
+      .data$year == test_start,
+      .data$ald_sector == verify_sector
     ) %>%
     dplyr::group_by(
-      .data$investor_name, .data$portfolio_name, .data$equity_market,
-      .data$ald_sector, .data$scenario, .data$allocation,
-      .data$scenario_geography
+      .data$ald_sector, .data$scenario_geography
     ) %>%
     dplyr::summarise(
-      scen_sec_prod = sum(.data$scen_tech_prod, na.rm = TRUE),
+      plan_sec_prod = sum(.data$plan_tech_prod, na.rm = TRUE),
       .groups = "drop"
     ) %>%
     dplyr::ungroup() %>%
-    dplyr::pull(.data$scen_sec_prod)
+    dplyr::pull(.data$plan_sec_prod)
 
   verify_scenario_change_end_year_electric_target <- test_scenario %>%
     dplyr::filter(
-      .data$year == test_end &
-        .data$technology == verify_technology &
-        .data$scenario == verify_scenario
+      .data$year == test_end,
+      .data$technology == verify_technology,
+      .data$scenario == verify_scenario
     ) %>%
     dplyr::pull(.data$fair_share_perc)
 
@@ -136,8 +139,8 @@ test_that("company-technology target production after extension equals SMSP for
 
   verify_result_electric <- test_results %>%
     dplyr::filter(
-      .data$year == test_end &
-        .data$technology == verify_technology
+      .data$year == test_end,
+      .data$technology == verify_technology
     ) %>%
     dplyr::pull(verify_scenario)
 
@@ -149,7 +152,7 @@ test_that("company-technology target production after extension equals SMSP for
 
 test_that("company-technology target production after extension equals TMSR for
           high carbon technology", {
-  test_data <- read_test_data("extend_scenario_trajectories.csv")
+  test_data <- read_test_data("new_extend_scenario_trajectories.csv")
   test_scenario <- read_test_data("scenario_data.csv")
 
   test_start <- 2020
@@ -171,17 +174,16 @@ test_that("company-technology target production after extension equals TMSR for
 
   initial_tech_target_coal <- test_data %>%
     dplyr::filter(
-      .data$year == test_start &
-        .data$technology == verify_technology &
-        .data$scenario == verify_scenario
+      .data$year == test_start,
+      .data$technology == verify_technology
     ) %>%
-    dplyr::pull(.data$scen_tech_prod)
+    dplyr::pull(.data$plan_tech_prod)
 
   verify_scenario_change_end_year_coal_target <- test_scenario %>%
     dplyr::filter(
-      .data$year == test_end &
-        .data$technology == verify_technology &
-        .data$scenario == verify_scenario
+      .data$year == test_end,
+      .data$technology == verify_technology,
+      .data$scenario == verify_scenario
     ) %>%
     dplyr::pull(.data$fair_share_perc)
 
@@ -190,8 +192,8 @@ test_that("company-technology target production after extension equals TMSR for
 
   verify_result_coal <- test_results %>%
     dplyr::filter(
-      .data$year == test_end &
-        .data$technology == verify_technology
+      .data$year == test_end,
+      .data$technology == verify_technology
     ) %>%
     dplyr::pull(verify_scenario)
 
