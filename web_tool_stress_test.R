@@ -328,7 +328,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Equity_results_", calcu
           end_analysis = end_year,
           time_frame = time_horizon
         ) %>%
-        set_baseline_trajectory(
+        set_baseline_trajectory_old(
           scenario_to_follow_baseline = scenario_to_follow_baseline
         ) %>%
         set_ls_trajectory(
@@ -466,7 +466,7 @@ if (file.exists(file.path(results_path, pf_name, paste0("Bonds_results_", calcul
           end_analysis = end_year,
           time_frame = time_horizon
         ) %>%
-        set_baseline_trajectory(
+        set_baseline_trajectory_old(
           scenario_to_follow_baseline = scenario_to_follow_baseline
         ) %>%
         set_ls_trajectory(

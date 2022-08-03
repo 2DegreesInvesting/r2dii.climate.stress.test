@@ -215,22 +215,16 @@ report_duplicates <- function(data, cols, throw_error = TRUE) {
 #'
 #' @return NULL
 report_company_drops <- function(data_list, asset_type, log_path) {
-  if (asset_type == "bonds") {
-    merge_cols <- c("company_name", "id" = "corporate_bond_ticker")
-  } else {
-    merge_cols <- c("company_name")
-  }
-
   report_dropped_company_names(
-    data_x = data_list$pacta_results,
+    data_x = data_list$production_data,
     data_y = data_list$financial_data,
     name_y = "financial data",
-    merge_cols = merge_cols,
+    merge_cols = c("company_name", "id" = "company_id"),
     log_path = log_path
   )
 
   report_dropped_company_names(
-    data_x = data_list$pacta_results,
+    data_x = data_list$production_data,
     data_y = data_list$df_price,
     name_y = "price data",
     merge_cols = c("technology", "ald_sector", "year"),

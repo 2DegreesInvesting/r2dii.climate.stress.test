@@ -177,7 +177,6 @@ run_lrisk_iteration <- function(args_list) {
 globalVariables(c(names(formals(run_lrisk)), "iter_var"))
 
 read_and_process_and_calc_lrisk <- function(args_list) {
-
   list2env(args_list, envir = rlang::current_env())
 
   log_path <- file.path(output_path, paste0("log_file_", iter_var, ".txt"))
@@ -197,23 +196,13 @@ read_and_process_and_calc_lrisk <- function(args_list) {
     scenario_geography = scenario_geography
   )
 
-  year_litigation_event <- shock_year
-
   cat("-- Reading input data from designated input path. \n")
 
   if (use_company_terms) {
     paste_write("Using user - configured company - term data. \n", log_path = log_path)
   }
 
-  data <- st_read_specific(
-    input_path_project_specific,
-    asset_type = asset_type,
-    use_company_terms = use_company_terms
-  )
-  start_year <- get_start_year(data)
-  data <- append(
-    data, st_read_agnostic(input_path_project_agnostic, start_year = start_year, sectors = sectors_and_technologies_list$sectors)
-  )
+  data <- st_read_agnostic(input_path_project_agnostic, start_year = start_year, sectors = sectors_and_technologies_list$sectors)
 
   cat("-- Processing input data. \n")
 
@@ -226,40 +215,39 @@ read_and_process_and_calc_lrisk <- function(args_list) {
       shock_scenario = shock_scenario,
       sectors = sectors_and_technologies_list$sectors,
       technologies = sectors_and_technologies_list$technologies,
+      start_year = start_year,
       log_path = log_path
     )
 
   input_data_list <- list(
-    pacta_results = processed$pacta_results,
     capacity_factors_power = processed$capacity_factors_power,
-    sector_exposures = processed$sector_exposures,
     scenario_data = processed$scenario_data,
     df_price = processed$df_price,
-    financial_data = processed$financial_data
+    financial_data = processed$financial_data,
+    production_data = processed$production_data
   )
+  browser()
+  # TODO: check if this is still relevant. probably needs to go into the matching part.
+  # since we are reading from PAMS, this should not be required here
+  # if (asset_type == "loans") {
+  #   input_data_list$financial_data <- input_data_list$financial_data %>%
+  #     dplyr::mutate(company_name = stringr::str_to_lower(.data$company_name))
+  # }
 
-  if (asset_type == "loans") {
-    input_data_list$financial_data <- input_data_list$financial_data %>%
-      dplyr::mutate(company_name = stringr::str_to_lower(.data$company_name))
-  }
-
+  # TODO: this requires company id to work for all companies, i.e. using 2021Q4 PAMS data
   report_company_drops(
     data_list = input_data_list,
     asset_type = asset_type,
     log_path = log_path
   )
 
-  port_aum <- calculate_aum(input_data_list$sector_exposures)
-
-  litigation_scenario <- tibble::tibble(
-    scenario_name = glue::glue("SCC_{year_litigation_event}"),
-    model = "SCC",
-    exp_share_damages_paid = exp_share_damages_paid,
-    scc = scc,
+  # port_aum <- calculate_aum(input_data_list$sector_exposures)
+  litigation_scenario <- generate_litigation_shocks(
     start_of_analysis = start_year,
     end_of_analysis = end_year_lookup,
-    year_of_shock = year_litigation_event,
-    duration_of_shock = end_year_lookup - year_litigation_event + 1
+    shock_year = shock_year,
+    scc = scc,
+    exp_share_damages_paid = exp_share_damages_paid
   )
 
   cat("-- Calculating market risk. \n")

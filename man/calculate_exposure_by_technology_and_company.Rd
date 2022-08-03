@@ -14,17 +14,8 @@ calculate_exposure_by_technology_and_company(
 )
 }
 \arguments{
-\item{asset_type}{String holding type of asset.}
-
-\item{input_data_list}{List with project agnostic and project specific input data}
-
-\item{start_year}{Numeric, holding start year of analysis.}
-
-\item{time_horizon}{Considered timeframe for PACTA analysis.}
-
-\item{scenario_to_follow_shock}{Character. A string that indicates which
-of the scenarios included in the analysis should be used to set the
-late & sudden technology trajectories.}
+\item{asset_type}{String holding asset_type. For accepted values compare
+\code{stress_test_arguments}.}
 
 \item{log_path}{String holding path to log file.}
 }

@@ -7,7 +7,7 @@
 calc_scenario_prices(
   price_data,
   baseline_scenario,
-  shock_scenario,
+  target_scenario,
   transition_scenario,
   start_year
 )
@@ -17,7 +17,7 @@ calc_scenario_prices(
 
 \item{baseline_scenario}{String holding name of the baseline scenario.}
 
-\item{shock_scenario}{String holding name of the shock scenario.}
+\item{target_scenario}{String holding name of the target scenario.}
 
 \item{transition_scenario}{Tibble with 1 row holding at least variables
 \code{year_of_shock} and \code{duration_of_shock}.}

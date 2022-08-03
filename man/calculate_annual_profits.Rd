@@ -5,40 +5,27 @@
 \title{Calculate annual profits}
 \usage{
 calculate_annual_profits(
-  asset_type,
-  input_data_list,
-  scenario_to_follow_baseline,
-  scenario_to_follow_shock,
-  transition_scenario,
-  start_year,
+  data,
+  baseline_scenario,
+  shock_scenario,
   end_year,
-  time_horizon,
   discount_rate,
   growth_rate,
   log_path
 )
 }
 \arguments{
-\item{asset_type}{String holding type of asset.}
+\item{data}{data frame containing the full trajectory company data}
 
-\item{input_data_list}{List with project agnostic and project specific input data}
-
-\item{scenario_to_follow_baseline}{Character. A string that indicates which
+\item{baseline_scenario}{Character. A string that indicates which
 of the scenarios included in the analysis should be used to set the
 baseline technology trajectories.}
 
-\item{scenario_to_follow_shock}{Character. A string that indicates which
+\item{shock_scenario}{Character. A string that indicates which
 of the scenarios included in the analysis should be used to set the
 late & sudden technology trajectories.}
 
-\item{transition_scenario}{Tibble with 1 row holding at least variables
-\code{year_of_shock} and \code{duration_of_shock}.}
-
-\item{start_year}{Numeric, holding start year of analysis.}
-
 \item{end_year}{Numeric, holding end year of analysis.}
-
-\item{time_horizon}{Considered timeframe for PACTA analysis.}
 
 \item{discount_rate}{Numeric, that holds the discount rate of dividends per
 year in the DCF. For accepted range compare \code{stress_test_arguments}.}

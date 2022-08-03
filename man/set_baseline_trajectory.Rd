@@ -5,7 +5,7 @@
 \title{Defines which scenario values to use for the baseline trajectory in the
 stress test.}
 \usage{
-set_baseline_trajectory(data, scenario_to_follow_baseline)
+set_baseline_trajectory(data, baseline_scenario)
 }
 \arguments{
 \item{data}{A dataframe that contains scenario trajectories by technology
@@ -13,7 +13,7 @@ until 2040 for all the scenarios included in the analysis and
 production build out plans by technology or company and technology,
 usually for 5 years, based on PACTA results.}
 
-\item{scenario_to_follow_baseline}{Character. A string that indicates which
+\item{baseline_scenario}{Character. A string that indicates which
 of the scenarios included in the analysis should be used to set the
 baseline technology trajectories.}
 }
@@ -38,6 +38,6 @@ portfolio/technology level.
 Other scenario definition: 
 \code{\link{calc_future_prod_follows_scen}()},
 \code{\link{calc_late_sudden_traj}()},
-\code{\link{set_ls_trajectory}()}
+\code{\link{set_trisk_trajectory}()}
 }
 \concept{scenario definition}

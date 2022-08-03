@@ -1,12 +1,9 @@
-#' Calculate annual profits
-#'
-#' Wrapper function to calculate annual profits.
+#' Calculate transition shock trajectory
 #'
 #' @inheritParams validate_input_values
 #' @inheritParams report_company_drops
-#' @param asset_type String holding type of asset.
 #' @param input_data_list List with project agnostic and project specific input data
-#' @param scenario_to_follow_baseline Character. A string that indicates which
+#' @param baseline_scenario Character. A string that indicates which
 #'   of the scenarios included in the analysis should be used to set the
 #'   baseline technology trajectories.
 #' @param scenario_to_follow_shock Character. A string that indicates which
@@ -17,58 +14,81 @@
 #' @param start_year Numeric, holding start year of analysis.
 #' @param end_year Numeric, holding end year of analysis.
 #' @param time_horizon Considered timeframe for PACTA analysis.
-#' @param growth_rate Numeric, that holds the terminal growth rate of profits
-#'   beyond the `end_year` in the DCF.
 #'
 #' @return A tibble holding annual profits
-calculate_annual_profits <- function(asset_type, input_data_list, scenario_to_follow_baseline,
-                                     scenario_to_follow_shock, transition_scenario, start_year,
-                                     end_year, time_horizon, discount_rate,
-                                     growth_rate, log_path) {
-  price_data <- input_data_list$df_price %>%
-    calc_scenario_prices(
-      baseline_scenario = scenario_to_follow_baseline,
-      shock_scenario = scenario_to_follow_shock,
-      transition_scenario = transition_scenario,
-      start_year = start_year
-    )
+calculate_trisk_trajectory <- function(input_data_list,
+                                       baseline_scenario,
+                                       target_scenario,
+                                       transition_scenario,
+                                       start_year,
+                                       end_year,
+                                       time_horizon,
+                                       log_path) {
 
-  extended_pacta_results <- input_data_list$pacta_results %>%
-    extend_scenario_trajectory(
-      scenario_data = input_data_list$scenario_data,
-      start_analysis = start_year,
-      end_analysis = end_year,
-      time_frame = time_horizon,
-      target_scenario = scenario_to_follow_shock
-    ) %>%
+  production_data <- input_data_list$production_data %>%
     set_baseline_trajectory(
-      scenario_to_follow_baseline = scenario_to_follow_baseline
+      baseline_scenario = baseline_scenario
     ) %>%
-    set_ls_trajectory(
-      scenario_to_follow_ls = scenario_to_follow_shock,
+    set_trisk_trajectory(
+      target_scenario = target_scenario,
       shock_scenario = transition_scenario,
-      scenario_to_follow_ls_aligned = scenario_to_follow_shock,
+      target_scenario_aligned = target_scenario,
       start_year = start_year,
       end_year = end_year,
       analysis_time_frame = time_horizon,
       log_path = log_path
     )
 
-  if (asset_type == "bonds") {
-    merge_cols <- c("company_name", "id" = "corporate_bond_ticker")
-  } else {
-    merge_cols <- c("company_name")
-  }
+  price_data <- input_data_list$df_price %>%
+    calc_scenario_prices(
+      baseline_scenario = baseline_scenario,
+      target_scenario = target_scenario,
+      transition_scenario = transition_scenario,
+      start_year = start_year
+    )
 
-  extended_pacta_results_with_financials <- extended_pacta_results %>%
+  merge_cols <- c("company_name", "id" = "company_id")
+
+  full_trajectory <- production_data %>%
     dplyr::inner_join(
       y = input_data_list$financial_data,
       by = merge_cols
     ) %>%
     fill_annual_profit_cols()
 
-  annual_profits <- extended_pacta_results_with_financials %>%
-    join_price_data(df_prices = price_data) %>%
+  full_trajectory <- full_trajectory %>%
+    join_price_data(df_prices = price_data)
+
+  return(full_trajectory)
+}
+
+
+#' Calculate annual profits
+#'
+#' Wrapper function to calculate annual profits.
+#'
+#' @inheritParams validate_input_values
+#' @inheritParams report_company_drops
+#' @param data data frame containing the full trajectory company data
+#' @param baseline_scenario Character. A string that indicates which
+#'   of the scenarios included in the analysis should be used to set the
+#'   baseline technology trajectories.
+#' @param shock_scenario Character. A string that indicates which
+#'   of the scenarios included in the analysis should be used to set the
+#'   late & sudden technology trajectories.
+#' @param end_year Numeric, holding end year of analysis.
+#' @param growth_rate Numeric, that holds the terminal growth rate of profits
+#'   beyond the `end_year` in the DCF.
+#'
+#' @return A tibble holding annual profits
+calculate_annual_profits <- function(data,
+                                     baseline_scenario,
+                                     shock_scenario,
+                                     end_year,
+                                     discount_rate,
+                                     growth_rate,
+                                     log_path) {
+  annual_profits <- data %>%
     calculate_net_profits() %>%
     dcf_model_techlevel(discount_rate = discount_rate) %>%
     # TODO: ADO 879 - note rows with zero profits/NPVs will produce NaN in the Merton model
@@ -79,8 +99,8 @@ calculate_annual_profits <- function(asset_type, input_data_list, scenario_to_fo
       end_year = end_year,
       growth_rate = growth_rate,
       discount_rate = discount_rate,
-      baseline_scenario = scenario_to_follow_baseline,
-      shock_scenario = scenario_to_follow_shock
+      baseline_scenario = baseline_scenario,
+      shock_scenario = shock_scenario
     )
 
   return(annual_profits)

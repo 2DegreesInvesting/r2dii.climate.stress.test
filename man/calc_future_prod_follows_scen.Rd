@@ -37,6 +37,6 @@ production plans.
 Other scenario definition: 
 \code{\link{calc_late_sudden_traj}()},
 \code{\link{set_baseline_trajectory}()},
-\code{\link{set_ls_trajectory}()}
+\code{\link{set_trisk_trajectory}()}
 }
 \concept{scenario definition}

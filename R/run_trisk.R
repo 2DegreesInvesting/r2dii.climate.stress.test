@@ -218,51 +218,62 @@ read_and_process_and_calc <- function(args_list) {
     financial_data = processed$financial_data,
     production_data = processed$production_data
   )
-browser()
-  # check if this is still relevant. probably needs to go into the matching part.
-  if (asset_type == "loans") {
-    input_data_list$financial_data <- input_data_list$financial_data %>%
-      dplyr::mutate(company_name = stringr::str_to_lower(.data$company_name))
-  }
 
-  # TODO: this may be needed for merging the prod data as well.
+  # TODO: check if this is still relevant. probably needs to go into the matching part.
+  # since we are reading from PAMS, this should not be required here
+  # if (asset_type == "loans") {
+  #   input_data_list$financial_data <- input_data_list$financial_data %>%
+  #     dplyr::mutate(company_name = stringr::str_to_lower(.data$company_name))
+  # }
+
+  # TODO: this requires company id to work for all companies, i.e. using 2021Q4 PAMS data
   report_company_drops(
     data_list = input_data_list,
     asset_type = asset_type,
     log_path = log_path
   )
 
-  port_aum <- calculate_aum(input_data_list$sector_exposures)
   transition_scenario <- generate_transition_shocks(
     start_of_analysis = start_year,
     end_of_analysis = end_year_lookup,
     shock_year = shock_year
   )
 
-  cat("-- Calculating market risk. \n")
+  cat("-- Calculating production trajectory under trisk shock")
 
-  company_annual_profits <- calculate_annual_profits(
-    asset_type = asset_type,
+  input_data_list$full_trajectory <- calculate_trisk_trajectory(
     input_data_list = input_data_list,
-    scenario_to_follow_baseline = baseline_scenario,
-    scenario_to_follow_shock = shock_scenario,
+    baseline_scenario = baseline_scenario,
+    target_scenario = shock_scenario,
     transition_scenario = transition_scenario,
     start_year = start_year,
     end_year = end_year_lookup,
     time_horizon = time_horizon_lookup,
+    log_path = log_path
+  )
+
+  cat("-- Calculating net profits. \n")
+browser()
+  company_annual_profits <- calculate_annual_profits(
+    data = input_data_list$full_trajectory,
+    baseline_scenario = baseline_scenario,
+    shock_scenario = shock_scenario,
+    end_year = end_year_lookup,
     discount_rate = discount_rate,
     growth_rate = growth_rate,
     log_path = log_path
   )
 
-  exposure_by_technology_and_company <- calculate_exposure_by_technology_and_company(
-    asset_type = asset_type,
-    input_data_list = input_data_list,
-    start_year = start_year,
-    time_horizon = time_horizon_lookup,
-    scenario_to_follow_shock = shock_scenario,
-    log_path = log_path
-  )
+  # exposure_by_technology_and_company <- calculate_exposure_by_technology_and_company(
+  #   asset_type = asset_type,
+  #   input_data_list = input_data_list,
+  #   start_year = start_year,
+  #   time_horizon = time_horizon_lookup,
+  #   scenario_to_follow_shock = shock_scenario,
+  #   log_path = log_path
+  # )
+
+  cat("-- Calculating market risk. \n")
 
   company_technology_value_changes <- company_annual_profits %>%
     company_technology_asset_value_at_risk(
@@ -291,12 +302,12 @@ browser()
   # TODO: ADO 879 - note which companies produce missing results due to
   # insufficient input information (e.g. NAs for financials or 0 equity value)
 
-  company_expected_loss <- company_expected_loss(
-    data = company_pd_changes_overall,
-    loss_given_default = lgd,
-    exposure_at_default = exposure_by_technology_and_company,
-    port_aum = port_aum
-  )
+  # company_expected_loss <- company_expected_loss(
+  #   data = company_pd_changes_overall,
+  #   loss_given_default = lgd,
+  #   exposure_at_default = exposure_by_technology_and_company,
+  #   port_aum = port_aum
+  # )
 
   # TODO: ADO 879 - note which companies produce missing results due to
   # insufficient output from overall pd changes or related financial data inputs
@@ -313,15 +324,15 @@ browser()
 
   company_trajectories <- add_term_to_trajectories(
     annual_profits = company_annual_profits,
-    pacta_results = input_data_list$pacta_results
+    pacta_results = input_data_list$production_data
   )
 
   return(
     list(
-      port_aum = port_aum,
-      exposure_by_technology_and_company = exposure_by_technology_and_company,
+      # port_aum = port_aum,
+      # exposure_by_technology_and_company = exposure_by_technology_and_company,
       company_technology_value_changes = company_technology_value_changes,
-      company_expected_loss = company_expected_loss,
+      # company_expected_loss = company_expected_loss,
       company_pd_changes_annual = company_pd_changes_annual,
       company_pd_changes_overall = company_pd_changes_overall,
       company_trajectories = company_trajectories,
