@@ -254,7 +254,12 @@ read_and_process_and_calc <- function(args_list) {
 
   cat("-- Calculating net profits. \n")
 browser()
-  company_annual_profits <- calculate_annual_profits(
+
+  # calc net profits
+
+  # calc discounted net profits
+
+company_annual_profits <- calculate_annual_profits(
     data = input_data_list$full_trajectory,
     baseline_scenario = baseline_scenario,
     shock_scenario = shock_scenario,

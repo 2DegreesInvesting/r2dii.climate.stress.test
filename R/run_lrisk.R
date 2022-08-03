@@ -257,6 +257,11 @@ read_and_process_and_calc_lrisk <- function(args_list) {
 browser()
   cat("-- Calculating production trajectory under trisk shock")
 
+  # calc net profits
+
+  # subtract lrisk settlement from profits
+
+  # calc discounted net profits
   input_data_list$full_trajectory <- calculate_lrisk_trajectory(
     input_data_list = input_data_list,
     baseline_scenario = baseline_scenario,
@@ -345,12 +350,12 @@ browser()
   # TODO: ADO 879 - note which companies produce missing results due to
   # insufficient input information (e.g. NAs for financials or 0 equity value)
 
-  company_expected_loss <- company_expected_loss(
-    data = company_pd_changes_overall,
-    loss_given_default = lgd,
-    exposure_at_default = exposure_by_technology_and_company,
-    port_aum = port_aum
-  )
+  # company_expected_loss <- company_expected_loss(
+  #   data = company_pd_changes_overall,
+  #   loss_given_default = lgd,
+  #   exposure_at_default = exposure_by_technology_and_company,
+  #   port_aum = port_aum
+  # )
 
   # TODO: ADO 879 - note which companies produce missing results due to
   # insufficient output from overall pd changes or related financial data inputs
@@ -367,15 +372,15 @@ browser()
 
   company_trajectories <- add_term_to_trajectories(
     annual_profits = company_annual_profits,
-    pacta_results = input_data_list$pacta_results
+    pacta_results = input_data_list$production_data
   )
 
   return(
     list(
-      port_aum = port_aum,
-      exposure_by_technology_and_company = exposure_by_technology_and_company,
+      # port_aum = port_aum,
+      # exposure_by_technology_and_company = exposure_by_technology_and_company,
       company_technology_value_changes = company_technology_value_changes,
-      company_expected_loss = company_expected_loss,
+      # company_expected_loss = company_expected_loss,
       company_pd_changes_annual = company_pd_changes_annual,
       company_pd_changes_overall = company_pd_changes_overall,
       company_trajectories = company_trajectories,
