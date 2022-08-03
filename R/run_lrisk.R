@@ -48,6 +48,10 @@
 #'   companies are to be used. For accepted values compare
 #'   `stress_test_arguments`. Note that currently this functionality is not
 #'   available for asset_type bonds.
+#' @param start_year Numeric, first year in the analysis used as the starting
+#'   point from which production forecasts are compared against scenario targets.
+#'   Must be available in the production data and indicates the first year of
+#'   the scenario data.
 #' @param settlement_factor Catch all factor (ratio) that can be used to adjust the
 #'   expected payout of the settlement due to further data gaps. Set to 1 by
 #'   default.
@@ -76,6 +80,7 @@ run_lrisk <- function(asset_type,
                       fallback_term = 2,
                       scenario_geography = "Global",
                       use_company_terms = FALSE,
+                      start_year = 2021,
                       settlement_factor = 1,
                       exp_share_damages_paid = 0.027,
                       scc = 40L,
@@ -226,7 +231,7 @@ read_and_process_and_calc_lrisk <- function(args_list) {
     financial_data = processed$financial_data,
     production_data = processed$production_data
   )
-  browser()
+
   # TODO: check if this is still relevant. probably needs to go into the matching part.
   # since we are reading from PAMS, this should not be required here
   # if (asset_type == "loans") {
@@ -249,75 +254,23 @@ read_and_process_and_calc_lrisk <- function(args_list) {
     scc = scc,
     exp_share_damages_paid = exp_share_damages_paid
   )
+browser()
+  cat("-- Calculating production trajectory under trisk shock")
 
-  cat("-- Calculating market risk. \n")
+  input_data_list$full_trajectory <- calculate_lrisk_trajectory(
+    input_data_list = input_data_list,
+    baseline_scenario = baseline_scenario,
+    target_scenario = shock_scenario,
+    litigation_scenario = litigation_scenario,
+    start_year = start_year,
+    end_year = end_year_lookup,
+    time_horizon = time_horizon_lookup,
+    log_path = log_path
+  )
 
-  # TODO: maybe wrap the below into something like calculate_annual_profits_lr()
-  # TODO: decide if a slow change in price trajectory is needed...
-  # For now, we assume that we just have the standard prices which are renamed to be able to use functions
-  price_data <- input_data_list$df_price %>%
-    dplyr::rename(
-      Baseline_price = !!rlang::sym(glue::glue("price_{baseline_scenario}")),
-      late_sudden_price = !!rlang::sym(glue::glue("price_{shock_scenario}"))
-    )
+  cat("-- Calculating net profits. \n")
 
-  extended_pacta_results <- input_data_list$pacta_results %>%
-    extend_scenario_trajectory(
-      scenario_data = input_data_list$scenario_data,
-      start_analysis = start_year,
-      end_analysis = end_year_lookup,
-      time_frame = time_horizon_lookup,
-      target_scenario = shock_scenario
-    ) %>%
-    set_baseline_trajectory(
-      scenario_to_follow_baseline = baseline_scenario
-    ) %>%
-    # we currently assume that production levels and emission factors of
-    # misaligned company-technology combinations are forced onto the target
-    # scenario trajectory directly after the litigation shock.
-    # This may not be perfectly realistic and may be refined in the future.
-    # TODO: we need to decide how to handle low carbon technologies.
-    # currently they are exempt from liabilities of not building out enough.
-    # this may be realistic, but misaligned ones should not switch their
-    # production to the target trajectory. This would lead to unrealistic jumps
-    # in buildout and the litigation risk model should not require solving
-    # for the scenario.
-    set_litigation_trajectory(
-      litigation_scenario = shock_scenario,
-      shock_scenario = litigation_scenario,
-      litigation_scenario_aligned = shock_scenario,
-      start_year = start_year,
-      end_year = end_year_lookup,
-      analysis_time_frame = time_horizon_lookup,
-      log_path = log_path
-    ) %>%
-    dplyr::mutate(
-      actual_emissions = .data$late_sudden * .data$emission_factor,
-      allowed_emissions = !!rlang::sym(shock_scenario) * .data$emission_factor,
-      overshoot_emissions = dplyr::if_else(
-        .data$actual_emissions - .data$allowed_emissions < 0,
-        0,
-        .data$actual_emissions - .data$allowed_emissions
-      )
-    )
-
-  if (asset_type == "bonds") {
-    merge_cols <- c("company_name", "id" = "corporate_bond_ticker")
-  } else {
-    merge_cols <- c("company_name")
-  }
-
-  extended_pacta_results_with_financials <- extended_pacta_results %>%
-    dplyr::inner_join(
-      y = input_data_list$financial_data,
-      by = merge_cols
-    ) %>%
-    fill_annual_profit_cols()
-
-  # TODO: check if we want diverging prices between the scenarios at all.
-  # these need to be explained, or we need to pick one time series only.
-  annual_profits <- extended_pacta_results_with_financials %>%
-    join_price_data(df_prices = price_data) %>%
+  annual_profits <- annual_profits %>%
     calculate_net_profits()
 
   # TODO: validate this section in detail
@@ -354,14 +307,16 @@ read_and_process_and_calc_lrisk <- function(args_list) {
       shock_scenario = shock_scenario
     )
 
-  exposure_by_technology_and_company <- calculate_exposure_by_technology_and_company(
-    asset_type = asset_type,
-    input_data_list = input_data_list,
-    start_year = start_year,
-    time_horizon = time_horizon_lookup,
-    scenario_to_follow_shock = shock_scenario,
-    log_path = log_path
-  )
+  # exposure_by_technology_and_company <- calculate_exposure_by_technology_and_company(
+  #   asset_type = asset_type,
+  #   input_data_list = input_data_list,
+  #   start_year = start_year,
+  #   time_horizon = time_horizon_lookup,
+  #   scenario_to_follow_shock = shock_scenario,
+  #   log_path = log_path
+  # )
+
+  cat("-- Calculating market risk. \n")
 
   company_technology_value_changes <- company_annual_profits %>%
     company_technology_asset_value_at_risk(

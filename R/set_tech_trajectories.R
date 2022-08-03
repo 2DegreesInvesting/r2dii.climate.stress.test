@@ -613,8 +613,7 @@ set_litigation_trajectory <- function(data,
   validate_data_has_expected_cols(
     data = data,
     expected_columns = c(
-      "investor_name", "portfolio_name", "id", "company_name",
-      "ald_sector", "technology", "scenario_geography",
+      "id", "company_name", "ald_sector", "technology", "scenario_geography",
       "plan_tech_prod", "emission_factor", "baseline",
       litigation_scenario, litigation_scenario_aligned
     )
@@ -641,12 +640,7 @@ set_litigation_trajectory <- function(data,
   # in production levels for all sectors with production pathways.
   data <- data %>%
     dplyr::group_by(
-      .data$investor_name,
-      .data$portfolio_name,
-      .data$id,
-      .data$company_name,
-      .data$ald_sector,
-      .data$technology,
+      .data$id, .data$company_name, .data$ald_sector, .data$technology,
       .data$scenario_geography
     ) %>%
     dplyr::mutate(
@@ -663,14 +657,8 @@ set_litigation_trajectory <- function(data,
   reference <- data %>%
     dplyr::filter(.data$year == .env$start_year + .env$analysis_time_frame) %>%
     dplyr::select(
-      .data$investor_name,
-      .data$portfolio_name,
-      .data$id,
-      .data$company_name,
-      .data$ald_sector,
-      .data$technology,
-      .data$scenario_geography,
-      .data$plan_tech_prod
+      .data$id, .data$company_name, .data$ald_sector, .data$technology,
+      .data$scenario_geography, .data$plan_tech_prod
     ) %>%
     dplyr::rename(
       reference_tech_prod = .data$plan_tech_prod
@@ -678,12 +666,7 @@ set_litigation_trajectory <- function(data,
 
   data <- data %>%
     dplyr::group_by(
-      .data$investor_name,
-      .data$portfolio_name,
-      .data$id,
-      .data$company_name,
-      .data$ald_sector,
-      .data$technology,
+      .data$id, .data$company_name, .data$ald_sector, .data$technology,
       .data$scenario_geography
     ) %>%
     dplyr::mutate(
@@ -705,21 +688,13 @@ set_litigation_trajectory <- function(data,
   data <- data %>%
     dplyr::inner_join(
       reference,
-      by = c(
-        "investor_name", "portfolio_name", "id", "company_name", "ald_sector",
-        "technology", "scenario_geography"
-      )
+      by = c("id", "company_name", "ald_sector","technology", "scenario_geography")
     )
 
   data_extended <- data %>%
     dplyr::filter(.data$year > .env$start_year + .env$analysis_time_frame) %>%
     dplyr::group_by(
-      .data$investor_name,
-      .data$portfolio_name,
-      .data$id,
-      .data$company_name,
-      .data$ald_sector,
-      .data$technology,
+      .data$id, .data$company_name, .data$ald_sector, .data$technology,
       .data$scenario_geography
     ) %>%
     dplyr::mutate(
@@ -737,12 +712,7 @@ set_litigation_trajectory <- function(data,
   data <- data_forecast %>%
     dplyr::bind_rows(data_extended) %>%
     dplyr::arrange(
-      .data$investor_name,
-      .data$portfolio_name,
-      .data$id,
-      .data$company_name,
-      .data$scenario_geography,
-      .data$ald_sector,
+      .data$id, .data$company_name, .data$scenario_geography, .data$ald_sector,
       .data$technology
     )
 

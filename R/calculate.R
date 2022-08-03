@@ -6,7 +6,7 @@
 #' @param baseline_scenario Character. A string that indicates which
 #'   of the scenarios included in the analysis should be used to set the
 #'   baseline technology trajectories.
-#' @param scenario_to_follow_shock Character. A string that indicates which
+#' @param target_scenario Character. A string that indicates which
 #'   of the scenarios included in the analysis should be used to set the
 #'   late & sudden technology trajectories.
 #' @param transition_scenario Tibble with 1 row holding at least variables
@@ -62,6 +62,89 @@ calculate_trisk_trajectory <- function(input_data_list,
   return(full_trajectory)
 }
 
+#' Calculate litigation shock trajectory
+#'
+#' @inheritParams validate_input_values
+#' @inheritParams report_company_drops
+#' @param input_data_list List with project agnostic and project specific input data
+#' @param baseline_scenario Character. A string that indicates which
+#'   of the scenarios included in the analysis should be used to set the
+#'   baseline technology trajectories.
+#' @param target_scenario Character. A string that indicates which
+#'   of the scenarios included in the analysis should be used to set the
+#'   late & sudden technology trajectories.
+#' @param litigation_scenario Tibble with 1 row holding at least variables
+#'   `year_of_shock`, `duration_of_shock`, `scc` and `exp_share_damages_paid`
+#' @param start_year Numeric, holding start year of analysis.
+#' @param end_year Numeric, holding end year of analysis.
+#' @param time_horizon Considered timeframe for PACTA analysis.
+#'
+#' @return A tibble holding annual profits
+calculate_lrisk_trajectory <- function(input_data_list,
+                                       baseline_scenario,
+                                       target_scenario,
+                                       litigation_scenario,
+                                       start_year,
+                                       end_year,
+                                       time_horizon,
+                                       log_path) {
+
+  production_data <- input_data_list$production_data %>%
+    set_baseline_trajectory(
+      baseline_scenario = baseline_scenario
+    ) %>%
+    # we currently assume that production levels and emission factors of
+    # misaligned company-technology combinations are forced onto the target
+    # scenario trajectory directly after the litigation shock.
+    # This may not be perfectly realistic and may be refined in the future.
+    # TODO: we need to decide how to handle low carbon technologies.
+    # currently they are exempt from liabilities of not building out enough.
+    # this may be realistic, but misaligned ones should not switch their
+    # production to the target trajectory. This would lead to unrealistic jumps
+    # in buildout and the litigation risk model should not require solving
+    # for the scenario.
+    set_litigation_trajectory(
+      litigation_scenario = target_scenario,
+      shock_scenario = litigation_scenario,
+      litigation_scenario_aligned = target_scenario,
+      start_year = start_year,
+      end_year = end_year_lookup,
+      analysis_time_frame = time_horizon_lookup,
+      log_path = log_path
+    ) %>%
+    # TODO: put the mutate into an aptly named function
+    dplyr::mutate(
+      actual_emissions = .data$late_sudden * .data$emission_factor,
+      allowed_emissions = !!rlang::sym(target_scenario) * .data$emission_factor,
+      overshoot_emissions = dplyr::if_else(
+        .data$actual_emissions - .data$allowed_emissions < 0,
+        0,
+        .data$actual_emissions - .data$allowed_emissions
+      )
+    )
+
+  # TODO: decide if a slow change in price trajectory is needed...
+  # For now, we assume that we just have the standard prices which are renamed to be able to use functions
+  price_data <- input_data_list$df_price %>%
+    dplyr::rename(
+      Baseline_price = !!rlang::sym(glue::glue("price_{baseline_scenario}")),
+      late_sudden_price = !!rlang::sym(glue::glue("price_{target_scenario}"))
+    )
+
+  merge_cols <- c("company_name", "id" = "company_id")
+
+  full_trajectory <- production_data %>%
+    dplyr::inner_join(
+      y = input_data_list$financial_data,
+      by = merge_cols
+    ) %>%
+    fill_annual_profit_cols()
+
+  full_trajectory <- full_trajectory %>%
+    join_price_data(df_prices = price_data)
+
+  return(full_trajectory)
+}
 
 #' Calculate annual profits
 #'
