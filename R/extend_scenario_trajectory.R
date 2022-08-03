@@ -151,12 +151,6 @@ extend_scenario_trajectory <- function(data,
       "scenario_geography", "plan_tech_prod", "plan_emission_factor",
       "plan_sec_prod"
     )
-    # expected_columns = c(
-    #   "year", "investor_name", "portfolio_name", "equity_market", "ald_sector",
-    #   "technology", "scenario", "allocation", "scenario_geography",
-    #   "plan_tech_prod", "plan_carsten", "plan_emission_factor",
-    #   "scen_tech_prod", "plan_sec_prod", "plan_sec_carsten", "id", "company_name"
-    # )
   )
 
   validate_data_has_expected_cols(
@@ -182,18 +176,12 @@ extend_scenario_trajectory <- function(data,
     dplyr::inner_join(
       scenario_data,
       by = c("ald_sector", "technology", "scenario_geography", "year")
-      # by = c("ald_sector", "technology", "scenario_geography", "scenario", "year")
     ) %>%
     report_all_duplicate_kinds(
       composite_unique_cols = c(
         "year", "id", "company_name", "ald_sector", "technology", "scenario",
         "scenario_geography", "units"
       )
-      # composite_unique_cols = c(
-      #   "year", "investor_name", "portfolio_name", "id", "company_name",
-      #   "ald_sector", "technology", "scenario", "allocation",
-      #   "scenario_geography", "units"
-      # )
     )
 
   data <- data %>%
@@ -217,19 +205,12 @@ extend_scenario_trajectory <- function(data,
         "technology", "plan_tech_prod", "phase_out", "emission_factor",
         "proximity_to_target", "direction"
       ),
-      # id_cols = c(
-      #   "investor_name", "portfolio_name", "id", "company_name", "year",
-      #   "scenario_geography", "ald_sector", "technology", "plan_tech_prod",
-      #   "phase_out", "emission_factor", "proximity_to_target", "direction"
-      # ),
       names_from = .data$scenario,
       values_from = .data$scen_tech_prod
     ) %>%
     dplyr::arrange(
       .data$id, .data$company_name, .data$scenario_geography, .data$ald_sector,
       .data$technology, .data$year
-      # .data$investor_name, .data$portfolio_name, .data$id, .data$company_name,
-      # .data$scenario_geography, .data$ald_sector, .data$technology, .data$year
     )
 
   return(data)
@@ -252,25 +233,15 @@ summarise_production_technology_forecasts <- function(data,
       .data$id, .data$company_name, .data$ald_sector, .data$technology,
       .data$scenario_geography, .data$year, .data$plan_tech_prod,
       .data$plan_emission_factor
-      # .data$investor_name, .data$portfolio_name, .data$id, .data$company_name,
-      # .data$ald_sector, .data$technology, .data$scenario_geography,
-      # .data$allocation, .data$year, .data$scenario, .data$plan_tech_prod,
-      # .data$plan_emission_factor, .data$scen_tech_prod
     ) %>%
     dplyr::filter(.data$year <= .env$start_analysis + .env$time_frame) %>%
     dplyr::group_by(
       .data$id, .data$company_name, .data$ald_sector, .data$technology,
       .data$scenario_geography
-      # .data$investor_name, .data$portfolio_name, .data$id, .data$company_name,
-      # .data$ald_sector, .data$technology, .data$scenario, .data$allocation,
-      # .data$scenario_geography
     ) %>%
     dplyr::arrange(
       .data$id, .data$company_name, .data$ald_sector, .data$technology,
       .data$scenario_geography, .data$year
-      # .data$investor_name, .data$portfolio_name, .data$id, .data$company_name,
-      # .data$ald_sector, .data$technology, .data$scenario, .data$allocation,
-      # .data$scenario_geography, .data$year
     ) %>%
     dplyr::mutate(
       # Initial value is identical between production and scenario target,
@@ -321,8 +292,6 @@ extend_to_full_analysis_timeframe <- function(data,
         !!!rlang::syms(
           c(
             "id", "company_name", "ald_sector", "technology", "scenario_geography"
-            # "investor_name", "portfolio_name", "id", "company_name", "ald_sector",
-            # "technology", "scenario", "allocation", "scenario_geography"
           )
         )
       )
@@ -330,9 +299,6 @@ extend_to_full_analysis_timeframe <- function(data,
     dplyr::arrange(
       .data$id, .data$company_name, .data$ald_sector, .data$technology,
       .data$scenario_geography, .data$year
-      # .data$investor_name, .data$portfolio_name, .data$id, .data$company_name,
-      # .data$ald_sector, .data$technology, .data$scenario, .data$allocation,
-      # .data$scenario_geography, .data$year
     ) %>%
     tidyr::fill(
       .data$initial_technology_production,
@@ -359,22 +325,15 @@ summarise_production_sector_forecasts <- function(data) {
     dplyr::group_by(
       .data$id, .data$company_name, .data$ald_sector, .data$scenario,
       .data$scenario_geography, .data$units, .data$year
-      # .data$investor_name, .data$portfolio_name, .data$id, .data$company_name,
-      # .data$ald_sector, .data$scenario, .data$allocation,
-      # .data$scenario_geography, .data$units, .data$year
     ) %>%
     dplyr::mutate(
-      plan_sec_prod = sum(.data$plan_tech_prod, na.rm = TRUE)#,
-      # scen_sec_prod = sum(.data$scen_tech_prod, na.rm = TRUE)
+      plan_sec_prod = sum(.data$plan_tech_prod, na.rm = TRUE)
     ) %>%
     dplyr::arrange(.data$year) %>%
     dplyr::ungroup() %>%
     dplyr::group_by(
       .data$id, .data$company_name, .data$ald_sector, .data$scenario,
       .data$scenario_geography, .data$units
-      # .data$investor_name, .data$portfolio_name, .data$id, .data$company_name,
-      # .data$ald_sector, .data$scenario, .data$allocation,
-      # .data$scenario_geography, .data$units
     ) %>%
     dplyr::mutate(
       # first year plan and scenario values are equal by construction,
@@ -453,9 +412,6 @@ calculate_proximity_to_target <- function(data,
     dplyr::group_by(
       .data$id, .data$company_name, .data$ald_sector, .data$technology,
       .data$scenario_geography
-      # .data$investor_name, .data$portfolio_name, .data$id, .data$company_name,
-      # .data$ald_sector, .data$technology, .data$allocation,
-      # .data$scenario_geography
     ) %>%
     dplyr::mutate(
       required_change = .data$scen_tech_prod - .data$initial_technology_production,
@@ -487,8 +443,6 @@ calculate_proximity_to_target <- function(data,
       production_changes,
       by = c(
         "id", "company_name", "ald_sector", "technology", "scenario_geography"
-        # "investor_name", "portfolio_name", "id", "company_name", "ald_sector",
-        # "technology", "allocation", "scenario_geography"
       )
     )
 }

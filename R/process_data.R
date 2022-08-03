@@ -725,7 +725,6 @@ process_production_data <- function(data, start_year, end_year, time_horizon,
     #   time_horizon = time_horizon
     # ) %>%
     is_scenario_geography_in_pacta_results(scenario_geography_filter) %>%
-    # dplyr::filter(.data$scenario %in% .env$scenarios_filter) %>%
     dplyr::filter(.data$scenario_geography %in% .env$scenario_geography_filter) %>%
     dplyr::filter(.data$ald_sector %in% .env$sectors) %>%
     dplyr::filter(.data$technology %in% .env$technologies) %>%

@@ -133,7 +133,6 @@ convert_power_cap_to_generation <- function(data,
       plan_tech_prod = dplyr::if_else(
         .data$ald_sector == "Power",
         .data$plan_tech_prod * !!rlang::sym(glue::glue("capfac_{baseline_scenario}")) * .env$hours_to_year,
-        # .data$plan_tech_prod * .data$capacity_factor_plan * .env$hours_to_year,
         .data$plan_tech_prod
       ),
       !!rlang::sym(baseline_scenario) := dplyr::if_else(
