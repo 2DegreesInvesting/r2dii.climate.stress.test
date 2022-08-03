@@ -193,18 +193,8 @@ read_and_process_and_calc <- function(args_list) {
   if (use_company_terms) {
     paste_write("Using user - configured company - term data. \n", log_path = log_path)
   }
-browser()
-  data <- st_read_specific(
-    input_path_project_specific,
-    asset_type = asset_type,
-    use_company_terms = use_company_terms
-  )
-  # TODO: start year can't come from portfolio anymore
-  # start_year <- get_start_year(data)
-  data <- append(
-    data, st_read_agnostic(input_path_project_agnostic, start_year = start_year, sectors = sectors_and_technologies_list$sectors)
-  )
-  # data <- st_read_agnostic(input_path_project_agnostic, start_year = start_year, sectors = sectors_and_technologies_list$sectors)
+
+  data <- st_read_agnostic(input_path_project_agnostic, start_year = start_year, sectors = sectors_and_technologies_list$sectors)
 
   cat("-- Processing input data. \n")
 
@@ -217,30 +207,19 @@ browser()
       shock_scenario = shock_scenario,
       sectors = sectors_and_technologies_list$sectors,
       technologies = sectors_and_technologies_list$technologies,
+      start_year = start_year,
       log_path = log_path
     )
 
   input_data_list <- list(
-    pacta_results = processed$pacta_results,
     capacity_factors_power = processed$capacity_factors_power,
-    sector_exposures = processed$sector_exposures,
     scenario_data = processed$scenario_data,
     df_price = processed$df_price,
     financial_data = processed$financial_data,
     production_data = processed$production_data
   )
-
-  # TODO: calculate scenario forecasts for production data
-
-  # extend with scenario targets
-
-  # convert power capacity to generation
-  production_data <- convert_power_cap_to_generation(
-    data = production_data,
-    capacity_factors_power = capacity_factors_power,
-    baseline_scenario = baseline_scenario
-  )
-
+browser()
+  # check if this is still relevant. probably needs to go into the matching part.
   if (asset_type == "loans") {
     input_data_list$financial_data <- input_data_list$financial_data %>%
       dplyr::mutate(company_name = stringr::str_to_lower(.data$company_name))

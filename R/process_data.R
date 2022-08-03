@@ -615,15 +615,9 @@ process_company_terms <- function(data, fallback_term) {
 
 st_process <- function(data, asset_type, fallback_term,
                        scenario_geography, baseline_scenario, shock_scenario,
-                       sectors, technologies,
+                       sectors, technologies, start_year,
                        log_path) {
-  start_year <- get_start_year(data)
   scenarios_filter <- c(baseline_scenario, shock_scenario)
-
-  sector_exposures <- process_sector_exposures(
-    data$sector_exposures,
-    asset_type = asset_type
-  )
 
   df_price <- process_price_data(
     data$df_price,
@@ -649,41 +643,26 @@ st_process <- function(data, asset_type, fallback_term,
     asset_type = asset_type
   )
 
-  company_terms <- process_company_terms(
-    data$company_terms,
-    fallback_term = fallback_term
-  )
-
-  pacta_results <- process_pacta_results(
-    data$pacta_results,
-    start_year = start_year,
-    end_year = end_year_lookup,
-    time_horizon = time_horizon_lookup,
-    scenario_geography_filter = scenario_geography,
-    scenarios_filter = scenarios_filter,
-    equity_market_filter = equity_market_filter_lookup,
-    sectors = sectors,
-    technologies = technologies,
-    allocation_method = allocation_method_lookup,
-    asset_type = asset_type,
-    log_path = log_path
-  ) %>%
-    add_terms(company_terms = company_terms, fallback_term = fallback_term)
-
   production_data <- process_production_data(
     data$production_data,
     start_year = start_year,
     end_year = end_year_lookup,
     time_horizon = time_horizon_lookup,
     scenario_geography_filter = scenario_geography,
-    # TODO: scenarios need to come in later
-    # scenarios_filter = scenarios_filter,
     sectors = sectors,
     technologies = technologies,
     log_path = log_path
-  ) %>%
-    add_terms(company_terms = company_terms, fallback_term = fallback_term)
+  )
 
+  # add extend production data with scenario targets
+  production_data <- production_data %>%
+    extend_scenario_trajectory(
+      scenario_data = scenario_data,
+      start_analysis = start_year,
+      end_analysis = end_year_lookup,
+      time_frame = time_horizon_lookup,
+      target_scenario = shock_scenario
+    )
 
   # capacity_factors are only applied for power sector
   if ("Power" %in% sectors) {
@@ -696,30 +675,22 @@ st_process <- function(data, asset_type, fallback_term,
       end_year = end_year_lookup
     )
 
-    pacta_results <- convert_power_cap_to_generation(
-      data = pacta_results,
-      capacity_factors_power = capacity_factors_power,
-      baseline_scenario = baseline_scenario
-    )
-
-    # TODO: needs scenario independent version
+    # convert power capacity to generation
     production_data <- convert_power_cap_to_generation(
       data = production_data,
       capacity_factors_power = capacity_factors_power,
-      baseline_scenario = baseline_scenario
+      baseline_scenario = baseline_scenario,
+      target_scenario = shock_scenario
     )
   } else {
     capacity_factors_power <- data$capacity_factors_power
   }
 
   out <- list(
-    pacta_results = pacta_results,
-    sector_exposures = sector_exposures,
     capacity_factors_power = capacity_factors_power,
     df_price = df_price,
     scenario_data = scenario_data,
     financial_data = financial_data,
-    company_terms = company_terms,
     production_data = production_data
   )
 
@@ -728,7 +699,7 @@ st_process <- function(data, asset_type, fallback_term,
 
 #' Process data of type indicated by function name
 #'
-#' @inheritParams run_stress_test
+#' @inheritParams run_trisk
 #' @inheritParams report_company_drops
 #' @param data A tibble of data of type indicated by function name.
 #' @param start_year Numeric, holding start year of analysis.

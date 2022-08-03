@@ -7,7 +7,8 @@
 convert_power_cap_to_generation(
   data,
   capacity_factors_power = NULL,
-  baseline_scenario
+  baseline_scenario,
+  target_scenario
 )
 }
 \arguments{
@@ -20,6 +21,8 @@ translate company level power capacity to units sold. Contains information
 on the technology (power sector only) and scenario_geography levels.}
 
 \item{baseline_scenario}{String holding name of baseline scenario.}
+
+\item{target_scenario}{String holding name of target scenario.}
 }
 \description{
 Units of generated power are assumed to be sold and hence get priced in the
