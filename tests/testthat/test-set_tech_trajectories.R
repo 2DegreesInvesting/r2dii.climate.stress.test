@@ -4,7 +4,7 @@ test_that("set_baseline_trajectories returns a data frame", {
 
   baseline_trajectory <- set_baseline_trajectory(
     data = test_data_set_baseline,
-    scenario_to_follow_baseline = "NPS"
+    baseline_scenario = "NPS"
   )
 
   testthat::expect_s3_class(baseline_trajectory, "data.frame")
@@ -15,7 +15,7 @@ test_that("set_baseline_trajectories does not fully replicate indicated scenario
 
   baseline_trajectory <- set_baseline_trajectory(
     data = test_data_set_baseline,
-    scenario_to_follow_baseline = "NPS"
+    baseline_scenario = "NPS"
   )
 
   testthat::expect_false(
@@ -39,7 +39,7 @@ test_that("set_baseline_trajectories replicates provided production trajectory
 
   baseline_trajectory <- set_baseline_trajectory(
     data = test_data_set_baseline,
-    scenario_to_follow_baseline = "NPS"
+    baseline_scenario = "NPS"
   )
 
   baseline_trajectory_forecast <- baseline_trajectory %>% head(forecast_length)
