@@ -233,7 +233,6 @@ read_and_process_and_calc <- function(args_list) {
     log_path = log_path
   )
 
-  port_aum <- calculate_aum(input_data_list$sector_exposures)
   transition_scenario <- generate_transition_shocks(
     start_of_analysis = start_year,
     end_of_analysis = end_year_lookup,
@@ -256,22 +255,6 @@ read_and_process_and_calc <- function(args_list) {
     log_path = log_path
   )
 
-  exposure_by_technology_and_company <- calculate_exposure_by_technology_and_company(
-    asset_type = asset_type,
-    input_data_list = input_data_list,
-    start_year = start_year,
-    time_horizon = time_horizon_lookup,
-    scenario_to_follow_shock = shock_scenario,
-    log_path = log_path
-  )
-
-  company_technology_value_changes <- company_annual_profits %>%
-    company_technology_asset_value_at_risk(
-      shock_scenario = transition_scenario,
-      div_netprofit_prop_coef = div_netprofit_prop_coef,
-      flat_multiplier = flat_multiplier_lookup
-    )
-
   company_technology_npv <- company_annual_profits %>%
     company_technology_asset_value_at_risk(
       shock_scenario = transition_scenario,
@@ -292,26 +275,6 @@ read_and_process_and_calc <- function(args_list) {
   # TODO: ADO 879 - note which companies produce missing results due to
   # insufficient input information (e.g. NAs for financials or 0 equity value)
 
-  company_expected_loss <- company_expected_loss(
-    data = company_pd_changes_overall,
-    loss_given_default = lgd,
-    exposure_at_default = exposure_by_technology_and_company,
-    port_aum = port_aum
-  )
-
-  # TODO: ADO 879 - note which companies produce missing results due to
-  # insufficient output from overall pd changes or related financial data inputs
-
-  company_pd_changes_annual <- calculate_pd_change_annual(
-    data = company_annual_profits,
-    shock_year = transition_scenario$year_of_shock,
-    end_of_analysis = end_year_lookup,
-    risk_free_interest_rate = risk_free_rate
-  )
-
-  # TODO: ADO 879 - note which companies produce missing results due to
-  # insufficient input information (e.g. NAs for financials or 0 equity value)
-
   company_trajectories <- add_term_to_trajectories(
     annual_profits = company_annual_profits,
     pacta_results = input_data_list$pacta_results
@@ -319,11 +282,6 @@ read_and_process_and_calc <- function(args_list) {
 
   return(
     list(
-      port_aum = port_aum,
-      exposure_by_technology_and_company = exposure_by_technology_and_company,
-      company_technology_value_changes = company_technology_value_changes,
-      company_expected_loss = company_expected_loss,
-      company_pd_changes_annual = company_pd_changes_annual,
       company_pd_changes_overall = company_pd_changes_overall,
       company_trajectories = company_trajectories,
       company_technology_npv = company_technology_npv
