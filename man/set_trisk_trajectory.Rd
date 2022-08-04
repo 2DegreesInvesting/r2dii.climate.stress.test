@@ -20,9 +20,18 @@ set_trisk_trajectory(
 \item{data}{A dataframe that contains the scenario data prepared until the
 step after the baseline trajectories are calculated.}
 
+\item{target_scenario}{Character. A string that indicates which
+of the scenarios included in the analysis should be used to set the
+late & sudden technology trajectories.}
+
 \item{shock_scenario}{A dataframe that contains information about the
 transition scenario, specifically the shock year and, duration of the
 shock and the name of the shock scenario}
+
+\item{target_scenario_aligned}{Character. A string that indicates which
+of the scenarios included in the analysis should be used to set the
+late & sudden technology trajectories in case the company is aligned after
+the forecast period.}
 
 \item{start_year}{Numeric. A numeric vector of length 1 that contains the
 start year of the analysis.}
@@ -34,15 +43,6 @@ end year of the analysis.}
 of years for which forward looking production data is considered.}
 
 \item{log_path}{String holding path to log file.}
-
-\item{scenario_to_follow_ls}{Character. A string that indicates which
-of the scenarios included in the analysis should be used to set the
-late & sudden technology trajectories.}
-
-\item{scenario_to_follow_ls_aligned}{Character. A string that indicates which
-of the scenarios included in the analysis should be used to set the
-late & sudden technology trajectories in case the company is aligned after
-the forecast period.}
 }
 \value{
 data frame

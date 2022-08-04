@@ -277,13 +277,13 @@ set_ls_trajectory <- function(data,
 #' @inheritParams report_company_drops
 #' @param data A dataframe that contains the scenario data prepared until the
 #'   step after the baseline trajectories are calculated.
-#' @param scenario_to_follow_ls Character. A string that indicates which
+#' @param target_scenario Character. A string that indicates which
 #'   of the scenarios included in the analysis should be used to set the
 #'   late & sudden technology trajectories.
 #' @param shock_scenario A dataframe that contains information about the
 #'   transition scenario, specifically the shock year and, duration of the
 #'   shock and the name of the shock scenario
-#' @param scenario_to_follow_ls_aligned Character. A string that indicates which
+#' @param target_scenario_aligned Character. A string that indicates which
 #'   of the scenarios included in the analysis should be used to set the
 #'   late & sudden technology trajectories in case the company is aligned after
 #'   the forecast period.
