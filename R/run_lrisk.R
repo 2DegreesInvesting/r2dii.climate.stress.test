@@ -293,17 +293,8 @@ read_and_process_and_calc_lrisk <- function(args_list) {
     log_path = log_path
   )
 
-  # exposure_by_technology_and_company <- calculate_exposure_by_technology_and_company(
-  #   asset_type = asset_type,
-  #   input_data_list = input_data_list,
-  #   start_year = start_year,
-  #   time_horizon = time_horizon_lookup,
-  #   scenario_to_follow_shock = shock_scenario,
-  #   log_path = log_path
-  # )
-
   cat("-- Calculating market risk. \n")
-browser()
+
   company_technology_value_changes <- company_annual_profits %>%
     company_technology_asset_value_at_risk(
       shock_scenario = litigation_scenario,
@@ -329,16 +320,6 @@ browser()
     )
 
   # TODO: ADO 879 - note which companies produce missing results due to
-  # insufficient input information (e.g. NAs for financials or 0 equity value)
-
-  # company_expected_loss <- company_expected_loss(
-  #   data = company_pd_changes_overall,
-  #   loss_given_default = lgd,
-  #   exposure_at_default = exposure_by_technology_and_company,
-  #   port_aum = port_aum
-  # )
-
-  # TODO: ADO 879 - note which companies produce missing results due to
   # insufficient output from overall pd changes or related financial data inputs
 
   company_pd_changes_annual <- calculate_pd_change_annual(
@@ -351,20 +332,18 @@ browser()
   # TODO: ADO 879 - note which companies produce missing results due to
   # insufficient input information (e.g. NAs for financials or 0 equity value)
 
-  company_trajectories <- add_term_to_trajectories(
-    annual_profits = company_annual_profits,
-    pacta_results = input_data_list$production_data
-  )
+  # company_trajectories <- add_term_to_trajectories(
+  #   annual_profits = company_annual_profits,
+  #   pacta_results = input_data_list$production_data
+  # )
 
   return(
     list(
-      # port_aum = port_aum,
-      # exposure_by_technology_and_company = exposure_by_technology_and_company,
       company_technology_value_changes = company_technology_value_changes,
-      # company_expected_loss = company_expected_loss,
       company_pd_changes_annual = company_pd_changes_annual,
       company_pd_changes_overall = company_pd_changes_overall,
-      company_trajectories = company_trajectories,
+      # TODO: see if this is sufficient to aggregate trajectories
+      company_trajectories = company_annual_profits,
       company_technology_npv = company_technology_npv
     )
   )

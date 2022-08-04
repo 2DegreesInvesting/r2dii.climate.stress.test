@@ -22,8 +22,7 @@ company_technology_asset_value_at_risk <- function(data,
   validate_data_has_expected_cols(
     data = data,
     expected_columns = c(
-      "investor_name", "portfolio_name", "company_name", "year",
-      "scenario_geography", "ald_sector", "technology",
+      "company_name", "year", "scenario_geography", "ald_sector", "technology",
       "discounted_net_profit_ls", "discounted_net_profit_baseline"
     )
   )
@@ -41,8 +40,8 @@ company_technology_asset_value_at_risk <- function(data,
       !is.na(.data$discounted_net_profit_baseline)
     ) %>%
     dplyr::group_by(
-      .data$investor_name, .data$portfolio_name, .data$company_name,
-      .data$ald_sector, .data$technology, .data$scenario_geography
+      .data$company_name, .data$ald_sector, .data$technology,
+      .data$scenario_geography
     ) %>%
     dplyr::summarise(
       total_disc_npv_ls = sum(.data$discounted_net_profit_ls),

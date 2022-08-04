@@ -284,182 +284,184 @@ check_valid_financial_data_values <- function(financial_data, asset_type) {
 wrangle_results <- function(results_list, sensitivity_analysis_vars) {
   sensitivity_analysis_vars <- paste0(sensitivity_analysis_vars, "_arg")
 
-  # value changes -----------------------------------------------------------
-  validate_data_has_expected_cols(
-    data = results_list$company_value_changes,
-    expected_columns = c(
-      "investor_name", "portfolio_name", "company_name", "scenario_geography",
-      "scenario_name", "year_of_shock", "duration_of_shock", "ald_sector",
-      "technology", "asset_portfolio_value",
-      "tech_company_exposure", "VaR_tech_company", "tech_company_value_change",
-      "company_exposure", "VaR_company", "company_value_change",
-      "technology_exposure", "VaR_technology", "technology_value_change",
-      "sector_exposure", "VaR_sector", "sector_value_change",
-      "analysed_sectors_exposure", "VaR_analysed_sectors",
-      "analysed_sectors_value_change", sensitivity_analysis_vars
-    )
-  )
-
-  company_value_changes <- results_list$company_value_changes %>%
-    # ADO 2549 - select instead of relocate so that no surplus columns can sneak in
-    dplyr::select(
-      .data$investor_name, .data$portfolio_name, .data$company_name,
-      .data$scenario_geography, .data$scenario_name, .data$year_of_shock,
-      .data$duration_of_shock, .data$ald_sector, .data$technology,
-      .data$asset_portfolio_value,
-      .data$tech_company_exposure, .data$VaR_tech_company,
-      .data$tech_company_value_change, .data$company_exposure,
-      .data$VaR_company, .data$company_value_change, .data$technology_exposure,
-      .data$VaR_technology, .data$technology_value_change,
-      .data$sector_exposure, .data$VaR_sector, .data$sector_value_change,
-      .data$analysed_sectors_exposure, .data$VaR_analysed_sectors,
-      .data$analysed_sectors_value_change,
-      !!!rlang::syms(sensitivity_analysis_vars)
-    ) %>%
-    dplyr::rename(
-      company_technology_exposure = .data$tech_company_exposure,
-      company_technology_percent_value_change = .data$VaR_tech_company,
-      company_technology_absolute_value_change = .data$tech_company_value_change,
-      company_exposure = .data$company_exposure,
-      company_percent_value_change = .data$VaR_company,
-      company_absolute_value_change = .data$company_value_change,
-      technology_exposure = .data$technology_exposure,
-      technology_percent_value_change = .data$VaR_technology,
-      technology_absolute_value_change = .data$technology_value_change,
-      sector_exposure = .data$sector_exposure,
-      sector_percent_value_change = .data$VaR_sector,
-      sector_absolute_value_change = .data$sector_value_change,
-      analysed_portfolio_exposure = .data$analysed_sectors_exposure,
-      analysed_portfolio_percent_value_change = .data$VaR_analysed_sectors,
-      analysed_portfolio_absolute_value_change = .data$analysed_sectors_value_change
-    )
-
-  portfolio_value_changes <- results_list$company_value_changes %>%
-    # ADO 2549 - actively select all columns that should remain in the portfolio
-    # level results, rather than unselecting some. This avoids extra columns.
-    dplyr::select(
-      .data$investor_name, .data$portfolio_name, .data$scenario_geography,
-      .data$scenario_name, .data$year_of_shock, .data$duration_of_shock,
-      .data$ald_sector, .data$technology,
-      .data$asset_portfolio_value, .data$technology_exposure,
-      .data$VaR_technology, .data$technology_value_change,
-      .data$sector_exposure, .data$VaR_sector, .data$sector_value_change,
-      .data$analysed_sectors_exposure, .data$VaR_analysed_sectors,
-      .data$analysed_sectors_value_change,
-      !!!rlang::syms(sensitivity_analysis_vars)
-    ) %>%
-    # ADO 2549 - all numeric variables should be unique across the CUC variables
-    # running distinct all and the check afterwards ensures this is the case
-    dplyr::distinct_all() %>%
-    dplyr::arrange(.data$year_of_shock, .data$ald_sector, .data$technology) %>%
-    dplyr::rename(
-      technology_exposure = .data$technology_exposure,
-      technology_percent_value_change = .data$VaR_technology,
-      technology_absolute_value_change = .data$technology_value_change,
-      sector_exposure = .data$sector_exposure,
-      sector_percent_value_change = .data$VaR_sector,
-      sector_absolute_value_change = .data$sector_value_change,
-      analysed_portfolio_exposure = .data$analysed_sectors_exposure,
-      analysed_portfolio_percent_value_change = .data$VaR_analysed_sectors,
-      analysed_portfolio_absolute_value_change = .data$analysed_sectors_value_change
-    )
-
-  # expected loss -----------------------------------------------------------
-  company_expected_loss <- results_list$company_expected_loss %>%
-    dplyr::select(
-      .data$scenario_name, .data$scenario_geography, .data$investor_name,
-      .data$portfolio_name, .data$company_name, .data$ald_sector,
-      .data$pd, .data$PD_change, .data$lgd, .data$exposure_at_default,
-      .data$expected_loss_baseline, .data$expected_loss_late_sudden,
-      !!!rlang::syms(sensitivity_analysis_vars)
-    ) %>%
-    dplyr::arrange(
-      .data$scenario_geography, .data$scenario_name, .data$investor_name,
-      .data$portfolio_name, .data$company_name, .data$ald_sector
-    ) %>%
-    dplyr::rename(
-      pd_baseline = .data$pd,
-      pd_change_shock = .data$PD_change,
-      expected_loss_shock = .data$expected_loss_late_sudden
-    )
-
-  # pd changes --------------------------------------------------------------
-  company_pd_changes_annual <- results_list$company_pd_changes_annual %>%
-    dplyr::select(
-      .data$scenario_name, .data$scenario_geography, .data$investor_name,
-      .data$portfolio_name, .data$company_name, .data$ald_sector, .data$year,
-      .data$PD_change, !!!rlang::syms(sensitivity_analysis_vars)
-    ) %>%
-    dplyr::arrange(
-      .data$scenario_geography, .data$scenario_name, .data$investor_name,
-      .data$portfolio_name, .data$company_name, .data$ald_sector, .data$year
-    ) %>%
-    dplyr::rename(
-      pd_change_shock = .data$PD_change
-    )
-
-  portfolio_pd_changes_annual <- results_list$company_pd_changes_annual %>%
-    dplyr::select(
-      .data$scenario_name, .data$scenario_geography, .data$investor_name,
-      .data$portfolio_name, .data$company_name, .data$ald_sector, .data$year,
-      .data$PD_change, .data$PD_change_sector,
-      !!!rlang::syms(sensitivity_analysis_vars)
-    ) %>%
-    dplyr::arrange(
-      .data$scenario_geography, .data$scenario_name, .data$investor_name,
-      .data$portfolio_name, .data$company_name, .data$ald_sector, .data$year
-    ) %>%
-    dplyr::rename(
-      pd_change_shock = .data$PD_change,
-      pd_change_sector_shock = .data$PD_change_sector
-    ) %>%
-    dplyr::distinct_all()
-
-
-  company_pd_changes_overall <- results_list$company_pd_changes_overall %>%
-    dplyr::select(
-      .data$scenario_name, .data$scenario_geography, .data$investor_name,
-      .data$portfolio_name, .data$company_name, .data$ald_sector, .data$term,
-      .data$PD_change, !!!rlang::syms(sensitivity_analysis_vars)
-    ) %>%
-    dplyr::arrange(
-      .data$scenario_geography, .data$scenario_name, .data$investor_name,
-      .data$portfolio_name, .data$company_name, .data$ald_sector, .data$term
-    ) %>%
-    dplyr::rename(
-      pd_change_shock = .data$PD_change
-    )
-
-  portfolio_pd_changes_overall <- results_list$company_pd_changes_overall %>%
-    dplyr::select(
-      .data$scenario_name, .data$scenario_geography, .data$investor_name,
-      .data$portfolio_name, .data$company_name, .data$ald_sector, .data$term,
-      .data$PD_change, .data$PD_change_sector,
-      !!!rlang::syms(sensitivity_analysis_vars)
-    ) %>%
-    dplyr::arrange(
-      .data$scenario_geography, .data$scenario_name, .data$investor_name,
-      .data$portfolio_name, .data$company_name, .data$ald_sector, .data$term
-    ) %>%
-    dplyr::rename(
-      pd_change_shock = .data$PD_change,
-      pd_change_sector_shock = .data$PD_change_sector
-    ) %>%
-    dplyr::distinct_all()
+  # # value changes -----------------------------------------------------------
+  # validate_data_has_expected_cols(
+  #   data = results_list$company_value_changes,
+  #   expected_columns = c(
+  #     "investor_name", "portfolio_name", "company_name", "scenario_geography",
+  #     "scenario_name", "year_of_shock", "duration_of_shock", "ald_sector",
+  #     "technology", "asset_portfolio_value",
+  #     "tech_company_exposure", "VaR_tech_company", "tech_company_value_change",
+  #     "company_exposure", "VaR_company", "company_value_change",
+  #     "technology_exposure", "VaR_technology", "technology_value_change",
+  #     "sector_exposure", "VaR_sector", "sector_value_change",
+  #     "analysed_sectors_exposure", "VaR_analysed_sectors",
+  #     "analysed_sectors_value_change", sensitivity_analysis_vars
+  #   )
+  # )
+  #
+  # company_value_changes <- results_list$company_value_changes %>%
+  #   # ADO 2549 - select instead of relocate so that no surplus columns can sneak in
+  #   dplyr::select(
+  #     .data$investor_name, .data$portfolio_name, .data$company_name,
+  #     .data$scenario_geography, .data$scenario_name, .data$year_of_shock,
+  #     .data$duration_of_shock, .data$ald_sector, .data$technology,
+  #     .data$asset_portfolio_value,
+  #     .data$tech_company_exposure, .data$VaR_tech_company,
+  #     .data$tech_company_value_change, .data$company_exposure,
+  #     .data$VaR_company, .data$company_value_change, .data$technology_exposure,
+  #     .data$VaR_technology, .data$technology_value_change,
+  #     .data$sector_exposure, .data$VaR_sector, .data$sector_value_change,
+  #     .data$analysed_sectors_exposure, .data$VaR_analysed_sectors,
+  #     .data$analysed_sectors_value_change,
+  #     !!!rlang::syms(sensitivity_analysis_vars)
+  #   ) %>%
+  #   dplyr::rename(
+  #     company_technology_exposure = .data$tech_company_exposure,
+  #     company_technology_percent_value_change = .data$VaR_tech_company,
+  #     company_technology_absolute_value_change = .data$tech_company_value_change,
+  #     company_exposure = .data$company_exposure,
+  #     company_percent_value_change = .data$VaR_company,
+  #     company_absolute_value_change = .data$company_value_change,
+  #     technology_exposure = .data$technology_exposure,
+  #     technology_percent_value_change = .data$VaR_technology,
+  #     technology_absolute_value_change = .data$technology_value_change,
+  #     sector_exposure = .data$sector_exposure,
+  #     sector_percent_value_change = .data$VaR_sector,
+  #     sector_absolute_value_change = .data$sector_value_change,
+  #     analysed_portfolio_exposure = .data$analysed_sectors_exposure,
+  #     analysed_portfolio_percent_value_change = .data$VaR_analysed_sectors,
+  #     analysed_portfolio_absolute_value_change = .data$analysed_sectors_value_change
+  #   )
+  #
+  # portfolio_value_changes <- results_list$company_value_changes %>%
+  #   # ADO 2549 - actively select all columns that should remain in the portfolio
+  #   # level results, rather than unselecting some. This avoids extra columns.
+  #   dplyr::select(
+  #     .data$investor_name, .data$portfolio_name, .data$scenario_geography,
+  #     .data$scenario_name, .data$year_of_shock, .data$duration_of_shock,
+  #     .data$ald_sector, .data$technology,
+  #     .data$asset_portfolio_value, .data$technology_exposure,
+  #     .data$VaR_technology, .data$technology_value_change,
+  #     .data$sector_exposure, .data$VaR_sector, .data$sector_value_change,
+  #     .data$analysed_sectors_exposure, .data$VaR_analysed_sectors,
+  #     .data$analysed_sectors_value_change,
+  #     !!!rlang::syms(sensitivity_analysis_vars)
+  #   ) %>%
+  #   # ADO 2549 - all numeric variables should be unique across the CUC variables
+  #   # running distinct all and the check afterwards ensures this is the case
+  #   dplyr::distinct_all() %>%
+  #   dplyr::arrange(.data$year_of_shock, .data$ald_sector, .data$technology) %>%
+  #   dplyr::rename(
+  #     technology_exposure = .data$technology_exposure,
+  #     technology_percent_value_change = .data$VaR_technology,
+  #     technology_absolute_value_change = .data$technology_value_change,
+  #     sector_exposure = .data$sector_exposure,
+  #     sector_percent_value_change = .data$VaR_sector,
+  #     sector_absolute_value_change = .data$sector_value_change,
+  #     analysed_portfolio_exposure = .data$analysed_sectors_exposure,
+  #     analysed_portfolio_percent_value_change = .data$VaR_analysed_sectors,
+  #     analysed_portfolio_absolute_value_change = .data$analysed_sectors_value_change
+  #   )
+  #
+  # # expected loss -----------------------------------------------------------
+  # company_expected_loss <- results_list$company_expected_loss %>%
+  #   dplyr::select(
+  #     .data$scenario_name, .data$scenario_geography, .data$investor_name,
+  #     .data$portfolio_name, .data$company_name, .data$ald_sector,
+  #     .data$pd, .data$PD_change, .data$lgd, .data$exposure_at_default,
+  #     .data$expected_loss_baseline, .data$expected_loss_late_sudden,
+  #     !!!rlang::syms(sensitivity_analysis_vars)
+  #   ) %>%
+  #   dplyr::arrange(
+  #     .data$scenario_geography, .data$scenario_name, .data$investor_name,
+  #     .data$portfolio_name, .data$company_name, .data$ald_sector
+  #   ) %>%
+  #   dplyr::rename(
+  #     pd_baseline = .data$pd,
+  #     pd_change_shock = .data$PD_change,
+  #     expected_loss_shock = .data$expected_loss_late_sudden
+  #   )
+  #
+  # # pd changes --------------------------------------------------------------
+  # company_pd_changes_annual <- results_list$company_pd_changes_annual %>%
+  #   dplyr::select(
+  #     .data$scenario_name, .data$scenario_geography, .data$investor_name,
+  #     .data$portfolio_name, .data$company_name, .data$ald_sector, .data$year,
+  #     .data$PD_change, !!!rlang::syms(sensitivity_analysis_vars)
+  #   ) %>%
+  #   dplyr::arrange(
+  #     .data$scenario_geography, .data$scenario_name, .data$investor_name,
+  #     .data$portfolio_name, .data$company_name, .data$ald_sector, .data$year
+  #   ) %>%
+  #   dplyr::rename(
+  #     pd_change_shock = .data$PD_change
+  #   )
+  #
+  # portfolio_pd_changes_annual <- results_list$company_pd_changes_annual %>%
+  #   dplyr::select(
+  #     .data$scenario_name, .data$scenario_geography, .data$investor_name,
+  #     .data$portfolio_name, .data$company_name, .data$ald_sector, .data$year,
+  #     .data$PD_change, .data$PD_change_sector,
+  #     !!!rlang::syms(sensitivity_analysis_vars)
+  #   ) %>%
+  #   dplyr::arrange(
+  #     .data$scenario_geography, .data$scenario_name, .data$investor_name,
+  #     .data$portfolio_name, .data$company_name, .data$ald_sector, .data$year
+  #   ) %>%
+  #   dplyr::rename(
+  #     pd_change_shock = .data$PD_change,
+  #     pd_change_sector_shock = .data$PD_change_sector
+  #   ) %>%
+  #   dplyr::distinct_all()
+  #
+  #
+  # company_pd_changes_overall <- results_list$company_pd_changes_overall %>%
+  #   dplyr::select(
+  #     .data$scenario_name, .data$scenario_geography, .data$investor_name,
+  #     .data$portfolio_name, .data$company_name, .data$ald_sector, .data$term,
+  #     .data$PD_change, !!!rlang::syms(sensitivity_analysis_vars)
+  #   ) %>%
+  #   dplyr::arrange(
+  #     .data$scenario_geography, .data$scenario_name, .data$investor_name,
+  #     .data$portfolio_name, .data$company_name, .data$ald_sector, .data$term
+  #   ) %>%
+  #   dplyr::rename(
+  #     pd_change_shock = .data$PD_change
+  #   )
+  #
+  # portfolio_pd_changes_overall <- results_list$company_pd_changes_overall %>%
+  #   dplyr::select(
+  #     .data$scenario_name, .data$scenario_geography, .data$investor_name,
+  #     .data$portfolio_name, .data$company_name, .data$ald_sector, .data$term,
+  #     .data$PD_change, .data$PD_change_sector,
+  #     !!!rlang::syms(sensitivity_analysis_vars)
+  #   ) %>%
+  #   dplyr::arrange(
+  #     .data$scenario_geography, .data$scenario_name, .data$investor_name,
+  #     .data$portfolio_name, .data$company_name, .data$ald_sector, .data$term
+  #   ) %>%
+  #   dplyr::rename(
+  #     pd_change_shock = .data$PD_change,
+  #     pd_change_sector_shock = .data$PD_change_sector
+  #   ) %>%
+  #   dplyr::distinct_all()
 
   # company trajectories ----------------------------------------------------
   company_trajectories <- results_list$company_trajectories %>%
     dplyr::select(
-      .data$investor_name, .data$portfolio_name, .data$scenario_name,
-      .data$company_name, .data$year, .data$scenario_geography, .data$ald_sector,
-      .data$technology, .data$plan_tech_prod, .data$phase_out, .data$baseline,
-      .data$scen_to_follow_aligned, .data$late_sudden, .data$company_id, .data$pd,
-      .data$net_profit_margin, .data$debt_equity_ratio, .data$volatility,
-      .data$Baseline_price, .data$late_sudden_price, .data$net_profits_baseline,
-      .data$net_profits_ls, .data$discounted_net_profit_baseline,
-      .data$discounted_net_profit_ls, !!!rlang::syms(sensitivity_analysis_vars)
+      .data$scenario_name, .data$company_name, .data$year,
+      .data$scenario_geography, .data$ald_sector, .data$technology,
+      .data$plan_tech_prod, .data$phase_out, .data$baseline,
+      .data$scen_to_follow_aligned, .data$late_sudden, .data$id,
+      .data$pd, .data$net_profit_margin, .data$debt_equity_ratio,
+      .data$volatility, .data$Baseline_price, .data$late_sudden_price,
+      .data$net_profits_baseline, .data$net_profits_ls,
+      .data$discounted_net_profit_baseline, .data$discounted_net_profit_ls,
+      !!!rlang::syms(sensitivity_analysis_vars)
     ) %>%
     dplyr::rename(
+      company_id = .data$id,
       production_plan_company_technology = .data$plan_tech_prod,
       # TODO: add once ADO3530 is merged
       # direction_of_target = .data$direction,
@@ -475,13 +477,13 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
     )
 
   return(list(
-    company_value_changes = company_value_changes,
-    portfolio_value_changes = portfolio_value_changes,
-    company_expected_loss = company_expected_loss,
-    company_pd_changes_annual = company_pd_changes_annual,
-    portfolio_pd_changes_annual = portfolio_pd_changes_annual,
-    company_pd_changes_overall = company_pd_changes_overall,
-    portfolio_pd_changes_overall = portfolio_pd_changes_overall,
+    # company_value_changes = company_value_changes,
+    # portfolio_value_changes = portfolio_value_changes,
+    # company_expected_loss = company_expected_loss,
+    # company_pd_changes_annual = company_pd_changes_annual,
+    # portfolio_pd_changes_annual = portfolio_pd_changes_annual,
+    # company_pd_changes_overall = company_pd_changes_overall,
+    # portfolio_pd_changes_overall = portfolio_pd_changes_overall,
     company_trajectories = company_trajectories,
     crispy_output = results_list$crispy_output
   ))
@@ -498,88 +500,88 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
 check_results <- function(wrangled_results_list, sensitivity_analysis_vars) {
   sensitivity_analysis_vars <- paste0(sensitivity_analysis_vars, "_arg")
 
-  # value changes -----------------------------------------------------------
-  wrangled_results_list$company_value_changes %>%
-    report_missings(
-      name_data = "Value changes - Company level"
-    ) %>%
-    report_all_duplicate_kinds(
-      composite_unique_cols = c(
-        "investor_name", "portfolio_name", "company_name", "scenario_geography",
-        "scenario_name", "year_of_shock", "duration_of_shock", "ald_sector", "technology",
-        sensitivity_analysis_vars
-      )
-    )
+  # # value changes -----------------------------------------------------------
+  # wrangled_results_list$company_value_changes %>%
+  #   report_missings(
+  #     name_data = "Value changes - Company level"
+  #   ) %>%
+  #   report_all_duplicate_kinds(
+  #     composite_unique_cols = c(
+  #       "investor_name", "portfolio_name", "company_name", "scenario_geography",
+  #       "scenario_name", "year_of_shock", "duration_of_shock", "ald_sector", "technology",
+  #       sensitivity_analysis_vars
+  #     )
+  #   )
+  #
+  # wrangled_results_list$portfolio_value_changes %>%
+  #   report_missings(
+  #     name_data = "Value changes - Portfolios level"
+  #   ) %>%
+  #   report_all_duplicate_kinds(
+  #     composite_unique_cols = c(
+  #       "investor_name", "portfolio_name", "scenario_geography", "scenario_name",
+  #       "year_of_shock", "duration_of_shock", "ald_sector", "technology",
+  #       sensitivity_analysis_vars
+  #     )
+  #   )
 
-  wrangled_results_list$portfolio_value_changes %>%
-    report_missings(
-      name_data = "Value changes - Portfolios level"
-    ) %>%
-    report_all_duplicate_kinds(
-      composite_unique_cols = c(
-        "investor_name", "portfolio_name", "scenario_geography", "scenario_name",
-        "year_of_shock", "duration_of_shock", "ald_sector", "technology",
-        sensitivity_analysis_vars
-      )
-    )
+  # # expected loss -----------------------------------------------------------
+  # wrangled_results_list$company_expected_loss %>%
+  #   report_missings(
+  #     name_data = "Expected loss - Company level"
+  #   ) %>%
+  #   report_all_duplicate_kinds(
+  #     composite_unique_cols = c(
+  #       "scenario_name", "scenario_geography", "investor_name", "portfolio_name",
+  #       "company_name", "ald_sector",
+  #       sensitivity_analysis_vars
+  #     )
+  #   )
 
-  # expected loss -----------------------------------------------------------
-  wrangled_results_list$company_expected_loss %>%
-    report_missings(
-      name_data = "Expected loss - Company level"
-    ) %>%
-    report_all_duplicate_kinds(
-      composite_unique_cols = c(
-        "scenario_name", "scenario_geography", "investor_name", "portfolio_name",
-        "company_name", "ald_sector",
-        sensitivity_analysis_vars
-      )
-    )
-
-  # pd changes --------------------------------------------------------------
-  wrangled_results_list$company_pd_changes_annual %>%
-    report_missings(
-      name_data = "Annual PD changes - Company level"
-    ) %>%
-    report_all_duplicate_kinds(
-      composite_unique_cols = c(
-        "scenario_name", "scenario_geography", "investor_name", "portfolio_name",
-        "ald_sector", "year", "company_name", sensitivity_analysis_vars
-      )
-    )
-
-  wrangled_results_list$portfolio_pd_changes_annual %>%
-    report_missings(
-      name_data = "Annual PD changes - Portfolio level"
-    ) %>%
-    report_all_duplicate_kinds(
-      composite_unique_cols = c(
-        "scenario_name", "scenario_geography", "investor_name", "portfolio_name",
-        "ald_sector", "year", "company_name", sensitivity_analysis_vars
-      )
-    )
-
-  wrangled_results_list$company_pd_changes_overall %>%
-    report_missings(
-      name_data = "Overall PD changes - Company level"
-    ) %>%
-    report_all_duplicate_kinds(
-      composite_unique_cols = c(
-        "scenario_name", "scenario_geography", "investor_name", "portfolio_name",
-        "ald_sector", "term", "company_name", sensitivity_analysis_vars
-      )
-    )
-
-  wrangled_results_list$portfolio_pd_changes_overall %>%
-    report_missings(
-      name_data = "Overall PD changes - Portfolio level"
-    ) %>%
-    report_all_duplicate_kinds(
-      composite_unique_cols = c(
-        "scenario_name", "scenario_geography", "investor_name", "portfolio_name",
-        "ald_sector", "term", "company_name", sensitivity_analysis_vars
-      )
-    )
+  # # pd changes --------------------------------------------------------------
+  # wrangled_results_list$company_pd_changes_annual %>%
+  #   report_missings(
+  #     name_data = "Annual PD changes - Company level"
+  #   ) %>%
+  #   report_all_duplicate_kinds(
+  #     composite_unique_cols = c(
+  #       "scenario_name", "scenario_geography", "investor_name", "portfolio_name",
+  #       "ald_sector", "year", "company_name", sensitivity_analysis_vars
+  #     )
+  #   )
+  #
+  # wrangled_results_list$portfolio_pd_changes_annual %>%
+  #   report_missings(
+  #     name_data = "Annual PD changes - Portfolio level"
+  #   ) %>%
+  #   report_all_duplicate_kinds(
+  #     composite_unique_cols = c(
+  #       "scenario_name", "scenario_geography", "investor_name", "portfolio_name",
+  #       "ald_sector", "year", "company_name", sensitivity_analysis_vars
+  #     )
+  #   )
+  #
+  # wrangled_results_list$company_pd_changes_overall %>%
+  #   report_missings(
+  #     name_data = "Overall PD changes - Company level"
+  #   ) %>%
+  #   report_all_duplicate_kinds(
+  #     composite_unique_cols = c(
+  #       "scenario_name", "scenario_geography", "investor_name", "portfolio_name",
+  #       "ald_sector", "term", "company_name", sensitivity_analysis_vars
+  #     )
+  #   )
+  #
+  # wrangled_results_list$portfolio_pd_changes_overall %>%
+  #   report_missings(
+  #     name_data = "Overall PD changes - Portfolio level"
+  #   ) %>%
+  #   report_all_duplicate_kinds(
+  #     composite_unique_cols = c(
+  #       "scenario_name", "scenario_geography", "investor_name", "portfolio_name",
+  #       "ald_sector", "term", "company_name", sensitivity_analysis_vars
+  #     )
+  #   )
 
   # company trajectories ----------------------------------------------------
   wrangled_results_list$company_trajectories %>%
@@ -591,8 +593,8 @@ check_results <- function(wrangled_results_list, sensitivity_analysis_vars) {
     check_expected_missings() %>%
     report_all_duplicate_kinds(
       composite_unique_cols = c(
-        "investor_name", "portfolio_name", "company_name", "year",
-        "scenario_geography", "ald_sector", "technology", sensitivity_analysis_vars
+        "company_name", "year", "scenario_geography", "ald_sector", "technology",
+        sensitivity_analysis_vars
       )
     ) %>%
     # not considering those two variables when checking for missings because
@@ -610,9 +612,9 @@ check_results <- function(wrangled_results_list, sensitivity_analysis_vars) {
     report_all_duplicate_kinds(
       composite_unique_cols = c(
         "company_name", "sector", "business_unit", "roll_up_type",
-        "scenario_geography", "calculation_type", "baseline_scenario",
-        "shock_scenario", "lgd", "risk_free_rate", "discount_rate",
-        "dividend_rate", "growth_rate", "shock_year", "term"
+        "scenario_geography", "baseline_scenario", "shock_scenario", "lgd",
+        "risk_free_rate", "discount_rate", "dividend_rate", "growth_rate",
+        "shock_year", "term"
       )
     )
 
@@ -666,8 +668,8 @@ cap_terms <- function(data) {
   return(data)
 }
 
-add_term_to_trajectories <- function(annual_profits, pacta_results) {
-  distinct_company_terms <- pacta_results %>%
+add_term_to_trajectories <- function(annual_profits, production_data) {
+  distinct_company_terms <- production_data %>%
     dplyr::select(company_name, term) %>%
     dplyr::distinct_all()
 

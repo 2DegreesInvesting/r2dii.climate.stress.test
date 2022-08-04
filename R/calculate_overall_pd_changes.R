@@ -25,9 +25,8 @@ calculate_pd_change_overall <- function(data,
   validate_data_has_expected_cols(
     data = data,
     expected_columns = c(
-      "investor_name", "portfolio_name", "id", "company_name", "year",
-      "scenario_geography", "ald_sector", "technology",
-      "scenario_name", "discounted_net_profit_ls",
+      "id", "company_name", "year", "scenario_geography", "ald_sector",
+      "technology", "scenario_name", "discounted_net_profit_ls",
       "discounted_net_profit_baseline", "debt_equity_ratio", "volatility"
     )
   )
@@ -35,8 +34,7 @@ calculate_pd_change_overall <- function(data,
   data <- data %>%
     dplyr::filter(.data$year >= .env$shock_year) %>%
     dplyr::group_by(
-      .data$investor_name, .data$portfolio_name, .data$id, .data$company_name,
-      .data$ald_sector, .data$scenario_name,
+      .data$id, .data$company_name, .data$ald_sector, .data$scenario_name,
       .data$scenario_geography, .data$debt_equity_ratio, .data$volatility
     ) %>%
     dplyr::summarise(
@@ -46,10 +44,9 @@ calculate_pd_change_overall <- function(data,
     ) %>%
     dplyr::ungroup() %>%
     dplyr::select(
-      .data$investor_name, .data$portfolio_name, .data$scenario_name,
-      .data$scenario_geography, .data$id, .data$company_name, .data$ald_sector,
-      .data$equity_0_baseline, .data$equity_0_late_sudden,
-      .data$debt_equity_ratio, .data$volatility
+      .data$scenario_name, .data$scenario_geography, .data$id,
+      .data$company_name, .data$ald_sector, .data$equity_0_baseline,
+      .data$equity_0_late_sudden, .data$debt_equity_ratio, .data$volatility
     )
 
   data <- data %>%

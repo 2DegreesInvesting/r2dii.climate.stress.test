@@ -29,9 +29,8 @@ calculate_pd_change_annual <- function(data,
   validate_data_has_expected_cols(
     data = data,
     expected_columns = c(
-      "investor_name", "portfolio_name", "id", "company_name", "year",
-      "scenario_geography", "ald_sector", "technology",
-      "scenario_name", "discounted_net_profit_ls",
+      "id", "company_name", "year", "scenario_geography", "ald_sector",
+      "technology", "scenario_name", "discounted_net_profit_ls",
       "discounted_net_profit_baseline", "debt_equity_ratio", "volatility"
     )
   )
@@ -40,9 +39,9 @@ calculate_pd_change_annual <- function(data,
     dplyr::filter(.data$year >= .env$shock_year) %>%
     # ADO 2313 - summarise by company, drop technology
     dplyr::group_by(
-      .data$scenario_name, .data$scenario_geography, .data$investor_name,
-      .data$portfolio_name, .data$id, .data$company_name, .data$ald_sector,
-      .data$year, .data$debt_equity_ratio, .data$volatility
+      .data$scenario_name, .data$scenario_geography, .data$id,
+      .data$company_name, .data$ald_sector, .data$year, .data$debt_equity_ratio,
+      .data$volatility
     ) %>%
     dplyr::summarise(
       discounted_net_profit_baseline = sum(.data$discounted_net_profit_baseline, na.rm = TRUE),
@@ -52,13 +51,13 @@ calculate_pd_change_annual <- function(data,
     dplyr::ungroup() %>%
     # ADO 2313 -  cumulative sum by year to obtain inputs for annual PD calculations
     dplyr::arrange(
-      .data$scenario_name, .data$scenario_geography, .data$investor_name,
-      .data$portfolio_name, .data$id, .data$company_name, .data$ald_sector,
-      .data$year, .data$debt_equity_ratio, .data$volatility
+      .data$scenario_name, .data$scenario_geography, .data$id,
+      .data$company_name, .data$ald_sector, .data$year, .data$debt_equity_ratio,
+      .data$volatility
     ) %>%
     dplyr::group_by(
-      .data$scenario_name, .data$scenario_geography, .data$investor_name,
-      .data$portfolio_name, .data$id, .data$company_name, .data$ald_sector,
+      .data$scenario_name, .data$scenario_geography, .data$id,
+      .data$company_name, .data$ald_sector,
       # TODO: clarify the appropriate summation for annual PD calculations
       # grouping by year effectively means the cumsum does nothing, so the
       # intent should be revisited
@@ -70,10 +69,9 @@ calculate_pd_change_annual <- function(data,
     ) %>%
     dplyr::ungroup() %>%
     dplyr::select(
-      .data$investor_name, .data$portfolio_name, .data$scenario_name,
-      .data$scenario_geography, .data$id, .data$company_name, .data$ald_sector,
-      .data$year, .data$equity_t_baseline, .data$equity_t_late_sudden,
-      .data$debt_equity_ratio, .data$volatility
+      .data$scenario_name, .data$scenario_geography, .data$id,
+      .data$company_name, .data$ald_sector, .data$year, .data$equity_t_baseline,
+      .data$equity_t_late_sudden, .data$debt_equity_ratio, .data$volatility
     )
 
   data <- data %>%
