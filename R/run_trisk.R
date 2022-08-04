@@ -216,7 +216,6 @@ read_and_process_and_calc <- function(args_list) {
   input_data_list <- list(
     pacta_results = processed$pacta_results,
     capacity_factors_power = processed$capacity_factors_power,
-    sector_exposures = processed$sector_exposures,
     scenario_data = processed$scenario_data,
     df_price = processed$df_price,
     financial_data = processed$financial_data
