@@ -73,9 +73,6 @@
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/calculate_annual_profits.html</loc>
   </url>
   <url>
-    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/calculate_aum.html</loc>
-  </url>
-  <url>
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/calculate_exposure_by_technology_and_company.html</loc>
   </url>
   <url>
@@ -229,9 +226,6 @@
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/read_scenario_data.html</loc>
   </url>
   <url>
-    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/read_sector_exposures.html</loc>
-  </url>
-  <url>
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/read_transition_scenarios.html</loc>
   </url>
   <url>
@@ -320,9 +314,6 @@
   </url>
   <url>
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/wrangle_and_check_pacta_results.html</loc>
-  </url>
-  <url>
-    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/wrangle_and_check_sector_exposures.html</loc>
   </url>
   <url>
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/wrangle_results.html</loc>
