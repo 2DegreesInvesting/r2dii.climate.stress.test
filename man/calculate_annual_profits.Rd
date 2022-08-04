@@ -39,5 +39,5 @@ beyond the \code{end_year} in the DCF.}
 A tibble holding annual profits
 }
 \description{
-Wrapper function to calculate annual profits.
+Wrapper function to calculate discounted annual profits and terminal value.
 }

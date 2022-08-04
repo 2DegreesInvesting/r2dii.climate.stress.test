@@ -148,7 +148,7 @@ calculate_lrisk_trajectory <- function(input_data_list,
 
 #' Calculate annual profits
 #'
-#' Wrapper function to calculate annual profits.
+#' Wrapper function to calculate discounted annual profits and terminal value.
 #'
 #' @inheritParams validate_input_values
 #' @inheritParams report_company_drops
@@ -171,13 +171,8 @@ calculate_annual_profits <- function(data,
                                      discount_rate,
                                      growth_rate,
                                      log_path) {
-  annual_profits <- data %>%
-    calculate_net_profits() %>%
-    dcf_model_techlevel(discount_rate = discount_rate) %>%
-    # TODO: ADO 879 - note rows with zero profits/NPVs will produce NaN in the Merton model
-    dplyr::filter(!is.na(company_id))
-
-  annual_profits <- annual_profits %>%
+  data <- data %>%
+    dividend_discount_model(discount_rate = discount_rate) %>%
     calculate_terminal_value(
       end_year = end_year,
       growth_rate = growth_rate,
@@ -186,7 +181,49 @@ calculate_annual_profits <- function(data,
       shock_scenario = shock_scenario
     )
 
-  return(annual_profits)
+  return(data)
+}
+
+#' Calculate annual profits after payout of settlement in lrisk
+#'
+#' @param data data frame containing the full trajectory company data
+#' @param scc Numeric. Social cost of carbon per excess ton of CO2 emitted. This
+#'   is the price for each surplus ton of CO2 that goes into the calculation of
+#'   the carbon liability of a company.
+#' @param exp_share_damages_paid Numeric. Ratio that defines the expected share
+#'   of the calculated social cost of carbon that is considered in the liability.
+#' @param settlement_factor Catch all factor (ratio) that can be used to adjust
+#'   the expected payout of the settlement due to further data gaps. Set to 1 by
+#'   default.
+#' @param shock_year Numeric, year of the litigation event
+#'
+#' @return A tibble holding annual profits
+subtract_settlement <- function(data,
+                                scc,
+                                exp_share_damages_paid,
+                                settlement_factor,
+                                shock_year) {
+  # TODO: validate this function in detail
+  data <- data %>%
+    dplyr::mutate(
+      scc_liability =
+        .data$overshoot_emissions * .env$scc *
+        .env$exp_share_damages_paid
+    ) %>%
+    dplyr::group_by(.data$company_name, .data$ald_sector, .data$technology) %>%
+    dplyr::mutate(
+      settlement = sum(.data$scc_liability, na.rm = TRUE) * .env$settlement_factor
+    ) %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(
+      net_profits_ls = dplyr::if_else(
+        year == .env$shock_year,
+        .data$net_profits_ls - .data$settlement,
+        .data$net_profits_ls
+      )
+    )
+
+  return(data)
 }
 
 #' Calculate exposure_by_technology_and_company
@@ -300,8 +337,7 @@ calculate_terminal_value <- function(data,
   data <- data %>%
     dplyr::bind_rows(terminal_value) %>%
     dplyr::arrange(
-      .data$investor_name, .data$portfolio_name, .data$id,
-      .data$scenario_geography, .data$company_name, .data$ald_sector,
+      .data$id, .data$scenario_geography, .data$company_name, .data$ald_sector,
       .data$technology, .data$year
     )
 

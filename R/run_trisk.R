@@ -253,14 +253,13 @@ read_and_process_and_calc <- function(args_list) {
   )
 
   cat("-- Calculating net profits. \n")
-browser()
 
   # calc net profits
+  company_net_profits <- calculate_net_profits(input_data_list$full_trajectory)
 
   # calc discounted net profits
-
-company_annual_profits <- calculate_annual_profits(
-    data = input_data_list$full_trajectory,
+  company_annual_profits <- calculate_annual_profits(
+    data = company_net_profits,
     baseline_scenario = baseline_scenario,
     shock_scenario = shock_scenario,
     end_year = end_year_lookup,
@@ -279,7 +278,7 @@ company_annual_profits <- calculate_annual_profits(
   # )
 
   cat("-- Calculating market risk. \n")
-
+browser()
   company_technology_value_changes <- company_annual_profits %>%
     company_technology_asset_value_at_risk(
       shock_scenario = transition_scenario,

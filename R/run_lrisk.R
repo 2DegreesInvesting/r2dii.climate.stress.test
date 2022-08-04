@@ -254,14 +254,9 @@ read_and_process_and_calc_lrisk <- function(args_list) {
     scc = scc,
     exp_share_damages_paid = exp_share_damages_paid
   )
-browser()
+
   cat("-- Calculating production trajectory under trisk shock")
 
-  # calc net profits
-
-  # subtract lrisk settlement from profits
-
-  # calc discounted net profits
   input_data_list$full_trajectory <- calculate_lrisk_trajectory(
     input_data_list = input_data_list,
     baseline_scenario = baseline_scenario,
@@ -275,42 +270,28 @@ browser()
 
   cat("-- Calculating net profits. \n")
 
-  annual_profits <- annual_profits %>%
-    calculate_net_profits()
+  # calc net profits
+  company_net_profits <- calculate_net_profits(input_data_list$full_trajectory)
 
-  # TODO: validate this section in detail
-  annual_profits <- annual_profits %>%
-    dplyr::mutate(
-      scc_liability =
-        .data$overshoot_emissions * litigation_scenario$scc *
-        litigation_scenario$exp_share_damages_paid
-    ) %>%
-    dplyr::group_by(company_name, ald_sector, technology) %>%
-    dplyr::mutate(
-      settlement = sum(.data$scc_liability, na.rm = TRUE) * settlement_factor
-    ) %>%
-    dplyr::ungroup() %>%
-    dplyr::mutate(
-      net_profits_ls = dplyr::if_else(
-        year == litigation_scenario$year_of_shock,
-        .data$net_profits_ls - .data$settlement,
-        .data$net_profits_ls
-      )
+  # subtract lrisk settlement from profits
+  company_net_profits <- company_net_profits %>%
+    subtract_settlement(
+      scc = scc,
+      exp_share_damages_paid = exp_share_damages_paid,
+      settlement_factor = settlement_factor,
+      shock_year = shock_year
     )
 
-  annual_profits <- annual_profits %>%
-    dcf_model_techlevel(discount_rate = discount_rate) %>%
-    # TODO: ADO 879 - note rows with zero profits/NPVs will produce NaN in the Merton model
-    dplyr::filter(!is.na(company_id))
-
-  company_annual_profits <- annual_profits %>%
-    calculate_terminal_value(
-      end_year = end_year_lookup,
-      growth_rate = growth_rate,
-      discount_rate = discount_rate,
-      baseline_scenario = baseline_scenario,
-      shock_scenario = shock_scenario
-    )
+  # calc discounted net profits
+  company_annual_profits <- calculate_annual_profits(
+    data = company_net_profits,
+    baseline_scenario = baseline_scenario,
+    shock_scenario = shock_scenario,
+    end_year = end_year_lookup,
+    discount_rate = discount_rate,
+    growth_rate = growth_rate,
+    log_path = log_path
+  )
 
   # exposure_by_technology_and_company <- calculate_exposure_by_technology_and_company(
   #   asset_type = asset_type,
@@ -322,7 +303,7 @@ browser()
   # )
 
   cat("-- Calculating market risk. \n")
-
+browser()
   company_technology_value_changes <- company_annual_profits %>%
     company_technology_asset_value_at_risk(
       shock_scenario = litigation_scenario,
