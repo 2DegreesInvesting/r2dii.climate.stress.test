@@ -22,7 +22,6 @@ Other import functions:
 \code{\link{read_financial_data}()},
 \code{\link{read_pacta_results_wt}()},
 \code{\link{read_pacta_results}()},
-\code{\link{read_production_data}()},
 \code{\link{read_transition_scenarios}()}
 }
 \concept{import functions}
