@@ -1,12 +1,3 @@
-st_read_specific <- function(dir, asset_type, use_company_terms) {
-  out <- list(
-    pacta_results = read_pacta_results(pacta_results_file(dir, asset_type)),
-    company_terms = read_company_terms(company_terms_file(dir), use_company_terms)
-  )
-
-  return(out)
-}
-
 st_read_agnostic <- function(dir, start_year, sectors) {
 
   # capacity_factors are only needed for power sector
