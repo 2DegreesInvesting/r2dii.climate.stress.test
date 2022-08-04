@@ -417,23 +417,6 @@ remove_high_carbon_tech_with_missing_production <- function(data,
 #' Process data of type indicated by function name
 #'
 #' @inheritParams process_pacta_results
-#' @inheritParams run_trisk
-#'
-#' @return A tibble of data as indicated by function name.
-#' @noRd
-process_sector_exposures <- function(data, asset_type) {
-  data_processed <- data %>%
-    wrangle_and_check_sector_exposures(asset_type = asset_type) %>%
-    stop_if_empty(data_name = "Sector Exposures") %>%
-    report_all_duplicate_kinds(composite_unique_cols = cuc_sector_exposures) %>%
-    report_missings(name_data = "sector exposures", throw_error = TRUE)
-
-  return(data_processed)
-}
-
-#' Process data of type indicated by function name
-#'
-#' @inheritParams process_pacta_results
 #'
 #' @return A tibble of data as indicated by function name.
 #' @noRd
@@ -619,11 +602,6 @@ st_process <- function(data, asset_type, fallback_term,
   start_year <- get_start_year(data)
   scenarios_filter <- c(baseline_scenario, shock_scenario)
 
-  sector_exposures <- process_sector_exposures(
-    data$sector_exposures,
-    asset_type = asset_type
-  )
-
   df_price <- process_price_data(
     data$df_price,
     technologies = technologies,
@@ -691,7 +669,6 @@ st_process <- function(data, asset_type, fallback_term,
 
   out <- list(
     pacta_results = pacta_results,
-    sector_exposures = sector_exposures,
     capacity_factors_power = capacity_factors_power,
     df_price = df_price,
     scenario_data = scenario_data,
