@@ -2,18 +2,16 @@
 % Please edit documentation in R/read_production_data.R
 \name{read_production_data}
 \alias{read_production_data}
-\title{Read in company production data processed from AR PAMS data set that contains
-information on production values and emission factors of companies}
+\title{Read in AR PAMS production data.}
 \usage{
 read_production_data(path = NULL)
 }
 \arguments{
 \item{path}{A string that points to the location of the file containing the
-company production data.}
+AR PAMS dataset}
 }
 \description{
-Read in company production data processed from AR PAMS data set that contains
-information on production values and emission factors of companies
+Read in AR PAMS production data.
 }
 \seealso{
 Other import functions: 
@@ -22,7 +20,6 @@ Other import functions:
 \code{\link{read_financial_data}()},
 \code{\link{read_ngfs_carbon_tax}()},
 \code{\link{read_pacta_results_wt}()},
-\code{\link{read_pacta_results}()},
 \code{\link{read_transition_scenarios}()}
 }
 \concept{import functions}

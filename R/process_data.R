@@ -417,23 +417,6 @@ remove_high_carbon_tech_with_missing_production <- function(data,
 #' Process data of type indicated by function name
 #'
 #' @inheritParams process_pacta_results
-#' @inheritParams run_trisk
-#'
-#' @return A tibble of data as indicated by function name.
-#' @noRd
-process_sector_exposures <- function(data, asset_type) {
-  data_processed <- data %>%
-    wrangle_and_check_sector_exposures(asset_type = asset_type) %>%
-    stop_if_empty(data_name = "Sector Exposures") %>%
-    report_all_duplicate_kinds(composite_unique_cols = cuc_sector_exposures) %>%
-    report_missings(name_data = "sector exposures", throw_error = TRUE)
-
-  return(data_processed)
-}
-
-#' Process data of type indicated by function name
-#'
-#' @inheritParams process_pacta_results
 #'
 #' @return A tibble of data as indicated by function name.
 #' @noRd
@@ -492,7 +475,6 @@ process_price_data <- function(data, technologies, sectors, start_year, end_year
 
   # adding dummy unit price data for automotive data
   if ("Automotive" %in% sectors) {
-
     auto_tech <- p4i_p4b_sector_technology_lookup %>%
       dplyr::filter(.data$sector_p4i == "Automotive") %>%
       dplyr::pull(.data$technology_p4i)

@@ -5,11 +5,6 @@ pacta_results_file <- function(dir, asset_type) {
   return(out)
 }
 
-sector_exposures_file <- function(dir) {
-  out <- file.path(dir, "overview_portfolio.rda")
-  return(out)
-}
-
 capacity_factor_file <- function(dir) {
   out <- file.path(dir, "prewrangled_capacity_factors.csv")
   return(out)

@@ -446,7 +446,6 @@ get_start_year <- function(data) {
 #' @return A list with entries sectors and technologies
 #' @noRd
 infer_sectors_and_technologies <- function(baseline_scenario, shock_scenario, scenario_geography) {
-
   sectors_baseline <- scenario_geography_x_ald_sector %>%
     dplyr::filter(.data$scenario == !!baseline_scenario & .data$scenario_geography == !!scenario_geography) %>%
     dplyr::pull(.data$ald_sector)

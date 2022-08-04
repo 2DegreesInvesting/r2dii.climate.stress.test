@@ -85,7 +85,6 @@ cuc_pacta_results <- c(
   "year", "equity_market", "ald_sector", "technology", "scenario", "allocation",
   "scenario_geography", "company_name", "id", "investor_name", "portfolio_name"
 )
-cuc_sector_exposures <- c("financial_sector", "investor_name", "portfolio_name")
 
 cuc_capacity_factors_power <- c("scenario", "scenario_geography", "technology", "year")
 cuc_price_data <- c("year", "ald_sector", "technology", "scenario")
