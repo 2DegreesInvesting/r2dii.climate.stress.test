@@ -7,8 +7,7 @@ test_that("function detects values out of range", {
   )
 
   expect_error(check_valid_financial_data_values(
-    financial_data = fin_data,
-    asset_type = "equity"
+    financial_data = fin_data
   ), "pd detected")
 })
 
