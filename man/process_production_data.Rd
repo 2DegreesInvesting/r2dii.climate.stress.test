@@ -12,7 +12,6 @@ process_production_data(
   scenario_geography_filter,
   sectors,
   technologies,
-  asset_type,
   log_path
 )
 }
@@ -31,9 +30,6 @@ indicates which geographic scenario to apply in the analysis.}
 \item{sectors}{Character vector, holding considered sectors.}
 
 \item{technologies}{Character vector, holding considered technologies.}
-
-\item{asset_type}{String holding asset_type. For accepted values compare
-\code{stress_test_arguments}.}
 
 \item{log_path}{String holding path to log file.}
 }

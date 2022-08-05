@@ -20,9 +20,6 @@ prod_nesting_vars_lookup <- c(
   "ald_sector", "technology", "scenario_geography", "company_name"
 )
 
-
-asset_types_lookup <- c("equity", "bonds", "loans")
-
 calculation_level_lookup <- "company"
 
 end_year_lookup <- 2040

@@ -37,17 +37,9 @@ aggregate_results <- function(results_list, sensitivity_analysis_vars, iter_var)
 
   crispy_output <- crispy_output %>%
     dplyr::mutate(roll_up_type = "equity_ownership") %>%
-    # dplyr::mutate(
-      # roll_up_type = dplyr::if_else(
-      #   .data$asset_type_arg == "bonds",
-      #   "financial_control",
-      #   "equity_ownership"
-      # )
-    # ) %>%
     dplyr::rename(
       sector = .data$ald_sector,
       business_unit = .data$technology,
-      # calculation_type = .data$asset_type_arg,
       baseline_scenario = .data$baseline_scenario_arg,
       shock_scenario = .data$shock_scenario_arg,
       lgd = .data$lgd_arg,
@@ -66,12 +58,12 @@ aggregate_results <- function(results_list, sensitivity_analysis_vars, iter_var)
     ) %>%
     dplyr::select(
       .data$company_name, .data$sector, .data$business_unit,
-      .data$roll_up_type, .data$scenario_geography, #.data$calculation_type,
-      .data$baseline_scenario, .data$shock_scenario, .data$lgd,
-      .data$risk_free_rate, .data$discount_rate, .data$dividend_rate,
-      .data$growth_rate, .data$shock_year, .data$net_present_value_baseline,
-      .data$net_present_value_shock, .data$net_present_value_difference,
-      .data$term, .data$pd_baseline, .data$pd_shock, .data$pd_difference
+      .data$roll_up_type, .data$scenario_geography,  .data$baseline_scenario,
+      .data$shock_scenario, .data$lgd, .data$risk_free_rate, .data$discount_rate,
+      .data$dividend_rate, .data$growth_rate, .data$shock_year,
+      .data$net_present_value_baseline, .data$net_present_value_shock,
+      .data$net_present_value_difference, .data$term, .data$pd_baseline,
+      .data$pd_shock, .data$pd_difference
     )
 
   return(list(

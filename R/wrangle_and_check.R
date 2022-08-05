@@ -23,12 +23,9 @@ wrangle_and_check_pacta_results <- function(pacta_results, start_year, time_hori
 
 #' Check financial data
 #'
-#' Applies sanity checks to financial data. Also remove column
-#' corporate_bond_ticker if `asset_type` is not bonds.
+#' Applies sanity checks to financial data.
 #'
 #' @param financial_data A data set of `financial_data`.
-#' @param asset_type A string indicating if company data are for analysis for
-#'   bond or equity.
 #' @param interactive_mode If TRUE the, more verbose, interactive mode is used.
 #'
 #' @return Returns prewrangled `financial_data` invisibly.
@@ -45,44 +42,29 @@ wrangle_and_check_pacta_results <- function(pacta_results, start_year, time_hori
 #' )
 #'
 #' check_financial_data(
-#'   financial_data = fin_data,
-#'   asset_type = "equity"
+#'   financial_data = fin_data
 #' )
-check_financial_data <- function(financial_data, asset_type,
+check_financial_data <- function(financial_data,
                                  interactive_mode = FALSE) {
-  if (!asset_type %in% c("bonds", "equity", "loans")) {
-    stop("Invalid asset type.")
-  }
-
   expected_columns <- c(
     "company_name", "company_id", "pd", "net_profit_margin",
     "debt_equity_ratio", "volatility"
   )
-
-  if (asset_type == "bonds") {
-    expected_columns <- c(expected_columns, "corporate_bond_ticker")
-  }
 
   validate_data_has_expected_cols(
     data = financial_data,
     expected_columns = expected_columns
   )
 
-  if (asset_type != "bonds") {
-    # ADO 2493 - if asset_type not bond, ticker not required. Use distinct_all
-    # to remove duplicates from remaining CUC columns since financial data is
-    # always equal for these columns
-    financial_data <- financial_data %>%
-      dplyr::select(
-        .data$company_name, .data$company_id, .data$pd, .data$net_profit_margin,
-        .data$debt_equity_ratio, .data$volatility
-      ) %>%
-      dplyr::distinct_all()
-  } else {
-    financial_data <- financial_data %>%
-      dplyr::filter(!is.na(.data$corporate_bond_ticker)) %>%
-      check_company_ticker_mapping()
-  }
+
+  # ADO 2493 - Use distinct_all to remove duplicates from remaining CUC columns
+  # since financial data is always equal for these columns
+  financial_data <- financial_data %>%
+    dplyr::select(
+      .data$company_name, .data$company_id, .data$pd, .data$net_profit_margin,
+      .data$debt_equity_ratio, .data$volatility
+    ) %>%
+    dplyr::distinct_all()
 
   report_missings(
     data = financial_data,
@@ -98,8 +80,7 @@ check_financial_data <- function(financial_data, asset_type,
   )
 
   check_valid_financial_data_values(
-    financial_data = financial_data,
-    asset_type = asset_type
+    financial_data = financial_data
   )
 
   if (interactive_mode) {
@@ -185,7 +166,7 @@ fill_annual_profit_cols <- function(annual_profits) {
 #' @inheritParams check_financial_data
 #'
 #' @return NULL
-check_valid_financial_data_values <- function(financial_data, asset_type) {
+check_valid_financial_data_values <- function(financial_data) {
   if (any(financial_data$pd < 0 | financial_data$pd >= 1)) {
     stop("Implausibe value(s) < 0 or >= 1 for pd detected. Please check.")
   }
@@ -194,14 +175,9 @@ check_valid_financial_data_values <- function(financial_data, asset_type) {
     stop("Implausibe value(s) <= 0 or > 1 for net_profit_margin detected. Please check.")
   }
 
-  if (asset_type == "equity") {
-    if (any(financial_data$debt_equity_ratio < 0)) {
-      stop("Implausibe value(s) < 0 for debt_equity_ratio detected. Please check.")
-    }
-  } else {
-    if (any(financial_data$debt_equity_ratio <= 0)) {
-      stop("Implausibe value(s) <= 0 for debt_equity_ratio detected. Please check.")
-    }
+
+  if (any(financial_data$debt_equity_ratio < 0)) {
+    stop("Implausibe value(s) < 0 for debt_equity_ratio detected. Please check.")
   }
 
   if (any(financial_data$volatility < 0)) {

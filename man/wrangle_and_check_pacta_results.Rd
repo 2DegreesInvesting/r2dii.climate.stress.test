@@ -8,10 +8,6 @@ wrangle_and_check_pacta_results(pacta_results, start_year, time_horizon)
 }
 \arguments{
 \item{pacta_results}{Results from PACTA analysis.}
-
-\item{start_year}{Numeric, holding start year of analysis.}
-
-\item{time_horizon}{Numeric, holding time horizon of analysis.}
 }
 \value{
 Wrangled \code{pacta_results.}

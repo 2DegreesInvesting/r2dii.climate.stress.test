@@ -5,12 +5,10 @@
 #' vector of values to one (and only one) of the detail arguments. This will
 #' result in running the analysis multiple times in a row with the argument
 #' varied.
-#' NOTE: argument `asset_type` and `fallback_term` cannot be iterated.
+#' NOTE: argument `fallback_term` cannot be iterated.
 #' NOTE: if `return_results` is TRUE results will not be written to `output
 #' path` but instead are returned.
 #'
-#' @param asset_type String holding asset_type. For accepted values compare
-#'   `stress_test_arguments`.
 #' @param input_path_project_specific String holding path to project specific
 #'   data.
 #' @param input_path_project_agnostic String holding path to project agnostic
@@ -46,8 +44,7 @@
 #'   accepted values compare `stress_test_arguments`.
 #' @param use_company_terms Boolean, indicating if term values for individual
 #'   companies are to be used. For accepted values compare
-#'   `stress_test_arguments`. Note that currently this functionality is not
-#'   available for asset_type bonds.
+#'   `stress_test_arguments`.
 #' @param start_year Numeric, first year in the analysis used as the starting
 #'   point from which production forecasts are compared against scenario targets.
 #'   Must be available in the production data and indicates the first year of
@@ -55,8 +52,7 @@
 #' @param return_results Boolean, indicating if results shall be exported.
 #' @return NULL
 #' @export
-run_trisk <- function(asset_type,
-                      input_path_project_specific,
+run_trisk <- function(input_path_project_specific,
                       input_path_project_agnostic,
                       output_path,
                       baseline_scenario = "WEO2020_SPS",
@@ -92,8 +88,7 @@ run_trisk <- function(asset_type,
     div_netprofit_prop_coef = div_netprofit_prop_coef,
     shock_year = shock_year,
     fallback_term = fallback_term,
-    use_company_terms = use_company_terms,
-    asset_type = asset_type
+    use_company_terms = use_company_terms
   )
 
   args_list$output_path <- customise_output_path(
@@ -130,7 +125,6 @@ run_trisk <- function(asset_type,
 
   write_stress_test_results(
     results_list = st_results_wrangled_and_checked,
-    asset_type = asset_type,
     iter_var = iter_var,
     output_path = args_list$output_path
   )
@@ -200,7 +194,6 @@ read_and_process_and_calc <- function(args_list) {
 
   processed <- data %>%
     st_process(
-      asset_type = asset_type,
       fallback_term = fallback_term,
       scenario_geography = scenario_geography,
       baseline_scenario = baseline_scenario,
@@ -229,7 +222,6 @@ read_and_process_and_calc <- function(args_list) {
   # TODO: this requires company id to work for all companies, i.e. using 2021Q4 PAMS data
   report_company_drops(
     data_list = input_data_list,
-    asset_type = asset_type,
     log_path = log_path
   )
 

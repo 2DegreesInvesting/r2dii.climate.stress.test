@@ -5,7 +5,6 @@
 \title{Run stress testing for provided asset type.}
 \usage{
 run_trisk(
-  asset_type,
   input_path_project_specific,
   input_path_project_agnostic,
   output_path,
@@ -25,9 +24,6 @@ run_trisk(
 )
 }
 \arguments{
-\item{asset_type}{String holding asset_type. For accepted values compare
-\code{stress_test_arguments}.}
-
 \item{input_path_project_specific}{String holding path to project specific
 data.}
 
@@ -76,8 +72,7 @@ accepted values compare \code{stress_test_arguments}.}
 
 \item{use_company_terms}{Boolean, indicating if term values for individual
 companies are to be used. For accepted values compare
-\code{stress_test_arguments}. Note that currently this functionality is not
-available for asset_type bonds.}
+\code{stress_test_arguments}.}
 
 \item{start_year}{Numeric, first year in the analysis used as the starting
 point from which production forecasts are compared against scenario targets.
@@ -92,6 +87,6 @@ understand sensitivities of the scenarios, in which case the user may pass a
 vector of values to one (and only one) of the detail arguments. This will
 result in running the analysis multiple times in a row with the argument
 varied.
-NOTE: argument \code{asset_type} and \code{fallback_term} cannot be iterated.
+NOTE: argument \code{fallback_term} cannot be iterated.
 NOTE: if \code{return_results} is TRUE results will not be written to \verb{output path} but instead are returned.
 }

@@ -15,8 +15,7 @@ validate_input_values(
   div_netprofit_prop_coef,
   shock_year,
   fallback_term,
-  use_company_terms,
-  asset_type
+  use_company_terms
 )
 }
 \arguments{
@@ -57,10 +56,6 @@ For accepted range compare \code{stress_test_arguments}.}
 
 \item{use_company_terms}{Boolean, indicating if term values for individual
 companies are to be used. For accepted values compare
-\code{stress_test_arguments}. Note that currently this functionality is not
-available for asset_type bonds.}
-
-\item{asset_type}{String holding asset_type. For accepted values compare
 \code{stress_test_arguments}.}
 }
 \description{

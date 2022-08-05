@@ -214,7 +214,7 @@ report_duplicates <- function(data, cols, throw_error = TRUE) {
 #' @inheritParams validate_input_values
 #'
 #' @return NULL
-report_company_drops <- function(data_list, asset_type, log_path) {
+report_company_drops <- function(data_list, log_path) {
   report_dropped_company_names(
     data_x = data_list$production_data,
     data_y = data_list$financial_data,
@@ -325,7 +325,7 @@ get_iter_var <- function(args_list) {
   } else if (nrow(iterate_arg) == 1) {
     iter_var <- iterate_arg$name
 
-    if (iter_var %in% c("asset_type", "fallback_term", setup_vars_lookup)) {
+    if (iter_var %in% c("fallback_term", setup_vars_lookup)) {
       rlang::abort(c(
         "Must not provide more than one value for argument that cannot be iterated",
         x = glue::glue("Arguments with multiple values: {toString(iter_var)}."),

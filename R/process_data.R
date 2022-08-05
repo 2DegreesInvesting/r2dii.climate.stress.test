@@ -1,122 +1,3 @@
-#' Process data of type indicated by function name
-#'
-#' @inheritParams run_trisk
-#' @inheritParams report_company_drops
-#' @param data A tibble of data of type indicated by function name.
-#' @param start_year Numeric, holding start year of analysis.
-#' @param end_year Numeric, holding end year of analysis.
-#' @param time_horizon Numeric, holding time horizon of analysis.
-#' @param scenario_geography_filter Character. A vector of length 1 that
-#'   indicates which geographic scenario to apply in the analysis.
-#' @param scenarios_filter Vector holding baseline and shock scenario name.
-#' @param equity_market_filter Character. A vector of length 1 that
-#'   indicates which equity market to apply in the analysis.
-#' @param sectors Character vector, holding considered sectors.
-#' @param technologies Character vector, holding considered technologies.
-#' @param allocation_method Character. A vector of length 1 indicating the
-#'   set of PACTA data to be used in the analysis, based on the choice of an
-#'   allocation rule.
-#'
-#' @return A tibble of data as indicated by function name.
-process_pacta_results <- function(data, start_year, end_year, time_horizon,
-                                  scenario_geography_filter, scenarios_filter,
-                                  equity_market_filter, sectors, technologies,
-                                  allocation_method, asset_type, log_path) {
-  data_processed <- data %>%
-    wrangle_and_check_pacta_results(
-      start_year = start_year,
-      time_horizon = time_horizon
-    ) %>%
-    set_initial_plan_carsten_missings_to_zero(
-      start_year = start_year,
-      time_horizon = time_horizon
-    ) %>%
-    is_scenario_geography_in_pacta_results(scenario_geography_filter) %>%
-    dplyr::filter(.data$investor_name == investor_name_placeholder) %>%
-    dplyr::filter(.data$equity_market == equity_market_filter) %>%
-    dplyr::filter(.data$allocation == allocation_method) %>%
-    dplyr::filter(.data$scenario %in% .env$scenarios_filter) %>%
-    dplyr::filter(.data$scenario_geography %in% .env$scenario_geography_filter) %>%
-    dplyr::filter(.data$ald_sector %in% .env$sectors) %>%
-    dplyr::filter(.data$technology %in% .env$technologies) %>%
-    dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$start_year + .env$time_horizon)) %>%
-    remove_companies_with_missing_exposures(
-      start_year = start_year,
-      time_horizon = time_horizon,
-      log_path = log_path
-    ) %>%
-    remove_sectors_with_missing_production_end_of_forecast(
-      start_year = start_year,
-      time_horizon = time_horizon,
-      log_path = log_path
-    ) %>%
-    remove_sectors_with_missing_production_start_year(
-      start_year = start_year,
-      log_path = log_path
-    ) %>%
-    remove_high_carbon_tech_with_missing_production(
-      start_year = start_year,
-      time_horizon = time_horizon,
-      log_path = log_path
-    ) %>%
-    stop_if_empty(data_name = "Pacta Results") %>%
-    check_level_availability(
-      data_name = "Pacta Results",
-      expected_levels_list =
-        list(
-          year = start_year:(start_year + time_horizon),
-          allocation = allocation_method,
-          equity_market = equity_market_filter,
-          scenario = scenarios_filter,
-          scenario_geography = scenario_geography_filter
-        )
-    ) %>%
-    check_level_availability(
-      data_name = "Pacta Results",
-      expected_levels_list =
-        list(
-          ald_sector = sectors,
-          technology = technologies
-        ),
-      throw_error = FALSE
-    ) %>%
-    report_missing_col_combinations(col_names = c("allocation", "equity_market", "scenario", "scenario_geography", "technology", "year")) %>%
-    report_all_duplicate_kinds(composite_unique_cols = cuc_pacta_results)
-
-  if (asset_type == "bonds") {
-    data_processed %>%
-      dplyr::rename(corporate_bond_ticker = .data$id) %>%
-      dplyr::filter(!is.na(corporate_bond_ticker)) %>%
-      dplyr::select(company_name, corporate_bond_ticker) %>%
-      dplyr::distinct() %>%
-      check_company_ticker_mapping()
-  }
-
-  # if_plan_emission_factor is NA and plan_tech_prod is zero, set the emission
-  # factor to 0 as well, as it will not contribute to company emissions
-  data_processed <- data_processed %>%
-    dplyr::mutate(
-      plan_emission_factor = dplyr::if_else(
-        is.na(.data$plan_emission_factor) & .data$plan_tech_prod == 0,
-        0,
-        .data$plan_emission_factor
-      )
-    )
-
-  # since pacta for loans returns only NA values for id, we ignore the
-  # column when checking for missing values
-  if (asset_type == "loans") {
-    data_processed %>%
-      dplyr::select(-.data$id) %>%
-      report_missings(name_data = "pacta data", throw_error = TRUE)
-  } else {
-    data_processed %>%
-      report_missings(name_data = "pacta data", throw_error = TRUE)
-  }
-
-  return(data_processed)
-}
-
 is_scenario_geography_in_pacta_results <- function(data, scenario_geography_filter) {
   if (!scenario_geography_filter %in% unique(data$scenario_geography)) {
     stop(paste0(
@@ -416,7 +297,7 @@ remove_high_carbon_tech_with_missing_production <- function(data,
 
 #' Process data of type indicated by function name
 #'
-#' @inheritParams process_pacta_results
+#' @inheritParams process_production_data
 #'
 #' @return A tibble of data as indicated by function name.
 #' @noRd
@@ -466,7 +347,7 @@ harmonise_cap_fac_geo_names <- function(data) {
 
 #' Process data of type indicated by function name
 #'
-#' @inheritParams process_pacta_results
+#' @inheritParams process_production_data
 #'
 #' @return A tibble of data as indicated by function name.
 #' @noRd
@@ -521,7 +402,7 @@ process_price_data <- function(data, technologies, sectors, start_year, end_year
 
 #' Process data of type indicated by function name
 #'
-#' @inheritParams process_pacta_results
+#' @inheritParams process_production_data
 #'
 #' @return A tibble of data as indicated by function name.
 #' @noRd
@@ -556,15 +437,15 @@ process_scenario_data <- function(data, start_year, end_year, sectors, technolog
 
 #' Process data of type indicated by function name
 #'
-#' @inheritParams process_pacta_results
+#' @inheritParams process_production_data
 #' @inheritParams run_trisk
 #'
 #' @return A tibble of data as indicated by function name.
 #' @noRd
-process_financial_data <- function(data, asset_type) {
+process_financial_data <- function(data) {
   data_processed <- data %>%
     stop_if_empty(data_name = "Financial Data") %>%
-    check_financial_data(asset_type = asset_type) %>%
+    check_financial_data() %>%
     report_all_duplicate_kinds(composite_unique_cols = cuc_financial_data) %>%
     report_missings(name_data = "financial data", throw_error = TRUE)
 
@@ -576,7 +457,7 @@ process_financial_data <- function(data, asset_type) {
 #'
 #' NOTE returns NULL if `data` is NULL.
 #'
-#' @inheritParams process_pacta_results
+#' @inheritParams process_production_data
 #' @param fallback_term Numeric, holding fallback term.
 #'
 #' @return A tibble of data as indicated by function name.
@@ -595,10 +476,9 @@ process_company_terms <- function(data, fallback_term) {
   return(data_processed)
 }
 
-st_process <- function(data, asset_type, fallback_term,
-                       scenario_geography, baseline_scenario, shock_scenario,
-                       sectors, technologies, start_year,
-                       log_path) {
+st_process <- function(data, fallback_term, scenario_geography,
+                       baseline_scenario, shock_scenario, sectors, technologies,
+                       start_year, log_path) {
   scenarios_filter <- c(baseline_scenario, shock_scenario)
 
   df_price <- process_price_data(
@@ -621,8 +501,7 @@ st_process <- function(data, asset_type, fallback_term,
   )
 
   financial_data <- process_financial_data(
-    data$financial_data,
-    asset_type = asset_type
+    data$financial_data
   )
 
   production_data <- process_production_data(
@@ -695,7 +574,7 @@ st_process <- function(data, asset_type, fallback_term,
 #' @return A tibble of data as indicated by function name.
 process_production_data <- function(data, start_year, end_year, time_horizon,
                                   scenario_geography_filter, sectors,
-                                  technologies, asset_type, log_path) {
+                                  technologies, log_path) {
   data_processed <- data %>%
     # TODO: check if needs adaptation
     # wrangle_and_check_pacta_results(
