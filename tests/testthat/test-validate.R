@@ -12,8 +12,7 @@ test_that("Error is thrown if input values are of incorrect type", {
     div_netprofit_prop_coef = 1,
     shock_year = 2030,
     fallback_term = 4,
-    use_company_terms = "FALSE",
-    asset_type = "loans"
+    use_company_terms = "FALSE"
   ), "logical")
 
   # numeric
@@ -28,8 +27,7 @@ test_that("Error is thrown if input values are of incorrect type", {
     div_netprofit_prop_coef = "1",
     shock_year = 2030,
     fallback_term = 4,
-    use_company_terms = FALSE,
-    asset_type = "bonds"
+    use_company_terms = FALSE
   ), "numeric")
 })
 
@@ -46,8 +44,7 @@ test_that("Error is thrown if input values are of incorrect type for input value
     div_netprofit_prop_coef = c("1", "2"),
     shock_year = 2030,
     fallback_term = 4,
-    use_company_terms = FALSE,
-    asset_type = "bonds"
+    use_company_terms = FALSE
   ), "numeric")
 })
 
@@ -66,8 +63,7 @@ test_that("Error is thrown if an input value is out of bounds", {
     div_netprofit_prop_coef = 1,
     shock_year = 2030,
     fallback_term = 4,
-    use_company_terms = FALSE,
-    asset_type = "loans"
+    use_company_terms = FALSE
   ), "risk_free_rate")
 
   # length > 1
@@ -82,8 +78,7 @@ test_that("Error is thrown if an input value is out of bounds", {
     div_netprofit_prop_coef = 1,
     shock_year = 2030,
     fallback_term = 4,
-    use_company_terms = FALSE,
-    asset_type = "loans"
+    use_company_terms = FALSE
   ), "Invalid input: -1, 100.")
 })
 
@@ -91,7 +86,7 @@ test_that("Error is thrown if a character input value is out of bounds", {
 
   # length = 1
   expect_error(validate_input_values(
-    baseline_scenario = "WEO2019_SPS",
+    baseline_scenario = "WEO2000_SPS",
     shock_scenario = "WEO2019_SDS",
     scenario_geography = "Global",
     lgd = 0.45,
@@ -101,13 +96,12 @@ test_that("Error is thrown if a character input value is out of bounds", {
     div_netprofit_prop_coef = 1,
     shock_year = 2030,
     fallback_term = 4,
-    use_company_terms = FALSE,
-    asset_type = "derivates"
-  ), "asset_type")
+    use_company_terms = FALSE
+  ), "baseline_scenario")
 
   # length > 1
   expect_error(validate_input_values(
-    baseline_scenario = "WEO2019_SPS",
+    baseline_scenario = c("WEO2019_SPS", "WEO2019_CPS"),
     shock_scenario = "WEO2019_SDS",
     scenario_geography = "Global",
     lgd = 0.45,
@@ -117,9 +111,8 @@ test_that("Error is thrown if a character input value is out of bounds", {
     div_netprofit_prop_coef = 1,
     shock_year = 2030,
     fallback_term = 4,
-    use_company_terms = FALSE,
-    asset_type = c("derivates", "fund")
-  ), "asset_type")
+    use_company_terms = FALSE
+  ), "baseline_scenario")
 })
 
 test_that("Error is thrown if term is not an integer", {
@@ -134,8 +127,7 @@ test_that("Error is thrown if term is not an integer", {
     div_netprofit_prop_coef = 1,
     shock_year = 2030,
     fallback_term = 4.5,
-    use_company_terms = FALSE,
-    asset_type = "loans"
+    use_company_terms = FALSE
   ), "whole number")
 })
 
@@ -151,7 +143,6 @@ test_that("No error is thrown if an input value equals a bound", {
     div_netprofit_prop_coef = 1,
     shock_year = 2030,
     fallback_term = 4,
-    use_company_terms = FALSE,
-    asset_type = "loans"
+    use_company_terms = FALSE
   ))
 })
