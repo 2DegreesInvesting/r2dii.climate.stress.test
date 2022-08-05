@@ -211,7 +211,6 @@ report_duplicates <- function(data, cols, throw_error = TRUE) {
 #'
 #' @param data_list A list of imported stress test input data.
 #' @param log_path String holding path to log file.
-#' @inheritParams validate_input_values
 #'
 #' @return NULL
 report_company_drops <- function(data_list, log_path) {

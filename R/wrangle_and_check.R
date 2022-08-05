@@ -1,26 +1,3 @@
-#' Wrangle and check PACTA results
-#'
-#' Function applies several filter steps to
-#' 1. restrict PACTA results to scenarios useable for stresstesting
-#' 1. to apply run/project related selections.
-#'
-#' Also consistency checks are run.
-#'
-#' @inheritParams process_pacta_results
-#' @param pacta_results Results from PACTA analysis.
-#'
-#' @return Wrangled `pacta_results.`
-wrangle_and_check_pacta_results <- function(pacta_results, start_year, time_horizon) {
-  wrangled_pacta_results <- pacta_results %>%
-    tidyr::complete(
-      year = seq(start_year, start_year + time_horizon),
-      tidyr::nesting(!!!rlang::syms(nesting_vars_lookup))
-    ) %>%
-    dplyr::mutate(plan_tech_prod = dplyr::if_else(is.na(.data$plan_tech_prod), 0, .data$plan_tech_prod))
-
-  return(wrangled_pacta_results)
-}
-
 #' Check financial data
 #'
 #' Applies sanity checks to financial data.
