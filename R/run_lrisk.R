@@ -9,8 +9,6 @@
 #' NOTE: if `return_results` is TRUE results will not be written to `output
 #' path` but instead are returned.
 #'
-#' @param input_path_project_specific String holding path to project specific
-#'   data.
 #' @param input_path_project_agnostic String holding path to project agnostic
 #'   data.
 #' @param output_path String holding path to which output files are written.
@@ -62,8 +60,7 @@
 #' @param return_results Boolean, indicating if results shall be exported.
 #' @return NULL
 #' @export
-run_lrisk <- function(input_path_project_specific,
-                      input_path_project_agnostic,
+run_lrisk <- function(input_path_project_agnostic,
                       output_path,
                       baseline_scenario = "WEO2020_SPS",
                       shock_scenario = "WEO2020_SDS",

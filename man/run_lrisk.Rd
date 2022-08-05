@@ -5,7 +5,6 @@
 \title{Run stress testing for provided asset type.}
 \usage{
 run_lrisk(
-  input_path_project_specific,
   input_path_project_agnostic,
   output_path,
   baseline_scenario = "WEO2020_SPS",
@@ -27,9 +26,6 @@ run_lrisk(
 )
 }
 \arguments{
-\item{input_path_project_specific}{String holding path to project specific
-data.}
-
 \item{input_path_project_agnostic}{String holding path to project agnostic
 data.}
 

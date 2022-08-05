@@ -5,7 +5,6 @@
 \title{Run stress testing for provided asset type.}
 \usage{
 run_trisk(
-  input_path_project_specific,
   input_path_project_agnostic,
   output_path,
   baseline_scenario = "WEO2020_SPS",
@@ -24,9 +23,6 @@ run_trisk(
 )
 }
 \arguments{
-\item{input_path_project_specific}{String holding path to project specific
-data.}
-
 \item{input_path_project_agnostic}{String holding path to project agnostic
 data.}
 
