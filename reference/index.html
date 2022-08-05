@@ -75,14 +75,6 @@
         </td>
         <td><p>Aggregate results</p></td>
       </tr><tr><td>
-          <p><code><a href="annual_pd_change_company_sector.html">annual_pd_change_company_sector()</a></code> </p>
-        </td>
-        <td><p>Display the annual pd changes per company and technology.</p></td>
-      </tr><tr><td>
-          <p><code><a href="annual_pd_change_sector_shock_year.html">annual_pd_change_sector_shock_year()</a></code> </p>
-        </td>
-        <td><p>Display the annual pd changes per shock year and technology.</p></td>
-      </tr><tr><td>
           <p><code><a href="apply_filters.html">apply_filters()</a></code> </p>
         </td>
         <td><p>Filter input company or portfolio data to match model specifications and
@@ -116,10 +108,6 @@ after the policy shock hits.</p></td>
         </td>
         <td><p>Calculate annual profits</p></td>
       </tr><tr><td>
-          <p><code><a href="calculate_exposure_by_technology_and_company.html">calculate_exposure_by_technology_and_company()</a></code> </p>
-        </td>
-        <td><p>Calculate exposure_by_technology_and_company</p></td>
-      </tr><tr><td>
           <p><code><a href="calculate_net_profits.html">calculate_net_profits()</a></code> </p>
         </td>
         <td><p>Calculates annual net profits on the company-technology level for the
@@ -135,20 +123,6 @@ production build out is multiplied with the proximity to the target. This
 approximates the additional capital investment such a company would have to
 make in a short time, which leads to added costs. This ensures that late
 build out will not proportionally translate into increased profits.</p></td>
-      </tr><tr><td>
-          <p><code><a href="calculate_pd_change_annual.html">calculate_pd_change_annual()</a></code> </p>
-        </td>
-        <td><p>Calculate change in probabilities of default (PDs) of loans connected to
-companies at hand. This is based on the equity values derived from the DCF
-model. Said Equity values are used as different starting points for the
-Merton model (one reflecting the business as usual baseline scenario, the
-other reflecting the late &amp; sudden shock scenario). Since we calculate the PDs
-on an annual basis (start year up to year t), we use different NPVs based on
-the DCF model for every year that we calculate a PD for. Only discounted
-profits up until the year in question will be taken into account as the equity
-starting points for each of the calculations. Prior to a policy shock, this
-implies equal starting points for baseline and late and sudden scenarios and
-only after the shock, we get diverging starting points.</p></td>
       </tr><tr><td>
           <p><code><a href="calculate_pd_change_overall.html">calculate_pd_change_overall()</a></code> </p>
         </td>
@@ -199,16 +173,6 @@ level.</p></td>
           <p><code><a href="check_valid_financial_data_values.html">check_valid_financial_data_values()</a></code> </p>
         </td>
         <td><p>Check if values in financial data are plausible</p></td>
-      </tr><tr><td>
-          <p><code><a href="company_expected_loss.html">company_expected_loss()</a></code> </p>
-        </td>
-        <td><p>Calculate change of expected loss between scenarios for corporate loans on
-the company-technology level. The function uses a maximum term of 5 years and
-all loans with longer maturities are thrown into the 5 year bucket. The
-calculation of PD changes that underlies the input to this function is based
-on the comparison of overall NPVs of the corresponding equity values for the
-companies at hand. That is, the PD changes take into account all discounted
-future profits plus the terminal value.</p></td>
       </tr><tr><td>
           <p><code><a href="company_technology_asset_value_at_risk.html">company_technology_asset_value_at_risk()</a></code> </p>
         </td>
@@ -295,14 +259,6 @@ either via environment variable or options.</p></td>
         </td>
         <td><p>Lookup valid values</p></td>
       </tr><tr><td>
-          <p><code><a href="overall_pd_change_company_sector.html">overall_pd_change_company_sector()</a></code> </p>
-        </td>
-        <td><p>Display the overall pd changes per maturity, company and technology.</p></td>
-      </tr><tr><td>
-          <p><code><a href="overall_pd_change_sector_shock_year.html">overall_pd_change_sector_shock_year()</a></code> </p>
-        </td>
-        <td><p>Display the overall pd changes per maturity, shock year and technology.</p></td>
-      </tr><tr><td>
           <p><code><a href="path_dropbox_2dii.html">path_dropbox_2dii()</a></code> </p>
         </td>
         <td><p>Easily access directories in your local copy of 2dii's Dropbox folder</p></td>
@@ -333,11 +289,6 @@ are given.</p></td>
         </td>
         <td><p>Read in company financial data processed from eikon exports and AR master data
 that contain information on multiple credit risk inputs</p></td>
-      </tr><tr><td>
-          <p><code><a href="read_ngfs_carbon_tax.html">read_ngfs_carbon_tax()</a></code> </p>
-        </td>
-        <td><p>Read in NGFS carbon tax data from csv and check that all expected columns
-are given.</p></td>
       </tr><tr><td>
           <p><code><a href="read_pacta_results.html">read_pacta_results()</a></code> </p>
         </td>
@@ -424,35 +375,6 @@ litigation event in the LRISK stress test.</p></td>
         </td>
         <td><p>Defines which scenario values to use for the late &amp; sudden trajectory in the
 stress test.</p></td>
-      </tr><tr><td>
-          <p><code><a href="show_carbon_budget.html">show_carbon_budget()</a></code> </p>
-        </td>
-        <td><p>Display the carbon budget per technology over time</p></td>
-      </tr><tr><td>
-          <p><code><a href="show_impact_by_shock_year.html">show_impact_by_shock_year()</a></code> </p>
-        </td>
-        <td><p>Display impact on value at risk by technology and shock year</p></td>
-      </tr><tr><td>
-          <p><code><a href="show_pf_technology_shares.html">show_pf_technology_shares()</a></code> </p>
-        </td>
-        <td><p>Check the technology shares</p></td>
-      </tr><tr><td>
-          <p><code><a href="show_price_trajectories.html">show_price_trajectories()</a></code> </p>
-        </td>
-        <td><p>Display the market price trajectories per technology</p></td>
-      </tr><tr><td>
-          <p><code><a href="show_prod_baseline_target_ls_pf.html">show_prod_baseline_target_ls_pf()</a></code> </p>
-        </td>
-        <td><p>Compare the production trajectories per technology by baseline, target and
-late_and_sudden scenarios</p></td>
-      </tr><tr><td>
-          <p><code><a href="show_prod_trajectories.html">show_prod_trajectories()</a></code> </p>
-        </td>
-        <td><p>Display the market production trajectories per technology</p></td>
-      </tr><tr><td>
-          <p><code><a href="show_var_change_by_shock_year.html">show_var_change_by_shock_year()</a></code> </p>
-        </td>
-        <td><p>Display change of results by technology and shock year</p></td>
       </tr><tr><td>
           <p><code><a href="source_all.html">source_all()</a></code> </p>
         </td>
