@@ -1,17 +1,15 @@
-test_that("with bonds, with iteration, using default settings output is unchanged", {
+test_that("with iteration, using default settings output is unchanged", {
   skip_if_not(opt_in_snapshots())
   skip_on_ci()
   skip_on_cran()
   skip_slow_tests()
 
-  in_specific <- Sys.getenv("ST_SPECIFIC_BONDS")
   in_agnostic <- Sys.getenv("ST_AGNOSTIC")
   out <- tempfile()
   fs::dir_create(out)
 
   suppressed_console_output <- suppressWarnings(capture.output(
-    results <- run_trisk("bonds",
-      input_path_project_specific = in_specific,
+    results <- run_trisk(
       input_path_project_agnostic = in_agnostic,
       output_path = out,
       shock_year = c(2025, 2030),
@@ -22,20 +20,18 @@ test_that("with bonds, with iteration, using default settings output is unchange
   expect_snapshot(lapply(results, as.data.frame))
 })
 
-test_that("with loans, without iteration, using minimum values of input arguments output is unchanged", {
+test_that("without iteration, using minimum values of input arguments output is unchanged", {
   skip_if_not(opt_in_snapshots())
   skip_on_ci()
   skip_on_cran()
   skip_slow_tests()
 
-  in_specific <- Sys.getenv("ST_SPECIFIC_LOANS")
   in_agnostic <- Sys.getenv("ST_AGNOSTIC")
   out <- tempfile()
   fs::dir_create(out)
 
   suppressed_console_output <- suppressWarnings(suppressMessages(capture.output(
-    results <- run_trisk("loans",
-      input_path_project_specific = in_specific,
+    results <- run_trisk(
       input_path_project_agnostic = in_agnostic,
       output_path = out,
       lgd = get_st_argument("lgd", "min"),
@@ -53,20 +49,18 @@ test_that("with loans, without iteration, using minimum values of input argument
   expect_snapshot(lapply(results, as.data.frame))
 })
 
-test_that("with equity, without iteration, using maximum values of input arguments output is unchanged", {
+test_that("without iteration, using maximum values of input arguments output is unchanged", {
   skip_if_not(opt_in_snapshots())
   skip_on_ci()
   skip_on_cran()
   skip_slow_tests()
 
-  in_specific <- Sys.getenv("ST_SPECIFIC_EQUITY")
   in_agnostic <- Sys.getenv("ST_AGNOSTIC")
   out <- tempfile()
   fs::dir_create(out)
 
   suppressed_console_output <- suppressWarnings(suppressMessages(capture.output(
-    results <- run_trisk("equity",
-      input_path_project_specific = in_specific,
+    results <- run_trisk(
       input_path_project_agnostic = in_agnostic,
       output_path = out,
       scenario_geography = "OECD",
