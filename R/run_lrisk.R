@@ -115,14 +115,8 @@ run_lrisk <- function(input_path_project_agnostic,
     }) %>%
     purrr::set_names(result_names)
 
-  st_results_aggregated <- aggregate_results(
-    results_list = st_results,
-    sensitivity_analysis_vars = names(args_list)[!names(args_list) %in% setup_vars_lookup],
-    iter_var = iter_var
-  )
-
   st_results_wrangled_and_checked <- wrangle_results(
-    results_list = st_results_aggregated,
+    results_list = st_results,
     sensitivity_analysis_vars = names(args_list)[!names(args_list) %in% setup_vars_lookup]
   ) %>%
     check_results(
