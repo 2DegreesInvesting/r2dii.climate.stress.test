@@ -203,13 +203,6 @@ read_and_process_and_calc <- function(args_list) {
     production_data = processed$production_data
   )
 
-  # TODO: check if this is still relevant. probably needs to go into the matching part.
-  # since we are reading from PAMS, this should not be required here
-  # if (asset_type == "loans") {
-  #   input_data_list$financial_data <- input_data_list$financial_data %>%
-  #     dplyr::mutate(company_name = stringr::str_to_lower(.data$company_name))
-  # }
-
   # TODO: this requires company id to work for all companies, i.e. using 2021Q4 PAMS data
   report_company_drops(
     data_list = input_data_list,
@@ -269,13 +262,6 @@ read_and_process_and_calc <- function(args_list) {
       end_of_analysis = end_year_lookup,
       risk_free_interest_rate = risk_free_rate
     )
-
-  # TODO: ADO 879 - note which companies produce missing results due to
-  # insufficient input information (e.g. NAs for financials or 0 equity value)
-  # company_trajectories <- add_term_to_trajectories(
-  #   annual_profits = company_annual_profits,
-  #   pacta_results = input_data_list$pacta_results
-  # )
 
   return(
     list(
