@@ -323,14 +323,6 @@ get_iter_var <- function(args_list) {
     iter_var <- "standard"
   } else if (nrow(iterate_arg) == 1) {
     iter_var <- iterate_arg$name
-
-    if (iter_var %in% c("fallback_term", setup_vars_lookup)) {
-      rlang::abort(c(
-        "Must not provide more than one value for argument that cannot be iterated",
-        x = glue::glue("Arguments with multiple values: {toString(iter_var)}."),
-        i = "Please correct your function call"
-      ))
-    }
   } else {
     rlang::abort(c(
       "Must provide no more than one argument with multiple values.",

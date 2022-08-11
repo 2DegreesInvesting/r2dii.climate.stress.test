@@ -7,8 +7,7 @@
 #' @return NULL
 validate_input_values <- function(baseline_scenario, shock_scenario, scenario_geography,
                                   lgd, risk_free_rate, discount_rate, growth_rate,
-                                  div_netprofit_prop_coef, shock_year,
-                                  fallback_term) {
+                                  div_netprofit_prop_coef, shock_year) {
   input_args <- mget(names(formals()), sys.frame(sys.nframe()))
 
   c("baseline_scenario", "shock_scenario", "scenario_geography") %>%
@@ -16,18 +15,12 @@ validate_input_values <- function(baseline_scenario, shock_scenario, scenario_ge
 
   c(
     "lgd", "risk_free_rate", "discount_rate", "growth_rate",
-    "div_netprofit_prop_coef", "shock_year", "fallback_term"
+    "div_netprofit_prop_coef", "shock_year"
   ) %>%
     purrr::walk(validate_values_in_range, args_list = input_args)
 
   if (!all(shock_year %% 1 == 0)) {
     stop("Argument shock_year must be a whole number")
-  }
-
-  # ADO 1943 - Once we decide to add a separate Merton calculation on the average
-  # maturity of a portfolio, this check will need to be removed
-  if (!all(fallback_term %% 1 == 0)) {
-    stop("Argument fallback_term must be a whole number")
   }
 
   if (!(growth_rate < discount_rate)) {

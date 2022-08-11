@@ -10,8 +10,7 @@ test_that("Error is thrown if input values are of incorrect type", {
     discount_rate = 0.07,
     growth_rate = 0.06,
     div_netprofit_prop_coef = "1",
-    shock_year = 2030,
-    fallback_term = 4
+    shock_year = 2030
   ), "numeric")
 })
 
@@ -26,8 +25,7 @@ test_that("Error is thrown if input values are of incorrect type for input value
     discount_rate = 0.07,
     growth_rate = 0.06,
     div_netprofit_prop_coef = c("1", "2"),
-    shock_year = 2030,
-    fallback_term = 4
+    shock_year = 2030
   ), "numeric")
 })
 
@@ -44,8 +42,7 @@ test_that("Error is thrown if an input value is out of bounds", {
     discount_rate = 0.07,
     growth_rate = 0.06,
     div_netprofit_prop_coef = 1,
-    shock_year = 2030,
-    fallback_term = 4
+    shock_year = 2030
   ), "risk_free_rate")
 
   # length > 1
@@ -58,8 +55,7 @@ test_that("Error is thrown if an input value is out of bounds", {
     discount_rate = 0.07,
     growth_rate = 0.06,
     div_netprofit_prop_coef = 1,
-    shock_year = 2030,
-    fallback_term = 4
+    shock_year = 2030
   ), "Invalid input: -1, 100.")
 })
 
@@ -75,8 +71,7 @@ test_that("Error is thrown if a character input value is out of bounds", {
     discount_rate = 0.07,
     growth_rate = 0.06,
     div_netprofit_prop_coef = 1,
-    shock_year = 2030,
-    fallback_term = 4
+    shock_year = 2030
   ), "baseline_scenario")
 
   # length > 1
@@ -89,8 +84,7 @@ test_that("Error is thrown if a character input value is out of bounds", {
     discount_rate = 0.07,
     growth_rate = 0.06,
     div_netprofit_prop_coef = 1,
-    shock_year = 2030,
-    fallback_term = 4
+    shock_year = 2030
   ), "baseline_scenario")
 })
 
@@ -104,8 +98,7 @@ test_that("Error is thrown if term is not an integer", {
     discount_rate = 0.07,
     growth_rate = 0.06,
     div_netprofit_prop_coef = 1,
-    shock_year = 2030,
-    fallback_term = 4.5
+    shock_year = 2030.5
   ), "whole number")
 })
 
@@ -119,7 +112,6 @@ test_that("No error is thrown if an input value equals a bound", {
     discount_rate = 0.07,
     growth_rate = 0.06,
     div_netprofit_prop_coef = 1,
-    shock_year = 2030,
-    fallback_term = 4
+    shock_year = 2030
   ))
 })

@@ -213,7 +213,7 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
         "scenario_name", "scenario_geography", "company_name", "ald_sector",
         "baseline_scenario_arg", "shock_scenario_arg", "lgd_arg",
         "risk_free_rate_arg", "discount_rate_arg", "growth_rate_arg",
-        "div_netprofit_prop_coef_arg", "shock_year_arg", "fallback_term_arg"
+        "div_netprofit_prop_coef_arg", "shock_year_arg"
       )
     )
 
@@ -301,29 +301,6 @@ check_results <- function(wrangled_results_list, sensitivity_analysis_vars) {
     )
 
   return(invisible(wrangled_results_list))
-}
-
-#' Fill missing terms with fallback_term
-#'
-#' Also throws informative message on number of filled values.
-#'
-#' @param data A tibble holding at least column `term`.
-#' @param fallback_term Numeric, holding fallback term.
-#'
-#' @return Tibble `data `
-fill_na_terms <- function(data, fallback_term) {
-  n_companies_with_na_term <- data %>%
-    dplyr::filter(is.na(term)) %>%
-    nrow()
-
-  if (n_companies_with_na_term > 0) {
-    message(paste("Using fallback term", fallback_term, "for", n_companies_with_na_term, "companies."))
-
-    data <- data %>%
-      dplyr::mutate(term = dplyr::if_else(is.na(.data$term), as.double(fallback_term), .data$term))
-  }
-
-  return(data)
 }
 
 #' Cap terms

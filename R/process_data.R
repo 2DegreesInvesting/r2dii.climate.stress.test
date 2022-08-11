@@ -452,33 +452,9 @@ process_financial_data <- function(data) {
   return(data_processed)
 }
 
-
-#' Process data of type indicated by function name
-#'
-#' NOTE returns NULL if `data` is NULL.
-#'
-#' @inheritParams process_production_data
-#' @param fallback_term Numeric, holding fallback term.
-#'
-#' @return A tibble of data as indicated by function name.
-process_company_terms <- function(data, fallback_term) {
-  if (is.null(data)) {
-    return(data)
-  }
-
-  data_processed <- data %>%
-    check_company_terms() %>%
-    dplyr::mutate(term = as.double(term)) %>%
-    fill_na_terms(fallback_term) %>%
-    cap_terms() %>%
-    report_all_duplicate_kinds(composite_unique_cols = cuc_company_terms)
-
-  return(data_processed)
-}
-
-st_process <- function(data, fallback_term, scenario_geography,
-                       baseline_scenario, shock_scenario, sectors, technologies,
-                       start_year, log_path) {
+st_process <- function(data, scenario_geography, baseline_scenario,
+                       shock_scenario, sectors, technologies, start_year,
+                       log_path) {
   scenarios_filter <- c(baseline_scenario, shock_scenario)
 
   df_price <- process_price_data(

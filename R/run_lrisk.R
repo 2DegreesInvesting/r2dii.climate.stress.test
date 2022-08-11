@@ -5,7 +5,6 @@
 #' vector of values to one (and only one) of the detail arguments. This will
 #' result in running the analysis multiple times in a row with the argument
 #' varied.
-#' NOTE: argument `fallback_term` cannot be iterated.
 #' NOTE: if `return_results` is TRUE results will not be written to `output
 #' path` but instead are returned.
 #'
@@ -33,10 +32,6 @@
 #'   range compare `stress_test_arguments`.
 #' @param shock_year Numeric, holding year the shock is applied. For accepted
 #'   range compare `stress_test_arguments`.
-#' @param fallback_term Numeric. A coefficient that determines for which
-#'   maturity the expected loss should be calculated in the credit risk section
-#'   in case no company level term data are provided via `use_company_terms`.
-#'   For accepted range compare `stress_test_arguments`.
 #' @param scenario_geography Character vector, indicating which geographical
 #'   region(s) (concerning asset location) results shall be calculated for. For
 #'   accepted values compare `stress_test_arguments`.
@@ -67,7 +62,6 @@ run_lrisk <- function(input_path_project_agnostic,
                       growth_rate = 0.03,
                       div_netprofit_prop_coef = 1,
                       shock_year = 2030,
-                      fallback_term = 2,
                       scenario_geography = "Global",
                       start_year = 2021,
                       settlement_factor = 1,
@@ -92,8 +86,7 @@ run_lrisk <- function(input_path_project_agnostic,
     discount_rate = discount_rate,
     growth_rate = growth_rate,
     div_netprofit_prop_coef = div_netprofit_prop_coef,
-    shock_year = shock_year,
-    fallback_term = fallback_term
+    shock_year = shock_year
   )
 
   args_list$output_path <- customise_output_path(
@@ -189,7 +182,6 @@ read_and_process_and_calc_lrisk <- function(args_list) {
 
   processed <- data %>%
     st_process(
-      fallback_term = fallback_term,
       scenario_geography = scenario_geography,
       baseline_scenario = baseline_scenario,
       shock_scenario = shock_scenario,
