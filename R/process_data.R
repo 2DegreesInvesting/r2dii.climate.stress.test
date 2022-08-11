@@ -64,38 +64,6 @@ remove_companies_with_missing_exposures <- function(data,
   return(data_filtered)
 }
 
-#' Rows that have no information on the exposure before the end of the
-#' production forecast, should get a zero exposure value. This allows keeping
-#' the information for cases where production is only being built out toward the
-#' end of the forecast period.
-#'
-#' @inheritParams calculate_annual_profits
-#' @inheritParams report_company_drops
-#' @param data tibble containing filtered PACTA results
-#'
-#' @return A tibble of data without rows with no exposure info
-#' @noRd
-set_initial_plan_carsten_missings_to_zero <- function(data,
-                                                      start_year,
-                                                      time_horizon) {
-  data <- data %>%
-    dplyr::mutate(
-      plan_carsten = dplyr::if_else(
-        .data$year < .env$start_year + .env$time_horizon &
-          is.na(.data$plan_carsten),
-        0,
-        .data$plan_carsten
-      )
-    ) %>%
-    dplyr::arrange(
-      .data$investor_name, .data$portfolio_name, .data$company_name,
-      .data$scenario, .data$scenario_geography, .data$ald_sector,
-      .data$technology, .data$year
-    )
-
-  return(data)
-}
-
 #' Remove rows from PACTA results that belong to company-sector combinations
 #' for which there is no positive production value in the relevant year of
 #' exposure (last year of forecast). This handles the edge case that a company
@@ -556,10 +524,6 @@ process_production_data <- function(data, start_year, end_year, time_horizon,
       start_year = start_year,
       time_horizon = time_horizon
     ) %>%
-    # set_initial_plan_carsten_missings_to_zero(
-    #   start_year = start_year,
-    #   time_horizon = time_horizon
-    # ) %>%
     is_scenario_geography_in_pacta_results(scenario_geography_filter) %>%
     dplyr::filter(.data$scenario_geography %in% .env$scenario_geography_filter) %>%
     dplyr::filter(.data$ald_sector %in% .env$sectors) %>%
