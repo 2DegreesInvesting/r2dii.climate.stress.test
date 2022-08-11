@@ -11,11 +11,7 @@ NULL
 # practical purpose.
 investor_name_placeholder <- "Meta Investor"
 
-# vector holding vars to nest pacta results by
-nesting_vars_lookup <- c(
-  "investor_name", "portfolio_name", "equity_market", "ald_sector", "technology",
-  "scenario", "allocation", "scenario_geography", "company_name"
-)
+# vector holding vars to nest production data input by
 prod_nesting_vars_lookup <- c(
   "ald_sector", "technology", "scenario_geography", "company_name"
 )
