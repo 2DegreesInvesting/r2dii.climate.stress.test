@@ -74,11 +74,6 @@ countries_for_regions_mapper_lookup <- tibble::tibble(
   source = rep(c("weo_2019", "weo_2020"), 6)
 )
 
-cuc_pacta_results <- c(
-  "year", "equity_market", "ald_sector", "technology", "scenario", "allocation",
-  "scenario_geography", "company_name", "id", "investor_name", "portfolio_name"
-)
-
 cuc_capacity_factors_power <- c("scenario", "scenario_geography", "technology", "year")
 cuc_price_data <- c("year", "ald_sector", "technology", "scenario")
 cuc_financial_data <- c("company_name", "company_id")
