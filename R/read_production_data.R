@@ -22,5 +22,13 @@ read_production_data <- function(path = NULL) {
       )
     )
 
+  validate_data_has_expected_cols(
+    data = data,
+    expected_columns = c(
+      "id", "company_name", "scenario_geography", "year", "ald_sector",
+      "technology", "plan_tech_prod", "plan_emission_factor", "plan_sec_prod"
+    )
+  )
+
   return(data)
 }
