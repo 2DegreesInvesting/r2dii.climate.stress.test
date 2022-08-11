@@ -552,11 +552,10 @@ process_production_data <- function(data, start_year, end_year, time_horizon,
                                   scenario_geography_filter, sectors,
                                   technologies, log_path) {
   data_processed <- data %>%
-    # TODO: check if needs adaptation
-    # wrangle_and_check_pacta_results(
-    #   start_year = start_year,
-    #   time_horizon = time_horizon
-    # ) %>%
+    wrangle_and_check_production_data(
+      start_year = start_year,
+      time_horizon = time_horizon
+    ) %>%
     # set_initial_plan_carsten_missings_to_zero(
     #   start_year = start_year,
     #   time_horizon = time_horizon

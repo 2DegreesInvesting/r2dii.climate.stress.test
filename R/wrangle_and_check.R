@@ -108,6 +108,24 @@ check_company_terms <- function(data, interactive_mode = FALSE) {
   return(invisible(data))
 }
 
+#' Wrangle nad check production input data
+#'
+#' @param data A tibble holding production data.
+#' @param start_year Numeric. Start year of the analysis
+#' @param time_horizon Numeric. Number of years of forward looking production data
+#'
+#' @return Returns data invisibly.
+wrangle_and_check_production_data <- function(data, start_year, time_horizon) {
+  data <- data %>%
+    tidyr::complete(
+      year = seq(start_year, start_year + time_horizon),
+      tidyr::nesting(!!!rlang::syms(prod_nesting_vars_lookup))
+    ) %>%
+    dplyr::mutate(plan_tech_prod = dplyr::if_else(is.na(.data$plan_tech_prod), 0, .data$plan_tech_prod))
+
+  return(data)
+}
+
 #' Fill missing values on annual_profits
 #'
 #' Function fill missing rows on cols company_id, pd, net_profit_margin,
