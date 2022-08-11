@@ -589,13 +589,7 @@ process_production_data <- function(data, start_year, end_year, time_horizon,
       expected_levels_list =
         list(
           year = start_year:(start_year + time_horizon),
-          scenario_geography = scenario_geography_filter
-        )
-    ) %>%
-    check_level_availability(
-      data_name = "Production Data",
-      expected_levels_list =
-        list(
+          scenario_geography = scenario_geography_filter,
           ald_sector = sectors,
           technology = technologies
         ),
