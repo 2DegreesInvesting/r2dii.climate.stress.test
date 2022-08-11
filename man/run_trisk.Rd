@@ -17,7 +17,6 @@ run_trisk(
   shock_year = 2030,
   fallback_term = 2,
   scenario_geography = "Global",
-  use_company_terms = FALSE,
   start_year = 2021,
   return_results = FALSE
 )
@@ -65,10 +64,6 @@ For accepted range compare \code{stress_test_arguments}.}
 \item{scenario_geography}{Character vector, indicating which geographical
 region(s) (concerning asset location) results shall be calculated for. For
 accepted values compare \code{stress_test_arguments}.}
-
-\item{use_company_terms}{Boolean, indicating if term values for individual
-companies are to be used. For accepted values compare
-\code{stress_test_arguments}.}
 
 \item{start_year}{Numeric, first year in the analysis used as the starting
 point from which production forecasts are compared against scenario targets.

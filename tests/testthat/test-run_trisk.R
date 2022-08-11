@@ -41,7 +41,6 @@ test_that("without iteration, using minimum values of input arguments output is 
       div_netprofit_prop_coef = get_st_argument("div_netprofit_prop_coef", "min"),
       shock_year = get_st_argument("shock_year", "min"),
       fallback_term = as.integer(get_st_argument("fallback_term", "min")),
-      use_company_terms = TRUE,
       return_results = TRUE
     )
   )))
@@ -71,7 +70,6 @@ test_that("without iteration, using maximum values of input arguments output is 
       div_netprofit_prop_coef = get_st_argument("div_netprofit_prop_coef", "max"),
       shock_year = get_st_argument("shock_year", "max"),
       fallback_term = as.integer(get_st_argument("fallback_term", "max")),
-      use_company_terms = TRUE,
       return_results = TRUE
     )
   )))

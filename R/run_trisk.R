@@ -40,9 +40,6 @@
 #' @param scenario_geography Character vector, indicating which geographical
 #'   region(s) (concerning asset location) results shall be calculated for. For
 #'   accepted values compare `stress_test_arguments`.
-#' @param use_company_terms Boolean, indicating if term values for individual
-#'   companies are to be used. For accepted values compare
-#'   `stress_test_arguments`.
 #' @param start_year Numeric, first year in the analysis used as the starting
 #'   point from which production forecasts are compared against scenario targets.
 #'   Must be available in the production data and indicates the first year of
@@ -62,7 +59,6 @@ run_trisk <- function(input_path_project_agnostic,
                       shock_year = 2030,
                       fallback_term = 2,
                       scenario_geography = "Global",
-                      use_company_terms = FALSE,
                       start_year = 2021,
                       return_results = FALSE) {
   cat("-- Running transition risk stress test. \n\n\n")
@@ -84,8 +80,7 @@ run_trisk <- function(input_path_project_agnostic,
     growth_rate = growth_rate,
     div_netprofit_prop_coef = div_netprofit_prop_coef,
     shock_year = shock_year,
-    fallback_term = fallback_term,
-    use_company_terms = use_company_terms
+    fallback_term = fallback_term
   )
 
   args_list$output_path <- customise_output_path(
@@ -174,10 +169,6 @@ read_and_process_and_calc <- function(args_list) {
   )
 
   cat("-- Reading input data from designated input path. \n")
-
-  if (use_company_terms) {
-    paste_write("Using user - configured company - term data. \n", log_path = log_path)
-  }
 
   data <- st_read_agnostic(input_path_project_agnostic, start_year = start_year, sectors = sectors_and_technologies_list$sectors)
 

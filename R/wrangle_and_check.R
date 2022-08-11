@@ -213,8 +213,7 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
         "scenario_name", "scenario_geography", "company_name", "ald_sector",
         "baseline_scenario_arg", "shock_scenario_arg", "lgd_arg",
         "risk_free_rate_arg", "discount_rate_arg", "growth_rate_arg",
-        "div_netprofit_prop_coef_arg", "shock_year_arg", "fallback_term_arg",
-        "use_company_terms_arg"
+        "div_netprofit_prop_coef_arg", "shock_year_arg", "fallback_term_arg"
       )
     )
 
