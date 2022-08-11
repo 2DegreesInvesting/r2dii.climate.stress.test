@@ -78,7 +78,6 @@ cuc_capacity_factors_power <- c("scenario", "scenario_geography", "technology", 
 cuc_price_data <- c("year", "ald_sector", "technology", "scenario")
 cuc_financial_data <- c("company_name", "company_id")
 cuc_scenario_data <- c("scenario_geography", "scenario", "ald_sector", "technology", "year")
-cuc_company_terms <- c("company_name")
 
 cuc_production_data <- c(
   "company_name", "id", "year", "ald_sector", "technology", "scenario_geography"
