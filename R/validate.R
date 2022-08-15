@@ -8,8 +8,14 @@
 validate_input_values <- function(baseline_scenario, shock_scenario, scenario_geography,
                                   lgd, risk_free_rate, discount_rate, growth_rate,
                                   div_netprofit_prop_coef, shock_year,
-                                  fallback_term, use_company_terms, asset_type) {
+                                  fallback_term, use_company_terms, asset_type,
+                                  settlement_factor = NULL, exp_share_damages_paid = NULL, scc = NULL) {
   input_args <- mget(names(formals()), sys.frame(sys.nframe()))
+
+  if(is.null(settlement_factor) & is.null(exp_share_damages_paid) & is.null(scc)) {
+    input_args = input_args[-which(sapply(input_args, is.null))]
+  }
+
 
   c("baseline_scenario", "shock_scenario", "scenario_geography", "asset_type", "use_company_terms") %>%
     purrr::walk(validate_values_in_values, args_list = input_args)

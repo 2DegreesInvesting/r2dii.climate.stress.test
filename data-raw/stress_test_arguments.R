@@ -12,7 +12,10 @@ stress_test_arguments <- tibble::tribble(
                "shock_year",    "double",   "2030",                     NA,     "2025",     "2035",
             "fallback_term",    "double",      "2",                     NA,        "1",        "5", # NOTE: before changing check cap_terms().
        "scenario_geography", "character", "Global", "AdvancedEconomies, Africa, AsiaPacific, Brazil, CentralandSouthAmerica, China, DevelopingEconomies, Emergingmarket&developingeconomies, EU, Eurasia, Europe, Global, India, Japan, LatinAmerica, MiddleEast, NonOECD, NorthAmerica, OECD, Russia, SouthAfrica, SoutheastAsia, US",         NA,         NA,
-        "use_company_terms",   "logical",  "FALSE",          "TRUE, FALSE",         NA,         NA
+        "use_company_terms",   "logical",  "FALSE",          "TRUE, FALSE",         NA,         NA,
+        "settlement_factor",    "double",      "1",                     NA,        "0",         "1",
+   "exp_share_damages_paid",    "double",  "0.027",                     NA,        "0",         "1",
+                      "scc",    "double",     "40",                     NA,        "0",      "10000"
 )
 # styler: on
 
