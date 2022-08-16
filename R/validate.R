@@ -2,7 +2,7 @@
 #'
 #' Checks that user inputs are within defined ranges.
 #'
-#' @inheritParams run_trisk
+#' @inheritParams run_lrisk
 #'
 #' @return NULL
 validate_input_values <- function(baseline_scenario, shock_scenario, scenario_geography,
