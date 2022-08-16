@@ -3,7 +3,7 @@
     Code
       stress_test_arguments
     Output
-      # A tibble: 12 x 6
+      # A tibble: 15 x 6
          name                    type      default     allowed             min   max  
          <chr>                   <chr>     <chr>       <chr>               <chr> <chr>
        1 asset_type              character <NA>        equity, bonds, loa~ <NA>  <NA> 
@@ -18,4 +18,7 @@
       10 fallback_term           double    2           <NA>                1     5    
       11 scenario_geography      character Global      AdvancedEconomies,~ <NA>  <NA> 
       12 use_company_terms       logical   FALSE       TRUE, FALSE         <NA>  <NA> 
+      13 settlement_factor       double    1           <NA>                0     1    
+      14 exp_share_damages_paid  double    0.027       <NA>                0     1    
+      15 scc                     double    40          <NA>                0     10000
 
