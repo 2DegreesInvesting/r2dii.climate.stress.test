@@ -86,7 +86,7 @@ remove_sectors_with_missing_production_end_of_forecast <- function(data,
   companies_missing_sector_production <- data %>%
     dplyr::filter(.data$year == .env$start_year + .env$time_horizon) %>%
     dplyr::group_by(
-      .data$company_name, .data$scenario, .data$ald_sector
+      .data$company_name, .data$ald_sector
     ) %>%
     dplyr::summarise(
       sector_prod = sum(.data$plan_tech_prod, na.rm = TRUE),
@@ -95,14 +95,10 @@ remove_sectors_with_missing_production_end_of_forecast <- function(data,
     dplyr::ungroup() %>%
     dplyr::filter(.data$sector_prod <= 0)
 
-  # while this technically removes problematic cases for only certain scenarios
-  # for a company, this will in practice not lead to one scenario being removed
-  # and another remaining in the data because the production plans are the same
-  # across scenarios.
   data_filtered <- data %>%
     dplyr::anti_join(
       companies_missing_sector_production,
-      by = c("company_name", "scenario", "ald_sector")
+      by = c("company_name", "ald_sector")
     )
 
   n_companies_post <- length(unique(data_filtered$company_name))
@@ -152,7 +148,7 @@ remove_sectors_with_missing_production_start_year <- function(data,
   companies_missing_sector_production_start_year <- data %>%
     dplyr::filter(.data$year == .env$start_year) %>%
     dplyr::group_by(
-      .data$company_name, .data$scenario, .data$ald_sector
+      .data$company_name, .data$ald_sector
     ) %>%
     dplyr::summarise(
       sector_prod = sum(.data$plan_tech_prod, na.rm = TRUE),
@@ -161,14 +157,10 @@ remove_sectors_with_missing_production_start_year <- function(data,
     dplyr::ungroup() %>%
     dplyr::filter(.data$sector_prod <= 0)
 
-  # while this technically removes problematic cases for only certain scenarios
-  # for a company, this will in practice not lead to one scenario being removed
-  # and another remaining in the data because the production plans are the same
-  # across scenarios.
   data_filtered <- data %>%
     dplyr::anti_join(
       companies_missing_sector_production_start_year,
-      by = c("company_name", "scenario", "ald_sector")
+      by = c("company_name", "ald_sector")
     )
 
   n_companies_post <- length(unique(data_filtered$company_name))
@@ -217,7 +209,7 @@ remove_high_carbon_tech_with_missing_production <- function(data,
   companies_missing_high_carbon_tech_production <- data %>%
     dplyr::filter(.data$technology %in% high_carbon_tech_lookup) %>%
     dplyr::group_by(
-      .data$company_name, .data$scenario, .data$ald_sector, .data$technology
+      .data$company_name, .data$ald_sector, .data$technology
     ) %>%
     dplyr::summarise(
       technology_prod = sum(.data$plan_tech_prod, na.rm = TRUE),
@@ -226,14 +218,10 @@ remove_high_carbon_tech_with_missing_production <- function(data,
     dplyr::ungroup() %>%
     dplyr::filter(.data$technology_prod <= 0)
 
-  # while this technically removes problematic cases for only certain scenarios
-  # for a company, this will in practice not lead to one scenario being removed
-  # and another remaining in the data because the production plans are the same
-  # across scenarios.
   data_filtered <- data %>%
     dplyr::anti_join(
       companies_missing_high_carbon_tech_production,
-      by = c("company_name", "scenario", "ald_sector", "technology")
+      by = c("company_name", "ald_sector", "technology")
     )
 
   if (nrow(companies_missing_high_carbon_tech_production) > 0) {
@@ -529,23 +517,20 @@ process_production_data <- function(data, start_year, end_year, time_horizon,
     dplyr::filter(.data$ald_sector %in% .env$sectors) %>%
     dplyr::filter(.data$technology %in% .env$technologies) %>%
     dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$start_year + .env$time_horizon)) %>%
-    # TODO: up for debate
-    # remove_sectors_with_missing_production_end_of_forecast(
-    #   start_year = start_year,
-    #   time_horizon = time_horizon,
-    #   log_path = log_path
-    # ) %>%
-    # TODO: keep, adapt
-    # remove_sectors_with_missing_production_start_year(
-    #   start_year = start_year,
-    #   log_path = log_path
-    # ) %>%
-    # TODO: unclear, review, adapt if needed
-    # remove_high_carbon_tech_with_missing_production(
-    #   start_year = start_year,
-    #   time_horizon = time_horizon,
-    #   log_path = log_path
-    # ) %>%
+    remove_sectors_with_missing_production_end_of_forecast(
+      start_year = start_year,
+      time_horizon = time_horizon,
+      log_path = log_path
+    ) %>%
+    remove_sectors_with_missing_production_start_year(
+      start_year = start_year,
+      log_path = log_path
+    ) %>%
+    remove_high_carbon_tech_with_missing_production(
+      start_year = start_year,
+      time_horizon = time_horizon,
+      log_path = log_path
+    ) %>%
     stop_if_empty(data_name = "Production Data") %>%
     check_level_availability(
       data_name = "Production Data",
