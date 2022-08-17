@@ -106,7 +106,7 @@ run_lrisk <- function(asset_type,
     exp_share_damages_paid = exp_share_damages_paid,
     scc = scc,
     risk_type = "lrisk"
-    )
+  )
 
   args_list$output_path <- customise_output_path(
     output_path = args_list$output_path,
