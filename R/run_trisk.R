@@ -88,7 +88,8 @@ run_trisk <- function(asset_type,
     shock_year = shock_year,
     fallback_term = fallback_term,
     use_company_terms = use_company_terms,
-    asset_type = asset_type
+    asset_type = asset_type,
+    risk_type = "trisk"
   )
 
   args_list$output_path <- customise_output_path(
