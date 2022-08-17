@@ -198,7 +198,7 @@ read_and_process_and_calc <- function(args_list) {
     shock_year = shock_year
   )
 
-  cat("-- Calculating production trajectory under trisk shock")
+  cat("-- Calculating production trajectory under trisk shock. \n")
 
   input_data_list$full_trajectory <- calculate_trisk_trajectory(
     input_data_list = input_data_list,

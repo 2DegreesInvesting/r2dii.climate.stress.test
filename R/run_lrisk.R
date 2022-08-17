@@ -213,7 +213,7 @@ read_and_process_and_calc_lrisk <- function(args_list) {
     exp_share_damages_paid = exp_share_damages_paid
   )
 
-  cat("-- Calculating production trajectory under lrisk shock")
+  cat("-- Calculating production trajectory under lrisk shock. \n")
 
   input_data_list$full_trajectory <- calculate_lrisk_trajectory(
     input_data_list = input_data_list,
