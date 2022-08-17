@@ -108,7 +108,7 @@ check_company_terms <- function(data, interactive_mode = FALSE) {
   return(invisible(data))
 }
 
-#' Wrangle nad check production input data
+#' Wrangle and check production input data
 #'
 #' @param data A tibble holding production data.
 #' @param start_year Numeric. Start year of the analysis

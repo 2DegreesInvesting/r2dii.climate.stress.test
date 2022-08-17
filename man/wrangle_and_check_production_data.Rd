@@ -2,7 +2,7 @@
 % Please edit documentation in R/wrangle_and_check.R
 \name{wrangle_and_check_production_data}
 \alias{wrangle_and_check_production_data}
-\title{Wrangle nad check production input data}
+\title{Wrangle and check production input data}
 \usage{
 wrangle_and_check_production_data(data, start_year, time_horizon)
 }
@@ -17,5 +17,5 @@ wrangle_and_check_production_data(data, start_year, time_horizon)
 Returns data invisibly.
 }
 \description{
-Wrangle nad check production input data
+Wrangle and check production input data
 }

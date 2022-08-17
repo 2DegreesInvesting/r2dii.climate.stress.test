@@ -12,7 +12,7 @@ run_prep_calculation_loans(
 )
 }
 \arguments{
-\item{input_path_project_specific}{file path to project specifc data}
+\item{input_path_project_specific}{file path to project specific data}
 
 \item{input_path_project_agnostic}{String holding path to project agnostic
 data.}
