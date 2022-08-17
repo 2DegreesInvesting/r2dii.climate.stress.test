@@ -203,7 +203,6 @@ subtract_settlement <- function(data,
                                 exp_share_damages_paid,
                                 settlement_factor,
                                 shock_year) {
-  # TODO: validate this function in detail
   data <- data %>%
     dplyr::mutate(
       scc_liability =
