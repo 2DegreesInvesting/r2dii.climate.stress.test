@@ -81,7 +81,11 @@
 <span>  <span class="va">shock_year</span>,</span>
 <span>  <span class="va">fallback_term</span>,</span>
 <span>  <span class="va">use_company_terms</span>,</span>
-<span>  <span class="va">asset_type</span></span>
+<span>  <span class="va">asset_type</span>,</span>
+<span>  <span class="va">settlement_factor</span>,</span>
+<span>  <span class="va">exp_share_damages_paid</span>,</span>
+<span>  <span class="va">scc</span>,</span>
+<span>  <span class="va">risk_type</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -104,7 +108,7 @@ accepted values compare <code>stress_test_arguments</code>.</p></dd>
 
 
 <dt>lgd</dt>
-<dd><p>Numeric, holding the loss given default for accepted value range
+<dd><p>Numeric, holding the loss given default, for accepted value range
 check <code>stress_test_arguments</code>.</p></dd>
 
 
@@ -152,6 +156,29 @@ available for asset_type bonds.</p></dd>
 <dt>asset_type</dt>
 <dd><p>String holding asset_type. For accepted values compare
 <code>stress_test_arguments</code>.</p></dd>
+
+
+<dt>settlement_factor</dt>
+<dd><p>Catch all factor (ratio) that can be used to adjust the
+expected payout of the settlement due to further data gaps. Set to 1 by
+default.</p></dd>
+
+
+<dt>exp_share_damages_paid</dt>
+<dd><p>Numeric. Ratio that defines the expected share
+of the calculated social cost of carbon that is considered in the liability.
+This can follow historical precedents such as the Tobacco Master
+Settlement that had a an expected share of 2.7% of the damages paid.</p></dd>
+
+
+<dt>scc</dt>
+<dd><p>Numeric. Social cost of carbon per excess ton of CO2 emitted. This
+is the price for each surplus ton of CO2 that goes into the calculation of
+the carbon liability of a company.</p></dd>
+
+
+<dt>risk_type</dt>
+<dd><p>String that is either lrisk or trisk.</p></dd>
 
 </dl></div>
 
