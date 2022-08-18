@@ -63,8 +63,8 @@ p4i_p4b_sector_technology_lookup <- tibble::tribble(
 
 # styler: on
 
-# holds names of input arguments to run_trisk that are not model parameters
-setup_vars_lookup <- c("input_path_project_agnostic", "output_path", "iter_var", "return_results")
+# holds names of input arguments to run_*risk that are not model parameters
+setup_vars_lookup <- c("input_path", "output_path", "iter_var", "return_results")
 
 high_carbon_tech_lookup <- c("ICE", "Coal", "Oil", "Gas", "CoalCap", "GasCap", "OilCap")
 
