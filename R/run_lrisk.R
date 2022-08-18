@@ -85,7 +85,11 @@ run_lrisk <- function(input_path,
     discount_rate = discount_rate,
     growth_rate = growth_rate,
     div_netprofit_prop_coef = div_netprofit_prop_coef,
-    shock_year = shock_year
+    shock_year = shock_year,
+    settlement_factor = settlement_factor,
+    exp_share_damages_paid = exp_share_damages_paid,
+    scc = scc,
+    risk_type = "lrisk"
   )
 
   args_list$output_path <- customise_output_path(

@@ -72,7 +72,8 @@ run_trisk <- function(input_path,
     discount_rate = discount_rate,
     growth_rate = growth_rate,
     div_netprofit_prop_coef = div_netprofit_prop_coef,
-    shock_year = shock_year
+    shock_year = shock_year,
+    risk_type = "trisk"
   )
 
   args_list$output_path <- customise_output_path(

@@ -11,7 +11,10 @@ stress_test_arguments <- tibble::tribble(
   "div_netprofit_prop_coef",    "double",      "1",                     NA,      "0.8",        "1",
                "shock_year",    "double",   "2030",                     NA,     "2025",     "2035",
        "scenario_geography", "character", "Global", "AdvancedEconomies, Africa, AsiaPacific, Brazil, CentralandSouthAmerica, China, DevelopingEconomies, Emergingmarket&developingeconomies, EU, Eurasia, Europe, Global, India, Japan, LatinAmerica, MiddleEast, NonOECD, NorthAmerica, OECD, Russia, SouthAfrica, SoutheastAsia, US",         NA,         NA,
-               "start_year",    "double",   "2021",                     NA,     "2021",     "2021"
+               "start_year",    "double",   "2021",                     NA,     "2021",     "2021",
+        "settlement_factor",    "double",      "1",                     NA,        "0",         "1",
+   "exp_share_damages_paid",    "double",  "0.027",                     NA,        "0",         "1",
+                      "scc",    "double",     "40",                     NA,        "0",      "10000"
 )
 # styler: on
 

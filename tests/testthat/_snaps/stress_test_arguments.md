@@ -3,7 +3,7 @@
     Code
       stress_test_arguments
     Output
-      # A tibble: 11 x 6
+      # A tibble: 14 x 6
          name                    type      default     allowed             min   max  
          <chr>                   <chr>     <chr>       <chr>               <chr> <chr>
        1 asset_type              character <NA>        equity, bonds, loa~ <NA>  <NA> 
@@ -17,4 +17,7 @@
        9 shock_year              double    2030        <NA>                2025  2035 
       10 scenario_geography      character Global      AdvancedEconomies,~ <NA>  <NA> 
       11 start_year              double    2021        <NA>                2021  2021 
+      12 settlement_factor       double    1           <NA>                0     1    
+      13 exp_share_damages_paid  double    0.027       <NA>                0     1    
+      14 scc                     double    40          <NA>                0     10000
 
