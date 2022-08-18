@@ -8,62 +8,6 @@ is_scenario_geography_in_pacta_results <- function(data, scenario_geography_filt
   invisible(data)
 }
 
-#' Remove rows from PACTA results that belong to company-technology combinations
-#' for which there is no information on the exposure in the portfolio. We join
-#' company results on the portfolio exposure based on the last available year of
-#' the production forecast. Hence we filter for missings in that year.
-#'
-#' @inheritParams calculate_annual_profits
-#' @inheritParams report_company_drops
-#' @param data tibble containing filtered PACTA results
-#'
-#' @return A tibble of data without rows with no exposure info
-#' @noRd
-remove_companies_with_missing_exposures <- function(data,
-                                                    start_year,
-                                                    time_horizon,
-                                                    log_path) {
-  n_companies_pre <- length(unique(data$company_name))
-
-  # we merge the exposure of the last year of the forecast on the company
-  # results for the aggregation, to get the closest picture to the shock year.
-  # Hence start_year + time_horizon
-  companies_missing_exposure_value <- data %>%
-    dplyr::filter(.data$year == .env$start_year + .env$time_horizon) %>%
-    dplyr::filter(is.na(.data$plan_carsten))
-
-  data_filtered <- data %>%
-    dplyr::anti_join(
-      companies_missing_exposure_value,
-      by = c("company_name", "technology")
-    )
-
-  n_companies_post <- length(unique(data_filtered$company_name))
-
-  if (n_companies_pre > n_companies_post) {
-    percent_loss <- (n_companies_pre - n_companies_post) * 100 / n_companies_pre
-    affected_companies <- sort(
-      setdiff(
-        data$company_name,
-        data_filtered$company_name
-      )
-    )
-    paste_write(
-      format_indent_1(), "When filtering out holdings with exposures missing value, dropped rows for",
-      n_companies_pre - n_companies_post, "out of", n_companies_pre, "companies",
-      log_path = log_path
-    )
-    paste_write(format_indent_2(), "percent loss:", percent_loss, log_path = log_path)
-    paste_write(format_indent_2(), "affected companies:", log_path = log_path)
-    purrr::walk(affected_companies, function(company) {
-      paste_write(format_indent_2(), company, log_path = log_path)
-    })
-  }
-
-
-  return(data_filtered)
-}
-
 #' Remove rows from PACTA results that belong to company-sector combinations
 #' for which there is no positive production value in the relevant year of
 #' exposure (last year of forecast). This handles the edge case that a company
