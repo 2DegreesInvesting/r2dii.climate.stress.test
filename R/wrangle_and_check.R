@@ -67,47 +67,6 @@ check_financial_data <- function(financial_data,
   return(invisible(financial_data))
 }
 
-#' Check company term values for plausibility
-#'
-#' @param data A tibble holding company_terms data.
-#' @param interactive_mode If TRUE the, more verbose, interactive mode is used.
-#'
-#' @return Returns data invisibly.
-#' @export
-check_company_terms <- function(data, interactive_mode = FALSE) {
-  not_na_terms <- data %>%
-    dplyr::filter(!is.na(.data$term)) %>%
-    dplyr::pull(.data$term)
-
-  if (any(not_na_terms < 1)) {
-    rlang::abort(c(
-      "Must not provide terms below 1",
-      x = glue::glue("Identified terms below."),
-      i = "Please check company_terms.csv file."
-    ))
-  }
-
-  if (!all(not_na_terms %% 1 == 0)) {
-    rlang::abort(c(
-      "Terms must be provided as whole numbers.",
-      x = glue::glue("Identified terms that are not whole numbers."),
-      i = "Please check company_terms.csv file."
-    ))
-  }
-
-  if (interactive_mode) {
-    n_terms_bigger_5 <- not_na_terms[not_na_terms > 5]
-
-    if (length(n_terms_bigger_5) > 0) {
-      message(paste("Identified", length(n_terms_bigger_5), "companies with term > 5. Terms will be capped."))
-    }
-
-    message("Company - term data validated successfully.")
-  }
-
-  return(invisible(data))
-}
-
 #' Wrangle and check production input data
 #'
 #' @param data A tibble holding production data.
@@ -319,41 +278,4 @@ check_results <- function(wrangled_results_list, sensitivity_analysis_vars) {
     )
 
   return(invisible(wrangled_results_list))
-}
-
-#' Cap terms
-#'
-#' Caps terms to maximum of 5 (years). The value 5 was chosen as for longer
-#' time frames reliability of model deteriorates. Informative message on number
-#' of affected companies is thrown.
-#'
-#' @param data A tibble holding at least column `term`.
-#'
-#' @return Tibble `data` with capped term.
-cap_terms <- function(data) {
-  n_terms_bigger_5 <- data %>%
-    dplyr::filter(.data$term > 5) %>%
-    nrow()
-
-  if (n_terms_bigger_5 > 0) {
-    message(paste("Capping term values to 5 for", n_terms_bigger_5, "companies."))
-
-    data <- data %>%
-      dplyr::mutate(term = dplyr::if_else(.data$term > 5, 5, .data$term))
-  }
-
-  return(data)
-}
-
-add_term_to_trajectories <- function(annual_profits, production_data) {
-  distinct_company_terms <- production_data %>%
-    dplyr::select(company_name, term) %>%
-    dplyr::distinct_all()
-
-  report_duplicates(data = distinct_company_terms, cols = names(distinct_company_terms))
-
-  annual_profits_with_term <- annual_profits %>%
-    dplyr::inner_join(distinct_company_terms, by = c("company_name"))
-
-  return(annual_profits_with_term)
 }
