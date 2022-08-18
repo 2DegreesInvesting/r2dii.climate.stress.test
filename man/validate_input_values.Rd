@@ -16,7 +16,11 @@ validate_input_values(
   shock_year,
   fallback_term,
   use_company_terms,
-  asset_type
+  asset_type,
+  settlement_factor,
+  exp_share_damages_paid,
+  scc,
+  risk_type
 )
 }
 \arguments{
@@ -30,7 +34,7 @@ stress test, for accepted value range check \code{stress_test_arguments}.}
 region(s) (concerning asset location) results shall be calculated for. For
 accepted values compare \code{stress_test_arguments}.}
 
-\item{lgd}{Numeric, holding the loss given default for accepted value range
+\item{lgd}{Numeric, holding the loss given default, for accepted value range
 check \code{stress_test_arguments}.}
 
 \item{risk_free_rate}{Numeric that indicates the risk free rate of interest.
@@ -62,6 +66,21 @@ available for asset_type bonds.}
 
 \item{asset_type}{String holding asset_type. For accepted values compare
 \code{stress_test_arguments}.}
+
+\item{settlement_factor}{Catch all factor (ratio) that can be used to adjust the
+expected payout of the settlement due to further data gaps. Set to 1 by
+default.}
+
+\item{exp_share_damages_paid}{Numeric. Ratio that defines the expected share
+of the calculated social cost of carbon that is considered in the liability.
+This can follow historical precedents such as the Tobacco Master
+Settlement that had a an expected share of 2.7\% of the damages paid.}
+
+\item{scc}{Numeric. Social cost of carbon per excess ton of CO2 emitted. This
+is the price for each surplus ton of CO2 that goes into the calculation of
+the carbon liability of a company.}
+
+\item{risk_type}{String that is either lrisk or trisk.}
 }
 \description{
 Checks that user inputs are within defined ranges.
