@@ -10,28 +10,28 @@ validate_input_values <- function(baseline_scenario, shock_scenario, scenario_ge
                                   div_netprofit_prop_coef, shock_year,
                                   fallback_term, use_company_terms, asset_type,
                                   settlement_factor, exp_share_damages_paid, scc, risk_type) {
-
   input_args <- mget(names(formals()), sys.frame(sys.nframe()))
-  input_args <- input_args[ - which(names(input_args) == "risk_type")]
+  input_args <- input_args[-which(names(input_args) == "risk_type")]
 
-  if (!(risk_type %in% c("trisk","lrisk"))) {
+  if (!(risk_type %in% c("trisk", "lrisk"))) {
     stop("risk type must be either lrisk or trisk")
   }
 
-  if(risk_type == "trisk") {
-    input_args[which(names(input_args)%in%c("settlement_factor","scc", "exp_share_damages_paid"))]<-NULL
+  if (risk_type == "trisk") {
+    input_args[which(names(input_args) %in% c("settlement_factor", "scc", "exp_share_damages_paid"))] <- NULL
   }
 
   c("baseline_scenario", "shock_scenario", "scenario_geography", "asset_type", "use_company_terms") %>%
     purrr::walk(validate_values_in_values, args_list = input_args)
 
-  vector_numeric_args <-  c(
+  vector_numeric_args <- c(
     "lgd", "risk_free_rate", "discount_rate", "growth_rate",
     "div_netprofit_prop_coef", "shock_year", "fallback_term",
-    "settlement_factor", "exp_share_damages_paid", "scc")
+    "settlement_factor", "exp_share_damages_paid", "scc"
+  )
 
   if (risk_type == "trisk") {
-  vector_numeric_args <- vector_numeric_args[! vector_numeric_args %in% c("settlement_factor", "exp_share_damages_paid", "scc")]
+    vector_numeric_args <- vector_numeric_args[!vector_numeric_args %in% c("settlement_factor", "exp_share_damages_paid", "scc")]
   }
   vector_numeric_args %>%
     purrr::walk(validate_values_in_range, args_list = input_args)
