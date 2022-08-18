@@ -12,10 +12,8 @@ run_prep_calculation_loans(
 )
 }
 \arguments{
-\item{input_path_project_specific}{file path to project specific data}
-
-\item{input_path_project_agnostic}{String holding path to project agnostic
-data.}
+\item{input_path_project_specific}{File path to project specific data.
+#' @param input_path_project_specific File path to project agnostic data.}
 
 \item{data_prep_output_path}{Path where results are written. NOTE: This is a
 workflow that is needed exclusively in preparation of \code{\link[=run_trisk]{run_trisk()}} for

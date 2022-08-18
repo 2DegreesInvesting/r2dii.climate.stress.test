@@ -5,7 +5,7 @@
 \title{Run stress testing for provided asset type.}
 \usage{
 run_lrisk(
-  input_path_project_agnostic,
+  input_path,
   output_path,
   baseline_scenario = "WEO2020_SPS",
   shock_scenario = "WEO2020_SDS",
@@ -24,8 +24,7 @@ run_lrisk(
 )
 }
 \arguments{
-\item{input_path_project_agnostic}{String holding path to project agnostic
-data.}
+\item{input_path}{String holding path to project agnostic data.}
 
 \item{output_path}{String holding path to which output files are written.
 NOTE: Results and logs per run are saved to a subdirectory of output_path

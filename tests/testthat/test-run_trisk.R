@@ -10,7 +10,7 @@ test_that("without iteration, using minimum values of input arguments output is 
 
   suppressed_console_output <- suppressWarnings(suppressMessages(capture.output(
     results <- run_trisk(
-      input_path_project_agnostic = in_agnostic,
+      input_path = in_agnostic,
       output_path = out,
       lgd = get_st_argument("lgd", "min"),
       risk_free_rate = get_st_argument("risk_free_rate", "min"),
@@ -37,7 +37,7 @@ test_that("without iteration, using maximum values of input arguments output is 
 
   suppressed_console_output <- suppressWarnings(suppressMessages(capture.output(
     results <- run_trisk(
-      input_path_project_agnostic = in_agnostic,
+      input_path = in_agnostic,
       output_path = out,
       scenario_geography = "OECD",
       lgd = get_st_argument("lgd", "max"),

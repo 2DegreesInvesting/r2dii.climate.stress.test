@@ -1,7 +1,8 @@
 #' Run stress testing data preparation for loans
 #'
 #' @inheritParams run_trisk
-#' @param input_path_project_specific file path to project specific data
+#' @param input_path_project_specific File path to project specific data.
+#' #' @param input_path_project_specific File path to project agnostic data.
 #' @param data_prep_output_path Path where results are written. NOTE: This is a
 #'   workflow that is needed exclusively in preparation of [run_trisk()] for
 #'   loan books. It creates input data for the stress test. A recommended

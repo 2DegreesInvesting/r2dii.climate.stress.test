@@ -10,7 +10,7 @@ test_that("with iteration, using default settings output is unchanged", {
 
   suppressed_console_output <- suppressWarnings(capture.output(
     results <- run_lrisk(
-      input_path_project_agnostic = in_agnostic,
+      input_path = in_agnostic,
       output_path = out,
       shock_year = c(2025, 2030),
       return_results = TRUE

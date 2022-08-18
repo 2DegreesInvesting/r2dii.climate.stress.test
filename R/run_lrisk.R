@@ -8,8 +8,7 @@
 #' NOTE: if `return_results` is TRUE results will not be written to `output
 #' path` but instead are returned.
 #'
-#' @param input_path_project_agnostic String holding path to project agnostic
-#'   data.
+#' @param input_path String holding path to project agnostic data.
 #' @param output_path String holding path to which output files are written.
 #'   NOTE: Results and logs per run are saved to a subdirectory of output_path
 #'   that will be generated automatically. The name of the subdirectory is the
@@ -52,7 +51,7 @@
 #' @param return_results Boolean, indicating if results shall be exported.
 #' @return NULL
 #' @export
-run_lrisk <- function(input_path_project_agnostic,
+run_lrisk <- function(input_path,
                       output_path,
                       baseline_scenario = "WEO2020_SPS",
                       shock_scenario = "WEO2020_SDS",
@@ -176,7 +175,7 @@ read_and_process_and_calc_lrisk <- function(args_list) {
 
   cat("-- Reading input data from designated input path. \n")
 
-  data <- st_read_agnostic(input_path_project_agnostic, start_year = start_year, sectors = sectors_and_technologies_list$sectors)
+  data <- st_read_agnostic(input_path, start_year = start_year, sectors = sectors_and_technologies_list$sectors)
 
   cat("-- Processing input data. \n")
 
