@@ -428,11 +428,6 @@ stop_if_empty <- function(data, data_name) {
   return(invisible(data))
 }
 
-get_start_year <- function(data) {
-  out <- min(data$pacta_results$year, na.rm = TRUE)
-  return(out)
-}
-
 
 #' Infer supported sectors and technologies
 #'
