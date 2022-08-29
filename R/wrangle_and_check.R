@@ -297,7 +297,8 @@ check_results <- function(wrangled_results_list, sensitivity_analysis_vars) {
         "company_name", "sector", "business_unit", "roll_up_type",
         "scenario_geography", "calculation_type", "baseline_scenario",
         "shock_scenario", "lgd", "risk_free_rate", "discount_rate",
-        "dividend_rate", "growth_rate", "shock_year", "term"
+        "dividend_rate", "growth_rate", "shock_year", "term", "scc",
+        "settlement_factor", "exp_share_damages_paid"
       )
     )
 
