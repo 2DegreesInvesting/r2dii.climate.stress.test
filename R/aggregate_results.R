@@ -30,7 +30,8 @@ aggregate_results <- function(results_list, sensitivity_analysis_vars, iter_var)
         "investor_name", "portfolio_name", "scenario_name", "scenario_geography",
         "company_name", "ald_sector", "asset_type_arg", "baseline_scenario_arg",
         "shock_scenario_arg", "lgd_arg", "risk_free_rate_arg", "discount_rate_arg",
-        "growth_rate_arg", "div_netprofit_prop_coef_arg", "shock_year_arg",
+        "growth_rate_arg", "scc_arg", "settlement_factor_arg", "exp_share_damages_paid_arg",
+        "div_netprofit_prop_coef_arg", "shock_year_arg",
         "fallback_term_arg", "use_company_terms_arg"
       )
     )
@@ -53,6 +54,9 @@ aggregate_results <- function(results_list, sensitivity_analysis_vars, iter_var)
       discount_rate = .data$discount_rate_arg,
       dividend_rate = .data$div_netprofit_prop_coef_arg,
       growth_rate = .data$growth_rate_arg,
+      scc = .data$scc_arg,
+      settlement_factor = .data$settlement_factor_arg,
+      exp_share_damages_paid = .data$exp_share_damages_paid_arg,
       shock_year = .data$shock_year_arg,
       net_present_value_baseline = .data$total_disc_npv_baseline,
       net_present_value_shock = .data$total_disc_npv_ls,
@@ -68,7 +72,8 @@ aggregate_results <- function(results_list, sensitivity_analysis_vars, iter_var)
       .data$roll_up_type, .data$scenario_geography, .data$calculation_type,
       .data$baseline_scenario, .data$shock_scenario, .data$lgd,
       .data$risk_free_rate, .data$discount_rate, .data$dividend_rate,
-      .data$growth_rate, .data$shock_year, .data$net_present_value_baseline,
+      .data$growth_rate, .data$scc, .data$settlement_factor, .data$exp_share_damages_paid,
+      .data$shock_year, .data$net_present_value_baseline,
       .data$net_present_value_shock, .data$net_present_value_difference,
       .data$term, .data$pd_baseline, .data$pd_shock, .data$pd_difference
     )
