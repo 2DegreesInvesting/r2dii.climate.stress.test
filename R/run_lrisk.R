@@ -125,7 +125,8 @@ run_lrisk <- function(asset_type,
   st_results_aggregated <- aggregate_results(
     results_list = st_results,
     sensitivity_analysis_vars = names(args_list)[!names(args_list) %in% setup_vars_lookup],
-    iter_var = iter_var
+    iter_var = iter_var,
+    risk_type = "lrisk"
   )
 
   st_results_wrangled_and_checked <- wrangle_results(
@@ -133,7 +134,8 @@ run_lrisk <- function(asset_type,
     sensitivity_analysis_vars = names(args_list)[!names(args_list) %in% setup_vars_lookup]
   ) %>%
     check_results(
-      sensitivity_analysis_vars = names(args_list)[!names(args_list) %in% setup_vars_lookup]
+      sensitivity_analysis_vars = names(args_list)[!names(args_list) %in% setup_vars_lookup],
+      risk_type = "lrisk"
     )
 
   if (return_results) {
