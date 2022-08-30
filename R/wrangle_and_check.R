@@ -292,7 +292,7 @@ check_results <- function(wrangled_results_list, sensitivity_analysis_vars, risk
   wrangled_results_list$crispy_output %>%
     report_missings(
       name_data = "CRISPY Results"
-    ) #%>%
+    )
 
   if (risk_type == "trisk") {
     wrangled_results_list$crispy_output <- wrangled_results_list$crispy_output %>%
@@ -307,16 +307,16 @@ check_results <- function(wrangled_results_list, sensitivity_analysis_vars, risk
   }
 
   if (risk_type == "lrisk") {
-  wrangled_results_list$crispy_output <- wrangled_results_list$crispy_output %>%
-    report_all_duplicate_kinds(
-      composite_unique_cols = c(
-        "company_name", "sector", "business_unit", "roll_up_type",
-        "scenario_geography", "calculation_type", "baseline_scenario",
-        "shock_scenario", "lgd", "risk_free_rate", "discount_rate",
-        "dividend_rate", "growth_rate", "shock_year", "term",
-        "scc","settlement_factor", "exp_share_damages_paid"
+    wrangled_results_list$crispy_output <- wrangled_results_list$crispy_output %>%
+      report_all_duplicate_kinds(
+        composite_unique_cols = c(
+          "company_name", "sector", "business_unit", "roll_up_type",
+          "scenario_geography", "calculation_type", "baseline_scenario",
+          "shock_scenario", "lgd", "risk_free_rate", "discount_rate",
+          "dividend_rate", "growth_rate", "shock_year", "term",
+          "scc", "settlement_factor", "exp_share_damages_paid"
+        )
       )
-    )
   }
   return(invisible(wrangled_results_list))
 }
