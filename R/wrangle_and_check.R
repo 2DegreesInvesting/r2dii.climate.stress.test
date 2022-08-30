@@ -261,9 +261,10 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
 #'
 #' @inheritParams wrangle_results
 #' @param wrangled_results_list A list of wrangled results.
+#' @param risk_type String that is either lrisk or trisk.
 #'
 #' @return `wrangled_results_list`
-check_results <- function(wrangled_results_list, sensitivity_analysis_vars) {
+check_results <- function(wrangled_results_list, sensitivity_analysis_vars, risk_type) {
   sensitivity_analysis_vars <- paste0(sensitivity_analysis_vars, "_arg")
 
   # company trajectories ----------------------------------------------------
@@ -291,17 +292,32 @@ check_results <- function(wrangled_results_list, sensitivity_analysis_vars) {
   wrangled_results_list$crispy_output %>%
     report_missings(
       name_data = "CRISPY Results"
-    ) %>%
+    ) #%>%
+
+  if (risk_type == "trisk") {
+    wrangled_results_list$crispy_output <- wrangled_results_list$crispy_output %>%
+      report_all_duplicate_kinds(
+        composite_unique_cols = c(
+          "company_name", "sector", "business_unit", "roll_up_type",
+          "scenario_geography", "calculation_type", "baseline_scenario",
+          "shock_scenario", "lgd", "risk_free_rate", "discount_rate",
+          "dividend_rate", "growth_rate", "shock_year", "term"
+        )
+      )
+  }
+
+  if (risk_type == "lrisk") {
+  wrangled_results_list$crispy_output <- wrangled_results_list$crispy_output %>%
     report_all_duplicate_kinds(
       composite_unique_cols = c(
         "company_name", "sector", "business_unit", "roll_up_type",
         "scenario_geography", "calculation_type", "baseline_scenario",
         "shock_scenario", "lgd", "risk_free_rate", "discount_rate",
-        "dividend_rate", "growth_rate", "shock_year", "term", "scc",
-        "settlement_factor", "exp_share_damages_paid"
+        "dividend_rate", "growth_rate", "shock_year", "term",
+        "scc","settlement_factor", "exp_share_damages_paid"
       )
     )
-
+  }
   return(invisible(wrangled_results_list))
 }
 
