@@ -294,7 +294,8 @@ check_results <- function(wrangled_results_list, sensitivity_analysis_vars, risk
     "company_name", "sector", "business_unit", "roll_up_type",
     "scenario_geography", "calculation_type", "baseline_scenario",
     "shock_scenario", "lgd", "risk_free_rate", "discount_rate",
-    "dividend_rate", "growth_rate", "shock_year", "term")
+    "dividend_rate", "growth_rate", "shock_year", "term"
+  )
 
   if (risk_type == "lrisk") {
     composite_unique_cols_lrisk <- c("scc", "settlement_factor", "exp_share_damages_paid")
@@ -304,9 +305,10 @@ check_results <- function(wrangled_results_list, sensitivity_analysis_vars, risk
   wrangled_results_list$crispy_output %>%
     report_missings(
       name_data = "CRISPY Results"
-    )%>%
-      report_all_duplicate_kinds(
-        composite_unique_cols = composite_unique_cols_crispy_results)
+    ) %>%
+    report_all_duplicate_kinds(
+      composite_unique_cols = composite_unique_cols_crispy_results
+    )
 
 
 
