@@ -34,7 +34,7 @@ aggregate_results <- function(results_list, sensitivity_analysis_vars, iter_var,
 
   if (risk_type == "lrisk") {
     lrisk_additional <- c("scc_arg", "settlement_factor_arg", "exp_share_damages_paid_arg")
-    merge_by_cols <- append(merge_by_cols, lrisk_additional)
+    merge_by_cols <- c(merge_by_cols, lrisk_additional)
   }
 
   crispy_output <- results_list$company_technology_npv %>%
@@ -109,7 +109,6 @@ aggregate_results <- function(results_list, sensitivity_analysis_vars, iter_var,
         .data$term, .data$pd_baseline, .data$pd_shock, .data$pd_difference
       )
   }
-
 
   return(list(
     company_trajectories = results_list$company_trajectories,
