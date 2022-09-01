@@ -299,7 +299,7 @@ check_results <- function(wrangled_results_list, sensitivity_analysis_vars, risk
 
   if (risk_type == "lrisk") {
     composite_unique_cols_lrisk <- c("scc", "settlement_factor", "exp_share_damages_paid")
-    composite_unique_cols_crispy_results <- append(composite_unique_cols_crispy_results, composite_unique_cols_lrisk)
+    composite_unique_cols_crispy_results <- c(composite_unique_cols_crispy_results, composite_unique_cols_lrisk)
   }
 
   wrangled_results_list$crispy_output %>%
@@ -309,9 +309,6 @@ check_results <- function(wrangled_results_list, sensitivity_analysis_vars, risk
     report_all_duplicate_kinds(
       composite_unique_cols = composite_unique_cols_crispy_results
     )
-
-
-
 
   return(invisible(wrangled_results_list))
 }
