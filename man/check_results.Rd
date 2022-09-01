@@ -4,13 +4,15 @@
 \alias{check_results}
 \title{Check results}
 \usage{
-check_results(wrangled_results_list, sensitivity_analysis_vars)
+check_results(wrangled_results_list, sensitivity_analysis_vars, risk_type)
 }
 \arguments{
 \item{wrangled_results_list}{A list of wrangled results.}
 
 \item{sensitivity_analysis_vars}{String vector holding names of iteration
 arguments.}
+
+\item{risk_type}{String that is either lrisk or trisk.}
 }
 \value{
 \code{wrangled_results_list}
