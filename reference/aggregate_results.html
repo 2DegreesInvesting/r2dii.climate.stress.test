@@ -87,7 +87,7 @@ risk results for company and portfolio level.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">aggregate_results</span><span class="op">(</span><span class="va">results_list</span>, <span class="va">sensitivity_analysis_vars</span>, <span class="va">iter_var</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">aggregate_results</span><span class="op">(</span><span class="va">results_list</span>, <span class="va">sensitivity_analysis_vars</span>, <span class="va">iter_var</span>, <span class="va">risk_type</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -104,6 +104,10 @@ arguments.</p></dd>
 <dt>iter_var</dt>
 <dd><p>String vector holding the variable over which to iterate in
 sensitivity analysis</p></dd>
+
+
+<dt>risk_type</dt>
+<dd><p>String that is either lrisk or trisk</p></dd>
 
 </dl></div>
     <div id="value">
