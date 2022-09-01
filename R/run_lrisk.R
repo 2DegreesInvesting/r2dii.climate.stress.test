@@ -111,7 +111,8 @@ run_lrisk <- function(input_path,
     sensitivity_analysis_vars = names(args_list)[!names(args_list) %in% setup_vars_lookup]
   ) %>%
     check_results(
-      sensitivity_analysis_vars = names(args_list)[!names(args_list) %in% setup_vars_lookup]
+      sensitivity_analysis_vars = names(args_list)[!names(args_list) %in% setup_vars_lookup],
+      risk_type = "lrisk"
     )
 
   if (return_results) {
