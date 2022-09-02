@@ -147,9 +147,10 @@ check_valid_financial_data_values <- function(financial_data) {
 #' @param results_list A list of results.
 #' @param sensitivity_analysis_vars  String vector holding names of iteration
 #'   arguments.
+#' @param risk_type String that is either lrisk or trisk.
 #'
 #' @return A list of wrangled results.
-wrangle_results <- function(results_list, sensitivity_analysis_vars) {
+wrangle_results <- function(results_list, sensitivity_analysis_vars, risk_type) {
   sensitivity_analysis_vars <- paste0(sensitivity_analysis_vars, "_arg")
 
   # company trajectories ----------------------------------------------------

@@ -92,7 +92,8 @@ run_trisk <- function(input_path,
 
   st_results_wrangled_and_checked <- wrangle_results(
     results_list = st_results,
-    sensitivity_analysis_vars = names(args_list)[!names(args_list) %in% setup_vars_lookup]
+    sensitivity_analysis_vars = names(args_list)[!names(args_list) %in% setup_vars_lookup],
+    risk_type = "trisk"
   ) %>%
     check_results(
       sensitivity_analysis_vars = names(args_list)[!names(args_list) %in% setup_vars_lookup],
