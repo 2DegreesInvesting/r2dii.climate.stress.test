@@ -630,6 +630,13 @@ set_litigation_trajectory <- function(data,
         .data$scen_to_follow,
         .data$late_sudden
       )
+    ) %>%
+    dplyr::mutate(
+      is_litigated = dplyr::if_else(
+        !.data$aligned & .data$direction == "declining",
+        TRUE,
+        FALSE
+      )
     )
 
   data <- filter_negative_late_and_sudden(data, log_path = log_path)
