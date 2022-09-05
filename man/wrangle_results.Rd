@@ -4,10 +4,12 @@
 \alias{wrangle_results}
 \title{Wrangle results}
 \usage{
-wrangle_results(results_list, sensitivity_analysis_vars)
+wrangle_results(results_list, risk_type, sensitivity_analysis_vars)
 }
 \arguments{
 \item{results_list}{A list of results.}
+
+\item{risk_type}{String that is either lrisk or trisk.}
 
 \item{sensitivity_analysis_vars}{String vector holding names of iteration
 arguments.}

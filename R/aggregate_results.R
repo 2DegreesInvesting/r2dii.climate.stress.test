@@ -95,7 +95,8 @@ aggregate_results <- function(results_list, sensitivity_analysis_vars, iter_var,
         .data$growth_rate, .data$scc, .data$settlement_factor, .data$exp_share_damages_paid,
         .data$shock_year, .data$net_present_value_baseline,
         .data$net_present_value_shock, .data$net_present_value_difference,
-        .data$term, .data$pd_baseline, .data$pd_shock, .data$pd_difference
+        .data$term, .data$pd_baseline, .data$pd_shock, .data$pd_difference,
+        .data$is_litigated
       )
   } else {
     crispy_output <- crispy_output %>%

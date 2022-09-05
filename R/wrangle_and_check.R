@@ -215,25 +215,43 @@ check_valid_financial_data_values <- function(financial_data, asset_type) {
 #' is split into market risk results for company and portfolio level.
 #'
 #' @param results_list A list of results.
+#' @param risk_type String that is either lrisk or trisk.
 #' @param sensitivity_analysis_vars  String vector holding names of iteration
 #'   arguments.
 #'
 #' @return A list of wrangled results.
-wrangle_results <- function(results_list, sensitivity_analysis_vars) {
+wrangle_results <- function(results_list, risk_type, sensitivity_analysis_vars) {
   sensitivity_analysis_vars <- paste0(sensitivity_analysis_vars, "_arg")
 
   # company trajectories ----------------------------------------------------
-  company_trajectories <- results_list$company_trajectories %>%
-    dplyr::select(
-      .data$investor_name, .data$portfolio_name, .data$scenario_name,
-      .data$company_name, .data$year, .data$scenario_geography, .data$ald_sector,
-      .data$technology, .data$plan_tech_prod, .data$phase_out, .data$baseline,
-      .data$scen_to_follow_aligned, .data$late_sudden, .data$company_id, .data$pd,
-      .data$net_profit_margin, .data$debt_equity_ratio, .data$volatility,
-      .data$Baseline_price, .data$late_sudden_price, .data$net_profits_baseline,
-      .data$net_profits_ls, .data$discounted_net_profit_baseline,
-      .data$discounted_net_profit_ls, !!!rlang::syms(sensitivity_analysis_vars)
-    ) %>%
+  if (risk_type == "lrisk") {
+    company_trajectories <- results_list$company_trajectories %>%
+      dplyr::select(
+        .data$investor_name, .data$portfolio_name, .data$scenario_name,
+        .data$company_name, .data$year, .data$scenario_geography, .data$ald_sector,
+        .data$technology, .data$plan_tech_prod, .data$phase_out, .data$baseline,
+        .data$scen_to_follow_aligned, .data$late_sudden, .data$company_id, .data$pd,
+        .data$net_profit_margin, .data$debt_equity_ratio, .data$volatility,
+        .data$Baseline_price, .data$late_sudden_price, .data$net_profits_baseline,
+        .data$net_profits_ls, .data$discounted_net_profit_baseline,
+        .data$discounted_net_profit_ls, !!!rlang::syms(sensitivity_analysis_vars),
+        .data$is_litigated
+      )
+  } else {
+    company_trajectories <- results_list$company_trajectories %>%
+      dplyr::select(
+        .data$investor_name, .data$portfolio_name, .data$scenario_name,
+        .data$company_name, .data$year, .data$scenario_geography, .data$ald_sector,
+        .data$technology, .data$plan_tech_prod, .data$phase_out, .data$baseline,
+        .data$scen_to_follow_aligned, .data$late_sudden, .data$company_id, .data$pd,
+        .data$net_profit_margin, .data$debt_equity_ratio, .data$volatility,
+        .data$Baseline_price, .data$late_sudden_price, .data$net_profits_baseline,
+        .data$net_profits_ls, .data$discounted_net_profit_baseline,
+        .data$discounted_net_profit_ls, !!!rlang::syms(sensitivity_analysis_vars)
+      )
+  }
+
+  company_trajectories <- company_trajectories %>%
     dplyr::rename(
       production_plan_company_technology = .data$plan_tech_prod,
       # TODO: add once ADO3530 is merged
