@@ -1,7 +1,7 @@
 Package: r2dii.climate.stress.test
 Title: Climate Transition Risk Stress Test for Listed Equity, Corporate Bond and Corporate
     Loan Portfolios
-Version: 0.0.0.9003
+Version: 0.0.0.9004
 Authors@R: c(
     person(given = "Jacob",
            family = "Kastl",
