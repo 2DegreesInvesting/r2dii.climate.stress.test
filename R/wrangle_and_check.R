@@ -420,6 +420,7 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
     dplyr::select(
       .data$scenario_name, .data$scenario_geography, .data$investor_name,
       .data$portfolio_name, .data$company_name, .data$ald_sector, .data$term,
+      .data$PD_baseline, .data$PD_late_sudden,
       .data$PD_change, !!!rlang::syms(sensitivity_analysis_vars)
     ) %>%
     dplyr::arrange(
@@ -428,7 +429,8 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars) {
     ) %>%
     dplyr::rename(
       pd_change_shock = .data$PD_change
-    )
+    ) %>%
+    dplyr:rename(pd_shock = .data$PD_late_sudden)
 
   portfolio_pd_changes_overall <- results_list$company_pd_changes_overall %>%
     dplyr::select(
