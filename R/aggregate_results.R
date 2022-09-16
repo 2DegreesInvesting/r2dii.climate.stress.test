@@ -72,6 +72,13 @@ aggregate_results <- function(results_list, sensitivity_analysis_vars, iter_var,
 
   if (risk_type == "lrisk") {
     crispy_output <- crispy_output %>%
+      dplyr::inner_join(results_list$company_trajectories %>%
+        dplyr::select(.data$id, .data$company_name, .data$company_is_litigated) %>%
+        dplyr::distinct_all(),
+      by = c("id", "company_name")
+      )
+
+    crispy_output <- crispy_output %>%
       dplyr::rename(
         scc = .data$scc_arg,
         settlement_factor = .data$settlement_factor_arg,
