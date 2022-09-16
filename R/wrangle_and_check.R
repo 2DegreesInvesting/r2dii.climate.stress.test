@@ -235,7 +235,7 @@ wrangle_results <- function(results_list, risk_type, sensitivity_analysis_vars) 
         .data$Baseline_price, .data$late_sudden_price, .data$net_profits_baseline,
         .data$net_profits_ls, .data$discounted_net_profit_baseline,
         .data$discounted_net_profit_ls, !!!rlang::syms(sensitivity_analysis_vars),
-        .data$is_litigated
+        .data$company_is_litigated
       )
   } else {
     company_trajectories <- results_list$company_trajectories %>%

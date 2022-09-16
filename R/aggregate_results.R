@@ -96,7 +96,7 @@ aggregate_results <- function(results_list, sensitivity_analysis_vars, iter_var,
         .data$shock_year, .data$net_present_value_baseline,
         .data$net_present_value_shock, .data$net_present_value_difference,
         .data$term, .data$pd_baseline, .data$pd_shock, .data$pd_difference,
-        .data$is_litigated
+        .data$company_is_litigated
       )
   } else {
     crispy_output <- crispy_output %>%
