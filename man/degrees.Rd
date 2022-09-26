@@ -19,7 +19,6 @@ glue::glue("2{r2dii.climate.stress.test:::degrees()} Investing Initiative")
 \seealso{
 Other miscellaneous utility functions: 
 \code{\link{data_path}()},
-\code{\link{dropbox_exists}()},
-\code{\link{get_st_data_path}()}
+\code{\link{dropbox_exists}()}
 }
 \concept{miscellaneous utility functions}

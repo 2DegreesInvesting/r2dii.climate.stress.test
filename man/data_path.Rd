@@ -26,7 +26,6 @@ r2dii.climate.stress.test:::data_path()
 \seealso{
 Other miscellaneous utility functions: 
 \code{\link{degrees}()},
-\code{\link{dropbox_exists}()},
-\code{\link{get_st_data_path}()}
+\code{\link{dropbox_exists}()}
 }
 \concept{miscellaneous utility functions}
