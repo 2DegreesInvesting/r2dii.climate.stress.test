@@ -165,7 +165,7 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars, risk_type) 
         .data$volatility, .data$Baseline_price, .data$late_sudden_price,
         .data$net_profits_baseline, .data$net_profits_ls,
         .data$discounted_net_profit_baseline, .data$discounted_net_profit_ls,
-        !!!rlang::syms(sensitivity_analysis_vars)
+        !!!rlang::syms(sensitivity_analysis_vars), .data$company_is_litigated
       )
   } else {
     company_trajectories <- results_list$company_trajectories %>%
@@ -178,7 +178,7 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars, risk_type) 
         .data$volatility, .data$Baseline_price, .data$late_sudden_price,
         .data$net_profits_baseline, .data$net_profits_ls,
         .data$discounted_net_profit_baseline, .data$discounted_net_profit_ls,
-        !!!rlang::syms(sensitivity_analysis_vars), .data$company_is_litigated
+        !!!rlang::syms(sensitivity_analysis_vars)
       )
   }
 
@@ -243,6 +243,13 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars, risk_type) 
         settlement_factor = .data$settlement_factor_arg,
         exp_share_damages_paid = .data$exp_share_damages_paid_arg
       )
+
+    crispy_output <- crispy_output %>%
+      dplyr::inner_join(results_list$company_trajectories %>%
+                          dplyr::select(.data$id, .data$company_name, .data$company_is_litigated) %>%
+                          dplyr::distinct_all(),
+                        by = c("id", "company_name")
+      )
   }
 
   crispy_output <- crispy_output %>%
@@ -261,7 +268,8 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars, risk_type) 
         .data$growth_rate, .data$scc, .data$settlement_factor, .data$exp_share_damages_paid,
         .data$shock_year, .data$net_present_value_baseline,
         .data$net_present_value_shock, .data$net_present_value_difference,
-        .data$term, .data$pd_baseline, .data$pd_shock, .data$pd_difference
+        .data$term, .data$pd_baseline, .data$pd_shock, .data$pd_difference,
+        .data$company_is_litigated
       )
   } else {
     crispy_output <- crispy_output %>%
