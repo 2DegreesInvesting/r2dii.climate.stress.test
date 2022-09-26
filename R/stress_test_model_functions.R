@@ -31,39 +31,6 @@ late_sudden_prices <- function(target_price,
   return(ls_price)
 }
 
-# COMPANY ANNUAL PROFITS BY TECH --------------------------------------------------
-
-net_profit_margin_setup <- function(net_profit_margin_coal,
-                                    net_profit_margin_coalcap,
-                                    net_profit_margin_electric,
-                                    net_profit_margin_gas,
-                                    net_profit_margin_gascap,
-                                    net_profit_margin_hybrid,
-                                    net_profit_margin_ice,
-                                    net_profit_margin_nuclearcap,
-                                    net_profit_margin_oil,
-                                    net_profit_margin_renewablescap,
-                                    net_profit_margin_hydrocap,
-                                    net_profit_margin_oilcap) {
-  tibble::tibble(
-    "technology" = c("Coal", "CoalCap", "Electric", "Gas", "GasCap", "Hybrid", "ICE", "NuclearCap", "Oil", "RenewablesCap", "HydroCap", "OilCap"),
-    "net_profit_margin" = c(
-      net_profit_margin_coal,
-      net_profit_margin_coalcap,
-      net_profit_margin_electric,
-      net_profit_margin_gas,
-      net_profit_margin_gascap,
-      net_profit_margin_hybrid,
-      net_profit_margin_ice,
-      net_profit_margin_nuclearcap,
-      net_profit_margin_oil,
-      net_profit_margin_renewablescap,
-      net_profit_margin_hydrocap,
-      net_profit_margin_oilcap
-    )
-  )
-}
-
 join_price_data <- function(df, df_prices) {
   # Joins price data by sector, technology, year
   # scenario_geography NOT YET INCLUDED!
