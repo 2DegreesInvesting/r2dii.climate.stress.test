@@ -38,16 +38,6 @@ join_price_data <- function(df, df_prices) {
     dplyr::inner_join(df_prices, by = c("technology", "ald_sector", "year"))
 }
 
-calculate_net_profits_old <- function(df) {
-  # Calculates annual net profits
-  # Input: dataframe that has the baseline & LS production, prices and technoogy net profit margins
-  df %>%
-    dplyr::mutate(
-      net_profits_ls = late_sudden * late_sudden_price * net_profit_margin,
-      net_profits_baseline = baseline * Baseline_price * net_profit_margin
-    )
-}
-
 dcf_model_techlevel <- function(data, discount_rate) {
 
   # Calculates the annual discounted net profits on technology level
