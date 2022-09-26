@@ -21,7 +21,6 @@ columns are given.
 }
 \seealso{
 Other import functions: 
-\code{\link{read_capacity_factors_old}()},
 \code{\link{read_capacity_factors_power}()},
 \code{\link{read_financial_data}()},
 \code{\link{read_production_data}()},
