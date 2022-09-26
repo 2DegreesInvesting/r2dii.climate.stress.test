@@ -44,7 +44,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">r2dii.climate.stress.test</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9005</span>
       </span>
     </div>
 
@@ -118,28 +118,17 @@
 <ul><li>Use <code><a href="https://rdrr.io/r/base/library.html" class="external-link">library()</a></code> to attach the package</li></ul>
 <!-- end list --><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test">r2dii.climate.stress.test</a></span><span class="op">)</span></span></code></pre></div>
-<ul><li>Stress tests for corporate loans require a preparatory step for input data preparation for initial application of stress testing on a loan book</li></ul>
-<!-- end list --><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/run_prep_calculation_loans.html">run_prep_calculation_loans</a></span><span class="op">(</span></span>
-<span>  input_path_project_specific <span class="op">=</span> <span class="st">"/example_project/project_specific_input/"</span>,</span>
-<span>  input_path_project_agnostic <span class="op">=</span> <span class="st">"/example_project/project_agnostic_input/"</span>,</span>
-<span>  data_prep_output_path <span class="op">=</span> <span class="st">"/example_project/output"</span>,</span>
-<span><span class="op">)</span></span></code></pre></div>
 <ul><li>Run climate stress tests</li></ul>
-<!-- end list --><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<!-- end list --><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## run stress testing for assets of type corporate loans using default parameters</span></span>
 <span><span class="fu"><a href="reference/run_trisk.html">run_trisk</a></span><span class="op">(</span></span>
-<span>  asset_type <span class="op">=</span> <span class="st">"loans"</span>,</span>
-<span>  input_path_project_specific <span class="op">=</span> <span class="st">"/example_project/project_specific_input/"</span>,</span>
-<span>  input_path_project_agnostic <span class="op">=</span> <span class="st">"/example_project/project_agnostic_input/"</span>,</span>
+<span>  input_path <span class="op">=</span> <span class="st">"/example_project/project_agnostic_input/"</span>,</span>
 <span>  output_path <span class="op">=</span> <span class="st">"/example_project/output"</span>,</span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co">## run stress testing for asset of type corporate loans using various risk_free_rates to analyse sensitivities</span></span>
-<span><span class="fu"><a href="reference/run_trisk.html">run_trisk</a></span><span class="op">(</span></span>
-<span>  asset_type <span class="op">=</span> <span class="st">"loans"</span>,</span>
-<span>  input_path_project_specific <span class="op">=</span> <span class="st">"/example_project/project_specific_input/"</span>,</span>
-<span>  input_path_project_agnostic <span class="op">=</span> <span class="st">"/example_project/project_agnostic_input/"</span>,</span>
+<span><span class="co">## run stress testing (litigation risk) for asset of type corporate loans using various risk_free_rates to analyse sensitivities</span></span>
+<span><span class="fu"><a href="reference/run_lrisk.html">run_lrisk</a></span><span class="op">(</span></span>
+<span>  input_path <span class="op">=</span> <span class="st">"/example_project/project_agnostic_input/"</span>,</span>
 <span>  output_path <span class="op">=</span> <span class="st">"/example_project/output"</span>,</span>
 <span>  risk_free_rate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.01</span>, <span class="fl">0.03</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>

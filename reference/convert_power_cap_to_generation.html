@@ -24,7 +24,7 @@ scenario are used."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/aj
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">r2dii.climate.stress.test</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9005</span>
       </span>
     </div>
 
@@ -86,7 +86,8 @@ scenario are used.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">convert_power_cap_to_generation</span><span class="op">(</span></span>
 <span>  <span class="va">data</span>,</span>
 <span>  capacity_factors_power <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  <span class="va">baseline_scenario</span></span>
+<span>  <span class="va">baseline_scenario</span>,</span>
+<span>  <span class="va">target_scenario</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -106,6 +107,10 @@ on the technology (power sector only) and scenario_geography levels.</p></dd>
 
 <dt>baseline_scenario</dt>
 <dd><p>String holding name of baseline scenario.</p></dd>
+
+
+<dt>target_scenario</dt>
+<dd><p>String holding name of target scenario.</p></dd>
 
 </dl></div>
 

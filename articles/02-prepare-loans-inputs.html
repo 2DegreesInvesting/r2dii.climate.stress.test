@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">r2dii.climate.stress.test</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9005</span>
       </span>
     </div>
 
@@ -111,7 +111,7 @@
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test">r2dii.climate.stress.test</a></span><span class="op">)</span></span></code></pre></div>
-<p>The raw and matched loan book files need to be run through PACTA for banks and wrangled into the specific input format required by <code>r2dii.climate.stress.test</code>. To make this process as easy as possible for the user, we provide a function, <code><a href="../reference/run_prep_calculation_loans.html">run_prep_calculation_loans()</a></code>, which takes care of all relevant steps with minimal input from the user.</p>
+<p>The raw and matched loan book files need to be run through PACTA for banks and wrangled into the specific input format required by <code>r2dii.climate.stress.test</code>. To make this process as easy as possible for the user, we provide a function, <code>run_prep_calculation_loans()</code>, which takes care of all relevant steps with minimal input from the user.</p>
 <p><strong>NOTE:</strong> We strongly recommend providing the matched and prioritized loan book in one file for the entire raw loan book to be analyzed. In PACTA for banks, it can sometimes be advantageous for matching to split the loan book into separate files for each sector (or other splits). This should be avoided here, since the function also calculates relative exposures. Hence, after completing the steps of matching and prioritizing the loan book, all prioritized files should be combined into one file, before running this function.</p>
 <p>The r2dii.climate.stress.test currently supports a number of scenario geographies and four of the PACTA for Banks sectors of company production. They are the following:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -152,7 +152,7 @@
 <p>If everything has been set up correctly, simply running the following command in R will read the raw and matched loan books from the indicated project-specific inputs directory and auxiliary data from the project-agnostic data directory.</p>
 <p>It will then perform all calculations and wrangling required and write the intermediate input files <code>Loans_results_company.rda</code> and <code>overview_portfolio.rda</code> to the indicated <code>data_prep_output_path</code>. <strong>NOTE:</strong> Data generated with this workflow will serve as inputs for the subsequent stress test. Thus it is advisable to set <code>data_prep_output_path</code> to the same path as <code>input_path_project_specific</code> so that the generated data is written there.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/run_prep_calculation_loans.html">run_prep_calculation_loans</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="fu">run_prep_calculation_loans</span><span class="op">(</span></span>
 <span>  input_path_project_specific <span class="op">=</span> <span class="st">"/example_project/project_specific_input/"</span>,</span>
 <span>  input_path_project_agnostic <span class="op">=</span> <span class="st">"/example_project/project_agnostic_input/"</span>,</span>
 <span>  data_prep_output_path <span class="op">=</span> <span class="st">"/example_project/project_specific_input/"</span>,</span>
@@ -160,7 +160,7 @@
 <p>Since the argument credit_type has a default value, it is not required to set it, in case the user wants to run the stress test on the outstanding credit values in the loan book.</p>
 <p>However, it is also possible to run the analysis on the credit limits of the loans, in case these have been provided in the raw and matched loan books. To achieve this, instead of the previous command, simply run:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/run_prep_calculation_loans.html">run_prep_calculation_loans</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="fu">run_prep_calculation_loans</span><span class="op">(</span></span>
 <span>  input_path_project_specific <span class="op">=</span> <span class="st">"/example_project/project_specific_input/"</span>,</span>
 <span>  input_path_project_agnostic <span class="op">=</span> <span class="st">"/example_project/project_agnostic_input/"</span>,</span>
 <span>  data_prep_output_path <span class="op">=</span> <span class="st">"/example_project/project_specific_input/"</span>,</span>

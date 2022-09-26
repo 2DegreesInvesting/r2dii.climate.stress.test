@@ -4,7 +4,6 @@ understand sensitivities of the scenarios, in which case the user may pass a
 vector of values to one (and only one) of the detail arguments. This will
 result in running the analysis multiple times in a row with the argument
 varied.
-NOTE: argument asset_type and fallback_term cannot be iterated.
 NOTE: if return_results is TRUE results will not be written to output path but instead are returned."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -23,7 +22,7 @@ NOTE: if return_results is TRUE results will not be written to output path but i
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">r2dii.climate.stress.test</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9005</span>
       </span>
     </div>
 
@@ -76,15 +75,12 @@ understand sensitivities of the scenarios, in which case the user may pass a
 vector of values to one (and only one) of the detail arguments. This will
 result in running the analysis multiple times in a row with the argument
 varied.
-NOTE: argument <code>asset_type</code> and <code>fallback_term</code> cannot be iterated.
 NOTE: if <code>return_results</code> is TRUE results will not be written to <code>output path</code> but instead are returned.</p>
     </div>
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">run_trisk</span><span class="op">(</span></span>
-<span>  <span class="va">asset_type</span>,</span>
-<span>  <span class="va">input_path_project_specific</span>,</span>
-<span>  <span class="va">input_path_project_agnostic</span>,</span>
+<span>  <span class="va">input_path</span>,</span>
 <span>  <span class="va">output_path</span>,</span>
 <span>  baseline_scenario <span class="op">=</span> <span class="st">"WEO2020_SPS"</span>,</span>
 <span>  shock_scenario <span class="op">=</span> <span class="st">"WEO2020_SDS"</span>,</span>
@@ -94,28 +90,16 @@ NOTE: if <code>return_results</code> is TRUE results will not be written to <cod
 <span>  growth_rate <span class="op">=</span> <span class="fl">0.03</span>,</span>
 <span>  div_netprofit_prop_coef <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  shock_year <span class="op">=</span> <span class="fl">2030</span>,</span>
-<span>  fallback_term <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>  scenario_geography <span class="op">=</span> <span class="st">"Global"</span>,</span>
-<span>  use_company_terms <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  start_year <span class="op">=</span> <span class="fl">2021</span>,</span>
 <span>  return_results <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>asset_type</dt>
-<dd><p>String holding asset_type. For accepted values compare
-<code>stress_test_arguments</code>.</p></dd>
-
-
-<dt>input_path_project_specific</dt>
-<dd><p>String holding path to project specific
-data.</p></dd>
-
-
-<dt>input_path_project_agnostic</dt>
-<dd><p>String holding path to project agnostic
-data.</p></dd>
+    <dl><dt>input_path</dt>
+<dd><p>String holding path to project agnostic data.</p></dd>
 
 
 <dt>output_path</dt>
@@ -167,24 +151,17 @@ range compare <code>stress_test_arguments</code>.</p></dd>
 range compare <code>stress_test_arguments</code>.</p></dd>
 
 
-<dt>fallback_term</dt>
-<dd><p>Numeric. A coefficient that determines for which
-maturity the expected loss should be calculated in the credit risk section
-in case no company level term data are provided via <code>use_company_terms</code>.
-For accepted range compare <code>stress_test_arguments</code>.</p></dd>
-
-
 <dt>scenario_geography</dt>
 <dd><p>Character vector, indicating which geographical
 region(s) (concerning asset location) results shall be calculated for. For
 accepted values compare <code>stress_test_arguments</code>.</p></dd>
 
 
-<dt>use_company_terms</dt>
-<dd><p>Boolean, indicating if term values for individual
-companies are to be used. For accepted values compare
-<code>stress_test_arguments</code>. Note that currently this functionality is not
-available for asset_type bonds.</p></dd>
+<dt>start_year</dt>
+<dd><p>Numeric, first year in the analysis used as the starting
+point from which production forecasts are compared against scenario targets.
+Must be available in the production data and indicates the first year of
+the scenario data.</p></dd>
 
 
 <dt>return_results</dt>

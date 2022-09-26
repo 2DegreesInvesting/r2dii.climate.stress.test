@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">r2dii.climate.stress.test</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9005</span>
       </span>
     </div>
 
@@ -104,7 +104,7 @@
 <li>The user has successfully run at least the matching part of PACTA for Banks to produce the relevant project-specific raw input files.</li>
 <li>The user has obtained all relevant input files as described in the pdf manual. to produce the relevant project-specific raw input files.</li>
 <li>The input files are organized in a folder structure consistent with the one described in the vignette <a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/01-setup-project-directories.html">Set up project directories</a>.</li>
-<li>The user has successfully run the function <code><a href="../reference/run_prep_calculation_loans.html">run_prep_calculation_loans()</a></code> to generate the intermediate input files for the main stress test function in the required format. Refer to the <a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-prepare-loans-inputs.html">corresponding vignette</a> for details on how to do this.</li>
+<li>The user has successfully run the function <code>run_prep_calculation_loans()</code> to generate the intermediate input files for the main stress test function in the required format. Refer to the <a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-prepare-loans-inputs.html">corresponding vignette</a> for details on how to do this.</li>
 </ol>
 </div>
 <div class="section level2">
@@ -151,7 +151,7 @@
 <span><span class="fu"><a href="../reference/validate_file_exists.html">validate_file_exists</a></span><span class="op">(</span><span class="va">company_terms_path</span><span class="op">)</span></span>
 <span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span><span class="va">company_terms_path</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/validate_data_has_expected_cols.html">validate_data_has_expected_cols</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data</span>, expected_columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"company_name"</span>, <span class="st">"term"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/check_company_terms.html">check_company_terms</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data</span>, interactive_mode <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">check_company_terms</span><span class="op">(</span>data <span class="op">=</span> <span class="va">data</span>, interactive_mode <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="placing-file-in-folder-structure">Placing file in folder structure<a class="anchor" aria-label="anchor" href="#placing-file-in-folder-structure"></a>

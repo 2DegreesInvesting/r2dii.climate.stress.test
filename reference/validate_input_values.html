@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">r2dii.climate.stress.test</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9005</span>
       </span>
     </div>
 
@@ -79,9 +79,6 @@
 <span>  <span class="va">growth_rate</span>,</span>
 <span>  <span class="va">div_netprofit_prop_coef</span>,</span>
 <span>  <span class="va">shock_year</span>,</span>
-<span>  <span class="va">fallback_term</span>,</span>
-<span>  <span class="va">use_company_terms</span>,</span>
-<span>  <span class="va">asset_type</span>,</span>
 <span>  <span class="va">settlement_factor</span>,</span>
 <span>  <span class="va">exp_share_damages_paid</span>,</span>
 <span>  <span class="va">scc</span>,</span>
@@ -137,25 +134,6 @@ range compare <code>stress_test_arguments</code>.</p></dd>
 <dt>shock_year</dt>
 <dd><p>Numeric, holding year the shock is applied. For accepted
 range compare <code>stress_test_arguments</code>.</p></dd>
-
-
-<dt>fallback_term</dt>
-<dd><p>Numeric. A coefficient that determines for which
-maturity the expected loss should be calculated in the credit risk section
-in case no company level term data are provided via <code>use_company_terms</code>.
-For accepted range compare <code>stress_test_arguments</code>.</p></dd>
-
-
-<dt>use_company_terms</dt>
-<dd><p>Boolean, indicating if term values for individual
-companies are to be used. For accepted values compare
-<code>stress_test_arguments</code>. Note that currently this functionality is not
-available for asset_type bonds.</p></dd>
-
-
-<dt>asset_type</dt>
-<dd><p>String holding asset_type. For accepted values compare
-<code>stress_test_arguments</code>.</p></dd>
 
 
 <dt>settlement_factor</dt>

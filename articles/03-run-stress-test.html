@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">r2dii.climate.stress.test</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9005</span>
       </span>
     </div>
 
@@ -104,7 +104,7 @@
 <li>The user has successfully run at least the matching part of PACTA for Banks to produce the relevant project-specific raw input files.</li>
 <li>The user has obtained all relevant input files as described in the pdf manual.</li>
 <li>The input files are organized in a folder structure consistent with the one described in the vignette <a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/01-setup-project-directories.html">Set up project directories</a>.</li>
-<li>The user has successfully run the function <code><a href="../reference/run_prep_calculation_loans.html">run_prep_calculation_loans()</a></code> to generate the intermediate input files for the main stress test function in the required format. Refer to the <a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-prepare-loans-inputs.html">corresponding vignette</a> for details on how to do this.</li>
+<li>The user has successfully run the function <code>run_prep_calculation_loans()</code> to generate the intermediate input files for the main stress test function in the required format. Refer to the <a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-prepare-loans-inputs.html">corresponding vignette</a> for details on how to do this.</li>
 </ol>
 </div>
 <div class="section level2">
@@ -134,7 +134,7 @@
 <p>Specifications on the detail arguments are summarized in the following overview. The defaults that are used if the argument is not adjusted when calling <code><a href="../reference/run_trisk.html">run_trisk()</a></code> can be found in column <code>default</code>. The user may change any detail argument by explicitly passing it to the function. Note that there are allowed values for each of the inputs. For logical or character variables refer to column <code>allowed</code>, for numeric variables the allowed values are the range from <code>min</code> (inclusive) to <code>max</code> (inclusive).</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">stress_test_arguments</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 15 × 6</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 14 × 6</span></span></span>
 <span><span class="co">#&gt;    name                    type      default     allowed             min   max  </span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> asset_type              character <span style="color: #BB0000;">NA</span>          equity, bonds, loa… <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span></span>
@@ -146,12 +146,11 @@
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> growth_rate             double    0.03        <span style="color: #BB0000;">NA</span>                  0.01  0.099</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> div_netprofit_prop_coef double    1           <span style="color: #BB0000;">NA</span>                  0.8   1    </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> shock_year              double    2030        <span style="color: #BB0000;">NA</span>                  2025  2035 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> fallback_term           double    2           <span style="color: #BB0000;">NA</span>                  1     5    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> scenario_geography      character Global      AdvancedEconomies,… <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> use_company_terms       logical   FALSE       TRUE, FALSE         <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">13</span> settlement_factor       double    1           <span style="color: #BB0000;">NA</span>                  0     1    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">14</span> exp_share_damages_paid  double    0.027       <span style="color: #BB0000;">NA</span>                  0     1    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">15</span> scc                     double    40          <span style="color: #BB0000;">NA</span>                  0     10000</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> scenario_geography      character Global      AdvancedEconomies,… <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> start_year              double    2021        <span style="color: #BB0000;">NA</span>                  2021  2021 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> settlement_factor       double    1           <span style="color: #BB0000;">NA</span>                  0     1    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">13</span> exp_share_damages_paid  double    0.027       <span style="color: #BB0000;">NA</span>                  0     1    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">14</span> scc                     double    40          <span style="color: #BB0000;">NA</span>                  0     10000</span></span></code></pre></div>
 <p>Note that special special rules apply for the variables <code>baseline_scenario</code> and <code>shock_scenario</code>. Baseline and shock scenarios can in principle be selected from the following:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">scenarios</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">scenario_geography_x_ald_sector</span><span class="op">$</span><span class="va">scenario</span><span class="op">)</span></span>
