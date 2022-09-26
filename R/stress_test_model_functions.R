@@ -31,60 +31,11 @@ late_sudden_prices <- function(target_price,
   return(ls_price)
 }
 
-# COMPANY ANNUAL PROFITS BY TECH --------------------------------------------------
-
-net_profit_margin_setup <- function(net_profit_margin_coal,
-                                    net_profit_margin_coalcap,
-                                    net_profit_margin_electric,
-                                    net_profit_margin_gas,
-                                    net_profit_margin_gascap,
-                                    net_profit_margin_hybrid,
-                                    net_profit_margin_ice,
-                                    net_profit_margin_nuclearcap,
-                                    net_profit_margin_oil,
-                                    net_profit_margin_renewablescap,
-                                    net_profit_margin_hydrocap,
-                                    net_profit_margin_oilcap) {
-  tibble::tibble(
-    "technology" = c("Coal", "CoalCap", "Electric", "Gas", "GasCap", "Hybrid", "ICE", "NuclearCap", "Oil", "RenewablesCap", "HydroCap", "OilCap"),
-    "net_profit_margin" = c(
-      net_profit_margin_coal,
-      net_profit_margin_coalcap,
-      net_profit_margin_electric,
-      net_profit_margin_gas,
-      net_profit_margin_gascap,
-      net_profit_margin_hybrid,
-      net_profit_margin_ice,
-      net_profit_margin_nuclearcap,
-      net_profit_margin_oil,
-      net_profit_margin_renewablescap,
-      net_profit_margin_hydrocap,
-      net_profit_margin_oilcap
-    )
-  )
-}
-
 join_price_data <- function(df, df_prices) {
   # Joins price data by sector, technology, year
   # scenario_geography NOT YET INCLUDED!
   df <- df %>%
     dplyr::inner_join(df_prices, by = c("technology", "ald_sector", "year"))
-}
-
-join_net_profit_margins <- function(df, net_profit_margins) {
-  # Joins net profit margins by technology
-  df <- df %>%
-    dplyr::inner_join(net_profit_margins, by = "technology")
-}
-
-calculate_net_profits_old <- function(df) {
-  # Calculates annual net profits
-  # Input: dataframe that has the baseline & LS production, prices and technoogy net profit margins
-  df %>%
-    dplyr::mutate(
-      net_profits_ls = late_sudden * late_sudden_price * net_profit_margin,
-      net_profits_baseline = baseline * Baseline_price * net_profit_margin
-    )
 }
 
 dcf_model_techlevel <- function(data, discount_rate) {

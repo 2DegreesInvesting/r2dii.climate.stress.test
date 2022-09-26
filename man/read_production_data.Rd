@@ -15,10 +15,7 @@ Read in AR PAMS production data.
 }
 \seealso{
 Other import functions: 
-\code{\link{read_capacity_factors_old}()},
 \code{\link{read_capacity_factors_power}()},
-\code{\link{read_financial_data}()},
-\code{\link{read_pacta_results_wt}()},
-\code{\link{read_transition_scenarios}()}
+\code{\link{read_financial_data}()}
 }
 \concept{import functions}
