@@ -1,10 +1,3 @@
-pacta_results_file <- function(dir, asset_type) {
-  asset_type <- stringr::str_to_title(asset_type)
-  file <- glue::glue("{asset_type}_results_{calculation_level_lookup}.rda")
-  out <- file.path(dir, file)
-  return(out)
-}
-
 capacity_factor_file <- function(dir) {
   out <- file.path(dir, "prewrangled_capacity_factors.csv")
   return(out)
@@ -25,7 +18,7 @@ financial_data_file <- function(dir) {
   return(out)
 }
 
-company_terms_file <- function(dir) {
-  out <- file.path(dir, "company_terms.csv")
+production_data_file <- function(dir) {
+  out <- file.path(dir, "abcd_stress_test_input.csv")
   return(out)
 }

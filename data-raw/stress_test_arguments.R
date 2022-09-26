@@ -10,9 +10,8 @@ stress_test_arguments <- tibble::tribble(
               "growth_rate",    "double",   "0.03",                     NA,     "0.01",    "0.099",
   "div_netprofit_prop_coef",    "double",      "1",                     NA,      "0.8",        "1",
                "shock_year",    "double",   "2030",                     NA,     "2025",     "2035",
-            "fallback_term",    "double",      "2",                     NA,        "1",        "5", # NOTE: before changing check cap_terms().
        "scenario_geography", "character", "Global", "AdvancedEconomies, Africa, AsiaPacific, Brazil, CentralandSouthAmerica, China, DevelopingEconomies, Emergingmarket&developingeconomies, EU, Eurasia, Europe, Global, India, Japan, LatinAmerica, MiddleEast, NonOECD, NorthAmerica, OECD, Russia, SouthAfrica, SoutheastAsia, US",         NA,         NA,
-        "use_company_terms",   "logical",  "FALSE",          "TRUE, FALSE",         NA,         NA,
+               "start_year",    "double",   "2021",                     NA,     "2021",     "2021",
         "settlement_factor",    "double",      "1",                     NA,        "0",         "1",
    "exp_share_damages_paid",    "double",  "0.027",                     NA,        "0",         "1",
                       "scc",    "double",     "40",                     NA,        "0",      "10000"

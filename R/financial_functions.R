@@ -30,3 +30,29 @@ calculate_net_profits <- function(data) {
       )
     )
 }
+
+#' Calculates discounted net profits based on a dividends discount model
+#'
+#' @param data A data frame containing the annual net profits on company
+#'   technology level
+#' @param discount_rate Numeric, that holds the discount rate of dividends per
+#'   year in the DCF.
+dividend_discount_model <- function(data, discount_rate) {
+  data <- data %>%
+    dplyr::group_by(
+      .data$id, .data$company_name, .data$ald_sector, .data$technology,
+      .data$scenario_geography
+    ) %>%
+    dplyr::mutate(
+      t_calc = seq(0, (dplyr::n() - 1)),
+      discounted_net_profit_baseline = .data$net_profits_baseline /
+        (1 + .env$discount_rate) ^ .data$t_calc,
+      discounted_net_profit_ls = .data$net_profits_ls /
+        (1 + .env$discount_rate) ^ .data$t_calc
+    ) %>%
+    dplyr::select(-.data$t_calc) %>%
+    dplyr::ungroup()
+
+  return(data)
+}
+

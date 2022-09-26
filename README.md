@@ -50,20 +50,6 @@ devtools::install_github("2DegreesInvesting/r2dii.climate.stress.test")
 library(r2dii.climate.stress.test)
 ```
 
-  - Stress tests for corporate loans require a preparatory step for
-    input data preparation for initial application of stress testing on
-    a loan book
-
-<!-- end list -->
-
-``` r
-run_prep_calculation_loans(
-  input_path_project_specific = "/example_project/project_specific_input/",
-  input_path_project_agnostic = "/example_project/project_agnostic_input/",
-  data_prep_output_path = "/example_project/output",
-)
-```
-
   - Run climate stress tests
 
 <!-- end list -->
@@ -71,17 +57,13 @@ run_prep_calculation_loans(
 ``` r
 ## run stress testing for assets of type corporate loans using default parameters
 run_trisk(
-  asset_type = "loans",
-  input_path_project_specific = "/example_project/project_specific_input/",
-  input_path_project_agnostic = "/example_project/project_agnostic_input/",
+  input_path = "/example_project/project_agnostic_input/",
   output_path = "/example_project/output",
 )
 
-## run stress testing for asset of type corporate loans using various risk_free_rates to analyse sensitivities
-run_trisk(
-  asset_type = "loans",
-  input_path_project_specific = "/example_project/project_specific_input/",
-  input_path_project_agnostic = "/example_project/project_agnostic_input/",
+## run stress testing (litigation risk) for asset of type corporate loans using various risk_free_rates to analyse sensitivities
+run_lrisk(
+  input_path = "/example_project/project_agnostic_input/",
   output_path = "/example_project/output",
   risk_free_rate = c(0.01, 0.03)
 )

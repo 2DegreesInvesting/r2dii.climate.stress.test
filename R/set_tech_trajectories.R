@@ -1,33 +1,5 @@
-#' Defines which scenario values to use for the baseline trajectory in the
-#' stress test.
-#'
-#' @description
-#' Picks the corresponding values from the original scenario
-#' column indicated in the input and has the option to include PACTA based
-#' production forecast for the first few years of the baseline
-#' trajectory. If included, the trajectory after the end of the production
-#' forecast is offset by the initial production forecast so that the
-#' remainder of the baseline trajectory now is a parallel shift of the
-#' original scenario values. If not included, the trajectories replicate
-#' externally provided scenario trajectories.
-#' Trajectories are furthermore differentiated by scenario_geography, if
-#' multiple are passed.
-#' If no "id" or "company_name" are provided, the calculation switches to
-#' portfolio/technology level.
-#'
-#' @param data A dataframe that contains scenario trajectories by technology
-#'   until 2040 for all the scenarios included in the analysis and
-#'   production build out plans by technology or company and technology,
-#'   usually for 5 years, based on PACTA results.
-#' @param scenario_to_follow_baseline Character. A string that indicates which
-#'   of the scenarios included in the analysis should be used to set the
-#'   baseline technology trajectories.
-#'
-#' @family scenario definition
-#'
-#' @return dataframe.
-set_baseline_trajectory <- function(data,
-                                    scenario_to_follow_baseline) {
+set_baseline_trajectory_old <- function(data,
+                                        scenario_to_follow_baseline) {
   if (!"id" %in% names(data)) {
     data$id <- "PortfolioLevel"
   }
@@ -56,6 +28,67 @@ set_baseline_trajectory <- function(data,
     ) %>%
     dplyr::mutate(
       scen_to_follow = !!rlang::sym(scenario_to_follow_baseline)
+    ) %>%
+    dplyr::mutate(
+      scenario_change = .data$scen_to_follow - dplyr::lag(.data$scen_to_follow),
+      baseline = calc_future_prod_follows_scen(
+        planned_prod = .data$plan_tech_prod,
+        change_scen_prod = .data$scenario_change
+      )
+    ) %>%
+    dplyr::ungroup()
+
+  data <- data %>%
+    dplyr::select(-c(.data$scenario_change, .data$scen_to_follow))
+
+  return(data)
+}
+
+#' Defines which scenario values to use for the baseline trajectory in the
+#' stress test.
+#'
+#' @description
+#' Picks the corresponding values from the original scenario
+#' column indicated in the input and has the option to include PACTA based
+#' production forecast for the first few years of the baseline
+#' trajectory. If included, the trajectory after the end of the production
+#' forecast is offset by the initial production forecast so that the
+#' remainder of the baseline trajectory now is a parallel shift of the
+#' original scenario values. If not included, the trajectories replicate
+#' externally provided scenario trajectories.
+#' Trajectories are furthermore differentiated by scenario_geography, if
+#' multiple are passed.
+#' If no "id" or "company_name" are provided, the calculation switches to
+#' portfolio/technology level.
+#'
+#' @param data A dataframe that contains scenario trajectories by technology
+#'   until 2040 for all the scenarios included in the analysis and
+#'   production build out plans by technology or company and technology,
+#'   usually for 5 years, based on PACTA results.
+#' @param baseline_scenario Character. A string that indicates which
+#'   of the scenarios included in the analysis should be used to set the
+#'   baseline technology trajectories.
+#'
+#' @family scenario definition
+#'
+#' @return dataframe.
+set_baseline_trajectory <- function(data,
+                                    baseline_scenario) {
+  validate_data_has_expected_cols(
+    data = data,
+    expected_columns = c(
+      "id", "company_name", "ald_sector", "technology", "scenario_geography",
+      "plan_tech_prod", "emission_factor", baseline_scenario
+    )
+  )
+
+  data <- data %>%
+    dplyr::group_by(
+      .data$id, .data$company_name, .data$ald_sector, .data$technology,
+      .data$scenario_geography
+    ) %>%
+    dplyr::mutate(
+      scen_to_follow = !!rlang::sym(baseline_scenario)
     ) %>%
     dplyr::mutate(
       scenario_change = .data$scen_to_follow - dplyr::lag(.data$scen_to_follow),
@@ -108,48 +141,6 @@ calc_future_prod_follows_scen <- function(planned_prod = .data$plan_tech_prod,
   planned_prod
 }
 
-#' Defines which scenario values to use for the late & sudden trajectory in the
-#' stress test.
-#'
-#' @description
-#' Picks the corresponding values from the original scenario
-#' column indicated in the input and has the option to include PACTA based
-#' production forecast for the first few years of the late & sudden
-#' trajectory. Similarly, it is possible to define another input scenario
-#' in case the company is already aligned after the production forecast.
-#' If the production forecast is included, the trajectory after the end of
-#' the production forecast is offset by the initial production forecast
-#' so that the remainder of the late & sudden trajectory now is a parallel
-#' shift of the original scenario values. If not included, the trajectories
-#' replicate externally provided scenario trajectories at least until the
-#' year of the policy shock.
-#' Trajectories are calculated for each company by sector, scenario_geography,
-#' technology, year.
-#' If no "id" or "company_name" are provided, the calculation switches to
-#' portfolio/technology level.
-#' @inheritParams report_company_drops
-#' @param data A dataframe that contains the scenario data prepared until the
-#'   step after the baseline trajectories are calculated.
-#' @param scenario_to_follow_ls Character. A string that indicates which
-#'   of the scenarios included in the analysis should be used to set the
-#'   late & sudden technology trajectories.
-#' @param shock_scenario A dataframe that contains information about the
-#'   transition scenario, specifically the shock year and, duration of the
-#'   shock and the name of the shock scenario
-#' @param scenario_to_follow_ls_aligned Character. A string that indicates which
-#'   of the scenarios included in the analysis should be used to set the
-#'   late & sudden technology trajectories in case the company is aligned after
-#'   the forecast period.
-#' @param start_year Numeric. A numeric vector of length 1 that contains the
-#'   start year of the analysis.
-#' @param end_year Numeric. A numeric vector of length 1 that contains the
-#'   end year of the analysis.
-#' @param analysis_time_frame Numeric. A vector of length 1 indicating the number
-#'   of years for which forward looking production data is considered.
-#'
-#' @family scenario definition
-#'
-#' @return data frame
 set_ls_trajectory <- function(data,
                               scenario_to_follow_ls,
                               shock_scenario,
@@ -257,6 +248,142 @@ set_ls_trajectory <- function(data,
         .data$overshoot_direction
       )
     )
+
+  data <- filter_negative_late_and_sudden(data, log_path = log_path)
+
+  return(data)
+}
+
+
+#' Defines which scenario values to use for the late & sudden trajectory in the
+#' stress test.
+#'
+#' @description
+#' Picks the corresponding values from the original scenario
+#' column indicated in the input and has the option to include PACTA based
+#' production forecast for the first few years of the late & sudden
+#' trajectory. Similarly, it is possible to define another input scenario
+#' in case the company is already aligned after the production forecast.
+#' If the production forecast is included, the trajectory after the end of
+#' the production forecast is offset by the initial production forecast
+#' so that the remainder of the late & sudden trajectory now is a parallel
+#' shift of the original scenario values. If not included, the trajectories
+#' replicate externally provided scenario trajectories at least until the
+#' year of the policy shock.
+#' Trajectories are calculated for each company by sector, scenario_geography,
+#' technology, year.
+#' If no "id" or "company_name" are provided, the calculation switches to
+#' portfolio/technology level.
+#' @inheritParams report_company_drops
+#' @param data A dataframe that contains the scenario data prepared until the
+#'   step after the baseline trajectories are calculated.
+#' @param target_scenario Character. A string that indicates which
+#'   of the scenarios included in the analysis should be used to set the
+#'   late & sudden technology trajectories.
+#' @param shock_scenario A dataframe that contains information about the
+#'   transition scenario, specifically the shock year and, duration of the
+#'   shock and the name of the shock scenario
+#' @param target_scenario_aligned Character. A string that indicates which
+#'   of the scenarios included in the analysis should be used to set the
+#'   late & sudden technology trajectories in case the company is aligned after
+#'   the forecast period.
+#' @param start_year Numeric. A numeric vector of length 1 that contains the
+#'   start year of the analysis.
+#' @param end_year Numeric. A numeric vector of length 1 that contains the
+#'   end year of the analysis.
+#' @param analysis_time_frame Numeric. A vector of length 1 indicating the number
+#'   of years for which forward looking production data is considered.
+#'
+#' @family scenario definition
+#'
+#' @return data frame
+set_trisk_trajectory <- function(data,
+                                 target_scenario,
+                                 shock_scenario,
+                                 target_scenario_aligned,
+                                 start_year,
+                                 end_year,
+                                 analysis_time_frame,
+                                 log_path) {
+  validate_data_has_expected_cols(
+    data = data,
+    expected_columns = c(
+      "id", "company_name", "ald_sector", "technology", "scenario_geography",
+      "plan_tech_prod", "baseline",
+      target_scenario, target_scenario_aligned
+    )
+  )
+
+  validate_data_has_expected_cols(
+    data = shock_scenario,
+    expected_columns = c(
+      "year_of_shock", "duration_of_shock", "scenario_name"
+    )
+  )
+
+  scenario_name <- shock_scenario$scenario_name
+  year_of_shock <- shock_scenario$year_of_shock
+  duration_of_shock <- shock_scenario$duration_of_shock
+
+  data <- data %>%
+    dplyr::mutate(
+      scen_to_follow = !!rlang::sym(target_scenario),
+      scen_to_follow_aligned = !!rlang::sym(target_scenario_aligned),
+      late_sudden = .data$plan_tech_prod
+    )
+
+  data <- data %>%
+    dplyr::group_by(
+      .data$id, .data$company_name, .data$ald_sector, .data$technology,
+      .data$scenario_geography
+    ) %>%
+    dplyr::mutate(
+      scenario_change = .data$scen_to_follow - dplyr::lag(.data$scen_to_follow),
+      scenario_change_aligned = .data$scen_to_follow_aligned - dplyr::lag(.data$scen_to_follow_aligned),
+      scenario_change_baseline = .data$baseline - dplyr::lag(.data$baseline),
+      overshoot_direction = rep(
+        dplyr::if_else(
+          .data$scen_to_follow[1] - .data$scen_to_follow[length(.data$scen_to_follow)] > 0,
+          "Decreasing",
+          "Increasing"
+        ),
+        dplyr::n()
+      )
+    ) %>%
+    dplyr::ungroup()
+
+  data <- data %>%
+    dplyr::group_by(
+      .data$id, .data$company_name, .data$ald_sector, .data$technology,
+      .data$scenario_geography
+    ) %>%
+    dplyr::mutate(
+      late_sudden = calc_late_sudden_traj(
+        start_year = start_year,
+        end_year = end_year,
+        year_of_shock = year_of_shock,
+        duration_of_shock = duration_of_shock,
+        scen_to_follow = .data$scen_to_follow,
+        planned_prod = .data$plan_tech_prod,
+        late_and_sudden = .data$late_sudden,
+        scenario_change = .data$scenario_change,
+        scenario_change_baseline = .data$scenario_change_baseline,
+        scenario_change_aligned = .data$scenario_change_aligned,
+        overshoot_direction = .data$overshoot_direction[1],
+        time_frame = .env$analysis_time_frame
+      )
+    ) %>%
+    dplyr::ungroup() %>%
+    dplyr::select(
+      -c(
+        .data$scen_to_follow,
+        .data$scenario_change,
+        .data$scenario_change_baseline,
+        .data$scenario_change_aligned,
+        .data$overshoot_direction
+      )
+    ) %>%
+    dplyr::mutate(scenario_name = .env$scenario_name)
 
   data <- filter_negative_late_and_sudden(data, log_path = log_path)
 
@@ -486,8 +613,7 @@ set_litigation_trajectory <- function(data,
   validate_data_has_expected_cols(
     data = data,
     expected_columns = c(
-      "investor_name", "portfolio_name", "id", "company_name",
-      "ald_sector", "technology", "scenario_geography",
+      "id", "company_name", "ald_sector", "technology", "scenario_geography",
       "plan_tech_prod", "emission_factor", "baseline",
       litigation_scenario, litigation_scenario_aligned
     )
@@ -514,12 +640,7 @@ set_litigation_trajectory <- function(data,
   # in production levels for all sectors with production pathways.
   data <- data %>%
     dplyr::group_by(
-      .data$investor_name,
-      .data$portfolio_name,
-      .data$id,
-      .data$company_name,
-      .data$ald_sector,
-      .data$technology,
+      .data$id, .data$company_name, .data$ald_sector, .data$technology,
       .data$scenario_geography
     ) %>%
     dplyr::mutate(
@@ -536,14 +657,8 @@ set_litigation_trajectory <- function(data,
   reference <- data %>%
     dplyr::filter(.data$year == .env$start_year + .env$analysis_time_frame) %>%
     dplyr::select(
-      .data$investor_name,
-      .data$portfolio_name,
-      .data$id,
-      .data$company_name,
-      .data$ald_sector,
-      .data$technology,
-      .data$scenario_geography,
-      .data$plan_tech_prod
+      .data$id, .data$company_name, .data$ald_sector, .data$technology,
+      .data$scenario_geography, .data$plan_tech_prod
     ) %>%
     dplyr::rename(
       reference_tech_prod = .data$plan_tech_prod
@@ -551,12 +666,7 @@ set_litigation_trajectory <- function(data,
 
   data <- data %>%
     dplyr::group_by(
-      .data$investor_name,
-      .data$portfolio_name,
-      .data$id,
-      .data$company_name,
-      .data$ald_sector,
-      .data$technology,
+      .data$id, .data$company_name, .data$ald_sector, .data$technology,
       .data$scenario_geography
     ) %>%
     dplyr::mutate(
@@ -578,21 +688,13 @@ set_litigation_trajectory <- function(data,
   data <- data %>%
     dplyr::inner_join(
       reference,
-      by = c(
-        "investor_name", "portfolio_name", "id", "company_name", "ald_sector",
-        "technology", "scenario_geography"
-      )
+      by = c("id", "company_name", "ald_sector","technology", "scenario_geography")
     )
 
   data_extended <- data %>%
     dplyr::filter(.data$year > .env$start_year + .env$analysis_time_frame) %>%
     dplyr::group_by(
-      .data$investor_name,
-      .data$portfolio_name,
-      .data$id,
-      .data$company_name,
-      .data$ald_sector,
-      .data$technology,
+      .data$id, .data$company_name, .data$ald_sector, .data$technology,
       .data$scenario_geography
     ) %>%
     dplyr::mutate(
@@ -610,12 +712,7 @@ set_litigation_trajectory <- function(data,
   data <- data_forecast %>%
     dplyr::bind_rows(data_extended) %>%
     dplyr::arrange(
-      .data$investor_name,
-      .data$portfolio_name,
-      .data$id,
-      .data$company_name,
-      .data$scenario_geography,
-      .data$ald_sector,
+      .data$id, .data$company_name, .data$scenario_geography, .data$ald_sector,
       .data$technology
     )
 

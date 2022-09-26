@@ -11,13 +11,10 @@ NULL
 # practical purpose.
 investor_name_placeholder <- "Meta Investor"
 
-# vector holding vars to nest pacta results by
-nesting_vars_lookup <- c(
-  "investor_name", "portfolio_name", "equity_market", "ald_sector", "technology",
-  "scenario", "allocation", "scenario_geography", "company_name"
+# vector holding vars to nest production data input by
+prod_nesting_vars_lookup <- c(
+  "ald_sector", "technology", "scenario_geography", "company_name"
 )
-
-asset_types_lookup <- c("equity", "bonds", "loans")
 
 calculation_level_lookup <- "company"
 
@@ -66,8 +63,8 @@ p4i_p4b_sector_technology_lookup <- tibble::tribble(
 
 # styler: on
 
-# holds names of input arguments to run_trisk that are not model parameters
-setup_vars_lookup <- c("input_path_project_agnostic", "input_path_project_specific", "output_path", "iter_var", "return_results")
+# holds names of input arguments to run_*risk that are not model parameters
+setup_vars_lookup <- c("input_path", "output_path", "iter_var", "return_results")
 
 high_carbon_tech_lookup <- c("ICE", "Coal", "Oil", "Gas", "CoalCap", "GasCap", "OilCap")
 
@@ -77,13 +74,11 @@ countries_for_regions_mapper_lookup <- tibble::tibble(
   source = rep(c("weo_2019", "weo_2020"), 6)
 )
 
-cuc_pacta_results <- c(
-  "year", "equity_market", "ald_sector", "technology", "scenario", "allocation",
-  "scenario_geography", "company_name", "id", "investor_name", "portfolio_name"
-)
-
 cuc_capacity_factors_power <- c("scenario", "scenario_geography", "technology", "year")
 cuc_price_data <- c("year", "ald_sector", "technology", "scenario")
 cuc_financial_data <- c("company_name", "company_id")
 cuc_scenario_data <- c("scenario_geography", "scenario", "ald_sector", "technology", "year")
-cuc_company_terms <- c("company_name")
+
+cuc_production_data <- c(
+  "company_name", "id", "year", "ald_sector", "technology", "scenario_geography"
+)

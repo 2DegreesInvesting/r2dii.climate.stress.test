@@ -97,6 +97,6 @@ method applied is the overshoot/carbon budget method.
 Other scenario definition: 
 \code{\link{calc_future_prod_follows_scen}()},
 \code{\link{set_baseline_trajectory}()},
-\code{\link{set_ls_trajectory}()}
+\code{\link{set_trisk_trajectory}()}
 }
 \concept{scenario definition}

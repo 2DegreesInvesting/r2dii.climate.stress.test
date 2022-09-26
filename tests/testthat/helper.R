@@ -33,11 +33,11 @@ test_create_target_directory <- function(path = NULL,
 #' Get a valid value of an argument of `run_trisk()`
 #'
 #' @examples
-#' get_st_argument("fallback_term")
+#' get_st_argument("risk_free_rate")
 #' # Same
-#' get_st_argument("fallback_term", "default")
+#' get_st_argument("risk_free_rate", "default")
 #'
-#' get_st_argument("fallback_term", "min")
+#' get_st_argument("risk_free_rate", "min")
 #'
 #' typeof(get_st_argument("asset_type"))
 #' @noRd

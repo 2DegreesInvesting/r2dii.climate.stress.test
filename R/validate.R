@@ -8,7 +8,6 @@
 validate_input_values <- function(baseline_scenario, shock_scenario, scenario_geography,
                                   lgd, risk_free_rate, discount_rate, growth_rate,
                                   div_netprofit_prop_coef, shock_year,
-                                  fallback_term, use_company_terms, asset_type,
                                   settlement_factor, exp_share_damages_paid, scc, risk_type) {
   input_args <- mget(names(formals()), sys.frame(sys.nframe()))
   input_args <- input_args[-which(names(input_args) == "risk_type")]
@@ -21,13 +20,13 @@ validate_input_values <- function(baseline_scenario, shock_scenario, scenario_ge
     input_args[which(names(input_args) %in% c("settlement_factor", "scc", "exp_share_damages_paid"))] <- NULL
   }
 
-  c("baseline_scenario", "shock_scenario", "scenario_geography", "asset_type", "use_company_terms") %>%
+  c("baseline_scenario", "shock_scenario", "scenario_geography") %>%
     purrr::walk(validate_values_in_values, args_list = input_args)
 
   vector_numeric_args <- c(
     "lgd", "risk_free_rate", "discount_rate", "growth_rate",
-    "div_netprofit_prop_coef", "shock_year", "fallback_term",
-    "settlement_factor", "exp_share_damages_paid", "scc"
+    "div_netprofit_prop_coef", "shock_year", "settlement_factor",
+    "exp_share_damages_paid", "scc"
   )
 
   if (risk_type == "trisk") {
@@ -38,12 +37,6 @@ validate_input_values <- function(baseline_scenario, shock_scenario, scenario_ge
 
   if (!all(shock_year %% 1 == 0)) {
     stop("Argument shock_year must be a whole number")
-  }
-
-  # ADO 1943 - Once we decide to add a separate Merton calculation on the average
-  # maturity of a portfolio, this check will need to be removed
-  if (!all(fallback_term %% 1 == 0)) {
-    stop("Argument fallback_term must be a whole number")
   }
 
   if (!(growth_rate < discount_rate)) {

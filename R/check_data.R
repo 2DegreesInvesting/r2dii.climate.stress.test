@@ -83,27 +83,6 @@ check_sector_tech_mapping <- function(data, sector_col = "ald_sector",
   return(invisible(data))
 }
 
-#' Check mapping of companies to corporate bond tickers
-#'
-#' There needs to be an n x 1 mapping between companies and
-#' corporate bond tickers. Function verifies this is the case by checking that
-#' companies do not map to > 1 corporate bond ticker.
-#'
-#' @param data A tibble holding at least columns `company_name` and
-#'   `corporate_bond_ticker`.
-#'
-#' @return Returns data invisibly
-check_company_ticker_mapping <- function(data) {
-  companies_with_several_tickers <- data %>%
-    dplyr::group_by(company_name) %>%
-    dplyr::filter(dplyr::n() > 1)
-
-  if (nrow(companies_with_several_tickers) > 0) {
-    stop("Identified companies with > 1 corporate_bond_ticker.")
-  }
-  return(invisible(data))
-}
-
 #' Check expected missing patterns
 #'
 #' On certain variables missings appear that are not problematic but are

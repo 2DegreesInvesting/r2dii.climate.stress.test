@@ -1,15 +1,12 @@
-#' Calculate annual profits
-#'
-#' Wrapper function to calculate annual profits.
+#' Calculate transition shock trajectory
 #'
 #' @inheritParams validate_input_values
 #' @inheritParams report_company_drops
-#' @param asset_type String holding type of asset.
 #' @param input_data_list List with project agnostic and project specific input data
-#' @param scenario_to_follow_baseline Character. A string that indicates which
+#' @param baseline_scenario Character. A string that indicates which
 #'   of the scenarios included in the analysis should be used to set the
 #'   baseline technology trajectories.
-#' @param scenario_to_follow_shock Character. A string that indicates which
+#' @param target_scenario Character. A string that indicates which
 #'   of the scenarios included in the analysis should be used to set the
 #'   late & sudden technology trajectories.
 #' @param transition_scenario Tibble with 1 row holding at least variables
@@ -17,73 +14,215 @@
 #' @param start_year Numeric, holding start year of analysis.
 #' @param end_year Numeric, holding end year of analysis.
 #' @param time_horizon Considered timeframe for PACTA analysis.
-#' @param growth_rate Numeric, that holds the terminal growth rate of profits
-#'   beyond the `end_year` in the DCF.
 #'
 #' @return A tibble holding annual profits
-calculate_annual_profits <- function(asset_type, input_data_list, scenario_to_follow_baseline,
-                                     scenario_to_follow_shock, transition_scenario, start_year,
-                                     end_year, time_horizon, discount_rate,
-                                     growth_rate, log_path) {
-  price_data <- input_data_list$df_price %>%
-    calc_scenario_prices(
-      baseline_scenario = scenario_to_follow_baseline,
-      shock_scenario = scenario_to_follow_shock,
-      transition_scenario = transition_scenario,
-      start_year = start_year
-    )
+calculate_trisk_trajectory <- function(input_data_list,
+                                       baseline_scenario,
+                                       target_scenario,
+                                       transition_scenario,
+                                       start_year,
+                                       end_year,
+                                       time_horizon,
+                                       log_path) {
 
-  extended_pacta_results <- input_data_list$pacta_results %>%
-    extend_scenario_trajectory(
-      scenario_data = input_data_list$scenario_data,
-      start_analysis = start_year,
-      end_analysis = end_year,
-      time_frame = time_horizon,
-      target_scenario = scenario_to_follow_shock
-    ) %>%
+  production_data <- input_data_list$production_data %>%
     set_baseline_trajectory(
-      scenario_to_follow_baseline = scenario_to_follow_baseline
+      baseline_scenario = baseline_scenario
     ) %>%
-    set_ls_trajectory(
-      scenario_to_follow_ls = scenario_to_follow_shock,
+    set_trisk_trajectory(
+      target_scenario = target_scenario,
       shock_scenario = transition_scenario,
-      scenario_to_follow_ls_aligned = scenario_to_follow_shock,
+      target_scenario_aligned = target_scenario,
       start_year = start_year,
       end_year = end_year,
       analysis_time_frame = time_horizon,
       log_path = log_path
     )
 
-  if (asset_type == "bonds") {
-    merge_cols <- c("company_name", "id" = "corporate_bond_ticker")
-  } else {
-    merge_cols <- c("company_name")
-  }
+  price_data <- input_data_list$df_price %>%
+    calc_scenario_prices(
+      baseline_scenario = baseline_scenario,
+      target_scenario = target_scenario,
+      transition_scenario = transition_scenario,
+      start_year = start_year
+    )
 
-  extended_pacta_results_with_financials <- extended_pacta_results %>%
+  merge_cols <- c("company_name", "id" = "company_id")
+
+  full_trajectory <- production_data %>%
     dplyr::inner_join(
       y = input_data_list$financial_data,
       by = merge_cols
     ) %>%
     fill_annual_profit_cols()
 
-  annual_profits <- extended_pacta_results_with_financials %>%
-    join_price_data(df_prices = price_data) %>%
-    calculate_net_profits() %>%
-    dcf_model_techlevel(discount_rate = discount_rate) %>%
-    # TODO: ADO 879 - note rows with zero profits/NPVs will produce NaN in the Merton model
-    dplyr::filter(!is.na(company_id))
+  full_trajectory <- full_trajectory %>%
+    join_price_data(df_prices = price_data)
 
-  annual_profits <- annual_profits %>%
+  return(full_trajectory)
+}
+
+#' Calculate litigation shock trajectory
+#'
+#' @inheritParams validate_input_values
+#' @inheritParams report_company_drops
+#' @param input_data_list List with project agnostic and project specific input data
+#' @param baseline_scenario Character. A string that indicates which
+#'   of the scenarios included in the analysis should be used to set the
+#'   baseline technology trajectories.
+#' @param target_scenario Character. A string that indicates which
+#'   of the scenarios included in the analysis should be used to set the
+#'   late & sudden technology trajectories.
+#' @param litigation_scenario Tibble with 1 row holding at least variables
+#'   `year_of_shock`, `duration_of_shock`, `scc` and `exp_share_damages_paid`
+#' @param start_year Numeric, holding start year of analysis.
+#' @param end_year Numeric, holding end year of analysis.
+#' @param time_horizon Considered timeframe for PACTA analysis.
+#'
+#' @return A tibble holding annual profits
+calculate_lrisk_trajectory <- function(input_data_list,
+                                       baseline_scenario,
+                                       target_scenario,
+                                       litigation_scenario,
+                                       start_year,
+                                       end_year,
+                                       time_horizon,
+                                       log_path) {
+
+  production_data <- input_data_list$production_data %>%
+    set_baseline_trajectory(
+      baseline_scenario = baseline_scenario
+    ) %>%
+    # we currently assume that production levels and emission factors of
+    # misaligned company-technology combinations are forced onto the target
+    # scenario trajectory directly after the litigation shock.
+    # This may not be perfectly realistic and may be refined in the future.
+    # TODO: we need to decide how to handle low carbon technologies.
+    # currently they are exempt from liabilities of not building out enough.
+    # this may be realistic, but misaligned ones should not switch their
+    # production to the target trajectory. This would lead to unrealistic jumps
+    # in buildout and the litigation risk model should not require solving
+    # for the scenario.
+    set_litigation_trajectory(
+      litigation_scenario = target_scenario,
+      shock_scenario = litigation_scenario,
+      litigation_scenario_aligned = target_scenario,
+      start_year = start_year,
+      end_year = end_year_lookup,
+      analysis_time_frame = time_horizon_lookup,
+      log_path = log_path
+    ) %>%
+    # TODO: put the mutate into an aptly named function
+    dplyr::mutate(
+      actual_emissions = .data$late_sudden * .data$emission_factor,
+      allowed_emissions = !!rlang::sym(target_scenario) * .data$emission_factor,
+      overshoot_emissions = dplyr::if_else(
+        .data$actual_emissions - .data$allowed_emissions < 0,
+        0,
+        .data$actual_emissions - .data$allowed_emissions
+      )
+    )
+
+  # TODO: decide if a slow change in price trajectory is needed...
+  # For now, we assume that we just have the standard prices which are renamed to be able to use functions
+  price_data <- input_data_list$df_price %>%
+    dplyr::rename(
+      Baseline_price = !!rlang::sym(glue::glue("price_{baseline_scenario}")),
+      late_sudden_price = !!rlang::sym(glue::glue("price_{target_scenario}"))
+    )
+
+  merge_cols <- c("company_name", "id" = "company_id")
+
+  full_trajectory <- production_data %>%
+    dplyr::inner_join(
+      y = input_data_list$financial_data,
+      by = merge_cols
+    ) %>%
+    fill_annual_profit_cols()
+
+  full_trajectory <- full_trajectory %>%
+    join_price_data(df_prices = price_data)
+
+  return(full_trajectory)
+}
+
+#' Calculate annual profits
+#'
+#' Wrapper function to calculate discounted annual profits and terminal value.
+#'
+#' @inheritParams validate_input_values
+#' @inheritParams report_company_drops
+#' @param data data frame containing the full trajectory company data
+#' @param baseline_scenario Character. A string that indicates which
+#'   of the scenarios included in the analysis should be used to set the
+#'   baseline technology trajectories.
+#' @param shock_scenario Character. A string that indicates which
+#'   of the scenarios included in the analysis should be used to set the
+#'   late & sudden technology trajectories.
+#' @param end_year Numeric, holding end year of analysis.
+#' @param growth_rate Numeric, that holds the terminal growth rate of profits
+#'   beyond the `end_year` in the DCF.
+#'
+#' @return A tibble holding annual profits
+calculate_annual_profits <- function(data,
+                                     baseline_scenario,
+                                     shock_scenario,
+                                     end_year,
+                                     discount_rate,
+                                     growth_rate,
+                                     log_path) {
+  data <- data %>%
+    dividend_discount_model(discount_rate = discount_rate) %>%
     calculate_terminal_value(
       end_year = end_year,
       growth_rate = growth_rate,
       discount_rate = discount_rate,
-      baseline_scenario = scenario_to_follow_baseline,
-      shock_scenario = scenario_to_follow_shock
+      baseline_scenario = baseline_scenario,
+      shock_scenario = shock_scenario
     )
 
-  return(annual_profits)
+  return(data)
+}
+
+#' Calculate annual profits after payout of settlement in lrisk
+#'
+#' @param data data frame containing the full trajectory company data
+#' @param scc Numeric. Social cost of carbon per excess ton of CO2 emitted. This
+#'   is the price for each surplus ton of CO2 that goes into the calculation of
+#'   the carbon liability of a company.
+#' @param exp_share_damages_paid Numeric. Ratio that defines the expected share
+#'   of the calculated social cost of carbon that is considered in the liability.
+#' @param settlement_factor Catch all factor (ratio) that can be used to adjust
+#'   the expected payout of the settlement due to further data gaps. Set to 1 by
+#'   default.
+#' @param shock_year Numeric, year of the litigation event
+#'
+#' @return A tibble holding annual profits
+subtract_settlement <- function(data,
+                                scc,
+                                exp_share_damages_paid,
+                                settlement_factor,
+                                shock_year) {
+  data <- data %>%
+    dplyr::mutate(
+      scc_liability =
+        .data$overshoot_emissions * .env$scc *
+        .env$exp_share_damages_paid
+    ) %>%
+    dplyr::group_by(.data$company_name, .data$ald_sector, .data$technology) %>%
+    dplyr::mutate(
+      settlement = sum(.data$scc_liability, na.rm = TRUE) * .env$settlement_factor
+    ) %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(
+      net_profits_ls = dplyr::if_else(
+        year == .env$shock_year,
+        .data$net_profits_ls - .data$settlement,
+        .data$net_profits_ls
+      )
+    )
+
+  return(data)
 }
 
 calculate_terminal_value <- function(data,
@@ -122,8 +261,7 @@ calculate_terminal_value <- function(data,
   data <- data %>%
     dplyr::bind_rows(terminal_value) %>%
     dplyr::arrange(
-      .data$investor_name, .data$portfolio_name, .data$id,
-      .data$scenario_geography, .data$company_name, .data$ald_sector,
+      .data$id, .data$scenario_geography, .data$company_name, .data$ald_sector,
       .data$technology, .data$year
     )
 

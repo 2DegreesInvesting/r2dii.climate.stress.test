@@ -7,24 +7,6 @@ test_that("function detects values out of range", {
   )
 
   expect_error(check_valid_financial_data_values(
-    financial_data = fin_data,
-    asset_type = "equity"
+    financial_data = fin_data
   ), "pd detected")
-})
-
-# check_company_terms -----------------------------------------------------
-test_that("Error is thrown if terms < 1 are provided", {
-  expect_error(
-    check_company_terms(
-      tibble::tibble(term = c(0, 2, NA))
-    ), "terms below 1"
-  )
-})
-
-test_that("Error is thrown if terms are provided as decimals", {
-  expect_error(
-    check_company_terms(
-      tibble::tibble(term = c(2, 2.1))
-    ), "whole number"
-  )
 })

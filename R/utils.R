@@ -211,26 +211,19 @@ report_duplicates <- function(data, cols, throw_error = TRUE) {
 #'
 #' @param data_list A list of imported stress test input data.
 #' @param log_path String holding path to log file.
-#' @inheritParams validate_input_values
 #'
 #' @return NULL
-report_company_drops <- function(data_list, asset_type, log_path) {
-  if (asset_type == "bonds") {
-    merge_cols <- c("company_name", "id" = "corporate_bond_ticker")
-  } else {
-    merge_cols <- c("company_name")
-  }
-
+report_company_drops <- function(data_list, log_path) {
   report_dropped_company_names(
-    data_x = data_list$pacta_results,
+    data_x = data_list$production_data,
     data_y = data_list$financial_data,
     name_y = "financial data",
-    merge_cols = merge_cols,
+    merge_cols = c("company_name", "id" = "company_id"),
     log_path = log_path
   )
 
   report_dropped_company_names(
-    data_x = data_list$pacta_results,
+    data_x = data_list$production_data,
     data_y = data_list$df_price,
     name_y = "price data",
     merge_cols = c("technology", "ald_sector", "year"),
@@ -330,8 +323,7 @@ get_iter_var <- function(args_list) {
     iter_var <- "standard"
   } else if (nrow(iterate_arg) == 1) {
     iter_var <- iterate_arg$name
-
-    if (iter_var %in% c("asset_type", "fallback_term", setup_vars_lookup)) {
+    if (iter_var %in% setup_vars_lookup) {
       rlang::abort(c(
         "Must not provide more than one value for argument that cannot be iterated",
         x = glue::glue("Arguments with multiple values: {toString(iter_var)}."),
@@ -434,11 +426,6 @@ stop_if_empty <- function(data, data_name) {
     rlang::abort(glue::glue("Stopping calculation, dataset {data_name} is empty."))
   }
   return(invisible(data))
-}
-
-get_start_year <- function(data) {
-  out <- min(data$pacta_results$year, na.rm = TRUE)
-  return(out)
 }
 
 

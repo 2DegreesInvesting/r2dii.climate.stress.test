@@ -4,13 +4,10 @@
 \alias{check_valid_financial_data_values}
 \title{Check if values in financial data are plausible}
 \usage{
-check_valid_financial_data_values(financial_data, asset_type)
+check_valid_financial_data_values(financial_data)
 }
 \arguments{
 \item{financial_data}{A data set of \code{financial_data}.}
-
-\item{asset_type}{A string indicating if company data are for analysis for
-bond or equity.}
 }
 \description{
 Checks that numeric columns hold values in acceptable ranges.

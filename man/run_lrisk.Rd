@@ -5,9 +5,7 @@
 \title{Run stress testing for provided asset type.}
 \usage{
 run_lrisk(
-  asset_type,
-  input_path_project_specific,
-  input_path_project_agnostic,
+  input_path,
   output_path,
   baseline_scenario = "WEO2020_SPS",
   shock_scenario = "WEO2020_SDS",
@@ -17,9 +15,8 @@ run_lrisk(
   growth_rate = 0.03,
   div_netprofit_prop_coef = 1,
   shock_year = 2030,
-  fallback_term = 2,
   scenario_geography = "Global",
-  use_company_terms = FALSE,
+  start_year = 2021,
   settlement_factor = 1,
   exp_share_damages_paid = 0.027,
   scc = 40L,
@@ -27,14 +24,7 @@ run_lrisk(
 )
 }
 \arguments{
-\item{asset_type}{String holding asset_type. For accepted values compare
-\code{stress_test_arguments}.}
-
-\item{input_path_project_specific}{String holding path to project specific
-data.}
-
-\item{input_path_project_agnostic}{String holding path to project agnostic
-data.}
+\item{input_path}{String holding path to project agnostic data.}
 
 \item{output_path}{String holding path to which output files are written.
 NOTE: Results and logs per run are saved to a subdirectory of output_path
@@ -67,19 +57,14 @@ range compare \code{stress_test_arguments}.}
 \item{shock_year}{Numeric, holding year the shock is applied. For accepted
 range compare \code{stress_test_arguments}.}
 
-\item{fallback_term}{Numeric. A coefficient that determines for which
-maturity the expected loss should be calculated in the credit risk section
-in case no company level term data are provided via \code{use_company_terms}.
-For accepted range compare \code{stress_test_arguments}.}
-
 \item{scenario_geography}{Character vector, indicating which geographical
 region(s) (concerning asset location) results shall be calculated for. For
 accepted values compare \code{stress_test_arguments}.}
 
-\item{use_company_terms}{Boolean, indicating if term values for individual
-companies are to be used. For accepted values compare
-\code{stress_test_arguments}. Note that currently this functionality is not
-available for asset_type bonds.}
+\item{start_year}{Numeric, first year in the analysis used as the starting
+point from which production forecasts are compared against scenario targets.
+Must be available in the production data and indicates the first year of
+the scenario data.}
 
 \item{settlement_factor}{Catch all factor (ratio) that can be used to adjust the
 expected payout of the settlement due to further data gaps. Set to 1 by
@@ -102,6 +87,5 @@ understand sensitivities of the scenarios, in which case the user may pass a
 vector of values to one (and only one) of the detail arguments. This will
 result in running the analysis multiple times in a row with the argument
 varied.
-NOTE: argument \code{asset_type} and \code{fallback_term} cannot be iterated.
 NOTE: if \code{return_results} is TRUE results will not be written to \verb{output path} but instead are returned.
 }

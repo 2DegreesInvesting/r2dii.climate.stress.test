@@ -4,13 +4,10 @@
 \alias{report_company_drops}
 \title{Report dropped companies}
 \usage{
-report_company_drops(data_list, asset_type, log_path)
+report_company_drops(data_list, log_path)
 }
 \arguments{
 \item{data_list}{A list of imported stress test input data.}
-
-\item{asset_type}{String holding asset_type. For accepted values compare
-\code{stress_test_arguments}.}
 
 \item{log_path}{String holding path to log file.}
 }

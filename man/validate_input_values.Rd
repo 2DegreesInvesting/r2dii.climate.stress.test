@@ -14,9 +14,6 @@ validate_input_values(
   growth_rate,
   div_netprofit_prop_coef,
   shock_year,
-  fallback_term,
-  use_company_terms,
-  asset_type,
   settlement_factor,
   exp_share_damages_paid,
   scc,
@@ -53,19 +50,6 @@ range compare \code{stress_test_arguments}.}
 
 \item{shock_year}{Numeric, holding year the shock is applied. For accepted
 range compare \code{stress_test_arguments}.}
-
-\item{fallback_term}{Numeric. A coefficient that determines for which
-maturity the expected loss should be calculated in the credit risk section
-in case no company level term data are provided via \code{use_company_terms}.
-For accepted range compare \code{stress_test_arguments}.}
-
-\item{use_company_terms}{Boolean, indicating if term values for individual
-companies are to be used. For accepted values compare
-\code{stress_test_arguments}. Note that currently this functionality is not
-available for asset_type bonds.}
-
-\item{asset_type}{String holding asset_type. For accepted values compare
-\code{stress_test_arguments}.}
 
 \item{settlement_factor}{Catch all factor (ratio) that can be used to adjust the
 expected payout of the settlement due to further data gaps. Set to 1 by

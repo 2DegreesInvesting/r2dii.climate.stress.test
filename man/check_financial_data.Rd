@@ -4,13 +4,10 @@
 \alias{check_financial_data}
 \title{Check financial data}
 \usage{
-check_financial_data(financial_data, asset_type, interactive_mode = FALSE)
+check_financial_data(financial_data, interactive_mode = FALSE)
 }
 \arguments{
 \item{financial_data}{A data set of \code{financial_data}.}
-
-\item{asset_type}{A string indicating if company data are for analysis for
-bond or equity.}
 
 \item{interactive_mode}{If TRUE the, more verbose, interactive mode is used.}
 }
@@ -18,8 +15,7 @@ bond or equity.}
 Returns prewrangled \code{financial_data} invisibly.
 }
 \description{
-Applies sanity checks to financial data. Also remove column
-corporate_bond_ticker if \code{asset_type} is not bonds.
+Applies sanity checks to financial data.
 }
 \examples{
 fin_data <- tibble::tibble(
@@ -33,7 +29,6 @@ fin_data <- tibble::tibble(
 )
 
 check_financial_data(
-  financial_data = fin_data,
-  asset_type = "equity"
+  financial_data = fin_data
 )
 }
