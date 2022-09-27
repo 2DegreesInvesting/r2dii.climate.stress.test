@@ -154,18 +154,35 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars, risk_type) 
   sensitivity_analysis_vars <- paste0(sensitivity_analysis_vars, "_arg")
 
   # company trajectories ----------------------------------------------------
-  company_trajectories <- results_list$company_trajectories %>%
-    dplyr::select(
-      .data$scenario_name, .data$company_name, .data$year,
-      .data$scenario_geography, .data$ald_sector, .data$technology,
-      .data$plan_tech_prod, .data$phase_out, .data$baseline,
-      .data$scen_to_follow_aligned, .data$late_sudden, .data$id,
-      .data$pd, .data$net_profit_margin, .data$debt_equity_ratio,
-      .data$volatility, .data$Baseline_price, .data$late_sudden_price,
-      .data$net_profits_baseline, .data$net_profits_ls,
-      .data$discounted_net_profit_baseline, .data$discounted_net_profit_ls,
-      !!!rlang::syms(sensitivity_analysis_vars)
-    ) %>%
+  if (risk_type == "lrisk") {
+    company_trajectories <- results_list$company_trajectories %>%
+      dplyr::select(
+        .data$scenario_name, .data$company_name, .data$year,
+        .data$scenario_geography, .data$ald_sector, .data$technology,
+        .data$plan_tech_prod, .data$phase_out, .data$baseline,
+        .data$scen_to_follow_aligned, .data$late_sudden, .data$id,
+        .data$pd, .data$net_profit_margin, .data$debt_equity_ratio,
+        .data$volatility, .data$Baseline_price, .data$late_sudden_price,
+        .data$net_profits_baseline, .data$net_profits_ls,
+        .data$discounted_net_profit_baseline, .data$discounted_net_profit_ls,
+        !!!rlang::syms(sensitivity_analysis_vars), .data$company_is_litigated
+      )
+  } else {
+    company_trajectories <- results_list$company_trajectories %>%
+      dplyr::select(
+        .data$scenario_name, .data$company_name, .data$year,
+        .data$scenario_geography, .data$ald_sector, .data$technology,
+        .data$plan_tech_prod, .data$phase_out, .data$baseline,
+        .data$scen_to_follow_aligned, .data$late_sudden, .data$id,
+        .data$pd, .data$net_profit_margin, .data$debt_equity_ratio,
+        .data$volatility, .data$Baseline_price, .data$late_sudden_price,
+        .data$net_profits_baseline, .data$net_profits_ls,
+        .data$discounted_net_profit_baseline, .data$discounted_net_profit_ls,
+        !!!rlang::syms(sensitivity_analysis_vars)
+      )
+  }
+
+  company_trajectories <- company_trajectories %>%
     dplyr::rename(
       company_id = .data$id,
       production_plan_company_technology = .data$plan_tech_prod,
@@ -226,6 +243,13 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars, risk_type) 
         settlement_factor = .data$settlement_factor_arg,
         exp_share_damages_paid = .data$exp_share_damages_paid_arg
       )
+
+    crispy_output <- crispy_output %>%
+      dplyr::inner_join(results_list$company_trajectories %>%
+                          dplyr::select(.data$id, .data$company_name, .data$company_is_litigated) %>%
+                          dplyr::distinct_all(),
+                        by = c("id", "company_name")
+      )
   }
 
   crispy_output <- crispy_output %>%
@@ -244,7 +268,8 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars, risk_type) 
         .data$growth_rate, .data$scc, .data$settlement_factor, .data$exp_share_damages_paid,
         .data$shock_year, .data$net_present_value_baseline,
         .data$net_present_value_shock, .data$net_present_value_difference,
-        .data$term, .data$pd_baseline, .data$pd_shock, .data$pd_difference
+        .data$term, .data$pd_baseline, .data$pd_shock, .data$pd_difference,
+        .data$company_is_litigated
       )
   } else {
     crispy_output <- crispy_output %>%

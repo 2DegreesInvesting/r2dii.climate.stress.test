@@ -567,7 +567,18 @@ set_litigation_trajectory <- function(data,
         .data$scen_to_follow,
         .data$late_sudden
       )
-    )
+    ) %>%
+    dplyr::mutate(
+      company_x_biz_unit_is_litigated = dplyr::if_else(
+        !.data$aligned & .data$direction == "declining",
+        TRUE,
+        FALSE
+      )
+    ) %>%
+    dplyr::group_by(.data$id, .data$company_name) %>%
+    dplyr::mutate(company_is_litigated = any(.data$company_x_biz_unit_is_litigated)) %>%
+    dplyr::ungroup() %>%
+    dplyr::select(-.data$company_x_biz_unit_is_litigated)
 
   data <- filter_negative_late_and_sudden(data, log_path = log_path)
 
