@@ -220,18 +220,19 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars, risk_type) 
     )
 
   if (risk_type == "lrisk") {
+    select_cols <- c(merge_by_cols, "company_is_litigated")
+    crispy_output <- crispy_output %>%
+      dplyr::inner_join(results_list$company_trajectories %>%
+                          dplyr::select(!!select_cols) %>%
+                          dplyr::distinct_all(),
+                        by = merge_by_cols
+      )
+
     crispy_output <- crispy_output %>%
       dplyr::rename(
         scc = .data$scc_arg,
         settlement_factor = .data$settlement_factor_arg,
         exp_share_damages_paid = .data$exp_share_damages_paid_arg
-      )
-
-    crispy_output <- crispy_output %>%
-      dplyr::inner_join(results_list$company_trajectories %>%
-                          dplyr::select(.data$id, .data$company_name, .data$company_is_litigated) %>%
-                          dplyr::distinct_all(),
-                        by = c("id", "company_name")
       )
   }
 
