@@ -219,6 +219,22 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars, risk_type) 
       by = merge_by_cols
     )
 
+  if (risk_type == "lrisk") {
+    crispy_output <- crispy_output %>%
+      dplyr::rename(
+        scc = .data$scc_arg,
+        settlement_factor = .data$settlement_factor_arg,
+        exp_share_damages_paid = .data$exp_share_damages_paid_arg
+      )
+
+    crispy_output <- crispy_output %>%
+      dplyr::inner_join(results_list$company_trajectories %>%
+                          dplyr::select(.data$id, .data$company_name, .data$company_is_litigated) %>%
+                          dplyr::distinct_all(),
+                        by = c("id", "company_name")
+      )
+  }
+
   crispy_output <- crispy_output %>%
     dplyr::mutate(roll_up_type = "equity_ownership") %>%
     dplyr::rename(
@@ -236,22 +252,6 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars, risk_type) 
       pd_baseline = .data$PD_baseline,
       pd_shock = .data$PD_late_sudden
     )
-
-  if (risk_type == "lrisk") {
-    crispy_output <- crispy_output %>%
-      dplyr::rename(
-        scc = .data$scc_arg,
-        settlement_factor = .data$settlement_factor_arg,
-        exp_share_damages_paid = .data$exp_share_damages_paid_arg
-      )
-
-    crispy_output <- crispy_output %>%
-      dplyr::inner_join(results_list$company_trajectories %>%
-                          dplyr::select(.data$id, .data$company_name, .data$company_is_litigated) %>%
-                          dplyr::distinct_all(),
-                        by = c("id", "company_name")
-      )
-  }
 
   crispy_output <- crispy_output %>%
     dplyr::mutate(
