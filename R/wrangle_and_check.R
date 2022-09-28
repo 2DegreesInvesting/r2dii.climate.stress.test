@@ -204,7 +204,8 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars, risk_type) 
     "scenario_name", "scenario_geography", "company_name", "ald_sector",
     "baseline_scenario_arg", "shock_scenario_arg", "lgd_arg",
     "risk_free_rate_arg", "discount_rate_arg", "growth_rate_arg",
-    "div_netprofit_prop_coef_arg", "shock_year_arg"
+    "div_netprofit_prop_coef_arg", "shock_year_arg", "start_year_arg",
+    "scenario_geography_arg"
   )
 
   if (risk_type == "lrisk") {
@@ -217,6 +218,23 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars, risk_type) 
       results_list$company_pd_changes_overall,
       by = merge_by_cols
     )
+
+  if (risk_type == "lrisk") {
+    select_cols <- c(merge_by_cols, "company_is_litigated")
+    crispy_output <- crispy_output %>%
+      dplyr::inner_join(results_list$company_trajectories %>%
+                          dplyr::select(!!select_cols) %>%
+                          dplyr::distinct_all(),
+                        by = merge_by_cols
+      )
+
+    crispy_output <- crispy_output %>%
+      dplyr::rename(
+        scc = .data$scc_arg,
+        settlement_factor = .data$settlement_factor_arg,
+        exp_share_damages_paid = .data$exp_share_damages_paid_arg
+      )
+  }
 
   crispy_output <- crispy_output %>%
     dplyr::mutate(roll_up_type = "equity_ownership") %>%
@@ -235,22 +253,6 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars, risk_type) 
       pd_baseline = .data$PD_baseline,
       pd_shock = .data$PD_late_sudden
     )
-
-  if (risk_type == "lrisk") {
-    crispy_output <- crispy_output %>%
-      dplyr::rename(
-        scc = .data$scc_arg,
-        settlement_factor = .data$settlement_factor_arg,
-        exp_share_damages_paid = .data$exp_share_damages_paid_arg
-      )
-
-    crispy_output <- crispy_output %>%
-      dplyr::inner_join(results_list$company_trajectories %>%
-                          dplyr::select(.data$id, .data$company_name, .data$company_is_litigated) %>%
-                          dplyr::distinct_all(),
-                        by = c("id", "company_name")
-      )
-  }
 
   crispy_output <- crispy_output %>%
     dplyr::mutate(
