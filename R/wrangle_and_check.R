@@ -165,7 +165,8 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars, risk_type) 
         .data$volatility, .data$Baseline_price, .data$late_sudden_price,
         .data$net_profits_baseline, .data$net_profits_ls,
         .data$discounted_net_profit_baseline, .data$discounted_net_profit_ls,
-        !!!rlang::syms(sensitivity_analysis_vars), .data$company_is_litigated
+        !!!rlang::syms(sensitivity_analysis_vars), .data$company_is_litigated,
+        .data$settlement
       )
   } else {
     company_trajectories <- results_list$company_trajectories %>%
@@ -220,12 +221,12 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars, risk_type) 
     )
 
   if (risk_type == "lrisk") {
-    select_cols <- c(merge_by_cols, "company_is_litigated")
+    select_cols <- c(merge_by_cols, "technology", "company_is_litigated", "settlement")
     crispy_output <- crispy_output %>%
       dplyr::inner_join(results_list$company_trajectories %>%
                           dplyr::select(!!select_cols) %>%
                           dplyr::distinct_all(),
-                        by = merge_by_cols
+                        by = c(merge_by_cols, "technology") # inlcuding since settlement is a technology level variable
       )
 
     crispy_output <- crispy_output %>%
@@ -271,7 +272,7 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars, risk_type) 
         .data$shock_year, .data$net_present_value_baseline,
         .data$net_present_value_shock, .data$net_present_value_difference,
         .data$term, .data$pd_baseline, .data$pd_shock, .data$pd_difference,
-        .data$company_is_litigated
+        .data$company_is_litigated, .data$settlement
       )
   } else {
     crispy_output <- crispy_output %>%
