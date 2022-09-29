@@ -452,15 +452,14 @@ process_production_data <- function(data, start_year, end_year, time_horizon,
                                   scenario_geography_filter, sectors,
                                   technologies, log_path) {
   data_processed <- data %>%
-    wrangle_and_check_production_data(
-      start_year = start_year,
-      time_horizon = time_horizon
-    ) %>%
-    is_scenario_geography_in_pacta_results(scenario_geography_filter) %>%
     dplyr::filter(.data$scenario_geography %in% .env$scenario_geography_filter) %>%
     dplyr::filter(.data$ald_sector %in% .env$sectors) %>%
     dplyr::filter(.data$technology %in% .env$technologies) %>%
     dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$start_year + .env$time_horizon)) %>%
+    wrangle_and_check_production_data(
+      start_year = start_year,
+      time_horizon = time_horizon
+    ) %>%
     remove_sectors_with_missing_production_end_of_forecast(
       start_year = start_year,
       time_horizon = time_horizon,
