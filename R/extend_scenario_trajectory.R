@@ -97,8 +97,8 @@ extend_scenario_trajectory <- function(data,
       values_from = "scen_tech_prod"
     ) %>%
     dplyr::arrange(
-      "id", "company_name", "scenario_geography", "ald_sector",
-      "technology", "year"
+      .data$id, .data$company_name, .data$scenario_geography, .data$ald_sector,
+      .data$technology, .data$year
     )
 
   return(data)
@@ -219,7 +219,7 @@ summarise_production_sector_forecasts <- function(data) {
     dplyr::mutate(
       plan_sec_prod = sum(.data$plan_tech_prod, na.rm = TRUE)
     ) %>%
-    dplyr::arrange("year") %>%
+    dplyr::arrange(.data$year) %>%
     dplyr::ungroup() %>%
     dplyr::group_by(
       .data$id, .data$company_name, .data$ald_sector, .data$scenario,

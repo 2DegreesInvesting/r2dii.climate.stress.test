@@ -37,12 +37,13 @@ test_that("PD_changes point in expected direction", {
   expected_direction <- test_data %>%
     dplyr::filter(.data$year == filter_year) %>%
     dplyr::select(
-      "scenario_name",
-      "scenario_geography",
-      "company_name",
-      "ald_sector",
-      "discounted_net_profit_baseline",
-      "discounted_net_profit_ls"
+      dplyr::all_of(c("scenario_name",
+               "scenario_geography",
+               "company_name",
+               "ald_sector",
+               "discounted_net_profit_baseline",
+               "discounted_net_profit_ls")
+      )
     ) %>%
     dplyr::mutate(
       pd_expected_rising = dplyr::if_else(

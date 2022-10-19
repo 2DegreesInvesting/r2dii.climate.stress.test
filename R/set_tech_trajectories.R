@@ -38,8 +38,8 @@ set_baseline_trajectory <- function(data,
 
   data <- data %>%
     dplyr::group_by(
-      "id", "company_name", "ald_sector", "technology",
-      "scenario_geography"
+      .data$id, .data$company_name, .data$ald_sector, .data$technology,
+      .data$scenario_geography
     ) %>%
     dplyr::mutate(
       scen_to_follow = !!rlang::sym(baseline_scenario)

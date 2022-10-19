@@ -109,7 +109,7 @@ convert_power_cap_to_generation <- function(data,
   }
 
   capacity_factors_power <- capacity_factors_power %>%
-    dplyr::filter(scenario %in% c(baseline_scenario, target_scenario)) %>%
+    dplyr::filter(.data$scenario %in% c(baseline_scenario, target_scenario)) %>%
     tidyr::pivot_wider(
       id_cols = dplyr::all_of(c("scenario_geography", "technology", "year")),
       names_from = "scenario",
