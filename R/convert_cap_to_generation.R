@@ -55,7 +55,7 @@ convert_cap_to_generation <- function(data,
       ),
       scenario_geography = .data$scenario_geography
     ) %>%
-    dplyr::select(-.data$capacity_factor)
+    dplyr::select(-"capacity_factor")
 }
 
 #' Translate power capacity to power generation
@@ -111,10 +111,10 @@ convert_power_cap_to_generation <- function(data,
   capacity_factors_power <- capacity_factors_power %>%
     dplyr::filter(.data$scenario %in% c(baseline_scenario, target_scenario)) %>%
     tidyr::pivot_wider(
-      id_cols = c(.data$scenario_geography, .data$technology, .data$year),
-      names_from = .data$scenario,
+      id_cols = all_of(c("scenario_geography", "technology", "year")),
+      names_from = "scenario",
       names_prefix = "capfac_",
-      values_from = .data$capacity_factor
+      values_from = "capacity_factor"
     )
 
   # ADO 1945 - Left join is applied since only rows in data from ald_sector
