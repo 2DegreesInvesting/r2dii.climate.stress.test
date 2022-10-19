@@ -118,7 +118,7 @@ summarise_production_technology_forecasts <- function(data,
                                                       time_frame) {
   data <- data %>%
     dplyr::select(
-      all_of(c("id", "company_name", "ald_sector", "technology",
+      dplyr::all_of(c("id", "company_name", "ald_sector", "technology",
       "scenario_geography", "year", "plan_tech_prod",
       "plan_emission_factor")
       )
@@ -190,7 +190,7 @@ extend_to_full_analysis_timeframe <- function(data,
       .data$scenario_geography, .data$year
     ) %>%
     tidyr::fill(
-      all_of(c("initial_technology_production",
+      dplyr::all_of(c("initial_technology_production",
                "final_technology_production",
                "phase_out",
                "plan_emission_factor")
@@ -322,7 +322,7 @@ calculate_proximity_to_target <- function(data,
       )
     ) %>%
     dplyr::select(
-      -all_of(c(
+      -dplyr::all_of(c(
         "sum_required_change", "sum_realised_change",
         "ratio_realised_required")
       )

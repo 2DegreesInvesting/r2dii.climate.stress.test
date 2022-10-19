@@ -54,7 +54,7 @@ set_baseline_trajectory <- function(data,
     dplyr::ungroup()
 
   data <- data %>%
-    dplyr::select(-all_of(c("scenario_change", "scen_to_follow")))
+    dplyr::select(-dplyr::all_of(c("scenario_change", "scen_to_follow")))
 
   return(data)
 }
@@ -215,7 +215,7 @@ set_trisk_trajectory <- function(data,
     ) %>%
     dplyr::ungroup() %>%
     dplyr::select(
-      -all_of(c(
+      -dplyr::all_of(c(
         "scen_to_follow",
         "scenario_change",
         "scenario_change_baseline",
@@ -375,7 +375,7 @@ calc_late_sudden_traj <- function(start_year, end_year, year_of_shock, duration_
 filter_negative_late_and_sudden <- function(data_with_late_and_sudden, log_path) {
   negative_late_and_sudden <- data_with_late_and_sudden %>%
     dplyr::filter(.data$late_sudden < 0) %>%
-    dplyr::select(all_of(c("company_name", "technology"))) %>%
+    dplyr::select(dplyr::all_of(c("company_name", "technology"))) %>%
     dplyr::distinct()
 
   if (nrow(negative_late_and_sudden) > 0) {
@@ -497,7 +497,7 @@ set_litigation_trajectory <- function(data,
   reference <- data %>%
     dplyr::filter(.data$year == .env$start_year + .env$analysis_time_frame) %>%
     dplyr::select(
-      all_of(c("id", "company_name", "ald_sector", "technology",
+      dplyr::all_of(c("id", "company_name", "ald_sector", "technology",
       "scenario_geography", "plan_tech_prod"))
     ) %>%
     dplyr::rename(
