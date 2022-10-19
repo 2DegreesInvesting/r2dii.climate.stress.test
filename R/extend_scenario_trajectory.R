@@ -93,12 +93,12 @@ extend_scenario_trajectory <- function(data,
         "technology", "plan_tech_prod", "phase_out", "emission_factor",
         "proximity_to_target", "direction"
       ),
-      names_from = .data$scenario,
-      values_from = .data$scen_tech_prod
+      names_from = "scenario",
+      values_from = "scen_tech_prod"
     ) %>%
     dplyr::arrange(
-      .data$id, .data$company_name, .data$scenario_geography, .data$ald_sector,
-      .data$technology, .data$year
+      "id", "company_name", "scenario_geography", "ald_sector",
+      "technology", "year"
     )
 
   return(data)
@@ -118,18 +118,18 @@ summarise_production_technology_forecasts <- function(data,
                                                       time_frame) {
   data <- data %>%
     dplyr::select(
-      .data$id, .data$company_name, .data$ald_sector, .data$technology,
-      .data$scenario_geography, .data$year, .data$plan_tech_prod,
-      .data$plan_emission_factor
+      "id", "company_name", "ald_sector", "technology",
+      "scenario_geography", "year", "plan_tech_prod",
+      "plan_emission_factor"
     ) %>%
-    dplyr::filter(.data$year <= .env$start_analysis + .env$time_frame) %>%
+    dplyr::filter("year" <= .env$start_analysis + .env$time_frame) %>%
     dplyr::group_by(
-      .data$id, .data$company_name, .data$ald_sector, .data$technology,
-      .data$scenario_geography
+      "id", "company_name", "ald_sector", "technology",
+      "scenario_geography"
     ) %>%
     dplyr::arrange(
-      .data$id, .data$company_name, .data$ald_sector, .data$technology,
-      .data$scenario_geography, .data$year
+      "id", "company_name", "ald_sector", "technology",
+      "scenario_geography", "year"
     ) %>%
     dplyr::mutate(
       # Initial value is identical between production and scenario target,
@@ -153,8 +153,8 @@ identify_technology_phase_out <- function(data) {
   data <- data %>%
     dplyr::mutate(
       phase_out = dplyr::if_else(
-        .data$final_technology_production == 0 &
-          .data$sum_production_forecast > 0,
+        "final_technology_production" == 0 &
+          "sum_production_forecast" > 0,
         TRUE,
         FALSE
       )
@@ -185,17 +185,17 @@ extend_to_full_analysis_timeframe <- function(data,
       )
     ) %>%
     dplyr::arrange(
-      .data$id, .data$company_name, .data$ald_sector, .data$technology,
-      .data$scenario_geography, .data$year
+      "id", "company_name", "ald_sector", "technology",
+      "scenario_geography", "year"
     ) %>%
     tidyr::fill(
-      .data$initial_technology_production,
-      .data$final_technology_production,
-      .data$phase_out,
-      .data$plan_emission_factor
+      "initial_technology_production",
+      "final_technology_production",
+      "phase_out",
+      "plan_emission_factor"
     ) %>%
     dplyr::rename(
-      emission_factor = .data$plan_emission_factor
+      emission_factor = "plan_emission_factor"
     )
 
   return(data)
@@ -211,22 +211,22 @@ extend_to_full_analysis_timeframe <- function(data,
 summarise_production_sector_forecasts <- function(data) {
   data <- data %>%
     dplyr::group_by(
-      .data$id, .data$company_name, .data$ald_sector, .data$scenario,
-      .data$scenario_geography, .data$units, .data$year
+      "id", "company_name", "ald_sector", "scenario",
+      "scenario_geography", "units", "year"
     ) %>%
     dplyr::mutate(
       plan_sec_prod = sum(.data$plan_tech_prod, na.rm = TRUE)
     ) %>%
-    dplyr::arrange(.data$year) %>%
+    dplyr::arrange("year") %>%
     dplyr::ungroup() %>%
     dplyr::group_by(
-      .data$id, .data$company_name, .data$ald_sector, .data$scenario,
-      .data$scenario_geography, .data$units
+      "id", "company_name", "ald_sector", "scenario",
+      "scenario_geography", "units"
     ) %>%
     dplyr::mutate(
       # first year plan and scenario values are equal by construction,
       # can thus be used for production and target
-      initial_sector_production = dplyr::first(.data$plan_sec_prod)
+      initial_sector_production = dplyr::first("plan_sec_prod")
     ) %>%
     dplyr::ungroup()
 }
@@ -242,7 +242,7 @@ apply_scenario_targets <- function(data) {
   data <- data %>%
     dplyr::mutate(
       scen_tech_prod = dplyr::if_else(
-        .data$direction == "declining",
+        "direction" == "declining",
         .data$initial_technology_production * (1 + .data$fair_share_perc), # tmsr
         .data$initial_technology_production + (.data$initial_sector_production * .data$fair_share_perc) # smsp
       )
@@ -262,9 +262,9 @@ handle_phase_out_and_negative_targets <- function(data) {
   data <- data %>%
     dplyr::mutate(
       scen_tech_prod = dplyr::case_when(
-        .data$scen_tech_prod < 0 ~ 0,
-        .data$phase_out == TRUE ~ 0,
-        TRUE ~ .data$scen_tech_prod
+        "scen_tech_prod" < 0 ~ 0,
+        "phase_out" == TRUE ~ 0,
+        TRUE ~ "scen_tech_prod"
       )
     )
 }
@@ -293,36 +293,36 @@ calculate_proximity_to_target <- function(data,
   production_changes <- data %>%
     dplyr::filter(
       dplyr::between(
-        .data$year, .env$start_analysis, .env$start_analysis + .env$time_frame
+        "year", .env$start_analysis, .env$start_analysis + .env$time_frame
       ),
-      .data$scenario == .env$target_scenario
+      "scenario" == .env$target_scenario
     ) %>%
     dplyr::group_by(
-      .data$id, .data$company_name, .data$ald_sector, .data$technology,
-      .data$scenario_geography
+      "id", "company_name", "ald_sector", "technology",
+      "scenario_geography"
     ) %>%
     dplyr::mutate(
-      required_change = .data$scen_tech_prod - .data$initial_technology_production,
-      realised_change = .data$plan_tech_prod - .data$initial_technology_production
+      required_change = "scen_tech_prod" - "initial_technology_production",
+      realised_change = "plan_tech_prod" - "initial_technology_production"
     ) %>%
     dplyr::summarise(
-      sum_required_change = sum(.data$required_change, na.rm = TRUE),
-      sum_realised_change = sum(.data$realised_change, na.rm = TRUE),
+      sum_required_change = sum("required_change", na.rm = TRUE),
+      sum_realised_change = sum("realised_change", na.rm = TRUE),
       .groups = "drop"
     ) %>%
     dplyr::ungroup() %>%
     dplyr::mutate(
-      ratio_realised_required = .data$sum_realised_change / .data$sum_required_change,
+      ratio_realised_required = "sum_realised_change" / "sum_required_change",
       proximity_to_target = dplyr::case_when(
-        .data$ratio_realised_required < 0 ~ 0,
-        .data$ratio_realised_required > 1 ~ 1,
-        TRUE ~ .data$ratio_realised_required
+        "ratio_realised_required" < 0 ~ 0,
+        "ratio_realised_required" > 1 ~ 1,
+        TRUE ~ "ratio_realised_required"
       )
     ) %>%
     dplyr::select(
       -c(
-        .data$sum_required_change, .data$sum_realised_change,
-        .data$ratio_realised_required
+        "sum_required_change", "sum_realised_change",
+        "ratio_realised_required"
       )
     )
 
