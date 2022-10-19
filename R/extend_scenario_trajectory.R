@@ -190,10 +190,11 @@ extend_to_full_analysis_timeframe <- function(data,
       .data$scenario_geography, .data$year
     ) %>%
     tidyr::fill(
-      .data$initial_technology_production,
-      .data$final_technology_production,
-      .data$phase_out,
-      .data$plan_emission_factor
+      all_of(c("initial_technology_production",
+               "final_technology_production",
+               "phase_out",
+               "plan_emission_factor")
+      )
     ) %>%
     dplyr::rename(
       emission_factor = "plan_emission_factor"
