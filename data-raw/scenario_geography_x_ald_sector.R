@@ -316,8 +316,6 @@ scenario_geography_x_ald_sector <- tibble::tribble(
 "SoutheastAsia",      "Power",   "WEO2021_aps",
 
 
-                                  "US",      "Power",   "WEO2019_SDS",
-                                  "US",      "Power",   "WEO2019_SPS",
                                   "US",      "Power",   "WEO2020_SDS",
                                   "US",      "Power",   "WEO2020_SPS"
 
