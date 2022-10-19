@@ -32,7 +32,7 @@ read_price_data <- function(path) {
     # doing hardcoded filtering directly upon import as we currently do not
     # differentiate scenario_geographies for price data
     dplyr::filter(scenario_geography == "Global") %>%
-    dplyr::select(.data$year, .data$scenario, ald_sector = .data$sector, .data$technology, .data$price)
+    dplyr::select(all_of(c("year", "scenario", "ald_sector" = "sector", "technology", "price")))
 
   return(data)
 }
