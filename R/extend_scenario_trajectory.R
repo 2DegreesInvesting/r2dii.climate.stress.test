@@ -88,11 +88,11 @@ extend_scenario_trajectory <- function(data,
 
   data <- data %>%
     tidyr::pivot_wider(
-      id_cols = c(
+      id_cols = dplyr::all_of(c(
         "id", "company_name", "year", "scenario_geography", "ald_sector",
         "technology", "plan_tech_prod", "phase_out", "emission_factor",
-        "proximity_to_target", "direction"
-      ),
+        "proximity_to_target", "direction")
+        ),
       names_from = "scenario",
       values_from = "scen_tech_prod"
     ) %>%
