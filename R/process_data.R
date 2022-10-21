@@ -172,7 +172,7 @@ remove_high_carbon_tech_with_missing_production <- function(data,
 
     # information on companies for which at least 1 technology is lost
     affected_company_sector_tech_overview <- companies_missing_high_carbon_tech_production %>%
-      dplyr::select(.data$company_name, .data$ald_sector, .data$technology) %>%
+      dplyr::select(dplyr::all_of(c("company_name", "ald_sector", "technology"))) %>%
       dplyr::distinct_all()
 
     percent_affected_companies <- (length(unique(affected_company_sector_tech_overview$company_name)) * 100) / length(unique(data$company_name))

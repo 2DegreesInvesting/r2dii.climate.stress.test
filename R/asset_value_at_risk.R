@@ -72,7 +72,7 @@ asset_value_at_risk <- function(data,
         (.data$total_disc_npv_ls - .data$total_disc_npv_baseline) /
         .data$total_disc_npv_baseline
     ) %>%
-    dplyr::select(-c(.data$total_disc_npv_ls, .data$total_disc_npv_baseline))
+    dplyr::select(-dplyr::all_of(c("total_disc_npv_ls", "total_disc_npv_baseline")))
 
   data <- data %>%
     dplyr::inner_join(
@@ -118,7 +118,7 @@ asset_value_at_risk <- function(data,
       year_of_shock = .env$shock_scenario$year_of_shock,
       production_shock_perc = NA_real_
     ) %>%
-    dplyr::select(-c(.data$plan_carsten, .data$plan_sec_carsten, .data$year))
+    dplyr::select(-dplyr::all_of(c("plan_carsten", "plan_sec_carsten", "year")))
 
   return(data)
 }

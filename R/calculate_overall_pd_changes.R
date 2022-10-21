@@ -44,9 +44,10 @@ calculate_pd_change_overall <- function(data,
     ) %>%
     dplyr::ungroup() %>%
     dplyr::select(
-      .data$scenario_name, .data$scenario_geography, .data$id,
-      .data$company_name, .data$ald_sector, .data$equity_0_baseline,
-      .data$equity_0_late_sudden, .data$debt_equity_ratio, .data$volatility
+      dplyr::all_of(c("scenario_name", "scenario_geography", "id",
+      "company_name", "ald_sector", "equity_0_baseline",
+      "equity_0_late_sudden", "debt_equity_ratio", "volatility")
+      )
     )
 
   data <- data %>%
@@ -56,7 +57,7 @@ calculate_pd_change_overall <- function(data,
       # ADO 1943 - see nesting step below
       term = NA_integer_
     ) %>%
-    dplyr::select(-.data$debt_equity_ratio)
+    dplyr::select(-"debt_equity_ratio")
 
   nesting_names <- c(colnames(data %>% dplyr::select(-term)))
 

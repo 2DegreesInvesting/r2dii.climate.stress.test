@@ -54,7 +54,7 @@ set_baseline_trajectory <- function(data,
     dplyr::ungroup()
 
   data <- data %>%
-    dplyr::select(-c(.data$scenario_change, .data$scen_to_follow))
+    dplyr::select(-dplyr::all_of(c("scenario_change", "scen_to_follow")))
 
   return(data)
 }
@@ -215,14 +215,14 @@ set_trisk_trajectory <- function(data,
     ) %>%
     dplyr::ungroup() %>%
     dplyr::select(
-      -c(
-        .data$scen_to_follow,
-        .data$scenario_change,
-        .data$scenario_change_baseline,
-        .data$scenario_change_aligned,
-        .data$overshoot_direction
+      -dplyr::all_of(c(
+        "scen_to_follow",
+        "scenario_change",
+        "scenario_change_baseline",
+        "scenario_change_aligned",
+        "overshoot_direction"
       )
-    ) %>%
+    )) %>%
     dplyr::mutate(scenario_name = .env$scenario_name)
 
   data <- filter_negative_late_and_sudden(data, log_path = log_path)
@@ -375,7 +375,7 @@ calc_late_sudden_traj <- function(start_year, end_year, year_of_shock, duration_
 filter_negative_late_and_sudden <- function(data_with_late_and_sudden, log_path) {
   negative_late_and_sudden <- data_with_late_and_sudden %>%
     dplyr::filter(.data$late_sudden < 0) %>%
-    dplyr::select(.data$company_name, .data$technology) %>%
+    dplyr::select(dplyr::all_of(c("company_name", "technology"))) %>%
     dplyr::distinct()
 
   if (nrow(negative_late_and_sudden) > 0) {
@@ -497,11 +497,11 @@ set_litigation_trajectory <- function(data,
   reference <- data %>%
     dplyr::filter(.data$year == .env$start_year + .env$analysis_time_frame) %>%
     dplyr::select(
-      .data$id, .data$company_name, .data$ald_sector, .data$technology,
-      .data$scenario_geography, .data$plan_tech_prod
+      dplyr::all_of(c("id", "company_name", "ald_sector", "technology",
+      "scenario_geography", "plan_tech_prod"))
     ) %>%
     dplyr::rename(
-      reference_tech_prod = .data$plan_tech_prod
+      reference_tech_prod = "plan_tech_prod"
     )
 
   data <- data %>%
@@ -578,7 +578,7 @@ set_litigation_trajectory <- function(data,
     dplyr::group_by(.data$id, .data$company_name) %>%
     dplyr::mutate(company_is_litigated = any(.data$company_x_biz_unit_is_litigated)) %>%
     dplyr::ungroup() %>%
-    dplyr::select(-.data$company_x_biz_unit_is_litigated)
+    dplyr::select(-"company_x_biz_unit_is_litigated")
 
   data <- filter_negative_late_and_sudden(data, log_path = log_path)
 
