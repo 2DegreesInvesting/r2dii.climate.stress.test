@@ -54,6 +54,7 @@ calculate_trisk_trajectory <- function(input_data_list,
       y = input_data_list$financial_data,
       by = merge_cols
     ) %>%
+    stop_if_empty(data_name = "Production data joined with Financial data") %>%
     fill_annual_profit_cols()
 
   full_trajectory <- full_trajectory %>%
@@ -138,6 +139,7 @@ calculate_lrisk_trajectory <- function(input_data_list,
       y = input_data_list$financial_data,
       by = merge_cols
     ) %>%
+    stop_if_empty(data_name = "Production data joined with Financial data") %>%
     fill_annual_profit_cols()
 
   full_trajectory <- full_trajectory %>%

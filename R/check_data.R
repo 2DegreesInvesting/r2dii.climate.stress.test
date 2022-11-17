@@ -44,8 +44,8 @@ check_level_availability <- function(data, data_name, expected_levels_list, thro
 check_sector_tech_mapping <- function(data, sector_col = "ald_sector",
                                       mapper_template = p4i_p4b_sector_technology_lookup) {
   sector_tech_mapper <- mapper_template %>%
-    dplyr::select(.data$sector_p4i, .data$technology_p4i) %>%
-    dplyr::rename(ald_sector = .data$sector_p4i, technology = .data$technology_p4i) %>%
+    dplyr::select(dplyr::all_of(c("sector_p4i", "technology_p4i"))) %>%
+    dplyr::rename(ald_sector = "sector_p4i", technology = "technology_p4i") %>%
     dplyr::filter(.data$ald_sector %in% unique(get(sector_col, data)))
 
   additional_sector_tech_combinations <- data %>%

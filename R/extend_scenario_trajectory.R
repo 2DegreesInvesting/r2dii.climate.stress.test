@@ -88,13 +88,13 @@ extend_scenario_trajectory <- function(data,
 
   data <- data %>%
     tidyr::pivot_wider(
-      id_cols = c(
+      id_cols = dplyr::all_of(c(
         "id", "company_name", "year", "scenario_geography", "ald_sector",
         "technology", "plan_tech_prod", "phase_out", "emission_factor",
-        "proximity_to_target", "direction"
-      ),
-      names_from = .data$scenario,
-      values_from = .data$scen_tech_prod
+        "proximity_to_target", "direction")
+        ),
+      names_from = "scenario",
+      values_from = "scen_tech_prod"
     ) %>%
     dplyr::arrange(
       .data$id, .data$company_name, .data$scenario_geography, .data$ald_sector,
@@ -118,9 +118,10 @@ summarise_production_technology_forecasts <- function(data,
                                                       time_frame) {
   data <- data %>%
     dplyr::select(
-      .data$id, .data$company_name, .data$ald_sector, .data$technology,
-      .data$scenario_geography, .data$year, .data$plan_tech_prod,
-      .data$plan_emission_factor
+      dplyr::all_of(c("id", "company_name", "ald_sector", "technology",
+      "scenario_geography", "year", "plan_tech_prod",
+      "plan_emission_factor")
+      )
     ) %>%
     dplyr::filter(.data$year <= .env$start_analysis + .env$time_frame) %>%
     dplyr::group_by(
@@ -189,13 +190,14 @@ extend_to_full_analysis_timeframe <- function(data,
       .data$scenario_geography, .data$year
     ) %>%
     tidyr::fill(
-      .data$initial_technology_production,
-      .data$final_technology_production,
-      .data$phase_out,
-      .data$plan_emission_factor
+      dplyr::all_of(c("initial_technology_production",
+               "final_technology_production",
+               "phase_out",
+               "plan_emission_factor")
+      )
     ) %>%
     dplyr::rename(
-      emission_factor = .data$plan_emission_factor
+      emission_factor = "plan_emission_factor"
     )
 
   return(data)
@@ -320,9 +322,9 @@ calculate_proximity_to_target <- function(data,
       )
     ) %>%
     dplyr::select(
-      -c(
-        .data$sum_required_change, .data$sum_realised_change,
-        .data$ratio_realised_required
+      -dplyr::all_of(c(
+        "sum_required_change", "sum_realised_change",
+        "ratio_realised_required")
       )
     )
 

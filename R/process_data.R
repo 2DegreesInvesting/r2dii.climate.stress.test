@@ -172,7 +172,7 @@ remove_high_carbon_tech_with_missing_production <- function(data,
 
     # information on companies for which at least 1 technology is lost
     affected_company_sector_tech_overview <- companies_missing_high_carbon_tech_production %>%
-      dplyr::select(.data$company_name, .data$ald_sector, .data$technology) %>%
+      dplyr::select(dplyr::all_of(c("company_name", "ald_sector", "technology"))) %>%
       dplyr::distinct_all()
 
     percent_affected_companies <- (length(unique(affected_company_sector_tech_overview$company_name)) * 100) / length(unique(data$company_name))
@@ -452,15 +452,14 @@ process_production_data <- function(data, start_year, end_year, time_horizon,
                                   scenario_geography_filter, sectors,
                                   technologies, log_path) {
   data_processed <- data %>%
-    wrangle_and_check_production_data(
-      start_year = start_year,
-      time_horizon = time_horizon
-    ) %>%
-    is_scenario_geography_in_pacta_results(scenario_geography_filter) %>%
     dplyr::filter(.data$scenario_geography %in% .env$scenario_geography_filter) %>%
     dplyr::filter(.data$ald_sector %in% .env$sectors) %>%
     dplyr::filter(.data$technology %in% .env$technologies) %>%
     dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$start_year + .env$time_horizon)) %>%
+    wrangle_and_check_production_data(
+      start_year = start_year,
+      time_horizon = time_horizon
+    ) %>%
     remove_sectors_with_missing_production_end_of_forecast(
       start_year = start_year,
       time_horizon = time_horizon,
