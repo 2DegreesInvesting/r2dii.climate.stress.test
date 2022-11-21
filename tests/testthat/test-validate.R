@@ -149,7 +149,7 @@ test_that("Error is thrown if a character input value is out of bounds", {
     shock_scenario = "WEO2021_SDS",
     scenario_geography = "Global",
     lgd = 0.45,
-    risk_free_rate = 1,
+    risk_free_rate = 0,
     discount_rate = 0.07,
     growth_rate = 0.06,
     div_netprofit_prop_coef = 1,
