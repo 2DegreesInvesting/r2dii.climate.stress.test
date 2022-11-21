@@ -27,8 +27,10 @@ place your projects somewhere with a sane path, such as
 \section{Setup for a custom Dropbox folder}{
 
 If the name of your 2dii Dropbox folder is different from the default,
-you may add this to .Rprofile (see \code{\link[usethis:edit]{usethis::edit_r_profile()}}):\preformatted{options(r2dii_dropbox = "The name of your custom dropbox folder goes here")
-}
+you may add this to .Rprofile (see \code{\link[usethis:edit]{usethis::edit_r_profile()}}):
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{options(r2dii_dropbox = "The name of your custom dropbox folder goes here")
+}\if{html}{\out{</div>}}
 }
 
 \seealso{
