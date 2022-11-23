@@ -145,7 +145,7 @@ test_that("Error is thrown if a character input value is out of bounds", {
 
   # length > 1
   expect_error(validate_input_values(
-    baseline_scenario = c("WEO2021_STEPS", "WEO2021_APS"),
+    baseline_scenario = c("WEO2001_STEPS", "WEO2021_APS"),
     shock_scenario = "WEO2021_SDS",
     scenario_geography = "Global",
     lgd = 0.45,
