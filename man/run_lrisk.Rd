@@ -7,8 +7,8 @@
 run_lrisk(
   input_path,
   output_path,
-  baseline_scenario = "WEO2020_SPS",
-  shock_scenario = "WEO2020_SDS",
+  baseline_scenario = "WEO2021_STEPS",
+  shock_scenario = "WEO2021_SDS",
   lgd = 0.45,
   risk_free_rate = 0.02,
   discount_rate = 0.07,
