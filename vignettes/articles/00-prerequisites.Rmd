@@ -42,13 +42,9 @@ repository but may be subject to internal approval
 
 PACTA for Banks enables banks to measure the alignment of their corporate 
 lending portfolios with climate scenarios across a set of key climate-relevant 
-sectors and technologies. The climate transition risk stress test builds on 
-company level forward looking production data for NFCs in order to account 
-for adaptive capacity. 
+sectors and technologies. The climate transition risk stress test uses 
+prewrangled climate scenario data from PACTA. 
 
-The development version or the climate transition stress test requires that 
-the user has successfully run at least the matching part of PACTA for Banks 
-to produce the relevant project-specific raw input files.
 
 Helpful links for understanding PACTA for Banks and guidance material to help 
 run the software:
@@ -58,9 +54,14 @@ https://www.transitionmonitor.com/pacta-for-banks-2020/
 * PACTA for Banks Methodology: https://www.transitionmonitor.com/wp-content/uploads/2021/07/PACTA-for-Banks-Methodology-document-02-07-2021_v1.2.0_v4.pdf
 * The PACTA for Banks R packages can be obtained from CRAN or GitHub. 
 The material below describes in step by step how to use them:
-  + r2dii.data manual: https://2degreesinvesting.github.io/r2dii.data/
-  + r2dii.match manual: https://2degreesinvesting.github.io/r2dii.match/
-  + r2dii.analysis manual: https://2degreesinvesting.github.io/r2dii.analysis/
+  + r2dii.data manual: https://rmi-pacta.github.io/r2dii.data/
+  + r2dii.match manual: https://rmi-pacta.github.io/r2dii.match/
+  + r2dii.analysis manual: https://rmi-pacta.github.io/r2dii.analysis/
+  
+## Asset Resolution
+The climate transition risk stress test uses forward looking asset-level production data 
+in order to account for adaptive capacity. The respective data are provided by Asset Resolution.
+
 
 ## Next steps
 
@@ -70,4 +71,4 @@ the analysis:
 
 * [README document with installation procedure](https://2degreesinvesting.github.io/r2dii.climate.stress.test/index.html)
 * [Set up project directories for climate transition risk stress test](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/01-setup-project-directories.html)
-* [Preparing the intermediate inputs for stress testing loans](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-prepare-loans-inputs.html)
+
