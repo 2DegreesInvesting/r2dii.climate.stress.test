@@ -1,5 +1,5 @@
 ---
-title: "01 - Set up project directories for climate transition risk stress test"
+title: "01 - Set up project directories for the  1in1000 model suite"
 ---
 
 ```{r, include = FALSE}
