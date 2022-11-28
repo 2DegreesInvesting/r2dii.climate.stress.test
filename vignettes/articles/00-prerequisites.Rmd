@@ -19,7 +19,7 @@ This vignette describes the necessary prerequisites for installing `r2dii.climat
 
 ## Software Requirements
 
-2DII climate transition stress testing analysis is performed using R packages.
+The 2DII 1in1000 model suite is performed by using R packages.
 R is a programming language in which the source code is written. 
 To use R, it is easiest to use an Integrated Development Environment (IDE),
 in this case RStudio. It is recommended for the person performing the analysis 
@@ -59,12 +59,13 @@ The material below describes in step by step how to use them:
   + r2dii.analysis manual: https://rmi-pacta.github.io/r2dii.analysis/
   
 ## Asset Resolution
-The climate transition risk stress test uses forward looking asset-level production data 
+The 1in1000 model suite uses forward looking asset-level production data 
 in order to account for adaptive capacity. The respective data are provided by Asset Resolution.
 
 
 ## Next steps
 
+### Are you running the 1in1000 model suite yourself ? 
 After successfully completing the prerequisites, see the README on how to 
 install the package followed by the below-mentioned vignettes on how to run 
 the analysis:
@@ -72,3 +73,5 @@ the analysis:
 * [README document with installation procedure](https://2degreesinvesting.github.io/r2dii.climate.stress.test/index.html)
 * [Set up project directories for climate transition risk stress test](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/01-setup-project-directories.html)
 
+### Is the 1in1000 model suite ran for you by 2DII ? 
+*  [Read and understand the output of the  1in1000 model suite  ](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/04-setup-project-directories.html)
