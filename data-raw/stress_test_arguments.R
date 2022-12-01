@@ -2,8 +2,8 @@
 stress_test_arguments <- tibble::tribble(
                       ~name,       ~type, ~default,               ~allowed,       ~min,       ~max,
                "asset_type", "character",       NA, "equity, bonds, loans",         NA,         NA,
-        "baseline_scenario", "character", "WEO2021_STEPS", "WEO2021_STEPS, GECO2019_ref, WEO2021_APS",         NA,         NA,
-           "shock_scenario", "character", "WEO2021_SDS", "WEO2021_SDS, WEO2021_NZE_2050, GECO2019_1.5c, GECO2019_2c_m",         NA,         NA,
+        "baseline_scenario", "character", "WEO2021_STEPS", "WEO2021_STEPS, GECO2021_CurPol, WEO2021_APS",         NA,         NA,
+           "shock_scenario", "character", "WEO2021_SDS", "WEO2021_SDS, WEO2021_NZE_2050, GECO2021_1.5C-Unif, GECO2021_NDC-LTS",         NA,         NA,
                       "lgd",    "double",   "0.45",                     NA,      "0.3",      "0.9",
            "risk_free_rate",    "double",   "0.02",                     NA,        "0",     "0.05",
             "discount_rate",    "double",   "0.07",                     NA,    "0.015",      "0.1",
