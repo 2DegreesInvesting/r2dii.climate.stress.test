@@ -19,7 +19,7 @@ This vignette describes the necessary prerequisites for installing `r2dii.climat
 
 ## Software Requirements
 
-The 2DII 1in1000 model suite is performed by using R packages.
+The 2DII 1in1000 stress test is performed using the 1in1000 model suite writting in R code and distributed as an R package.
 R is a programming language in which the source code is written. 
 To use R, it is easiest to use an Integrated Development Environment (IDE),
 in this case RStudio. It is recommended for the person performing the analysis 
@@ -52,11 +52,7 @@ run the software:
 * PACTA for Banks overview:
 https://www.transitionmonitor.com/pacta-for-banks-2020/
 * PACTA for Banks Methodology: https://www.transitionmonitor.com/wp-content/uploads/2021/07/PACTA-for-Banks-Methodology-document-02-07-2021_v1.2.0_v4.pdf
-* The PACTA for Banks R packages can be obtained from CRAN or GitHub. 
-The material below describes in step by step how to use them:
-  + r2dii.data manual: https://rmi-pacta.github.io/r2dii.data/
-  + r2dii.match manual: https://rmi-pacta.github.io/r2dii.match/
-  + r2dii.analysis manual: https://rmi-pacta.github.io/r2dii.analysis/
+
   
 ## Asset Resolution
 The 1in1000 model suite uses forward looking asset-level production data 

@@ -41,9 +41,7 @@ library(r2dii.climate.stress.test)
 
 ## Running the Stress Test for one scenario
 
-In order to run a stress test on one set of parameters, the user needs
-to pass exactly one value per input argument to the function `run_trisk()` or `run_lrisk()`, respectively. 
-The only arguments that do not have a default value and must be set by the user are the file paths. In this case, we want to run the simplest form of the stress test: 
+File paths must always be specified in the arguments of run_trisk() or run_lrisk(). They are the only arguments which do not have a default value and must be set by the user.
 
 ```{r, eval = FALSE}
 run_trisk(
