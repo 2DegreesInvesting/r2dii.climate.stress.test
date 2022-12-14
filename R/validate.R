@@ -39,7 +39,7 @@ validate_input_values <- function(baseline_scenario, shock_scenario, scenario_ge
     stop("Argument shock_year must be a whole number")
   }
 
-  if (!(growth_rate < discount_rate)) {
+  if (!all(growth_rate < discount_rate)) {
     stop("Growth rate needs to be strictly smaller than discount rate")
   }
 }
