@@ -122,12 +122,12 @@ line with the technologies, for which the scenarios provide production pathways.
 * `volatility`:
 * `price_baseline_scenario`:
 * `price_shock_scenario`:
-* `net_profits_baseline_scenario`:
-* `net_profits_shock_scenario`:
-* `discounted_net_profits_baseline_scenario`:
-* `discounted_net_profits_shock_scenario`:
-* `baseline_scenario_arg`:
-* `shock_scenario_arg`: 
+* `net_profits_baseline_scenario`: 
+* `net_profits_shock_scenario`: Net Profits of a company under shock scenario.
+* `discounted_net_profits_baseline_scenario`: Discounted net profits of a company under baseline scenario.
+* `discounted_net_profits_shock_scenario`: Discounted net profits of a company under shock scenario.
+* `baseline_scenario_arg`: Name of the baseline scenario.
+* `shock_scenario_arg`: Name of the Shock scenario.
 * `lgd_arg`: Loss given default applied in the calculation of the expected loss.
 *`risk_free_rate_arg` the risk free interest rate. Input parameter to the Merton
 credit risk model.
