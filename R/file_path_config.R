@@ -22,3 +22,8 @@ production_data_file <- function(dir) {
   out <- file.path(dir, "abcd_stress_test_input.csv")
   return(out)
 }
+
+carbon_price_data_file <- function(dir) {
+  out <- file.path(dir, "ngfs_carbon_tax.csv")
+  return(out)
+}
