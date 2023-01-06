@@ -450,6 +450,7 @@ set_litigation_trajectory <- function(data,
                                       end_year,
                                       analysis_time_frame,
                                       log_path) {
+  browser()
   validate_data_has_expected_cols(
     data = data,
     expected_columns = c(
@@ -564,7 +565,10 @@ set_litigation_trajectory <- function(data,
     dplyr::mutate(
       late_sudden = dplyr::if_else(
         !.data$aligned & .data$year > shock_scenario$year_of_shock & .data$direction == "declining",
-        .data$scen_to_follow,
+        # .data$scen_to_follow,
+        # EDIT: JC: I am disabling production shock by keeping the scenario after shock year
+        # 'late_sudden' as opposed to scen_to_follow
+        .data$late_sudden,
         .data$late_sudden
       )
     ) %>%
