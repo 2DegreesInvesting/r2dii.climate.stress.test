@@ -17,6 +17,7 @@ are given.
 }
 \seealso{
 Other import functions: 
+\code{\link{read_carbon_data}()},
 \code{\link{read_financial_data}()},
 \code{\link{read_production_data}()}
 }
