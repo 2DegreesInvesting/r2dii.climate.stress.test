@@ -16,6 +16,7 @@ Read in AR PAMS production data.
 \seealso{
 Other import functions: 
 \code{\link{read_capacity_factors_power}()},
+\code{\link{read_carbon_data}()},
 \code{\link{read_financial_data}()}
 }
 \concept{import functions}
