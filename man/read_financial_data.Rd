@@ -18,6 +18,7 @@ that contain information on multiple credit risk inputs
 \seealso{
 Other import functions: 
 \code{\link{read_capacity_factors_power}()},
+\code{\link{read_carbon_data}()},
 \code{\link{read_production_data}()}
 }
 \concept{import functions}
