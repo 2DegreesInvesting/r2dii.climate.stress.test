@@ -31,6 +31,27 @@ calculate_net_profits <- function(data) {
     )
 }
 
+#' ONLY FOR LRISK
+#' Calculates annual net profits on the company-technology level for only the
+#' baseline scenario.
+#' Climate laggards in increasing technologies DO NOT need to build
+#' out their production in increasing technologies to compensate for their
+#' missed targets.
+#'
+#' @param data A data frame containing the production forecasts of companies
+#'   under baseline and late and sudden, market prices/costs, company net profit
+#'   margins, the proximity to target in the production forecast period and an
+#'   indication of the direction of the technology.
+calculate_net_profits_lrisk <- function(data) {
+  data <- data %>%
+    dplyr::mutate(
+      production_compensation = .data$late_sudden - .data$baseline,
+      net_profits_baseline = .data$baseline * .data$Baseline_price * .data$net_profit_margin,
+      net_profits_ls =.data$late_sudden * .data$Baseline_price * .data$net_profit_margin
+        # EDIT: price only set at baseline level
+      )
+}
+
 #' Calculates discounted net profits based on a dividends discount model
 #'
 #' @param data A data frame containing the annual net profits on company
