@@ -450,7 +450,6 @@ set_litigation_trajectory <- function(data,
                                       end_year,
                                       analysis_time_frame,
                                       log_path) {
-  browser()
   validate_data_has_expected_cols(
     data = data,
     expected_columns = c(
@@ -524,7 +523,14 @@ set_litigation_trajectory <- function(data,
         FALSE
       )
     ) %>%
-    dplyr::ungroup()
+    dplyr::group_by(.data$id, .data$company_name) %>%
+    dplyr::mutate(
+      company_is_litigated = dplyr::if_else(
+        !.data$aligned & .data$direction == "declining",
+        TRUE,
+        FALSE
+      )
+    )
 
   data <- data %>%
     dplyr::inner_join(
@@ -541,7 +547,8 @@ set_litigation_trajectory <- function(data,
     dplyr::mutate(
       late_sudden = dplyr::if_else(
         .data$aligned,
-        .data$reference_tech_prod + cumsum(.data$scen_to_follow_aligned_change),
+        # .data$reference_tech_prod + cumsum(.data$scen_to_follow_aligned_change),
+        .data$reference_tech_prod + cumsum(.data$baseline_scenario_change),
         .data$reference_tech_prod + cumsum(.data$baseline_scenario_change)
       )
     ) %>%
@@ -561,28 +568,17 @@ set_litigation_trajectory <- function(data,
   # need to decline ensures that low carbon technologies that are not built out
   # sufficiently do not get a boost out of the blue by moving to the increased
   # trajectory of the target scenario.
-  data <- data %>%
-    dplyr::mutate(
-      late_sudden = dplyr::if_else(
-        !.data$aligned & .data$year > shock_scenario$year_of_shock & .data$direction == "declining",
-        # .data$scen_to_follow,
-        # EDIT: JC: I am disabling production shock by keeping the scenario after shock year
-        # 'late_sudden' as opposed to scen_to_follow
-        .data$late_sudden,
-        .data$late_sudden
-      )
-    ) %>%
-    dplyr::mutate(
-      company_x_biz_unit_is_litigated = dplyr::if_else(
-        !.data$aligned & .data$direction == "declining",
-        TRUE,
-        FALSE
-      )
-    ) %>%
-    dplyr::group_by(.data$id, .data$company_name) %>%
-    dplyr::mutate(company_is_litigated = any(.data$company_x_biz_unit_is_litigated)) %>%
-    dplyr::ungroup() %>%
-    dplyr::select(-"company_x_biz_unit_is_litigated")
+  # data <- data
+  #   # EDIT 2: I am commenting out the whole section below. Trajectory is already defined
+  #   # as following baseline rate of change in lines 545, 546
+  #   # dplyr::mutate(
+  #   #   late_sudden = dplyr::if_else(
+  #   #     !.data$aligned & .data$year > shock_scenario$year_of_shock & .data$direction == "declining",
+  #   #     # .data$scen_to_follow,
+  #   #     .data$late_sudden
+  #   #   )
+  #   # ) %>%
+
 
   data <- filter_negative_late_and_sudden(data, log_path = log_path)
 
