@@ -8,8 +8,8 @@ test_that("calculate_net_profits penalizes companies for late build out of low
   )
 
   carbon_data_test <- tibble::tribble(
-    ~year, ~model, ~scenario, ~scenario_geography, ~variable, ~unit, ~carbon_tax,
-    2030, "MESSAGEix-GLOBIOM 1.0", "Current policies (Hot house world, Rep)", "Global", "Price|Carbon", 10, 10,
+    ~year, ~model, ~scenario, ~variable, ~unit, ~carbon_tax, ~scenario_geography,
+    2030, "MESSAGEix-GLOBIOM 1.0", "Current policies (Hot house world, Rep)", "Price|Carbon", 10, 10, "Global"
 
   )
 
@@ -59,9 +59,8 @@ test_that("calculate_net_profits does not apply penalty on lost profits for high
   )
 
   carbon_data_test <- tibble::tribble(
-    ~year, ~model, ~scenario, ~scenario_geography, ~variable, ~unit, ~carbon_tax,
-    2030, "MESSAGEix-GLOBIOM 1.0", "Current policies (Hot house world, Rep)", "Global", "Price|Carbon", 10, 10,
-
+    ~year, ~model, ~scenario, ~variable, ~unit, ~carbon_tax, ~scenario_geography,
+    2030, "MESSAGEix-GLOBIOM 1.0", "Current policies (Hot house world, Rep)", "Price|Carbon", 10, 10, "Global"
   )
 
 
