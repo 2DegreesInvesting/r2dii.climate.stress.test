@@ -221,8 +221,8 @@ set_trisk_trajectory <- function(data,
         "scenario_change_baseline",
         "scenario_change_aligned",
         "overshoot_direction"
-      )
-    )) %>%
+      ))
+    ) %>%
     dplyr::mutate(scenario_name = .env$scenario_name)
 
   data <- filter_negative_late_and_sudden(data, log_path = log_path)
@@ -497,8 +497,10 @@ set_litigation_trajectory <- function(data,
   reference <- data %>%
     dplyr::filter(.data$year == .env$start_year + .env$analysis_time_frame) %>%
     dplyr::select(
-      dplyr::all_of(c("id", "company_name", "ald_sector", "technology",
-      "scenario_geography", "plan_tech_prod"))
+      dplyr::all_of(c(
+        "id", "company_name", "ald_sector", "technology",
+        "scenario_geography", "plan_tech_prod"
+      ))
     ) %>%
     dplyr::rename(
       reference_tech_prod = "plan_tech_prod"
@@ -528,7 +530,7 @@ set_litigation_trajectory <- function(data,
   data <- data %>%
     dplyr::inner_join(
       reference,
-      by = c("id", "company_name", "ald_sector","technology", "scenario_geography")
+      by = c("id", "company_name", "ald_sector", "technology", "scenario_geography")
     )
 
   data_extended <- data %>%
