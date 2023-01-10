@@ -44,10 +44,11 @@ calculate_pd_change_overall <- function(data,
     ) %>%
     dplyr::ungroup() %>%
     dplyr::select(
-      dplyr::all_of(c("scenario_name", "scenario_geography", "id",
-      "company_name", "ald_sector", "equity_0_baseline",
-      "equity_0_late_sudden", "debt_equity_ratio", "volatility")
-      )
+      dplyr::all_of(c(
+        "scenario_name", "scenario_geography", "id",
+        "company_name", "ald_sector", "equity_0_baseline",
+        "equity_0_late_sudden", "debt_equity_ratio", "volatility"
+      ))
     )
 
   data <- data %>%
