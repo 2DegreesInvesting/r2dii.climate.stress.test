@@ -24,26 +24,25 @@ calculate_net_profits <- function(data,
                                   shock_year,
                                   end_year,
                                   carbon_data) {
-
-  carbon_data <- carbon_data %>% dplyr::filter(.data$model == "MESSAGEix-GLOBIOM 1.0") %>% dplyr::select(-c(scenario_geography))
+  carbon_data <- carbon_data %>%
+    dplyr::filter(.data$model == "MESSAGEix-GLOBIOM 1.0") %>%
+    dplyr::select(-c(scenario_geography))
   market_passthrough <- 0
 
-  data <-data %>%
-    merge(carbon_data, by = c('year')) %>%
+  data <- data %>%
+    merge(carbon_data, by = c("year")) %>%
     dplyr::mutate(
-      carbon_tax = ifelse (year > shock_year, .data$carbon_tax ,0),
+      carbon_tax = ifelse(year > shock_year, .data$carbon_tax, 0),
       production_compensation = .data$late_sudden - .data$baseline,
       net_profits_baseline = .data$baseline * .data$Baseline_price * .data$net_profit_margin,
       net_profits_ls = dplyr::if_else(
         .data$direction == "declining",
-        .data$late_sudden * (.data$late_sudden_price - (1-market_passthrough) * .data$carbon_tax* .data$emission_factor) * .data$net_profit_margin,
+        .data$late_sudden * (.data$late_sudden_price - (1 - market_passthrough) * .data$carbon_tax * .data$emission_factor) * .data$net_profit_margin,
         .data$late_sudden * .data$late_sudden_price * .data$net_profit_margin -
           .data$production_compensation * .data$late_sudden_price * .data$net_profit_margin * (1 - .data$proximity_to_target)
         # TODO: ADO4109 - should the market size penalty only be applied to laggards?
-
       )
     )
-
 }
 
 calculate_net_profits_without_carbon_tax <- function(data) {
@@ -77,13 +76,13 @@ dividend_discount_model <- function(data, discount_rate) {
     ) %>%
     dplyr::mutate(
       t_calc = seq(0, (dplyr::n() - 1)),
-       discounted_net_profit_baseline = .data$net_profits_baseline /
-         (1 + .env$discount_rate) ^ .data$t_calc,
-       discounted_net_profit_ls = .data$net_profits_ls /
-         (1 + .env$discount_rate) ^ .data$t_calc)%>%
-     dplyr::select(-.data$t_calc) %>%
-     dplyr::ungroup()
+      discounted_net_profit_baseline = .data$net_profits_baseline /
+        (1 + .env$discount_rate)^.data$t_calc,
+      discounted_net_profit_ls = .data$net_profits_ls /
+        (1 + .env$discount_rate)^.data$t_calc
+    ) %>%
+    dplyr::select(-.data$t_calc) %>%
+    dplyr::ungroup()
 
   return(data)
 }
-
