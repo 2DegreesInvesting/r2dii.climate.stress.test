@@ -46,7 +46,7 @@ calculate_net_profits <- function(data,
 
 }
 
-calculate_net_profits_lrisk <- function(data) {
+calculate_net_profits_without_carbon_tax <- function(data) {
   data <- data %>%
     dplyr::mutate(
       production_compensation = .data$late_sudden - .data$baseline,
