@@ -91,8 +91,8 @@ extend_scenario_trajectory <- function(data,
       id_cols = dplyr::all_of(c(
         "id", "company_name", "year", "scenario_geography", "ald_sector",
         "technology", "plan_tech_prod", "phase_out", "emission_factor",
-        "proximity_to_target", "direction")
-        ),
+        "proximity_to_target", "direction"
+      )),
       names_from = "scenario",
       values_from = "scen_tech_prod"
     ) %>%
@@ -118,10 +118,11 @@ summarise_production_technology_forecasts <- function(data,
                                                       time_frame) {
   data <- data %>%
     dplyr::select(
-      dplyr::all_of(c("id", "company_name", "ald_sector", "technology",
-      "scenario_geography", "year", "plan_tech_prod",
-      "plan_emission_factor")
-      )
+      dplyr::all_of(c(
+        "id", "company_name", "ald_sector", "technology",
+        "scenario_geography", "year", "plan_tech_prod",
+        "plan_emission_factor"
+      ))
     ) %>%
     dplyr::filter(.data$year <= .env$start_analysis + .env$time_frame) %>%
     dplyr::group_by(
@@ -190,11 +191,12 @@ extend_to_full_analysis_timeframe <- function(data,
       .data$scenario_geography, .data$year
     ) %>%
     tidyr::fill(
-      dplyr::all_of(c("initial_technology_production",
-               "final_technology_production",
-               "phase_out",
-               "plan_emission_factor")
-      )
+      dplyr::all_of(c(
+        "initial_technology_production",
+        "final_technology_production",
+        "phase_out",
+        "plan_emission_factor"
+      ))
     ) %>%
     dplyr::rename(
       emission_factor = "plan_emission_factor"
@@ -324,8 +326,8 @@ calculate_proximity_to_target <- function(data,
     dplyr::select(
       -dplyr::all_of(c(
         "sum_required_change", "sum_realised_change",
-        "ratio_realised_required")
-      )
+        "ratio_realised_required"
+      ))
     )
 
   data <- data %>%
