@@ -235,7 +235,7 @@ read_and_process_and_calc_lrisk <- function(args_list) {
   cat("-- Calculating net profits. \n")
 
   # calc net profits
-  company_net_profits <- calculate_net_profits_lrisk(input_data_list$full_trajectory)
+  company_net_profits <- calculate_net_profits_without_carbon_tax(input_data_list$full_trajectory)
 
   # subtract lrisk settlement from profits
   company_net_profits <- company_net_profits %>%
