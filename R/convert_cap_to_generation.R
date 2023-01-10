@@ -101,7 +101,7 @@ convert_power_cap_to_generation <- function(data,
 
   # ensure required scenarios for planned capacity and scenario capacity are given
   if (
-      !baseline_scenario %in% unique(capacity_factors_power$scenario) |
+    !baseline_scenario %in% unique(capacity_factors_power$scenario) |
       !target_scenario %in% unique(capacity_factors_power$scenario)
   ) {
     stop(glue::glue("At least one input scenario from {baseline_scenario} or
