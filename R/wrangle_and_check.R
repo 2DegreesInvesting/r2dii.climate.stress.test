@@ -224,9 +224,9 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars, risk_type) 
     select_cols <- c(merge_by_cols, "technology", "company_is_litigated", "settlement")
     crispy_output <- crispy_output %>%
       dplyr::inner_join(results_list$company_trajectories %>%
-                          dplyr::select(!!select_cols) %>%
-                          dplyr::distinct_all(),
-                        by = c(merge_by_cols, "technology") # inlcuding since settlement is a technology level variable
+        dplyr::select(!!select_cols) %>%
+        dplyr::distinct_all(),
+      by = c(merge_by_cols, "technology") # inlcuding since settlement is a technology level variable
       )
 
     crispy_output <- crispy_output %>%
