@@ -337,7 +337,7 @@ process_scenario_data <- function(data, start_year, end_year, sectors, technolog
 
 #' Process data of type indicated by function name
 #'
-#' @inheritParams process_carbon_data
+#' @inheritParams process_production_data
 #'
 #' @return A tibble of data as indicated by function name.
 #' @noRd
