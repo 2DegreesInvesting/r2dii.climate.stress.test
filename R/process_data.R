@@ -338,6 +338,21 @@ process_scenario_data <- function(data, start_year, end_year, sectors, technolog
 #' Process data of type indicated by function name
 #'
 #' @inheritParams process_production_data
+#'
+#' @return A tibble of data as indicated by function name.
+#' @noRd
+process_carbon_data <- function(data, start_year, end_year) {
+  data_processed <- data %>%
+    dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year)) %>%
+    # dplyr::filter(.data$model %in% .env$model_filter)
+    stop_if_empty(data_name = "Carbon Data")
+
+  return(data_processed)
+}
+
+#' Process data of type indicated by function name
+#'
+#' @inheritParams process_production_data
 #' @inheritParams run_trisk
 #'
 #' @return A tibble of data as indicated by function name.
@@ -378,6 +393,12 @@ st_process <- function(data, scenario_geography, baseline_scenario,
 
   financial_data <- process_financial_data(
     data$financial_data
+  )
+
+  carbon_data <- process_carbon_data(
+    data$carbon_data,
+    start_year = start_year,
+    end_year = end_year_lookup
   )
 
   production_data <- process_production_data(
@@ -428,7 +449,8 @@ st_process <- function(data, scenario_geography, baseline_scenario,
     df_price = df_price,
     scenario_data = scenario_data,
     financial_data = financial_data,
-    production_data = production_data
+    production_data = production_data,
+    carbon_data = carbon_data
   )
 
   return(out)
@@ -449,8 +471,8 @@ st_process <- function(data, scenario_geography, baseline_scenario,
 #'
 #' @return A tibble of data as indicated by function name.
 process_production_data <- function(data, start_year, end_year, time_horizon,
-                                  scenario_geography_filter, sectors,
-                                  technologies, log_path) {
+                                    scenario_geography_filter, sectors,
+                                    technologies, log_path) {
   data_processed <- data %>%
     dplyr::filter(.data$scenario_geography %in% .env$scenario_geography_filter) %>%
     dplyr::filter(.data$ald_sector %in% .env$sectors) %>%

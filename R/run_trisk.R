@@ -185,7 +185,8 @@ read_and_process_and_calc <- function(args_list) {
     scenario_data = processed$scenario_data,
     df_price = processed$df_price,
     financial_data = processed$financial_data,
-    production_data = processed$production_data
+    production_data = processed$production_data,
+    carbon_data = processed$carbon_data
   )
 
   # TODO: this requires company id to work for all companies, i.e. using 2021Q4 PAMS data
@@ -216,7 +217,11 @@ read_and_process_and_calc <- function(args_list) {
   cat("-- Calculating net profits. \n")
 
   # calc net profits
-  company_net_profits <- calculate_net_profits(input_data_list$full_trajectory)
+  company_net_profits <- calculate_net_profits(input_data_list$full_trajectory,
+    carbon_data = input_data_list$carbon_data,
+    shock_year = shock_year,
+    end_year = end_year_lookup
+  )
 
   # calc discounted net profits
   company_annual_profits <- calculate_annual_profits(

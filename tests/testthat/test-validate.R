@@ -159,7 +159,6 @@ test_that("Error is thrown if a character input value is out of bounds", {
     scc = 40,
     exp_share_damages_paid = 0.027
   ), "baseline")
-
 })
 
 test_that("No error is thrown if an input value equals a bound", {
