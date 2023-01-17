@@ -44,20 +44,32 @@ calculate_net_profits <- function(data,
 }
 
 calculate_net_profits_without_carbon_tax <- function(data) {
-  data <- data %>%
-    dplyr::mutate(
-      production_compensation = .data$late_sudden - .data$baseline,
-      net_profits_baseline = .data$baseline * .data$Baseline_price * .data$net_profit_margin,
-      net_profits_ls = dplyr::if_else(
-        .data$direction == "declining",
-        .data$late_sudden * .data$late_sudden_price * .data$net_profit_margin,
-        .data$late_sudden * .data$late_sudden_price * .data$net_profit_margin -
-          .data$production_compensation * .data$late_sudden_price * .data$net_profit_margin * (1 - .data$proximity_to_target)
-        # TODO: ADO4109 - should the market size penalty only be applied to laggards?
-      )
-    )
+
+  baseline <- calculate_net_profits_baseline(data)
+  shock_increasing_technologies <-  calculate_net_profits_shock_increasing_technologies(data = data %>% filter(direction == "increasing"))
+  shock_declining_technologies <- calculate_net_profits_shock_declining_technologies(data = data %>% filter(direction == "declining"))
+
+  data <- full_join(shock_increasing_technologies, shock_declining_technologies)
+  data <- full_join(data, baseline)
+
 }
 
+calculate_net_profits_baseline <- function(data) {
+  data <- data %>%
+    dplyr::mutate(net_profits_baseline = .data$baseline * .data$Baseline_price * .data$net_profit_margin)
+}
+
+calculate_net_profits_shock_declining_technologies <- function(data){
+  data <- data %>%
+    dplyr::mutate(net_profits_ls = .data$late_sudden * .data$late_sudden_price * .data$net_profit_margin)
+}
+
+calculate_net_profits_shock_increasing_technologies <- function(data){
+  data <- data %>%
+    dplyr::mutate(production_compensation = .data$late_sudden - .data$baseline,
+                  net_profits_ls = .data$late_sudden * .data$late_sudden_price * .data$net_profit_margin -
+                    .data$production_compensation * .data$late_sudden_price * .data$net_profit_margin * (1 - .data$proximity_to_target))
+}
 
 
 #' Calculates discounted net profits based on a dividends discount model
