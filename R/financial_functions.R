@@ -65,14 +65,12 @@ calculate_net_profits <- function(data,
 #'   indication of the direction of the technology.
 
 calculate_net_profits_without_carbon_tax <- function(data) {
-
   baseline <- calculate_net_profits_baseline(data)
-  shock_increasing_technologies <-  calculate_net_profits_shock_increasing_technologies(data = data %>% dplyr::filter(direction == "increasing"))
+  shock_increasing_technologies <- calculate_net_profits_shock_increasing_technologies(data = data %>% dplyr::filter(direction == "increasing"))
   shock_declining_technologies <- calculate_net_profits_shock_declining_technologies(data = data %>% dplyr::filter(direction == "declining"))
 
   data_test <- dplyr::full_join(shock_increasing_technologies, shock_declining_technologies)
   data_test <- dplyr::full_join(data_test, baseline)
-
 }
 
 #' Calculates annual net profits on the company-technology level for the
@@ -94,7 +92,7 @@ calculate_net_profits_baseline <- function(data) {
 #'   margins, the proximity to target in the production forecast period and an
 #'   indication of the direction of the technology.
 
-calculate_net_profits_shock_declining_technologies <- function(data){
+calculate_net_profits_shock_declining_technologies <- function(data) {
   data <- data %>%
     dplyr::mutate(net_profits_ls = .data$late_sudden * .data$late_sudden_price * .data$net_profit_margin)
 }
@@ -106,11 +104,13 @@ calculate_net_profits_shock_declining_technologies <- function(data){
 #'   margins, the proximity to target in the production forecast period and an
 #'   indication of the direction of the technology.
 
-calculate_net_profits_shock_increasing_technologies <- function(data){
-  data <- data  %>%
-    dplyr::mutate(production_compensation = .data$late_sudden - .data$baseline,
-                  net_profits_ls = .data$late_sudden * .data$late_sudden_price * .data$net_profit_margin -
-                    .data$production_compensation * .data$late_sudden_price * .data$net_profit_margin * (1 - .data$proximity_to_target))
+calculate_net_profits_shock_increasing_technologies <- function(data) {
+  data <- data %>%
+    dplyr::mutate(
+      production_compensation = .data$late_sudden - .data$baseline,
+      net_profits_ls = .data$late_sudden * .data$late_sudden_price * .data$net_profit_margin -
+        .data$production_compensation * .data$late_sudden_price * .data$net_profit_margin * (1 - .data$proximity_to_target)
+    )
 }
 
 #' Calculates discounted net profits based on a dividends discount model
