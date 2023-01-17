@@ -218,9 +218,9 @@ read_and_process_and_calc <- function(args_list) {
 
   # calc net profits
   company_net_profits <- calculate_net_profits(input_data_list$full_trajectory,
-    carbon_data = input_data_list$carbon_data,
-    shock_year = shock_year,
-    end_year = end_year_lookup
+     carbon_data = input_data_list$carbon_data,
+     shock_year = shock_year,
+     end_year = end_year_lookup
   )
 
   # calc discounted net profits
