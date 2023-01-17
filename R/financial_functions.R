@@ -24,9 +24,7 @@ calculate_net_profits <- function(data,
                                   shock_year,
                                   end_year,
                                   carbon_data) {
-  carbon_data <- carbon_data %>%
-    dplyr::filter(.data$model == "MESSAGEix-GLOBIOM 1.0") %>%
-    dplyr::select(-c(scenario_geography))
+
   market_passthrough <- 0
 
   data <- data %>%
