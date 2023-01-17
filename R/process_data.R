@@ -344,10 +344,12 @@ process_scenario_data <- function(data, start_year, end_year, sectors, technolog
 process_carbon_data <- function(data, start_year, end_year) {
   data_processed <- data %>%
     dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year)) %>%
-    # dplyr::filter(.data$model %in% .env$model_filter)
+    dplyr::filter(.data$model == "MESSAGEix-GLOBIOM 1.0")%>%
+    dplyr::select(-c(scenario_geography)) %>%
     stop_if_empty(data_name = "Carbon Data")
 
   return(data_processed)
+
 }
 
 #' Process data of type indicated by function name
