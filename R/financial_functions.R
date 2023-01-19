@@ -61,7 +61,7 @@ calculate_net_profits_without_carbon_tax <- function(data) {
 
   data <- dplyr::full_join(shock_increasing_technologies, shock_declining_technologies)
   data <- dplyr::full_join(data, baseline)
-browser()
+
   return(data)
 }
 
