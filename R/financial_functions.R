@@ -45,6 +45,7 @@ calculate_net_profits <- function(data,
     )
 }
 
+
 #' Calculates annual net profits on the company-technology level for the
 #' baseline and late and sudden scenarios - without a carbon tax being added.
 #'
@@ -52,12 +53,12 @@ calculate_net_profits <- function(data,
 #'   under baseline and late and sudden, market prices/costs, company net profit
 #'   margins, the proximity to target in the production forecast period and an
 #'   indication of the direction of the technology.
-#'   @param direction either declining or increasing
-
+#'
+#' @return Data frame with annual netprofits for all cases without carbon tax
 calculate_net_profits_without_carbon_tax <- function(data) {
   baseline <- calculate_net_profits_baseline(data)
-  shock_increasing_technologies <- calculate_net_profits_shock_increasing_technologies(data = data %>% dplyr::filter(direction == "increasing"))
-  shock_declining_technologies <- calculate_net_profits_shock_declining_technologies(data = data %>% dplyr::filter(direction == "declining"))
+  shock_increasing_technologies <- calculate_net_profits_shock_increasing_technologies(data = data %>% dplyr::filter(.data$direction == "increasing"))
+  shock_declining_technologies <- calculate_net_profits_shock_declining_technologies(data = data %>% dplyr::filter(.data$direction == "declining"))
 
   data <- dplyr::full_join(shock_increasing_technologies, shock_declining_technologies)
   data <- dplyr::full_join(data, baseline)
@@ -65,12 +66,15 @@ calculate_net_profits_without_carbon_tax <- function(data) {
   return(data)
 }
 
-#' Calculates annual net profits on the company-technology level for the
-#' baseline
+
+#' Calculates annual net profits on the company-technology level for the baseline scenario
+#'
 #' @param data A data frame containing the production forecasts of companies
 #'   under baseline and late and sudden, market prices/costs, company net profit
 #'   margins, the proximity to target in the production forecast period and an
 #'   indication of the direction of the technology.
+#'
+#' @return A data frame with net profits for the baseline scenario.
 
 calculate_net_profits_baseline <- function(data) {
   data <- data %>%
@@ -79,12 +83,15 @@ calculate_net_profits_baseline <- function(data) {
   return(data)
 }
 
-#' Calculates annual net profits on the company-technology level for the
-#' shock scenario for declining technologies
-#' @param data A data frame containing the production forecasts of companies with declining
-#'   under the late and sudden, market prices/costs, company net profit
+
+#' Calculates annual net profits on the company-technology level for the shock scenario for declining technologies
+#'
+#' @param data A data frame containing the production forecasts of companies
+#'   under baseline and late and sudden, market prices/costs, company net profit
 #'   margins, the proximity to target in the production forecast period and an
 #'   indication of the direction of the technology.
+#'
+#' @return A data frame with net profits of companies with a declining technology
 
 calculate_net_profits_shock_declining_technologies <- function(data) {
   data <- data %>%
@@ -93,23 +100,24 @@ calculate_net_profits_shock_declining_technologies <- function(data) {
   return(data)
 }
 
-#' Calculates annual net profits on the company-technology level for the
-#' shock scenario for increasing technologies. Climate laggards which need to build
-#' out their production in increasing technologies to compensate for their
+
+#' Calculates annual net profits on the company-technology level for the shock scenario for increasing technologies.
+#' Climate laggards which need to build out their production in increasing technologies to compensate for their
 #' missed targets, are "punished" by adjusting the net profit margin on their
 #' additional build out based on their proximity to target within the given
 #' technology. Specifically, we measure the ratio of how much of the required
 #' build out or reduction in a technology the company will have done at the end
 #' of the forecast period. If the technology has an increasing target and the
-#' ratio of completion is below one, the net_profit_margin on the additional
-#' production build out is multiplied with the proximity to the target. This
-#' approximates the additional capital investment such a company would have to
-#' make in a short time, which leads to added costs. This ensures that late
+#' ratio of completion is below one, the net_profit_margin on the additional production build out
+#' is multiplied with the proximity to the target. This approximates the additional capital investment
+#' such a company would have to make in a short time, which leads to added costs. This ensures that late
 #' build out will not proportionally translate into increased profits.
-#' @param data A data frame containing the production forecasts of companies with increasing
-#'   under the late and sudden, market prices/costs, company net profit
-#'   margins, the proximity to target in the production forecast period and an
-#'   indication of the direction of the technology.
+#'
+#' @param data A data frame containing the production forecasts of companies with increasing under the late and sudden,
+#' market prices/costs, company net profit margins, the proximity to target in the production forecast period and an
+#' indication of the direction of the technology.
+#'
+#' @return  A data frame with net profits of companies with a increasing technology
 
 calculate_net_profits_shock_increasing_technologies <- function(data) {
   data <- data %>%

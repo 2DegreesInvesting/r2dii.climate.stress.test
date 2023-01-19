@@ -2,18 +2,19 @@
 % Please edit documentation in R/financial_functions.R
 \name{calculate_net_profits_shock_declining_technologies}
 \alias{calculate_net_profits_shock_declining_technologies}
-\title{Calculates annual net profits on the company-technology level for the
-shock scenario for declining technologies}
+\title{Calculates annual net profits on the company-technology level for the shock scenario for declining technologies}
 \usage{
 calculate_net_profits_shock_declining_technologies(data)
 }
 \arguments{
-\item{data}{A data frame containing the production forecasts of companies with declining
-under the late and sudden, market prices/costs, company net profit
+\item{data}{A data frame containing the production forecasts of companies
+under baseline and late and sudden, market prices/costs, company net profit
 margins, the proximity to target in the production forecast period and an
 indication of the direction of the technology.}
 }
+\value{
+A data frame with net profits of companies with a declining technology
+}
 \description{
-Calculates annual net profits on the company-technology level for the
-shock scenario for declining technologies
+Calculates annual net profits on the company-technology level for the shock scenario for declining technologies
 }

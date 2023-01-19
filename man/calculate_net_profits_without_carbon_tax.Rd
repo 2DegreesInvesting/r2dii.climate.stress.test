@@ -11,8 +11,10 @@ calculate_net_profits_without_carbon_tax(data)
 \item{data}{A data frame containing the production forecasts of companies
 under baseline and late and sudden, market prices/costs, company net profit
 margins, the proximity to target in the production forecast period and an
-indication of the direction of the technology.
-@param direction either declining or increasing}
+indication of the direction of the technology.}
+}
+\value{
+Data frame with annual netprofits for all cases without carbon tax
 }
 \description{
 Calculates annual net profits on the company-technology level for the
