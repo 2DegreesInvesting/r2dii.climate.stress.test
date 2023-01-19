@@ -3,7 +3,7 @@
 \name{calculate_net_profits_without_carbon_tax}
 \alias{calculate_net_profits_without_carbon_tax}
 \title{Calculates annual net profits on the company-technology level for the
-baseline and late and sudden scenarios without carbon tax. Climate laggards which need to build
+baseline and late and sudden scenarios without carbon tax Climate laggards which need to build
 out their production in increasing technologies to compensate for their
 missed targets, are "punished" by adjusting the net profit margin on their
 additional build out based on their proximity to target within the given
@@ -22,11 +22,12 @@ calculate_net_profits_without_carbon_tax(data)
 \item{data}{A data frame containing the production forecasts of companies
 under baseline and late and sudden, market prices/costs, company net profit
 margins, the proximity to target in the production forecast period and an
-indication of the direction of the technology.}
+indication of the direction of the technology.
+@param direction either declining or increasing}
 }
 \description{
 Calculates annual net profits on the company-technology level for the
-baseline and late and sudden scenarios without carbon tax. Climate laggards which need to build
+baseline and late and sudden scenarios without carbon tax Climate laggards which need to build
 out their production in increasing technologies to compensate for their
 missed targets, are "punished" by adjusting the net profit margin on their
 additional build out based on their proximity to target within the given
