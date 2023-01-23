@@ -22,6 +22,9 @@ the policy shock strikes in a given scenario.}
 
 \item{carbon_data}{NGFS carbon prices.}
 }
+\value{
+Data frame with annual netprofits for all cases without carbon tax.
+}
 \description{
 Calculates annual net profits on the company-technology level for the
 baseline and late and sudden scenarios - with a carbon tax being added.
