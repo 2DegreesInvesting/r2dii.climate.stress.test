@@ -47,7 +47,7 @@ calculate_net_profits <- function(data,
 #'   the policy shock strikes in a given scenario.
 #' @param carbon_data  NGFS carbon prices.
 #'
-#' @return
+#' @return Data frame with annual netprofits for all cases without carbon tax.
 
 calculate_net_profits_shock_declining_technologies_carbon_tax<- function(data,shock_year,
                                                                          carbon_data) {
