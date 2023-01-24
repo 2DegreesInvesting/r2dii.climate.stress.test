@@ -13,12 +13,10 @@ test_that("calculate_net_profits penalizes companies for late build out of low
 
 
   test_shock_year <- 2021
-  test_end_year_lookup <- 2040
 
   net_profits <- calculate_net_profits(input_data,
     carbon_data = carbon_data_test,
-    shock_year = test_shock_year,
-    end_year = test_end_year_lookup
+    shock_year = test_shock_year
   )
 
   net_profits_baseline_climate_leader <- net_profits %>%
@@ -62,12 +60,10 @@ test_that("calculate_net_profits does not apply penalty on lost profits for high
 
 
   test_shock_year <- 2021
-  test_end_year_lookup <- 2040
 
   net_profits <- calculate_net_profits(input_data,
     carbon_data = carbon_data_test,
-    shock_year = test_shock_year,
-    end_year = test_end_year_lookup
+    shock_year = test_shock_year
   )
 
   net_profits_baseline_climate_leader <- net_profits %>%
@@ -96,6 +92,95 @@ test_that("calculate_net_profits does not apply penalty on lost profits for high
   )
 })
 
+test_that("calculate_net_profits does not apply carbon tax on high
+          carbon technologies before shock year", {
+            input_data <- tibble::tribble(
+              ~company_name, ~baseline, ~late_sudden, ~Baseline_price, ~late_sudden_price, ~net_profit_margin, ~direction,~proximity_to_target, ~year, ~emission_factor,
+              "high carbon technology after shock year", 100, 50, 10, 10, 0.1, "declining", 0, 2030, 1
+            )
+
+            carbon_data_test <- tibble::tribble(
+              ~year, ~model, ~scenario, ~variable, ~unit, ~carbon_tax,
+              2030, "MESSAGEix-GLOBIOM 1.0", "Current policies (Hot house world, Rep)", "Price|Carbon", 10, 10,
+            )
+
+
+            test_shock_year_early <- 2025
+            test_shock_year_late <- 2035
+
+
+            net_profits_early <- calculate_net_profits(input_data,
+                                                 carbon_data = carbon_data_test,
+                                                 shock_year = test_shock_year_early
+            )
+
+            net_profits_late <- calculate_net_profits(input_data,
+                                                       carbon_data = carbon_data_test,
+                                                       shock_year = test_shock_year_late
+            )
+
+            net_profits_late_sudden_high_carbon_technology_early <- net_profits_early %>%
+              dplyr::pull(.data$net_profits_ls)
+
+            net_profits_late_sudden_high_carbon_technology_late <- net_profits_late %>%
+              dplyr::pull(.data$net_profits_ls)
+
+
+            testthat::expect_gt(
+              net_profits_late_sudden_high_carbon_technology_late,
+              net_profits_late_sudden_high_carbon_technology_early
+            )
+          })
+
+
+test_that("calculate_net_profits does not apply carbon tax for low
+          carbon technologies", {
+            input_data <- tibble::tribble(
+              ~company_name, ~baseline, ~late_sudden, ~Baseline_price, ~late_sudden_price, ~net_profit_margin, ~direction, ~proximity_to_target, ~year, ~emission_factor,
+              "high carbon technology", 100, 50, 10, 10, 0.1, "increasing", 0, 2030, 1,
+              "low carbon technology", 100, 50, 10, 10, 0.1, "declining", 0, 2030, 1
+            )
+
+            carbon_data_test <- tibble::tribble(
+              ~year, ~model, ~scenario, ~variable, ~unit, ~carbon_tax,
+              2030, "MESSAGEix-GLOBIOM 1.0", "Current policies (Hot house world, Rep)", "Price|Carbon", 10, 10,
+            )
+
+
+            test_shock_year <- 2021
+            test_end_year_lookup <- 2040
+
+            net_profits <- calculate_net_profits(input_data,
+                                                 carbon_data = carbon_data_test,
+                                                 shock_year = test_shock_year
+            )
+
+            net_profits_baseline_high_carbon_technology<- net_profits %>%
+              dplyr::filter(.data$company_name == "high carbon technology") %>%
+              dplyr::pull(.data$net_profits_baseline)
+
+            net_profits_baseline_low_carbon_technology <- net_profits %>%
+              dplyr::filter(.data$company_name == "low carbon technology") %>%
+              dplyr::pull(.data$net_profits_baseline)
+
+            net_profits_late_sudden_high_carbon_technology <- net_profits %>%
+              dplyr::filter(.data$company_name == "high carbon technology") %>%
+              dplyr::pull(.data$net_profits_ls)
+
+            net_profits_late_sudden_low_carbon_technology <- net_profits %>%
+              dplyr::filter(.data$company_name == "low carbon technology") %>%
+              dplyr::pull(.data$net_profits_ls)
+
+            testthat::expect_equal(
+              net_profits_baseline_high_carbon_technology,
+              net_profits_baseline_low_carbon_technology
+            )
+            testthat::expect_gt(
+              net_profits_late_sudden_high_carbon_technology,
+              net_profits_late_sudden_low_carbon_technology
+            )
+          })
+
 
 test_that("calculate_net_profits penalizes companies for late build out of low
           carbon technologies", {
@@ -107,7 +192,6 @@ test_that("calculate_net_profits penalizes companies for late build out of low
 
 
   test_shock_year <- 2021
-  test_end_year_lookup <- 2040
 
   net_profits <- calculate_net_profits_without_carbon_tax(input_data)
 
