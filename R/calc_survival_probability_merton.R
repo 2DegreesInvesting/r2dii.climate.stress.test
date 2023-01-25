@@ -38,7 +38,7 @@ calc_survival_probability_merton <- function(L, V0, sigma, r, t) {
     stop(paste0("Unexpected non positive numbers detected on at least one of arguments L, V0, sigma, t."))
   }
 
-  d1 <- (log(V0 / L) + (r + (sigma^2 / 2) * t)) / (sigma * sqrt(t))
+  d1 <- (log(V0 / L) + ((r + (sigma^2 / 2)) * t)) / (sigma * sqrt(t))
   d2 <- d1 - sigma * sqrt(t)
 
   # Default Probability
