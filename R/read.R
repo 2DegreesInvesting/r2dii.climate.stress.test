@@ -1,4 +1,4 @@
-st_read_agnostic <- function(dir, start_year, sectors) {
+st_read_agnostic <- function(dir, start_year, sectors, risktype) {
 
   # capacity_factors are only needed for power sector
   if ("Power" %in% sectors) {
@@ -7,6 +7,7 @@ st_read_agnostic <- function(dir, start_year, sectors) {
     capacity_factors_power <- NULL
   }
 
+  if (risktype == "trisk") {
   out <- list(
     capacity_factors_power = capacity_factors_power,
     df_price = read_price_data(price_data_file(dir)),
@@ -14,7 +15,17 @@ st_read_agnostic <- function(dir, start_year, sectors) {
     financial_data = read_financial_data(financial_data_file(dir)),
     production_data = read_production_data(production_data_file(dir)),
     carbon_data = read_carbon_data(carbon_price_data_file(dir))
-  )
+  ) }
+  else {
+    out <- list(
+      capacity_factors_power = capacity_factors_power,
+      df_price = read_price_data(price_data_file(dir)),
+      scenario_data = read_scenario_data(scenario_data_file(dir, start_year)),
+      financial_data = read_financial_data(financial_data_file(dir)),
+      production_data = read_production_data(production_data_file(dir))
+      )
+
+  }
 
   return(out)
 }
