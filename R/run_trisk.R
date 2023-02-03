@@ -38,6 +38,8 @@
 #'   point from which production forecasts are compared against scenario targets.
 #'   Must be available in the production data and indicates the first year of
 #'   the scenario data.
+#' @param carbon_price_model Character vector, indicating which NGFS model is used in regards to
+#'   carbon prices. Default is no carbon tax.
 #' @param return_results Boolean, indicating if results shall be exported.
 #' @return NULL
 #' @export
@@ -53,6 +55,7 @@ run_trisk <- function(input_path,
                       shock_year = 2030,
                       scenario_geography = "Global",
                       start_year = 2021,
+                      carbon_price_model = "no_carbon_tax",
                       return_results = FALSE) {
   cat("-- Running transition risk stress test. \n\n\n")
 
@@ -73,6 +76,7 @@ run_trisk <- function(input_path,
     growth_rate = growth_rate,
     div_netprofit_prop_coef = div_netprofit_prop_coef,
     shock_year = shock_year,
+    carbon_price_model = carbon_price_model,
     risk_type = "trisk"
   )
 
@@ -165,7 +169,7 @@ read_and_process_and_calc <- function(args_list) {
 
   cat("-- Reading input data from designated input path. \n")
 
-  data <- st_read_agnostic(input_path, start_year = start_year, sectors = sectors_and_technologies_list$sectors)
+  data <- st_read_agnostic(input_path, start_year = start_year, sectors = sectors_and_technologies_list$sectors, risktype = "trisk")
 
   cat("-- Processing input data. \n")
 
@@ -177,8 +181,8 @@ read_and_process_and_calc <- function(args_list) {
       sectors = sectors_and_technologies_list$sectors,
       technologies = sectors_and_technologies_list$technologies,
       start_year = start_year,
-      log_path = log_path
-    )
+      carbon_price_model = carbon_price_model,
+      log_path = log_path)
 
   input_data_list <- list(
     capacity_factors_power = processed$capacity_factors_power,
