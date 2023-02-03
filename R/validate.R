@@ -3,12 +3,14 @@
 #' Checks that user inputs are within defined ranges.
 #'
 #' @inheritParams run_lrisk
+#' @param carbon_price_model Character vector, indicating which NGFS model is used in regards to
+#'   carbon prices. Default is no carbon tax.
 #' @param risk_type String that is either lrisk or trisk.
 #' @return NULL
 validate_input_values <- function(baseline_scenario, shock_scenario, scenario_geography,
                                   lgd, risk_free_rate, discount_rate, growth_rate,
                                   div_netprofit_prop_coef, shock_year,
-                                  settlement_factor, exp_share_damages_paid, scc, risk_type) {
+                                  settlement_factor, exp_share_damages_paid, scc, risk_type, carbon_price_model) {
   input_args <- mget(names(formals()), sys.frame(sys.nframe()))
   input_args <- input_args[-which(names(input_args) == "risk_type")]
 
@@ -18,6 +20,10 @@ validate_input_values <- function(baseline_scenario, shock_scenario, scenario_ge
 
   if (risk_type == "trisk") {
     input_args[which(names(input_args) %in% c("settlement_factor", "scc", "exp_share_damages_paid"))] <- NULL
+  }
+
+  if (risk_type == "lrisk") {
+    input_args[which(names(input_args) %in% c("carbon_price_model"))] <- NULL
   }
 
   c("baseline_scenario", "shock_scenario", "scenario_geography") %>%
@@ -32,6 +38,11 @@ validate_input_values <- function(baseline_scenario, shock_scenario, scenario_ge
   if (risk_type == "trisk") {
     vector_numeric_args <- vector_numeric_args[!vector_numeric_args %in% c("settlement_factor", "exp_share_damages_paid", "scc")]
   }
+
+  if (risk_type == "lrisk") {
+    vector_numeric_args <- vector_numeric_args[!vector_numeric_args %in% c("carbon_price_model")]
+  }
+
   vector_numeric_args %>%
     purrr::walk(validate_values_in_range, args_list = input_args)
 
