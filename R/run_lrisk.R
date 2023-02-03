@@ -181,7 +181,7 @@ read_and_process_and_calc_lrisk <- function(args_list) {
 
   cat("-- Reading input data from designated input path. \n")
 
-  data <- st_read_agnostic(input_path, start_year = start_year, sectors = sectors_and_technologies_list$sectors)
+  data <- st_read_agnostic(input_path, start_year = start_year, sectors = sectors_and_technologies_list$sectors, risktype = "lrisk")
 
   cat("-- Processing input data. \n")
 
@@ -193,6 +193,7 @@ read_and_process_and_calc_lrisk <- function(args_list) {
       sectors = sectors_and_technologies_list$sectors,
       technologies = sectors_and_technologies_list$technologies,
       start_year = start_year,
+      carbon_price_model = carbon_price_model,
       log_path = log_path
     )
 
