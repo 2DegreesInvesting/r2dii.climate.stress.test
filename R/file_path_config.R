@@ -24,6 +24,6 @@ production_data_file <- function(dir) {
 }
 
 carbon_price_data_file <- function(dir) {
-  out <- file.path(dir, "ngfs_carbon_tax.csv")
+  out <- file.path(dir, "ngfs_carbon_price.csv")
   return(out)
 }
