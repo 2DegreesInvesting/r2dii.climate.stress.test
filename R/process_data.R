@@ -341,13 +341,21 @@ process_scenario_data <- function(data, start_year, end_year, sectors, technolog
 #'
 #' @return A tibble of data as indicated by function name.
 #' @noRd
-process_carbon_data <- function(data, start_year, end_year) {
-  data_processed <- data %>%
-    dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year)) %>%
-      dplyr::filter(.data$model == "MESSAGEix-GLOBIOM 1.0") %>%
-      dplyr::select(-c(scenario_geography))  %>%
-    # dplyr::filter(.data$model %in% .env$model_filter)
-    stop_if_empty(data_name = "Carbon Data")
+process_carbon_data <- function(data, start_year, end_year, carbon_price_model) {
+
+  data_processed <- data
+
+  if (is.null(data_processed)) {
+
+    data_processed <- NULL
+   } else {
+
+data_processed <- data_processed %>%
+   dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year)) %>%
+   dplyr::select(-c(scenario_geography))  %>%
+   dplyr::filter(.data$model %in% .env$carbon_price_model) %>%
+   stop_if_empty(data_name = "Carbon Data")
+   }
 
   return(data_processed)
 }
@@ -370,7 +378,7 @@ process_financial_data <- function(data) {
 }
 
 st_process <- function(data, scenario_geography, baseline_scenario,
-                       shock_scenario, sectors, technologies, start_year,
+                       shock_scenario, sectors, technologies, start_year, carbon_price_model,
                        log_path) {
   scenarios_filter <- c(baseline_scenario, shock_scenario)
 
@@ -397,10 +405,12 @@ st_process <- function(data, scenario_geography, baseline_scenario,
     data$financial_data
   )
 
+
   carbon_data <- process_carbon_data(
     data$carbon_data,
     start_year = start_year,
-    end_year = end_year_lookup
+    end_year = end_year_lookup,
+    carbon_price_model = carbon_price_model
   )
 
   production_data <- process_production_data(
