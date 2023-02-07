@@ -181,7 +181,7 @@ read_and_process_and_calc_lrisk <- function(args_list) {
 
   cat("-- Reading input data from designated input path. \n")
 
-  data <- st_read_agnostic(input_path, start_year = start_year, sectors = sectors_and_technologies_list$sectors, risktype = "lrisk")
+  data <- st_read_agnostic(input_path, start_year = start_year, sectors = sectors_and_technologies_list$sectors, risk_type = "lrisk")
 
   cat("-- Processing input data. \n")
 
