@@ -22,18 +22,18 @@
 calculate_net_profits <- function(data,
                                   carbon_data,
                                   shock_year) {
-
   baseline <- calculate_net_profits_baseline(data)
   shock_increasing_technologies <- calculate_net_profits_shock_increasing_technologies(data = data %>% dplyr::filter(.data$direction == "increasing"))
-  shock_declining_technologies <- calculate_net_profits_shock_declining_technologies_carbon_tax(data = data %>% dplyr::filter(.data$direction == "declining"),
-                                                                                                carbon_data = carbon_data,
-                                                                                                shock_year = shock_year)
+  shock_declining_technologies <- calculate_net_profits_shock_declining_technologies_carbon_tax(
+    data = data %>% dplyr::filter(.data$direction == "declining"),
+    carbon_data = carbon_data,
+    shock_year = shock_year
+  )
 
   data <- dplyr::full_join(shock_increasing_technologies, shock_declining_technologies)
   data <- dplyr::full_join(data, baseline)
 
   return(data)
-
 }
 
 #' Calculates annual net profits on the company-technology level for the
@@ -49,16 +49,17 @@ calculate_net_profits <- function(data,
 #'
 #' @return Data frame with annual netprofits for all cases without carbon tax.
 
-calculate_net_profits_shock_declining_technologies_carbon_tax<- function(data,shock_year,
-                                                                         carbon_data) {
-
+calculate_net_profits_shock_declining_technologies_carbon_tax <- function(data, shock_year,
+                                                                          carbon_data) {
   market_passthrough <- 0
 
   data <- data %>%
     merge(carbon_data, by = c("year")) %>%
-    dplyr::mutate(carbon_tax = ifelse(year > shock_year, .data$carbon_tax, 0),
-                  net_profits_ls =.data$late_sudden * (.data$late_sudden_price -
-                  (1 - market_passthrough) * .data$carbon_tax * .data$emission_factor) * .data$net_profit_margin)
+    dplyr::mutate(
+      carbon_tax = ifelse(year > shock_year, .data$carbon_tax, 0),
+      net_profits_ls = .data$late_sudden * (.data$late_sudden_price -
+        (1 - market_passthrough) * .data$carbon_tax * .data$emission_factor) * .data$net_profit_margin
+    )
 
   return(data)
 }
@@ -74,7 +75,6 @@ calculate_net_profits_shock_declining_technologies_carbon_tax<- function(data,sh
 #'
 #' @return Data frame with annual netprofits for all cases without carbon tax
 calculate_net_profits_without_carbon_tax <- function(data) {
-
   baseline <- calculate_net_profits_baseline(data)
   shock_increasing_technologies <- calculate_net_profits_shock_increasing_technologies(data = data %>% dplyr::filter(.data$direction == "increasing"))
   shock_declining_technologies <- calculate_net_profits_shock_declining_technologies(data = data %>% dplyr::filter(.data$direction == "declining"))

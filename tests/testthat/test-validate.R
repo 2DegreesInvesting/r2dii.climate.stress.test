@@ -2,7 +2,7 @@
 test_that("Error is thrown if input values are of incorrect type", {
 
   # numeric
-   expect_error(validate_input_values(
+  expect_error(validate_input_values(
     baseline_scenario = "WEO2021_STEPS",
     shock_scenario = "WEO2021_SDS",
     scenario_geography = "Global",

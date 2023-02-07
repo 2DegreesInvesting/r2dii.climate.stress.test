@@ -342,20 +342,17 @@ process_scenario_data <- function(data, start_year, end_year, sectors, technolog
 #' @return A tibble of data as indicated by function name.
 #' @noRd
 process_carbon_data <- function(data, start_year, end_year, carbon_price_model) {
-
   data_processed <- data
 
   if (is.null(data_processed)) {
-
     data_processed <- NULL
-   } else {
-
-data_processed <- data_processed %>%
-   dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year)) %>%
-   dplyr::select(-c(scenario_geography))  %>%
-   dplyr::filter(.data$model %in% .env$carbon_price_model) %>%
-   stop_if_empty(data_name = "Carbon Data")
-   }
+  } else {
+    data_processed <- data_processed %>%
+      dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year)) %>%
+      dplyr::select(-c(scenario_geography)) %>%
+      dplyr::filter(.data$model %in% .env$carbon_price_model) %>%
+      stop_if_empty(data_name = "Carbon Data")
+  }
 
   return(data_processed)
 }

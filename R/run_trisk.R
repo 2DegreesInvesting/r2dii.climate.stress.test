@@ -182,7 +182,8 @@ read_and_process_and_calc <- function(args_list) {
       technologies = sectors_and_technologies_list$technologies,
       start_year = start_year,
       carbon_price_model = carbon_price_model,
-      log_path = log_path)
+      log_path = log_path
+    )
 
   input_data_list <- list(
     capacity_factors_power = processed$capacity_factors_power,
@@ -222,8 +223,8 @@ read_and_process_and_calc <- function(args_list) {
 
   # calc net profits
   company_net_profits <- calculate_net_profits(input_data_list$full_trajectory,
-     carbon_data = input_data_list$carbon_data,
-     shock_year = shock_year
+    carbon_data = input_data_list$carbon_data,
+    shock_year = shock_year
   )
 
   # calc discounted net profits
