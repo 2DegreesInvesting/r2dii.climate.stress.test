@@ -344,6 +344,7 @@ process_scenario_data <- function(data, start_year, end_year, sectors, technolog
 process_carbon_data <- function(data, start_year, end_year, carbon_price_model) {
   data_processed <- data
 
+## dataframe will be NULL for lrisk this is the case as lrisk does not read in and use carbon prices
   if (is.null(data_processed)) {
     data_processed <- NULL
   } else {
