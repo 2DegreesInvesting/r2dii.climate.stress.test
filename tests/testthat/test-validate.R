@@ -136,21 +136,18 @@ test_that("Error is thrown if a character input value is out of bounds", {
     shock_scenario = "WEO2021_SDS",
     scenario_geography = "Global",
     lgd = 0.45,
-    risk_free_rate = 1,
+    risk_free_rate = 0,
     discount_rate = 0.07,
-    growth_rate = 0.06,
+     growth_rate = 0.06,
     div_netprofit_prop_coef = 1,
     shock_year = 2030,
     risk_type = "trisk",
-    settlement_factor = 1,
-    scc = 40,
-    exp_share_damages_paid = 0.027,
     carbon_price_model = "no_carbon_tax"
   ), "baseline")
 
   # length > 1
   expect_error(validate_input_values(
-    baseline_scenario = c("WEO2001_STEPS", "WEO2021_APS"),
+    baseline_scenario = c("WEO2001_STEPS", "WEO2001_APS"),
     shock_scenario = "WEO2021_SDS",
     scenario_geography = "Global",
     lgd = 0.45,
@@ -158,11 +155,9 @@ test_that("Error is thrown if a character input value is out of bounds", {
     discount_rate = 0.07,
     growth_rate = 0.06,
     div_netprofit_prop_coef = 1,
-    shock_year = 2030,
+    shock_year = 2025,
     risk_type = "trisk",
-    settlement_factor = 1,
-    scc = 40,
-    exp_share_damages_paid = 0.027
+    carbon_price_model = "no_carbon_tax"
   ), "baseline")
 })
 
