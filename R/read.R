@@ -21,7 +21,6 @@ st_read_agnostic <- function(dir, start_year, sectors, risk_type) {
     carbon_data <- read_carbon_data(carbon_price_data_file(dir))
 
     out$carbon_data <- carbon_data
-
   }
 
   return(out)

@@ -26,7 +26,7 @@ validate_input_values <- function(baseline_scenario, shock_scenario, scenario_ge
     input_args[which(names(input_args) %in% c("carbon_price_model"))] <- NULL
   }
 
-  vector_character_args <- c("baseline_scenario", "shock_scenario", "scenario_geography","carbon_price_model")
+  vector_character_args <- c("baseline_scenario", "shock_scenario", "scenario_geography", "carbon_price_model")
 
   if (risk_type == "lrisk") {
     vector_character_args <- vector_character_args[!vector_character_args %in% c("carbon_price_model")]

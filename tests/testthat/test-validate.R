@@ -138,7 +138,7 @@ test_that("Error is thrown if a character input value is out of bounds", {
     lgd = 0.45,
     risk_free_rate = 0,
     discount_rate = 0.07,
-     growth_rate = 0.06,
+    growth_rate = 0.06,
     div_netprofit_prop_coef = 1,
     shock_year = 2030,
     risk_type = "trisk",
