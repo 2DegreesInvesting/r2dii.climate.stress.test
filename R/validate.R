@@ -26,13 +26,13 @@ validate_input_values <- function(baseline_scenario, shock_scenario, scenario_ge
     input_args[which(names(input_args) %in% c("carbon_price_model"))] <- NULL
   }
 
-  validate_values_in_values <- c("baseline_scenario", "shock_scenario", "scenario_geography","carbon_price_model")
+  vector_character_args <- c("baseline_scenario", "shock_scenario", "scenario_geography","carbon_price_model")
 
   if (risk_type == "lrisk") {
-    validate_values_in_values <- validate_values_in_values[!validate_values_in_values %in% c("carbon_price_model")]
+    vector_character_args <- vector_character_args[!vector_character_args %in% c("carbon_price_model")]
   }
 
-validate_values_in_values %>%
+  vector_character_args %>%
     purrr::walk(validate_values_in_values, args_list = input_args)
 
   vector_numeric_args <- c(
