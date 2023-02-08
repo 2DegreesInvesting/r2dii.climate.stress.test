@@ -14,7 +14,8 @@ stress_test_arguments <- tibble::tribble(
                "start_year",    "double",   "2021",                     NA,     "2021",     "2021",
         "settlement_factor",    "double",      "1",                     NA,        "0",         "1",
    "exp_share_damages_paid",    "double",  "0.027",                     NA,        "0",         "1",
-                      "scc",    "double",     "40",                     NA,        "0",      "10000"
+                      "scc",    "double",     "40",                     NA,        "0",      "10000",
+               "carbon_price_model", "character", "no_carbon_tax", "no_carbon_tax, MESSAGEix-GLOBIOM 1.0, REMIND-MAgPIE 1.7-3.0, GCAM 5.2", NA, NA
 )
 # styler: on
 

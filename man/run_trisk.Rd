@@ -17,6 +17,7 @@ run_trisk(
   shock_year = 2030,
   scenario_geography = "Global",
   start_year = 2021,
+  carbon_price_model = "no_carbon_tax",
   return_results = FALSE
 )
 }
@@ -62,6 +63,9 @@ accepted values compare \code{stress_test_arguments}.}
 point from which production forecasts are compared against scenario targets.
 Must be available in the production data and indicates the first year of
 the scenario data.}
+
+\item{carbon_price_model}{Character vector, indicating which NGFS model is used in regards to
+carbon prices. Default is no carbon tax.}
 
 \item{return_results}{Boolean, indicating if results shall be exported.}
 }

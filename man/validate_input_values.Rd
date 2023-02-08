@@ -17,7 +17,8 @@ validate_input_values(
   settlement_factor,
   exp_share_damages_paid,
   scc,
-  risk_type
+  risk_type,
+  carbon_price_model
 )
 }
 \arguments{
@@ -65,6 +66,9 @@ is the price for each surplus ton of CO2 that goes into the calculation of
 the carbon liability of a company.}
 
 \item{risk_type}{String that is either lrisk or trisk.}
+
+\item{carbon_price_model}{Character vector, indicating which NGFS model is used in regards to
+carbon prices. Default is no carbon tax.}
 }
 \description{
 Checks that user inputs are within defined ranges.
