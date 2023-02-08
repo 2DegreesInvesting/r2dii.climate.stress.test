@@ -16,7 +16,7 @@ st_read_agnostic <- function(dir, start_year, sectors, risk_type) {
     production_data = read_production_data(production_data_file(dir))
   )
 
-  ## read in dataframe with carbon prices in the trisk model
+  ## read in dataframe with carbon prices in the trisk model lrisk does not have carbon tax option
   if (risk_type == "trisk") {
     carbon_data <- read_carbon_data(carbon_price_data_file(dir))
 
