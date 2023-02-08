@@ -26,7 +26,13 @@ validate_input_values <- function(baseline_scenario, shock_scenario, scenario_ge
     input_args[which(names(input_args) %in% c("carbon_price_model"))] <- NULL
   }
 
-  c("baseline_scenario", "shock_scenario", "scenario_geography") %>%
+  validate_values_in_values <- c("baseline_scenario", "shock_scenario", "scenario_geography","carbon_price_model")
+
+  if (risk_type == "lrisk") {
+    validate_values_in_values <- validate_values_in_values[!validate_values_in_values %in% c("carbon_price_model")]
+  }
+
+validate_values_in_values %>%
     purrr::walk(validate_values_in_values, args_list = input_args)
 
   vector_numeric_args <- c(
@@ -37,10 +43,6 @@ validate_input_values <- function(baseline_scenario, shock_scenario, scenario_ge
 
   if (risk_type == "trisk") {
     vector_numeric_args <- vector_numeric_args[!vector_numeric_args %in% c("settlement_factor", "exp_share_damages_paid", "scc")]
-  }
-
-  if (risk_type == "lrisk") {
-    vector_numeric_args <- vector_numeric_args[!vector_numeric_args %in% c("carbon_price_model")]
   }
 
   vector_numeric_args %>%
