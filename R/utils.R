@@ -467,18 +467,19 @@ infer_sectors_and_technologies <- function(baseline_scenario, shock_scenario, sc
 }
 
 
-infer_scenario_type <- function (baseline_scenario, shock_scenario) {
-
-  if(grepl("NGFS2021",baseline_scenario) & grepl("NGFS2021", shock_scenario))
+infer_scenario_type <- function(baseline_scenario, shock_scenario) {
+  if (grepl("NGFS2021", baseline_scenario) & grepl("NGFS2021", shock_scenario)) {
     return("is_ngfs")
+  }
 
-  if(!grepl("NGFS2021",baseline_scenario) & !grepl("NGFS2021", shock_scenario))
+  if (!grepl("NGFS2021", baseline_scenario) & !grepl("NGFS2021", shock_scenario)) {
     return("is_not_ngfs")
-
-  else((grepl("NGFS2021",baseline_scenario) &!grepl("NGFS2021", shock_scenario))|(!grepl("NGFS2021",baseline_scenario) &grepl("NGFS2021", shock_scenario)))
+  } else {
+    ((grepl("NGFS2021", baseline_scenario) & !grepl("NGFS2021", shock_scenario)) | (!grepl("NGFS2021", baseline_scenario) & grepl("NGFS2021", shock_scenario)))
+  }
   rlang::abort(
     c(
       "you cannot combine these scenarios, expert"
-    ))
-
+    )
+  )
 }
