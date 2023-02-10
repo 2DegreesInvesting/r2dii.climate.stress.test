@@ -197,3 +197,20 @@ test_that("Error is thrown if colnames are missing", {
     "columns: D, E."
   )
 })
+
+
+test_that("Error is thrown if NGFS scenarios are combined with non-NGFS scenarios", {
+  data <- tibble::tibble(
+    baseline_scenario = c(""),
+    b = c("B1", "B2", "B1", "B2", "B1"),
+    c = 1:5
+  )
+
+  expect_error(
+    checked_data <- report_duplicates(
+      data = data,
+      cols = c("a", "b"),
+    ),
+    "Identified 1 duplicates"
+  )
+})
