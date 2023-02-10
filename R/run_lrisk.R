@@ -92,7 +92,7 @@ run_lrisk <- function(input_path,
     risk_type = "lrisk"
   )
 
-  scenario_type <-  infer_scenario_type(
+  scenario_type <- infer_scenario_type(
     baseline_scenario = baseline_scenario,
     shock_scenario = shock_scenario
   )

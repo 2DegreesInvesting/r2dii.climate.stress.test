@@ -80,7 +80,7 @@ run_trisk <- function(input_path,
     risk_type = "trisk"
   )
 
-  scenario_type <-  infer_scenario_type(
+  scenario_type <- infer_scenario_type(
     baseline_scenario = baseline_scenario,
     shock_scenario = shock_scenario
   )

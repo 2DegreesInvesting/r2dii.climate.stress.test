@@ -469,17 +469,14 @@ infer_sectors_and_technologies <- function(baseline_scenario, shock_scenario, sc
 infer_scenario_type <- function(baseline_scenario, shock_scenario) {
   if (grepl("NGFS2021", baseline_scenario) & grepl("NGFS2021", shock_scenario)) {
     return("is_ngfs")
-  }
-
-  else if(!grepl("NGFS2021", baseline_scenario) & !grepl("NGFS2021", shock_scenario)) {
+  } else if (!grepl("NGFS2021", baseline_scenario) & !grepl("NGFS2021", shock_scenario)) {
     return("is_not_ngfs")
-  }
-
-  else
+  } else {
     rlang::abort(
       c(
         "The chosen baseline and shock scenario cannot be combined with one another",
         x = glue::glue("baseline scenario: {baseline_scenario}, shock_scenario: {shock_scenario}")
       )
     )
+  }
 }
