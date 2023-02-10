@@ -472,14 +472,18 @@ infer_scenario_type <- function(baseline_scenario, shock_scenario) {
     return("is_ngfs")
   }
 
-  if (!grepl("NGFS2021", baseline_scenario) & !grepl("NGFS2021", shock_scenario)) {
+  else if(!grepl("NGFS2021", baseline_scenario) & !grepl("NGFS2021", shock_scenario)) {
     return("is_not_ngfs")
-  } else {
-    ((grepl("NGFS2021", baseline_scenario) & !grepl("NGFS2021", shock_scenario)) | (!grepl("NGFS2021", baseline_scenario) & grepl("NGFS2021", shock_scenario)))
   }
+
+  else #{
+    #((grepl("NGFS2021", baseline_scenario) & !grepl("NGFS2021", shock_scenario)) | (!grepl("NGFS2021", baseline_scenario) & grepl("NGFS2021", shock_scenario)))
+ # }
   rlang::abort(
     c(
-      "you cannot combine these scenarios, expert"
+      "The chosen baseline and shock scenario cannot be combined with each other, expert",
+      x = glue::glue("baseline scenario: {baseline_scenario}, shock_scenario: {shock_scenario}")
+
     )
   )
 }
