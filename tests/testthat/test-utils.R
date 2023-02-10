@@ -197,3 +197,16 @@ test_that("Error is thrown if colnames are missing", {
     "columns: D, E."
   )
 })
+
+# validate scenario_type-------------------------------------------------------
+test_that("Error is thrown if NGFS scenario is combined with non-NGFS scenario", {
+  data <- tibble::tibble(
+    a = c("NGFS2021_GCAM_CP"),
+    b = c("WEO2021_NZE_2050")
+
+  )
+
+  expect_error(scenario_type <- infer_scenario_type(
+    data = data
+  ))
+})
