@@ -92,6 +92,11 @@ run_lrisk <- function(input_path,
     risk_type = "lrisk"
   )
 
+  scenario_type <- infer_scenario_type(
+    baseline_scenario = baseline_scenario,
+    shock_scenario = shock_scenario
+  )
+
   args_list$output_path <- customise_output_path(
     output_path = args_list$output_path,
     iter_var = iter_var
