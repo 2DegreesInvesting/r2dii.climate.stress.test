@@ -18,8 +18,6 @@ prod_nesting_vars_lookup <- c(
 
 calculation_level_lookup <- "company"
 
-end_year_lookup <- 2040
-
 time_horizon_lookup <- 5
 
 flat_multiplier_lookup <- 1

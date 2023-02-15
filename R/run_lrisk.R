@@ -102,6 +102,9 @@ run_lrisk <- function(input_path,
     iter_var = iter_var
   )
 
+  args_list$end_year <- end_year_lookup(scenario_type = scenario_type)
+
+
   st_results_list <- run_lrisk_iteration(args_list)
 
   result_names <- names(st_results_list[[1]])
@@ -162,7 +165,7 @@ run_lrisk_iteration <- function(args_list) {
 }
 
 # Avoid R CMD check NOTE: "Undefined global functions or variables"
-globalVariables(c(names(formals(run_lrisk)), "iter_var"))
+globalVariables(c(names(formals(run_lrisk)), "iter_var", "end_year"))
 
 read_and_process_and_calc_lrisk <- function(args_list) {
   list2env(args_list, envir = rlang::current_env())
@@ -199,7 +202,8 @@ read_and_process_and_calc_lrisk <- function(args_list) {
       technologies = sectors_and_technologies_list$technologies,
       start_year = start_year,
       carbon_price_model = carbon_price_model,
-      log_path = log_path
+      log_path = log_path,
+      end_year = end_year
     )
 
   input_data_list <- list(
@@ -219,7 +223,7 @@ read_and_process_and_calc_lrisk <- function(args_list) {
 
   litigation_scenario <- generate_litigation_shocks(
     start_of_analysis = start_year,
-    end_of_analysis = end_year_lookup,
+    end_of_analysis = end_year,
     shock_year = shock_year,
     scc = scc,
     exp_share_damages_paid = exp_share_damages_paid
@@ -233,7 +237,7 @@ read_and_process_and_calc_lrisk <- function(args_list) {
     target_scenario = shock_scenario,
     litigation_scenario = litigation_scenario,
     start_year = start_year,
-    end_year = end_year_lookup,
+    end_year = end_year,
     time_horizon = time_horizon_lookup,
     log_path = log_path
   )
@@ -257,7 +261,7 @@ read_and_process_and_calc_lrisk <- function(args_list) {
     data = company_net_profits,
     baseline_scenario = baseline_scenario,
     shock_scenario = shock_scenario,
-    end_year = end_year_lookup,
+    end_year = end_year,
     discount_rate = discount_rate,
     growth_rate = growth_rate,
     log_path = log_path
@@ -278,7 +282,7 @@ read_and_process_and_calc_lrisk <- function(args_list) {
   company_pd_changes_overall <- company_annual_profits %>%
     calculate_pd_change_overall(
       shock_year = litigation_scenario$year_of_shock,
-      end_of_analysis = end_year_lookup,
+      end_of_analysis = end_year,
       risk_free_interest_rate = risk_free_rate
     )
 

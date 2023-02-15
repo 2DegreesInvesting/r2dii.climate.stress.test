@@ -148,7 +148,6 @@ test_that("calculate_net_profits does not apply carbon tax for low
 
 
   test_shock_year <- 2021
-  test_end_year_lookup <- 2040
 
   net_profits <- calculate_net_profits(input_data,
     carbon_data = carbon_data_test,
