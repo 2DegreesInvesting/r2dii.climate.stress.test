@@ -165,7 +165,7 @@ run_lrisk_iteration <- function(args_list) {
 }
 
 # Avoid R CMD check NOTE: "Undefined global functions or variables"
-globalVariables(c(names(formals(run_lrisk)), "iter_var"))
+globalVariables(c(names(formals(run_lrisk)), "iter_var", "end_year"))
 
 read_and_process_and_calc_lrisk <- function(args_list) {
   list2env(args_list, envir = rlang::current_env())
