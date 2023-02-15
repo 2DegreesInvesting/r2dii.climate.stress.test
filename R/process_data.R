@@ -377,7 +377,7 @@ process_financial_data <- function(data) {
 
 st_process <- function(data, scenario_geography, baseline_scenario,
                        shock_scenario, sectors, technologies, start_year, carbon_price_model,
-                       log_path,end_year) {
+                       log_path, end_year) {
   scenarios_filter <- c(baseline_scenario, shock_scenario)
 
   df_price <- process_price_data(

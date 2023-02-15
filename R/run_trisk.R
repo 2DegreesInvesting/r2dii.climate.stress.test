@@ -95,7 +95,7 @@ run_trisk <- function(input_path,
 
 
   st_results_list <- run_stress_test_iteration(args_list)
-browser()
+  browser()
   result_names <- names(st_results_list[[1]])
   st_results <- result_names %>%
     purrr::map(function(tib) {

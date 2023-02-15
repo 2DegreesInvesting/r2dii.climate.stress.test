@@ -482,9 +482,9 @@ infer_scenario_type <- function(baseline_scenario, shock_scenario) {
 }
 
 end_year_lookup <- function(scenario_type) {
- return(2040)
+  return(2040)
 
-  if(scenario_type == "is_ngfs")
- return(2060)
-
+  if (scenario_type == "is_ngfs") {
+    return(2060)
+  }
 }
