@@ -377,7 +377,7 @@ process_financial_data <- function(data) {
 
 st_process <- function(data, scenario_geography, baseline_scenario,
                        shock_scenario, sectors, technologies, start_year, carbon_price_model,
-                       log_path) {
+                       log_path,end_year) {
   scenarios_filter <- c(baseline_scenario, shock_scenario)
 
   df_price <- process_price_data(
@@ -385,14 +385,14 @@ st_process <- function(data, scenario_geography, baseline_scenario,
     technologies = technologies,
     sectors = sectors,
     start_year = start_year,
-    end_year = end_year_lookup,
+    end_year = end_year,
     scenarios_filter = scenarios_filter
   )
 
   scenario_data <- process_scenario_data(
     data$scenario_data,
     start_year = start_year,
-    end_year = end_year_lookup,
+    end_year = end_year,
     sectors = sectors,
     technologies = technologies,
     scenario_geography_filter = scenario_geography,
@@ -407,14 +407,14 @@ st_process <- function(data, scenario_geography, baseline_scenario,
   carbon_data <- process_carbon_data(
     data$carbon_data,
     start_year = start_year,
-    end_year = end_year_lookup,
+    end_year = end_year,
     carbon_price_model = carbon_price_model
   )
 
   production_data <- process_production_data(
     data$production_data,
     start_year = start_year,
-    end_year = end_year_lookup,
+    end_year = end_year,
     time_horizon = time_horizon_lookup,
     scenario_geography_filter = scenario_geography,
     sectors = sectors,
@@ -427,7 +427,7 @@ st_process <- function(data, scenario_geography, baseline_scenario,
     extend_scenario_trajectory(
       scenario_data = scenario_data,
       start_analysis = start_year,
-      end_analysis = end_year_lookup,
+      end_analysis = end_year,
       time_frame = time_horizon_lookup,
       target_scenario = shock_scenario
     )
@@ -440,7 +440,7 @@ st_process <- function(data, scenario_geography, baseline_scenario,
       scenario_geography_filter = scenario_geography,
       technologies = technologies,
       start_year = start_year,
-      end_year = end_year_lookup
+      end_year = end_year
     )
 
     # convert power capacity to generation
