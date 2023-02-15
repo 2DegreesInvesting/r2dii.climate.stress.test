@@ -107,7 +107,7 @@ calculate_lrisk_trajectory <- function(input_data_list,
       shock_scenario = litigation_scenario,
       litigation_scenario_aligned = target_scenario,
       start_year = start_year,
-      end_year = end_year_lookup,
+      end_year = end_year,
       analysis_time_frame = time_horizon_lookup,
       log_path = log_path
     ) %>%
