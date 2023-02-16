@@ -13,7 +13,7 @@ test_that("calculate_net_profits penalizes companies for late build out of low
 
 
   test_shock_year <- 2021
-  test_market_passthrough <-0
+  test_market_passthrough <- 0
 
 
   net_profits <- calculate_net_profits(input_data,
@@ -63,7 +63,7 @@ test_that("calculate_net_profits does not apply penalty on lost profits for high
 
 
   test_shock_year <- 2021
-  test_market_passthrough <-0
+  test_market_passthrough <- 0
 
 
   net_profits <- calculate_net_profits(input_data,
@@ -113,7 +113,7 @@ test_that("calculate_net_profits does not apply carbon tax on high
 
   test_shock_year_early <- 2025
   test_shock_year_late <- 2035
-  test_market_passthrough <-0
+  test_market_passthrough <- 0
 
 
 
@@ -158,7 +158,7 @@ test_that("calculate_net_profits does not apply carbon tax for low
 
 
   test_shock_year <- 2021
-  test_market_passthrough <-0
+  test_market_passthrough <- 0
 
 
   net_profits <- calculate_net_profits(input_data,

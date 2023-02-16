@@ -55,8 +55,6 @@ calculate_net_profits <- function(data,
 
 calculate_net_profits_shock_declining_technologies_carbon_tax <- function(data, shock_year,
                                                                           carbon_data, market_passthrough) {
-
-
   data <- data %>%
     merge(carbon_data, by = c("year")) %>%
     dplyr::mutate(

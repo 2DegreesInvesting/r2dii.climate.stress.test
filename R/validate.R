@@ -39,7 +39,7 @@ validate_input_values <- function(baseline_scenario, shock_scenario, scenario_ge
   vector_numeric_args <- c(
     "lgd", "risk_free_rate", "discount_rate", "growth_rate",
     "div_netprofit_prop_coef", "shock_year", "settlement_factor",
-    "exp_share_damages_paid", "scc",  "market_passthrough"
+    "exp_share_damages_paid", "scc", "market_passthrough"
   )
 
   if (risk_type == "trisk") {
