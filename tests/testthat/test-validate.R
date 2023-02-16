@@ -175,6 +175,7 @@ test_that("No error is thrown if an input value equals a bound", {
     risk_type = "trisk",
     settlement_factor = 1,
     scc = 40,
+    market_passthrough = 0,
     exp_share_damages_paid = 0.027,
     carbon_price_model = "no_carbon_tax"
   ))
