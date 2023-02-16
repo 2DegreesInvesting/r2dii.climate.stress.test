@@ -40,7 +40,9 @@
 #'   the scenario data.
 #' @param carbon_price_model Character vector, indicating which NGFS model is used in regards to
 #'   carbon prices. Default is no carbon tax.
+#' @param market_passthrough Firm's ability to pass carbon tax onto the consumer
 #' @param return_results Boolean, indicating if results shall be exported.
+#'
 #' @return NULL
 #' @export
 run_trisk <- function(input_path,
@@ -56,6 +58,7 @@ run_trisk <- function(input_path,
                       scenario_geography = "Global",
                       start_year = 2021,
                       carbon_price_model = "no_carbon_tax",
+                      market_passthrough = 0,
                       return_results = FALSE) {
   cat("-- Running transition risk stress test. \n\n\n")
 
@@ -77,6 +80,7 @@ run_trisk <- function(input_path,
     div_netprofit_prop_coef = div_netprofit_prop_coef,
     shock_year = shock_year,
     carbon_price_model = carbon_price_model,
+    market_passthrough = market_passthrough,
     risk_type = "trisk"
   )
 
@@ -234,7 +238,8 @@ read_and_process_and_calc <- function(args_list) {
   # calc net profits
   company_net_profits <- calculate_net_profits(input_data_list$full_trajectory,
     carbon_data = input_data_list$carbon_data,
-    shock_year = shock_year
+    shock_year = shock_year,
+    market_passthrough = market_passthrough
   )
 
   # calc discounted net profits

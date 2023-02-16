@@ -18,6 +18,7 @@ run_trisk(
   scenario_geography = "Global",
   start_year = 2021,
   carbon_price_model = "no_carbon_tax",
+  market_passthrough = 0,
   return_results = FALSE
 )
 }
@@ -66,6 +67,8 @@ the scenario data.}
 
 \item{carbon_price_model}{Character vector, indicating which NGFS model is used in regards to
 carbon prices. Default is no carbon tax.}
+
+\item{market_passthrough}{Firm's ability to pass carbon tax onto the consumer}
 
 \item{return_results}{Boolean, indicating if results shall be exported.}
 }

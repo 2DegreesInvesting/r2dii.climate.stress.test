@@ -6,11 +6,12 @@
 #' @param carbon_price_model Character vector, indicating which NGFS model is used in regards to
 #'   carbon prices. Default is no carbon tax.
 #' @param risk_type String that is either lrisk or trisk.
+#' @param market_passthrough Firm's ability to pass carbon tax onto the consumer..
 #' @return NULL
 validate_input_values <- function(baseline_scenario, shock_scenario, scenario_geography,
                                   lgd, risk_free_rate, discount_rate, growth_rate,
                                   div_netprofit_prop_coef, shock_year,
-                                  settlement_factor, exp_share_damages_paid, scc, risk_type, carbon_price_model) {
+                                  settlement_factor, exp_share_damages_paid, scc, risk_type, carbon_price_model, market_passthrough) {
   input_args <- mget(names(formals()), sys.frame(sys.nframe()))
   input_args <- input_args[-which(names(input_args) == "risk_type")]
 
@@ -23,7 +24,7 @@ validate_input_values <- function(baseline_scenario, shock_scenario, scenario_ge
   }
 
   if (risk_type == "lrisk") {
-    input_args[which(names(input_args) %in% c("carbon_price_model"))] <- NULL
+    input_args[which(names(input_args) %in% c("carbon_price_model", "market_passthrough"))] <- NULL
   }
 
   vector_character_args <- c("baseline_scenario", "shock_scenario", "scenario_geography", "carbon_price_model")
@@ -38,11 +39,15 @@ validate_input_values <- function(baseline_scenario, shock_scenario, scenario_ge
   vector_numeric_args <- c(
     "lgd", "risk_free_rate", "discount_rate", "growth_rate",
     "div_netprofit_prop_coef", "shock_year", "settlement_factor",
-    "exp_share_damages_paid", "scc"
+    "exp_share_damages_paid", "scc", "market_passthrough"
   )
 
   if (risk_type == "trisk") {
     vector_numeric_args <- vector_numeric_args[!vector_numeric_args %in% c("settlement_factor", "exp_share_damages_paid", "scc")]
+  }
+
+  if (risk_type == "lrisk") {
+    vector_numeric_args <- vector_numeric_args[!vector_numeric_args %in% c("market_passthrough")]
   }
 
   vector_numeric_args %>%

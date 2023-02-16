@@ -18,7 +18,8 @@ validate_input_values(
   exp_share_damages_paid,
   scc,
   risk_type,
-  carbon_price_model
+  carbon_price_model,
+  market_passthrough
 )
 }
 \arguments{
@@ -69,6 +70,8 @@ the carbon liability of a company.}
 
 \item{carbon_price_model}{Character vector, indicating which NGFS model is used in regards to
 carbon prices. Default is no carbon tax.}
+
+\item{market_passthrough}{Firm's ability to pass carbon tax onto the consumer..}
 }
 \description{
 Checks that user inputs are within defined ranges.

@@ -13,10 +13,13 @@ test_that("calculate_net_profits penalizes companies for late build out of low
 
 
   test_shock_year <- 2021
+  test_market_passthrough <- 0
+
 
   net_profits <- calculate_net_profits(input_data,
     carbon_data = carbon_data_test,
-    shock_year = test_shock_year
+    shock_year = test_shock_year,
+    market_passthrough = test_market_passthrough
   )
 
   net_profits_baseline_climate_leader <- net_profits %>%
@@ -60,10 +63,13 @@ test_that("calculate_net_profits does not apply penalty on lost profits for high
 
 
   test_shock_year <- 2021
+  test_market_passthrough <- 0
+
 
   net_profits <- calculate_net_profits(input_data,
     carbon_data = carbon_data_test,
-    shock_year = test_shock_year
+    shock_year = test_shock_year,
+    market_passthrough = test_market_passthrough
   )
 
   net_profits_baseline_climate_leader <- net_profits %>%
@@ -107,16 +113,20 @@ test_that("calculate_net_profits does not apply carbon tax on high
 
   test_shock_year_early <- 2025
   test_shock_year_late <- 2035
+  test_market_passthrough <- 0
+
 
 
   net_profits_early <- calculate_net_profits(input_data,
     carbon_data = carbon_data_test,
-    shock_year = test_shock_year_early
+    shock_year = test_shock_year_early,
+    market_passthrough = test_market_passthrough
   )
 
   net_profits_late <- calculate_net_profits(input_data,
     carbon_data = carbon_data_test,
-    shock_year = test_shock_year_late
+    shock_year = test_shock_year_late,
+    market_passthrough = test_market_passthrough
   )
 
   net_profits_late_sudden_high_carbon_technology_early <- net_profits_early %>%
@@ -148,10 +158,13 @@ test_that("calculate_net_profits does not apply carbon tax for low
 
 
   test_shock_year <- 2021
+  test_market_passthrough <- 0
+
 
   net_profits <- calculate_net_profits(input_data,
     carbon_data = carbon_data_test,
-    shock_year = test_shock_year
+    shock_year = test_shock_year,
+    market_passthrough = test_market_passthrough
   )
 
   net_profits_baseline_high_carbon_technology <- net_profits %>%
@@ -217,5 +230,50 @@ test_that("calculate_net_profits penalizes companies for late build out of low
   testthat::expect_gt(
     net_profits_late_sudden_climate_leader,
     net_profits_late_sudden_climate_laggard
+  )
+})
+
+
+
+test_that("a higher market passthrough has a weaker impact on a company's net profits", {
+  input_data <- tibble::tribble(
+    ~company_name, ~baseline, ~late_sudden, ~Baseline_price, ~late_sudden_price, ~net_profit_margin, ~direction, ~proximity_to_target, ~year, ~emission_factor,
+    "high carbon technology after shock year", 100, 50, 10, 10, 0.1, "declining", 0, 2030, 1
+  )
+
+  carbon_data_test <- tibble::tribble(
+    ~year, ~model, ~scenario, ~variable, ~unit, ~carbon_tax,
+    2030, "MESSAGEix-GLOBIOM 1.0", "Current policies (Hot house world, Rep)", "Price|Carbon", 10, 10,
+  )
+
+
+  test_shock_year <- 2025
+  test_market_passthrough_low <- 0
+  test_market_passthrough_high <- 1
+
+
+
+  net_profits_low_market_power <- calculate_net_profits(input_data,
+    carbon_data = carbon_data_test,
+    shock_year = test_shock_year,
+    market_passthrough = test_market_passthrough_low
+  )
+
+  net_profits_high_market_power <- calculate_net_profits(input_data,
+    carbon_data = carbon_data_test,
+    shock_year = test_shock_year,
+    market_passthrough = test_market_passthrough_high
+  )
+
+  net_profits_low_market_power <- net_profits_low_market_power %>%
+    dplyr::pull(.data$net_profits_ls)
+
+  net_profits_high_market_power <- net_profits_high_market_power %>%
+    dplyr::pull(.data$net_profits_ls)
+
+
+  testthat::expect_gt(
+    net_profits_high_market_power,
+    net_profits_low_market_power
   )
 })

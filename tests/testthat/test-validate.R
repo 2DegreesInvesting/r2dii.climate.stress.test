@@ -16,6 +16,7 @@ test_that("Error is thrown if input values are of incorrect type", {
     settlement_factor = 1,
     scc = 40,
     exp_share_damages_paid = 0.027,
+    market_passthrough = 0,
     carbon_price_model = "no_carbon_tax"
   ), "numeric")
 
@@ -52,6 +53,7 @@ test_that("Error is thrown if input values are of incorrect type for input value
     settlement_factor = 1,
     scc = 40,
     exp_share_damages_paid = 0.027,
+    market_passthrough = 0,
     carbon_price_model = "no_carbon_tax"
   ), "numeric")
 
@@ -90,6 +92,7 @@ test_that("Error is thrown if an input value is out of bounds", {
     settlement_factor = 1,
     scc = 40,
     exp_share_damages_paid = 0.027,
+    market_passthrough = 0,
     carbon_price_model = "no_carbon_tax"
   ), "risk_free_rate")
 
@@ -108,6 +111,7 @@ test_that("Error is thrown if an input value is out of bounds", {
     settlement_factor = 1,
     scc = 40,
     exp_share_damages_paid = 0.027,
+    market_passthrough = 0,
     carbon_price_model = "no_carbon_tax"
   ), "Invalid input: -1, 100.")
 
@@ -142,6 +146,7 @@ test_that("Error is thrown if a character input value is out of bounds", {
     div_netprofit_prop_coef = 1,
     shock_year = 2030,
     risk_type = "trisk",
+    market_passthrough = 0,
     carbon_price_model = "no_carbon_tax"
   ), "baseline")
 
@@ -157,6 +162,7 @@ test_that("Error is thrown if a character input value is out of bounds", {
     div_netprofit_prop_coef = 1,
     shock_year = 2025,
     risk_type = "trisk",
+    market_passthrough = 0,
     carbon_price_model = "no_carbon_tax"
   ), "baseline")
 })
@@ -175,6 +181,7 @@ test_that("No error is thrown if an input value equals a bound", {
     risk_type = "trisk",
     settlement_factor = 1,
     scc = 40,
+    market_passthrough = 0,
     exp_share_damages_paid = 0.027,
     carbon_price_model = "no_carbon_tax"
   ))
