@@ -8,7 +8,8 @@ baseline and late and sudden scenarios - with a carbon tax being added.}
 calculate_net_profits_shock_declining_technologies_carbon_tax(
   data,
   shock_year,
-  carbon_data
+  carbon_data,
+  market_passthrough
 )
 }
 \arguments{
@@ -21,6 +22,8 @@ indication of the direction of the technology.}
 the policy shock strikes in a given scenario.}
 
 \item{carbon_data}{NGFS carbon prices.}
+
+\item{market_passthrough}{A firm's ability to pass a carbon tax onto the consumer.}
 }
 \value{
 Data frame with annual netprofits for all cases without carbon tax.
