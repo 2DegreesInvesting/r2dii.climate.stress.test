@@ -13,10 +13,13 @@ test_that("calculate_net_profits penalizes companies for late build out of low
 
 
   test_shock_year <- 2021
+  test_market_passthrough <-0
+
 
   net_profits <- calculate_net_profits(input_data,
     carbon_data = carbon_data_test,
-    shock_year = test_shock_year
+    shock_year = test_shock_year,
+    market_passthrough = test_market_passthrough
   )
 
   net_profits_baseline_climate_leader <- net_profits %>%
@@ -60,10 +63,13 @@ test_that("calculate_net_profits does not apply penalty on lost profits for high
 
 
   test_shock_year <- 2021
+  test_market_passthrough <-0
+
 
   net_profits <- calculate_net_profits(input_data,
     carbon_data = carbon_data_test,
-    shock_year = test_shock_year
+    shock_year = test_shock_year,
+    market_passthrough = test_market_passthrough
   )
 
   net_profits_baseline_climate_leader <- net_profits %>%
@@ -107,16 +113,20 @@ test_that("calculate_net_profits does not apply carbon tax on high
 
   test_shock_year_early <- 2025
   test_shock_year_late <- 2035
+  test_market_passthrough <-0
+
 
 
   net_profits_early <- calculate_net_profits(input_data,
     carbon_data = carbon_data_test,
-    shock_year = test_shock_year_early
+    shock_year = test_shock_year_early,
+    market_passthrough = test_market_passthrough
   )
 
   net_profits_late <- calculate_net_profits(input_data,
     carbon_data = carbon_data_test,
-    shock_year = test_shock_year_late
+    shock_year = test_shock_year_late,
+    market_passthrough = test_market_passthrough
   )
 
   net_profits_late_sudden_high_carbon_technology_early <- net_profits_early %>%
@@ -148,10 +158,13 @@ test_that("calculate_net_profits does not apply carbon tax for low
 
 
   test_shock_year <- 2021
+  test_market_passthrough <-0
+
 
   net_profits <- calculate_net_profits(input_data,
     carbon_data = carbon_data_test,
-    shock_year = test_shock_year
+    shock_year = test_shock_year,
+    market_passthrough = test_market_passthrough
   )
 
   net_profits_baseline_high_carbon_technology <- net_profits %>%
