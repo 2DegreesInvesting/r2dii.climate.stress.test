@@ -18,16 +18,19 @@
 #'   indication of the direction of the technology.
 #' @param shock_year A numeric vector of length one that indicates in which year
 #'   the policy shock strikes in a given scenario.
+#' @param market_passthrough A firm's ability to pass a carbon tax onto the consumer.
 #' @param carbon_data NGFS carbon prices.
 calculate_net_profits <- function(data,
                                   carbon_data,
-                                  shock_year) {
+                                  shock_year,
+                                  market_passthrough) {
   baseline <- calculate_net_profits_baseline(data)
   shock_increasing_technologies <- calculate_net_profits_shock_increasing_technologies(data = data %>% dplyr::filter(.data$direction == "increasing"))
   shock_declining_technologies <- calculate_net_profits_shock_declining_technologies_carbon_tax(
     data = data %>% dplyr::filter(.data$direction == "declining"),
     carbon_data = carbon_data,
-    shock_year = shock_year
+    shock_year = shock_year,
+    market_passthrough = market_passthrough
   )
 
   data <- dplyr::full_join(shock_increasing_technologies, shock_declining_technologies)
@@ -46,12 +49,13 @@ calculate_net_profits <- function(data,
 #' @param shock_year A numeric vector of length one that indicates in which year
 #'   the policy shock strikes in a given scenario.
 #' @param carbon_data  NGFS carbon prices.
+#' @param market_passthrough A firm's ability to pass a carbon tax onto the consumer.
 #'
 #' @return Data frame with annual netprofits for all cases without carbon tax.
 
 calculate_net_profits_shock_declining_technologies_carbon_tax <- function(data, shock_year,
-                                                                          carbon_data) {
-  market_passthrough <- 0
+                                                                          carbon_data, market_passthrough) {
+
 
   data <- data %>%
     merge(carbon_data, by = c("year")) %>%
