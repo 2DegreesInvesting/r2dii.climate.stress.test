@@ -15,7 +15,8 @@ stress_test_arguments <- tibble::tribble(
         "settlement_factor",    "double",      "1",                     NA,        "0",         "1",
    "exp_share_damages_paid",    "double",  "0.027",                     NA,        "0",         "1",
                       "scc",    "double",     "40",                     NA,        "0",      "10000",
-               "carbon_price_model", "character", "no_carbon_tax", "no_carbon_tax, MESSAGEix-GLOBIOM 1.0, REMIND-MAgPIE 1.7-3.0, GCAM 5.2", NA, NA
+               "carbon_price_model", "character", "no_carbon_tax", "no_carbon_tax, MESSAGEix-GLOBIOM 1.0, REMIND-MAgPIE 1.7-3.0, GCAM 5.2", NA, NA,
+  "market_passthrough", "double", "0", NA, "0", "1"
 )
 # styler: on
 
