@@ -485,7 +485,7 @@ end_year_lookup <- function(scenario_type) {
   end_year <- as.numeric(2040)
 
   if (scenario_type == "is_ngfs") {
-    end_year <- as.numeric(2060)
+    end_year <- as.numeric(2100)
   }
   return(end_year)
 }
