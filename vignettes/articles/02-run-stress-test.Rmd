@@ -1,5 +1,5 @@
 ---
-title: "03 - Run transition risk stress test on corporate loan books"
+title: "02 - Run transition (or litigation) risk stress test"
 ---
 
 ```{r, include = FALSE}
@@ -10,8 +10,9 @@ knitr::opts_chunk$set(
 ```
 
 This vignette describes in detail, how to run a climate transition risk stress
-test for loans, using the function `run_trisk` to calculate the credit risk of a
-loan book.
+test, using the function `run_trisk()` to calculate the credit risk. 
+Additionally, the function `run_lrisk()` is elaborated upon, which can be used to run the climate 
+litigation stress test. 
 
 ## Assumptions
 
@@ -21,15 +22,9 @@ In order to keep this vignette concise, we assume the following has been set up:
 2. All required R packages are installed, specifically
 `r2dii.climate.stress.test`. Note that this may require installing additional
 packages. You will be prompted to install these in case any are missing.
-3. The user has successfully run at least the matching part of PACTA for Banks
-to produce the relevant project-specific raw input files.
-4. The user has obtained all relevant input files as described in the pdf manual.
-5. The input files are organized in a folder structure consistent with the one
+3. The input files are organized in a folder structure consistent with the one
 described in the vignette [Set up project directories](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/01-setup-project-directories.html).
-6. The user has successfully run the function `run_prep_calculation_loans()` to
-generate the intermediate input files for the main stress test function in the
-required format. Refer to the [corresponding vignette](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-prepare-loans-inputs.html)
-for details on how to do this.
+
 
 ## Running the Analysis
 
@@ -46,36 +41,62 @@ library(r2dii.climate.stress.test)
 
 ## Running the Stress Test for one scenario
 
-In order to run a stress test for loans on one set of parameters, the user needs
-to pass exactly one value per input argument to the function `run_trisk()`.
-The only arguments that do not have a default value and must be set by the user
-are `asset_type` and the file paths. In this case, we want to run the stress
-test for loans, so the easiest way to obtain results is by running:
+File paths must always be specified in the arguments of run_trisk() or run_lrisk(). They are the only arguments which do not have a default value and must be set by the user.
 
 ```{r, eval = FALSE}
 run_trisk(
-  asset_type = "loans",
-  input_path_project_specific = "/example_project/project_specific_input/",
-  input_path_project_agnostic = "/example_project/project_agnostic_input/",
-  output_path = "/example_project/output",
+  input_path = "/example_project/project_input/",
+  output_path = "/example_project/output"
 )
 ```
 
-This will calculate the stress test for loans and write the results along with a
-log file into the designated output directory, using the default values for all
-detail arguments.
+```{r, eval = FALSE}
+run_lrisk(
+  input_path = "/example_project/project_input/",
+  output_path = "/example_project/output",
+  return_results = TRUE
+)
+```
+
+
+This will calculate the transition or litigation risk stress test and write the results, along with a log file, into the designated output directory, 
+using the default values for all detail arguments.
 
 **NOTE:** The default mode will **not return** any objects within the R session.
-We find this is the easiest and most user friendly way to obtain results. We
-alternatively provide the option that the function returns a list holding the
-result objects. This allows the user to inspect and further analyze the data
-directly in R.
+We find this is the easiest and most user friendly way to obtain results. We alternatively provide the option that the function returns 
+a list holding the result objects by setting the argument `return results` to TRUE . This allows the user to inspect and further analyze the data directly in R.
+
+## Available scenario geopgrahies and sectors 
+The r2dii.climate.stress.test currently supports a number of scenario geographies 
+and four of the PACTA for Banks sectors of company production. They are the following:
+
+```{r}
+sectors <- unique(scenario_geography_x_ald_sector$ald_sector)
+print(sectors)
+```
+
+Note that the supported sectors do depend on the `scenario_geography` 
+(i.e. the geographical region (concerning asset location) results shall be 
+calculated for). All supported scenario geographies are the following:
+
+```{r}
+scenario_geographies <- unique(scenario_geography_x_ald_sector$scenario_geography)
+print(scenario_geographies)
+```
+
+One can use a helper function to obtain the supported scenario_geographies for
+a sector as follows:
+  
+```{r}
+geographies_for_sector("Coal")
+```
+
 
 
 ### Input arguments
 Specifications on the detail arguments are summarized in the following overview.
 The defaults that are used if the argument is not adjusted when calling
-`run_trisk()` can be found in column `default`. The user may change any detail
+`run_trisk()` or `run_lrisk()` can be found in column `default`. The user may change any detail
 argument by explicitly passing it to the function. Note that there are allowed
 values for each of the inputs. For logical or character variables refer to
 column `allowed`, for numeric variables the allowed values are the range from
@@ -94,13 +115,8 @@ print(scenarios)
 ```
 
 Which scenarios are supported however depends on the analysed `sector` and
-`scenario_geography`. In [the vignette on loan book preparation](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-prepare-loans-inputs.html)
-we explained how to infer which combinations of `sector` and
-`scenario_geography` are supported by the stress test. To infer which scenarios 
-are supported for these combinations you can use the following helper function:
-```{r}
-scenario_for_sector_x_geography("Coal", "Europe")
-```
+`scenario_geography`.
+
 
 **NOTE:** It is **strongly recommended** to select a `baseline_scenario` and a
 `shock_scenario` from the same scenario source, as indicated by the part of the
@@ -147,6 +163,17 @@ returned as a list of results within the running session. The default is FALSE,
 which writes the outputs to the target directory and does not return them as a
 list object in R.
 
+lrisk holds the following three additional arguments:
+
+* `scc`, describes the social cost of carbon per excess ton of CO2 emitted. It is the price for each surplus ton of 
+CO2 that goes into the calculation of the carbon liability of a company.
+* `settlement_factor` is a catch all factor (ratio) that can be used to adjust the expected payout of the settlement 
+due to further data gaps.
+* `exp_share_damages_paid` is the ratio that defines the expected share of the calculated social cost of carbon that 
+is considered in the liability.This can follow historical precedents such as the Tobacco Master Settlement that had a 
+an expected share of 2.7% of the damages paid.
+
+
 ### Adjusting the input arguments
 The user may want to run a stress test that is tailored to their assumptions
 about a plausible transition risk shock scenario. For example, the user could
@@ -155,25 +182,15 @@ default, using:
 
 ```{r, eval = FALSE}
 run_trisk(
-  asset_type = "loans",
-  input_path_project_specific = "/example_project/project_specific_input/",
-  input_path_project_agnostic = "/example_project/project_agnostic_input/",
+  input_path = "/example_project/project_input/",
   output_path = "/example_project/output",
   risk_free_rate = 0.01,
   shock_year = 2028
 )
 ```
+**NOTE:** One important input argument that affects the behavior of where the results are written, is the argument return_results. Per default it is set to FALSE, which means that results are written as csv files to a sub directory in the output_path and the user must open these files to view the results. If the user wants to view the results directly in R, they can set the argument to TRUE which will return them as a list of data frames in the R session. This means they are not written to the designated output_path however, so the user must do this by themselves if the results ought to be kept. In this case, the user must still provide an output path though, as every calculation will write a log file.
 
-**NOTE:** One important input argument that affects the behavior of where the
-results are written, is the argument `return_results`. Per default it is set to
-`FALSE`, which means that results are written as csv files to a sub directory in
-the `output_path` and the user must open these files to view the results.
-If the user wants to view the results directly in R, they can set the argument
-to `TRUE` which will return them as a list of data frames in the R session. This
-means they are not written to the designated `output_path` however, so the user
-must do this by themselves if the results ought to be kept. In this case, the
-user must still provide an output path though, as every calculation will write a
-log file.
+
 
 ### Output files
 The output files are written into a sub directory of the path indicated as
@@ -185,14 +202,9 @@ will be generated automatically, this way we ensure that no existing results are
 overwritten.
 
 * `log_file_standard.txt`
-* `loans_company_trajectories_\<suffix\>.csv`
-* `loans_portfolio_value_changes_standard.csv`
-* `loans_company_value_changes__standard.csv`
-* `loans_company_expected_loss_standard.csv`
-* `loans_sector_pd_changes_annual_standard.csv`
-* `loans_sector_pd_changes_overall_standard.csv`
-* `loans_company_pd_changes_annual_\<suffix\>.csv`
-* `loans_company_pd_changes_overall_\<suffix\>.csv`
+* `crispy_output_standard.csv`
+* `company_trajectories_standard.csv`
+
 
 ## Running a Sensitivity Analysis for the Stress Test
 
@@ -205,16 +217,13 @@ only one) of the detail arguments when running the stress test function. This
 will lead to the model iterating over the set of values passed for the chosen
 argument, while keeping all other input arguments constant.
 
-**NOTE:** It is not possible to iterate over `asset_type` and `term`.
 
 If the user wishes to understand the impact of the `shock_year` on the results
 for example, they can run the following:
 
 ```{r, eval = FALSE}
 run_trisk(
-  asset_type = "loans",
-  input_path_project_specific = "/example_project/project_specific_input/",
-  input_path_project_agnostic = "/example_project/project_agnostic_input/",
+  input_path = "/example_project/project_input/",
   output_path = "/example_project/output",
   shock_year = c(2025, 2028, 2032, 2035)
 )
@@ -224,17 +233,16 @@ This will yield outputs with four versions of the stress test, one for each of
 the shock years indicated. All the results will be written into one file per
 output type for ease of use, e.g.:
 
-* `loans_portfolio_value_changes_shock_year.csv`
-* `loans_company_value_changes_shock_year.csv`
-* `loans_company_expected_loss_shock_year.csv`
-* `loans_sector_pd_changes_annual_shock_year.csv`
-* `loans_sector_pd_changes_overall_shock_year.csv`
+* `company_trajectories_shock_year.csv`
+* `crispy_output_shock_year.csv`
+* `log_file_shock_year.txt`
+
 
 **NOTE:** The suffix of the files is now changed to mirror which variable was
 iterated over. This enables the user to run multiple different sensitivity
 analyses for a project and easily navigate these.
 
-When running a sensitivity analysis one one input, the user can still use other
+When running a sensitivity analysis on one input, the user can still use other
 values than the default parameters for the other input arguments.
 
 For example, when iterating over the `shock_year`, it is still possible to use a
@@ -242,9 +250,7 @@ For example, when iterating over the `shock_year`, it is still possible to use a
 
 ```{r, eval = FALSE}
 run_trisk(
-  asset_type = "loans",
-  input_path_project_specific = "/example_project/project_specific_input/",
-  input_path_project_agnostic = "/example_project/project_agnostic_input/",
+  input_path = "/example_project/project_input/",
   output_path = "/example_project/output",
   risk_free_rate = 0.01,
   shock_year = c(2025, 2028, 2032, 2035)
@@ -255,7 +261,9 @@ run_trisk(
 so that it is always possible to understand which parameters were used in any
 given calculation.
 
+
+
 ## Interpretation of the output files
 
 Detailed explanations of the result files can be found in the vignette:
-[Understand the output files of the transition risk stress test](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/05-read-the-outputs.html).
+[Understand the output files of the transition risk stress test](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/04-read-the-outputs.html).

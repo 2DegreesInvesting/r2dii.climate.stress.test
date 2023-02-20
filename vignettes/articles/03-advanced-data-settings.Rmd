@@ -1,5 +1,5 @@
 ---
-title: "04 - Improve stress test by providing further project specific data"
+title: "03 - Improve stress test by providing further project specific data"
 ---
 
 ```{r, include = FALSE}
@@ -22,107 +22,14 @@ In order to keep this vignette concise, we assume the following has been set up:
 2. All required R packages are installed, specifically
 `r2dii.climate.stress.test`. Note that this may require installing additional
 packages. You will be prompted to install these in case any are missing.
-3. The user has successfully run at least the matching part of PACTA for Banks
-to produce the relevant project-specific raw input files.
-4. The user has obtained all relevant input files as described in the pdf manual.
-to produce the relevant project-specific raw input files.
-5. The input files are organized in a folder structure consistent with the one
+3. The input files are organized in a folder structure consistent with the one
 described in the vignette [Set up project directories](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/01-setup-project-directories.html).
-6. The user has successfully run the function `run_prep_calculation_loans()` to
-generate the intermediate input files for the main stress test function in the
-required format. Refer to the [corresponding vignette](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-prepare-loans-inputs.html)
-for details on how to do this.
 
 ## Prerequisites
 In order to keep this vignette concise, we assume that you have successfully
 completed all preparation steps described in the vignettes [Set up project
-directories](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/01-setup-project-directories.html)
-and [prepare loans
-inputs](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-prepare-loans-inputs.html).
-
-
-## Company - term data
-Including company - term data allows you to incorporate the information you have
-on term values of the loan to a company in your loan book, instead of using an
-identical term value for all loans.
-
-### Preparing company - term data 
-The data that needs to be created is a csv file named `company_terms.csv`. It
-holds the columns `company_name` (character, holding the name of analysed
-companies) and term (numeric, indicates which maturity the loans to respective
-companies is assumed to have in years). In column `company_name` include all
-unique company names from `Loans_results_company.rda`, which you generated in
-[prepare loans
-inputs](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-prepare-loans-inputs.html).
-If you want to use R to obtain this column you can take the following steps.
-
-```{r, eval = FALSE}
-library(readr)
-library(r2dii.climate.stress.test)
-
-loans_results_company_file_path <- file.path("/example_project/project_specific_input", "Loans_results_company.rda")
-validate_file_exists(loans_results_company_file_path)
-data <- readr::read_rds(loans_results_company_file_path)
-unique_companies <- data %>%
-  dplyr::select(company_name) %>%
-  dplyr::distinct()
-readr::write_csv(unique_companies, file.path("/example_project/project_specific_input", "company_terms.csv"))
-
-```
-
-You can now open this file in a tool of your choice, and add second column named
-term. In column `term` add the terms per company. Please make sure to save the
-result as a csv file again. Make sure that file is saved in folder holding
-project specific data.
-
-**NOTE:** 
-
-* Terms need to be whole numbers. 
-* Only include values up to 5. Higher values will be capped to 5 as for
-calculations with longer time frames the reliability of the Merton model
-deteriorates.
-* Leave term blank for companies for which you lack respective information. A
-fallback, as provided as argument `fallback_term` to `run_trisk()` will be
-used to fill the gaps.
-
-### Validating company - term data
-Before including the file in your analysis you may want to validate that your
-file complies with requirements concerning structure and content. You may verify
-by executing the following lines of code. You will receive warning/error
-messages in case problems are detected.
-```{r, eval = FALSE}
-library(readr)
-library(r2dii.climate.stress.test)
-
-company_terms_path <- file.path("/example_project/project_specific_input", "company_terms.csv")
-validate_file_exists(company_terms_path)
-data <- readr::read_csv(company_terms_path)
-validate_data_has_expected_cols(data = data, expected_columns = c("company_name", "term"))
-check_company_terms(data = data, interactive_mode = TRUE)
-```
-
-### Placing file in folder structure
-In order to make sure your version of `company_terms.csv` is used in the
-analysis place it in
-
-* `example_project/`
-    * `project_specific_input`
-    
-as set up in [Set up project
 directories](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/01-setup-project-directories.html).
 
-### Running the Stress Test with provided company - term data
-In order to include the company - term data in your analysis set argument
-`use_company_terms` to TRUE in the call to `run_trisk`.
-```{r, eval = FALSE}
-run_trisk(
-  asset_type = "loans",
-  input_path_project_specific = "/example_project/project_specific_input",
-  input_path_project_agnostic = "/example_project/project_agnostic_input/",
-  output_path = "/example_project/output",
-  use_company_terms = TRUE
-)
-```
 
 ## Financial data
 Financial data provide several financial indicators on the company level. If
@@ -215,4 +122,4 @@ If the respective dataset as provided by 2DII already exists there make sure to
 replace it with your custom file.
 
 ### Running the Stress Test with provided financial data
-You can now run the stress test as described in vignette [Run stress test](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/03-run-stress-test.html).
+You can now run the stress test as described in vignette [Run stress test](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-run-stress-test.html).
