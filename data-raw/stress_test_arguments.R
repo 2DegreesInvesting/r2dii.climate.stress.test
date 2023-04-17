@@ -1,4 +1,4 @@
-# styler: off
+#styler: off
 
 stress_test_arguments <- tibble::tribble(
                       ~name,       ~type,        ~default,                                                                                                                                                                                                                                                                                                                                ~allowed,    ~min,    ~max,
@@ -16,10 +16,11 @@ stress_test_arguments <- tibble::tribble(
         "settlement_factor",    "double",             "1",                                                                                                                                                                                                                                                                                                                                      NA,     "0",     "1",
    "exp_share_damages_paid",    "double",         "0.027",                                                                                                                                                                                                                                                                                                                                      NA,     "0",     "1",
                       "scc",    "double",            "40",                                                                                                                                                                                                                                                                                                                                      NA,     "0", "10000",
-       "carbon_price_model", "character", "no_carbon_tax",                                                                                                                                                                                                                                                                 "no_carbon_tax, MESSAGEix-GLOBIOM 1.0, REMIND-MAgPIE 1.7-3.0, GCAM 5.2",      NA,      NA,
+       "carbon_price_model", "character", "no_carbon_tax",                                                                                                                                                                                                                                                                                                 "no_carbon_tax, NZ2050, NDC, DN0, B2DS",      NA,      NA,
        "market_passthrough",    "double",             "0",                                                                                                                                                                                                                                                                                                                                      NA,     "0",     "1"
   )
 
-# styler: on
+
+#styler: on
 
 usethis::use_data(stress_test_arguments, overwrite = TRUE)
