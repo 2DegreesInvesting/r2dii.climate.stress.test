@@ -21,6 +21,6 @@ stress_test_arguments <- tibble::tribble(
   )
 
 
-#styler: on
+# styler: on
 
 usethis::use_data(stress_test_arguments, overwrite = TRUE)
