@@ -19,16 +19,13 @@
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/01-setup-project-directories.html</loc>
   </url>
   <url>
-    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/02-prepare-loans-inputs.html</loc>
+    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/02-run-stress-test.html</loc>
   </url>
   <url>
-    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/03-run-stress-test.html</loc>
+    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/03-advanced-data-settings.html</loc>
   </url>
   <url>
-    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/04-advanced-data-settings.html</loc>
-  </url>
-  <url>
-    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/05-read-the-outputs.html</loc>
+    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/04-read-the-outputs.html</loc>
   </url>
   <url>
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/index.html</loc>
@@ -62,6 +59,21 @@
   </url>
   <url>
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/calculate_net_profits.html</loc>
+  </url>
+  <url>
+    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/calculate_net_profits_baseline.html</loc>
+  </url>
+  <url>
+    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/calculate_net_profits_shock_declining_technologies.html</loc>
+  </url>
+  <url>
+    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/calculate_net_profits_shock_declining_technologies_carbon_tax.html</loc>
+  </url>
+  <url>
+    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/calculate_net_profits_shock_increasing_technologies.html</loc>
+  </url>
+  <url>
+    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/calculate_net_profits_without_carbon_tax.html</loc>
   </url>
   <url>
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/calculate_pd_change_overall.html</loc>
@@ -152,6 +164,9 @@
   </url>
   <url>
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/read_capacity_factors_power.html</loc>
+  </url>
+  <url>
+    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/read_carbon_data.html</loc>
   </url>
   <url>
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/read_financial_data.html</loc>

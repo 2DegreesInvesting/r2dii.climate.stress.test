@@ -40,19 +40,16 @@ NOTE: if return_results is TRUE results will not be written to output path but i
       <a href="../articles/00-prerequisites.html">00 - Prerequisites</a>
     </li>
     <li>
-      <a href="../articles/01-setup-project-directories.html">01 - Set up project directories for climate transition risk stress test</a>
+      <a href="../articles/01-setup-project-directories.html">01 - Set up project directories for the  1in1000 model suite</a>
     </li>
     <li>
-      <a href="../articles/02-prepare-loans-inputs.html">02 - Prepare loan input files for stress testing corporate loan books</a>
+      <a href="../articles/02-run-stress-test.html">02 - Run transition (or litigation) risk stress test</a>
     </li>
     <li>
-      <a href="../articles/03-run-stress-test.html">03 - Run transition risk stress test on corporate loan books</a>
+      <a href="../articles/03-advanced-data-settings.html">03 - Improve stress test by providing further project specific data</a>
     </li>
     <li>
-      <a href="../articles/04-advanced-data-settings.html">04 - Improve stress test by providing further project specific data</a>
-    </li>
-    <li>
-      <a href="../articles/05-read-the-outputs.html">05 - Understand the output files of the transition risk stress test</a>
+      <a href="../articles/04-read-the-outputs.html">04 - Understand the output files of the transition risk stress test</a>
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"></ul></div><!--/.nav-collapse -->
@@ -92,6 +89,8 @@ NOTE: if <code>return_results</code> is TRUE results will not be written to <cod
 <span>  shock_year <span class="op">=</span> <span class="fl">2030</span>,</span>
 <span>  scenario_geography <span class="op">=</span> <span class="st">"Global"</span>,</span>
 <span>  start_year <span class="op">=</span> <span class="fl">2021</span>,</span>
+<span>  carbon_price_model <span class="op">=</span> <span class="st">"no_carbon_tax"</span>,</span>
+<span>  market_passthrough <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  return_results <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -164,6 +163,15 @@ Must be available in the production data and indicates the first year of
 the scenario data.</p></dd>
 
 
+<dt>carbon_price_model</dt>
+<dd><p>Character vector, indicating which NGFS model is used in regards to
+carbon prices. Default is no carbon tax.</p></dd>
+
+
+<dt>market_passthrough</dt>
+<dd><p>Firm's ability to pass carbon tax onto the consumer</p></dd>
+
+
 <dt>return_results</dt>
 <dd><p>Boolean, indicating if results shall be exported.</p></dd>
 
@@ -181,7 +189,7 @@ the scenario data.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

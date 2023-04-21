@@ -64,19 +64,16 @@
       <a href="articles/00-prerequisites.html">00 - Prerequisites</a>
     </li>
     <li>
-      <a href="articles/01-setup-project-directories.html">01 - Set up project directories for climate transition risk stress test</a>
+      <a href="articles/01-setup-project-directories.html">01 - Set up project directories for the  1in1000 model suite</a>
     </li>
     <li>
-      <a href="articles/02-prepare-loans-inputs.html">02 - Prepare loan input files for stress testing corporate loan books</a>
+      <a href="articles/02-run-stress-test.html">02 - Run transition (or litigation) risk stress test</a>
     </li>
     <li>
-      <a href="articles/03-run-stress-test.html">03 - Run transition risk stress test on corporate loan books</a>
+      <a href="articles/03-advanced-data-settings.html">03 - Improve stress test by providing further project specific data</a>
     </li>
     <li>
-      <a href="articles/04-advanced-data-settings.html">04 - Improve stress test by providing further project specific data</a>
-    </li>
-    <li>
-      <a href="articles/05-read-the-outputs.html">05 - Understand the output files of the transition risk stress test</a>
+      <a href="articles/04-read-the-outputs.html">04 - Understand the output files of the transition risk stress test</a>
     </li>
   </ul>
 </li>
@@ -98,6 +95,7 @@
 <a class="anchor" aria-label="anchor" href="#r2diiclimatestresstest-"></a>
 </h1></div>
 <!-- badges: start -->
+
 <p>The goal of r2dii.climate.stress.test is to provide a tool that can be used to conduct what-if climate stress test analyses for financial institutions, supervisors, regulators and other stakeholders. The tool aims at highlighting potential financial risk in especially climate relevant sectors, split by production technology where required. The sectors covered by the 2DII climate stress test and therefore by this package, follow mostly the logic of the Paris Agreement Capital Transition Assessment (PACTA) tool, but can in principle be adapted to other settings. Application of the code requires availability of custom data. For more information about the methodology and inquiries on running a pilot of the stress test in cooperation with 2DII, please contact <a href="mailto:stresstest@2degrees-investing.org" class="email">stresstest@2degrees-investing.org</a>.</p>
 <div class="section level2">
 <h2 id="prerequisites">Prerequisites<a class="anchor" aria-label="anchor" href="#prerequisites"></a>
@@ -115,10 +113,14 @@
 <div class="section level2">
 <h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
 </h2>
-<ul><li>Use <code><a href="https://rdrr.io/r/base/library.html" class="external-link">library()</a></code> to attach the package</li></ul>
+<ul>
+<li>Use <code><a href="https://rdrr.io/r/base/library.html" class="external-link">library()</a></code> to attach the package</li>
+</ul>
 <!-- end list --><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test">r2dii.climate.stress.test</a></span><span class="op">)</span></span></code></pre></div>
-<ul><li>Run climate stress tests</li></ul>
+<ul>
+<li>Run climate stress tests</li>
+</ul>
 <!-- end list --><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## run stress testing for assets of type corporate loans using default parameters</span></span>
 <span><span class="fu"><a href="reference/run_trisk.html">run_trisk</a></span><span class="op">(</span></span>
@@ -203,7 +205,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

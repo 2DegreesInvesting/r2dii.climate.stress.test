@@ -53,19 +53,16 @@
       <a href="../articles/00-prerequisites.html">00 - Prerequisites</a>
     </li>
     <li>
-      <a href="../articles/01-setup-project-directories.html">01 - Set up project directories for climate transition risk stress test</a>
+      <a href="../articles/01-setup-project-directories.html">01 - Set up project directories for the  1in1000 model suite</a>
     </li>
     <li>
-      <a href="../articles/02-prepare-loans-inputs.html">02 - Prepare loan input files for stress testing corporate loan books</a>
+      <a href="../articles/02-run-stress-test.html">02 - Run transition (or litigation) risk stress test</a>
     </li>
     <li>
-      <a href="../articles/03-run-stress-test.html">03 - Run transition risk stress test on corporate loan books</a>
+      <a href="../articles/03-advanced-data-settings.html">03 - Improve stress test by providing further project specific data</a>
     </li>
     <li>
-      <a href="../articles/04-advanced-data-settings.html">04 - Improve stress test by providing further project specific data</a>
-    </li>
-    <li>
-      <a href="../articles/05-read-the-outputs.html">05 - Understand the output files of the transition risk stress test</a>
+      <a href="../articles/04-read-the-outputs.html">04 - Understand the output files of the transition risk stress test</a>
     </li>
   </ul>
 </li>
@@ -80,7 +77,7 @@
 
       
 
-      </header><script src="00-prerequisites_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>00 - Prerequisites</h1>
@@ -93,7 +90,9 @@
 
     
     
-<p>This vignette describes the necessary prerequisites for installing <code>r2dii.climate.stress.test</code> and performing the stress testing analysis.</p>
+<p>This vignette describes the necessary prerequisites for installing
+<code>r2dii.climate.stress.test</code> and performing the stress testing
+analysis.</p>
 <div class="section level2">
 <h2 id="hardware-requirements">Hardware requirements<a class="anchor" aria-label="anchor" href="#hardware-requirements"></a>
 </h2>
@@ -106,52 +105,77 @@
 <div class="section level2">
 <h2 id="software-requirements">Software Requirements<a class="anchor" aria-label="anchor" href="#software-requirements"></a>
 </h2>
-<p>2DII climate transition stress testing analysis is performed using R packages. R is a programming language in which the source code is written. To use R, it is easiest to use an Integrated Development Environment (IDE), in this case RStudio. It is recommended for the person performing the analysis to have basic coding skills.</p>
+<p>The 2DII 1in1000 stress test is performed using the 1in1000 model
+suite writting in R code and distributed as an R package. R is a
+programming language in which the source code is written. To use R, it
+is easiest to use an Integrated Development Environment (IDE), in this
+case RStudio. It is recommended for the person performing the analysis
+to have basic coding skills.</p>
 <p><strong>Programming language</strong></p>
 <ul>
-<li>R - version must be 3.4 or higher (it is best practice to download the most recent version of R). This can be downloaded for Windows from <a href="https://cran.r-project.org/bin/windows/base/" class="external-link uri">https://cran.r-project.org/bin/windows/base/</a>
+<li>R - version must be 3.4 or higher (it is best practice to download
+the most recent version of R). This can be downloaded for Windows from
+<a href="https://cran.r-project.org/bin/windows/base/" class="external-link uri">https://cran.r-project.org/bin/windows/base/</a>
 </li>
-<li>In most cases, this should be downloadable from the financial institution’s software repository but may be subject to internal approval</li>
+<li>In most cases, this should be downloadable from the financial
+institution’s software repository but may be subject to internal
+approval</li>
 </ul>
 <p><strong>Integrated Development Environment (IDE)</strong></p>
 <ul>
 <li>RStudio - This can be downloaded at <a href="https://rstudio.com/products/rstudio/download/" class="external-link uri">https://rstudio.com/products/rstudio/download/</a>
 </li>
-<li>Again, this should be downloadable from the financial institution’s software repository but may be subject to internal approval</li>
+<li>Again, this should be downloadable from the financial institution’s
+software repository but may be subject to internal approval</li>
 </ul>
 </div>
 <div class="section level2">
 <h2 id="pacta-for-banks">PACTA for Banks<a class="anchor" aria-label="anchor" href="#pacta-for-banks"></a>
 </h2>
-<p>PACTA for Banks enables banks to measure the alignment of their corporate lending portfolios with climate scenarios across a set of key climate-relevant sectors and technologies. The climate transition risk stress test builds on company level forward looking production data for NFCs in order to account for adaptive capacity.</p>
-<p>The development version or the climate transition stress test requires that the user has successfully run at least the matching part of PACTA for Banks to produce the relevant project-specific raw input files.</p>
-<p>Helpful links for understanding PACTA for Banks and guidance material to help run the software:</p>
+<p>PACTA for Banks enables banks to measure the alignment of their
+corporate lending portfolios with climate scenarios across a set of key
+climate-relevant sectors and technologies. The climate transition risk
+stress test uses prewrangled climate scenario data from PACTA.</p>
+<p>Helpful links for understanding PACTA for Banks and guidance material
+to help run the software:</p>
 <ul>
 <li>PACTA for Banks overview: <a href="https://www.transitionmonitor.com/pacta-for-banks-2020/" class="external-link uri">https://www.transitionmonitor.com/pacta-for-banks-2020/</a>
 </li>
 <li>PACTA for Banks Methodology: <a href="https://www.transitionmonitor.com/wp-content/uploads/2021/07/PACTA-for-Banks-Methodology-document-02-07-2021_v1.2.0_v4.pdf" class="external-link uri">https://www.transitionmonitor.com/wp-content/uploads/2021/07/PACTA-for-Banks-Methodology-document-02-07-2021_v1.2.0_v4.pdf</a>
 </li>
-<li>The PACTA for Banks R packages can be obtained from CRAN or GitHub. The material below describes in step by step how to use them:
-<ul>
-<li>r2dii.data manual: <a href="https://2degreesinvesting.github.io/r2dii.data/" class="external-link uri">https://2degreesinvesting.github.io/r2dii.data/</a>
-</li>
-<li>r2dii.match manual: <a href="https://2degreesinvesting.github.io/r2dii.match/" class="external-link uri">https://2degreesinvesting.github.io/r2dii.match/</a>
-</li>
-<li>r2dii.analysis manual: <a href="https://2degreesinvesting.github.io/r2dii.analysis/" class="external-link uri">https://2degreesinvesting.github.io/r2dii.analysis/</a>
-</li>
 </ul>
-</li>
-</ul>
+</div>
+<div class="section level2">
+<h2 id="asset-resolution">Asset Resolution<a class="anchor" aria-label="anchor" href="#asset-resolution"></a>
+</h2>
+<p>The 1in1000 model suite uses forward looking asset-level production
+data in order to account for adaptive capacity. The respective data are
+provided by Asset Resolution.</p>
 </div>
 <div class="section level2">
 <h2 id="next-steps">Next steps<a class="anchor" aria-label="anchor" href="#next-steps"></a>
 </h2>
-<p>After successfully completing the prerequisites, see the README on how to install the package followed by the below-mentioned vignettes on how to run the analysis:</p>
+<div class="section level3">
+<h3 id="are-you-running-the-1in1000-model-suite-yourself">Are you running the 1in1000 model suite yourself ?<a class="anchor" aria-label="anchor" href="#are-you-running-the-1in1000-model-suite-yourself"></a>
+</h3>
+<p>After successfully completing the prerequisites, see the README on
+how to install the package followed by the below-mentioned vignettes on
+how to run the analysis:</p>
 <ul>
-<li><a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test/index.html">README document with installation procedure</a></li>
-<li><a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/01-setup-project-directories.html">Set up project directories for climate transition risk stress test</a></li>
-<li><a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/02-prepare-loans-inputs.html">Preparing the intermediate inputs for stress testing loans</a></li>
+<li><a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test/index.html">README
+document with installation procedure</a></li>
+<li><a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/01-setup-project-directories.html">Set
+up project directories for climate transition risk stress test</a></li>
 </ul>
+</div>
+<div class="section level3">
+<h3 id="is-the-1in1000-model-suite-ran-for-you-by-2dii">Is the 1in1000 model suite ran for you by 2DII ?<a class="anchor" aria-label="anchor" href="#is-the-1in1000-model-suite-ran-for-you-by-2dii"></a>
+</h3>
+<ul>
+<li><a href="https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/articles/04-setup-project-directories.html">Read
+and understand the output of the 1in1000 model suite</a></li>
+</ul>
+</div>
 </div>
   </div>
 
@@ -172,7 +196,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

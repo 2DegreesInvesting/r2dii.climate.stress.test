@@ -35,19 +35,16 @@
       <a href="../articles/00-prerequisites.html">00 - Prerequisites</a>
     </li>
     <li>
-      <a href="../articles/01-setup-project-directories.html">01 - Set up project directories for climate transition risk stress test</a>
+      <a href="../articles/01-setup-project-directories.html">01 - Set up project directories for the  1in1000 model suite</a>
     </li>
     <li>
-      <a href="../articles/02-prepare-loans-inputs.html">02 - Prepare loan input files for stress testing corporate loan books</a>
+      <a href="../articles/02-run-stress-test.html">02 - Run transition (or litigation) risk stress test</a>
     </li>
     <li>
-      <a href="../articles/03-run-stress-test.html">03 - Run transition risk stress test on corporate loan books</a>
+      <a href="../articles/03-advanced-data-settings.html">03 - Improve stress test by providing further project specific data</a>
     </li>
     <li>
-      <a href="../articles/04-advanced-data-settings.html">04 - Improve stress test by providing further project specific data</a>
-    </li>
-    <li>
-      <a href="../articles/05-read-the-outputs.html">05 - Understand the output files of the transition risk stress test</a>
+      <a href="../articles/04-read-the-outputs.html">04 - Understand the output files of the transition risk stress test</a>
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"></ul></div><!--/.nav-collapse -->
@@ -113,6 +110,38 @@ production build out is multiplied with the proximity to the target. This
 approximates the additional capital investment such a company would have to
 make in a short time, which leads to added costs. This ensures that late
 build out will not proportionally translate into increased profits.</p></td>
+      </tr><tr><td>
+          <p><code><a href="calculate_net_profits_baseline.html">calculate_net_profits_baseline()</a></code> </p>
+        </td>
+        <td><p>Calculates annual net profits on the company-technology level for the baseline scenario</p></td>
+      </tr><tr><td>
+          <p><code><a href="calculate_net_profits_shock_declining_technologies.html">calculate_net_profits_shock_declining_technologies()</a></code> </p>
+        </td>
+        <td><p>Calculates annual net profits on the company-technology level for the shock scenario for declining technologies</p></td>
+      </tr><tr><td>
+          <p><code><a href="calculate_net_profits_shock_declining_technologies_carbon_tax.html">calculate_net_profits_shock_declining_technologies_carbon_tax()</a></code> </p>
+        </td>
+        <td><p>Calculates annual net profits on the company-technology level for the
+baseline and late and sudden scenarios - with a carbon tax being added.</p></td>
+      </tr><tr><td>
+          <p><code><a href="calculate_net_profits_shock_increasing_technologies.html">calculate_net_profits_shock_increasing_technologies()</a></code> </p>
+        </td>
+        <td><p>Calculates annual net profits on the company-technology level for the shock scenario for increasing technologies.
+Climate laggards which need to build out their production in increasing technologies to compensate for their
+missed targets, are "punished" by adjusting the net profit margin on their
+additional build out based on their proximity to target within the given
+technology. Specifically, we measure the ratio of how much of the required
+build out or reduction in a technology the company will have done at the end
+of the forecast period. If the technology has an increasing target and the
+ratio of completion is below one, the net_profit_margin on the additional production build out
+is multiplied with the proximity to the target. This approximates the additional capital investment
+such a company would have to make in a short time, which leads to added costs. This ensures that late
+build out will not proportionally translate into increased profits.</p></td>
+      </tr><tr><td>
+          <p><code><a href="calculate_net_profits_without_carbon_tax.html">calculate_net_profits_without_carbon_tax()</a></code> </p>
+        </td>
+        <td><p>Calculates annual net profits on the company-technology level for the
+baseline and late and sudden scenarios - without a carbon tax being added.</p></td>
       </tr><tr><td>
           <p><code><a href="calculate_pd_change_overall.html">calculate_pd_change_overall()</a></code> </p>
         </td>
@@ -240,6 +269,10 @@ large scale climate transition policy is deployed.</p></td>
         <td><p>Read in power capacity factors from csv and check that all expected columns
 are given.</p></td>
       </tr><tr><td>
+          <p><code><a href="read_carbon_data.html">read_carbon_data()</a></code> </p>
+        </td>
+        <td><p>Read in carbon price data from ngfs data</p></td>
+      </tr><tr><td>
           <p><code><a href="read_financial_data.html">read_financial_data()</a></code> </p>
         </td>
         <td><p>Read in company financial data processed from eikon exports and AR master data
@@ -364,7 +397,7 @@ stress test.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>
