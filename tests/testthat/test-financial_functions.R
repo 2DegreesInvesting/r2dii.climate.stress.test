@@ -8,7 +8,7 @@ test_that("calculate_net_profits penalizes companies for late build out of low
 
   carbon_data_test <- tibble::tribble(
     ~year, ~model, ~scenario, ~variable, ~unit, ~carbon_tax, ~scenario_geography,
-    2030, "MESSAGEix-GLOBIOM 1.0", "Current policies (Hot house world, Rep)", "Price|Carbon", 10, 10, "Global"
+    2030, "GCAM 5.3+ NGFS", "NDC", "Price|Carbon", 10, 10, "Global"
   )
 
 
@@ -58,7 +58,7 @@ test_that("calculate_net_profits does not apply penalty on lost profits for high
 
   carbon_data_test <- tibble::tribble(
     ~year, ~model, ~scenario, ~variable, ~unit, ~carbon_tax, ~scenario_geography,
-    2030, "MESSAGEix-GLOBIOM 1.0", "Current policies (Hot house world, Rep)", "Price|Carbon", 10, 10, "Global"
+    2030, "GCAM 5.3+ NGFS", "NDC", "Price|Carbon", 10, 10, "Global"
   )
 
 
@@ -107,7 +107,7 @@ test_that("calculate_net_profits does not apply carbon tax on high
 
   carbon_data_test <- tibble::tribble(
     ~year, ~model, ~scenario, ~variable, ~unit, ~carbon_tax,
-    2030, "MESSAGEix-GLOBIOM 1.0", "Current policies (Hot house world, Rep)", "Price|Carbon", 10, 10,
+    2030, "GCAM 5.3+ NGFS", "NDC", "Price|Carbon", 10, 10,
   )
 
 
@@ -153,7 +153,7 @@ test_that("calculate_net_profits does not apply carbon tax for low
 
   carbon_data_test <- tibble::tribble(
     ~year, ~model, ~scenario, ~variable, ~unit, ~carbon_tax,
-    2030, "MESSAGEix-GLOBIOM 1.0", "Current policies (Hot house world, Rep)", "Price|Carbon", 10, 10,
+    2030, "GCAM 5.3+ NGFS", "NDC", "Price|Carbon", 10, 10,
   )
 
 
@@ -243,7 +243,7 @@ test_that("a higher market passthrough has a weaker impact on a company's net pr
 
   carbon_data_test <- tibble::tribble(
     ~year, ~model, ~scenario, ~variable, ~unit, ~carbon_tax,
-    2030, "MESSAGEix-GLOBIOM 1.0", "Current policies (Hot house world, Rep)", "Price|Carbon", 10, 10,
+    2030, "GCAM 5.3+ NGFS", "NDC", "Price|Carbon", 10, 10,
   )
 
 
