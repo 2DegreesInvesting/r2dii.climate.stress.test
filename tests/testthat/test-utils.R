@@ -58,7 +58,7 @@ test_that("Warning is thrown if combinations are missing", {
       data = data,
       col_names = c("a", "b")
     ),
-    "Identified 1 missing combinations"
+    "Identified 2 missing combinations"
   )
 })
 
