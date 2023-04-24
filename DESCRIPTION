@@ -5,11 +5,11 @@ Version: 0.0.0.9005
 Authors@R: c(
     person(given = "Jacob",
            family = "Kastl",
-           role = c("aut", "cre"),
+           role = c("aut"),
            email = "jacob.kastl@gmail.com"),
     person(given = "Franziska",
            family = "Fischer",
-           role = c("aut"),
+           role = c("aut", "cre"),
            email = "franziska@2degrees-investing.org"),
     person(given = "2 Degrees Investing Initiative",
            role = c("cph", "fnd"),
