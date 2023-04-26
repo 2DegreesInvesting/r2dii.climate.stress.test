@@ -469,8 +469,18 @@ infer_sectors_and_technologies <- function(baseline_scenario, shock_scenario, sc
 infer_scenario_type <- function(baseline_scenario, shock_scenario) {
   if (grepl("NGFS2021", baseline_scenario) & grepl("NGFS2021", shock_scenario)) {
     return("is_ngfs")
-  } else if (!grepl("NGFS2021", baseline_scenario) & !grepl("NGFS2021", shock_scenario)) {
-    return("is_not_ngfs")
+  }
+
+  if (grepl("IPR2021", baseline_scenario) & grepl("IPR2021", shock_scenario)) {
+    return("is_ipr")
+  }
+
+  if (grepl("GECO2021", baseline_scenario) & grepl("GECO2021", shock_scenario)) {
+    return("is_geco")
+  }
+
+  if (grepl("WEO2021", baseline_scenario) & grepl("WEO2021", shock_scenario)) {
+    return("is_weo")
   } else {
     rlang::abort(
       c(
@@ -487,5 +497,10 @@ end_year_lookup <- function(scenario_type) {
   if (scenario_type == "is_ngfs") {
     end_year <- as.numeric(2100)
   }
+
+  if (scenario_type == "is_ipr") {
+    end_year <- as.numeric(2050)
+  }
+
   return(end_year)
 }
