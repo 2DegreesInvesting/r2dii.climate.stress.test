@@ -49,6 +49,15 @@ scenario_geography_x_ald_sector <- tibble::tribble(
   "Global", "Automotive",      "GECO2021_1.5C-Unif",
   "Global", "Automotive",         "GECO2021_CurPol",
   "Global", "Automotive",        "GECO2021_NDC-LTS",
+  "Global",       "Coal",             "IPR2021_FPS",
+  "Global",    "Oil&Gas",             "IPR2021_FPS",
+  "Global",      "Power",             "IPR2021_FPS",
+  "Global",       "Coal",             "IPR2021_RPS",
+  "Global",    "Oil&Gas",             "IPR2021_RPS",
+  "Global",      "Power",             "IPR2021_RPS",
+  "Global",       "Coal",        "IPR2021_baseline",
+  "Global",    "Oil&Gas",        "IPR2021_baseline",
+  "Global",      "Power",        "IPR2021_baseline",
   "Global",       "Coal",      "NGFS2021_GCAM_B2DS",
   "Global",    "Oil&Gas",      "NGFS2021_GCAM_B2DS",
   "Global",      "Power",      "NGFS2021_GCAM_B2DS",
@@ -171,7 +180,6 @@ scenario_geography_x_ald_sector <- tibble::tribble(
   "US",      "Power",             "WEO2021_SDS",
   "US",      "Power",           "WEO2021_STEPS"
 )
-
 
 # styler: on
 
