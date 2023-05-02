@@ -479,6 +479,10 @@ infer_scenario_type <- function(baseline_scenario, shock_scenario) {
     return("is_geco")
   }
 
+  if (grepl("Oxford2021", baseline_scenario) & grepl("Oxford2021", shock_scenario)) {
+    return("is_oxford")
+  }
+
   if (grepl("WEO2021", baseline_scenario) & grepl("WEO2021", shock_scenario)) {
     return("is_weo")
   } else {
@@ -496,6 +500,10 @@ end_year_lookup <- function(scenario_type) {
 
   if (scenario_type == "is_ngfs") {
     end_year <- as.numeric(2100)
+  }
+
+  if (scenario_type == "is_oxford") {
+    end_year <- as.numeric(2050)
   }
 
   if (scenario_type == "is_ipr") {
