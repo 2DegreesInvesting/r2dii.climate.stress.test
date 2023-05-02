@@ -53,6 +53,14 @@ set_baseline_trajectory <- function(data,
     ) %>%
     dplyr::ungroup()
 
+  # Negative Production Adjustment: when Baseline Production goes below 0, it stays at 0
+  data <- data %>%
+    dplyr::group_by(.data$id, .data$company_name, .data$ald_sector, .data$technology, .data$scenario_geography, .data$year) %>%
+    dplyr::mutate(baseline_adj = dplyr::if_else(.data$baseline < 0 & dplyr::lag(.data$baseline, default = 0) >= 0, 0, .data$baseline)) %>%
+    dplyr::ungroup() %>%
+    dplyr::select(-baseline) %>%
+    dplyr::rename(baseline = baseline_adj)
+
   data <- data %>%
     dplyr::select(-dplyr::all_of(c("scenario_change", "scen_to_follow")))
 
