@@ -371,7 +371,7 @@ calc_late_sudden_traj <- function(start_year, end_year, year_of_shock, duration_
         late_and_sudden[k] <- 0
       } else if (late_and_sudden[k] < 0) {
         late_and_sudden[k] <- 0
-        late_and_sudden[(k+1):length(scen_to_follow)] <- 0
+        late_and_sudden[(k + 1):length(scen_to_follow)] <- 0
       }
     }
   }

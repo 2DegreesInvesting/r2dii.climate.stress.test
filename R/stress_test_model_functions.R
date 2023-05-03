@@ -39,7 +39,6 @@ join_price_data <- function(df, df_prices) {
 }
 
 dcf_model_techlevel <- function(data, discount_rate) {
-
   # Calculates the annual discounted net profits on technology level
   data %>%
     dplyr::group_by(investor_name, portfolio_name, id, company_name, ald_sector, technology, scenario_geography) %>%
