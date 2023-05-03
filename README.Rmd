@@ -64,7 +64,6 @@ run_lrisk(
   output_path = "/example_project/output",
   risk_free_rate = c(0.01, 0.03)
 )
-
 ```
 
 ## Details

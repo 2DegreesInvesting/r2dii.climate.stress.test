@@ -169,7 +169,6 @@ remove_high_carbon_tech_with_missing_production <- function(data,
     )
 
   if (nrow(companies_missing_high_carbon_tech_production) > 0) {
-
     # information on companies for which at least 1 technology is lost
     affected_company_sector_tech_overview <- companies_missing_high_carbon_tech_production %>%
       dplyr::select(dplyr::all_of(c("company_name", "ald_sector", "technology"))) %>%
@@ -253,7 +252,6 @@ harmonise_cap_fac_geo_names <- function(data) {
 #' @noRd
 process_price_data <- function(data, technologies, sectors, start_year, end_year,
                                scenarios_filter) {
-
   # adding dummy unit price data for automotive data
   if ("Automotive" %in% sectors) {
     auto_tech <- p4i_p4b_sector_technology_lookup %>%
