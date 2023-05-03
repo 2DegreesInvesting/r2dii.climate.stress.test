@@ -361,9 +361,18 @@ calc_late_sudden_traj <- function(start_year, end_year, year_of_shock, duration_
     # company plans are already aligned
     # no need for overshoot in production cap, set LS trajectory to follow
     # the scenario indicated as late & sudden aligned
+    # Negative Production Adjustment: If shock production gets negative, it is set to 0 and
+    # all future shock production is also set to 0
+    # same procedure if the last year of shock production is negative
 
     for (k in seq(first_production_na, length(scen_to_follow))) {
       late_and_sudden[k] <- late_and_sudden[k - 1] + scenario_change_aligned[k]
+      if (k == length(scen_to_follow) && late_and_sudden[k] < 0) {
+        late_and_sudden[k] <- 0
+      } else if (late_and_sudden[k] < 0) {
+        late_and_sudden[k] <- 0
+        late_and_sudden[(k+1):length(scen_to_follow)] <- 0
+      }
     }
   }
   return(late_and_sudden)
