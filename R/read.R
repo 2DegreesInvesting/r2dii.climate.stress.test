@@ -1,5 +1,4 @@
 st_read_agnostic <- function(dir, start_year, sectors, risk_type) {
-
   # capacity_factors are only needed for power sector
   if ("Power" %in% sectors) {
     capacity_factors_power <- read_capacity_factors_power(capacity_factor_file(dir))
