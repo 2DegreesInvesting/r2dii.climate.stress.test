@@ -53,6 +53,14 @@ set_baseline_trajectory <- function(data,
     ) %>%
     dplyr::ungroup()
 
+  # Negative Production Adjustment: when Baseline Production goes below 0, it stays at 0
+  data <- data %>%
+    dplyr::group_by(.data$id, .data$company_name, .data$ald_sector, .data$technology, .data$scenario_geography, .data$year) %>%
+    dplyr::mutate(baseline_adj = dplyr::if_else(.data$baseline < 0 & dplyr::lag(.data$baseline, default = 0) >= 0, 0, .data$baseline)) %>%
+    dplyr::ungroup() %>%
+    dplyr::select(-baseline) %>%
+    dplyr::rename(baseline = .data$baseline_adj)
+
   data <- data %>%
     dplyr::select(-dplyr::all_of(c("scenario_change", "scen_to_follow")))
 
@@ -353,9 +361,15 @@ calc_late_sudden_traj <- function(start_year, end_year, year_of_shock, duration_
     # company plans are already aligned
     # no need for overshoot in production cap, set LS trajectory to follow
     # the scenario indicated as late & sudden aligned
+    # negative production adjustment: if shock production goes below 0
+    # then this and future production stays constant at 0.
 
     for (k in seq(first_production_na, length(scen_to_follow))) {
       late_and_sudden[k] <- late_and_sudden[k - 1] + scenario_change_aligned[k]
+      if (late_and_sudden[k] < 0) {
+        late_and_sudden[k:length(late_and_sudden)] <- 0
+        break
+      }
     }
   }
   return(late_and_sudden)
