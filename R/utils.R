@@ -499,7 +499,7 @@ end_year_lookup <- function(scenario_type) {
   end_year <- as.numeric(2040)
 
   if (scenario_type %in% c("is_ngfs", "is_oxford", "is_ipr")) {
-    end_year <- as.numeric(2100)
+    end_year <- as.numeric(2050)
   }
 
   return(end_year)
