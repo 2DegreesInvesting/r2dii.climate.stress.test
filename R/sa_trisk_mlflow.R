@@ -59,40 +59,6 @@ multirun_trisk_mlflow <-
     }
   }
 
-#' download artifacts of all runs given a specific parameter marginally tuned
-get_mlflow_runs_artifacts <- function(tracking_uri, experiment_name, parameter_focus) {
-
-  mlflow::mlflow_set_tracking_uri(uri = tracking_uri)
-  mlflow::mlflow_client()
-  experiment <- mlflow::mlflow_get_experiment(name = experiment_name)
-
-  experiment_id <- experiment[[1, "experiment_id"]]
-
-  # fetch the run uuids with tag matching the current parameter_focus
-  parameter_focus_runs <-
-    mlflow::mlflow_search_runs(
-      filter = paste("tags.", parameter_focus, " = 'TRUE'", sep = ""),
-      experiment_ids = as.character(experiment_id)
-    )
-  parameter_focus_run_ids <- parameter_focus_runs[["run_uuid"]]
-
-  all_runs_artifacts <- list()
-  for (run_id in parameter_focus_run_ids){
-    # path refers to the place of desired artifacts INSIDE the run_id folder
-    # here it is empty since we want all artifacts, from the root
-    artifacts_path <- mlflow::mlflow_download_artifacts(path="", run_id = run_id)
-
-    run_artifacts <-
-      list(
-        company_trajectories = readr::read_csv(file.path(artifacts_path, "company_trajectories_.csv")),
-        crispy_output_ = readr::read_csv(file.path(artifacts_path, "crispy_output_.csv")),
-        time_spent = readr::read_csv(file.path(artifacts_path, "time_spent.csv"))
-      )
-
-    all_runs_artifacts[[run_id]] <-  run_artifacts
-  }
-  return(all_runs_artifacts)
-}
 
 run_trisk_mlflow <- function(tracking_uri, experiment_name, nondefault_params, ...) {
   # starts mlflow client to connect to mlflow server
@@ -152,13 +118,11 @@ run_trisk_mlflow <- function(tracking_uri, experiment_name, nondefault_params, .
         mlflow::mlflow_log_metric(metric_name, metric_value)
       }
 
-      plots <- draw_trisk_plots(st_results_wrangled_and_checked)
-
-
-      for (plot_name in names(plots)){
-        plot_path <- file.path(mlflow_run_output_dir, paste(plot_name, 'png', sep='.'))
-        ggplot2::ggsave(plot_path,plot=plots[[plot_name]])
-      }
+      #plots <- draw_trisk_plots(st_results_wrangled_and_checked)
+      #for (plot_name in names(plots)){
+      #  plot_path <- file.path(mlflow_run_output_dir, paste(plot_name, 'png', sep='.'))
+      #  ggplot2::ggsave(plot_path,plot=plots[[plot_name]])
+      #}
 
       time_spent <- tibble::as_tibble(as.list(time_spent))
       readr::write_delim(time_spent,
