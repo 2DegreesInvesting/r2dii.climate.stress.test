@@ -8,7 +8,8 @@ multirun_trisk_mlflow <-
            trisk_input_path,
            trisk_output_path,
            scenario_pairs,
-           params_grid) {
+           params_grid,
+           save_artifacts) {
 
     auto_experiment_name <-
       ifelse(is.null(experiment_name), TRUE, FALSE)
@@ -45,6 +46,7 @@ multirun_trisk_mlflow <-
               'tracking_uri = "', tracking_uri, '",',
               'experiment_name = "', experiment_name, '",',
               'nondefault_params = nondefault_params,',
+              'save_artifacts = save_artifacts,',
               'input_path = "', trisk_input_path, '",',
               'output_path = "', trisk_output_path, '",',
               'baseline_scenario = "', baseline_scenario, '",',
@@ -60,7 +62,13 @@ multirun_trisk_mlflow <-
   }
 
 
-run_trisk_mlflow <- function(tracking_uri, experiment_name, nondefault_params, ...) {
+run_trisk_mlflow <-
+  function(tracking_uri,
+           experiment_name,
+           nondefault_params,
+           save_artifacts,
+           ...) {
+
   # starts mlflow client to connect to mlflow server
   mlflow::mlflow_set_tracking_uri(uri = tracking_uri)
   mlflow::mlflow_client()
@@ -129,12 +137,14 @@ run_trisk_mlflow <- function(tracking_uri, experiment_name, nondefault_params, .
                          file.path(mlflow_run_output_dir, "time_spent.csv"),
                          delim = ",")
 
+      if (save_artifacts==TRUE){
+        r2dii.climate.stress.test:::write_stress_test_results(
+          results_list = st_results_wrangled_and_checked,
+          iter_var = "",
+          output_path = mlflow_run_output_dir
+        )
+        }
 
-      r2dii.climate.stress.test:::write_stress_test_results(
-        results_list = st_results_wrangled_and_checked,
-        iter_var = "",
-        output_path = mlflow_run_output_dir
-      )
       mlflow::mlflow_set_tag("LOG_STATUS", "SUCCESS")
 
       },
@@ -147,7 +157,9 @@ run_trisk_mlflow <- function(tracking_uri, experiment_name, nondefault_params, .
       },
 
     finally={
-      mlflow::mlflow_log_artifact(path = mlflow_run_output_dir)
+      if (save_artifacts==TRUE){
+        mlflow::mlflow_log_artifact(path = mlflow_run_output_dir)
+        }
       # deletes temp directory
       unlink(mlflow_run_output_dir, recursive = TRUE)
       }

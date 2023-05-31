@@ -45,11 +45,12 @@ main <- function() {
 
   multirun_trisk_mlflow(
     tracking_uri = "http://127.0.0.1:5000",
-    experiment_name = "sa_st_master",
+    experiment_name = "test_test",
     trisk_input_path = "sensitivity_analysis/project_input",
     trisk_output_path = "sensitivity_analysis/output",
     scenario_pairs = scenario_pairs,
-    params_grid = params_grid
+    params_grid = params_grid,
+    save_artifacts=FALSE
   )
 }
 
