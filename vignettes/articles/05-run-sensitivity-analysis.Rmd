@@ -51,7 +51,7 @@ http://localhost:5000
 
 ```{r, eval = FALSE}
 Sys.setenv(
-MLFLOW_PYTHON_BIN = "mlflow_python_bin/Users/username/opt/miniconda3/envs/mlflow_env/bin/python",
+MLFLOW_PYTHON_BIN = "/Users/username/opt/miniconda3/envs/mlflow_env/bin/python",
 MLFLOW_BIN = "/Users/username/opt/miniconda3/envs/mlflow_env/bin/mlflow"
 )
 ```
