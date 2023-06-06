@@ -1,31 +1,77 @@
 library(mlflow)
-library(ggplot2)
+
+check_if_run_already_done <-
+  function(tracking_uri,
+           experiment_name,
+           baseline_scenario,
+           shock_scenario,
+           param_name,
+           param_value) {
+  mlflow::mlflow_set_tracking_uri(tracking_uri)
+  experiment_id <- mlflow::mlflow_get_experiment(name = experiment_name)$experiment_id[1]
+  found_runs <- mlflow::mlflow_search_runs(
+    filter = paste(
+      'tags.LOG_STATUS = "SUCCESS"',
+      " and ",
+      "params.baseline_scenario = '", baseline_scenario, "'",
+      " and ",
+      "params.shock_scenario = '", shock_scenario,"'",
+      " and ",
+      "tags.", param_name, " = 'TRUE'",
+      " and ",
+      "metrics.", param_name, " = ", param_value,
+      sep = ""),
+    experiment_ids = as.character(experiment_id)
+  )
+  if (nrow(found_runs) > 0){
+    print(paste("Skipping run with ",
+                "params.baseline_scenario = '", baseline_scenario, "'",
+                " and ",
+                "params.shock_scenario = '", shock_scenario,"'",
+                " and ",
+                "tags.", param_name, " = 'TRUE'",
+                " and ",
+                "metrics.", param_name, " = ", param_value,
+                " as it's been completed already",
+                sep = ""))
+    return(T)
+  }
+  else{
+    return(F)
+  }
+}
 
 #' @export
 multirun_trisk_mlflow <-
   function(tracking_uri = "http://localhost:5000",
-           experiment_name = NULL,
+           experiment_name,
            trisk_input_path,
            trisk_output_path,
            scenario_pairs,
            params_grid,
-           save_artifacts) {
+           save_artifacts=TRUE,
+           additional_tags=NULL) {
 
-    auto_experiment_name <-
-      ifelse(is.null(experiment_name), TRUE, FALSE)
+    # starts mlflow client to connect to mlflow server
+    mlflow::mlflow_set_tracking_uri(uri = tracking_uri)
+    mlflow::mlflow_client()
+
+    # gets mlflow experiment, or if it doesn't exist creates it
+    tryCatch({
+      mlflow::mlflow_get_experiment(name = experiment_name)
+    },
+    error = function(cond) {
+      mlflow::mlflow_create_experiment(experiment_name)
+    },
+    finally = {
+      mlflow::mlflow_set_experiment(experiment_name)
+    })
 
     # iterates over scenario pairs. If no experiment name is defined,
     # the experiment name is the join of the baseline and shock scenario names.
     for (i in 1:nrow(scenario_pairs)) {
-      baseline_scenario = scenario_pairs[[i, "baseline_scenario"]]
-      shock_scenario = scenario_pairs[[i, "shock_scenario"]]
-
-      experiment_name <- ifelse(
-        auto_experiment_name,
-        paste(baseline_scenario, shock_scenario, sep =
-                "-"),
-        experiment_name
-      )
+      baseline_scenario = as.character(scenario_pairs[[i, "baseline_scenario"]])
+      shock_scenario = as.character(scenario_pairs[[i, "shock_scenario"]])
 
       # iterates over the params defined in the params grid,
       # then over the values defined for this parameter.
@@ -40,21 +86,26 @@ multirun_trisk_mlflow <-
                                               is_nondefault = rep(FALSE, length(params_grid)))
           nondefault_params[nondefault_params$param_name == param_name, "is_nondefault"] <- TRUE
 
-          eval(parse(
-            text = paste(
-              "run_trisk_mlflow(",
-              'tracking_uri = "', tracking_uri, '",',
-              'experiment_name = "', experiment_name, '",',
-              'nondefault_params = nondefault_params,',
-              'save_artifacts = save_artifacts,',
-              'input_path = "', trisk_input_path, '",',
-              'output_path = "', trisk_output_path, '",',
-              'baseline_scenario = "', baseline_scenario, '",',
-              'shock_scenario = "', shock_scenario, '",',
-              param_name," = ", param_value,
-              ")"
-              , sep="")
-          ))
+          if(!check_if_run_already_done(tracking_uri, experiment_name,
+                                        baseline_scenario, shock_scenario,
+                                        param_name, param_value)){
+            eval(parse(
+              text = paste(
+                "run_trisk_mlflow(",
+                'tracking_uri = tracking_uri, ',
+                'experiment_name = experiment_name, ',
+                'nondefault_params = nondefault_params, ',
+                'save_artifacts = save_artifacts, ',
+                'input_path = trisk_input_path, ',
+                'output_path = trisk_output_path, ',
+                'additional_tags = additional_tags, ',
+                'baseline_scenario = baseline_scenario, ',
+                'shock_scenario = shock_scenario, ',
+                param_name," = ", param_value,
+                ")"
+                , sep="")
+            ))
+            }
 
         }
       }
@@ -67,22 +118,9 @@ run_trisk_mlflow <-
            experiment_name,
            nondefault_params,
            save_artifacts,
+           additional_tags,
            ...) {
 
-  # starts mlflow client to connect to mlflow server
-  mlflow::mlflow_set_tracking_uri(uri = tracking_uri)
-  mlflow::mlflow_client()
-
-  # gets mlflow experiment, or if it doesn't exist creates it
-  tryCatch({
-    mlflow::mlflow_get_experiment(name = experiment_name)
-  },
-  error = function(cond) {
-    mlflow::mlflow_create_experiment(experiment_name)
-  },
-  finally = {
-    mlflow::mlflow_set_experiment(experiment_name)
-  })
 
   with(mlflow::mlflow_start_run(), {
     for (i in 1:nrow(nondefault_params)){
@@ -90,6 +128,10 @@ run_trisk_mlflow <-
       tag_is_nondefault <- nondefault_params[[i, "is_nondefault"]]
       mlflow::mlflow_set_tag(tag_param_name, tag_is_nondefault)
     }
+    if (!is.null(additional_tags) ){
+    for (tag_name in names(additional_tags)){
+      mlflow::mlflow_set_tag(tag_name, additional_tags[[tag_name]])
+    }}
     # creates a temporary output directory to save TRISK outputs
     # TODO return the name of the output folder in the run_trisk output,
     #  log the artifacts from this folder, and remove this mechanic
@@ -126,27 +168,25 @@ run_trisk_mlflow <-
         mlflow::mlflow_log_metric(metric_name, metric_value)
       }
 
-      #plots <- draw_trisk_plots(st_results_wrangled_and_checked)
-      #for (plot_name in names(plots)){
-      #  plot_path <- file.path(mlflow_run_output_dir, paste(plot_name, 'png', sep='.'))
-      #  ggplot2::ggsave(plot_path,plot=plots[[plot_name]])
-      #}
-
       time_spent <- tibble::as_tibble(as.list(time_spent))
       readr::write_delim(time_spent,
                          file.path(mlflow_run_output_dir, "time_spent.csv"),
                          delim = ",")
 
       if (save_artifacts==TRUE){
-        r2dii.climate.stress.test:::write_stress_test_results(
-          results_list = st_results_wrangled_and_checked,
-          iter_var = "",
-          output_path = mlflow_run_output_dir
+        filepath <- file.path(
+          mlflow_run_output_dir,
+          "crispy_output.csv"
         )
+        zip_path <- file.path(
+          mlflow_run_output_dir,
+          "artifacts.zip"
+        )
+        readr::write_csv(st_results_wrangled_and_checked$crispy_output, filepath)
+        zip::zip(zip_path, "crispy_output.csv", root=mlflow_run_output_dir)
+        unlink(filepath)
         }
-
       mlflow::mlflow_set_tag("LOG_STATUS", "SUCCESS")
-
       },
 
     error=function(cond){

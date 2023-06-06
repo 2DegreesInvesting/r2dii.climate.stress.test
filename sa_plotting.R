@@ -1,6 +1,8 @@
 # TODO bivariate analysis for discount rate & growth_rate
 # mlflow server --backend-store-uri sensitivity_analysis/mlruns --default-artifact-root sensitivity_analysis/mlartifacts --serve-artifacts --host 127.0.0.1 --port 5000
 
+symlog <- function(x){sign(x)*log(abs(x))}
+
 library(ggplot2)
 library(dplyr)
 
@@ -56,7 +58,6 @@ draw_lineplot_npv_share <- function(all_runs_data){
 
 
 draw_npv_diff_distribution_over_tweaked_values <- function(all_runs_data){
-  symlog <- function(x){sign(x)*log(abs(x))}
 
   plot_data <- all_runs_data %>%
     dplyr::filter(term == 5)
@@ -129,6 +130,22 @@ make_npv_summary_table_per_company <- function(all_runs_data){
   npv_summary_table
 }
 
+share_of_zeros <- function(all_runs_data){
+  tot_number_of_companies <- length(unique(all_runs_data$company_name))
+
+  share_of_zeros_npv <- all_runs_data %>%
+    dplyr::filter(net_present_value_shock == 0 & term == 5) %>%
+    dplyr::group_by(scenario_duo, tweaked_param_value) %>%
+    dplyr::summarise(n_ingroup = dplyr::n()) %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(share_of_zero_npv=n_ingroup/.env$tot_number_of_companies)
+
+  share_of_zeros_pd_terms <- all_runs_data %>%
+    dplyr::filter(pd_baseline == 0) %>%
+    group_by(scenario_duo, tweaked_param_value, term) %>%
+    dplyr::summarise(n_pd_zero=dplyr::n())
+}
+
 make_pd_summary_table_per_company <- function(all_runs_data){
 
   pd_runs_data <- all_runs_data %>%
@@ -137,7 +154,116 @@ make_pd_summary_table_per_company <- function(all_runs_data){
 
 }
 
-outputs_folder <- file.path("sensitivity_analysis", "outputs")
+compute_npv_and_pd_slopes_over_one_parameter_values <- function(all_runs_data){
+  slopes_npv_over_param_tweaked <- all_runs_data %>%
+    dplyr::filter(term == 5) %>%
+    dplyr::group_by(
+      scenario_duo,
+      tweaked_param_name,
+      sector,
+      business_unit,
+      company_name) %>%
+    dplyr::do(model_npv_baseline = lm(net_present_value_baseline ~ as.double(tweaked_param_value), data=.),
+              model_npv_shock = lm(net_present_value_shock ~ as.double(tweaked_param_value), data=.),
+              model_pd_baseline_term_5 = lm(pd_baseline ~ as.double(tweaked_param_value), data=.),
+              model_pd_shock_term_5 = lm(pd_shock ~ as.double(tweaked_param_value), data=.)) %>%
+    dplyr::mutate(slope_npv_baseline=coef(model_npv_baseline)[2],
+                  slope_npv_shock=coef(model_npv_shock)[2],
+                  slope_pd_baseline_term_5=coef(model_pd_baseline_term_5)[2],
+                  slope_pd_shock_term_5=coef(model_pd_shock_term_5)[2]) %>%
+    dplyr::select(-c("model_npv_baseline", "model_npv_shock",
+                     "model_pd_baseline_term_5", "model_pd_shock_term_5"))
+
+  slopes_avg_pd_over_param_tweaked <- all_runs_data %>%
+    dplyr::group_by(
+      scenario_duo,
+      tweaked_param_name,
+      tweaked_param_value,
+      sector,
+      business_unit,
+      company_name) %>%
+    dplyr::summarise(mean_terms_pd_baseline=mean(pd_baseline),
+                     mean_terms_pd_shock=mean(pd_shock)) %>%
+    dplyr::ungroup() %>%
+    dplyr::group_by(
+      scenario_duo,
+      tweaked_param_name,
+      sector,
+      business_unit,
+      company_name
+    ) %>%
+    dplyr::do(model_mean_terms_pd_baseline = lm(mean_terms_pd_baseline ~ as.double(tweaked_param_value), data=.),
+              model_mean_terms_pd_shock = lm(mean_terms_pd_shock ~ as.double(tweaked_param_value), data=.)) %>%
+    dplyr::mutate(slope_mean_terms_pd_baseline=coef(model_mean_terms_pd_baseline)[2],
+                  slope_mean_terms_pd_shock=coef(model_mean_terms_pd_shock)[2]) %>%
+    dplyr::select(-c("model_mean_terms_pd_baseline", "model_mean_terms_pd_shock" ))
+
+  slopes_over_param_tweaked <- dplyr::inner_join(
+    slopes_npv_over_param_tweaked,
+    slopes_avg_pd_over_param_tweaked,
+    by=c("scenario_duo", "tweaked_param_name", "sector", "business_unit", "company_name"))
+
+}
+
+draw_slopes_boxplots <- function(slopes_of_all_parameters){
+
+  boxplot_slope_npv_baseline <- slopes_of_all_parameters %>%
+    ggplot(aes(x = tweaked_param_name, y = symlog(1+slope_npv_baseline), fill = scenario_duo)) +
+    geom_boxplot() +
+    facet_wrap(~business_unit) +
+    theme(axis.text.x = element_text(angle = 60, hjust = 1)) +
+    ggtitle("Slope of NPV baseline evolution when increasing tweaked parameters values")
+
+  boxplot_slope_npv_shock <- slopes_of_all_parameters %>%
+    ggplot(aes(x = tweaked_param_name, y = symlog(1+slope_npv_shock), fill = scenario_duo)) +
+    geom_boxplot() +
+    facet_wrap(~business_unit) +
+    theme(axis.text.x = element_text(angle = 60, hjust = 1)) +
+    ggtitle("Slope of NPV shock evolution when increasing tweaked parameters values")
+
+  # boxplot_slope_term_5_pd_baseline <- slopes_of_all_parameters %>%
+  #   ggplot(aes(x = tweaked_param_name, y = slope_pd_baseline_term_5, fill = scenario_duo)) +
+  #   geom_boxplot() +
+  #   facet_wrap(~business_unit) +
+  #   theme(axis.text.x = element_text(angle = 60, hjust = 1)) +
+  #   ggtitle("Slope of the `PD baseline term 5` evolution when increasing tweaked parameters values")
+  #
+  # boxplot_slope_term_5_pd_shock <- slopes_of_all_parameters %>%
+  #   ggplot(aes(x = tweaked_param_name, y = slope_pd_shock_term_5, fill = scenario_duo)) +
+  #   geom_boxplot() +
+  #   facet_wrap(~business_unit) +
+  #   theme(axis.text.x = element_text(angle = 60, hjust = 1)) +
+  #   ggtitle("Slope of the `PD shock term 5` evolution when increasing tweaked parameters values")
+
+
+  boxplot_slope_mean_terms_pd_baseline <- slopes_of_all_parameters %>%
+    ggplot(aes(x = tweaked_param_name, y = slope_mean_terms_pd_baseline, fill = scenario_duo)) +
+    geom_boxplot() +
+    facet_wrap(~business_unit) +
+    theme(axis.text.x = element_text(angle = 60, hjust = 1)) +
+    ggtitle("Slope of the `mean PD baseline over terms` evolution when increasing tweaked parameters values")
+
+  boxplot_slope_mean_terms_pd_shock <- slopes_of_all_parameters %>%
+    ggplot(aes(x = tweaked_param_name, y = slope_mean_terms_pd_shock, fill = scenario_duo)) +
+    geom_boxplot() +
+    facet_wrap(~business_unit) +
+    theme(axis.text.x = element_text(angle = 60, hjust = 1)) +
+    ggtitle("Slope of the `mean PD shock over terms` evolution when increasing tweaked parameters values")
+
+
+  list("boxplot_slope_npv_baseline"=boxplot_slope_npv_baseline,
+       "boxplot_slope_npv_shock"=boxplot_slope_npv_shock,
+       "boxplot_slope_term_5_pd_baseline"=boxplot_slope_term_5_pd_baseline,
+       "boxplot_slope_term_5_pd_shock"=boxplot_slope_term_5_pd_shock,
+       "boxplot_slope_mean_terms_pd_baseline"=boxplot_slope_mean_terms_pd_baseline,
+       "boxplot_slope_mean_terms_pd_shock"=boxplot_slope_mean_terms_pd_shock)
+}
+
+# ==============================
+# MAIN
+# ==============================
+
+outputs_folder <- file.path("sensitivity_analysis", "sensitivity_analysis_outputs")
 plots_folder <- file.path(outputs_folder, "plots")
 summary_tables_folder <- file.path(outputs_folder, "summary_tables")
 dir.create(outputs_folder)
@@ -145,10 +271,11 @@ dir.create(plots_folder)
 dir.create(summary_tables_folder)
 
 all_parameters_focus <- c("shock_year", "discount_rate", "growth_rate",
-                          "div_netprofit_prop_coef", "lgd",
-                          "risk_free_rate", "market_passthrough")
+                          "div_netprofit_prop_coef", "lgd", "market_passthrough",
+                          "risk_free_rate")
 
 
+slopes_of_all_parameters <- NULL
 for (parameter_focus in all_parameters_focus) {
   parameter_focus_runs <- get_run_matching_tag(
     tracking_uri = "http://localhost:5000",
@@ -197,18 +324,21 @@ for (parameter_focus in all_parameters_focus) {
   })
   }
 
-  npv_summary_table <- make_npv_summary_table_per_company(all_runs_data)
-  filename <- paste(parameter_focus, "npv_summary_table.csv", sep='__')
-  readr::write_csv(npv_summary_table, file=file.path(summary_tables_folder, filename))
+  npv_slopes_over_param_tweaked <- compute_npv_and_pd_slopes_over_one_parameter_values(all_runs_data)
+  slopes_of_all_parameters <- dplyr::bind_rows(slopes_of_all_parameters, npv_slopes_over_param_tweaked)
 
-  # pd_summary_table <- make_pd_summary_table_per_company(all_runs_data)
-  # filename <- paste(parameter_focus, "pd_summary_table.csv", sep='__')
-  # readr::write_csv(npv_summary_table, file=file.path(pd_summary_table, filename))
-
-  npv_diff_distribution_over_tweaked_values_plot <- draw_npv_diff_distribution_over_tweaked_values(all_runs_data)
-  filename <- paste(parameter_focus, "npv_diff_distribution_over_tweaked_values.jpg", sep='__')
-  ggsave(plot=npv_diff_distribution_over_tweaked_values_plot, path=plots_folder, filename=filename,
-         width=40, height=30, units="cm")
+  # npv_summary_table <- make_npv_summary_table_per_company(all_runs_data)
+  # filename <- paste(parameter_focus, "npv_summary_table.csv", sep='__')
+  # readr::write_csv(npv_summary_table, file=file.path(summary_tables_folder, filename))
+  #
+  # # pd_summary_table <- make_pd_summary_table_per_company(all_runs_data)
+  # # filename <- paste(parameter_focus, "pd_summary_table.csv", sep='__')
+  # # readr::write_csv(npv_summary_table, file=file.path(pd_summary_table, filename))
+  #
+  # npv_diff_distribution_over_tweaked_values_plot <- draw_npv_diff_distribution_over_tweaked_values(all_runs_data)
+  # filename <- paste(parameter_focus, "npv_diff_distribution_over_tweaked_values.jpg", sep='__')
+  # ggsave(plot=npv_diff_distribution_over_tweaked_values_plot, path=plots_folder, filename=filename,
+  #        width=40, height=30, units="cm")
 
 
   print(paste("done analysing", parameter_focus))
@@ -219,3 +349,64 @@ for (parameter_focus in all_parameters_focus) {
 
 }
 
+readr::write_csv(slopes_of_all_parameters,
+                 file=file.path(summary_tables_folder, "slopes_of_all_parameters.csv"))
+
+plots_list <- draw_slopes_boxplots(slopes_of_all_parameters)
+
+
+
+ggsave(plot=plots_list$boxplot_slope_npv_baseline,
+       path=plots_folder,
+       filename="boxplot_slope_npv_baseline.jpg",
+       width=40, height=30, units="cm")
+
+ggsave(plot=plots_list$boxplot_slope_npv_shock,
+       path=plots_folder,
+       filename="boxplot_slope_npv_shock.jpg",
+       width=40, height=30, units="cm")
+
+# ggsave(plot=plots_list$boxplot_slope_term_5_pd_baseline,
+#        path=plots_folder,
+#        filename="boxplot_slope_term_5_pd_baseline.jpg",
+#        width=40, height=30, units="cm")
+#
+# ggsave(plot=plots_list$boxplot_slope_term_5_pd_shock,
+#        path=plots_folder,
+#        filename="boxplot_slope_term_5_pd_shock.jpg",
+#        width=40, height=30, units="cm")
+
+ggsave(plot=plots_list$boxplot_slope_mean_terms_pd_baseline,
+       path=plots_folder,
+       filename="boxplot_slope_mean_terms_pd_baseline.jpg",
+       width=40, height=30, units="cm")
+
+ggsave(plot=plots_list$boxplot_slope_mean_terms_pd_shock,
+       path=plots_folder,
+       filename="boxplot_slope_mean_terms_pd_shock.jpg",
+       width=40, height=30, units="cm")
+
+
+
+amplitudes <- slopes_of_all_parameters %>%
+  dplyr::group_by(scenario_duo, sector, business_unit, tweaked_param_name) %>%
+  dplyr::summarise(
+    mean_slope_npv_baseline=mean(symlog(1+slope_npv_baseline)),
+    mean_slope_npv_shock = mean(symlog(1+slope_npv_shock)),
+    mean_slope_mean_terms_pd_baseline = mean(slope_mean_terms_pd_baseline),
+    mean_slope_mean_terms_pd_shock = mean(slope_mean_terms_pd_shock)
+    ) %>%
+  dplyr::ungroup()
+
+for (colname in c("mean_slope_npv_baseline", "mean_slope_npv_shock",
+                  "mean_slope_mean_terms_pd_baseline", "mean_slope_mean_terms_pd_shock")){
+
+amplitudes_pivoted <- amplitudes %>%
+  tidyr::pivot_wider(
+    id_cols=c("scenario_duo", "sector", "business_unit"),
+    names_from=tweaked_param_name,
+    values_from=colname)
+
+filename <- paste("amplitudes_",colname, ".xls", sep='')
+readr::write_excel_csv(amplitudes_pivoted, file=file.path(summary_tables_folder, filename))
+}
