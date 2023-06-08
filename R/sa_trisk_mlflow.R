@@ -14,24 +14,30 @@ set_mlflow_experiment <- function(experiment_name){
   })
 }
 
-create_tags_list <- function(param_name, params_grid, additional_tags){
+create_tags_list <- function(param_names, params_grid, additional_tags){
+  param_names <- param_names[param_names %in% names(params_grid)] # remove baseline and shock param
   param_tweaked <- rep(FALSE, length(params_grid))
   names(param_tweaked) <- names(params_grid)
-  param_tweaked[param_name] <- TRUE
+  param_tweaked[param_names] <- TRUE
   tags <- c(param_tweaked, additional_tags)
 
   tags
 }
 
-generate_runs_parameters <- function(scenario_pairs, params_grid){
-  runs_parameters <- NULL
-  for (param_name in names(params_grid)){
-    runs_parameters <- dplyr::bind_rows(
-      runs_parameters,
-      scenario_pairs %>% dplyr::cross_join(as.data.frame(params_grid[param_name]))
+generate_runs_parameters <- function(scenario_pairs, params_grid, max_param_combinations){
+
+  param_names_combinations <- utils::combn(names(params_grid), m=max_param_combinations)
+
+  param_values_combinations <- NULL
+  for (i in 1:ncol(param_names_combinations)){
+    param_names_to_combine <- param_names_combinations[,i]
+    param_values_combinations <- dplyr::bind_rows(
+      param_values_combinations,
+      expand.grid(params_grid[param_names_to_combine])
     )
   }
 
+  runs_parameters <- scenario_pairs %>% dplyr::cross_join(param_values_combinations)
   runs_parameters
 }
 
@@ -54,7 +60,7 @@ fetch_completed_runs_parameters <- function(runs_parameters, tracking_uri, exper
     }
     if (nrow(finished_baseline_runs) > 0){
     # lengthy block of code to convert the output from MLFlow
-    # to the same tibble format as the `runs_parameters`
+    # to the same dataframe format as the `runs_parameters` dataframe
     params_df_list <- lapply(1:nrow(finished_baseline_runs),
                              function(x) (dplyr::bind_rows(
                                dplyr::inner_join(finished_baseline_runs$params[[x]],
@@ -73,22 +79,44 @@ fetch_completed_runs_parameters <- function(runs_parameters, tracking_uri, exper
                              function(x) (tidyr::pivot_wider(params_df_list[[x]],
                                                              names_from = "key",
                                                              values_from = "value.params")))
-    finished_runs_params_df <- dplyr::bind_rows(params_df_list)
+    completed_runs_params_baseline_scenario <- dplyr::bind_rows(params_df_list)
 
     # aggregate the baseline_scenario runs together
-    completed_runs_params <- dplyr::bind_rows(completed_runs_params, finished_runs_params_df)
+    completed_runs_params <- dplyr::bind_rows(completed_runs_params,
+                                              completed_runs_params_baseline_scenario)
     }
   }
+  completed_runs_params <- as.data.frame(completed_runs_params)
   completed_runs_params
 }
 
 filter_out_completed_runs <- function(runs_parameters, completed_runs_params){
   uncompleted_runs <- dplyr::anti_join(
-    runs_parameters %>% dplyr::mutate(dplyr::across(dplyr::everything(), type.convert)),
-    completed_runs_params %>% dplyr::mutate(dplyr::across(dplyr::everything(), type.convert))
+    runs_parameters %>% dplyr::mutate(dplyr::across(dplyr::everything(), purrr::partial(type.convert, as.is=TRUE))),
+    completed_runs_params %>% dplyr::mutate(dplyr::across(dplyr::everything(), purrr::partial(type.convert, as.is=TRUE)))
     , by=names(runs_parameters))
 
   uncompleted_runs
+}
+
+generate_and_filter_run_parameters <-
+  function(tracking_uri,
+           experiment_name,
+           scenario_pairs,
+           params_grid,
+           max_param_combinations) {
+
+  runs_parameters <- generate_runs_parameters(scenario_pairs, params_grid, max_param_combinations)
+  print("Gathering previous runs parameters...")
+  completed_runs_params <- fetch_completed_runs_parameters(runs_parameters, tracking_uri, experiment_name)
+  if (nrow(completed_runs_params) > 0){
+    filtered_run_parameters <- filter_out_completed_runs(runs_parameters, completed_runs_params)
+    print(paste("Removed",nrow(runs_parameters) - nrow(filtered_run_parameters),
+                "runs that have already been executed"))
+  } else{
+    filtered_run_parameters <- runs_parameters
+  }
+  filtered_run_parameters
 }
 
 #' @export
@@ -97,9 +125,11 @@ multirun_trisk_mlflow <-
            experiment_name,
            trisk_input_path,
            trisk_output_path,
-           scenario_pairs,
+           baseline_scenarios,
+           shock_scenarios,
            params_grid,
-           save_artifacts=TRUE,
+           save_artifacts=c("crispy_output"),
+           max_param_combinations=1,
            additional_tags=NULL) {
 
     # starts mlflow client to connect to mlflow server
@@ -108,36 +138,42 @@ multirun_trisk_mlflow <-
 
     set_mlflow_experiment(experiment_name)
 
+    # Creates the dataframe of all runs parameters
     # Gather runs and filter already completed ones
     # cannot check each run 1 by 1 with the server as it is too time consuming.
-    runs_parameters <- generate_runs_parameters(scenario_pairs, params_grid)
-    print("Gathering previous runs parameters...")
-    completed_runs_params <- fetch_completed_runs_parameters(runs_parameters, tracking_uri, experiment_name)
-    if (! is.null(completed_runs_params)){
-      filtered_run_parameters <- filter_out_completed_runs(runs_parameters, completed_runs_params)
-      print(paste("Removed",nrow(runs_parameters) - nrow(filtered_run_parameters),
-                  "runs that have already been executed"))
-    } else{
-      filtered_run_parameters <- runs_parameters
-    }
-
+    scenario_pairs <- expand.grid(baseline_scenario=baseline_scenarios,
+                                  shock_scenario=shock_scenarios)
+    filtered_run_parameters <- generate_and_filter_run_parameters(tracking_uri,
+                                                                  experiment_name,
+                                                                  scenario_pairs,
+                                                                  params_grid,
+                                                                  max_param_combinations)
     print(paste("Starting the execution of",nrow(filtered_run_parameters),"total runs"))
+
+
     n_completed_runs <- 0
     for (i in 1:nrow(filtered_run_parameters)) {
       row_params <- filtered_run_parameters[i,]
       use_params <- row_params[,which(!is.na(row_params))]
 
-      baseline_scenario = as.character(use_params[["baseline_scenario"]])
-      shock_scenario = as.character(use_params[["shock_scenario"]])
-      # varying 1 parameter at a time, the only available value will be in 3rd position.
-      param_value <- use_params[,3]
-      param_name <- names(use_params)[3]
-      # surround parameter by double quotes if it is a string
-      param_value <- ifelse(is.character(param_value),
-                            paste('"', param_value, '"', sep=''),
-                            param_value)
+      tags <- create_tags_list(names(use_params), params_grid, additional_tags)
 
-      tags <- create_tags_list(param_name, params_grid, additional_tags)
+      # aggregate input parameters in a string to then evaluate
+      eval_run_params <- NULL
+      for (param_name in names(use_params)){
+        param_value <- use_params[[param_name]]
+        param_value <- ifelse(is.factor(param_value),
+                              as.character(param_value),
+                              param_value)
+        param_value <- ifelse(is.character(param_value),
+                              paste('"', param_value, '"', sep=''),
+                              param_value)
+        eval_run_params <- paste(
+          eval_run_params,
+          paste(param_name," = ", param_value, sep="")
+        , sep=",")
+      }
+
 
       eval(parse(
         text = paste(
@@ -147,10 +183,8 @@ multirun_trisk_mlflow <-
           'tags = tags, ',
           'save_artifacts = save_artifacts, ',
           'input_path = trisk_input_path, ',
-          'output_path = trisk_output_path, ',
-          'baseline_scenario = baseline_scenario, ',
-          'shock_scenario = shock_scenario, ',
-          param_name," = ", param_value,
+          'output_path = trisk_output_path',
+          eval_run_params,
           ")"
           , sep="")
         ))
@@ -161,13 +195,42 @@ multirun_trisk_mlflow <-
   }
 
 
+write_and_zip_csv_artifacts <-
+  function(st_results_wrangled_and_checked,
+           mlflow_run_output_dir,
+           save_artifacts) {
+  written_csv_paths <- NULL
+  for (artifact_name in save_artifacts){
+    filepath <- file.path(
+      mlflow_run_output_dir,
+      paste(artifact_name, ".csv", sep="")
+    )
+    readr::write_csv(st_results_wrangled_and_checked[[artifact_name]], filepath)
+    written_csv_paths <- c(written_csv_paths, filepath)
+  }
+  zip_path <- file.path(
+    mlflow_run_output_dir,
+    "artifacts.zip"
+  )
+  zip::zip(zip_path, paste(save_artifacts, ".csv", sep=""), root=mlflow_run_output_dir)
+  unlink(written_csv_paths)
+  }
+
+log_metrics_df <- function(metrics_df){
+  for (i in 1:nrow(metrics_df)){
+    metric_name <- metrics_df[[i, "metric_name"]]
+    metric_name <- stringr::str_replace_all(metric_name, "[^A-Za-z0-9]", "_")
+    metric_value <- metrics_df[[i, "metric_value"]]
+    mlflow::mlflow_log_metric(metric_name, metric_value)
+  }
+}
+
 run_trisk_mlflow <-
   function(tracking_uri,
            experiment_name,
            tags,
            save_artifacts,
            ...) {
-
 
   with(mlflow::mlflow_start_run(), {
 
@@ -186,7 +249,6 @@ run_trisk_mlflow <-
     default_params <- formals(run_trisk)
     default_params <- default_params[!(names(default_params) %in% names(input_params))]
     all_params <- c(input_params, default_params)
-
     # log parameters name and their value
     for (param_name in names(all_params)) {
       if (!(param_name %in% c("input_path", "output_path", "return_results"))) {
@@ -201,34 +263,19 @@ run_trisk_mlflow <-
       })
 
       metrics_df <- compute_trisk_metrics(st_results_wrangled_and_checked)
-
-      for (i in 1:nrow(metrics_df)){
-        metric_name <- metrics_df[[i, "metric_name"]]
-        metric_name <- stringr::str_replace_all(metric_name, "[^A-Za-z0-9]", "_")
-        metric_value <- metrics_df[[i, "metric_value"]]
-        mlflow::mlflow_log_metric(metric_name, metric_value)
-      }
+      log_metrics_df(metrics_df)
 
       time_spent <- tibble::as_tibble(as.list(time_spent))
       readr::write_delim(time_spent,
                          file.path(mlflow_run_output_dir, "time_spent.csv"),
                          delim = ",")
 
-      if (save_artifacts==TRUE){
-        filepath <- file.path(
-          mlflow_run_output_dir,
-          "crispy_output.csv"
-        )
-        readr::write_csv(st_results_wrangled_and_checked$crispy_output, filepath)
+      if (!is.null(save_artifacts)){
+        write_and_zip_csv_artifacts(st_results_wrangled_and_checked,
+                                    mlflow_run_output_dir,
+                                    save_artifacts)
+      }
 
-        zip_path <- file.path(
-          mlflow_run_output_dir,
-          "artifacts.zip"
-        )
-        zip::zip(zip_path, "crispy_output.csv", root=mlflow_run_output_dir)
-
-        unlink(filepath)
-        }
       mlflow::mlflow_set_tag("LOG_STATUS", "SUCCESS")
       },
 
@@ -236,11 +283,12 @@ run_trisk_mlflow <-
       fileConn<-file(file.path(mlflow_run_output_dir, "error_message.txt"))
       writeLines(as.character(cond), fileConn)
       close(fileConn)
+
       mlflow::mlflow_set_tag("LOG_STATUS", "FAILED")
       },
 
     finally={
-      if (save_artifacts==TRUE){
+      if (!is.null(save_artifacts)){
         mlflow::mlflow_log_artifact(path = mlflow_run_output_dir)
         }
       # deletes temp directory
