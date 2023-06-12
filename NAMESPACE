@@ -3,6 +3,7 @@
 export("%>%")
 export(check_financial_data)
 export(credit_type_lookup)
+export(gather_trisk_outputs_for_tweaked_parameter)
 export(geographies_for_sector)
 export(multirun_trisk_mlflow)
 export(run_lrisk)

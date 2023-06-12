@@ -58,7 +58,7 @@ MLFLOW_BIN = "/Users/username/opt/miniconda3/envs/mlflow_env/bin/mlflow"
 
 3. Run an experiment on different values of a set of parameters, using the function `multirun_trisk_mlflow()`. 
 - For each line of the scenario_pairs tibble, all parameters will be used once in a run. 
-- Change the value of experiment_name to record a new set of run in a separate directory in the mlflow output folders, or leave it the same to append new runs to an existing experiment. 
+- Change the value of experiment_name to record a new set of run in a separate directory in the mlflow output folders, or leave it the same to append new runs to an existing experiment.
 - Saving TRISK outputs for each run can quickly take up storage space (300Mo per run). To ignore the saving of the outputs and only record the metrics/tags of each run, set save_artifacts to FALSE.
 
 Example syntax for `multirun_trisk_mlflow()`:
@@ -77,10 +77,7 @@ Example syntax for `multirun_trisk_mlflow()`:
     div_netprofit_prop_coef = c(0.8, 0.85, 0.9, 0.95, 1),
     shock_year = c(2025, 2027, 2029, 2030, 2032, 2034, 2035),
     scenario_geography = c("Global"),
-    #settlement_factor = c(0, 0.3, 0.6, 1),
-    #exp_share_damages_paid = c(0, 0.027, 0.1, 0.5, 1),
-    #scc = c(0, 40, 400, 4000, 10000),
-    #carbon_price_model = c("no_carbon_tax", "NZ2050", "NDC", "DN0", "B2DS"),
+    carbon_price_model = c("no_carbon_tax", "NZ2050", "NDC", "DN0", "B2DS"),
     market_passthrough = c(0, 0.3, 0.6, 1)
   )
 
@@ -92,12 +89,22 @@ Example syntax for `multirun_trisk_mlflow()`:
     trisk_output_path = "example_project/output",
     scenario_pairs = scenario_pairs,
     params_grid = params_grid,
-    save_artifacts=TRUE
+    save_artifacts=c("crispy_output", "company_trajectories"),
+    max_param_combinations=1,
   )
 
 ```
 
+It is possible to stop this function while it runs, and restarting is with the same parameters names. It is possible to change the values of each parameter, but not changing the names / number of parameters tested. When changing the names of parameters, 
+
+It is recommended to change the value of experiment_name when changing the names of parameters present in the params_grid variable, because changing those names will generate an error when fetching and filtering previous runs parameters.
+
+The results are then available to browse in the MLFlow UI, or to be analyzed by searching
+runs, or downloading artifacts, using the following workflow.
+
 # Searching runs and extracting their outputs
+
+#### Using native functions from the MLFlow package
 
 1. The run details can be obtained this way, by specifying a filter. Examples syntax of the filter can be found here : https://mlflow.org/docs/latest/search-runs.html .
 
@@ -125,6 +132,17 @@ mlflow::mlflow_client()
 # path refers to the folder inside a run where the artifacts are saved.
 # in this case, all artifacts are saved at the root of each run.
 artifacts_path <- mlflow::mlflow_download_artifacts(path="", run_id = run_id)
-artifact <- readr::read_csv(file.path(artifacts_path, artifact_name), show_col_types = FALSE)
+# unzip in-memory and read the desired file, crispy_output.csv or company_trajectories.csv
+f_conn <- unz(file.path(artifacts_path, "artifacts.zip"), "crispy_output.csv")
+artifact <- readr::read_csv(f_conn, show_col_types = FALSE)
 ```
 
+#### Aggregating all TRISK outputs where a given parameter is tweaked
+
+```{r, eval=FALSE}
+  tweaked_parameter_runs_data <- gather_trisk_outputs_for_tweaked_parameter(
+    tracking_uri="http://localhost:5000",
+    experiment_name="EXPERIMENT_NAME",
+    tweaked_parameter="shock_year",
+    csv_filename="crispy_output.csv")
+```

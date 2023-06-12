@@ -1,8 +1,8 @@
 # TODO bivariate analysis for discount rate & growth_rate
 # mlflow server --backend-store-uri sensitivity_analysis/mlruns --default-artifact-root sensitivity_analysis/mlartifacts --serve-artifacts --host 127.0.0.1 --port 5000
 
-symlog <- function(x){sign(x)*log(abs(x))}
 
+library(r2dii.climate.stress.test)
 library(ggplot2)
 library(dplyr)
 
@@ -14,89 +14,19 @@ mlflow_bin <-
 Sys.setenv(MLFLOW_PYTHON_BIN = mlflow_python_bin,
            MLFLOW_BIN = mlflow_bin)
 
-# ==================
-# MLFLOW
-# ==================
+outputs_folder <- file.path("sensitivity_analysis", "sensitivity_analysis_outputs3")
+plots_folder <- file.path(outputs_folder, "plots")
+summary_tables_folder <- file.path(outputs_folder, "summary_tables")
 
-get_tweaked_parameter_runs <- function(tracking_uri, experiment_name, tweaked_parameter){
-  mlflow::mlflow_set_tracking_uri(uri = tracking_uri)
-  mlflow::mlflow_client()
-  experiment <- mlflow::mlflow_get_experiment(name = experiment_name)
-  experiment_id <- experiment[[1, "experiment_id"]]
+params_to_analyze <- c("discount_rate","shock_year", "growth_rate",
+                       #"div_netprofit_prop_coef", "lgd", "market_passthrough",
+                       "risk_free_rate")
+experiment_name <- "oxford" #"st_master_data_fullruns"
 
-  # fetch the run uuids with tag matching the current tweaked_parameter
-  tweaked_parameter_runs <-
-    mlflow::mlflow_search_runs(
-      filter = paste("tags.", tweaked_parameter, " = 'TRUE'",
-                     " and ",
-                     "tags.LOG_STATUS = 'SUCCESS'",
-                     sep = ""),
-      experiment_ids = as.character(experiment_id)
-    )
 
-  return(tweaked_parameter_runs)
-}
+library(ggplot2)
 
-read_csv_from_zipped_artifacts <- function(tracking_uri, experiment_name, run_id, csv_filename){
-  mlflow::mlflow_set_tracking_uri(uri = tracking_uri)
-  mlflow::mlflow_client()
-
-  artifacts_path <- mlflow::mlflow_download_artifacts(path="", run_id = run_id)
-  f_conn <- unz(file.path(artifacts_path, "artifacts.zip"), csv_filename)
-  artifact <- readr::read_csv(f_conn, show_col_types = FALSE)
-  return(artifact)
-}
-
-gather_cripsy_outputs_for_tweaked_parameter <-
-  function(tracking_uri,
-           experiment_name,
-           tweaked_parameter) {
-
-  tweaked_parameter_runs <- get_tweaked_parameter_runs(
-    tracking_uri, experiment_name, tweaked_parameter
-  )
-
-  tweaked_parameter_runs_data <- NULL
-  for (run_id in tweaked_parameter_runs[["run_uuid"]]) {
-    tryCatch({
-      crispy_output <- read_csv_from_zipped_artifacts(
-        tracking_uri,
-        experiment_name,
-        run_id,
-        csv_filename = "crispy_output.csv"
-      )
-
-      run_params <-
-        tweaked_parameter_runs[tweaked_parameter_runs$run_uuid == run_id, ]$params[[1]]
-      param_value <-
-        run_params[run_params$key == tweaked_parameter,]$value
-
-      run_data <- crispy_output %>%
-        dplyr::mutate(scenario_duo = paste(baseline_scenario, shock_scenario, sep='&'),
-                      tweaked_param_name=tweaked_parameter,
-                      tweaked_param_value=param_value) %>%
-        dplyr::select(
-          scenario_duo,
-          tweaked_param_name,
-          tweaked_param_value,
-          sector,
-          business_unit,
-          company_name,
-          term,
-          pd_baseline,
-          pd_shock,
-          net_present_value_baseline,
-          net_present_value_shock
-        )
-      tweaked_parameter_runs_data <- dplyr::bind_rows(tweaked_parameter_runs_data, run_data)
-
-    },
-    error=function(cond){
-      print(cond)
-    })
-  }
-  return(tweaked_parameter_runs_data)
-  }
+symlog <- function(x){sign(x)*log(abs(x))}
 
 # ==================
 # ANALYSIS
@@ -122,8 +52,8 @@ compare_npv_roc_between_scenarios <- function(tweaked_parameter_runs_data){
     # meaning the shock induces a loss.
     dplyr::mutate(npv_loss_at_shock = npv_rate_of_change >= 1) %>%
     tidyr::pivot_wider(id_cols=c("company_name" ,"sector" ,"business_unit", "tweaked_param_name", "tweaked_param_value"),
-                           names_from=scenario_duo,
-                           values_from=npv_loss_at_shock)
+                       names_from=scenario_duo,
+                       values_from=npv_loss_at_shock)
 
   unique_scenario_duos <- unique(tweaked_parameter_runs_data$scenario_duo)
   n_scenario_duos <- length(unique_scenario_duos)
@@ -199,7 +129,7 @@ share_of_zeros <- function(tweaked_parameter_runs_data){
       zero_share_npv_shock = sum(net_present_value_shock == 0, na.rm=T) / sum(!is.na(net_present_value_shock)),
       zero_share_pd_baseline = sum(pd_baseline == 0, na.rm=T) / sum(!is.na(pd_baseline)),
       zero_share_pd_shock = sum(pd_shock == 0, na.rm=T) / sum(!is.na(pd_shock))
-                  )
+    )
   share_of_zeros_df
 }
 
@@ -254,6 +184,10 @@ compute_npv_and_pd_slopes_over_one_parameter_values <- function(tweaked_paramete
     by=c("scenario_duo", "tweaked_param_name", "sector", "business_unit", "company_name"))
 
 }
+
+# ==================
+# PLOTS
+# ==================
 
 draw_boxplots_foreach_param_value <- function(tweaked_parameter_runs_data, tweaked_parameter){
   boxplot_npv_baseline <- tweaked_parameter_runs_data %>%
@@ -327,17 +261,10 @@ draw_slopes_boxplots <- function(slopes_of_all_parameters){
        "boxplot_slope_mean_terms_pd_shock"=boxplot_slope_mean_terms_pd_shock)
 }
 
+
 # ==============================
 # MAIN
 # ==============================
-
-outputs_folder <- file.path("sensitivity_analysis", "sensitivity_analysis_outputs2")
-plots_folder <- file.path(outputs_folder, "plots")
-summary_tables_folder <- file.path(outputs_folder, "summary_tables")
-
-params_to_analyze <- c("shock_year", "discount_rate", "growth_rate",
-                       #"div_netprofit_prop_coef", "lgd", "market_passthrough",
-                       "risk_free_rate")
 
 
 dir.create(outputs_folder, showWarnings = FALSE)
@@ -347,11 +274,12 @@ dir.create(summary_tables_folder, showWarnings = FALSE)
 slopes_of_all_parameters <- NULL
 for (tweaked_parameter in params_to_analyze) {
 
-  tweaked_parameter_runs_data <- gather_cripsy_outputs_for_tweaked_parameter(
+  tweaked_parameter_runs_data <- gather_trisk_outputs_for_tweaked_parameter(
     tracking_uri="http://localhost:5000",
-    experiment_name="st_master_data_fullruns",
-    tweaked_parameter=tweaked_parameter)
-
+    experiment_name=experiment_name,
+    tweaked_parameter=tweaked_parameter,
+    csv_filename="crispy_output.csv")
+  if (!is.null(tweaked_parameter_runs_data)){
   scenarios_npv_loss_at_shock_agreeing_rate <- compare_npv_roc_between_scenarios(tweaked_parameter_runs_data)
   scenarios_pd_diff_sign_agreeing_rate <- compare_pd_diff_between_scenarios(tweaked_parameter_runs_data)
   share_of_zeros_df <- share_of_zeros(tweaked_parameter_runs_data)
@@ -379,7 +307,10 @@ for (tweaked_parameter in params_to_analyze) {
   slopes_of_all_parameters <- dplyr::bind_rows(slopes_of_all_parameters, npv_slopes_over_param_tweaked)
 
   print(paste("done analysing", tweaked_parameter))
-
+  }
+  else{
+    print(paste("No data found in experiment", experiment_name, "with tweaked parameter", tweaked_parameter))
+  }
 }
 
 readr::write_csv(slopes_of_all_parameters,
@@ -406,8 +337,6 @@ ggsave(plot=plots_list$boxplot_slope_mean_terms_pd_shock,
        path=plots_folder,
        filename="boxplot_slope_mean_terms_pd_shock.jpg",
        width=40, height=30, units="cm")
-
-
 
 amplitudes <- slopes_of_all_parameters %>%
   dplyr::group_by(scenario_duo, sector, business_unit, tweaked_param_name) %>%

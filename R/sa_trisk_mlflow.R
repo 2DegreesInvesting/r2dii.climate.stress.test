@@ -1,135 +1,42 @@
 library(mlflow)
 
-
-set_mlflow_experiment <- function(experiment_name){
-  # gets mlflow experiment, or if it doesn't exist creates it
-  tryCatch({
-    mlflow::mlflow_get_experiment(name = experiment_name)
-  },
-  error = function(cond) {
-    mlflow::mlflow_create_experiment(experiment_name)
-  },
-  finally = {
-    mlflow::mlflow_set_experiment(experiment_name)
-  })
-}
-
-create_tags_list <- function(param_names, params_grid, additional_tags){
-  param_names <- param_names[param_names %in% names(params_grid)] # remove baseline and shock param
-  param_tweaked <- rep(FALSE, length(params_grid))
-  names(param_tweaked) <- names(params_grid)
-  param_tweaked[param_names] <- TRUE
-  tags <- c(param_tweaked, additional_tags)
-
-  tags
-}
-
-generate_runs_parameters <- function(scenario_pairs, params_grid, max_param_combinations){
-
-  param_names_combinations <- utils::combn(names(params_grid), m=max_param_combinations)
-
-  param_values_combinations <- NULL
-  for (i in 1:ncol(param_names_combinations)){
-    param_names_to_combine <- param_names_combinations[,i]
-    param_values_combinations <- dplyr::bind_rows(
-      param_values_combinations,
-      expand.grid(params_grid[param_names_to_combine])
-    )
-  }
-
-  runs_parameters <- scenario_pairs %>% dplyr::cross_join(param_values_combinations)
-  runs_parameters
-}
-
-fetch_completed_runs_parameters <- function(runs_parameters, tracking_uri, experiment_name){
-  mlflow::mlflow_set_tracking_uri(tracking_uri)
-  experiment_id <- mlflow::mlflow_get_experiment(name = experiment_name)$experiment_id[1]
-  # iterate the runs search by filtering over each baseline_scenario
-  # because mlflow returns at most 1000 runs from a search. It will work
-  # as long as there are less than 1000 runs per baseline scenario.
-  completed_runs_params <- NULL
-  for (baseline_scenario in unique(runs_parameters$baseline_scenario)){
-    finished_baseline_runs <- mlflow::mlflow_search_runs(
-      filter = paste("params.baseline_scenario = '",baseline_scenario,"'",
-                     " and ",
-                     "attributes.status = 'FINISHED'", sep=''),
-      experiment_ids = as.character(experiment_id))
-    if (nrow(finished_baseline_runs) == 1000){
-      stop("mlflow_search_runs has reached the limit of runs that can be returned with this filter.
-           Must refine the filter conditions in generate_runs_parameters().")
-    }
-    if (nrow(finished_baseline_runs) > 0){
-    # lengthy block of code to convert the output from MLFlow
-    # to the same dataframe format as the `runs_parameters` dataframe
-    params_df_list <- lapply(1:nrow(finished_baseline_runs),
-                             function(x) (dplyr::bind_rows(
-                               dplyr::inner_join(finished_baseline_runs$params[[x]],
-                                                            finished_baseline_runs$tags[[x]],
-                                                            by="key", suffix=c(".params", ".tags")),
-                               finished_baseline_runs$params[[x]] %>%
-                                 dplyr::filter(key %in% c("baseline_scenario", "shock_scenario")) %>%
-                                 dplyr::mutate(value.params=value, value.tags="TRUE") %>%
-                                 dplyr::select(key, value.params, value.tags)
-                               )))
-    params_df_list <- lapply(1:length(params_df_list),
-                             function(x) (params_df_list[[x]] %>%
-                                            dplyr::mutate(value.params=ifelse(value.tags, value.params, NA)) %>%
-                                            dplyr::select(key, value.params)))
-    params_df_list <- lapply(1:length(params_df_list),
-                             function(x) (tidyr::pivot_wider(params_df_list[[x]],
-                                                             names_from = "key",
-                                                             values_from = "value.params")))
-    completed_runs_params_baseline_scenario <- dplyr::bind_rows(params_df_list)
-
-    # aggregate the baseline_scenario runs together
-    completed_runs_params <- dplyr::bind_rows(completed_runs_params,
-                                              completed_runs_params_baseline_scenario)
-    }
-  }
-  completed_runs_params <- as.data.frame(completed_runs_params)
-  completed_runs_params
-}
-
-filter_out_completed_runs <- function(runs_parameters, completed_runs_params){
-  uncompleted_runs <- dplyr::anti_join(
-    runs_parameters %>% dplyr::mutate(dplyr::across(dplyr::everything(), purrr::partial(type.convert, as.is=TRUE))),
-    completed_runs_params %>% dplyr::mutate(dplyr::across(dplyr::everything(), purrr::partial(type.convert, as.is=TRUE)))
-    , by=names(runs_parameters))
-
-  uncompleted_runs
-}
-
-generate_and_filter_run_parameters <-
-  function(tracking_uri,
-           experiment_name,
-           scenario_pairs,
-           params_grid,
-           max_param_combinations) {
-
-  runs_parameters <- generate_runs_parameters(scenario_pairs, params_grid, max_param_combinations)
-  print("Gathering previous runs parameters...")
-  completed_runs_params <- fetch_completed_runs_parameters(runs_parameters, tracking_uri, experiment_name)
-  if (nrow(completed_runs_params) > 0){
-    filtered_run_parameters <- filter_out_completed_runs(runs_parameters, completed_runs_params)
-    print(paste("Removed",nrow(runs_parameters) - nrow(filtered_run_parameters),
-                "runs that have already been executed"))
-  } else{
-    filtered_run_parameters <- runs_parameters
-  }
-  filtered_run_parameters
-}
-
+#' This function launches multiple instances of TRISK, each with a different set
+#' of parameters. Each run of TRISK and its outputs are logged in MLFlow, under
+#' the experiment_name defined in input.
+#'
+#' The set of parameters is created from the values contained in the params_grid,
+#'
+#'  cross-merging the scenario_pairs
+#' table, and the values defined in the params_grid.
+#'
+#' @param tracking_uri address of the mlflow server. Defaults to locally run server on port 5000.
+#' @param experiment_name name of the experiment. It is recommended to change this value
+#'    when changing the parameters names in the `params_grid` variable.
+#' @param trisk_input_path input path for the data to be used by run_trisk
+#' @param trisk_output_path output path to save outputs of run_trisk. Not actually
+#'    used when logging trisk outputs of
+#' @param scenario_pairs table with 2 columns: baseline_scenario, and shock_scenario.
+#'    For each row of this table, all parameters values (and eventutally their combinations)
+#'    defined in the `param_grid` will be tested in a run.
+#' @param params_grid list of parameters, their names mapping to a range of values to
+#'    be tested in independant runs.
+#' @param max_param_combinations how many parameters defined in the `param_grid` will be combined
+#'    when generating the run_parameters table. If equal to 1, each value of a parameter will
+#'    generate 1 run. When bigger than 1,
+#'    e.g. when equal to 2,
+#' @param artifact_names name of the output in the st_results_wrangled_and_checked results
+#'    to be logged as artifacts in MLFlow
+#' @param additional_tags list of key/values pairs. User-defined tags to be logged with every run
 #' @export
 multirun_trisk_mlflow <-
-  function(tracking_uri = "http://localhost:5000",
+  function(tracking_uri = "http://127.0.0.1:5000",
            experiment_name,
            trisk_input_path,
            trisk_output_path,
-           baseline_scenarios,
-           shock_scenarios,
+           scenario_pairs,
            params_grid,
-           save_artifacts=c("crispy_output"),
            max_param_combinations=1,
+           artifact_names=c("crispy_output", "company_trajectories"),
            additional_tags=NULL) {
 
     # starts mlflow client to connect to mlflow server
@@ -141,8 +48,6 @@ multirun_trisk_mlflow <-
     # Creates the dataframe of all runs parameters
     # Gather runs and filter already completed ones
     # cannot check each run 1 by 1 with the server as it is too time consuming.
-    scenario_pairs <- expand.grid(baseline_scenario=baseline_scenarios,
-                                  shock_scenario=shock_scenarios)
     filtered_run_parameters <- generate_and_filter_run_parameters(tracking_uri,
                                                                   experiment_name,
                                                                   scenario_pairs,
@@ -157,79 +62,75 @@ multirun_trisk_mlflow <-
       use_params <- row_params[,which(!is.na(row_params))]
 
       tags <- create_tags_list(names(use_params), params_grid, additional_tags)
-
       # aggregate input parameters in a string to then evaluate
-      eval_run_params <- NULL
+      trisk_run_params <- as.list(use_params)
       for (param_name in names(use_params)){
         param_value <- use_params[[param_name]]
         param_value <- ifelse(is.factor(param_value),
                               as.character(param_value),
                               param_value)
-        param_value <- ifelse(is.character(param_value),
-                              paste('"', param_value, '"', sep=''),
-                              param_value)
-        eval_run_params <- paste(
-          eval_run_params,
-          paste(param_name," = ", param_value, sep="")
-        , sep=",")
+        trisk_run_params[param_name] = param_value
       }
+      do.call(run_trisk_mlflow,
+              c(list(tracking_uri = tracking_uri,
+                     experiment_name = experiment_name,
+                     tags = tags,
+                     artifact_names = artifact_names,
+                     input_path = trisk_input_path,
+                     output_path = trisk_output_path)
+                ,trisk_run_params))
 
+      is_gc_stabilized <- function(prev_gc, new_gc, Mb_tol=500){
+        # Column 2 refers to the used memory in Mb
+        prev_Ncells <- prev_gc["Ncells", 2]
+        prev_Vcells <- prev_gc["Vcells", 2]
+        new_Ncells <- new_gc["Ncells", 2]
+        new_Vcells <- new_gc["Vcells", 2]
 
-      eval(parse(
-        text = paste(
-          "run_trisk_mlflow(",
-          'tracking_uri = tracking_uri, ',
-          'experiment_name = experiment_name, ',
-          'tags = tags, ',
-          'save_artifacts = save_artifacts, ',
-          'input_path = trisk_input_path, ',
-          'output_path = trisk_output_path',
-          eval_run_params,
-          ")"
-          , sep="")
-        ))
+        Ncells_cleaned <- dplyr::near(prev_Ncells, new_Ncells, tol=Mb_tol)
+        Vcells_cleaned <- dplyr::near(prev_Ncells, new_Ncells, tol=Mb_tol)
+
+        return(Ncells_cleaned & Vcells_cleaned)
+      }
+      prev_gc <- gc()
+      Sys.sleep(1)
+      new_gc <- gc()
+      while (!is_gc_stabilized(prev_gc, new_gc)){
+        print("Garbage collection ...")
+        prev_gc <- gc()
+        Sys.sleep(1)
+        new_gc <- gc()
+      }
 
       n_completed_runs <- n_completed_runs + 1
       print(paste("Done",n_completed_runs,"/",nrow(filtered_run_parameters),"total runs"))
     }
   }
 
-
-write_and_zip_csv_artifacts <-
-  function(st_results_wrangled_and_checked,
-           mlflow_run_output_dir,
-           save_artifacts) {
-  written_csv_paths <- NULL
-  for (artifact_name in save_artifacts){
-    filepath <- file.path(
-      mlflow_run_output_dir,
-      paste(artifact_name, ".csv", sep="")
-    )
-    readr::write_csv(st_results_wrangled_and_checked[[artifact_name]], filepath)
-    written_csv_paths <- c(written_csv_paths, filepath)
-  }
-  zip_path <- file.path(
-    mlflow_run_output_dir,
-    "artifacts.zip"
-  )
-  zip::zip(zip_path, paste(save_artifacts, ".csv", sep=""), root=mlflow_run_output_dir)
-  unlink(written_csv_paths)
-  }
-
-log_metrics_df <- function(metrics_df){
-  for (i in 1:nrow(metrics_df)){
-    metric_name <- metrics_df[[i, "metric_name"]]
-    metric_name <- stringr::str_replace_all(metric_name, "[^A-Za-z0-9]", "_")
-    metric_value <- metrics_df[[i, "metric_value"]]
-    mlflow::mlflow_log_metric(metric_name, metric_value)
-  }
-}
-
+#' This function runs 1 instance of TRISK, and logs the result in MLFLow under
+#' the experiment name defined in input.
+#'
+#' There are 4 kinds of outputs that are logged :
+#' - Parameters: The input parameters of the TRISK function
+#' - Tags : key/values pairs used to search experiments using text filters.
+#' - Metrics: key/value pairs where the value is an aggregated quantity created from
+#'    the TRISK output, and computed in the compute_trisk_metrics() function.
+#'    Metrics can be used in combination with the parameters to create charts
+#'    in the MLFLow UI.
+#' - Artifacts: Files returned as the output of TRISK. The artifacts can later be
+#'    downloaded to aggregate and analyse the results over several runs.
+#'
+#' @param tracking_uri address of the mlflow server.
+#' @param experiment_name name of the experiment
+#' @param tags list of key/value pairs to be logged in mlflow with the current run
+#' @param artifact_names name of the variables in the TRISK output to be saved as
+#'   a CSV, and logged into mlflow
+#' @param ... input parameters of run_trisk
 run_trisk_mlflow <-
   function(tracking_uri,
            experiment_name,
            tags,
-           save_artifacts,
+           artifact_names,
            ...) {
 
   with(mlflow::mlflow_start_run(), {
@@ -257,23 +158,18 @@ run_trisk_mlflow <-
     }
 
     tryCatch({
-      time_spent <- system.time({
-        st_results_wrangled_and_checked <-
-          r2dii.climate.stress.test::run_trisk(return_results = TRUE, ...)
-      })
+      st_results_wrangled_and_checked <-
+        r2dii.climate.stress.test::run_trisk(return_results = TRUE, ...)
+      print("TRISK run completed")
 
       metrics_df <- compute_trisk_metrics(st_results_wrangled_and_checked)
       log_metrics_df(metrics_df)
 
-      time_spent <- tibble::as_tibble(as.list(time_spent))
-      readr::write_delim(time_spent,
-                         file.path(mlflow_run_output_dir, "time_spent.csv"),
-                         delim = ",")
 
-      if (!is.null(save_artifacts)){
+      if (!is.null(artifact_names)){
         write_and_zip_csv_artifacts(st_results_wrangled_and_checked,
                                     mlflow_run_output_dir,
-                                    save_artifacts)
+                                    artifact_names)
       }
 
       mlflow::mlflow_set_tag("LOG_STATUS", "SUCCESS")
@@ -288,7 +184,7 @@ run_trisk_mlflow <-
       },
 
     finally={
-      if (!is.null(save_artifacts)){
+      if (!is.null(artifact_names)){
         mlflow::mlflow_log_artifact(path = mlflow_run_output_dir)
         }
       # deletes temp directory
@@ -296,5 +192,28 @@ run_trisk_mlflow <-
       }
     )
   })
+    is_gc_stabilized <- function(prev_gc, new_gc, Mb_tol=500){
+      # Column 2 refers to the used memory in Mb
+      prev_Ncells <- prev_gc["Ncells", 2]
+      prev_Vcells <- prev_gc["Vcells", 2]
+      new_Ncells <- new_gc["Ncells", 2]
+      new_Vcells <- new_gc["Vcells", 2]
+
+      Ncells_cleaned <- dplyr::near(prev_Ncells, new_Ncells, tol=Mb_tol)
+      Vcells_cleaned <- dplyr::near(prev_Ncells, new_Ncells, tol=Mb_tol)
+
+      return(Ncells_cleaned & Vcells_cleaned)
+    }
+
+    prev_gc <- gc()
+    Sys.sleep(1)
+    new_gc <- gc()
+    while (!is_gc_stabilized(prev_gc, new_gc)){
+      print("Garbage collection ...")
+      prev_gc <- gc()
+      Sys.sleep(1)
+      new_gc <- gc()
+    }
+
 }
 
