@@ -5,9 +5,14 @@ library(mlflow)
 #' the experiment_name defined in input.
 #'
 #' The set of parameters is created from the values contained in the params_grid,
+#' which are then either combined to test all pairs/triplets/... of parameters (depending
+#' on the value set for max_param_combination), or varied individually if this
+#' parameter is set to 1.
+#' Those parameters combinations are then repeated for each scenario pairs provideo
+#' in input.
 #'
-#'  cross-merging the scenario_pairs
-#' table, and the values defined in the params_grid.
+#' The results of TRISK are logged as artifacts in MLFlow, and can be queried later on
+#' for aggregation and analysis.
 #'
 #' @param tracking_uri address of the mlflow server. Defaults to locally run server on port 5000.
 #' @param experiment_name name of the experiment. It is recommended to change this value
@@ -71,6 +76,7 @@ multirun_trisk_mlflow <-
                               param_value)
         trisk_run_params[param_name] = param_value
       }
+
       do.call(run_trisk_mlflow,
               c(list(tracking_uri = tracking_uri,
                      experiment_name = experiment_name,
@@ -79,28 +85,6 @@ multirun_trisk_mlflow <-
                      input_path = trisk_input_path,
                      output_path = trisk_output_path)
                 ,trisk_run_params))
-
-      is_gc_stabilized <- function(prev_gc, new_gc, Mb_tol=500){
-        # Column 2 refers to the used memory in Mb
-        prev_Ncells <- prev_gc["Ncells", 2]
-        prev_Vcells <- prev_gc["Vcells", 2]
-        new_Ncells <- new_gc["Ncells", 2]
-        new_Vcells <- new_gc["Vcells", 2]
-
-        Ncells_cleaned <- dplyr::near(prev_Ncells, new_Ncells, tol=Mb_tol)
-        Vcells_cleaned <- dplyr::near(prev_Ncells, new_Ncells, tol=Mb_tol)
-
-        return(Ncells_cleaned & Vcells_cleaned)
-      }
-      prev_gc <- gc()
-      Sys.sleep(1)
-      new_gc <- gc()
-      while (!is_gc_stabilized(prev_gc, new_gc)){
-        print("Garbage collection ...")
-        prev_gc <- gc()
-        Sys.sleep(1)
-        new_gc <- gc()
-      }
 
       n_completed_runs <- n_completed_runs + 1
       print(paste("Done",n_completed_runs,"/",nrow(filtered_run_parameters),"total runs"))
@@ -158,8 +142,7 @@ run_trisk_mlflow <-
     }
 
     tryCatch({
-      st_results_wrangled_and_checked <-
-        r2dii.climate.stress.test::run_trisk(return_results = TRUE, ...)
+      st_results_wrangled_and_checked <- run_trisk(return_results = TRUE, ...)
       print("TRISK run completed")
 
       metrics_df <- compute_trisk_metrics(st_results_wrangled_and_checked)
@@ -184,6 +167,7 @@ run_trisk_mlflow <-
       },
 
     finally={
+      browser()
       if (!is.null(artifact_names)){
         mlflow::mlflow_log_artifact(path = mlflow_run_output_dir)
         }
@@ -192,28 +176,7 @@ run_trisk_mlflow <-
       }
     )
   })
-    is_gc_stabilized <- function(prev_gc, new_gc, Mb_tol=500){
-      # Column 2 refers to the used memory in Mb
-      prev_Ncells <- prev_gc["Ncells", 2]
-      prev_Vcells <- prev_gc["Vcells", 2]
-      new_Ncells <- new_gc["Ncells", 2]
-      new_Vcells <- new_gc["Vcells", 2]
 
-      Ncells_cleaned <- dplyr::near(prev_Ncells, new_Ncells, tol=Mb_tol)
-      Vcells_cleaned <- dplyr::near(prev_Ncells, new_Ncells, tol=Mb_tol)
-
-      return(Ncells_cleaned & Vcells_cleaned)
-    }
-
-    prev_gc <- gc()
-    Sys.sleep(1)
-    new_gc <- gc()
-    while (!is_gc_stabilized(prev_gc, new_gc)){
-      print("Garbage collection ...")
-      prev_gc <- gc()
-      Sys.sleep(1)
-      new_gc <- gc()
-    }
 
 }
 

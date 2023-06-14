@@ -54,7 +54,9 @@ Sys.setenv(
 MLFLOW_PYTHON_BIN = "/Users/username/opt/miniconda3/envs/mlflow_env/bin/python",
 MLFLOW_BIN = "/Users/username/opt/miniconda3/envs/mlflow_env/bin/mlflow"
 )
+library(mlflow)
 ```
+
 
 3. Run an experiment on different values of a set of parameters, using the function `multirun_trisk_mlflow()`. 
 - For each line of the scenario_pairs tibble, all parameters will be used once in a run. 
