@@ -51,8 +51,8 @@ http://localhost:5000
 
 ```{r, eval = FALSE}
 Sys.setenv(
-MLFLOW_PYTHON_BIN = "/Users/username/opt/miniconda3/envs/mlflow_env/bin/python",
-MLFLOW_BIN = "/Users/username/opt/miniconda3/envs/mlflow_env/bin/mlflow"
+  MLFLOW_PYTHON_BIN = "/Users/username/opt/miniconda3/envs/mlflow_env/bin/python",
+  MLFLOW_BIN = "/Users/username/opt/miniconda3/envs/mlflow_env/bin/mlflow"
 )
 library(mlflow)
 ```
@@ -65,36 +65,34 @@ library(mlflow)
 
 Example syntax for `multirun_trisk_mlflow()`:
 ```{r, eval = FALSE}
+scenario_pairs <- tibble::tribble(
+  ~baseline_scenario, ~shock_scenario,
+  "WEO2021_STEPS", "WEO2021_SDS",
+  "WEO2021_APS", "WEO2021_NZE_2050"
+)
+params_grid <- list(
+  discount_rate = c(0.015, 0.04, 0.07, 0.1),
+  lgd = c(0.3, 0.45, 0.6, 0.75, 0.9),
+  risk_free_rate = c(0, 0.02, 0.05),
+  growth_rate = c(0.01, 0.03, 0.099),
+  div_netprofit_prop_coef = c(0.8, 0.85, 0.9, 0.95, 1),
+  shock_year = c(2025, 2027, 2029, 2030, 2032, 2034, 2035),
+  scenario_geography = c("Global"),
+  carbon_price_model = c("no_carbon_tax", "NZ2050", "NDC", "DN0", "B2DS"),
+  market_passthrough = c(0, 0.3, 0.6, 1)
+)
 
-  scenario_pairs = tibble::tribble(
-    ~baseline_scenario, ~shock_scenario,
-    "WEO2021_STEPS", "WEO2021_SDS",
-    "WEO2021_APS", "WEO2021_NZE_2050"
-  )
-  params_grid = list(
-    discount_rate = c(0.015, 0.04, 0.07, 0.1),
-    lgd = c(0.3, 0.45, 0.6, 0.75, 0.9),
-    risk_free_rate = c(0, 0.02, 0.05),
-    growth_rate = c(0.01, 0.03, 0.099),
-    div_netprofit_prop_coef = c(0.8, 0.85, 0.9, 0.95, 1),
-    shock_year = c(2025, 2027, 2029, 2030, 2032, 2034, 2035),
-    scenario_geography = c("Global"),
-    carbon_price_model = c("no_carbon_tax", "NZ2050", "NDC", "DN0", "B2DS"),
-    market_passthrough = c(0, 0.3, 0.6, 1)
-  )
 
-
-  multirun_trisk_mlflow(
-    tracking_uri = "http://127.0.0.1:5000",
-    experiment_name = "EXPERIMENT_NAME",
-    trisk_input_path = "example_project/project_input",
-    trisk_output_path = "example_project/output",
-    scenario_pairs = scenario_pairs,
-    params_grid = params_grid,
-    save_artifacts=c("crispy_output", "company_trajectories"),
-    max_param_combinations=1,
-  )
-
+multirun_trisk_mlflow(
+  tracking_uri = "http://127.0.0.1:5000",
+  experiment_name = "EXPERIMENT_NAME",
+  trisk_input_path = "example_project/project_input",
+  trisk_output_path = "example_project/output",
+  scenario_pairs = scenario_pairs,
+  params_grid = params_grid,
+  save_artifacts = c("crispy_output", "company_trajectories"),
+  max_param_combinations = 1,
+)
 ```
 
 It is possible to stop this function while it runs, and restarting is with the same parameters names. It is possible to change the values of each parameter, but not changing the names / number of parameters tested. When changing the names of parameters, 
@@ -118,12 +116,12 @@ mlflow::mlflow_client()
 experiment <- mlflow::mlflow_get_experiment(name = "EXPERIMENT_NAME")
 experiment_id <- experiment[[1, "experiment_id"]]
 
-# will return a tibble containing the metadatas of all runs 
+# will return a tibble containing the metadatas of all runs
 # where the parameter shock_year has been tweaked.
 runs <- mlflow::mlflow_search_runs(
   filter = "tags.shock_year = 'TRUE'",
   experiment_ids = as.character(experiment_id)
-  )
+)
 ```
 
 2. After obtaining a run_id with the previous commands, the artifacts saved during this run can be obtained this way. Where `artifact_name` is one of company_trajectories_.csv, crispy_output_.csv, time_spent.csv . If a run fails, the only available artifact is the error message returned by the `run_trisk()` function.
@@ -133,7 +131,7 @@ mlflow::mlflow_set_tracking_uri(uri = tracking_uri)
 mlflow::mlflow_client()
 # path refers to the folder inside a run where the artifacts are saved.
 # in this case, all artifacts are saved at the root of each run.
-artifacts_path <- mlflow::mlflow_download_artifacts(path="", run_id = run_id)
+artifacts_path <- mlflow::mlflow_download_artifacts(path = "", run_id = run_id)
 # unzip in-memory and read the desired file, crispy_output.csv or company_trajectories.csv
 f_conn <- unz(file.path(artifacts_path, "artifacts.zip"), "crispy_output.csv")
 artifact <- readr::read_csv(f_conn, show_col_types = FALSE)
@@ -142,9 +140,10 @@ artifact <- readr::read_csv(f_conn, show_col_types = FALSE)
 #### Aggregating all TRISK outputs where a given parameter is tweaked
 
 ```{r, eval=FALSE}
-  tweaked_parameter_runs_data <- gather_trisk_outputs_for_tweaked_parameter(
-    tracking_uri="http://localhost:5000",
-    experiment_name="EXPERIMENT_NAME",
-    tweaked_parameter="shock_year",
-    csv_filename="crispy_output.csv")
+tweaked_parameter_runs_data <- gather_trisk_outputs_for_tweaked_parameter(
+  tracking_uri = "http://localhost:5000",
+  experiment_name = "EXPERIMENT_NAME",
+  tweaked_parameter = "shock_year",
+  csv_filename = "crispy_output.csv"
+)
 ```

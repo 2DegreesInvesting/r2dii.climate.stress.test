@@ -40,10 +40,9 @@ multirun_trisk_mlflow <-
            trisk_output_path,
            scenario_pairs,
            params_grid,
-           max_param_combinations=1,
-           artifact_names=c("crispy_output", "company_trajectories"),
-           additional_tags=NULL) {
-
+           max_param_combinations = 1,
+           artifact_names = c("crispy_output", "company_trajectories"),
+           additional_tags = NULL) {
     # starts mlflow client to connect to mlflow server
     mlflow::mlflow_set_tracking_uri(uri = tracking_uri)
     mlflow::mlflow_client()
@@ -53,41 +52,50 @@ multirun_trisk_mlflow <-
     # Creates the dataframe of all runs parameters
     # Gather runs and filter already completed ones
     # cannot check each run 1 by 1 with the server as it is too time consuming.
-    filtered_run_parameters <- generate_and_filter_run_parameters(tracking_uri,
-                                                                  experiment_name,
-                                                                  scenario_pairs,
-                                                                  params_grid,
-                                                                  max_param_combinations)
-    print(paste("Starting the execution of",nrow(filtered_run_parameters),"total runs"))
+    filtered_run_parameters <- generate_and_filter_run_parameters(
+      tracking_uri,
+      experiment_name,
+      scenario_pairs,
+      params_grid,
+      max_param_combinations
+    )
+    print(paste("Starting the execution of", nrow(filtered_run_parameters), "total runs"))
 
 
     n_completed_runs <- 0
     for (i in 1:nrow(filtered_run_parameters)) {
-      row_params <- filtered_run_parameters[i,]
-      use_params <- row_params[,which(!is.na(row_params))]
+      row_params <- filtered_run_parameters[i, ]
+      use_params <- row_params[, which(!is.na(row_params))]
 
       tags <- create_tags_list(names(use_params), params_grid, additional_tags)
       # aggregate input parameters in a string to then evaluate
       trisk_run_params <- as.list(use_params)
-      for (param_name in names(use_params)){
+      for (param_name in names(use_params)) {
         param_value <- use_params[[param_name]]
         param_value <- ifelse(is.factor(param_value),
-                              as.character(param_value),
-                              param_value)
-        trisk_run_params[param_name] = param_value
+          as.character(param_value),
+          param_value
+        )
+        trisk_run_params[param_name] <- param_value
       }
 
-      do.call(run_trisk_mlflow,
-              c(list(tracking_uri = tracking_uri,
-                     experiment_name = experiment_name,
-                     tags = tags,
-                     artifact_names = artifact_names,
-                     input_path = trisk_input_path,
-                     output_path = trisk_output_path)
-                ,trisk_run_params))
+      do.call(
+        run_trisk_mlflow,
+        c(
+          list(
+            tracking_uri = tracking_uri,
+            experiment_name = experiment_name,
+            tags = tags,
+            artifact_names = artifact_names,
+            input_path = trisk_input_path,
+            output_path = trisk_output_path
+          ),
+          trisk_run_params
+        )
+      )
 
       n_completed_runs <- n_completed_runs + 1
-      print(paste("Done",n_completed_runs,"/",nrow(filtered_run_parameters),"total runs"))
+      print(paste("Done", n_completed_runs, "/", nrow(filtered_run_parameters), "total runs"))
     }
   }
 
@@ -116,67 +124,63 @@ run_trisk_mlflow <-
            tags,
            artifact_names,
            ...) {
-
-  with(mlflow::mlflow_start_run(), {
-
-    for (tag_name in names(tags)){
-      mlflow::mlflow_set_tag(tag_name, tags[[tag_name]])
-    }
-    # creates a temporary output directory to save TRISK outputs
-    # TODO return the name of the output folder in the run_trisk output,
-    #  log the artifacts from this folder, and remove this mechanic
-    mlflow_run_output_dir <- tempfile()
-    dir.create(mlflow_run_output_dir, recursive = TRUE)
-
-    # log all parameters in current run. Also logs default parameters of
-    # run_trisk, so all running parameters are logged in mlflow.
-    input_params <- list(...)
-    default_params <- formals(run_trisk)
-    default_params <- default_params[!(names(default_params) %in% names(input_params))]
-    all_params <- c(input_params, default_params)
-    # log parameters name and their value
-    for (param_name in names(all_params)) {
-      if (!(param_name %in% c("input_path", "output_path", "return_results"))) {
-        mlflow::mlflow_log_param(param_name, all_params[[param_name]])
+    with(mlflow::mlflow_start_run(), {
+      for (tag_name in names(tags)) {
+        mlflow::mlflow_set_tag(tag_name, tags[[tag_name]])
       }
-    }
+      # creates a temporary output directory to save TRISK outputs
+      # TODO return the name of the output folder in the run_trisk output,
+      #  log the artifacts from this folder, and remove this mechanic
+      mlflow_run_output_dir <- tempfile()
+      dir.create(mlflow_run_output_dir, recursive = TRUE)
 
-    tryCatch({
-      st_results_wrangled_and_checked <- run_trisk(return_results = TRUE, ...)
-      print("TRISK run completed")
-
-      metrics_df <- compute_trisk_metrics(st_results_wrangled_and_checked)
-      log_metrics_df(metrics_df)
-
-
-      if (!is.null(artifact_names)){
-        write_and_zip_csv_artifacts(st_results_wrangled_and_checked,
-                                    mlflow_run_output_dir,
-                                    artifact_names)
-      }
-
-      mlflow::mlflow_set_tag("LOG_STATUS", "SUCCESS")
-      },
-
-    error=function(cond){
-      fileConn<-file(file.path(mlflow_run_output_dir, "error_message.txt"))
-      writeLines(as.character(cond), fileConn)
-      close(fileConn)
-
-      mlflow::mlflow_set_tag("LOG_STATUS", "FAILED")
-      },
-
-    finally={
-      browser()
-      if (!is.null(artifact_names)){
-        mlflow::mlflow_log_artifact(path = mlflow_run_output_dir)
+      # log all parameters in current run. Also logs default parameters of
+      # run_trisk, so all running parameters are logged in mlflow.
+      input_params <- list(...)
+      default_params <- formals(run_trisk)
+      default_params <- default_params[!(names(default_params) %in% names(input_params))]
+      all_params <- c(input_params, default_params)
+      # log parameters name and their value
+      for (param_name in names(all_params)) {
+        if (!(param_name %in% c("input_path", "output_path", "return_results"))) {
+          mlflow::mlflow_log_param(param_name, all_params[[param_name]])
         }
-      # deletes temp directory
-      unlink(mlflow_run_output_dir, recursive = TRUE)
       }
-    )
-  })
+
+      tryCatch(
+        {
+          st_results_wrangled_and_checked <- run_trisk(return_results = TRUE, ...)
+          print("TRISK run completed")
+
+          metrics_df <- compute_trisk_metrics(st_results_wrangled_and_checked)
+          log_metrics_df(metrics_df)
 
 
-}
+          if (!is.null(artifact_names)) {
+            write_and_zip_csv_artifacts(
+              st_results_wrangled_and_checked,
+              mlflow_run_output_dir,
+              artifact_names
+            )
+          }
 
+          mlflow::mlflow_set_tag("LOG_STATUS", "SUCCESS")
+        },
+        error = function(cond) {
+          fileConn <- file(file.path(mlflow_run_output_dir, "error_message.txt"))
+          writeLines(as.character(cond), fileConn)
+          close(fileConn)
+
+          mlflow::mlflow_set_tag("LOG_STATUS", "FAILED")
+        },
+        finally = {
+          browser()
+          if (!is.null(artifact_names)) {
+            mlflow::mlflow_log_artifact(path = mlflow_run_output_dir)
+          }
+          # deletes temp directory
+          unlink(mlflow_run_output_dir, recursive = TRUE)
+        }
+      )
+    })
+  }
