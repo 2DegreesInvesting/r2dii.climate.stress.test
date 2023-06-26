@@ -15,7 +15,7 @@
        7 growth_rate             double    0.03          <NA>              0.01  0.099
        8 div_netprofit_prop_coef double    1             <NA>              0.8   1    
        9 shock_year              double    2030          <NA>              2025  2035 
-      10 scenario_geography      character Global        Africa, AsiaPaci~ <NA>  <NA> 
+      10 scenario_geography      character Global        AdvancedEconomie~ <NA>  <NA> 
       11 start_year              double    2021          <NA>              2021  2021 
       12 settlement_factor       double    1             <NA>              0     1    
       13 exp_share_damages_paid  double    0.027         <NA>              0     1    
