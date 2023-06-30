@@ -4,12 +4,21 @@
 \alias{customise_output_path}
 \title{Customise output path}
 \usage{
-customise_output_path(output_path, iter_var)
+customise_output_path(
+  output_path,
+  iter_var,
+  shock_scenario,
+  scenario_geography
+)
 }
 \arguments{
 \item{output_path}{String holding path to st output folder.}
 
 \item{iter_var}{String holding name of iteration variable.}
+
+\item{shock_scenario}{String holding name of shock scenario.}
+
+\item{scenario_geography}{String holding name of scenario geography.}
 }
 \value{
 Path to subdirectory in st output folder.
