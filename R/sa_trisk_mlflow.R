@@ -68,10 +68,11 @@ multirun_trisk_mlflow <-
       use_params <- row_params[, which(!is.na(row_params))]
 
       tags <- create_tags_list(names(use_params), params_grid, additional_tags)
-      # aggregate input parameters in a string to then evaluate
+
       trisk_run_params <- as.list(use_params)
       for (param_name in names(use_params)) {
         param_value <- use_params[[param_name]]
+        # type conversion from factor to char. Factor is inferred by tribble
         param_value <- ifelse(is.factor(param_value),
           as.character(param_value),
           param_value
@@ -174,7 +175,6 @@ run_trisk_mlflow <-
           mlflow::mlflow_set_tag("LOG_STATUS", "FAILED")
         },
         finally = {
-          browser()
           if (!is.null(artifact_names)) {
             mlflow::mlflow_log_artifact(path = mlflow_run_output_dir)
           }
