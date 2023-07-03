@@ -167,7 +167,7 @@ globalVariables(c(names(formals(run_trisk)), "iter_var", "end_year"))
 read_and_process_and_calc <- function(args_list) {
   list2env(args_list, envir = rlang::current_env())
 
-  log_path <- file.path(output_path, paste0("log_file_", iter_var, sep = "_", shock_scenario, sep = "_", scenario_geography, ".txt"))
+  log_path <- file.path(output_path,sprintf("log_file_%s_%s_%s.txt", iter_var, shock_scenario, scenario_geography))
 
   paste_write("\n\nIteration with parameter settings:", log_path = log_path)
   purrr::walk(names(args_list), function(name) {
