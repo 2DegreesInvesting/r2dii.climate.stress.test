@@ -395,9 +395,11 @@ fail_if_input_args_are_missing <- function(args_list) {
 #'
 #' @param output_path String holding path to st output folder.
 #' @param iter_var String holding name of iteration variable.
+#' @param shock_scenario String holding name of shock scenario.
+#' @param scenario_geography String holding name of scenario geography.
 #'
 #' @return Path to subdirectory in st output folder.
-customise_output_path <- function(output_path, iter_var) {
+customise_output_path <- function(output_path, iter_var, shock_scenario, scenario_geography) {
   if (!dir.exists(output_path)) {
     rlang::abort(
       c(
@@ -408,15 +410,13 @@ customise_output_path <- function(output_path, iter_var) {
     )
   }
 
-  timestamp <- paste(Sys.time(), iter_var, sep = "_")
-  timestamp <- gsub(" ", "_", timestamp)
-  timestamp <- gsub(":", "-", timestamp)
+  timestamp <- paste(format(Sys.time(),"%Y_%m_%d_%H_%M_%S"), iter_var, shock_scenario, scenario_geography, sep = "_")
   output_path_custom <- file.path(output_path, timestamp)
 
   dir.create(output_path_custom)
 
   # FIXME: quick solution to avoid empty output dirs in case of failing calculations
-  paste_write("Starting analysis.", log_path = file.path(output_path_custom, paste0("log_file_", iter_var, ".txt")))
+  paste_write("Starting analysis.", log_path = file.path(output_path_custom, paste0("log_file_", iter_var, sep="_", shock_scenario, sep="_", scenario_geography,".txt")))
 
   return(output_path_custom)
 }

@@ -92,7 +92,9 @@ run_trisk <- function(input_path,
 
   args_list$output_path <- customise_output_path(
     output_path = args_list$output_path,
-    iter_var = iter_var
+    iter_var = iter_var,
+    shock_scenario = shock_scenario,
+    scenario_geography = scenario_geography
   )
 
   args_list$end_year <- end_year_lookup(scenario_type = scenario_type)
@@ -124,6 +126,8 @@ run_trisk <- function(input_path,
   write_stress_test_results(
     results_list = st_results_wrangled_and_checked,
     iter_var = iter_var,
+    shock_scenario = shock_scenario,
+    scenario_geography = scenario_geography,
     output_path = args_list$output_path
   )
 
@@ -163,7 +167,7 @@ globalVariables(c(names(formals(run_trisk)), "iter_var", "end_year"))
 read_and_process_and_calc <- function(args_list) {
   list2env(args_list, envir = rlang::current_env())
 
-  log_path <- file.path(output_path, paste0("log_file_", iter_var, ".txt"))
+  log_path <- file.path(output_path,sprintf("log_file_%s_%s_%s.txt", iter_var, shock_scenario, scenario_geography))
 
   paste_write("\n\nIteration with parameter settings:", log_path = log_path)
   purrr::walk(names(args_list), function(name) {

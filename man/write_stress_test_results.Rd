@@ -4,12 +4,22 @@
 \alias{write_stress_test_results}
 \title{Write stress test reports to output dir}
 \usage{
-write_stress_test_results(results_list, iter_var, output_path)
+write_stress_test_results(
+  results_list,
+  iter_var,
+  shock_scenario,
+  scenario_geography,
+  output_path
+)
 }
 \arguments{
 \item{results_list}{A list of st results.}
 
 \item{iter_var}{String holding name of iteration variable.}
+
+\item{shock_scenario}{String holding shock scenario name.}
+
+\item{scenario_geography}{String holding scenario geography name.}
 
 \item{output_path}{String holding path to output dir.}
 }
