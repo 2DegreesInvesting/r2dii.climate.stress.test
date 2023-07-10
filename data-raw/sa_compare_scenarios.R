@@ -12,11 +12,13 @@ Sys.setenv(
   MLFLOW_BIN = mlflow_bin
 )
 
-mlflow_uri <- "http://localhost:5001"
-exp_name <- "all_scenarios_default_params_new_data"
-output_dir <- file.path("new_st_inputs/scenar_comparison")
-output_excel <- "NEW_scenario_pairs_comparisons.xlsx"
+mlflow_uri <- "http://localhost:5000"
+exp_name <- "good_newdata_long"
+output_dir <- file.path("good_new_st_inputs","scenar_comparison")
+output_excel <- "scenario_pairs_comparisons.xlsx"
 dir.create(output_dir, showWarnings = FALSE)
+
+### CODE
 
 read_csv_from_zipped_artifacts <- function(tracking_uri, experiment_name, run_id, csv_filename) {
   mlflow::mlflow_set_tracking_uri(uri = tracking_uri)

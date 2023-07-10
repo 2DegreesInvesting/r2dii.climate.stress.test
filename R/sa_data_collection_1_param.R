@@ -20,8 +20,16 @@ gather_trisk_outputs_for_tweaked_parameter <-
       tracking_uri, experiment_name, tweaked_parameter
     )
 
+    # Initializes the progress bar
+    pb <- txtProgressBar(min = 0,      # Minimum value of the progress bar
+                         max = length(runs_to_download), # Maximum value of the progress bar
+                         style = 3,    # Progress bar style (also available style = 1 and style = 2)
+                         width = 50,   # Progress bar width. Defaults to getOption("width")
+                         char = "=")   # Character used to create the bar
     tweaked_parameter_runs_data <- NULL
-    for (run_id in tweaked_parameter_runs[["run_uuid"]]) {
+    runs_to_download <- tweaked_parameter_runs[["run_uuid"]]
+    for (i in 1:length(runs_to_download)) {
+      run_id <- runs_to_download[[i]]
       tryCatch(
         {
           csv_artifact <- read_csv_from_zipped_artifacts(
@@ -48,6 +56,7 @@ gather_trisk_outputs_for_tweaked_parameter <-
           print(cond)
         }
       )
+      setTxtProgressBar(pb, i)
     }
     return(tweaked_parameter_runs_data)
   }
@@ -61,8 +70,8 @@ get_tweaked_parameter_runs <- function(tracking_uri, experiment_name, tweaked_pa
 
   if (!is.null(tweaked_parameter)) {
     str_filter <- paste(
-      paste("tags.", tweaked_parameter, " = 'TRUE'", sep = "", collapse = " and "),
-      " and ",
+      paste("tags.", tweaked_parameter, " = 'TRUE'", sep = "", collapse = " AND "),
+      " AND ",
       "tags.LOG_STATUS = 'SUCCESS'",
       sep = ""
     )

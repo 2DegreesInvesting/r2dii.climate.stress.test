@@ -41,29 +41,29 @@ scenario_pairs <- expand.grid(
 )
 
 params_grid <- list(
-  discount_rate = c(0.015, 0.04, 0.07, 0.1),
-  # lgd = c(0.3, 0.45, 0.6, 0.75, 0.9),
-  risk_free_rate = c(0, 0.02, 0.05),
-  growth_rate = c(0.01, 0.03, 0.099),
-  # div_netprofit_prop_coef = c(0.8, 0.85, 0.9, 0.95, 1),
-  shock_year = c(2025, 2027, 2029, 2030, 2032, 2034, 2035),
-  # scenario_geography = c("Global"),
-  # settlement_factor = c(0, 0.3, 0.6, 1),
-  # exp_share_damages_paid = c(0, 0.027, 0.1, 0.5, 1),
-  # scc = c(0, 40, 400, 4000, 10000),
-  carbon_price_model = c(
-    "no_carbon_tax", "NZ2050", "NDC", "DN0", "B2DS")
-  # carbon_price_model= c("no_carbon_tax", "NZ2050", "NDC", "DN0", "B2DS")
-  # market_passthrough = c(0, 0.3, 0.6, 1)
+  # discount_rate = c(0.015, 0.04, 0.07, 0.1),
+  # # lgd = c(0.3, 0.45, 0.6, 0.75, 0.9),
+  # risk_free_rate = c(0, 0.02, 0.05),
+  # growth_rate = c(0.01, 0.03, 0.099),
+  # # div_netprofit_prop_coef = c(0.8, 0.85, 0.9, 0.95, 1),
+  # shock_year = c(2025, 2027, 2029, 2030, 2032, 2034, 2035),
+  # # scenario_geography = c("Global"),
+  # # settlement_factor = c(0, 0.3, 0.6, 1),
+  # # exp_share_damages_paid = c(0, 0.027, 0.1, 0.5, 1),
+  # # scc = c(0, 40, 400, 4000, 10000),
+  # carbon_price_model = c(
+  #   "no_carbon_tax", "NZ2050", "NDC", "DN0", "B2DS")
+  # # carbon_price_model= c("no_carbon_tax", "NZ2050", "NDC", "DN0", "B2DS")
+  # # market_passthrough = c(0, 0.3, 0.6, 1)
 )
 
 # In a single experiment, do not change the names of parameters being tweaked in the param grid
 
 multirun_trisk_mlflow(
   tracking_uri = "http://127.0.0.1:5000",
-  experiment_name = "sensitivity_analysis_new_data_reduced",
-  trisk_input_path = "new_st_inputs/project_input",
-  trisk_output_path = "new_st_inputs/project_output",
+  experiment_name = "good_newdata_long",
+  trisk_input_path = "good_new_st_inputs/input",
+  trisk_output_path = "good_new_st_inputs/output",
   scenario_pairs = scenario_pairs,
   params_grid = params_grid,
   artifact_names = c("crispy_output"),
