@@ -13,8 +13,8 @@ Sys.setenv(
 )
 
 mlflow_uri <- "http://localhost:5000"
-exp_name <- "good_newdata_long"
-output_dir <- file.path("good_new_st_inputs","scenar_comparison")
+exp_name <- "all_scenarios_default_params_old_data"
+output_dir <- file.path("sa_st_inputs_master_raw","scenar_comparison_corr")
 output_excel <- "scenario_pairs_comparisons.xlsx"
 dir.create(output_dir, showWarnings = FALSE)
 
@@ -128,7 +128,7 @@ compare_pd_diff_between_scenarios <- function(tweaked_parameter_runs_data) {
       values_from = pd_diff_sign
     )
 
-  unique_scenario_duos <- unique(tweaked_parameter_runs_data$scenario_duo)
+  unique_scenario_duos <- sort(unique(tweaked_parameter_runs_data$scenario_duo))
   n_scenario_duos <- length(unique_scenario_duos)
 
   scenarios_pd_diff_sign_agreeing_rate <- data.frame(matrix(nrow = n_scenario_duos, ncol = n_scenario_duos))
@@ -152,12 +152,6 @@ compare_pd_diff_between_scenarios <- function(tweaked_parameter_runs_data) {
     }
   }
 
-  # sort rows and columns
-  scenarios_pd_diff_sign_agreeing_rate <- scenarios_pd_diff_sign_agreeing_rate[
-    order(row.names(scenarios_pd_diff_sign_agreeing_rate)),
-    order(names(scenarios_pd_diff_sign_agreeing_rate))
-    ]
-
   return(scenarios_pd_diff_sign_agreeing_rate)
 }
 
@@ -169,14 +163,16 @@ compare_npv_diff_between_scenarios <- function(tweaked_parameter_runs_data) {
       scenario_duo, company_name, sector, business_unit,
       net_present_value_baseline, net_present_value_shock
     ) %>%
-    dplyr::mutate(npv_diff = net_present_value_baseline - net_present_value_shock) %>%
+    dplyr::mutate(npv_diff = round(net_present_value_baseline - net_present_value_shock)) %>%
+    dplyr::mutate(npv_diff=dplyr::if_else(npv_diff==0, NA, npv_diff)) %>%
+    dplyr::filter(npv_diff != 0) %>%
     dplyr::mutate(npv_diff_sign = sign(npv_diff)) %>%
     tidyr::pivot_wider(
       id_cols = c("company_name", "sector", "business_unit"),
       names_from = scenario_duo,
       values_from = npv_diff_sign
     )
-  unique_scenario_duos <- unique(tweaked_parameter_runs_data$scenario_duo)
+  unique_scenario_duos <- sort(unique(tweaked_parameter_runs_data$scenario_duo))
   n_scenario_duos <- length(unique_scenario_duos)
 
   scenarios_npv_diff_sign_agreeing_rate <- data.frame(matrix(nrow = n_scenario_duos, ncol = n_scenario_duos))
@@ -200,30 +196,157 @@ compare_npv_diff_between_scenarios <- function(tweaked_parameter_runs_data) {
     }
   }
 
-  # sort rows and columns
-  scenarios_npv_diff_sign_agreeing_rate <- scenarios_npv_diff_sign_agreeing_rate[
-    order(row.names(scenarios_npv_diff_sign_agreeing_rate)),
-    order(names(scenarios_npv_diff_sign_agreeing_rate))
-  ]
-
-
   return(scenarios_npv_diff_sign_agreeing_rate)
 }
 
 count_n_companies_per_duo <- function(data){
-  n_companies_per_duo <- data %>%
-    dplyr::distinct(scenario_duo, company_name) %>%
+  data_npv_diff <-   data %>%
+    # filtering on term 5 to focus on a single npv value
+    dplyr::filter(term == 5) %>%
+    dplyr::select(
+      scenario_duo, company_name, sector, business_unit,
+      net_present_value_baseline, net_present_value_shock
+    ) %>%
+    dplyr::mutate(npv_diff = round(net_present_value_baseline - net_present_value_shock)) %>%
+    dplyr::mutate(npv_diff=dplyr::if_else(npv_diff==0, NA, npv_diff)) %>%
+    dplyr::filter(!is.na(npv_diff))
+
+  n_companies_per_duo <- data_npv_diff %>%
+    dplyr::distinct(scenario_duo, company_name, business_unit) %>%
     dplyr::group_by(scenario_duo) %>%
-    dplyr::summarise(n_companies=dplyr::n())
+    dplyr::summarise(n_companies_bu=dplyr::n())
   n_companies_per_duo <- n_companies_per_duo %>% dplyr::arrange(scenario_duo)
   return(n_companies_per_duo)
 }
 
-comparison_npv_diff <- compare_npv_diff_between_scenarios(all_crispy)
-comparison_pd_diff <- compare_pd_diff_between_scenarios(all_crispy)
-n_companies_per_duo <- count_n_companies_per_duo(all_crispy)
+
+correl_npv_diff_between_scenarios <- function(tweaked_parameter_runs_data) {
+  npv_scenarios_diff <- tweaked_parameter_runs_data %>%
+    # filtering on term 5 to focus on a single npv value
+    dplyr::filter(term == 5) %>%
+    dplyr::select(
+      scenario_duo, company_name, sector, business_unit,net_present_value_difference
+    )
+
+  unique_scenario_duos <- sort(unique(tweaked_parameter_runs_data$scenario_duo))
+  n_scenario_duos <- length(unique_scenario_duos)
+
+  scenarios_npv_diff_corr_matrix <- data.frame(matrix(nrow = n_scenario_duos, ncol = n_scenario_duos))
+  colnames(scenarios_npv_diff_corr_matrix) <- unique_scenario_duos
+  rownames(scenarios_npv_diff_corr_matrix) <- unique_scenario_duos
+
+  for (scenario_duo1 in unique_scenario_duos) {
+    for (scenario_duo2 in unique_scenario_duos) {
+      scenar1 <- npv_scenarios_diff %>% dplyr::filter(scenario_duo == scenario_duo1)
+      scenar2 <- npv_scenarios_diff %>% dplyr::filter(scenario_duo == scenario_duo2)
+
+      merge_comps <- dplyr::inner_join(scenar1 %>% dplyr::select(company_name,sector,business_unit, net_present_value_difference),
+                                       scenar2 %>% dplyr::select(company_name,sector,business_unit, net_present_value_difference),
+                                       by= dplyr::join_by(company_name,sector,business_unit))
+
+      correlation <- cor(merge_comps$net_present_value_difference.x,
+                         merge_comps$net_present_value_difference.y,
+                         method = 'pearson')
+
+      scenarios_npv_diff_corr_matrix[scenario_duo1, scenario_duo2] <- correlation
+      scenarios_npv_diff_corr_matrix[scenario_duo2, scenario_duo1] <- correlation
+    }
+  }
+
+  return(scenarios_npv_diff_corr_matrix)
+}
 
 
-write.xlsx(comparison_npv_diff, file=file.path(output_dir, output_excel), sheetName="comparison_npv_diff", row.names=TRUE)
-write.xlsx(comparison_pd_diff, file=file.path(output_dir, output_excel), sheetName="comparison_pd_diff", append=TRUE, row.names=TRUE)
-write.xlsx(n_companies_per_duo, file=file.path(output_dir, output_excel), sheetName="n_companies_per_duo", append=TRUE)
+
+use_duos <-
+  c(
+    "Oxford2021_base&Oxford2021_fast",
+    "IPR2021_baseline&IPR2021_RPS",
+    "IPR2021_baseline&IPR2021_FPS",
+    "NGFS2021_REMIND_CP&NGFS2021_REMIND_NZ2050",
+    "NGFS2021_REMIND_NDC&NGFS2021_REMIND_DT",
+    "NGFS2021_REMIND_CP&NGFS2021_REMIND_DT",
+    "NGFS2021_REMIND_NDC&NGFS2021_REMIND_DN0",
+    "NGFS2021_REMIND_CP&NGFS2021_REMIND_DN0",
+    "NGFS2021_REMIND_NDC&NGFS2021_REMIND_B2DS",
+    "NGFS2021_REMIND_CP&NGFS2021_REMIND_B2DS",
+    "NGFS2021_REMIND_NDC&NGFS2021_REMIND_NZ2050",
+    "NGFS2021_MESSAGE_NDC&NGFS2021_MESSAGE_NZ2050",
+    "NGFS2021_MESSAGE_CP&NGFS2021_MESSAGE_NZ2050",
+    "NGFS2021_MESSAGE_NDC&NGFS2021_MESSAGE_DT",
+    "NGFS2021_MESSAGE_CP&NGFS2021_MESSAGE_DT",
+    "NGFS2021_MESSAGE_NDC&NGFS2021_MESSAGE_DN0",
+    "NGFS2021_MESSAGE_CP&NGFS2021_MESSAGE_DN0",
+    "NGFS2021_MESSAGE_NDC&NGFS2021_MESSAGE_B2DS",
+    "NGFS2021_MESSAGE_CP&NGFS2021_MESSAGE_B2DS",
+    "NGFS2021_GCAM_NDC&NGFS2021_GCAM_NZ2050",
+    "NGFS2021_GCAM_CP&NGFS2021_GCAM_NZ2050",
+    "NGFS2021_GCAM_NDC&NGFS2021_GCAM_DT",
+    "NGFS2021_GCAM_CP&NGFS2021_GCAM_DT",
+    "NGFS2021_GCAM_NDC&NGFS2021_GCAM_DN0",
+    "NGFS2021_GCAM_CP&NGFS2021_GCAM_DN0",
+    "NGFS2021_GCAM_NDC&NGFS2021_GCAM_B2DS",
+    "NGFS2021_GCAM_CP&NGFS2021_GCAM_B2DS",
+    "GECO2021_CurPol&GECO2021_NDC-LTS",
+    "GECO2021_CurPol&GECO2021_1.5C-Unif",
+    "WEO2021_APS&WEO2021_NZE_2050",
+    "WEO2021_STEPS&WEO2021_NZE_2050",
+    "WEO2021_APS&WEO2021_SDS",
+    "WEO2021_STEPS&WEO2021_SDS"
+  )
+
+
+
+all_crispy_small <-
+  all_crispy %>% dplyr::filter(scenario_duo %in% use_duos)
+comparison_npv_diff <-
+  correl_npv_diff_between_scenarios(all_crispy_small)
+output_excel <-
+  glue::glue("scenario_pairs_comparisons_general.xlsx")
+write.xlsx(
+  comparison_npv_diff,
+  file = file.path(output_dir, output_excel),
+  sheetName = "comparison_npv_diff",
+  row.names = TRUE
+)
+
+for (bu in c(
+  "RenewablesCap",
+  "GasCap",
+  "NuclearCap",
+  "HydroCap",
+  "Gas",
+  "Oil",
+  "OilCap",
+  "Coal",
+  "CoalCap",
+  "Electric",
+  "Hybrid",
+  "ICE",
+  "FuelCell"
+)) {
+  use_duos <- c("Oxford2021_base&Oxford2021_fast", "IPR2021_baseline&IPR2021_RPS",
+                "NGFS2021_REMIND_CP&NGFS2021_REMIND_NZ2050",
+                "NGFS2021_MESSAGE_CP&NGFS2021_MESSAGE_NZ2050",
+                "NGFS2021_GCAM_CP&NGFS2021_GCAM_NZ2050",
+                "WEO2021_STEPS&WEO2021_NZE_2050")
+
+  all_crispy_small <-
+    all_crispy %>% dplyr::filter(scenario_duo %in% use_duos
+                                 , business_unit == bu)
+
+  comparison_npv_diff <-
+    correl_npv_diff_between_scenarios(all_crispy_small)
+  # comparison_pd_diff <- compare_pd_diff_between_scenarios(all_crispy_small)
+  # n_companies_per_duo <- count_n_companies_per_duo(all_crispy_small)
+
+  output_excel <- glue::glue("scenario_pairs_comparisons_{bu}.xlsx")
+  write.xlsx(
+    comparison_npv_diff,
+    file = file.path(output_dir, output_excel),
+    sheetName = "comparison_npv_diff",
+    row.names = TRUE
+  )
+  # write.xlsx(comparison_pd_diff, file=file.path(output_dir, output_excel), sheetName="comparison_pd_diff", append=TRUE, row.names=TRUE)
+  # write.xlsx(n_companies_per_duo, file=file.path(output_dir, output_excel), sheetName="n_companies_per_duo", append=TRUE)
+}
