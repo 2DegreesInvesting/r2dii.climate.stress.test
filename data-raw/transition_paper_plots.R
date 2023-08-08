@@ -188,7 +188,7 @@ use_duos <-
 
 all_crispy_filtered <- all_crispy_scenario_named %>%
   dplyr::filter(scenario_duo %in% use_duos,
-                term==5)
+                term == 5)
 
 symlog <- function(x) {
   sign(x) * log(abs(x))
@@ -232,7 +232,7 @@ npv_pivoted$metric <-
 for (scenario in
      all_crispy_filtered %>% distinct(target_duo) %>% pull())
 {
-  filtred_data <- npv_pivoted%>%
+  filtred_data <- npv_pivoted %>%
     filter(target_duo == scenario)
 
   le_plot <- filtred_data  %>%
@@ -250,12 +250,16 @@ for (scenario in
       hjust = 1,
       size = 8
     )) +
-    scale_fill_manual(values = c(REMIND = 'aquamarine1',
-                                 MESSAGE = 'yellow',
-                                 OXFORD='chartreuse3',
-                                 GCAM='brown2',
-                                 IEA='deepskyblue2',
-                                 IPR='darkviolet'))
+    scale_fill_manual(
+      values = c(
+        REMIND = 'aquamarine1',
+        MESSAGE = 'yellow',
+        OXFORD = 'chartreuse3',
+        GCAM = 'brown2',
+        IEA = 'deepskyblue2',
+        IPR = 'darkviolet'
+      )
+    )
 
   ggplot2::ggsave(
     filename = fs::path("transition_risk_paper", "npv_plots", scenario, ext = "png"),
@@ -294,43 +298,148 @@ pd_pivoted <-
 
 for (scenario in
      all_crispy_filtered %>% distinct(target_duo) %>% pull())
-  {
-    filtred_data <- pd_pivoted%>%
-      filter(target_duo == scenario)
+{
+  filtred_data <- pd_pivoted %>%
+    filter(target_duo == scenario)
 
-    le_plot <- filtred_data %>%
-      ggplot(aes(
-        x = metric,
-        y = value,
-        fill = scenario_provider
-      )) +
-      geom_boxplot() +
-      facet_wrap( ~ business_unit) +
-      xlab("metric") +
-      ylab("PD") +
-      theme(axis.text.x = element_text(
-        angle = 45,
-        hjust = 1,
-        size = 8
-      )) +
-      scale_fill_manual(values = c(REMIND = 'aquamarine1',
-                                   MESSAGE = 'yellow',
-                                   OXFORD='chartreuse3',
-                                   GCAM='brown2',
-                                   IEA='deepskyblue2',
-                                   IPR='darkviolet'))
-
-    ggplot2::ggsave(
-      filename = fs::path(
-        "transition_risk_paper",
-        "pd_plots",
-        scenario,
-        ext = "png"
-      ),
-      plot = le_plot,
-      width = 25,
-      height = 20,
-      units = "cm"
+  le_plot <- filtred_data %>%
+    ggplot(aes(x = metric,
+               y = value,
+               fill = scenario_provider)) +
+    geom_boxplot() +
+    facet_wrap( ~ business_unit) +
+    xlab("metric") +
+    ylab("PD") +
+    theme(axis.text.x = element_text(
+      angle = 45,
+      hjust = 1,
+      size = 8
+    )) +
+    scale_fill_manual(
+      values = c(
+        REMIND = 'aquamarine1',
+        MESSAGE = 'yellow',
+        OXFORD = 'chartreuse3',
+        GCAM = 'brown2',
+        IEA = 'deepskyblue2',
+        IPR = 'darkviolet'
+      )
     )
-  }
+
+  ggplot2::ggsave(
+    filename = fs::path("transition_risk_paper",
+                        "pd_plots",
+                        scenario,
+                        ext = "png"),
+    plot = le_plot,
+    width = 25,
+    height = 20,
+    units = "cm"
+  )
+}
+
+scenarios_correlations <-
+  correl_npv_diff_between_scenarios(all_crispy_filtered)
+match_volumes <- count_non_zero_matches(all_crispy_filtered)
+
+
+data_plot <-
+  scenarios_correlations %>%
+  mutate(source_scenario = row.names(scenarios_correlations)) %>%
+  tidyr::pivot_longer(!source_scenario, names_to = "dest_scenario", values_to = "correlation") %>%
+  left_join(
+    all_crispy_filtered %>% distinct(scenario_duo, target_duo),
+    by = c("source_scenario" = "scenario_duo")
+  ) %>%
+  rename(source_target_duo = target_duo) %>%
+  left_join(
+    all_crispy_filtered %>% distinct(scenario_duo, target_duo),
+    by = c("dest_scenario" = "scenario_duo")
+  ) %>%
+  rename(dest_target_duo = target_duo) %>%
+  filter(source_scenario != dest_scenario)
+
+match_volumes_plot <- match_volumes%>%
+  mutate(source_scenario = row.names(scenarios_correlations)) %>%
+  tidyr::pivot_longer(!source_scenario, names_to = "dest_scenario", values_to = "volume")
+
+data_plot <- data_plot %>% left_join(match_volumes_plot)
+
+col_vector <-
+  unlist(mapply(brewer.pal, qual_col_pals$maxcolors, rownames(qual_col_pals)))
+unique_target_duo <- unique(data_plot$source_target_duo)
+unique_colors <- sample(col_vector, length(unique_target_duo))
+mapper_target_duo_color <-
+  setNames(unique_colors, unique_target_duo)
+
+
+data_plot <- data_plot %>%
+  mutate(source_target_duo_color = mapper_target_duo_color[source_target_duo],
+         dest_target_duo_color = mapper_target_duo_color[dest_target_duo])
+
+scenario_axis_color_order <- data_plot %>%
+  group_by(source_scenario, source_target_duo, source_target_duo_color) %>%
+  summarise(avg_correlation=median(correlation), .groups = "drop") %>%
+  arrange(avg_correlation) %>%
+  select(source_scenario, source_target_duo_color)
+data_plot$source_scenario <- factor(data_plot$source_scenario, levels=scenario_axis_color_order$source_scenario)
+
+
+ggplot2::ggplot(data_plot,aes(source_scenario, correlation)) +
+  geom_beeswarm(
+    priority = 'density',
+    size =  data_plot$volume/max(data_plot$volume)*2.5,
+    color = data_plot$dest_target_duo_color,
+    alpha=0.85,
+    method="center",cex = 2.5
+  ) + theme(axis.text.x = element_text(
+    angle = 45,
+    hjust = 1,
+    size = 8,
+    color=scenario_axis_color_order$source_target_duo_color
+  ))
+
+ggplot2::ggplot(data_plot,aes(source_scenario, correlation)) +
+  geom_beeswarm(
+    priority = 'density',
+    size =  data_plot$volume/max(data_plot$volume)*2.5,
+    color = data_plot$dest_target_duo_color,
+    alpha=0.7
+  ) + theme(axis.text.x = element_text(
+    angle = 45,
+    hjust = 1,
+    size = 8,
+    color=scenario_axis_color_order$source_target_duo_color
+  ))
+
+
+ggplot2::ggplot(data_plot,aes(source_scenario, correlation)) +
+  ggbeeswarm::geom_beeswarm(priority='density',size=2.5, color=data_plot$dest_target_duo_color)
+
+ggplot2::ggplot(data_plot,aes(source_scenario, correlation)) +
+  geom_beeswarm(
+    priority = 'density',
+    size = 2.5,
+    color = data_plot$dest_target_duo_color,
+    alpha=0.7,
+    cex=1.5
+  ) + theme(axis.text.x = element_text(
+    angle = 45,
+    hjust = 1,
+    size = 8,
+    color=scenario_axis_color_order$source_target_duo_color
+  ))
+
+ggplot2::ggplot(data_plot,aes(correlation, source_scenario)) +
+  geom_beeswarm(
+    priority = 'density',
+    size = 2.5,
+    color = data_plot$dest_target_duo_color,
+    alpha=0.7,
+    cex=1.5
+  ) + theme(axis.text.x = element_text(
+    angle = 45,
+    hjust = 1,
+    size = 8
+  ), axis.text.y = element_text(color=scenario_axis_color_order$source_target_duo_color))
 

@@ -137,7 +137,7 @@ use_duos <- c(# nz_duos,
 all_crispy_filtered <- all_crispy_target_named %>%
   dplyr::filter(scenario_duo %in% use_duos, term == 5)
 
-compare_npv_diff_between_scenarios <- function(data) {
+compare_sign_npv_diff_between_scenarios <- function(data) {
   npv_scenarios_change_in_diff_sign <- data %>%
     dplyr::select(
       scenario_duo,
@@ -391,7 +391,7 @@ for (scenario in
 
   addWorksheet(wb, sheetName = "global")
   scenarios_npv_diff_sign_agreeing_rate <-
-    compare_npv_diff_between_scenarios(data_filtered)
+    compare_sign_npv_diff_between_scenarios(data_filtered)
   openxlsx::writeData(
     wb,
     sheet = "global",
@@ -406,7 +406,7 @@ for (scenario in
   for (bu in data_filtered %>% distinct(business_unit) %>% pull()) {
     addWorksheet(wb, sheetName = bu)
     scenarios_npv_diff_sign_agreeing_rate <-
-      compare_npv_diff_between_scenarios(data_filtered %>%
+      compare_sign_npv_diff_between_scenarios(data_filtered %>%
                                           filter(business_unit == bu))
     openxlsx::writeData(
       wb,
