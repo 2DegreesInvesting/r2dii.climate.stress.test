@@ -63,8 +63,12 @@ all_crispy <- all_crispy %>%
   dplyr::mutate(scenario_duo = paste(baseline_scenario, "&", shock_scenario, sep = ""))
 
 
+
+
 nz_duos <-
   c(
+    "IPR2021_baseline&IPR2021_RPS",
+    "Oxford2021_base&Oxford2021_fast",
     "NGFS2021_REMIND_CP&NGFS2021_REMIND_NZ2050",
     # "NGFS2021_REMIND_NDC&NGFS2021_REMIND_NZ2050",
     # "NGFS2021_MESSAGE_NDC&NGFS2021_MESSAGE_NZ2050",
@@ -97,24 +101,17 @@ dn0_duos <-
 
 b2ds_duos <-
   c(
+    "IPR2021_baseline&IPR2021_FPS",
     # "NGFS2021_REMIND_NDC&NGFS2021_REMIND_B2DS",
     "NGFS2021_REMIND_CP&NGFS2021_REMIND_B2DS",
     # "NGFS2021_MESSAGE_NDC&NGFS2021_MESSAGE_B2DS",
     "NGFS2021_MESSAGE_CP&NGFS2021_MESSAGE_B2DS",
     # "NGFS2021_GCAM_NDC&NGFS2021_GCAM_B2DS",
-    "NGFS2021_GCAM_CP&NGFS2021_GCAM_B2DS"
-  )
-
-other_duos <-
-  c(
-    "Oxford2021_base&Oxford2021_fast",
-    "IPR2021_baseline&IPR2021_RPS",
-    "IPR2021_baseline&IPR2021_FPS",
-    # "GECO2021_CurPol&GECO2021_NDC-LTS",
-    # "GECO2021_CurPol&GECO2021_1.5C-Unif",
-    "WEO2021_APS&WEO2021_SDS",
+    "NGFS2021_GCAM_CP&NGFS2021_GCAM_B2DS",
+    # "WEO2021_APS&WEO2021_SDS",
     "WEO2021_STEPS&WEO2021_SDS"
   )
+
 
 
 all_crispy_target_named <- all_crispy %>%
@@ -128,11 +125,11 @@ all_crispy_target_named <- all_crispy %>%
     )
   )
 
-use_duos <- c(# nz_duos,
+use_duos <- c(
+  nz_duos,
   dt_duos,
   dn0_duos,
-  b2ds_duos,
-  other_duos)
+  b2ds_duos)
 
 all_crispy_filtered <- all_crispy_target_named %>%
   dplyr::filter(scenario_duo %in% use_duos, term == 5)
