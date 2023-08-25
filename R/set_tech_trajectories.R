@@ -59,7 +59,7 @@ set_baseline_trajectory <- function(data,
     dplyr::mutate(baseline_adj = dplyr::if_else(.data$baseline < 0 & dplyr::lag(.data$baseline, default = 0) >= 0, 0, .data$baseline)) %>%
     dplyr::ungroup() %>%
     dplyr::select(-baseline) %>%
-    dplyr::rename(baseline = .data$baseline_adj)
+    dplyr::rename(baseline = baseline_adj)
 
   data <- data %>%
     dplyr::select(-dplyr::all_of(c("scenario_change", "scen_to_follow")))
