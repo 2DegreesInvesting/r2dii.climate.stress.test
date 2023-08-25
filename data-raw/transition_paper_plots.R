@@ -5,187 +5,21 @@ library(ggplot2)
 library(RColorBrewer)
 library(ggbeeswarm)
 
-mlflow_python_bin <-
-  "/Users/bertrandgallice/opt/miniconda3/envs/mlflow_env/bin/python"
-mlflow_bin <-
-  "/Users/bertrandgallice/opt/miniconda3/envs/mlflow_env/bin/mlflow"
-
-Sys.setenv(MLFLOW_PYTHON_BIN = mlflow_python_bin,
-           MLFLOW_BIN = mlflow_bin)
-
-mlflow_uri <- "http://localhost:5000"
-exp_name <- "all_scenarios_default_params_old_data"
 output_dir <-
-  file.path("sa_st_inputs_master_raw", "scenar_comparison_corr")
-output_excel <- "scenario_pairs_comparisons.xlsx"
+  file.path("CGFI paper", "results_final", "agg_power_sector_df_wide")
 dir.create(output_dir, showWarnings = FALSE)
 
-### CODE
 
-read_csv_from_zipped_artifacts <-
-  function(tracking_uri,
-           experiment_name,
-           run_id,
-           csv_filename) {
-    mlflow::mlflow_set_tracking_uri(uri = tracking_uri)
-    mlflow::mlflow_client()
-
-    artifacts_path <-
-      mlflow::mlflow_download_artifacts(path = "", run_id = run_id)
-    f_conn <-
-      unz(file.path(artifacts_path, "artifacts.zip"), csv_filename)
-    artifact <- readr::read_csv(f_conn, show_col_types = FALSE)
-    return(artifact)
-  }
-
-
-mlflow::mlflow_set_tracking_uri(uri = mlflow_uri)
-mlflow::mlflow_client()
-experiment <- mlflow::mlflow_get_experiment(name = exp_name)
-experiment_id <- experiment[[1, "experiment_id"]]
-
-all_runs <-
-  mlflow::mlflow_search_runs(filter = "tags.LOG_STATUS = 'SUCCESS'",
-                             experiment_ids = as.character(experiment_id))
-
-
-all_crispy <- NULL
-for (run_id in all_runs[["run_uuid"]]) {
-  crispy <- read_csv_from_zipped_artifacts(
-    tracking_uri = mlflow_uri,
-    experiment_name = exp_name,
-    run_id = run_id,
-    csv_filename = "crispy_output.csv"
-  )
-
-  all_crispy <- dplyr::bind_rows(all_crispy, crispy)
-}
-
-all_crispy <- all_crispy %>%
-  dplyr::mutate(scenario_duo = paste(baseline_scenario, "&", shock_scenario, sep = ""))
-
-
-nz_duos <-
-  c(
-    "IPR2021_baseline&IPR2021_RPS",
-    "Oxford2021_base&Oxford2021_fast",
-    "NGFS2021_REMIND_CP&NGFS2021_REMIND_NZ2050",
-    # "NGFS2021_REMIND_NDC&NGFS2021_REMIND_NZ2050",
-    # "NGFS2021_MESSAGE_NDC&NGFS2021_MESSAGE_NZ2050",
-    "NGFS2021_MESSAGE_CP&NGFS2021_MESSAGE_NZ2050",
-    # "NGFS2021_GCAM_NDC&NGFS2021_GCAM_NZ2050",
-    "NGFS2021_GCAM_CP&NGFS2021_GCAM_NZ2050",
-    # "WEO2021_APS&WEO2021_NZE_2050",
-    "WEO2021_STEPS&WEO2021_NZE_2050" # stated policy scenario == current policies ?
-  )
-
-dt_duos <-
-  c(
-    # "NGFS2021_REMIND_NDC&NGFS2021_REMIND_DT",
-    "NGFS2021_REMIND_CP&NGFS2021_REMIND_DT",
-    # "NGFS2021_MESSAGE_NDC&NGFS2021_MESSAGE_DT",
-    "NGFS2021_MESSAGE_CP&NGFS2021_MESSAGE_DT",
-    # "NGFS2021_GCAM_NDC&NGFS2021_GCAM_DT",
-    "NGFS2021_GCAM_CP&NGFS2021_GCAM_DT"
-  )
-
-dn0_duos <-
-  c(
-    # "NGFS2021_REMIND_NDC&NGFS2021_REMIND_DN0",
-    "NGFS2021_REMIND_CP&NGFS2021_REMIND_DN0",
-    # "NGFS2021_MESSAGE_NDC&NGFS2021_MESSAGE_DN0",
-    "NGFS2021_MESSAGE_CP&NGFS2021_MESSAGE_DN0",
-    # "NGFS2021_GCAM_NDC&NGFS2021_GCAM_DN0",
-    "NGFS2021_GCAM_CP&NGFS2021_GCAM_DN0"
-  )
-
-b2ds_duos <-
-  c(
-    "IPR2021_baseline&IPR2021_FPS",
-    # "NGFS2021_REMIND_NDC&NGFS2021_REMIND_B2DS",
-    "NGFS2021_REMIND_CP&NGFS2021_REMIND_B2DS",
-    # "NGFS2021_MESSAGE_NDC&NGFS2021_MESSAGE_B2DS",
-    "NGFS2021_MESSAGE_CP&NGFS2021_MESSAGE_B2DS",
-    # "NGFS2021_GCAM_NDC&NGFS2021_GCAM_B2DS",
-    "NGFS2021_GCAM_CP&NGFS2021_GCAM_B2DS",
-    # "WEO2021_APS&WEO2021_SDS",
-    "WEO2021_STEPS&WEO2021_SDS"
-  )
-
-
-
-all_crispy_target_named <- all_crispy %>%
-  dplyr::mutate(
-    target_duo = dplyr::case_when(
-      scenario_duo %in% nz_duos ~ "NZ2050",
-      scenario_duo %in% dt_duos ~ "DT",
-      scenario_duo %in% dn0_duos ~ "DN0",
-      scenario_duo %in% b2ds_duos ~ "B2DS",
-      .default = "other"
-    )
-  )
-
-remind_duos <-
-  c(
-    "NGFS2021_REMIND_CP&NGFS2021_REMIND_NZ2050",
-    "NGFS2021_REMIND_CP&NGFS2021_REMIND_DT",
-    "NGFS2021_REMIND_CP&NGFS2021_REMIND_DN0",
-    "NGFS2021_REMIND_CP&NGFS2021_REMIND_B2DS"
-  )
-
-message_duos <-
-  c(
-    "NGFS2021_MESSAGE_CP&NGFS2021_MESSAGE_NZ2050",
-    "NGFS2021_MESSAGE_CP&NGFS2021_MESSAGE_DT",
-    "NGFS2021_MESSAGE_CP&NGFS2021_MESSAGE_DN0",
-    "NGFS2021_MESSAGE_CP&NGFS2021_MESSAGE_B2DS"
-  )
-
-gcam_duos <-
-  c(
-    "NGFS2021_GCAM_CP&NGFS2021_GCAM_NZ2050",
-    "NGFS2021_GCAM_CP&NGFS2021_GCAM_DN0",
-    "NGFS2021_GCAM_CP&NGFS2021_GCAM_DT",
-    "NGFS2021_GCAM_CP&NGFS2021_GCAM_B2DS"
-  )
-
-iea_duos <- c(# stated policy scenario == current policies ?
-  "WEO2021_STEPS&WEO2021_NZE_2050",
-  "WEO2021_STEPS&WEO2021_SDS")
-
-ipr_duos <- c("IPR2021_baseline&IPR2021_RPS",
-              "IPR2021_baseline&IPR2021_FPS")
-
-
-oxford_duos <-
-  c("Oxford2021_base&Oxford2021_fast")
-
-
-all_crispy_scenario_named <- all_crispy_target_named %>%
-  dplyr::mutate(
-    scenario_provider = dplyr::case_when(
-      scenario_duo %in% remind_duos ~ "REMIND",
-      scenario_duo %in% message_duos ~ "MESSAGE",
-      scenario_duo %in% gcam_duos ~ "GCAM",
-      scenario_duo %in% iea_duos ~ "IEA",
-      scenario_duo %in% ipr_duos ~ "IPR",
-      scenario_duo %in% oxford_duos ~ "OXFORD",
-      .default = NA
-    )
-  )
-
-
-use_duos <-
-  c(remind_duos,
-    message_duos,
-    gcam_duos,
-    iea_duos,
-    ipr_duos,
-    oxford_duos)
-
-all_crispy_filtered <- all_crispy_scenario_named %>%
-  dplyr::filter(scenario_duo %in% use_duos,
-                term == 5)
+# all_crispy_filtered <- all_crispy_filtered %>%
+#   dplyr::filter(sector=="Power") %>%
+#   group_by(company_name) %>%
+#   summarise(net_present_value_baseline=sum(net_present_value_baseline),
+#             net_present_value_shock=sum(net_present_value_shock),
+#             net_present_value_difference=net_present_value_shock-net_present_value_baseline,
+#             pd_baseline = sum(pd_baseline),
+#             pd_shock=sum(pd_shock),
+#             pd_difference=pd_shock-pd_baseline,
+#             .groups="drop")%>%mutate(npv_roc=(net_present_value_shock-net_present_value_baseline)/net_present_value_baseline)
 
 # # selection of a random set of colors
 # col_vector <-
@@ -200,8 +34,8 @@ all_crispy_filtered <- all_crispy_scenario_named %>%
 mapper_scenario_provider_color <-  c(
   REMIND = '#ffe119',
   MESSAGE = '#800000',
-  OXFORD = '#000075',
-  GCAM = '#f58231',
+  OXFORD = '#f58231',
+  GCAM = '#F7389a',
   IEA = '#469990',
   IPR = 'darkviolet'
 )
@@ -211,17 +45,17 @@ symlog <- function(x) {
   sign(x) * log(abs(x))
 }
 
-dir.create(
-  fs::path("transition_risk_paper", "npv_plots"),
-  recursive = T,
-  showWarnings = F
-)
+### NPV DISTRIB PLOTS
+
+dir.create(fs::path(output_dir, "npv_plots"),
+           recursive = T,
+           showWarnings = F)
 
 npv_pivoted <-
   all_crispy_filtered %>%
   select(
     company_name,
-    business_unit,
+    # business_unit,
     baseline_scenario,
     shock_scenario,
     scenario_duo,
@@ -259,7 +93,7 @@ for (scenario in
       fill = scenario_provider
     )) +
     geom_boxplot() +
-    facet_wrap(~ business_unit) +
+    # facet_wrap( ~ business_unit) +
     xlab("metric") +
     ylab("NPV") +
     theme(axis.text.x = element_text(
@@ -268,10 +102,14 @@ for (scenario in
       size = 8
     )) +
     scale_fill_manual(values = mapper_scenario_provider_color) +
-    ggtitle(paste0("Companies distribution of NPV values for ", scenario ,"scenarios"))
+    ggtitle(paste0(
+      "Companies distribution of NPV values for ",
+      scenario ,
+      "scenarios"
+    ))
 
   ggplot2::ggsave(
-    filename = fs::path("transition_risk_paper", "npv_plots", scenario, ext = "png"),
+    filename = fs::path(output_dir, "npv_plots", scenario, ext = "png"),
     plot = le_plot,
     width = 25,
     height = 20,
@@ -279,17 +117,26 @@ for (scenario in
   )
 }
 
-dir.create(
-  fs::path("transition_risk_paper", "pd_plots"),
-  recursive = T,
-  showWarnings = F
-)
+
+
+
+
+
+
+
+
+
+### PD DISTRIB PLOTS
+
+dir.create(fs::path(output_dir, "pd_plots"),
+           recursive = T,
+           showWarnings = F)
 
 pd_pivoted <-
   all_crispy_filtered %>%
   select(
     company_name,
-    business_unit,
+    # business_unit,
     baseline_scenario,
     shock_scenario,
     scenario_duo,
@@ -316,7 +163,7 @@ for (scenario in
                y = value,
                fill = scenario_provider)) +
     geom_boxplot() +
-    facet_wrap(~ business_unit) +
+    # facet_wrap( ~ business_unit) +
     xlab("metric") +
     ylab("PD") +
     theme(axis.text.x = element_text(
@@ -324,11 +171,15 @@ for (scenario in
       hjust = 1,
       size = 8
     )) +
-    scale_fill_manual(values = mapper_scenario_provider_color)+
-    ggtitle(paste0("Companies distribution of PD values for ", scenario ,"scenarios"))
+    scale_fill_manual(values = mapper_scenario_provider_color) +
+    ggtitle(paste0(
+      "Companies distribution of PD values for ",
+      scenario ,
+      "scenarios"
+    ))
 
   ggplot2::ggsave(
-    filename = fs::path("transition_risk_paper",
+    filename = fs::path(output_dir,
                         "pd_plots",
                         scenario,
                         ext = "png"),
@@ -339,17 +190,33 @@ for (scenario in
   )
 }
 
-### CORRELATIONS SWARMPLOT
+
+
+
+
+
+
+
+
+
+
+
+
+# CORRELATIONS SWARMPLOT
+# all_crispy_filtered%>% readr::write_csv("CGFI paper/CORRECT_CRISPY_DATA.csv")
+
+swarm_plot_dir <- "correl_swarm_plots_npv_diff_pearson"
 
 dir.create(
-  fs::path("transition_risk_paper",
-           "correl_swarm_plots"),
+  fs::path(output_dir,
+           swarm_plot_dir),
   recursive = T,
   showWarnings = F
 )
 
 for (scenario in
-     c("all", all_crispy_filtered %>% distinct(target_duo) %>% pull())) {
+     c("all", all_crispy_filtered %>% distinct(target_duo) %>% pull()))
+{
   # compute volumes and correlations
   if (scenario == "all") {
     scenarios_correlations <-
@@ -359,7 +226,7 @@ for (scenario in
   } else{
     scenarios_correlations <-
       correl_npv_diff_between_scenarios(all_crispy_filtered %>%
-                                          filter(target_duo == scenario))
+                                         filter(target_duo == scenario))
     match_volumes <- count_non_zero_matches(all_crispy_filtered %>%
                                               filter(target_duo == scenario))
     size <- 10
@@ -425,23 +292,23 @@ for (scenario in
       priority = 'density',
       method = "center",
       cex = 2.5,
-      size=size+1
-    )+
+      size = size + 1
+    ) +
     geom_beeswarm(
       data_plot,
       mapping = aes(
         x = source_scenario,
         y = correlation,
-        colour = dest_scenario_provider
-        # ,size = volume / max(volume)
-      ),
+        colour = dest_scenario_provider,
+        size = volume / max(volume)
+      )
+      ,
       priority = 'density',
       # alpha = 0.85,
       method = "center",
       cex = 2.5,
-      size=size
-    )  +
-
+      size = size
+    ) +
     theme(
       axis.text.x = element_text(
         angle = 45,
@@ -451,20 +318,175 @@ for (scenario in
         # face = "bold"
       )
     ) +
-    scale_color_manual(values = mapper_scenario_provider_color)+
-    ggtitle(paste0("Correlations between NPV difference of companies between IAM, for ", scenario ," scenarios"))
+    scale_color_manual(values = mapper_scenario_provider_color) +
+    ggtitle(
+      paste0(
+        "Correlations between NPV difference of companies between IAM, for ",
+        scenario ,
+        " scenarios"
+      )
+    )
 
   ggplot2::ggsave(
-    filename = fs::path(
-      "transition_risk_paper",
-      "correl_swarm_plots",
-      scenario,
-      ext = "png"
-    ),
+    filename = fs::path(output_dir,
+                        swarm_plot_dir,
+                        scenario,
+                        ext = "png"),
     plot = le_plot,
-    width =30,
+    width = 30,
     height = 20,
     units = "cm"
   )
 
- }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+# CORRELATIONS SWARMPLOT
+# all_crispy_filtered%>% readr::write_csv("CGFI paper/CORRECT_CRISPY_DATA.csv")
+
+swarm_plot_dir <- "correl_swarm_plots_npv_roc_pearson"
+
+dir.create(
+  fs::path(output_dir,
+           swarm_plot_dir),
+  recursive = T,
+  showWarnings = F
+)
+
+for (scenario in
+     c("all", all_crispy_filtered %>% distinct(target_duo) %>% pull()))
+{
+  # compute volumes and correlations
+  if (scenario == "all") {
+    scenarios_correlations <-
+      correl_npv_roc_between_scenarios(all_crispy_filtered)
+    match_volumes <- count_non_zero_matches(all_crispy_filtered)
+    size <- 1
+  } else{
+    scenarios_correlations <-
+      correl_npv_roc_between_scenarios(all_crispy_filtered %>%
+                                          filter(target_duo == scenario))
+    match_volumes <- count_non_zero_matches(all_crispy_filtered %>%
+                                              filter(target_duo == scenario))
+    size <- 10
+  }
+
+  # pivot correlations to source->target scenario_duo, correlation as values
+  data_plot <-
+    scenarios_correlations %>%
+    mutate(source_scenario = row.names(scenarios_correlations)) %>%
+    tidyr::pivot_longer(!source_scenario,
+                        names_to = "dest_scenario",
+                        values_to = "correlation") %>%
+    left_join(
+      all_crispy_filtered %>% distinct(scenario_duo, scenario_provider),
+      by = c("source_scenario" = "scenario_duo")
+    ) %>%
+    rename(source_scenario_provider = scenario_provider) %>%
+    left_join(
+      all_crispy_filtered %>% distinct(scenario_duo, scenario_provider),
+      by = c("dest_scenario" = "scenario_duo")
+    ) %>%
+    rename(dest_scenario_provider = scenario_provider) %>%
+    filter(source_scenario != dest_scenario)
+  data_plot <- data_plot %>% tidyr::drop_na()
+
+  # adds volume of match to scenario_pair source/target
+  match_volumes_plot <- match_volumes %>%
+    mutate(source_scenario = row.names(scenarios_correlations)) %>%
+    tidyr::pivot_longer(!source_scenario,
+                        names_to = "dest_scenario",
+                        values_to = "volume")
+
+  data_plot <- data_plot %>% left_join(match_volumes_plot)
+
+  # assign colors to points
+  data_plot <- data_plot %>%
+    mutate(
+      source_scenario_provider_color = mapper_scenario_provider_color[source_scenario_provider],
+      dest_scenario_provider_color = mapper_scenario_provider_color[dest_scenario_provider]
+    )
+
+  # assign colors to axis text, and arrange x labels order from lowest average corr to highest
+  scenario_axis_color_order <- data_plot %>%
+    group_by(source_scenario,
+             source_scenario_provider,
+             source_scenario_provider_color) %>%
+    summarise(avg_correlation = mean(correlation),
+              .groups = "drop") %>%
+    arrange(avg_correlation) %>%
+    select(source_scenario, source_scenario_provider_color)
+  data_plot$source_scenario <-
+    factor(data_plot$source_scenario, levels = scenario_axis_color_order$source_scenario)
+
+
+  le_plot <- ggplot2::ggplot(clip = "off") +
+    geom_beeswarm(
+      data_plot,
+      mapping = aes(
+        x = source_scenario,
+        y = correlation,
+        colour = "#000000"
+        # alpha = 1
+      ),
+      priority = 'density',
+      method = "center",
+      cex = 2.5,
+      size = size + 1
+    ) +
+    geom_beeswarm(
+      data_plot,
+      mapping = aes(
+        x = source_scenario,
+        y = correlation,
+        colour = dest_scenario_provider,
+        size = volume / max(volume)
+      )
+      ,
+      priority = 'density',
+      # alpha = 0.85,
+      method = "center",
+      cex = 2.5,
+      size = size
+    ) +
+    theme(
+      axis.text.x = element_text(
+        angle = 45,
+        hjust = 1,
+        size = 8,
+        color = scenario_axis_color_order$source_scenario_provider_color,
+        # face = "bold"
+      )
+    ) +
+    scale_color_manual(values = mapper_scenario_provider_color) +
+    ggtitle(
+      paste0(
+        "Correlations between NPV rate of change of companies between IAM, for ",
+        scenario ,
+        " scenarios"
+      )
+    )
+
+  ggplot2::ggsave(
+    filename = fs::path(output_dir,
+                        swarm_plot_dir,
+                        scenario,
+                        ext = "png"),
+    plot = le_plot,
+    width = 30,
+    height = 20,
+    units = "cm"
+  )
+
+}
