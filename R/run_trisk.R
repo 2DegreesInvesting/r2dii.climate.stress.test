@@ -56,7 +56,7 @@ run_trisk <- function(input_path,
                       div_netprofit_prop_coef = 1,
                       shock_year = 2030,
                       scenario_geography = "Global",
-                      start_year = 2021,
+                      start_year = 2022,
                       carbon_price_model = "no_carbon_tax",
                       market_passthrough = 0,
                       return_results = FALSE) {
