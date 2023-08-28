@@ -1,4 +1,4 @@
-st_read_agnostic <- function(dir, start_year, sectors, risk_type) {
+st_read_agnostic <- function(dir, start_year, sectors, risk_type, start_year_two) {
 
   # capacity_factors are only needed for power sector
   if ("Power" %in% sectors) {
@@ -11,7 +11,7 @@ st_read_agnostic <- function(dir, start_year, sectors, risk_type) {
   out <- list(
     capacity_factors_power = capacity_factors_power,
     df_price = read_price_data(price_data_file(dir)),
-    scenario_data = read_scenario_data(scenario_data_file(dir, start_year)),
+    scenario_data = read_scenario_data(scenario_data_file(dir, start_year_two)),
     financial_data = read_financial_data(financial_data_file(dir)),
     production_data = read_production_data(production_data_file(dir))
   )
