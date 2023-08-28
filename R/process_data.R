@@ -532,6 +532,14 @@ process_production_data <- function(data, start_year, end_year, time_horizon,
         .data$plan_emission_factor
       )
     )
+  data_processed <- data_processed %>%
+    dplyr::mutate(
+      plan_sec_prod = dplyr::if_else(
+        is.na(.data$plan_sec_prod),
+        0,
+        .data$plan_sec_prod
+      )
+    )
 
   data_processed %>%
     report_missings(name_data = "production data", throw_error = TRUE)
