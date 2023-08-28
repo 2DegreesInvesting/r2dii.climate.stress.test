@@ -16,7 +16,7 @@
        8 div_netprofit_prop_coef double    1             <NA>              0.8   1    
        9 shock_year              double    2030          <NA>              2025  2035 
       10 scenario_geography      character Global        AdvancedEconomie~ <NA>  <NA> 
-      11 start_year              double    2021          <NA>              2021  2021 
+      11 start_year              double    2022          <NA>              2022  2022 
       12 settlement_factor       double    1             <NA>              0     1    
       13 exp_share_damages_paid  double    0.027         <NA>              0     1    
       14 scc                     double    40            <NA>              0     10000
