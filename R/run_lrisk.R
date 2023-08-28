@@ -169,7 +169,7 @@ run_lrisk_iteration <- function(args_list) {
 }
 
 # Avoid R CMD check NOTE: "Undefined global functions or variables"
-globalVariables(c(names(formals(run_lrisk)), "iter_var", "end_year"))
+globalVariables(c(names(formals(run_lrisk)), "iter_var", "end_year", "start_year_two"))
 
 read_and_process_and_calc_lrisk <- function(args_list) {
   list2env(args_list, envir = rlang::current_env())
@@ -193,7 +193,7 @@ read_and_process_and_calc_lrisk <- function(args_list) {
 
   cat("-- Reading input data from designated input path. \n")
 
-  data <- st_read_agnostic(input_path, start_year = start_year, sectors = sectors_and_technologies_list$sectors, risk_type = "lrisk")
+  data <- st_read_agnostic(input_path, start_year = start_year, sectors = sectors_and_technologies_list$sectors, risk_type = "lrisk", start_year_two = start_year_two)
 
   cat("-- Processing input data. \n")
 
