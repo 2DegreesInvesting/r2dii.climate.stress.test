@@ -13,7 +13,11 @@ investor_name_placeholder <- "Meta Investor"
 
 calculation_level_lookup <- "company"
 
-time_horizon_lookup <- 5
+# TODO this value must be removed everywhere it is referred
+# and the code using it must be refactored to not use it anymore.
+# It seems it refers to the time horizon in the production data
+# It is confusing to have this variable as well as end_year and start_year
+time_horizon_lookup <- 4
 
 flat_multiplier_lookup <- 1
 

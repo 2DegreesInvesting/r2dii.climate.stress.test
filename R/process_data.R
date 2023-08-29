@@ -376,7 +376,7 @@ process_financial_data <- function(data) {
 st_process <- function(data, scenario_geography, baseline_scenario,
                        shock_scenario, sectors, technologies, start_year, carbon_price_model,
                        log_path, end_year) {
-  time_horizon <- end_year - start_year # TODO refactor to remove this param
+
   scenarios_filter <- c(baseline_scenario, shock_scenario)
 
   df_price <- process_price_data(
@@ -414,7 +414,7 @@ st_process <- function(data, scenario_geography, baseline_scenario,
     data$production_data,
     start_year = start_year,
     end_year = end_year,
-    time_horizon = time_horizon,
+    time_horizon = time_horizon_lookup,
     scenario_geography_filter = scenario_geography,
     sectors = sectors,
     technologies = technologies,
@@ -472,7 +472,7 @@ st_process <- function(data, scenario_geography, baseline_scenario,
 #' @param data A tibble of data of type indicated by function name.
 #' @param start_year Numeric, holding start year of analysis.
 #' @param end_year Numeric, holding end year of analysis.
-#' @param time_horizon Numeric, holding time horizon of analysis.
+#' @param time_horizon Numeric, holding time horizon of production data.
 #' @param scenario_geography_filter Character. A vector of length 1 that
 #'   indicates which geographic scenario to apply in the analysis.
 #' @param sectors Character vector, holding considered sectors.
