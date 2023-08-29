@@ -13,7 +13,7 @@ investor_name_placeholder <- "Meta Investor"
 
 # vector holding vars to nest production data input by
 prod_nesting_vars_lookup <- c(
-  "ald_sector", "technology", "scenario_geography", "company_name", "id"
+  "ald_sector", "technology", "scenario_geography", "company_name" #, "id"
 )
 
 calculation_level_lookup <- "company"
