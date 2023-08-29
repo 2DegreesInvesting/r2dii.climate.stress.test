@@ -67,24 +67,6 @@ check_financial_data <- function(financial_data,
   return(invisible(financial_data))
 }
 
-#' Wrangle and check production input data
-#'
-#' @param data A tibble holding production data.
-#' @param start_year Numeric. Start year of the analysis
-#' @param time_horizon Numeric. Number of years of forward looking production data
-#'
-#' @return Returns data invisibly.
-wrangle_and_check_production_data <- function(data, start_year, time_horizon) {
-  data <- data %>%
-    tidyr::complete(
-      year = seq(start_year, start_year + time_horizon),
-      tidyr::nesting(!!!rlang::syms(prod_nesting_vars_lookup))
-    ) %>%
-    dplyr::mutate(plan_tech_prod = dplyr::if_else(is.na(.data$plan_tech_prod), 0, .data$plan_tech_prod))
-
-  return(data)
-}
-
 #' Fill missing values on annual_profits
 #'
 #' Function fill missing rows on cols company_id, pd, net_profit_margin,
@@ -223,10 +205,11 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars, risk_type) 
   if (risk_type == "lrisk") {
     select_cols <- c(merge_by_cols, "technology", "company_is_litigated", "settlement")
     crispy_output <- crispy_output %>%
-      dplyr::inner_join(results_list$company_trajectories %>%
-        dplyr::select(!!select_cols) %>%
-        dplyr::distinct_all(),
-      by = c(merge_by_cols, "technology") # inlcuding since settlement is a technology level variable
+      dplyr::inner_join(
+        results_list$company_trajectories %>%
+          dplyr::select(!!select_cols) %>%
+          dplyr::distinct_all(),
+        by = c(merge_by_cols, "technology") # inlcuding since settlement is a technology level variable
       )
 
     crispy_output <- crispy_output %>%

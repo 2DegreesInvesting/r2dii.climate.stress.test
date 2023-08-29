@@ -16,7 +16,7 @@ run_lrisk(
   div_netprofit_prop_coef = 1,
   shock_year = 2030,
   scenario_geography = "Global",
-  start_year = 2021,
+  start_year = 2022,
   settlement_factor = 1,
   exp_share_damages_paid = 0.027,
   scc = 40L,

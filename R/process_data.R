@@ -169,7 +169,6 @@ remove_high_carbon_tech_with_missing_production <- function(data,
     )
 
   if (nrow(companies_missing_high_carbon_tech_production) > 0) {
-
     # information on companies for which at least 1 technology is lost
     affected_company_sector_tech_overview <- companies_missing_high_carbon_tech_production %>%
       dplyr::select(dplyr::all_of(c("company_name", "ald_sector", "technology"))) %>%
@@ -253,7 +252,6 @@ harmonise_cap_fac_geo_names <- function(data) {
 #' @noRd
 process_price_data <- function(data, technologies, sectors, start_year, end_year,
                                scenarios_filter) {
-
   # adding dummy unit price data for automotive data
   if ("Automotive" %in% sectors) {
     auto_tech <- p4i_p4b_sector_technology_lookup %>%
@@ -378,6 +376,7 @@ process_financial_data <- function(data) {
 st_process <- function(data, scenario_geography, baseline_scenario,
                        shock_scenario, sectors, technologies, start_year, carbon_price_model,
                        log_path, end_year) {
+
   scenarios_filter <- c(baseline_scenario, shock_scenario)
 
   df_price <- process_price_data(
@@ -473,7 +472,7 @@ st_process <- function(data, scenario_geography, baseline_scenario,
 #' @param data A tibble of data of type indicated by function name.
 #' @param start_year Numeric, holding start year of analysis.
 #' @param end_year Numeric, holding end year of analysis.
-#' @param time_horizon Numeric, holding time horizon of analysis.
+#' @param time_horizon Numeric, holding time horizon of production data.
 #' @param scenario_geography_filter Character. A vector of length 1 that
 #'   indicates which geographic scenario to apply in the analysis.
 #' @param sectors Character vector, holding considered sectors.
@@ -488,10 +487,6 @@ process_production_data <- function(data, start_year, end_year, time_horizon,
     dplyr::filter(.data$ald_sector %in% .env$sectors) %>%
     dplyr::filter(.data$technology %in% .env$technologies) %>%
     dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$start_year + .env$time_horizon)) %>%
-    wrangle_and_check_production_data(
-      start_year = start_year,
-      time_horizon = time_horizon
-    ) %>%
     remove_sectors_with_missing_production_end_of_forecast(
       start_year = start_year,
       time_horizon = time_horizon,
@@ -521,18 +516,7 @@ process_production_data <- function(data, start_year, end_year, time_horizon,
     report_missing_col_combinations(col_names = c("scenario_geography", "technology", "year")) %>%
     report_all_duplicate_kinds(composite_unique_cols = cuc_production_data)
 
-  # TODO: check if still required
-  # if_plan_emission_factor is NA and plan_tech_prod is zero, set the emission
-  # factor to 0 as well, as it will not contribute to company emissions
-  data_processed <- data_processed %>%
-    dplyr::mutate(
-      plan_emission_factor = dplyr::if_else(
-        is.na(.data$plan_emission_factor) & .data$plan_tech_prod == 0,
-        0,
-        .data$plan_emission_factor
-      )
-    )
-
+  # checks that no missing values exist in the data
   data_processed %>%
     report_missings(name_data = "production data", throw_error = TRUE)
 

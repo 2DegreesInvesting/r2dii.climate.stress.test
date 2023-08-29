@@ -56,7 +56,7 @@ run_trisk <- function(input_path,
                       div_netprofit_prop_coef = 1,
                       shock_year = 2030,
                       scenario_geography = "Global",
-                      start_year = 2021,
+                      start_year = 2022,
                       carbon_price_model = "no_carbon_tax",
                       market_passthrough = 0,
                       return_results = FALSE) {
@@ -167,7 +167,7 @@ globalVariables(c(names(formals(run_trisk)), "iter_var", "end_year"))
 read_and_process_and_calc <- function(args_list) {
   list2env(args_list, envir = rlang::current_env())
 
-  log_path <- file.path(output_path,sprintf("log_file_%s_%s_%s.txt", iter_var, shock_scenario, scenario_geography))
+  log_path <- file.path(output_path, sprintf("log_file_%s_%s_%s.txt", iter_var, shock_scenario, scenario_geography))
 
   paste_write("\n\nIteration with parameter settings:", log_path = log_path)
   purrr::walk(names(args_list), function(name) {
