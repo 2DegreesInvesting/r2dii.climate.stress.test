@@ -22,7 +22,7 @@ process_production_data(
 
 \item{end_year}{Numeric, holding end year of analysis.}
 
-\item{time_horizon}{Numeric, holding time horizon of analysis.}
+\item{time_horizon}{Numeric, holding time horizon of production data.}
 
 \item{scenario_geography_filter}{Character. A vector of length 1 that
 indicates which geographic scenario to apply in the analysis.}
