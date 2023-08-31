@@ -260,7 +260,7 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars, risk_type) 
   } else {
     crispy_output <- crispy_output %>%
       dplyr::select(
-        .data$company_name, .data$sector, .data$business_unit,
+        .data$id, .data$company_name, .data$sector, .data$business_unit,
         .data$roll_up_type, .data$scenario_geography,
         .data$baseline_scenario, .data$shock_scenario, .data$lgd,
         .data$risk_free_rate, .data$discount_rate, .data$dividend_rate,
