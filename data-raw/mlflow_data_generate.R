@@ -18,14 +18,19 @@ Sys.setenv(
 baseline_scenarios <- c(
   # "IPR2021_baseline", "Oxford2021_base", "NGFS2021_REMIND_CP",
   #                       "NGFS2021_MESSAGE_CP", "NGFS2021_GCAM_CP", "WEO2021_STEPS",
-                        "NGFS2021_GCAM_NDC")
+                        "NGFS2021_GCAM_NDC", "NGFS2021_REMIND_NDC",
+                        "NGFS2021_MESSAGE_NDC")
 shock_scenarios <-c(
   # "IPR2021_RPS", "Oxford2021_fast", "NGFS2021_REMIND_NZ2050",
   #                   "NGFS2021_MESSAGE_NZ2050", "NGFS2021_GCAM_NZ2050", "WEO2021_NZE_2050",
   #                   "NGFS2021_REMIND_DT", "NGFS2021_MESSAGE_DT", "NGFS2021_GCAM_DT",
   #                   "NGFS2021_REMIND_DN0", "NGFS2021_MESSAGE_DN0", "NGFS2021_GCAM_DN0",
   #                   "IPR2021_FPS", "NGFS2021_REMIND_B2DS", "NGFS2021_MESSAGE_B2DS",
-                    "NGFS2021_GCAM_B2DS"
+                    # "NGFS2021_GCAM_B2DS"
+  "NGFS2021_REMIND_NZ2050", "NGFS2021_MESSAGE_NZ2050",  "NGFS2021_GCAM_NZ2050",
+  "NGFS2021_REMIND_DT", "NGFS2021_MESSAGE_DT", "NGFS2021_GCAM_DT",
+  "NGFS2021_REMIND_DN0", "NGFS2021_MESSAGE_DN0", "NGFS2021_GCAM_DN0",
+  "NGFS2021_REMIND_B2DS", "NGFS2021_MESSAGE_B2DS"
                     # , "WEO2021_SDS"
                     )
 # baseline_scenarios <- c("WEO2021_STEPS")
