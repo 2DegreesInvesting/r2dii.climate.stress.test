@@ -260,9 +260,14 @@ all_crispy_filtered <- all_crispy_scenario_named %>%
   )%>%
   dplyr::filter(scenario_duo %in% use_duos,
                 term == 5
-                ,sector=="Power")
+                ,sector=="Coal")
 
 # %>%
 #   select(-c(sector)) %>%
 #   rename(sector=business_unit)
 
+
+all_crispy_filtered <- all_crispy_filtered %>% mutate(
+  scenario_duo_bckp=scenario_duo,
+  scenario_duo=purrr::map_chr(stringr::str_split(scenario_duo, "&"), function(x) {x[2]})
+)

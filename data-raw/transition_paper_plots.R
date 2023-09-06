@@ -6,7 +6,7 @@ library(RColorBrewer)
 library(ggbeeswarm)
 
 output_dir <-
-  file.path("CGFI paper", "results_final", "agg_power_sector_df_wide")
+  file.path("CGFI paper", "results_final", "agg_Coal_sector_df_wide")
 dir.create(output_dir, showWarnings = FALSE)
 
 
@@ -31,13 +31,14 @@ dir.create(output_dir, showWarnings = FALSE)
 # mapper_scenario_provider_color <-
 #   setNames(unique_colors, unique_scenario_provider)
 
+
 mapper_scenario_provider_color <-  c(
-  REMIND = '#ffe119',
+  REMIND = '#8A8A8A',
   MESSAGE = '#800000',
-  OXFORD = '#f58231',
-  GCAM = '#F7389a',
-  IEA = '#469990',
-  IPR = 'darkviolet'
+  OXFORD = '#F2A83B',
+  GCAM = '#EA3AF7',
+  IEA = '#001AF5',
+  IPR = '#377D22'
 )
 
 
@@ -151,7 +152,15 @@ pd_pivoted <-
     names_to = "metric",
     names_repair = "minimal"
   )
-
+pd_pivoted$metric <-
+  factor(
+    pd_pivoted$metric,
+    levels = c(
+      "pd_baseline",
+      "pd_shock",
+      "pd_difference"
+    )
+  )
 for (scenario in
      all_crispy_filtered %>% distinct(target_duo) %>% pull())
 {

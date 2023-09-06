@@ -15,7 +15,7 @@ library(openxlsx)
 # exp_name <- "all_scenarios_default_params_old_data"
 
 output_dir <-
-  file.path("CGFI paper", "results_final", "agg_power_sector_df_wide")
+  file.path("CGFI paper", "results_final", "agg_Coal_sector_df_wide")
 dir.create(output_dir, showWarnings = FALSE)
 
 #
@@ -295,7 +295,7 @@ for (scenario in c("all_scenario_types", all_crispy_filtered %>% distinct(target
     openxlsx::writeData(
       wb,
       sheet = sector_name,
-      x = scenarios_npv_diff_corr_matrix,
+      x = scenarios_npv_roc_corr_matrix,
       startCol = 1,
       startRow = 1,
       colNames = T,
@@ -325,11 +325,16 @@ dir.create(
 )
 
 for (scenario in
+     c("all_scenario_types",
      all_crispy_filtered %>% distinct(target_duo) %>% pull())
+     )
 {
+  if (scenario=="all_scenario_types"){
+    data_filtered <- all_crispy_filtered
+  }else{
   data_filtered <-
     all_crispy_filtered %>% filter(target_duo == scenario)
-
+}
   wb <- openxlsx::createWorkbook()
   addWorksheet(wb, sheetName = "companies_volumes")
 
