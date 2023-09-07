@@ -6,7 +6,7 @@ library(RColorBrewer)
 library(ggbeeswarm)
 
 output_dir <-
-  file.path("CGFI paper", "results_final", "agg_Coal_sector_df_wide")
+  file.path("CGFI paper", "results_final", "agg_Power_with_NDC_new_identifier")
 dir.create(output_dir, showWarnings = FALSE)
 
 
