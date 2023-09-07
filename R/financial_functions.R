@@ -63,6 +63,9 @@ calculate_net_profits_shock_declining_technologies_carbon_tax <- function(data, 
         (1 - market_passthrough) * .data$carbon_tax * .data$emission_factor) * .data$net_profit_margin
     )
 
+  data$net_profits_ls[data$net_profits_ls < 0] <- 0
+
+
   return(data)
 }
 
