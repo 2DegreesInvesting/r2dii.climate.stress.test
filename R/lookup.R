@@ -17,7 +17,7 @@ calculation_level_lookup <- "company"
 # and the code using it must be refactored to not use it anymore.
 # It seems it refers to the time horizon in the production data
 # It is confusing to have this variable as well as end_year and start_year
-time_horizon_lookup <- 4
+time_horizon_lookup <- 5
 
 flat_multiplier_lookup <- 1
 
