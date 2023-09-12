@@ -397,9 +397,11 @@ fail_if_input_args_are_missing <- function(args_list) {
 #' @param iter_var String holding name of iteration variable.
 #' @param shock_scenario String holding name of shock scenario.
 #' @param scenario_geography String holding name of scenario geography.
+#' @param carbon_price_model String holding name of carbon price model for trisk
+#' @param risk_type String holding the risk type.
 #'
 #' @return Path to subdirectory in st output folder.
-customise_output_path <- function(output_path, iter_var, shock_scenario, scenario_geography) {
+customise_output_path <- function(output_path, iter_var, shock_scenario, scenario_geography, carbon_price_model, risk_type) {
   if (!dir.exists(output_path)) {
     rlang::abort(
       c(
@@ -410,13 +412,27 @@ customise_output_path <- function(output_path, iter_var, shock_scenario, scenari
     )
   }
 
-  timestamp <- paste(format(Sys.time(),"%Y_%m_%d_%H_%M_%S"), iter_var, shock_scenario, scenario_geography, sep = "_")
+  if (risk_type == "trisk") {
+  timestamp <- paste(format(Sys.time(),"%Y_%m_%d_%H_%M_%S"), iter_var, shock_scenario, scenario_geography, carbon_price_model, sep = "_")
+  }
+
+  if (risk_type == "lrisk") {
+    timestamp <- paste(format(Sys.time(),"%Y_%m_%d_%H_%M_%S"), iter_var, shock_scenario, scenario_geography, sep = "_")
+  }
+
   output_path_custom <- file.path(output_path, timestamp)
 
   dir.create(output_path_custom)
 
+  if (risk_type == "trisk") {
   # FIXME: quick solution to avoid empty output dirs in case of failing calculations
-  paste_write("Starting analysis.", log_path = file.path(output_path_custom, paste0("log_file_", iter_var, sep="_", shock_scenario, sep="_", scenario_geography,".txt")))
+  paste_write("Starting analysis.", log_path = file.path(output_path_custom, paste0("log_file_", iter_var, sep="_", shock_scenario, sep="_", scenario_geography, sep="_", carbon_price_model,".txt")))
+  }
+
+  if (risk_type == "lrisk") {
+    # FIXME: quick solution to avoid empty output dirs in case of failing calculations
+    paste_write("Starting analysis.", log_path = file.path(output_path_custom, paste0("log_file_", iter_var, sep="_", shock_scenario, sep="_", scenario_geography,".txt")))
+  }
 
   return(output_path_custom)
 }
