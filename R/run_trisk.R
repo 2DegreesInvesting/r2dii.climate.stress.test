@@ -94,7 +94,9 @@ run_trisk <- function(input_path,
     output_path = args_list$output_path,
     iter_var = iter_var,
     shock_scenario = shock_scenario,
-    scenario_geography = scenario_geography
+    scenario_geography = scenario_geography,
+    carbon_price_model = carbon_price_model,
+    risk_type = "trisk"
   )
 
   args_list$end_year <- end_year_lookup(scenario_type = scenario_type)
@@ -128,6 +130,8 @@ run_trisk <- function(input_path,
     iter_var = iter_var,
     shock_scenario = shock_scenario,
     scenario_geography = scenario_geography,
+    carbon_price_model = carbon_price_model,
+    risk_type = risk_type,
     output_path = args_list$output_path
   )
 
@@ -162,12 +166,12 @@ run_stress_test_iteration <- function(args_list) {
 }
 
 # Avoid R CMD check NOTE: "Undefined global functions or variables"
-globalVariables(c(names(formals(run_trisk)), "iter_var", "end_year"))
+globalVariables(c(names(formals(run_trisk)), "iter_var", "end_year", "risk_type"))
 
 read_and_process_and_calc <- function(args_list) {
   list2env(args_list, envir = rlang::current_env())
 
-  log_path <- file.path(output_path, sprintf("log_file_%s_%s_%s.txt", iter_var, shock_scenario, scenario_geography))
+  log_path <- file.path(output_path, sprintf("log_file_%s_%s_%s_%s.txt", iter_var, shock_scenario, scenario_geography, carbon_price_model))
 
   paste_write("\n\nIteration with parameter settings:", log_path = log_path)
   purrr::walk(names(args_list), function(name) {
