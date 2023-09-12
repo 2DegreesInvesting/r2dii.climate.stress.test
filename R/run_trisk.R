@@ -131,7 +131,7 @@ run_trisk <- function(input_path,
     shock_scenario = shock_scenario,
     scenario_geography = scenario_geography,
     carbon_price_model = carbon_price_model,
-    risk_type = risk_type,
+    risk_type = "trisk",
     output_path = args_list$output_path
   )
 
