@@ -81,7 +81,7 @@ calculate_net_profits_shock_declining_technologies_carbon_tax <- function(data, 
 #' @return Data frame with annual netprofits for all cases without carbon tax
 calculate_net_profits_without_carbon_tax <- function(data) {
   baseline <- calculate_net_profits_baseline(data)
-  shock_increasing_technologies <- calculate_net_profits_shock_increasing_technologies(data = data %>% dplyr::filter(.data$direction == "increasing"))
+  shock_increasing_technologies <- calculate_net_profits_shock_increasing_technologies(data = data %>% dplyr::filter(.data$overshoot_direction == "Increasing"))
   shock_declining_technologies <- calculate_net_profits_shock_declining_technologies(data = data %>% dplyr::filter(.data$direction == "declining"))
 
   data <- dplyr::full_join(shock_increasing_technologies, shock_declining_technologies)
