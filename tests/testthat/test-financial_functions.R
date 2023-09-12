@@ -1,10 +1,12 @@
 test_that("calculate_net_profits penalizes companies for late build out of low
           carbon technologies", {
   input_data <- tibble::tribble(
-    ~company_name, ~baseline, ~late_sudden, ~Baseline_price, ~late_sudden_price, ~net_profit_margin, ~direction, ~proximity_to_target, ~scenario_geography, ~year, ~emission_factor,
-    "leader", 100, 150, 10, 10, 0.1, "increasing", 1, "Global", 2030, 1,
-    "laggard", 100, 150, 10, 10, 0.1, "increasing", 0.5, "Global", 2030, 1
+    ~company_name, ~baseline, ~late_sudden, ~Baseline_price, ~late_sudden_price, ~net_profit_margin, ~overshoot_direction, ~proximity_to_target, ~scenario_geography, ~year, ~emission_factor,
+    "leader", 100, 150, 10, 10, 0.1, "Increasing", 1, "Global", 2030, 1,
+    "laggard", 100, 150, 10, 10, 0.1, "Increasing", 0.5, "Global", 2030, 1
   )
+
+#verify that the proximity to target value is not related to overshoot
 
   carbon_data_test <- tibble::tribble(
     ~year, ~model, ~scenario, ~variable, ~unit, ~carbon_tax, ~scenario_geography,
