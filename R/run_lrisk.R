@@ -101,7 +101,8 @@ run_lrisk <- function(input_path,
     output_path = args_list$output_path,
     iter_var = iter_var,
     shock_scenario = shock_scenario,
-    scenario_geography = scenario_geography
+    scenario_geography = scenario_geography,
+    risk_type = "lrisk"
   )
 
   args_list$end_year <- end_year_lookup(scenario_type = scenario_type)
@@ -135,6 +136,7 @@ run_lrisk <- function(input_path,
     iter_var = iter_var,
     shock_scenario = shock_scenario,
     scenario_geography = scenario_geography,
+    risk_type = risk_type,
     output_path = args_list$output_path
   )
 
@@ -169,7 +171,7 @@ run_lrisk_iteration <- function(args_list) {
 }
 
 # Avoid R CMD check NOTE: "Undefined global functions or variables"
-globalVariables(c(names(formals(run_lrisk)), "iter_var", "end_year"))
+globalVariables(c(names(formals(run_lrisk)), "iter_var", "end_year", "risk_type"))
 
 read_and_process_and_calc_lrisk <- function(args_list) {
   list2env(args_list, envir = rlang::current_env())

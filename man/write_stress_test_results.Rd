@@ -9,6 +9,8 @@ write_stress_test_results(
   iter_var,
   shock_scenario,
   scenario_geography,
+  carbon_price_model,
+  risk_type,
   output_path
 )
 }
@@ -20,6 +22,10 @@ write_stress_test_results(
 \item{shock_scenario}{String holding shock scenario name.}
 
 \item{scenario_geography}{String holding scenario geography name.}
+
+\item{carbon_price_model}{String holding carbon price model for trisk.}
+
+\item{risk_type}{String holding the risk type.}
 
 \item{output_path}{String holding path to output dir.}
 }

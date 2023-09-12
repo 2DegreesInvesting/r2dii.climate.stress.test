@@ -8,7 +8,9 @@ customise_output_path(
   output_path,
   iter_var,
   shock_scenario,
-  scenario_geography
+  scenario_geography,
+  carbon_price_model,
+  risk_type
 )
 }
 \arguments{
@@ -19,6 +21,10 @@ customise_output_path(
 \item{shock_scenario}{String holding name of shock scenario.}
 
 \item{scenario_geography}{String holding name of scenario geography.}
+
+\item{carbon_price_model}{String holding name of carbon price model for trisk}
+
+\item{risk_type}{String holding the risk type.}
 }
 \value{
 Path to subdirectory in st output folder.
