@@ -28,7 +28,7 @@ abcd_filtered <- abcd_input %>%
 
 # # load identifier
 # production_identifier <- readxl::read_excel("CGFI paper/Production_Identifierv2.xlsx")
-# make identifier
+# # make identifier
 production_identifier <- abcd_filtered%>%
   group_by(company_name,sector) %>%
   mutate(onlyconstant=length(unique(plan_tech_prod)) == 1) %>%
@@ -43,7 +43,7 @@ production_identifier <- abcd_filtered%>%
 #     by = c("company_name","business_unit")
 #   ) %>%
 #   dplyr::filter(as.logical(variation) == T)
-# with custom identifier
+# # with custom identifier
 all_crispy_no_constant_companies <- all_crispy %>%
   dplyr::inner_join(
     production_identifier,
@@ -145,46 +145,46 @@ nz_duos <-
   c(
     "IPR2021_baseline&IPR2021_RPS",
     "Oxford2021_base&Oxford2021_fast",
-    # "NGFS2021_REMIND_CP&NGFS2021_REMIND_NZ2050",
+    "NGFS2021_REMIND_CP&NGFS2021_REMIND_NZ2050",
     "NGFS2021_REMIND_NDC&NGFS2021_REMIND_NZ2050",
+    "NGFS2021_MESSAGE_CP&NGFS2021_MESSAGE_NZ2050",
     "NGFS2021_MESSAGE_NDC&NGFS2021_MESSAGE_NZ2050",
-    # "NGFS2021_MESSAGE_CP&NGFS2021_MESSAGE_NZ2050",
     "NGFS2021_GCAM_NDC&NGFS2021_GCAM_NZ2050",
-    # "NGFS2021_GCAM_CP&NGFS2021_GCAM_NZ2050",
-    # "WEO2021_APS&WEO2021_NZE_2050",
+    "NGFS2021_GCAM_CP&NGFS2021_GCAM_NZ2050",
+    "WEO2021_APS&WEO2021_NZE_2050",
     "WEO2021_STEPS&WEO2021_NZE_2050" # stated policy scenario == current policies ?
   )
 
 dt_duos <-
   c(
     "NGFS2021_REMIND_NDC&NGFS2021_REMIND_DT",
-    # "NGFS2021_REMIND_CP&NGFS2021_REMIND_DT",
+    "NGFS2021_REMIND_CP&NGFS2021_REMIND_DT",
     "NGFS2021_MESSAGE_NDC&NGFS2021_MESSAGE_DT",
-    # "NGFS2021_MESSAGE_CP&NGFS2021_MESSAGE_DT",
-    "NGFS2021_GCAM_NDC&NGFS2021_GCAM_DT"
-    # "NGFS2021_GCAM_CP&NGFS2021_GCAM_DT"
+    "NGFS2021_MESSAGE_CP&NGFS2021_MESSAGE_DT",
+    "NGFS2021_GCAM_NDC&NGFS2021_GCAM_DT",
+    "NGFS2021_GCAM_CP&NGFS2021_GCAM_DT"
   )
 
 dn0_duos <-
   c(
     "NGFS2021_REMIND_NDC&NGFS2021_REMIND_DN0",
-    # "NGFS2021_REMIND_CP&NGFS2021_REMIND_DN0",
+    "NGFS2021_REMIND_CP&NGFS2021_REMIND_DN0",
     "NGFS2021_MESSAGE_NDC&NGFS2021_MESSAGE_DN0",
-    # "NGFS2021_MESSAGE_CP&NGFS2021_MESSAGE_DN0",
-    "NGFS2021_GCAM_NDC&NGFS2021_GCAM_DN0"
-    # "NGFS2021_GCAM_CP&NGFS2021_GCAM_DN0"
+    "NGFS2021_MESSAGE_CP&NGFS2021_MESSAGE_DN0",
+    "NGFS2021_GCAM_NDC&NGFS2021_GCAM_DN0",
+    "NGFS2021_GCAM_CP&NGFS2021_GCAM_DN0"
   )
 
 b2ds_duos <-
   c(
     "IPR2021_baseline&IPR2021_FPS",
     "NGFS2021_REMIND_NDC&NGFS2021_REMIND_B2DS",
-    # "NGFS2021_REMIND_CP&NGFS2021_REMIND_B2DS",
+    "NGFS2021_REMIND_CP&NGFS2021_REMIND_B2DS",
     "NGFS2021_MESSAGE_NDC&NGFS2021_MESSAGE_B2DS",
-    # "NGFS2021_MESSAGE_CP&NGFS2021_MESSAGE_B2DS",
+    "NGFS2021_MESSAGE_CP&NGFS2021_MESSAGE_B2DS",
     "NGFS2021_GCAM_NDC&NGFS2021_GCAM_B2DS",
-    # "NGFS2021_GCAM_CP&NGFS2021_GCAM_B2DS",
-    # "WEO2021_APS&WEO2021_SDS",
+    "NGFS2021_GCAM_CP&NGFS2021_GCAM_B2DS",
+    "WEO2021_APS&WEO2021_SDS",
     "WEO2021_STEPS&WEO2021_SDS"
   )
 
@@ -203,34 +203,48 @@ all_crispy_target_named <- all_crispy_agg%>%
 
 remind_duos <-
   c(
-    "NGFS2021_REMIND_NDC&NGFS2021_REMIND_NZ2050",
-    "NGFS2021_REMIND_NDC&NGFS2021_REMIND_DT",
-    "NGFS2021_REMIND_NDC&NGFS2021_REMIND_DN0",
+    # "NGFS2021_REMIND_NDC&NGFS2021_REMIND_NZ2050",
+    # "NGFS2021_REMIND_NDC&NGFS2021_REMIND_DT",
+    # "NGFS2021_REMIND_NDC&NGFS2021_REMIND_DN0",
     "NGFS2021_REMIND_NDC&NGFS2021_REMIND_B2DS"
+    # "NGFS2021_REMIND_CP&NGFS2021_REMIND_NZ2050",
+    # "NGFS2021_REMIND_CP&NGFS2021_REMIND_DT",
+    # "NGFS2021_REMIND_CP&NGFS2021_REMIND_DN0",
+    # "NGFS2021_REMIND_CP&NGFS2021_REMIND_B2DS"
   )
 
 message_duos <-
   c(
-    "NGFS2021_MESSAGE_NDC&NGFS2021_MESSAGE_NZ2050",
-    "NGFS2021_MESSAGE_NDC&NGFS2021_MESSAGE_DT",
-    "NGFS2021_MESSAGE_NDC&NGFS2021_MESSAGE_DN0",
+    # "NGFS2021_MESSAGE_NDC&NGFS2021_MESSAGE_NZ2050",
+    # "NGFS2021_MESSAGE_NDC&NGFS2021_MESSAGE_DT",
+    # "NGFS2021_MESSAGE_NDC&NGFS2021_MESSAGE_DN0",
     "NGFS2021_MESSAGE_NDC&NGFS2021_MESSAGE_B2DS"
+    # "NGFS2021_MESSAGE_CP&NGFS2021_MESSAGE_NZ2050",
+    # "NGFS2021_MESSAGE_CP&NGFS2021_MESSAGE_DT",
+    # "NGFS2021_MESSAGE_CP&NGFS2021_MESSAGE_DN0",
+    # "NGFS2021_MESSAGE_CP&NGFS2021_MESSAGE_B2DS"
   )
 
 gcam_duos <-
   c(
-    "NGFS2021_GCAM_NDC&NGFS2021_GCAM_NZ2050",
-    "NGFS2021_GCAM_NDC&NGFS2021_GCAM_DN0",
-    "NGFS2021_GCAM_NDC&NGFS2021_GCAM_DT",
+    # "NGFS2021_GCAM_NDC&NGFS2021_GCAM_NZ2050",
+    # "NGFS2021_GCAM_NDC&NGFS2021_GCAM_DN0",
+    # "NGFS2021_GCAM_NDC&NGFS2021_GCAM_DT",
     "NGFS2021_GCAM_NDC&NGFS2021_GCAM_B2DS"
+    # "NGFS2021_GCAM_CP&NGFS2021_GCAM_NZ2050",
+    # "NGFS2021_GCAM_CP&NGFS2021_GCAM_DN0",
+    # "NGFS2021_GCAM_CP&NGFS2021_GCAM_DT",
+    # "NGFS2021_GCAM_CP&NGFS2021_GCAM_B2DS"
   )
 
 iea_duos <- c(# stated policy scenario == current policies ?
-  "WEO2021_STEPS&WEO2021_NZE_2050",
+  # "WEO2021_STEPS&WEO2021_NZE_2050",
   "WEO2021_STEPS&WEO2021_SDS")
 
-ipr_duos <- c("IPR2021_baseline&IPR2021_RPS",
-              "IPR2021_baseline&IPR2021_FPS")
+ipr_duos <- c(
+  # "IPR2021_baseline&IPR2021_RPS",
+              "IPR2021_baseline&IPR2021_FPS"
+              )
 
 
 oxford_duos <-
@@ -262,9 +276,9 @@ use_duos <-
 
 
 all_crispy_filtered <- all_crispy_scenario_named %>%
-  dplyr::inner_join(
-    readr::read_csv("CGFI paper/df_wide.csv") %>% distinct(company_name)
-  )%>%
+  # dplyr::inner_join(
+  #   readr::read_csv("CGFI paper/df_wide.csv") %>% distinct(company_name)
+  # )%>%
   dplyr::filter(scenario_duo %in% use_duos,
                 term == 5
                 ,sector=="Power")
@@ -278,3 +292,9 @@ all_crispy_filtered <- all_crispy_filtered %>% mutate(
   scenario_duo_bckp=scenario_duo,
   scenario_duo=purrr::map_chr(stringr::str_split(scenario_duo, "&"), function(x) {x[2]})
 )
+
+output_dir <-
+  file.path("CGFI paper", "results_final3", "agg_Power_NDC")
+dir.create(output_dir, showWarnings = FALSE)
+all_crispy_filtered%>%readr::write_csv(file.path(output_dir, "crispy.csv"))
+

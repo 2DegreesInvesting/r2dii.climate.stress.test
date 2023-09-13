@@ -14,9 +14,6 @@ library(openxlsx)
 # mlflow_uri <- "http://localhost:5000"
 # exp_name <- "all_scenarios_default_params_old_data"
 
-output_dir <-
-  file.path("CGFI paper", "results_final", "agg_Coal_sector_df_wide")
-dir.create(output_dir, showWarnings = FALSE)
 
 #
 # ### CODE
