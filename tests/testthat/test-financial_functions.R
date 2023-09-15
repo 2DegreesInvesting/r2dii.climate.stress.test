@@ -7,8 +7,8 @@ test_that("calculate_net_profits penalizes companies for late build out of low
   )
 
   carbon_data_test <- tibble::tribble(
-    ~year, ~model, ~scenario, ~variable, ~unit, ~carbon_tax, ~scenario_geography,
-    2030, "GCAM 5.3+ NGFS", "NDC", "Price|Carbon", 10, 10, "Global"
+    ~year, ~model, ~scenario, ~variable, ~unit, ~carbon_tax,
+    2030, "GCAM 5.3+ NGFS", "NDC", "Price|Carbon", 10, 10,
   )
 
 
