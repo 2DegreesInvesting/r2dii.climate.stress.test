@@ -1,6 +1,5 @@
 # validate_input_values ---------------------------------------------------
 test_that("Error is thrown if input values are of incorrect type", {
-
   # numeric
   expect_error(validate_input_values(
     baseline_scenario = "WEO2021_STEPS",
@@ -76,7 +75,6 @@ test_that("Error is thrown if input values are of incorrect type for input value
 
 
 test_that("Error is thrown if an input value is out of bounds", {
-
   # length = 1
   expect_error(validate_input_values(
     baseline_scenario = "WEO2021_STEPS",
@@ -133,7 +131,6 @@ test_that("Error is thrown if an input value is out of bounds", {
 })
 
 test_that("Error is thrown if a character input value is out of bounds", {
-
   # length = 1
   expect_error(validate_input_values(
     baseline_scenario = "WEO2000_STEPS",

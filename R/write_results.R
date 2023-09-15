@@ -13,13 +13,12 @@
 #' @return NULL
 write_stress_test_results <- function(results_list, iter_var, shock_scenario, scenario_geography, carbon_price_model, risk_type,
                                       output_path) {
-
   if (risk_type == "trisk") {
-  results_list$company_trajectories %>%
-    readr::write_csv(file.path(
-      output_path,
-      glue::glue("company_trajectories_{iter_var}_{shock_scenario}_{scenario_geography}_{carbon_price_model}.csv")
-    ))
+    results_list$company_trajectories %>%
+      readr::write_csv(file.path(
+        output_path,
+        glue::glue("company_trajectories_{iter_var}_{shock_scenario}_{scenario_geography}_{carbon_price_model}.csv")
+      ))
   }
 
   if (risk_type == "lrisk") {
@@ -32,11 +31,11 @@ write_stress_test_results <- function(results_list, iter_var, shock_scenario, sc
 
 
   if (risk_type == "trisk") {
-  results_list$crispy_output %>%
-    readr::write_csv(file.path(
-      output_path,
-      glue::glue("crispy_output_{iter_var}_{shock_scenario}_{scenario_geography}_{carbon_price_model}.csv")
-    ))
+    results_list$crispy_output %>%
+      readr::write_csv(file.path(
+        output_path,
+        glue::glue("crispy_output_{iter_var}_{shock_scenario}_{scenario_geography}_{carbon_price_model}.csv")
+      ))
   }
 
   if (risk_type == "lrisk") {

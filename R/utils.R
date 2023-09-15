@@ -216,7 +216,7 @@ report_duplicates <- function(data, cols, throw_error = TRUE) {
 report_company_drops <- function(data_list, log_path) {
   report_dropped_company_names(
     data_x = data_list$production_data,
-    data_y = data_list$financial_data %>% dplyr::select (-c("company_name")),
+    data_y = data_list$financial_data %>% dplyr::select(-c("company_name")),
     name_y = "financial data",
     merge_cols = c("id" = "company_id"),
     log_path = log_path
@@ -413,11 +413,11 @@ customise_output_path <- function(output_path, iter_var, shock_scenario, scenari
   }
 
   if (risk_type == "trisk") {
-  timestamp <- paste(format(Sys.time(),"%Y_%m_%d_%H_%M_%S"), iter_var, shock_scenario, scenario_geography, carbon_price_model, sep = "_")
+    timestamp <- paste(format(Sys.time(), "%Y_%m_%d_%H_%M_%S"), iter_var, shock_scenario, scenario_geography, carbon_price_model, sep = "_")
   }
 
   if (risk_type == "lrisk") {
-    timestamp <- paste(format(Sys.time(),"%Y_%m_%d_%H_%M_%S"), iter_var, shock_scenario, scenario_geography, sep = "_")
+    timestamp <- paste(format(Sys.time(), "%Y_%m_%d_%H_%M_%S"), iter_var, shock_scenario, scenario_geography, sep = "_")
   }
 
   output_path_custom <- file.path(output_path, timestamp)
@@ -425,13 +425,13 @@ customise_output_path <- function(output_path, iter_var, shock_scenario, scenari
   dir.create(output_path_custom)
 
   if (risk_type == "trisk") {
-  # FIXME: quick solution to avoid empty output dirs in case of failing calculations
-  paste_write("Starting analysis.", log_path = file.path(output_path_custom, paste0("log_file_", iter_var, sep="_", shock_scenario, sep="_", scenario_geography, sep="_", carbon_price_model,".txt")))
+    # FIXME: quick solution to avoid empty output dirs in case of failing calculations
+    paste_write("Starting analysis.", log_path = file.path(output_path_custom, paste0("log_file_", iter_var, sep = "_", shock_scenario, sep = "_", scenario_geography, sep = "_", carbon_price_model, ".txt")))
   }
 
   if (risk_type == "lrisk") {
     # FIXME: quick solution to avoid empty output dirs in case of failing calculations
-    paste_write("Starting analysis.", log_path = file.path(output_path_custom, paste0("log_file_", iter_var, sep="_", shock_scenario, sep="_", scenario_geography,".txt")))
+    paste_write("Starting analysis.", log_path = file.path(output_path_custom, paste0("log_file_", iter_var, sep = "_", shock_scenario, sep = "_", scenario_geography, ".txt")))
   }
 
   return(output_path_custom)
