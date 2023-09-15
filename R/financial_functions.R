@@ -100,6 +100,7 @@ calculate_net_profits_shock_declining_technologies_carbon_tax <- function(data, 
 #' @return Data frame with annual netprofits for all cases without carbon tax
 calculate_net_profits_without_carbon_tax <- function(data) {
   baseline <- calculate_net_profits_baseline(data)
+
   shock_increasing_technologies <- calculate_net_profits_shock_increasing_technologies(data = data %>% dplyr::filter(.data$direction == "increasing"))
   shock_declining_technologies <- calculate_net_profits_shock_declining_technologies(data = data %>% dplyr::filter(.data$direction == "declining"))
 
@@ -139,8 +140,8 @@ calculate_net_profits_baseline <- function(data) {
 calculate_net_profits_shock_declining_technologies <- function(data) {
 
   data <- data %>%
-    dplyr::mutate(net_profits_ls = .data$late_sudden * .data$late_sudden_price * .data$net_profit_margin) %>%
-    dplyr::select(-c("proximity_to_target"))
+    dplyr::mutate(net_profits_ls = .data$late_sudden * .data$late_sudden_price * .data$net_profit_margin) #%>%
+   # dplyr::select(-c("proximity_to_target"))
 
   return(data)
 }
@@ -171,16 +172,16 @@ calculate_net_profits_shock_increasing_technologies <- function(data) {
       production_compensation = .data$late_sudden - .data$baseline,
       net_profits_ls = .data$late_sudden * .data$late_sudden_price * .data$net_profit_margin -
         .data$production_compensation * .data$late_sudden_price * .data$net_profit_margin * (1 - .data$proximity_to_target)
-    )  %>%
-    dplyr::select(-c("proximity_to_target", "production_compensation"))
+    )  #%>%
+   # dplyr::select(-c("proximity_to_target", "production_compensation"))
 
   data_overshoot_decreasing <- data %>% dplyr::filter(.data$overshoot_direction == "Decreasing") %>%
     dplyr::mutate(
       production_compensation = 0,
       net_profits_ls = .data$late_sudden * .data$late_sudden_price * .data$net_profit_margin -
         .data$production_compensation * .data$late_sudden_price * .data$net_profit_margin * (1 - .data$proximity_to_target)
-    )  %>%
-    dplyr::select(-c("proximity_to_target", "production_compensation"))
+    )  #%>%
+    #dplyr::select(-c("proximity_to_target", "production_compensation"))
 
   data <- dplyr::full_join(data_overshoot_increasing, data_overshoot_decreasing)
 
