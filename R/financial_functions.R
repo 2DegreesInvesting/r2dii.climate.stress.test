@@ -102,7 +102,7 @@ calculate_net_profits_without_carbon_tax <- function(data) {
   baseline <- calculate_net_profits_baseline(data)
 
   shock_increasing_technologies <- calculate_net_profits_shock_increasing_technologies(data = data %>% dplyr::filter(.data$direction == "increasing"))
-  shock_declining_technologies <- calculate_net_profits_shock_declining_technologies(data = data %>% dplyr::filter(.data$direction == "declining"))
+  shock_declining_technologies <- calculate_net_profits_shock_declining_technologies_without_carbon_tax(data = data %>% dplyr::filter(.data$direction == "declining"))
 
   data <- dplyr::full_join(shock_increasing_technologies, shock_declining_technologies)
   data <- dplyr::full_join(data, baseline)
@@ -147,6 +147,17 @@ calculate_net_profits_shock_declining_technologies <- function(data) {
 }
 
 
+
+calculate_net_profits_shock_declining_technologies_without_carbon_tax <- function(data) {
+
+  data <- data %>%
+    dplyr::mutate(net_profits_ls = .data$late_sudden * .data$late_sudden_price * .data$net_profit_margin) %>%
+  dplyr::select(-c("proximity_to_target"))
+
+  return(data)
+}
+
+
 #' Calculates annual net profits on the company-technology level for the shock scenario for increasing technologies.
 #' Climate laggards which need to build out their production in increasing technologies to compensate for their
 #' missed targets, are "punished" by adjusting the net profit margin on their
@@ -172,16 +183,16 @@ calculate_net_profits_shock_increasing_technologies <- function(data) {
       production_compensation = .data$late_sudden - .data$baseline,
       net_profits_ls = .data$late_sudden * .data$late_sudden_price * .data$net_profit_margin -
         .data$production_compensation * .data$late_sudden_price * .data$net_profit_margin * (1 - .data$proximity_to_target)
-    )  #%>%
-   # dplyr::select(-c("proximity_to_target", "production_compensation"))
+    )  %>%
+   dplyr::select(-c("proximity_to_target", "production_compensation"))
 
   data_overshoot_decreasing <- data %>% dplyr::filter(.data$overshoot_direction == "Decreasing") %>%
     dplyr::mutate(
       production_compensation = 0,
       net_profits_ls = .data$late_sudden * .data$late_sudden_price * .data$net_profit_margin -
         .data$production_compensation * .data$late_sudden_price * .data$net_profit_margin * (1 - .data$proximity_to_target)
-    )  #%>%
-    #dplyr::select(-c("proximity_to_target", "production_compensation"))
+    )  %>%
+    dplyr::select(-c("proximity_to_target", "production_compensation"))
 
   data <- dplyr::full_join(data_overshoot_increasing, data_overshoot_decreasing)
 
