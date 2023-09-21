@@ -4,8 +4,9 @@ library(xlsx)
 library(ggplot2)
 library(RColorBrewer)
 library(ggbeeswarm)
+source(file = "data-raw/sa_functions.R")
 
-
+stopifnot(length(unique(data$scenario_duo)) == length(unique(data$scenario_duo_bckp)))
 
 # all_crispy_filtered <- all_crispy_filtered %>%
 #   dplyr::filter(sector=="Power") %>%
@@ -211,7 +212,7 @@ for (scenario in
 # CORRELATIONS SWARMPLOT
 # all_crispy_filtered%>% readr::write_csv("CGFI paper/CORRECT_CRISPY_DATA.csv")
 
-swarm_plot_dir <- "correl_swarm_plots_npv_diff_pearson"
+swarm_plot_dir <- "correl_swarm_plots_npv_diff"
 
 dir.create(
   fs::path(output_dir,
@@ -227,13 +228,13 @@ for (scenario in
   if (scenario == "all") {
     scenarios_correlations <-
       correl_npv_diff_between_scenarios(all_crispy_filtered)
-    match_volumes <- count_non_zero_matches(all_crispy_filtered)
+    match_volumes <- count_matching_volumes(all_crispy_filtered)
     size <- 1
   } else{
     scenarios_correlations <-
       correl_npv_diff_between_scenarios(all_crispy_filtered %>%
                                          filter(target_duo == scenario))
-    match_volumes <- count_non_zero_matches(all_crispy_filtered %>%
+    match_volumes <- count_matching_volumes(all_crispy_filtered %>%
                                               filter(target_duo == scenario))
     size <- 10
   }
@@ -359,9 +360,8 @@ for (scenario in
 
 
 # CORRELATIONS SWARMPLOT
-# all_crispy_filtered%>% readr::write_csv("CGFI paper/CORRECT_CRISPY_DATA.csv")
 
-swarm_plot_dir <- "correl_swarm_plots_npv_roc_pearson"
+swarm_plot_dir <- "correl_swarm_plots_npv_roc"
 
 dir.create(
   fs::path(output_dir,
@@ -377,13 +377,153 @@ for (scenario in
   if (scenario == "all") {
     scenarios_correlations <-
       correl_npv_roc_between_scenarios(all_crispy_filtered)
-    match_volumes <- count_non_zero_matches(all_crispy_filtered)
+    match_volumes <- count_matching_volumes(all_crispy_filtered)
     size <- 1
   } else{
     scenarios_correlations <-
       correl_npv_roc_between_scenarios(all_crispy_filtered %>%
                                           filter(target_duo == scenario))
-    match_volumes <- count_non_zero_matches(all_crispy_filtered %>%
+    match_volumes <- count_matching_volumes(all_crispy_filtered %>%
+                                              filter(target_duo == scenario))
+    size <- 10
+  }
+
+  # pivot correlations to source->target scenario_duo, correlation as values
+  data_plot <-
+    scenarios_correlations %>%
+    mutate(source_scenario = row.names(scenarios_correlations)) %>%
+    tidyr::pivot_longer(!source_scenario,
+                        names_to = "dest_scenario",
+                        values_to = "correlation") %>%
+    left_join(
+      all_crispy_filtered %>% distinct(scenario_duo, scenario_provider),
+      by = c("source_scenario" = "scenario_duo")
+    ) %>%
+    rename(source_scenario_provider = scenario_provider) %>%
+    left_join(
+      all_crispy_filtered %>% distinct(scenario_duo, scenario_provider),
+      by = c("dest_scenario" = "scenario_duo")
+    ) %>%
+    rename(dest_scenario_provider = scenario_provider) %>%
+    filter(source_scenario != dest_scenario)
+  data_plot <- data_plot %>% tidyr::drop_na()
+
+  # adds volume of match to scenario_pair source/target
+  match_volumes_plot <- match_volumes %>%
+    mutate(source_scenario = row.names(scenarios_correlations)) %>%
+    tidyr::pivot_longer(!source_scenario,
+                        names_to = "dest_scenario",
+                        values_to = "volume")
+
+  data_plot <- data_plot %>% left_join(match_volumes_plot)
+
+  # assign colors to points
+  data_plot <- data_plot %>%
+    mutate(
+      source_scenario_provider_color = mapper_scenario_provider_color[source_scenario_provider],
+      dest_scenario_provider_color = mapper_scenario_provider_color[dest_scenario_provider]
+    )
+
+  # assign colors to axis text, and arrange x labels order from lowest average corr to highest
+  scenario_axis_color_order <- data_plot %>%
+    group_by(source_scenario,
+             source_scenario_provider,
+             source_scenario_provider_color) %>%
+    summarise(avg_correlation = mean(correlation),
+              .groups = "drop") %>%
+    arrange(avg_correlation) %>%
+    select(source_scenario, source_scenario_provider_color)
+  data_plot$source_scenario <-
+    factor(data_plot$source_scenario, levels = scenario_axis_color_order$source_scenario)
+
+
+  le_plot <- ggplot2::ggplot(clip = "off") +
+    geom_beeswarm(
+      data_plot,
+      mapping = aes(
+        x = source_scenario,
+        y = correlation,
+        colour = "#000000"
+        # alpha = 1
+      ),
+      priority = 'density',
+      method = "center",
+      cex = 2.5,
+      size = size + 1
+    ) +
+    geom_beeswarm(
+      data_plot,
+      mapping = aes(
+        x = source_scenario,
+        y = correlation,
+        colour = dest_scenario_provider,
+        size = volume / max(volume)
+      )
+      ,
+      priority = 'density',
+      # alpha = 0.85,
+      method = "center",
+      cex = 2.5,
+      size = size
+    ) +
+    theme(
+      axis.text.x = element_text(
+        angle = 45,
+        hjust = 1,
+        size = 8,
+        color = scenario_axis_color_order$source_scenario_provider_color,
+        # face = "bold"
+      )
+    ) +
+    scale_color_manual(values = mapper_scenario_provider_color) +
+    ggtitle(
+      paste0(
+        "Correlations between NPV rate of change of companies between IAM, for ",
+        scenario ,
+        " scenarios"
+      )
+    )
+
+  ggplot2::ggsave(
+    filename = fs::path(output_dir,
+                        swarm_plot_dir,
+                        scenario,
+                        ext = "png"),
+    plot = le_plot,
+    width = 30,
+    height = 20,
+    units = "cm"
+  )
+
+}
+
+
+
+# CORRELATIONS SWARMPLOT
+
+swarm_plot_dir <- "correl_swarm_plots_pd_diff"
+
+dir.create(
+  fs::path(output_dir,
+           swarm_plot_dir),
+  recursive = T,
+  showWarnings = F
+)
+
+for (scenario in
+     c("all", all_crispy_filtered %>% distinct(target_duo) %>% pull()))
+{
+  # compute volumes and correlations
+  if (scenario == "all") {
+    scenarios_correlations <-
+      correl_pd_diff_between_scenarios(all_crispy_filtered)
+    match_volumes <- count_matching_volumes(all_crispy_filtered)
+    size <- 1
+  } else{
+    scenarios_correlations <-
+      correl_pd_diff_between_scenarios(all_crispy_filtered %>%
+                                         filter(target_duo == scenario))
+    match_volumes <- count_matching_volumes(all_crispy_filtered %>%
                                               filter(target_duo == scenario))
     size <- 10
   }

@@ -1,7 +1,7 @@
 devtools::load_all()
 
 # In a terminal opened in the project folder, execute this command to start a local mlflow server
-# mlflow server --backend-store-uri dummy_project/mlruns --default-artifact-root dummy_project/mlartifacts --serve-artifacts --host 127.0.0.1 --port 5000
+# mlflow server --backend-store-uri ~/mlfow_outputs/mlruns --default-artifact-root ~/mlfow_outputs/mlartifacts --serve-artifacts --host 127.0.0.1 --port 5000
 
 mlflow_python_bin <-
   "/Users/bertrandgallice/opt/miniconda3/envs/mlflow_env/bin/python"
@@ -23,21 +23,13 @@ baseline_scenarios <- c(
   "NGFS2021_MESSAGE_NDC"
 )
 shock_scenarios <- c(
-  # "IPR2021_RPS",  "NGFS2021_REMIND_NZ2050",
-  #                   "NGFS2021_MESSAGE_NZ2050", "NGFS2021_GCAM_NZ2050", "WEO2021_NZE_2050",
-  #                   "NGFS2021_REMIND_DT", "NGFS2021_MESSAGE_DT", "NGFS2021_GCAM_DT",
-  #                   "NGFS2021_REMIND_DN0", "NGFS2021_MESSAGE_DN0", "NGFS2021_GCAM_DN0",
-  "IPR2021_FPS",
-  "NGFS2021_GCAM_B2DS",
-  # "NGFS2021_GCAM_B2DS"
-  # "NGFS2021_REMIND_NZ2050", "NGFS2021_MESSAGE_NZ2050",  "NGFS2021_GCAM_NZ2050",
-  # "NGFS2021_REMIND_DT", "NGFS2021_MESSAGE_DT", "NGFS2021_GCAM_DT",
-  # "NGFS2021_REMIND_DN0", "NGFS2021_MESSAGE_DN0", "NGFS2021_GCAM_DN0",
-  "NGFS2021_REMIND_B2DS",
-  "Oxford2021_fast",
-  "NGFS2021_MESSAGE_B2DS"
-  ,
-  "WEO2021_SDS"
+  "IPR2021_RPS",
+  "NGFS2021_REMIND_NZ2050", "NGFS2021_MESSAGE_NZ2050", "NGFS2021_GCAM_NZ2050",
+  "WEO2021_NZE_2050",
+  "NGFS2021_REMIND_DT", "NGFS2021_MESSAGE_DT", "NGFS2021_GCAM_DT",
+  "NGFS2021_REMIND_DN0", "NGFS2021_MESSAGE_DN0", "NGFS2021_GCAM_DN0",
+  "NGFS2021_REMIND_B2DS", "Oxford2021_fast", "NGFS2021_MESSAGE_B2DS"
+  ,"NGFS2021_GCAM_B2DS","IPR2021_FPS", "WEO2021_SDS"
 )
 
 
@@ -54,6 +46,11 @@ scenario_pairs <-
   ), collapse = "_") == paste(head(
     stringr::str_split(shock_scenario, "_")[[1]], -1
   ), collapse = "_"))
+
+# TODO TEMP FIX REMOVE
+scenario_pairs <- dplyr::bind_rows(scenario_pairs,
+                                   tibble::tribble(~baseline_scenario, ~shock_scenario,
+                                                   "WEO2021_STEPS", "WEO2021_NZE_2050"))
 
 params_grid <- list(
   # discount_rate = c(0.015, 0.04, 0.07, 0.1),
@@ -81,7 +78,7 @@ params_grid <- list(
 )
   multirun_trisk_mlflow(
     tracking_uri = "http://127.0.0.1:5000",
-    experiment_name = "scenario_trajectories_2_new_scenario_data",
+    experiment_name = "cgfi_paper_overshoo_fix",
     trisk_input_path = "CGFI paper/project_input_ST_INPUTS_MASTER_adjabcd_adjCF 2/",
     trisk_output_path = "CGFI paper/project_output",
     scenario_pairs = scenario_pairs,

@@ -1,3 +1,4 @@
+library(dplyr)
 
 ### CGFI PAPER SPECIAL ======
 
@@ -22,42 +23,8 @@
 #   by = c("company_name", "business_unit")
 # ) %>% arrange(company_name, sector)
 
-abcd_input <- readr::read_csv("CGFI paper/project_input_ST_INPUTS_MASTER_adjabcd_adjCF 2/abcd_stress_test_input.csv")
-abcd_filtered <- abcd_input %>%
-  rename(sector=ald_sector, business_unit=technology)
 
-# # load identifier
-# production_identifier <- readxl::read_excel("CGFI paper/Production_Identifierv2.xlsx")
-# # make identifier
-production_identifier <- abcd_filtered%>%
-  group_by(company_name,sector) %>%
-  mutate(onlyconstant=length(unique(plan_tech_prod)) == 1) %>%
-  distinct(company_name, sector, business_unit, onlyconstant) %>%
-  ungroup()
-
-
-
-# all_crispy_no_constant_companies <- all_crispy %>%
-#   dplyr::inner_join(
-#     production_identifier,
-#     by = c("company_name","business_unit")
-#   ) %>%
-#   dplyr::filter(as.logical(variation) == T)
-# # with custom identifier
-all_crispy_no_constant_companies <- all_crispy %>%
-  dplyr::inner_join(
-    production_identifier,
-    by = c("company_name","business_unit", "sector")
-  ) %>%
-  dplyr::filter(as.logical(onlyconstant) == F)
-
-# all_crispy_no_constant_companies %>%
-#   readr::write_csv("CGFI paper/multi_crispy_no_constant_companies.csv")
-
-all_crispy_agg <- all_crispy_no_constant_companies %>%
-  # filter(    term == 5
-  #            # ,sector=="Power"
-  # ) %>%
+all_crispy_agg <- all_crispy %>%
   group_by(company_name  ,
            sector,
            scenario_duo,
@@ -94,6 +61,83 @@ all_crispy_agg <- all_crispy_no_constant_companies %>%
 # # data.frame(toutcor)[names(ref %>% select(-c("...1", company_name))),
 # #         names(power_rates_of_change %>% select(-c(company_name)))]
 #
+
+
+abcd_input <- readr::read_csv("CGFI paper/project_input_ST_INPUTS_MASTER_adjabcd_adjCF 2/abcd_stress_test_input.csv") %>%
+  rename(sector=ald_sector, business_unit=technology)
+# %>%
+#   group_by(id, company_name, scenario_geography, year, sector) %>%
+#   summarise(plan_tech_prod=sum(plan_tech_prod)) %>%
+#   ungroup()
+
+
+
+# # load identifier
+
+## Toni identifier
+# production_identifier <-
+#   readxl::read_excel("CGFI paper/Production_Identifierv2.xlsx")
+
+## Toni identifier grouped
+production_identifier <-
+  readxl::read_excel("CGFI paper/Production_Identifierv2.xlsx") %>%
+  left_join(abcd_input %>% distinct(business_unit, sector)) %>%
+  group_by(company_name, sector) %>%
+  summarise(variation = sum(variation) > 0) %>%
+  ungroup()
+
+## TONI filtered comps
+# production_identifier <- readxl::read_excel("CGFI paper/filteredcomps.xlsx")
+
+# # make identifier
+# production_identifier <- abcd_input%>%
+#   group_by(company_name,sector) %>%
+#   mutate(onlyconstant=length(unique(plan_tech_prod)) == 1) %>%
+#   distinct(company_name, sector, onlyconstant) %>%
+#   ungroup()
+
+
+#
+# # with Toni identifier
+# all_crispy_no_constant_companies <- all_crispy_agg %>%
+#   dplyr::inner_join(
+#     production_identifier,
+#     by = c("company_name","business_unit")
+#   ) %>%
+#   dplyr::filter(as.logical(variation) == T)
+
+# # with Toni grouped identifier
+all_crispy_no_constant_companies <- all_crispy_agg %>%
+  dplyr::inner_join(
+    production_identifier%>%
+      dplyr::filter(as.logical(variation) == T),
+    by = c("company_name", "sector")
+  )
+# all_crispy_no_constant_companies <- all_crispy_agg %>%
+#   dplyr::inner_join(
+#     production_identifier %>% dplyr::filter(as.logical(variation) == T) %>% distinct(company_name),
+#     by = c("company_name")
+# )
+
+
+
+# # with Toni filtered comps identifier
+# all_crispy_no_constant_companies <- all_crispy_agg %>%
+#   dplyr::inner_join(
+#     production_identifier,
+#     by = c("company_name")
+#   ) %>%
+#   dplyr::filter(as.logical(`SOME VARIATION CONFIRMED`) == T)
+
+
+# with custom identifier
+# all_crispy_no_constant_companies <- all_crispy_agg %>%
+#   dplyr::inner_join(
+#     production_identifier,
+#     by = c("company_name","business_unit", "sector")
+#   ) %>%
+#   dplyr::filter(as.logical(onlyconstant) == F)
+
 
 
 #
@@ -190,7 +234,7 @@ b2ds_duos <-
 
 
 
-all_crispy_target_named <- all_crispy_agg%>%
+all_crispy_target_named <- all_crispy_no_constant_companies %>%
   dplyr::mutate(
     target_duo = dplyr::case_when(
       scenario_duo %in% nz_duos ~ "NZ2050",
@@ -203,9 +247,9 @@ all_crispy_target_named <- all_crispy_agg%>%
 
 remind_duos <-
   c(
-    # "NGFS2021_REMIND_NDC&NGFS2021_REMIND_NZ2050",
-    # "NGFS2021_REMIND_NDC&NGFS2021_REMIND_DT",
-    # "NGFS2021_REMIND_NDC&NGFS2021_REMIND_DN0",
+    "NGFS2021_REMIND_NDC&NGFS2021_REMIND_NZ2050",
+    "NGFS2021_REMIND_NDC&NGFS2021_REMIND_DT",
+    "NGFS2021_REMIND_NDC&NGFS2021_REMIND_DN0",
     "NGFS2021_REMIND_NDC&NGFS2021_REMIND_B2DS"
     # "NGFS2021_REMIND_CP&NGFS2021_REMIND_NZ2050",
     # "NGFS2021_REMIND_CP&NGFS2021_REMIND_DT",
@@ -215,9 +259,9 @@ remind_duos <-
 
 message_duos <-
   c(
-    # "NGFS2021_MESSAGE_NDC&NGFS2021_MESSAGE_NZ2050",
-    # "NGFS2021_MESSAGE_NDC&NGFS2021_MESSAGE_DT",
-    # "NGFS2021_MESSAGE_NDC&NGFS2021_MESSAGE_DN0",
+    "NGFS2021_MESSAGE_NDC&NGFS2021_MESSAGE_NZ2050",
+    "NGFS2021_MESSAGE_NDC&NGFS2021_MESSAGE_DT",
+    "NGFS2021_MESSAGE_NDC&NGFS2021_MESSAGE_DN0",
     "NGFS2021_MESSAGE_NDC&NGFS2021_MESSAGE_B2DS"
     # "NGFS2021_MESSAGE_CP&NGFS2021_MESSAGE_NZ2050",
     # "NGFS2021_MESSAGE_CP&NGFS2021_MESSAGE_DT",
@@ -227,9 +271,9 @@ message_duos <-
 
 gcam_duos <-
   c(
-    # "NGFS2021_GCAM_NDC&NGFS2021_GCAM_NZ2050",
-    # "NGFS2021_GCAM_NDC&NGFS2021_GCAM_DN0",
-    # "NGFS2021_GCAM_NDC&NGFS2021_GCAM_DT",
+    "NGFS2021_GCAM_NDC&NGFS2021_GCAM_NZ2050",
+    "NGFS2021_GCAM_NDC&NGFS2021_GCAM_DN0",
+    "NGFS2021_GCAM_NDC&NGFS2021_GCAM_DT",
     "NGFS2021_GCAM_NDC&NGFS2021_GCAM_B2DS"
     # "NGFS2021_GCAM_CP&NGFS2021_GCAM_NZ2050",
     # "NGFS2021_GCAM_CP&NGFS2021_GCAM_DN0",
@@ -238,11 +282,11 @@ gcam_duos <-
   )
 
 iea_duos <- c(# stated policy scenario == current policies ?
-  # "WEO2021_STEPS&WEO2021_NZE_2050",
+  "WEO2021_STEPS&WEO2021_NZE_2050",
   "WEO2021_STEPS&WEO2021_SDS")
 
 ipr_duos <- c(
-  # "IPR2021_baseline&IPR2021_RPS",
+  "IPR2021_baseline&IPR2021_RPS",
               "IPR2021_baseline&IPR2021_FPS"
               )
 
@@ -294,7 +338,9 @@ all_crispy_filtered <- all_crispy_filtered %>% mutate(
 )
 
 output_dir <-
-  file.path("CGFI paper", "results_final3", "agg_Power_NDC")
+  file.path("CGFI paper", "results_final_overshoot_forkevin_final_final_final", "Power_full_database")
 dir.create(output_dir, showWarnings = FALSE)
+
+
 all_crispy_filtered%>%readr::write_csv(file.path(output_dir, "crispy.csv"))
 

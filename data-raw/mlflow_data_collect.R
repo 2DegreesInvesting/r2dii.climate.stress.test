@@ -10,7 +10,7 @@ Sys.setenv(MLFLOW_PYTHON_BIN = mlflow_python_bin,
            MLFLOW_BIN = mlflow_bin)
 
 mlflow_uri <- "http://localhost:5000"
-exp_name <- "scenario_trajectories_2_new_scenario_data"
+exp_name <- "cgfi_paper_overshoo_fix"
 
 mlflow::mlflow_set_tracking_uri(uri = mlflow_uri)
 mlflow::mlflow_client()
@@ -81,7 +81,7 @@ collect_artifacts <-
     )
   }
 
-output_dir <- "CGFI paper/new_scenars_trajectories"
+output_dir <- "CGFI paper/new_scenars_trajectories2"
 for (run_id in all_runs[["run_uuid"]]) {
   shock_scen <- (all_runs[all_runs$run_uuid == run_id,] %>%
                    dplyr::pull(params))[[1]] %>%

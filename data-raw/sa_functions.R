@@ -49,11 +49,7 @@ compare_sign_npv_diff_between_scenarios <- function(data) {
   return(scenarios_npv_diff_sign_agreeing_rate)
 }
 
-count_non_zero_matches <- function(data) {
-  npv_scenarios_diff <- data %>%
-    dplyr::mutate(npv_diff = round(net_present_value_difference)) %>%
-    dplyr::mutate(npv_diff = dplyr::if_else(npv_diff == 0, NA, npv_diff))
-
+count_matching_volumes <- function(data){
   unique_scenario_duos <- sort(unique(data$scenario_duo))
   n_scenario_duos <- length(unique_scenario_duos)
 
@@ -64,34 +60,73 @@ count_non_zero_matches <- function(data) {
 
   for (scenario_duo1 in unique_scenario_duos) {
     for (scenario_duo2 in unique_scenario_duos) {
-      scenar1 <- npv_scenarios_diff %>%
-        dplyr::filter(scenario_duo == scenario_duo1, !is.na(npv_diff)) %>%
-        dplyr::select(company_name, sector,
-                      # business_unit,
-                      npv_diff)
-      scenar2 <- npv_scenarios_diff %>%
-        dplyr::filter(scenario_duo == scenario_duo2, !is.na(npv_diff)) %>%
-        dplyr::select(company_name, sector,
-                      # business_unit,
-                      npv_diff)
+      scenar1 <- data %>%
+        dplyr::filter(scenario_duo == scenario_duo1) %>%
+        dplyr::distinct(company_name, sector)
+      scenar2 <- data %>%
+        dplyr::filter(scenario_duo == scenario_duo2) %>%
+        dplyr::distinct(company_name, sector)
 
       merge_comps <- dplyr::inner_join(scenar1,
                                        scenar2,
-                                       by = dplyr::join_by(company_name, sector,
-                                                           # business_unit
-                                                           ))
+                                       by = dplyr::join_by(company_name, sector))
 
-      nonzero_rows <- nrow(merge_comps)
+      matching_rows <- nrow(merge_comps)
 
       scenarios_nonzero_match_matrix[scenario_duo1, scenario_duo2] <-
-        nonzero_rows
+        matching_rows
       scenarios_nonzero_match_matrix[scenario_duo2, scenario_duo1] <-
-        nonzero_rows
+        matching_rows
     }
   }
 
   return(scenarios_nonzero_match_matrix)
+
 }
+
+# count_non_zero_matches <- function(data) {
+#   npv_scenarios_diff <- data %>%
+#     dplyr::mutate(npv_diff = round(net_present_value_difference)) %>%
+#     dplyr::mutate(npv_diff = dplyr::if_else(npv_diff == 0, NA, npv_diff))
+#
+#   unique_scenario_duos <- sort(unique(data$scenario_duo))
+#   n_scenario_duos <- length(unique_scenario_duos)
+#
+#   scenarios_nonzero_match_matrix <-
+#     data.frame(matrix(nrow = n_scenario_duos, ncol = n_scenario_duos))
+#   colnames(scenarios_nonzero_match_matrix) <- unique_scenario_duos
+#   rownames(scenarios_nonzero_match_matrix) <- unique_scenario_duos
+#
+#   for (scenario_duo1 in unique_scenario_duos) {
+#     for (scenario_duo2 in unique_scenario_duos) {
+#       scenar1 <- npv_scenarios_diff %>%
+#         dplyr::filter(scenario_duo == scenario_duo1, !is.na(npv_diff)) %>%
+#         dplyr::select(company_name, sector,
+#                       # business_unit,
+#                       npv_diff)
+#       scenar2 <- npv_scenarios_diff %>%
+#         dplyr::filter(scenario_duo == scenario_duo2, !is.na(npv_diff)) %>%
+#         dplyr::select(company_name, sector,
+#                       # business_unit,
+#                       npv_diff)
+#
+#       merge_comps <- dplyr::inner_join(scenar1,
+#                                        scenar2,
+#                                        by = dplyr::join_by(company_name, sector,
+#                                                            # business_unit
+#                                                            ))
+#
+#       nonzero_rows <- nrow(merge_comps)
+#
+#       scenarios_nonzero_match_matrix[scenario_duo1, scenario_duo2] <-
+#         nonzero_rows
+#       scenarios_nonzero_match_matrix[scenario_duo2, scenario_duo1] <-
+#         nonzero_rows
+#     }
+#   }
+#
+#   return(scenarios_nonzero_match_matrix)
+# }
 
 correl_npv_diff_between_scenarios <- function(data) {
   npv_scenarios_diff <- data %>%
@@ -246,6 +281,72 @@ correl_pd_diff_between_scenarios <- function(data) {
   return(scenarios_pd_diff_corr_matrix)
 }
 
+
+
+quadrants_counter <- function(data){
+  unique_scenario_duos <- sort(unique(data$scenario_duo))
+  n_scenario_duos <- length(unique_scenario_duos)
+
+
+  quadrants_comparisons <- NULL
+  for (scenario_duo1 in unique_scenario_duos) {
+    for (scenario_duo2 in unique_scenario_duos) {
+      scenar1 <- data %>% dplyr::filter(scenario_duo == scenario_duo1)%>%
+        dplyr::select(company_name, sector, net_present_value_rate_of_change)
+      scenar2 <- data %>% dplyr::filter(scenario_duo == scenario_duo2)%>%
+        dplyr::select(company_name, sector, net_present_value_rate_of_change)
+
+      npv_roc_join <- dplyr::inner_join(scenar1, scenar2,
+                                        by=dplyr::join_by("company_name", "sector"))
+      npv_roc_join <- npv_roc_join %>%
+        dplyr::mutate(Q1=(net_present_value_rate_of_change.x <= 0) & (net_present_value_rate_of_change.y <= 0),
+                      Q2=(net_present_value_rate_of_change.x < 0) & (net_present_value_rate_of_change.y > 0),
+                      Q3=(net_present_value_rate_of_change.x >= 0) & (net_present_value_rate_of_change.y >= 0),
+                      Q4=(net_present_value_rate_of_change.x > 0) & (net_present_value_rate_of_change.y < 0),
+                      zerozero=(net_present_value_rate_of_change.x == 0) & (net_present_value_rate_of_change.y == 0) ) %>%
+        dplyr::rowwise() %>%
+        dplyr::mutate(Q1=dplyr::if_else(zerozero==T, F, Q1)) # remove double count in Q1 and Q3 when both NPC roc == 0
+
+      effectifs_quadrants <- npv_roc_join %>%
+        dplyr::select(Q1, Q2, Q3, Q4) %>%
+        dplyr::summarise(dplyr::across(dplyr::everything(), ~ sum(., na.rm=T))) %>%
+        dplyr::mutate(scenar1=scenario_duo1,
+                      scenar2=scenario_duo2)
+
+      quadrants_comparisons <- dplyr::bind_rows(quadrants_comparisons, effectifs_quadrants)
+
+    }
+  }
+  return(quadrants_comparisons)
+}
+
+make_quadrants_tables <- function(all_quadrant_comparisons){
+  long_to_square <- function(table){
+    table <- as.data.frame(table)
+    # get row/column names of new matrix from columns 1 and 2 of data.frame
+    myNames <- sort(unique(as.character(unlist(table[1:2]))))
+
+    # build matrix of 0s
+    myMat <- matrix(0, length(myNames), length(myNames), dimnames = list(myNames, myNames))
+
+    # fill in upper triangle
+    myMat[as.matrix(table[c(1,2)])] <- table$values
+    # fill in the lower triangle
+    myMat[as.matrix(table[c(2,1)])] <- table$values
+
+    return(myMat)
+  }
+
+  sum_columns <- NULL
+
+  basic <- all_quadrant_comparisons
+
+  split_tables <- lapply( c("Q1", "Q2", "Q3", "Q4"), function(x) all_quadrant_comparisons %>%
+                            dplyr::select(.data$scenar1, .data$scenar2, x) %>%
+                            dplyr::rename(values=rlang::sym(x)))
+  split_square_tables <- purrr::map(split_tables, ~ long_to_square(.))
+
+}
 
 
 
