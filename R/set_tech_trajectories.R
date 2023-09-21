@@ -227,8 +227,7 @@ set_trisk_trajectory <- function(data,
         "scen_to_follow",
         "scenario_change",
         "scenario_change_baseline",
-        "scenario_change_aligned",
-        "overshoot_direction"
+        "scenario_change_aligned"
       ))
     ) %>%
     dplyr::mutate(scenario_name = .env$scenario_name)
