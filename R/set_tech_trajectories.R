@@ -332,8 +332,8 @@ calc_late_sudden_traj <- function(start_year, end_year, year_of_shock, duration_
   # we do not need to compensate production capacity, and set LS trajectory to follow
   # the scenario indicated as late & sudden aligned
   if (
-    (overshoot_direction == "Decreasing" & sum(scen_to_follow[1:time_frame+1]) < sum(late_and_sudden[1:time_frame+1])) |
-      (overshoot_direction == "Increasing" & sum(scen_to_follow[1:time_frame+1]) > sum(late_and_sudden[1:time_frame+1]))
+    (overshoot_direction == "Decreasing" & sum(scen_to_follow[1:time_frame + 1]) < sum(late_and_sudden[1:time_frame + 1])) |
+      (overshoot_direction == "Increasing" & sum(scen_to_follow[1:time_frame + 1]) > sum(late_and_sudden[1:time_frame + 1]))
   ) {
     x <- (
       sum(scen_to_follow) -

@@ -76,14 +76,15 @@ validate_file_exists(loans_results_company_file_path)
 data <- readr::read_rds(loans_results_company_file_path)
 fin_companies <- data %>%
   dplyr::select(company_name) %>%
-  dplyr::distinct() %>% 
+  dplyr::distinct() %>%
   dplyr::mutate(
-    company_id = 999, 
+    company_id = 999,
     corporate_bond_ticker = NA,
     pd = NA,
     net_profit_margin = NA,
     debt_equity_ratio = NA,
-    volatility = NA)
+    volatility = NA
+  )
 readr::write_csv(fin_companies, file.path("/example_project/project_agnostic_input", "prewrangled_financial_data_stress_test.csv")) # NOTE that this will overwrite financial data currently stored at the location if available
 ```
 
@@ -101,12 +102,13 @@ messages in case problems are detected.
 library(readr)
 library(r2dii.climate.stress.test)
 
-financial_data_path <- file.path("/example_project/project_agnostic_input",
-                                 "prewrangled_financial_data_stress_test.csv")
+financial_data_path <- file.path(
+  "/example_project/project_agnostic_input",
+  "prewrangled_financial_data_stress_test.csv"
+)
 validate_file_exists(financial_data_path)
 data <- readr::read_csv(financial_data_path)
 check_financial_data(financial_data = data, asset_type = "loans", interactive_mode = TRUE)
-
 ```
 
 ### Placing file in folder structure
