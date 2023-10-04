@@ -100,8 +100,7 @@ calculate_net_profits_shock_declining_technologies_carbon_tax <- function(data, 
 #' @return Data frame with annual netprofits for all cases without carbon tax
 calculate_net_profits_without_carbon_tax <- function(data) {
   baseline <- calculate_net_profits_baseline(data)
-
-  shock_increasing_technologies <- calculate_net_profits_shock_increasing_technologies(data = data %>% dplyr::filter(.data$direction == "increasing"))
+  shock_increasing_technologies <- calculate_net_profits_shock_increasing_technologies_without_carbon_tax(data = data %>% dplyr::filter(.data$direction == "increasing"))
   shock_declining_technologies <- calculate_net_profits_shock_declining_technologies_without_carbon_tax(data = data %>% dplyr::filter(.data$direction == "declining"))
 
   data <- dplyr::full_join(shock_increasing_technologies, shock_declining_technologies)
@@ -151,8 +150,7 @@ calculate_net_profits_shock_declining_technologies <- function(data) {
 calculate_net_profits_shock_declining_technologies_without_carbon_tax <- function(data) {
 
   data <- data %>%
-    dplyr::mutate(net_profits_ls = .data$late_sudden * .data$late_sudden_price * .data$net_profit_margin) %>%
-  dplyr::select(-c("proximity_to_target"))
+    dplyr::mutate(net_profits_ls = .data$late_sudden * .data$late_sudden_price * .data$net_profit_margin)
 
   return(data)
 }
@@ -198,6 +196,19 @@ calculate_net_profits_shock_increasing_technologies <- function(data) {
 
 
   return(data)
+}
+
+calculate_net_profits_shock_increasing_technologies_without_carbon_tax <- function(data) {
+
+  data <- data %>%
+    dplyr::mutate(
+      production_compensation = .data$late_sudden - .data$baseline,
+      net_profits_ls = .data$late_sudden * .data$late_sudden_price * .data$net_profit_margin -
+        .data$production_compensation * .data$late_sudden_price * .data$net_profit_margin * (1 - .data$proximity_to_target)
+    )
+
+return(data)
+
 }
 
 #' Calculates discounted net profits based on a dividends discount model
