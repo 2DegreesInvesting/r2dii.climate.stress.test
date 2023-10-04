@@ -4,8 +4,8 @@ library(xlsx)
 library(openxlsx)
 source(file = "data-raw/sa_functions.R")
 
-
-stopifnot(length(unique(data$scenario_duo)) == length(unique(data$scenario_duo_bckp)))
+# check that there are as many scenario duos as there are shock scenario (i.e. no duplicate shock with different baseline)
+stopifnot(length(unique(all_crispy_filtered$scenario_duo)) == length(unique(all_crispy_filtered$scenario_duo_bckp)))
 
 # mlflow_python_bin <-
 #   "/Users/bertrandgallice/opt/miniconda3/envs/mlflow_env/bin/python"
@@ -519,23 +519,23 @@ for (scenario in
       all_crispy_filtered %>% filter(target_duo == scenario)
   }
   wb <- openxlsx::createWorkbook()
-  addWorksheet(wb, sheetName = "quadrant_analysis")
 
-  quadrants_comparisons <- quadrants_counter(data_filtered)
+  quadrants_comparisons <- quadrants_counter_npv_roc(data_filtered)
   quadrants_tables <- make_quadrants_tables(quadrants_comparisons)
 
-  quadrants_comparisons <- quadrants_comparisons %>% mutate(total=Q1+Q2+Q3+Q4)
-  quadrants_comparisons %>%readr::write_csv("quadrant_analysis_long.csv")
+  for (sheet_name in names(quadrants_tables)){
+    addWorksheet(wb, sheetName = sheet_name)
+    openxlsx::writeData(
+      wb,
+      sheet = sheet_name,
+      x = quadrants_tables[[sheet_name]],
+      startCol = 1,
+      startRow = 1,
+      colNames = T,
+      rowNames = T
+    )
 
-  openxlsx::writeData(
-    wb,
-    sheet = "quadrant_analysis",
-    x = quadrants_effectifs,
-    startCol = 1,
-    startRow = 1,
-    colNames = T,
-    rowNames = T
-  )
+  }
 
   saveWorkbook(
     wb,
@@ -548,5 +548,70 @@ for (scenario in
     overwrite = T
   )
 
+}
+
+
+#
+# #======= NPV ROC DIFF BIGGER THAN 1
+
+
+dir.create(
+  fs::path(output_dir, "npv_roc_diff_bigger_1"),
+  recursive = T,
+  showWarnings = F
+)
+
+for (scenario in
+     c("all_scenario_types",
+       all_crispy_filtered %>% distinct(target_duo) %>% pull()))
+{
+  if (scenario=="all_scenario_types"){
+    data_filtered <- all_crispy_filtered
+  }else{
+    data_filtered <-
+      all_crispy_filtered %>% filter(target_duo == scenario)
+  }
+  wb <- openxlsx::createWorkbook()
+
+    addWorksheet(wb, sheetName = "global")
+  scenarios_pd_diff_correlation <-
+    diff_bigger_1_npv_roc_between_scenarios(data_filtered)
+  openxlsx::writeData(
+    wb,
+    sheet = "global",
+    x = scenarios_pd_diff_correlation,
+    startCol = 1,
+    startRow = 1,
+    colNames = T,
+    rowNames = T
+  )
+
+
+  for (sector_name in data_filtered %>% distinct(sector) %>% pull()) {
+    addWorksheet(wb, sheetName = sector_name)
+    scenarios_pd_diff_correlation <-
+      diff_bigger_1_npv_roc_between_scenarios(data_filtered %>%
+                                         filter(sector == sector_name))
+    openxlsx::writeData(
+      wb,
+      sheet = sector_name,
+      x = scenarios_pd_diff_correlation,
+      startCol = 1,
+      startRow = 1,
+      colNames = T,
+      rowNames = T
+    )
+  }
+
+  saveWorkbook(
+    wb,
+    file = fs::path(
+      output_dir,
+      "npv_roc_diff_bigger_1",
+      paste("npv_roc_diff_bigger_1_",scenario),
+      ext = "xlsx"
+    ),
+    overwrite = T
+  )
 
 }

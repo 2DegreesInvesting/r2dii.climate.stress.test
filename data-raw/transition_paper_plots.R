@@ -8,27 +8,6 @@ source(file = "data-raw/sa_functions.R")
 
 stopifnot(length(unique(data$scenario_duo)) == length(unique(data$scenario_duo_bckp)))
 
-# all_crispy_filtered <- all_crispy_filtered %>%
-#   dplyr::filter(sector=="Power") %>%
-#   group_by(company_name) %>%
-#   summarise(net_present_value_baseline=sum(net_present_value_baseline),
-#             net_present_value_shock=sum(net_present_value_shock),
-#             net_present_value_difference=net_present_value_shock-net_present_value_baseline,
-#             pd_baseline = sum(pd_baseline),
-#             pd_shock=sum(pd_shock),
-#             pd_difference=pd_shock-pd_baseline,
-#             .groups="drop")%>%mutate(npv_roc=(net_present_value_shock-net_present_value_baseline)/net_present_value_baseline)
-
-# # selection of a random set of colors
-# col_vector <-
-#   unlist(mapply(brewer.pal, qual_col_pals$maxcolors, rownames(qual_col_pals)))
-# unique_scenario_provider <-
-#   unique(all_crispy_filtered$scenario_provider)
-# unique_colors <-
-#   sample(col_vector, length(unique_scenario_provider))
-# mapper_scenario_provider_color <-
-#   setNames(unique_colors, unique_scenario_provider)
-
 
 mapper_scenario_provider_color <-  c(
   REMIND = '#8A8A8A',
@@ -54,7 +33,7 @@ npv_pivoted <-
   all_crispy_filtered %>%
   select(
     company_name,
-    # business_unit,
+    business_unit,
     baseline_scenario,
     shock_scenario,
     scenario_duo,
@@ -92,7 +71,7 @@ for (scenario in
       fill = scenario_provider
     )) +
     geom_boxplot() +
-    # facet_wrap( ~ business_unit) +
+    facet_wrap( ~ business_unit) +
     xlab("metric") +
     ylab("NPV") +
     theme(axis.text.x = element_text(
@@ -209,7 +188,7 @@ for (scenario in
 
 
 
-# CORRELATIONS SWARMPLOT
+# CORRELATIONS SWARMPLOT NPV DIFF
 # all_crispy_filtered%>% readr::write_csv("CGFI paper/CORRECT_CRISPY_DATA.csv")
 
 swarm_plot_dir <- "correl_swarm_plots_npv_diff"
@@ -327,11 +306,7 @@ for (scenario in
     ) +
     scale_color_manual(values = mapper_scenario_provider_color) +
     ggtitle(
-      paste0(
-        "Correlations between NPV difference of companies between IAM, for ",
-        scenario ,
-        " scenarios"
-      )
+        "Correlations of NPV difference between companies, obtained on scenarios from different IAMs",
     )
 
   ggplot2::ggsave(
@@ -359,7 +334,7 @@ for (scenario in
 
 
 
-# CORRELATIONS SWARMPLOT
+# CORRELATIONS SWARMPLOT NPV ROC
 
 swarm_plot_dir <- "correl_swarm_plots_npv_roc"
 
@@ -477,11 +452,7 @@ for (scenario in
     ) +
     scale_color_manual(values = mapper_scenario_provider_color) +
     ggtitle(
-      paste0(
-        "Correlations between NPV rate of change of companies between IAM, for ",
-        scenario ,
-        " scenarios"
-      )
+        "Correlations of NPV Rate of Change between companies, obtained on scenarios from different IAMs",
     )
 
   ggplot2::ggsave(
@@ -499,7 +470,7 @@ for (scenario in
 
 
 
-# CORRELATIONS SWARMPLOT
+# CORRELATIONS SWARMPLOT PD DIFF
 
 swarm_plot_dir <- "correl_swarm_plots_pd_diff"
 
@@ -617,11 +588,7 @@ for (scenario in
     ) +
     scale_color_manual(values = mapper_scenario_provider_color) +
     ggtitle(
-      paste0(
-        "Correlations between NPV rate of change of companies between IAM, for ",
-        scenario ,
-        " scenarios"
-      )
+      "Correlations of PD difference between companies, obtained on scenarios from different IAMs"
     )
 
   ggplot2::ggsave(

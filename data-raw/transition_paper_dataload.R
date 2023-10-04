@@ -245,6 +245,8 @@ all_crispy_target_named <- all_crispy_no_constant_companies %>%
     )
   )
 
+
+
 remind_duos <-
   c(
     "NGFS2021_REMIND_NDC&NGFS2021_REMIND_NZ2050",
@@ -338,7 +340,7 @@ all_crispy_filtered <- all_crispy_filtered %>% mutate(
 )
 
 output_dir <-
-  file.path("CGFI paper", "results_final_overshoot_forkevin_final_final_final", "Power_full_database")
+  file.path("CGFI paper", "results_final_overshoot_forkevin_final_final_final", "full_database")
 dir.create(output_dir, showWarnings = FALSE)
 
 

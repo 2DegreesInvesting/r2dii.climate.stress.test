@@ -283,7 +283,7 @@ correl_pd_diff_between_scenarios <- function(data) {
 
 
 
-quadrants_counter <- function(data){
+quadrants_counter_npv_roc <- function(data){
   unique_scenario_duos <- sort(unique(data$scenario_duo))
   n_scenario_duos <- length(unique_scenario_duos)
 
@@ -309,7 +309,8 @@ quadrants_counter <- function(data){
 
       effectifs_quadrants <- npv_roc_join %>%
         dplyr::select(Q1, Q2, Q3, Q4) %>%
-        dplyr::summarise(dplyr::across(dplyr::everything(), ~ sum(., na.rm=T))) %>%
+        dplyr::group_by(.) %>%
+        dplyr::summarise(dplyr::across(dplyr::everything(), ~ sum(., na.rm=T)), .groups="drop") %>%
         dplyr::mutate(scenar1=scenario_duo1,
                       scenar2=scenario_duo2)
 
@@ -317,34 +318,51 @@ quadrants_counter <- function(data){
 
     }
   }
+  quadrants_comparisons <- quadrants_comparisons %>% mutate(total_companies=Q1+Q2+Q3+Q4)
   return(quadrants_comparisons)
 }
 
-make_quadrants_tables <- function(all_quadrant_comparisons){
-  long_to_square <- function(table){
+make_quadrants_tables <- function(quadrants_comparisons) {
+  long_to_square <- function(table) {
     table <- as.data.frame(table)
     # get row/column names of new matrix from columns 1 and 2 of data.frame
     myNames <- sort(unique(as.character(unlist(table[1:2]))))
 
     # build matrix of 0s
-    myMat <- matrix(0, length(myNames), length(myNames), dimnames = list(myNames, myNames))
+    myMat <-
+      matrix(0,
+             length(myNames),
+             length(myNames),
+             dimnames = list(myNames, myNames))
 
     # fill in upper triangle
-    myMat[as.matrix(table[c(1,2)])] <- table$values
+    myMat[as.matrix(table[c(1, 2)])] <- table$values
     # fill in the lower triangle
-    myMat[as.matrix(table[c(2,1)])] <- table$values
+    myMat[as.matrix(table[c(2, 1)])] <- table$values
 
     return(myMat)
   }
 
-  sum_columns <- NULL
+  basic <- list(long_format = quadrants_comparisons)
 
-  basic <- all_quadrant_comparisons
+  split_tables <-
+    lapply(c("Q1", "Q2", "Q3", "Q4"), function(x)
+      quadrants_comparisons %>%
+        dplyr::select(.data$scenar1, .data$scenar2, x) %>%
+        dplyr::rename(values = rlang::sym(x)))
+  split_tables <- setNames(split_tables, c("Q1", "Q2", "Q3", "Q4"))
 
-  split_tables <- lapply( c("Q1", "Q2", "Q3", "Q4"), function(x) all_quadrant_comparisons %>%
-                            dplyr::select(.data$scenar1, .data$scenar2, x) %>%
-                            dplyr::rename(values=rlang::sym(x)))
-  split_square_tables <- purrr::map(split_tables, ~ long_to_square(.))
+  split_square_tables <-
+    purrr::map(split_tables, ~ long_to_square(.))
+
+  avg_volume <- mean(quadrants_comparisons$total_companies, na.rm = T)
+  split_square_tables_perc <-
+    purrr::map(split_square_tables, ~ . / avg_volume)
+  split_square_tables_perc <-
+    setNames(split_square_tables_perc,
+             paste0(names(split_square_tables_perc), "_perc"))
+
+  return(c(basic, split_square_tables, split_square_tables_perc))
 
 }
 
@@ -451,3 +469,53 @@ make_quadrants_tables <- function(all_quadrant_comparisons){
 #
 #   return(scenarios_npv_diff_corr_matrix)
 # }
+
+
+diff_bigger_1_npv_roc_between_scenarios <- function(data) {
+  npv_scenarios_roc <- data %>%
+    dplyr::mutate(npv_roc = round(net_present_value_difference)/net_present_value_baseline) %>%
+    dplyr::mutate(npv_roc = dplyr::if_else(npv_roc == 0, NA, npv_roc))
+
+  unique_scenario_duos <- sort(unique(data$scenario_duo))
+  n_scenario_duos <- length(unique_scenario_duos)
+
+  scenarios_npv_roc_corr_matrix <-
+    data.frame(matrix(nrow = n_scenario_duos, ncol = n_scenario_duos))
+  colnames(scenarios_npv_roc_corr_matrix) <- unique_scenario_duos
+  rownames(scenarios_npv_roc_corr_matrix) <- unique_scenario_duos
+
+  for (scenario_duo1 in unique_scenario_duos) {
+    for (scenario_duo2 in unique_scenario_duos) {
+      scenar1 <- npv_scenarios_roc %>%
+        dplyr::filter(scenario_duo == scenario_duo1, !is.na(npv_roc)) %>%
+        dplyr::select(company_name, sector,
+                      # business_unit,
+                      npv_roc,
+                      # shock_year
+        )
+      scenar2 <- npv_scenarios_roc %>%
+        dplyr::filter(scenario_duo == scenario_duo2, !is.na(npv_roc)) %>%
+        dplyr::select(company_name, sector,
+                      # business_unit,
+                      npv_roc,
+                      # shock_year
+        )
+
+      merge_comps <- dplyr::inner_join(scenar1,
+                                       scenar2,
+                                       by = dplyr::join_by(company_name, sector,
+                                                           # business_unit,
+                                                           # shock_year
+                                       ))
+
+      roc_diff <- sum(abs(merge_comps$npv_roc.x - merge_comps$npv_roc.y)> 1)
+
+      scenarios_npv_roc_corr_matrix[scenario_duo1, scenario_duo2] <-
+        roc_diff
+      scenarios_npv_roc_corr_matrix[scenario_duo2, scenario_duo1] <-
+        roc_diff
+    }
+  }
+
+  return(scenarios_npv_roc_corr_matrix)
+}
