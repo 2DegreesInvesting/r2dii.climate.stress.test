@@ -14,12 +14,14 @@ test_that("calculate_net_profits penalizes companies for late build out of low
 
   test_shock_year <- 2021
   test_market_passthrough <- 0
+  test_financial_stimulus <- 1
 
 
   net_profits <- calculate_net_profits(input_data,
     carbon_data = carbon_data_test,
     shock_year = test_shock_year,
-    market_passthrough = test_market_passthrough
+    market_passthrough = test_market_passthrough,
+    financial_stimulus = test_financial_stimulus
   )
 
   net_profits_baseline_laggard_with_no_overshoot <- net_profits %>%
@@ -65,12 +67,15 @@ test_that("calculate_net_profits does apply a carbon tax on high carbon technolo
 
   test_shock_year <- 2021
   test_market_passthrough <- 0
+  test_financial_stimulus <- 1
+
 
 
   net_profits <- calculate_net_profits(input_data,
     carbon_data = carbon_data_test,
     shock_year = test_shock_year,
-    market_passthrough = test_market_passthrough
+    market_passthrough = test_market_passthrough,
+    financial_stimulus = test_financial_stimulus
   )
 
   net_profits_baseline_climate_laggard_high_carbon_technology <- net_profits %>%
@@ -116,19 +121,23 @@ test_that("calculate_net_profits does not apply carbon tax on high
   test_shock_year_early <- 2025
   test_shock_year_late <- 2035
   test_market_passthrough <- 0
+  test_financial_stimulus <-1
+
 
 
 
   net_profits_early <- calculate_net_profits(input_data,
     carbon_data = carbon_data_test,
     shock_year = test_shock_year_early,
-    market_passthrough = test_market_passthrough
+    market_passthrough = test_market_passthrough,
+    financial_stimulus = test_financial_stimulus
   )
 
   net_profits_late <- calculate_net_profits(input_data,
     carbon_data = carbon_data_test,
     shock_year = test_shock_year_late,
-    market_passthrough = test_market_passthrough
+    market_passthrough = test_market_passthrough,
+    financial_stimulus = test_financial_stimulus
   )
 
   net_profits_late_sudden_high_carbon_technology_early <- net_profits_early %>%
@@ -201,19 +210,22 @@ test_that("a higher market passthrough has a weaker impact on a company's net pr
   test_shock_year <- 2025
   test_market_passthrough_low <- 0
   test_market_passthrough_high <- 1
+  test_financial_stimulus <- 1
 
 
 
   net_profits_low_market_power <- calculate_net_profits(input_data,
     carbon_data = carbon_data_test,
     shock_year = test_shock_year,
-    market_passthrough = test_market_passthrough_low
+    market_passthrough = test_market_passthrough_low,
+    financial_stimulus = test_financial_stimulus
   )
 
   net_profits_high_market_power <- calculate_net_profits(input_data,
     carbon_data = carbon_data_test,
     shock_year = test_shock_year,
-    market_passthrough = test_market_passthrough_high
+    market_passthrough = test_market_passthrough_high,
+    financial_stimulus = test_financial_stimulus
   )
 
   net_profits_low_market_power <- net_profits_low_market_power %>%
