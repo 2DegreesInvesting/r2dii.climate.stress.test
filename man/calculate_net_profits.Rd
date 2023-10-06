@@ -16,7 +16,13 @@ approximates the additional capital investment such a company would have to
 make in a short time, which leads to added costs. This ensures that late
 build out will not proportionally translate into increased profits.}
 \usage{
-calculate_net_profits(data, carbon_data, shock_year, market_passthrough)
+calculate_net_profits(
+  data,
+  carbon_data,
+  shock_year,
+  market_passthrough,
+  financial_stimulus
+)
 }
 \arguments{
 \item{data}{A data frame containing the production forecasts of companies
@@ -30,6 +36,8 @@ indication of the direction of the technology.}
 the policy shock strikes in a given scenario.}
 
 \item{market_passthrough}{A firm's ability to pass a carbon tax onto the consumer.}
+
+\item{financial_stimulus}{Additional support for low carbon companies.}
 }
 \description{
 Calculates annual net profits on the company-technology level for the
