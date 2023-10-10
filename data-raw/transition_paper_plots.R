@@ -6,7 +6,7 @@ library(RColorBrewer)
 library(ggbeeswarm)
 source(file = "data-raw/sa_functions.R")
 
-stopifnot(length(unique(data$scenario_duo)) == length(unique(data$scenario_duo_bckp)))
+stopifnot(length(unique(all_crispy_filtered$scenario_duo)) == length(unique(all_crispy_filtered$scenario_duo_bckp)))
 
 
 mapper_scenario_provider_color <-  c(
