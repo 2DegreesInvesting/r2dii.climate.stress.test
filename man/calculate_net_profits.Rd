@@ -37,7 +37,8 @@ the policy shock strikes in a given scenario.}
 
 \item{market_passthrough}{A firm's ability to pass a carbon tax onto the consumer.}
 
-\item{financial_stimulus}{Additional support for low carbon companies.}
+\item{financial_stimulus}{Additional channel through which the net profits of green
+companies can be boosted under a shock scenario.}
 }
 \description{
 Calculates annual net profits on the company-technology level for the
