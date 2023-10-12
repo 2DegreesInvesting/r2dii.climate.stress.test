@@ -21,7 +21,8 @@ calculate_net_profits_shock_increasing_technologies(data, financial_stimulus)
 market prices/costs, company net profit margins, the proximity to target in the production forecast period and an
 indication of the direction of the technology.}
 
-\item{financial_stimulus}{Additional support for low carbon companies.}
+\item{financial_stimulus}{Additional channel through which the net profits of green
+companies can be boosted under a shock scenario}
 }
 \value{
 A data frame with net profits of companies with a increasing technology
