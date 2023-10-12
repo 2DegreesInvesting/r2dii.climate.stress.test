@@ -7,7 +7,8 @@
 #'   carbon prices. Default is no carbon tax.
 #' @param risk_type String that is either lrisk or trisk.
 #' @param market_passthrough Firm's ability to pass carbon tax onto the consumer.
-#' @param financial_stimulus Additional support for low carbon companies.
+#' @param financial_stimulus Additional channel through which the net profits of green
+#' companies can be boosted under a shock scenario.
 #' @return NULL
 validate_input_values <- function(baseline_scenario, shock_scenario, scenario_geography,
                                   lgd, risk_free_rate, discount_rate, growth_rate,
