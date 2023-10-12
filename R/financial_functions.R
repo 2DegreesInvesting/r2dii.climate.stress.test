@@ -62,6 +62,17 @@ calculate_net_profits <- function(data,
 calculate_net_profits_shock_declining_technologies_carbon_tax <- function(data, shock_year,
                                                                           carbon_data, market_passthrough) {
 
+  carbon_data$carbon_tax <- ifelse(
+    carbon_data$scenario == "increasing_carbon_tax_50" & carbon_data$year < shock_year, 0,
+    ifelse(
+      carbon_data$scenario == "increasing_carbon_tax_50" & carbon_data$year == shock_year, 50,
+      ifelse(
+        carbon_data$scenario == "increasing_carbon_tax_50", carbon_data$carbon_tax * (1.04)^ (carbon_data$year - shock_year),
+        carbon_data$carbon_tax
+      )
+    )
+  )
+
   data <- data %>%
     merge(carbon_data, by = c("year"))
 
