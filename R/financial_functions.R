@@ -19,7 +19,8 @@
 #' @param shock_year A numeric vector of length one that indicates in which year
 #'   the policy shock strikes in a given scenario.
 #' @param market_passthrough A firm's ability to pass a carbon tax onto the consumer.
-#' @param financial_stimulus Additional support for low carbon companies.
+#' @param financial_stimulus Additional channel through which the net profits of green
+#' companies can be boosted under a shock scenario.
 #' @param carbon_data NGFS carbon prices.
 calculate_net_profits <- function(data,
                                   carbon_data,
@@ -174,7 +175,8 @@ calculate_net_profits_shock_declining_technologies_without_carbon_tax <- functio
 #' @param data A data frame containing the production forecasts of companies with increasing under the late and sudden,
 #' market prices/costs, company net profit margins, the proximity to target in the production forecast period and an
 #' indication of the direction of the technology.
-#' @param financial_stimulus Additional support for low carbon companies.
+#' @param financial_stimulus Additional channel through which the net profits of green
+#' companies can be boosted under a shock scenario
 #'
 #' @return  A data frame with net profits of companies with a increasing technology
 
