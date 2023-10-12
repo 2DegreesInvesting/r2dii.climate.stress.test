@@ -74,7 +74,8 @@ carbon prices. Default is no carbon tax.}
 
 \item{market_passthrough}{Firm's ability to pass carbon tax onto the consumer.}
 
-\item{financial_stimulus}{Additional support for low carbon companies.}
+\item{financial_stimulus}{Additional channel through which the net profits of green
+companies can be boosted under a shock scenario.}
 }
 \description{
 Checks that user inputs are within defined ranges.
