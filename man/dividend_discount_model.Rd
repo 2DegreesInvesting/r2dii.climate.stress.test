@@ -8,7 +8,7 @@ dividend_discount_model(data, discount_rate)
 }
 \arguments{
 \item{data}{A data frame containing the annual net profits on company
-technology level}
+ald_business_unit level}
 
 \item{discount_rate}{Numeric, that holds the discount rate of dividends per
 year in the DCF.}

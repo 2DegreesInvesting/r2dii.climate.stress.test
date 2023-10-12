@@ -7,7 +7,7 @@
 #'   forecasts (of the companies in the portfolio). Usually based on PACTA output.
 #' @param capacity_factors_power A data frame containing capacity factors to
 #'   translate company level power capacity to units sold. Contains information
-#'   on the technology (power sector only) and scenario_geography levels.
+#'   on the ald_business_unit (power sector only) and scenario_geography levels.
 
 convert_cap_to_generation <- function(data,
                                       capacity_factors_power = NULL) {
@@ -18,16 +18,16 @@ convert_cap_to_generation <- function(data,
     data = data,
     expected_columns = c(
       "year", "investor_name", "portfolio_name", "equity_market", "ald_sector",
-      "technology", "scenario", "allocation", "scenario_geography",
+      "ald_business_unit", "scenario", "allocation", "scenario_geography",
       "plan_tech_prod", "plan_carsten", "scen_tech_prod", "plan_sec_prod",
-      "plan_sec_carsten", "id", "company_name"
+      "plan_sec_carsten", "company_id", "company_name"
     )
   )
 
   validate_data_has_expected_cols(
     data = capacity_factors_power,
     expected_columns = c(
-      "technology", "capacity_factor", "scenario_geography"
+      "ald_business_unit", "capacity_factor", "scenario_geography"
     )
   )
 
@@ -36,7 +36,7 @@ convert_cap_to_generation <- function(data,
   data <- data %>%
     dplyr::left_join(
       capacity_factors_power,
-      by = c("technology", "scenario_geography")
+      by = c("ald_business_unit", "scenario_geography")
     )
 
   hours_to_year <- 24 * 365
@@ -64,7 +64,7 @@ convert_cap_to_generation <- function(data,
 #' net profit calculations. This also entails converting MWh into MW per year,
 #' since we calculate yearly profits. Note: For use in webscripts
 #' [convert_cap_to_generation()] is used currently, which only distinguishes
-#' capacity factor by technology and scenario_geography, whereas this function
+#' capacity factor by ald_business_unit and scenario_geography, whereas this function
 #' distinguishes further by year and scenario. Also note that for generation of
 #' variable `plan_tech_prod` (planned capacity) capacity factors from baseline
 #' scenario are used.
@@ -74,7 +74,7 @@ convert_cap_to_generation <- function(data,
 #'   output.
 #' @param capacity_factors_power A data frame containing capacity factors to
 #'   translate company level power capacity to units sold. Contains information
-#'   on the technology (power sector only) and scenario_geography levels.
+#'   on the ald_business_unit (power sector only) and scenario_geography levels.
 #' @param baseline_scenario String holding name of baseline scenario.
 #' @param target_scenario String holding name of target scenario.
 convert_power_cap_to_generation <- function(data,
@@ -87,15 +87,15 @@ convert_power_cap_to_generation <- function(data,
   validate_data_has_expected_cols(
     data = data,
     expected_columns = c(
-      "year", "ald_sector", "technology", "scenario_geography", "plan_tech_prod",
-      baseline_scenario, target_scenario, "id", "company_name"
+      "year", "ald_sector", "ald_business_unit", "scenario_geography", "plan_tech_prod",
+      baseline_scenario, target_scenario, "company_id", "company_name"
     )
   )
 
   validate_data_has_expected_cols(
     data = capacity_factors_power,
     expected_columns = c(
-      "technology", "capacity_factor", "scenario_geography", "year", "scenario"
+      "ald_business_unit", "capacity_factor", "scenario_geography", "year", "scenario"
     )
   )
 
@@ -111,7 +111,7 @@ convert_power_cap_to_generation <- function(data,
   capacity_factors_power <- capacity_factors_power %>%
     dplyr::filter(.data$scenario %in% c(baseline_scenario, target_scenario)) %>%
     tidyr::pivot_wider(
-      id_cols = dplyr::all_of(c("scenario_geography", "technology", "year")),
+      id_cols = dplyr::all_of(c("scenario_geography", "ald_business_unit", "year")),
       names_from = "scenario",
       names_prefix = "capfac_",
       values_from = "capacity_factor"
@@ -122,7 +122,7 @@ convert_power_cap_to_generation <- function(data,
   data <- data %>%
     dplyr::left_join(
       capacity_factors_power,
-      by = c("technology", "scenario_geography", "year")
+      by = c("ald_business_unit", "scenario_geography", "year")
     )
 
   hours_to_year <- 24 * 365

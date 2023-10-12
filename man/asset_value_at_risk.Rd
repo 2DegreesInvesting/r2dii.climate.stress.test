@@ -24,7 +24,7 @@ shock scenario at hand}
 strongly the future dividends propagate to the company value}
 
 \item{plan_carsten}{A dataframe that contains the share of the portfolio
-value of each company-technology combination. Used to quantify the impact of
+value of each company-ald_business_unit combination. Used to quantify the impact of
 the company-tech level shock on higher levels of aggregation in the pf}
 
 \item{port_aum}{A dataframe containing the value of the portfolio for

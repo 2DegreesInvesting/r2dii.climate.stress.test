@@ -32,16 +32,18 @@ late_sudden_prices <- function(target_price,
 }
 
 join_price_data <- function(df, df_prices) {
-  # Joins price data by sector, technology, year
+  # Joins price data by sector, ald_business_unit, year
   # scenario_geography NOT YET INCLUDED!
   df <- df %>%
-    dplyr::inner_join(df_prices, by = c("technology", "ald_sector", "year"))
+    dplyr::inner_join(df_prices, by = c("ald_business_unit", "ald_sector", "year"))
 }
 
 dcf_model_techlevel <- function(data, discount_rate) {
+  # TODO IS THIS FUNCTION STILL IN USE ?
+
   # Calculates the annual discounted net profits on technology level
   data %>%
-    dplyr::group_by(investor_name, portfolio_name, id, company_name, ald_sector, technology, scenario_geography) %>%
+    dplyr::group_by(investor_name, portfolio_name, id, company_name, ald_sector, ald_business_unit, scenario_geography) %>%
     dplyr::mutate(
       t_calc = seq(0, (dplyr::n() - 1)),
       discounted_net_profit_baseline = net_profits_baseline / (1 + discount_rate)^t_calc,

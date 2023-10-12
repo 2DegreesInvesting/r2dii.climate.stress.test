@@ -20,11 +20,11 @@ calculate_lrisk_trajectory(
 
 \item{baseline_scenario}{Character. A string that indicates which
 of the scenarios included in the analysis should be used to set the
-baseline technology trajectories.}
+baseline ald_business_unit trajectories.}
 
 \item{target_scenario}{Character. A string that indicates which
 of the scenarios included in the analysis should be used to set the
-late & sudden technology trajectories.}
+late & sudden ald_business_unit trajectories.}
 
 \item{litigation_scenario}{Tibble with 1 row holding at least variables
 \code{year_of_shock}, \code{duration_of_shock}, \code{scc} and \code{exp_share_damages_paid}}

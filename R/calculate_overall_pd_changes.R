@@ -25,8 +25,8 @@ calculate_pd_change_overall <- function(data,
   validate_data_has_expected_cols(
     data = data,
     expected_columns = c(
-      "id", "company_name", "year", "scenario_geography", "ald_sector",
-      "technology", "scenario_name", "discounted_net_profit_ls",
+      "company_id", "company_name", "year", "scenario_geography", "ald_sector",
+      "ald_business_unit", "scenario_name", "discounted_net_profit_ls",
       "discounted_net_profit_baseline", "debt_equity_ratio", "volatility"
     )
   )
@@ -34,7 +34,7 @@ calculate_pd_change_overall <- function(data,
   data <- data %>%
     dplyr::filter(.data$year >= .env$shock_year) %>%
     dplyr::group_by(
-      .data$id, .data$company_name, .data$ald_sector, .data$scenario_name,
+      .data$company_id, .data$company_name, .data$ald_sector, .data$scenario_name,
       .data$scenario_geography, .data$debt_equity_ratio, .data$volatility
     ) %>%
     dplyr::summarise(
@@ -45,7 +45,7 @@ calculate_pd_change_overall <- function(data,
     dplyr::ungroup() %>%
     dplyr::select(
       dplyr::all_of(c(
-        "scenario_name", "scenario_geography", "id",
+        "scenario_name", "scenario_geography", "company_id",
         "company_name", "ald_sector", "equity_0_baseline",
         "equity_0_late_sudden", "debt_equity_ratio", "volatility"
       ))

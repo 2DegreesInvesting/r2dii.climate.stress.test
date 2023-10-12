@@ -1,4 +1,4 @@
-year,source,scenario,scenario_geography,ald_sector,technology,units,generation,capacity,capacity_factor
+year,source,scenario,scenario_geography,ald_sector,ald_business_unit,units,generation,capacity,capacity_factor
 2018,test_scenario,SDS,Global,Power,CoalCap,GW,50,100,0.5
 2019,test_scenario,SDS,Global,Power,CoalCap,GW,50,100,0.5
 2020,test_scenario,SDS,Global,Power,CoalCap,GW,50,100,0.5

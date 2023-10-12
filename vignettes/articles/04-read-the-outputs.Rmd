@@ -108,7 +108,7 @@ mechanism and the year of the introduction of a transition policy.
 location of assets considered as well as the regional break down of the 
 scenario targets used.
 * `ald_sector`: Sector of the production assets analyzed.
-* `technology`: The technology can be understood as a sub-sector. These must be in
+* `ald_business_unit`: The ald_business_unit can be understood as a sub-sector. These must be in
 line with the technologies, for which the scenarios provide production pathways.
 * `production_plan_company_technology`:
 * `phase_out`:

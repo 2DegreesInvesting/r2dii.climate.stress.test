@@ -72,7 +72,7 @@ globalVariables(
     "stress_test_arguments",
     "t_calc",
     "tech_roadmap_sectors",
-    "technology",
+    "ald_business_unit",
     "term",
     "valid_input",
     "valid_value_usd",

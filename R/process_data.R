@@ -73,7 +73,7 @@ remove_sectors_with_missing_production_end_of_forecast <- function(data,
 
 #' Remove rows from PACTA results that belong to company-sector combinations
 #' for which there is no positive production value in the relevant start year.
-#' This handles the edge case that a company may have a green technology with
+#' This handles the edge case that a company may have a green ald_business_unit with
 #' zero initial production that should grow over time, but since the overall
 #' sector production is also zero in the start year, the SMSP is unable to
 #' calculate positive targets.
@@ -134,9 +134,9 @@ remove_sectors_with_missing_production_start_year <- function(data,
   return(data_filtered)
 }
 
-#' Remove rows from PACTA results that belong to company-technology combinations
-#' for which there is 0 production in a high carbon technology over the entire
-#' forecast. Since this technology would need to decrease in its targets, the
+#' Remove rows from PACTA results that belong to company-ald_business_unit combinations
+#' for which there is 0 production in a high carbon ald_business_unit over the entire
+#' forecast. Since this ald_business_unit would need to decrease in its targets, the
 #' production remains zero and creates missing values later on. The combination
 #' is therefore removed.
 #'
@@ -151,9 +151,9 @@ remove_high_carbon_tech_with_missing_production <- function(data,
                                                             time_horizon,
                                                             log_path) {
   companies_missing_high_carbon_tech_production <- data %>%
-    dplyr::filter(.data$technology %in% high_carbon_tech_lookup) %>%
+    dplyr::filter(.data$ald_business_unit %in% high_carbon_tech_lookup) %>%
     dplyr::group_by(
-      .data$company_name, .data$ald_sector, .data$technology
+      .data$company_name, .data$ald_sector, .data$ald_business_unit
     ) %>%
     dplyr::summarise(
       technology_prod = sum(.data$plan_tech_prod, na.rm = TRUE),
@@ -165,29 +165,29 @@ remove_high_carbon_tech_with_missing_production <- function(data,
   data_filtered <- data %>%
     dplyr::anti_join(
       companies_missing_high_carbon_tech_production,
-      by = c("company_name", "ald_sector", "technology")
+      by = c("company_name", "ald_sector", "ald_business_unit")
     )
 
   if (nrow(companies_missing_high_carbon_tech_production) > 0) {
-    # information on companies for which at least 1 technology is lost
+    # information on companies for which at least 1 ald_business_unit is lost
     affected_company_sector_tech_overview <- companies_missing_high_carbon_tech_production %>%
-      dplyr::select(dplyr::all_of(c("company_name", "ald_sector", "technology"))) %>%
+      dplyr::select(dplyr::all_of(c("company_name", "ald_sector", "ald_business_unit"))) %>%
       dplyr::distinct_all()
 
     percent_affected_companies <- (length(unique(affected_company_sector_tech_overview$company_name)) * 100) / length(unique(data$company_name))
     affected_companies <- affected_company_sector_tech_overview$company_name
 
     paste_write(
-      format_indent_1(), "When filtering out holdings with 0 production in given high-carbon technology, dropped rows for",
+      format_indent_1(), "When filtering out holdings with 0 production in given high-carbon ald_business_unit, dropped rows for",
       length(affected_companies), "out of", length(unique(data$company_name)), "companies",
       log_path = log_path
     )
     paste_write(format_indent_2(), "percent loss:", percent_affected_companies, log_path = log_path)
-    paste_write(format_indent_2(), "affected company-sector-technology combinations:", log_path = log_path)
+    paste_write(format_indent_2(), "affected company-sector-ald_business_unit combinations:", log_path = log_path)
 
     affected_company_sector_tech_overview %>%
-      purrr::pwalk(function(company_name, ald_sector, technology) {
-        paste_write(format_indent_2(), "company name:", company_name, "sector:", ald_sector, "technology:", technology, log_path = log_path)
+      purrr::pwalk(function(company_name, ald_sector, ald_business_unit) {
+        paste_write(format_indent_2(), "company name:", company_name, "sector:", ald_sector, "ald_business_unit:", ald_business_unit, log_path = log_path)
       })
   }
 
@@ -210,7 +210,7 @@ process_capacity_factors_power <- function(data,
     harmonise_cap_fac_geo_names() %>%
     dplyr::filter(.data$scenario %in% .env$scenarios_filter) %>%
     dplyr::filter(.data$scenario_geography %in% .env$scenario_geography_filter) %>%
-    dplyr::filter(.data$technology %in% .env$technologies) %>%
+    dplyr::filter(.data$ald_business_unit %in% .env$technologies) %>%
     dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year)) %>%
     stop_if_empty(data_name = "Capacity Factors") %>%
     check_level_availability(
@@ -220,10 +220,10 @@ process_capacity_factors_power <- function(data,
           year = start_year:end_year,
           scenario = scenarios_filter,
           scenario_geography = scenario_geography_filter,
-          technology = technologies[grep("Cap", technologies)] # when checking for expected levels of technology variable only expecte power sector levels
+          ald_business_unit = technologies[grep("Cap", technologies)] # when checking for expected levels of ald_business_unit variable only expecte power sector levels
         )
     ) %>%
-    report_missing_col_combinations(col_names = c("scenario", "scenario_geography", "technology", "year")) %>%
+    report_missing_col_combinations(col_names = c("scenario", "scenario_geography", "ald_business_unit", "year")) %>%
     report_all_duplicate_kinds(composite_unique_cols = cuc_capacity_factors_power) %>%
     report_missings(name_data = "capacity factors", throw_error = TRUE)
 
@@ -262,21 +262,21 @@ process_price_data <- function(data, technologies, sectors, start_year, end_year
       year = min(data$year):max(data$year),
       scenario = scenarios_filter,
       ald_sector = "Automotive",
-      technology = auto_tech,
+      ald_business_unit = auto_tech,
       price = 1
     )
 
     data <- data %>%
       dplyr::bind_rows(automotive_data) %>%
       dplyr::arrange(
-        .data$scenario, .data$ald_sector, .data$technology, .data$year
+        .data$scenario, .data$ald_sector, .data$ald_business_unit, .data$year
       )
   }
 
   data_processed <- data %>%
     dplyr::filter(.data$ald_sector %in% .env$sectors) %>%
     check_sector_tech_mapping(sector_col = "ald_sector") %>%
-    dplyr::filter(.data$technology %in% .env$technologies) %>%
+    dplyr::filter(.data$ald_business_unit %in% .env$technologies) %>%
     dplyr::filter(.data$scenario %in% .env$scenarios_filter) %>%
     dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year)) %>%
     stop_if_empty(data_name = "Price Data") %>%
@@ -286,11 +286,11 @@ process_price_data <- function(data, technologies, sectors, start_year, end_year
         list(
           year = start_year:end_year,
           ald_sector = sectors,
-          technology = technologies,
+          ald_business_unit = technologies,
           scenario = scenarios_filter
         )
     ) %>%
-    report_missing_col_combinations(col_names = c("scenario", "technology", "year")) %>%
+    report_missing_col_combinations(col_names = c("scenario", "ald_business_unit", "year")) %>%
     report_all_duplicate_kinds(composite_unique_cols = cuc_price_data) %>%
     report_missings(name_data = "price data", throw_error = TRUE) %>%
     tidyr::pivot_wider(names_from = "scenario", values_from = "price", names_prefix = "price_")
@@ -312,7 +312,7 @@ process_scenario_data <- function(data, start_year, end_year, sectors, technolog
     dplyr::filter(.data$ald_sector %in% .env$sectors) %>%
     stop_if_empty(data_name = "Scenario Data") %>%
     check_sector_tech_mapping() %>%
-    dplyr::filter(.data$technology %in% .env$technologies) %>%
+    dplyr::filter(.data$ald_business_unit %in% .env$technologies) %>%
     dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year)) %>%
     stop_if_empty(data_name = "Scenario Data") %>%
     check_level_availability(
@@ -323,10 +323,10 @@ process_scenario_data <- function(data, start_year, end_year, sectors, technolog
           ald_sector = sectors,
           scenario = scenarios_filter,
           scenario_geography = scenario_geography_filter,
-          technology = technologies
+          ald_business_unit = technologies
         )
     ) %>%
-    report_missing_col_combinations(col_names = c("scenario", "scenario_geography", "technology", "year")) %>%
+    report_missing_col_combinations(col_names = c("scenario", "scenario_geography", "ald_business_unit", "year")) %>%
     report_all_duplicate_kinds(composite_unique_cols = cuc_scenario_data) %>%
     report_missings(name_data = "scenario data", throw_error = TRUE)
 
@@ -484,7 +484,7 @@ process_production_data <- function(data, start_year, end_year, time_horizon,
   data_processed <- data %>%
     dplyr::filter(.data$scenario_geography %in% .env$scenario_geography_filter) %>%
     dplyr::filter(.data$ald_sector %in% .env$sectors) %>%
-    dplyr::filter(.data$technology %in% .env$technologies) %>%
+    dplyr::filter(.data$ald_business_unit %in% .env$technologies) %>%
     dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$start_year + .env$time_horizon)) %>%
     remove_sectors_with_missing_production_end_of_forecast(
       start_year = start_year,
@@ -508,11 +508,11 @@ process_production_data <- function(data, start_year, end_year, time_horizon,
           year = start_year:(start_year + time_horizon),
           scenario_geography = scenario_geography_filter,
           ald_sector = sectors,
-          technology = technologies
+          ald_business_unit = technologies
         ),
       throw_error = FALSE
     ) %>%
-    report_missing_col_combinations(col_names = c("scenario_geography", "technology", "year")) %>%
+    report_missing_col_combinations(col_names = c("scenario_geography", "ald_business_unit", "year")) %>%
     report_all_duplicate_kinds(composite_unique_cols = cuc_production_data)
 
   # checks that no missing values exist in the data

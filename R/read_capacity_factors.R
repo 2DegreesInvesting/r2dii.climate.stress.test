@@ -13,7 +13,7 @@ read_capacity_factors_power <- function(path = NULL) {
   validate_data_has_expected_cols(
     data = data,
     expected_columns = c(
-      "scenario", "scenario_geography", "technology", "year", "capacity_factor"
+      "scenario", "scenario_geography", "ald_business_unit", "year", "capacity_factor"
     )
   )
 

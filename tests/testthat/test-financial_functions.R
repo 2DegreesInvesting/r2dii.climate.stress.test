@@ -104,7 +104,7 @@ test_that("calculate_net_profits does not apply carbon tax on high
           carbon technologies before shock year", {
   input_data <- tibble::tribble(
     ~company_name, ~baseline, ~late_sudden, ~Baseline_price, ~late_sudden_price, ~net_profit_margin, ~direction, ~overshoot_direction, ~proximity_to_target, ~year, ~emission_factor,
-    "high carbon technology after shock year", 100, 50, 10, 10, 0.1, "declining", "Increasing", 0, 2030, 1
+    "high carbon ald_business_unit after shock year", 100, 50, 10, 10, 0.1, "declining", "Increasing", 0, 2030, 1
   )
 
   carbon_data_test <- tibble::tribble(
@@ -189,7 +189,7 @@ test_that("calculate_net_profits penalizes companies for late build out of low
 test_that("a higher market passthrough has a weaker impact on a company's net profits", {
   input_data <- tibble::tribble(
     ~company_name, ~baseline, ~late_sudden, ~Baseline_price, ~late_sudden_price, ~net_profit_margin, ~direction, ~overshoot_direction, ~proximity_to_target, ~year, ~emission_factor,
-    "high carbon technology after shock year", 100, 50, 10, 10, 0.1, "declining","Decreasing", 0, 2030, 1
+    "high carbon ald_business_unit after shock year", 100, 50, 10, 10, 0.1, "declining","Decreasing", 0, 2030, 1
   )
 
   carbon_data_test <- tibble::tribble(

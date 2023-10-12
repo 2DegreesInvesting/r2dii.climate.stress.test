@@ -2,14 +2,14 @@
 % Please edit documentation in R/financial_functions.R
 \name{calculate_net_profits}
 \alias{calculate_net_profits}
-\title{Calculates annual net profits on the company-technology level for the
+\title{Calculates annual net profits on the company-ald_business_unit level for the
 baseline and late and sudden scenarios. Climate laggards which need to build
 out their production in increasing technologies to compensate for their
 missed targets, are "punished" by adjusting the net profit margin on their
 additional build out based on their proximity to target within the given
-technology. Specifically, we measure the ratio of how much of the required
-build out or reduction in a technology the company will have done at the end
-of the forecast period. If the technology has an increasing target and the
+ald_business_unit. Specifically, we measure the ratio of how much of the required
+build out or reduction in a ald_business_unit the company will have done at the end
+of the forecast period. If the ald_business_unit has an increasing target and the
 ratio of completion is below one, the net_profit_margin on the additional
 production build out is multiplied with the proximity to the target. This
 approximates the additional capital investment such a company would have to
@@ -22,7 +22,7 @@ calculate_net_profits(data, carbon_data, shock_year, market_passthrough)
 \item{data}{A data frame containing the production forecasts of companies
 under baseline and late and sudden, market prices/costs, company net profit
 margins, the proximity to target in the production forecast period and an
-indication of the direction of the technology.}
+indication of the direction of the ald_business_unit.}
 
 \item{carbon_data}{NGFS carbon prices.}
 
@@ -32,14 +32,14 @@ the policy shock strikes in a given scenario.}
 \item{market_passthrough}{A firm's ability to pass a carbon tax onto the consumer.}
 }
 \description{
-Calculates annual net profits on the company-technology level for the
+Calculates annual net profits on the company-ald_business_unit level for the
 baseline and late and sudden scenarios. Climate laggards which need to build
 out their production in increasing technologies to compensate for their
 missed targets, are "punished" by adjusting the net profit margin on their
 additional build out based on their proximity to target within the given
-technology. Specifically, we measure the ratio of how much of the required
-build out or reduction in a technology the company will have done at the end
-of the forecast period. If the technology has an increasing target and the
+ald_business_unit. Specifically, we measure the ratio of how much of the required
+build out or reduction in a ald_business_unit the company will have done at the end
+of the forecast period. If the ald_business_unit has an increasing target and the
 ratio of completion is below one, the net_profit_margin on the additional
 production build out is multiplied with the proximity to the target. This
 approximates the additional capital investment such a company would have to

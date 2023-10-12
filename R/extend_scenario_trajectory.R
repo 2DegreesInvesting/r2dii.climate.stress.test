@@ -6,7 +6,7 @@
 #' Contrary to the old version, this implements company targets based on the
 #' SMSP for increasing technologies and TMSR for decreasing ones.
 #' Companies that get production targets below 0 or that show a pattern of
-#' phasing out a technology within the forecast period, will get 0 scenario
+#' phasing out a ald_business_unit within the forecast period, will get 0 scenario
 #' targets.
 #'
 #' @param data A data frame containing the production forecasts of companies
@@ -35,7 +35,7 @@ extend_scenario_trajectory <- function(data,
   validate_data_has_expected_cols(
     data = data,
     expected_columns = c(
-      "id", "company_name", "year", "ald_sector", "technology",
+      "company_id", "company_name", "year", "ald_sector", "ald_business_unit",
       "scenario_geography", "plan_tech_prod", "plan_emission_factor",
       "plan_sec_prod"
     )
@@ -44,7 +44,7 @@ extend_scenario_trajectory <- function(data,
   validate_data_has_expected_cols(
     data = scenario_data,
     expected_columns = c(
-      "technology", "scenario_geography", "ald_sector", "units",
+      "ald_business_unit", "scenario_geography", "ald_sector", "units",
       "scenario", "year", "direction", "fair_share_perc"
     )
   )
@@ -63,11 +63,11 @@ extend_scenario_trajectory <- function(data,
   data <- data %>%
     dplyr::inner_join(
       scenario_data,
-      by = c("ald_sector", "technology", "scenario_geography", "year")
+      by = c("ald_sector", "ald_business_unit", "scenario_geography", "year")
     ) %>%
     report_all_duplicate_kinds(
       composite_unique_cols = c(
-        "year", "id", "company_name", "ald_sector", "technology", "scenario",
+        "year", "company_id", "company_name", "ald_sector", "ald_business_unit", "scenario",
         "scenario_geography", "units"
       )
     )
@@ -89,16 +89,16 @@ extend_scenario_trajectory <- function(data,
   data <- data %>%
     tidyr::pivot_wider(
       id_cols = dplyr::all_of(c(
-        "id", "company_name", "year", "scenario_geography", "ald_sector",
-        "technology", "plan_tech_prod", "phase_out", "emission_factor",
+        "company_id", "company_name", "year", "scenario_geography", "ald_sector",
+        "ald_business_unit", "plan_tech_prod", "phase_out", "emission_factor",
         "proximity_to_target", "direction"
       )),
       names_from = "scenario",
       values_from = "scen_tech_prod"
     ) %>%
     dplyr::arrange(
-      .data$id, .data$company_name, .data$scenario_geography, .data$ald_sector,
-      .data$technology, .data$year
+      .data$company_id, .data$company_name, .data$scenario_geography, .data$ald_sector,
+      .data$ald_business_unit, .data$year
     )
 
   return(data)
@@ -119,18 +119,18 @@ summarise_production_technology_forecasts <- function(data,
   data <- data %>%
     dplyr::select(
       dplyr::all_of(c(
-        "id", "company_name", "ald_sector", "technology",
+        "company_id", "company_name", "ald_sector", "ald_business_unit",
         "scenario_geography", "year", "plan_tech_prod",
         "plan_emission_factor"
       ))
     ) %>%
     dplyr::filter(.data$year <= .env$start_analysis + .env$time_frame) %>%
     dplyr::group_by(
-      .data$id, .data$company_name, .data$ald_sector, .data$technology,
+      .data$company_id, .data$company_name, .data$ald_sector, .data$ald_business_unit,
       .data$scenario_geography
     ) %>%
     dplyr::arrange(
-      .data$id, .data$company_name, .data$ald_sector, .data$technology,
+      .data$company_id, .data$company_name, .data$ald_sector, .data$ald_business_unit,
       .data$scenario_geography, .data$year
     ) %>%
     dplyr::mutate(
@@ -145,7 +145,7 @@ summarise_production_technology_forecasts <- function(data,
   return(data)
 }
 
-#' Identify which company technology combination is a phase out and mark as such
+#' Identify which company ald_business_unit combination is a phase out and mark as such
 #'
 #' @param data A data frame containing the production forecasts of companies
 #'   (in the portfolio). Pre-processed to fit analysis parameters and after
@@ -181,13 +181,13 @@ extend_to_full_analysis_timeframe <- function(data,
       tidyr::nesting(
         !!!rlang::syms(
           c(
-            "id", "company_name", "ald_sector", "technology", "scenario_geography"
+            "company_id", "company_name", "ald_sector", "ald_business_unit", "scenario_geography"
           )
         )
       )
     ) %>%
     dplyr::arrange(
-      .data$id, .data$company_name, .data$ald_sector, .data$technology,
+      .data$company_id, .data$company_name, .data$ald_sector, .data$ald_business_unit,
       .data$scenario_geography, .data$year
     ) %>%
     tidyr::fill(
@@ -215,7 +215,7 @@ extend_to_full_analysis_timeframe <- function(data,
 summarise_production_sector_forecasts <- function(data) {
   data <- data %>%
     dplyr::group_by(
-      .data$id, .data$company_name, .data$ald_sector, .data$scenario,
+      .data$company_id, .data$company_name, .data$ald_sector, .data$scenario,
       .data$scenario_geography, .data$units, .data$year
     ) %>%
     dplyr::mutate(
@@ -224,7 +224,7 @@ summarise_production_sector_forecasts <- function(data) {
     dplyr::arrange(.data$year) %>%
     dplyr::ungroup() %>%
     dplyr::group_by(
-      .data$id, .data$company_name, .data$ald_sector, .data$scenario,
+      .data$company_id, .data$company_name, .data$ald_sector, .data$scenario,
       .data$scenario_geography, .data$units
     ) %>%
     dplyr::mutate(
@@ -235,8 +235,8 @@ summarise_production_sector_forecasts <- function(data) {
     dplyr::ungroup()
 }
 
-#' Apply TMSR/SMSP scenario targets based on initial technology or sector
-#' production and type of technology
+#' Apply TMSR/SMSP scenario targets based on initial ald_business_unit or sector
+#' production and type of ald_business_unit
 #'
 #' @param data A data frame containing the production forecasts of companies
 #'   (in the portfolio). Pre-processed to fit analysis parameters and after
@@ -255,8 +255,8 @@ apply_scenario_targets <- function(data) {
   return(data)
 }
 
-#' Set scenario targets to zero where companies phase out a technology or the
-#' extension of the technology leads to negative values
+#' Set scenario targets to zero where companies phase out a ald_business_unit or the
+#' extension of the ald_business_unit leads to negative values
 #'
 #' @param data A data frame containing the production forecasts of companies
 #'   (in the portfolio). Pre-processed to fit analysis parameters and after
@@ -273,8 +273,8 @@ handle_phase_out_and_negative_targets <- function(data) {
     )
 }
 
-#' Calculate the ratio of the required change in technology that each company
-#' has achieved per technology at the end of the production forecast period.
+#' Calculate the ratio of the required change in ald_business_unit that each company
+#' has achieved per ald_business_unit at the end of the production forecast period.
 #' This ratio will later serve to adjust the net profit margin for companies
 #' that have not built out enough production capacity in increasing technologies
 #' and hence need to scale up production to compensate for their lag in buildout.
@@ -302,7 +302,7 @@ calculate_proximity_to_target <- function(data,
       .data$scenario == .env$target_scenario
     ) %>%
     dplyr::group_by(
-      .data$id, .data$company_name, .data$ald_sector, .data$technology,
+      .data$company_id, .data$company_name, .data$ald_sector, .data$ald_business_unit,
       .data$scenario_geography
     ) %>%
     dplyr::mutate(
@@ -334,7 +334,7 @@ calculate_proximity_to_target <- function(data,
     dplyr::inner_join(
       production_changes,
       by = c(
-        "id", "company_name", "ald_sector", "technology", "scenario_geography"
+        "company_id", "company_name", "ald_sector", "ald_business_unit", "scenario_geography"
       )
     )
 }

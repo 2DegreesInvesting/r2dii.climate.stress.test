@@ -2,7 +2,7 @@
 % Please edit documentation in R/financial_functions.R
 \name{calculate_net_profits_shock_declining_technologies_carbon_tax}
 \alias{calculate_net_profits_shock_declining_technologies_carbon_tax}
-\title{Calculates annual net profits on the company-technology level for the
+\title{Calculates annual net profits on the company-ald_business_unit level for the
 baseline and late and sudden scenarios - with a carbon tax being added.}
 \usage{
 calculate_net_profits_shock_declining_technologies_carbon_tax(
@@ -16,7 +16,7 @@ calculate_net_profits_shock_declining_technologies_carbon_tax(
 \item{data}{A data frame containing the production forecasts of companies
 under baseline and late and sudden, market prices/costs, company net profit
 margins, the proximity to target in the production forecast period and an
-indication of the direction of the technology.}
+indication of the direction of the ald_business_unit.}
 
 \item{shock_year}{A numeric vector of length one that indicates in which year
 the policy shock strikes in a given scenario.}
@@ -29,6 +29,6 @@ the policy shock strikes in a given scenario.}
 Data frame with annual netprofits for all cases without carbon tax.
 }
 \description{
-Calculates annual net profits on the company-technology level for the
+Calculates annual net profits on the company-ald_business_unit level for the
 baseline and late and sudden scenarios - with a carbon tax being added.
 }

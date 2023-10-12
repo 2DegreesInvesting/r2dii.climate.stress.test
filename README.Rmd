@@ -23,7 +23,7 @@ The goal of r2dii.climate.stress.test is to provide a tool that can be used to
 conduct what-if climate stress test analyses for financial institutions,
 supervisors, regulators and other stakeholders. The tool aims at highlighting
 potential financial risk in especially climate relevant sectors, split by
-production technology where required. The sectors covered by the 2DII climate
+production ald_business_unit where required. The sectors covered by the 2DII climate
 stress test and therefore by this package, follow mostly the logic of the Paris
 Agreement Capital Transition Assessment (PACTA) tool, but can in principle be
 adapted to other settings. Application of the code requires availability of
