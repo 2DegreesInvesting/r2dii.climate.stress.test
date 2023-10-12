@@ -3,7 +3,7 @@
     Code
       stress_test_arguments
     Output
-      # A tibble: 17 x 6
+      # A tibble: 16 x 6
          name                    type      default       allowed           min   max  
          <chr>                   <chr>     <chr>         <chr>             <chr> <chr>
        1 asset_type              character <NA>          equity, bonds, l~ <NA>  <NA> 
@@ -22,5 +22,4 @@
       14 scc                     double    40            <NA>              0     10000
       15 carbon_price_model      character no_carbon_tax no_carbon_tax, N~ <NA>  <NA> 
       16 market_passthrough      double    0             <NA>              0     1    
-      17 financial_stimulus      double    1             <NA>              1     5    
 
