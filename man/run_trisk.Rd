@@ -19,6 +19,7 @@ run_trisk(
   start_year = 2022,
   carbon_price_model = "no_carbon_tax",
   market_passthrough = 0,
+  financial_stimulus = 1,
   return_results = FALSE
 )
 }
@@ -69,6 +70,8 @@ the scenario data.}
 carbon prices. Default is no carbon tax.}
 
 \item{market_passthrough}{Firm's ability to pass carbon tax onto the consumer}
+
+\item{financial_stimulus}{Additional support for low carbon companies.}
 
 \item{return_results}{Boolean, indicating if results shall be exported.}
 }

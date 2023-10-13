@@ -14,12 +14,15 @@ is multiplied with the proximity to the target. This approximates the additional
 such a company would have to make in a short time, which leads to added costs. This ensures that late
 build out will not proportionally translate into increased profits.}
 \usage{
-calculate_net_profits_shock_increasing_technologies(data)
+calculate_net_profits_shock_increasing_technologies(data, financial_stimulus)
 }
 \arguments{
 \item{data}{A data frame containing the production forecasts of companies with increasing under the late and sudden,
 market prices/costs, company net profit margins, the proximity to target in the production forecast period and an
 indication of the direction of the technology.}
+
+\item{financial_stimulus}{Additional channel through which the net profits of green
+companies can be boosted under a shock scenario}
 }
 \value{
 A data frame with net profits of companies with a increasing technology
