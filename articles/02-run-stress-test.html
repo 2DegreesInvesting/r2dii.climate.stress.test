@@ -233,7 +233,7 @@ numeric variables the allowed values are the range from <code>min</code>
 (inclusive) to <code>max</code> (inclusive).</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">stress_test_arguments</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 16 × 6</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 17 × 6</span></span></span>
 <span><span class="co">#&gt;    name                    type      default       allowed           min   max  </span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> asset_type              character <span style="color: #BB0000;">NA</span>            equity, bonds, l… <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span></span>
@@ -251,7 +251,8 @@ numeric variables the allowed values are the range from <code>min</code>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">13</span> exp_share_damages_paid  double    0.027         <span style="color: #BB0000;">NA</span>                0     1    </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">14</span> scc                     double    40            <span style="color: #BB0000;">NA</span>                0     10000</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">15</span> carbon_price_model      character no_carbon_tax no_carbon_tax, N… <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">16</span> market_passthrough      double    0             <span style="color: #BB0000;">NA</span>                0     1</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">16</span> market_passthrough      double    0             <span style="color: #BB0000;">NA</span>                0     1    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">17</span> financial_stimulus      double    1             <span style="color: #BB0000;">NA</span>                1     5</span></span></code></pre></div>
 <p>Note that special special rules apply for the variables
 <code>baseline_scenario</code> and <code>shock_scenario</code>. Baseline
 and shock scenarios can in principle be selected from the following:</p>

@@ -117,7 +117,13 @@ build out will not proportionally translate into increased profits.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">calculate_net_profits</span><span class="op">(</span><span class="va">data</span>, <span class="va">carbon_data</span>, <span class="va">shock_year</span>, <span class="va">market_passthrough</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">calculate_net_profits</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  <span class="va">carbon_data</span>,</span>
+<span>  <span class="va">shock_year</span>,</span>
+<span>  <span class="va">market_passthrough</span>,</span>
+<span>  <span class="va">financial_stimulus</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -140,6 +146,11 @@ the policy shock strikes in a given scenario.</p></dd>
 
 <dt>market_passthrough</dt>
 <dd><p>A firm's ability to pass a carbon tax onto the consumer.</p></dd>
+
+
+<dt>financial_stimulus</dt>
+<dd><p>Additional channel through which the net profits of green
+companies can be boosted under a shock scenario.</p></dd>
 
 </dl></div>
 
