@@ -19,7 +19,8 @@ validate_input_values(
   scc,
   risk_type,
   carbon_price_model,
-  market_passthrough
+  market_passthrough,
+  financial_stimulus
 )
 }
 \arguments{
@@ -71,7 +72,10 @@ the carbon liability of a company.}
 \item{carbon_price_model}{Character vector, indicating which NGFS model is used in regards to
 carbon prices. Default is no carbon tax.}
 
-\item{market_passthrough}{Firm's ability to pass carbon tax onto the consumer..}
+\item{market_passthrough}{Firm's ability to pass carbon tax onto the consumer.}
+
+\item{financial_stimulus}{Additional channel through which the net profits of green
+companies can be boosted under a shock scenario.}
 }
 \description{
 Checks that user inputs are within defined ranges.

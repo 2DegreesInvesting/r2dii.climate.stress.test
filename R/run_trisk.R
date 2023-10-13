@@ -42,6 +42,7 @@
 #'   carbon prices. Default is no carbon tax.
 #' @param market_passthrough Firm's ability to pass carbon tax onto the consumer
 #' @param return_results Boolean, indicating if results shall be exported.
+#' @param financial_stimulus Additional support for low carbon companies.
 #'
 #' @return NULL
 #' @export
@@ -59,6 +60,7 @@ run_trisk <- function(input_path,
                       start_year = 2022,
                       carbon_price_model = "no_carbon_tax",
                       market_passthrough = 0,
+                      financial_stimulus = 1,
                       return_results = FALSE) {
   cat("-- Running transition risk stress test. \n\n\n")
 
@@ -81,6 +83,7 @@ run_trisk <- function(input_path,
     shock_year = shock_year,
     carbon_price_model = carbon_price_model,
     market_passthrough = market_passthrough,
+    financial_stimulus = financial_stimulus,
     risk_type = "trisk"
   )
 
@@ -247,7 +250,8 @@ read_and_process_and_calc <- function(args_list) {
   company_net_profits <- calculate_net_profits(input_data_list$full_trajectory,
     carbon_data = input_data_list$carbon_data,
     shock_year = shock_year,
-    market_passthrough = market_passthrough
+    market_passthrough = market_passthrough,
+    financial_stimulus = financial_stimulus
   )
 
   # calc discounted net profits
