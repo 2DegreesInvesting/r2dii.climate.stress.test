@@ -25,6 +25,8 @@ customise_output_path(
 
 \item{carbon_price_model}{String holding name of carbon price model for trisk}
 
+\item{financial_stimulus}{Numeric value describing additional financial support for low carbon companies.}
+
 \item{risk_type}{String holding the risk type.}
 }
 \value{
