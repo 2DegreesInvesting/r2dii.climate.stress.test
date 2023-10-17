@@ -8,6 +8,7 @@
 #' @param shock_scenario String holding shock scenario name.
 #' @param scenario_geography String holding scenario geography name.
 #' @param carbon_price_model String holding carbon price model for trisk.
+#' @param financial_stimulus Numeric value additional support for low carbon technologies.
 #' @param risk_type String holding the risk type.
 #'
 #' @return NULL
