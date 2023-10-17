@@ -11,6 +11,7 @@ write_stress_test_results(
   scenario_geography,
   carbon_price_model,
   risk_type,
+  financial_stimulus,
   output_path
 )
 }
