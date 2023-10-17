@@ -98,6 +98,7 @@ run_trisk <- function(input_path,
     iter_var = iter_var,
     shock_scenario = shock_scenario,
     scenario_geography = scenario_geography,
+    financial_stimulus =financial_stimulus,
     carbon_price_model = carbon_price_model,
     risk_type = "trisk"
   )
@@ -134,6 +135,7 @@ run_trisk <- function(input_path,
     shock_scenario = shock_scenario,
     scenario_geography = scenario_geography,
     carbon_price_model = carbon_price_model,
+    financial_stimulus =financial_stimulus,
     risk_type = "trisk",
     output_path = args_list$output_path
   )
@@ -174,7 +176,13 @@ globalVariables(c(names(formals(run_trisk)), "iter_var", "end_year", "risk_type"
 read_and_process_and_calc <- function(args_list) {
   list2env(args_list, envir = rlang::current_env())
 
-  log_path <- file.path(output_path, sprintf("log_file_%s_%s_%s_%s.txt", iter_var, shock_scenario, scenario_geography, carbon_price_model))
+  if(financial_stimulus > 1) {
+
+  log_path <- file.path(output_path, sprintf("log_file_%s_%s_%s_%s_%s.txt", iter_var, shock_scenario, scenario_geography, carbon_price_model, financial_stimulus))
+  } else
+
+  {log_path <- file.path(output_path, sprintf("log_file_%s_%s_%s_%s.txt", iter_var, shock_scenario, scenario_geography, carbon_price_model))
+  }
 
   paste_write("\n\nIteration with parameter settings:", log_path = log_path)
   purrr::walk(names(args_list), function(name) {
