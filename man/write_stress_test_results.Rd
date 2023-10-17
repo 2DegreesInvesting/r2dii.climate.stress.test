@@ -28,6 +28,8 @@ write_stress_test_results(
 
 \item{risk_type}{String holding the risk type.}
 
+\item{financial_stimulus}{Numeric value additional support for low carbon technologies.}
+
 \item{output_path}{String holding path to output dir.}
 }
 \description{
