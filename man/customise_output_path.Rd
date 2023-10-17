@@ -10,6 +10,7 @@ customise_output_path(
   shock_scenario,
   scenario_geography,
   carbon_price_model,
+  financial_stimulus,
   risk_type
 )
 }
