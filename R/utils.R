@@ -399,6 +399,7 @@ fail_if_input_args_are_missing <- function(args_list) {
 #' @param scenario_geography String holding name of scenario geography.
 #' @param carbon_price_model String holding name of carbon price model for trisk
 #' @param risk_type String holding the risk type.
+#' @param financial_stimulus Numeric value describing additional financial support for low carbon companies.
 #'
 #' @return Path to subdirectory in st output folder.
 customise_output_path <- function(output_path, iter_var, shock_scenario, scenario_geography, carbon_price_model, financial_stimulus, risk_type) {
