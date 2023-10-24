@@ -50,7 +50,7 @@ calculate_trisk_trajectory <- function(input_data_list,
 
   full_trajectory <- production_data %>%
     dplyr::inner_join(
-      y = input_data_list$financial_data %>% dplyr::select(!c(company_name)),
+      y = input_data_list$financial_data,
       by = merge_cols
     ) %>%
     stop_if_empty(data_name = "Production data joined with Financial data") %>%
