@@ -11,6 +11,7 @@ write_stress_test_results(
   scenario_geography,
   carbon_price_model,
   risk_type,
+  financial_stimulus,
   output_path
 )
 }
@@ -26,6 +27,8 @@ write_stress_test_results(
 \item{carbon_price_model}{String holding carbon price model for trisk.}
 
 \item{risk_type}{String holding the risk type.}
+
+\item{financial_stimulus}{Numeric value additional support for low carbon technologies.}
 
 \item{output_path}{String holding path to output dir.}
 }

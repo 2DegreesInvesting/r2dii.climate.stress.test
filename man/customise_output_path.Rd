@@ -10,6 +10,7 @@ customise_output_path(
   shock_scenario,
   scenario_geography,
   carbon_price_model,
+  financial_stimulus,
   risk_type
 )
 }
@@ -23,6 +24,8 @@ customise_output_path(
 \item{scenario_geography}{String holding name of scenario geography.}
 
 \item{carbon_price_model}{String holding name of carbon price model for trisk}
+
+\item{financial_stimulus}{Numeric value describing additional financial support for low carbon companies.}
 
 \item{risk_type}{String holding the risk type.}
 }
