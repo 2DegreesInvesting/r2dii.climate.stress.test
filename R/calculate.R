@@ -45,7 +45,7 @@ calculate_trisk_trajectory <- function(input_data_list,
       transition_scenario = transition_scenario,
       start_year = start_year
     )
-
+  
   merge_cols <- c("id" = "company_id")
 
   full_trajectory <- production_data %>%
