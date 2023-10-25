@@ -46,7 +46,7 @@ calculate_trisk_trajectory <- function(input_data_list,
       start_year = start_year
     )
 
-  merge_cols <- c("company_id" = "company_id")
+  merge_cols <- c("id" = "company_id")
 
   full_trajectory <- production_data %>%
     dplyr::inner_join(

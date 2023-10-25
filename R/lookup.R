@@ -30,7 +30,7 @@ allocation_method_lookup <- "portfolio_weight"
 
 equity_market_filter_lookup <- "GlobalMarket"
 
-# ald_business_unit and sector mapping between P4I and P4B
+# technology and sector mapping between P4I and P4B
 # HDV and shipping not consistently defined across both versions at this time
 # styler: off
 p4i_p4b_sector_technology_lookup <- tibble::tribble(
