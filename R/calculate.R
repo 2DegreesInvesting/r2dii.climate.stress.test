@@ -5,10 +5,10 @@
 #' @param input_data_list List with project agnostic and project specific input data
 #' @param baseline_scenario Character. A string that indicates which
 #'   of the scenarios included in the analysis should be used to set the
-#'   baseline technology trajectories.
+#'   baseline ald_business_unit trajectories.
 #' @param target_scenario Character. A string that indicates which
 #'   of the scenarios included in the analysis should be used to set the
-#'   late & sudden technology trajectories.
+#'   late & sudden ald_business_unit trajectories.
 #' @param transition_scenario Tibble with 1 row holding at least variables
 #'   `year_of_shock` and `duration_of_shock`.
 #' @param start_year Numeric, holding start year of analysis.
@@ -46,11 +46,11 @@ calculate_trisk_trajectory <- function(input_data_list,
       start_year = start_year
     )
 
-  merge_cols <- c("id" = "company_id")
+  merge_cols <- c("company_id" = "company_id")
 
   full_trajectory <- production_data %>%
     dplyr::inner_join(
-      y = input_data_list$financial_data %>% dplyr::select(!c(company_name)),
+      y = input_data_list$financial_data,
       by = merge_cols
     ) %>%
     stop_if_empty(data_name = "Production data joined with Financial data") %>%
@@ -69,10 +69,10 @@ calculate_trisk_trajectory <- function(input_data_list,
 #' @param input_data_list List with project agnostic and project specific input data
 #' @param baseline_scenario Character. A string that indicates which
 #'   of the scenarios included in the analysis should be used to set the
-#'   baseline technology trajectories.
+#'   baseline ald_business_unit trajectories.
 #' @param target_scenario Character. A string that indicates which
 #'   of the scenarios included in the analysis should be used to set the
-#'   late & sudden technology trajectories.
+#'   late & sudden ald_business_unit trajectories.
 #' @param litigation_scenario Tibble with 1 row holding at least variables
 #'   `year_of_shock`, `duration_of_shock`, `scc` and `exp_share_damages_paid`
 #' @param start_year Numeric, holding start year of analysis.
@@ -93,7 +93,7 @@ calculate_lrisk_trajectory <- function(input_data_list,
       baseline_scenario = baseline_scenario
     ) %>%
     # we currently assume that production levels and emission factors of
-    # misaligned company-technology combinations are forced onto the target
+    # misaligned company-ald_business_unit combinations are forced onto the target
     # scenario trajectory directly after the litigation shock.
     # This may not be perfectly realistic and may be refined in the future.
     # TODO: we need to decide how to handle low carbon technologies.
@@ -130,7 +130,7 @@ calculate_lrisk_trajectory <- function(input_data_list,
       late_sudden_price = !!rlang::sym(glue::glue("price_{target_scenario}"))
     )
 
-  merge_cols <- c("company_name", "id" = "company_id")
+  merge_cols <- c("company_name", "company_id" = "company_id")
 
   full_trajectory <- production_data %>%
     dplyr::inner_join(
@@ -155,10 +155,10 @@ calculate_lrisk_trajectory <- function(input_data_list,
 #' @param data data frame containing the full trajectory company data
 #' @param baseline_scenario Character. A string that indicates which
 #'   of the scenarios included in the analysis should be used to set the
-#'   baseline technology trajectories.
+#'   baseline ald_business_unit trajectories.
 #' @param shock_scenario Character. A string that indicates which
 #'   of the scenarios included in the analysis should be used to set the
-#'   late & sudden technology trajectories.
+#'   late & sudden ald_business_unit trajectories.
 #' @param end_year Numeric, holding end year of analysis.
 #' @param growth_rate Numeric, that holds the terminal growth rate of profits
 #'   beyond the `end_year` in the DCF.
@@ -207,9 +207,9 @@ subtract_settlement <- function(data,
     dplyr::mutate(
       scc_liability =
         .data$overshoot_emissions * .env$scc *
-          .env$exp_share_damages_paid
+        .env$exp_share_damages_paid
     ) %>%
-    dplyr::group_by(.data$company_name, .data$ald_sector, .data$technology) %>%
+    dplyr::group_by(.data$company_name, .data$ald_sector, .data$ald_business_unit) %>%
     dplyr::mutate(
       settlement = sum(.data$scc_liability, na.rm = TRUE) * .env$settlement_factor
     ) %>%
@@ -261,8 +261,8 @@ calculate_terminal_value <- function(data,
   data <- data %>%
     dplyr::bind_rows(terminal_value) %>%
     dplyr::arrange(
-      .data$id, .data$scenario_geography, .data$company_name, .data$ald_sector,
-      .data$technology, .data$year
+      .data$company_id, .data$scenario_geography, .data$company_name, .data$ald_sector,
+      .data$ald_business_unit, .data$year
     )
 
   return(data)

@@ -216,9 +216,9 @@ report_duplicates <- function(data, cols, throw_error = TRUE) {
 report_company_drops <- function(data_list, log_path) {
   report_dropped_company_names(
     data_x = data_list$production_data,
-    data_y = data_list$financial_data %>% dplyr::select(-c("company_name")),
+    data_y = data_list$financial_data,
     name_y = "financial data",
-    merge_cols = c("id" = "company_id"),
+    merge_cols = c("company_id"),
     log_path = log_path
   )
 
@@ -226,7 +226,7 @@ report_company_drops <- function(data_list, log_path) {
     data_x = data_list$production_data,
     data_y = data_list$df_price,
     name_y = "price data",
-    merge_cols = c("technology", "ald_sector", "year"),
+    merge_cols = c("ald_business_unit", "ald_sector", "year"),
     log_path = log_path
   )
 
