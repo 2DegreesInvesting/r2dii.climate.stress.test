@@ -26,6 +26,7 @@ library(dplyr)
 
 all_crispy_agg <- all_crispy %>%
   group_by(company_name  ,
+  business_unit,
            sector,
            scenario_duo,
            baseline_scenario,
@@ -188,7 +189,6 @@ all_crispy_no_constant_companies <- all_crispy_agg %>%
 nz_duos <-
   c(
     "IPR2021_baseline&IPR2021_RPS",
-    "Oxford2021_base&Oxford2021_fast",
     "NGFS2021_REMIND_CP&NGFS2021_REMIND_NZ2050",
     "NGFS2021_REMIND_NDC&NGFS2021_REMIND_NZ2050",
     "NGFS2021_MESSAGE_CP&NGFS2021_MESSAGE_NZ2050",
@@ -229,7 +229,9 @@ b2ds_duos <-
     "NGFS2021_GCAM_NDC&NGFS2021_GCAM_B2DS",
     "NGFS2021_GCAM_CP&NGFS2021_GCAM_B2DS",
     "WEO2021_APS&WEO2021_SDS",
-    "WEO2021_STEPS&WEO2021_SDS"
+    "WEO2021_STEPS&WEO2021_SDS",
+    "Oxford2021_base&Oxford2021_fast"
+
   )
 
 
@@ -340,7 +342,7 @@ all_crispy_filtered <- all_crispy_filtered %>% mutate(
 )
 
 output_dir <-
-  file.path("CGFI paper", "results_final_overshoot_forkevin_final_final_final", "full_database")
+  file.path("CGFI paper", "results_final_overshoot_forkevin_final_final_final_gireesh", "full_database")
 dir.create(output_dir, showWarnings = FALSE)
 
 

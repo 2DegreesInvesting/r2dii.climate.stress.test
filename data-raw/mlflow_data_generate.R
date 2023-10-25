@@ -1,7 +1,7 @@
 devtools::load_all()
 
 # In a terminal opened in the project folder, execute this command to start a local mlflow server
-# mlflow server --backend-store-uri ~/mlfow_outputs/mlruns --default-artifact-root ~/mlfow_outputs/mlartifacts --serve-artifacts --host 127.0.0.1 --port 5000
+# mlflow server --backend-store-uri ~/backup_mlflow_outputs/mlfow_outputs/mlruns --default-artifact-root ~/backup_mlflow_outputs/mlfow_outputs/mlartifacts --serve-artifacts --host 127.0.0.1 --port 5000
 
 mlflow_python_bin <-
   "/Users/bertrandgallice/opt/miniconda3/envs/mlflow_env/bin/python"

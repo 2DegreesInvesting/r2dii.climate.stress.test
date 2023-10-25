@@ -1,3 +1,13 @@
+CGFI paper/*
+dummy_project/*
+good_new_st_inputs/*
+new_st_inputs/*
+sa_st_inputs_master_raw/*
+sensitivity_analysis/*
+st_inputs_test/*
+transition_risk_paper/*
+st_inputs_eikon_and_ar/*
+
 # History files
 .Rhistory
 .Rapp.history
@@ -49,3 +59,4 @@ Desktop.ini
 docs
 tests/testthat/_snaps/run_trisk*
 tests/testthat/_snaps/run_lrisk*
+CGFI paper/*

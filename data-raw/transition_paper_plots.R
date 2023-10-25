@@ -104,6 +104,66 @@ for (scenario in
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ### PD DISTRIB PLOTS
 
 dir.create(fs::path(output_dir, "pd_plots"),
@@ -175,6 +235,60 @@ for (scenario in
     units = "cm"
   )
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -334,6 +448,60 @@ for (scenario in
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # CORRELATIONS SWARMPLOT NPV ROC
 
 swarm_plot_dir <- "correl_swarm_plots_npv_roc"
@@ -354,6 +522,7 @@ for (scenario in
       correl_npv_roc_between_scenarios(all_crispy_filtered)
     match_volumes <- count_matching_volumes(all_crispy_filtered)
     size <- 1
+    fontsize <- 8
   } else{
     scenarios_correlations <-
       correl_npv_roc_between_scenarios(all_crispy_filtered %>%
@@ -361,6 +530,7 @@ for (scenario in
     match_volumes <- count_matching_volumes(all_crispy_filtered %>%
                                               filter(target_duo == scenario))
     size <- 10
+    fontsize <- 14
   }
 
   # pivot correlations to source->target scenario_duo, correlation as values
@@ -445,9 +615,12 @@ for (scenario in
       axis.text.x = element_text(
         angle = 45,
         hjust = 1,
-        size = 8,
+        size = fontsize,
         color = scenario_axis_color_order$source_scenario_provider_color,
         # face = "bold"
+      ),
+      axis.text.y = element_text(
+        size = fontsize
       )
     ) +
     scale_color_manual(values = mapper_scenario_provider_color) +
@@ -467,6 +640,70 @@ for (scenario in
   )
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -603,3 +840,599 @@ for (scenario in
   )
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# CORRELATIONS DENSITY NPV ROC
+
+swarm_plot_dir <- "correl_density_plots_npv_roc"
+
+dir.create(
+  fs::path(output_dir,
+           swarm_plot_dir),
+  recursive = T,
+  showWarnings = F
+)
+
+for (scenario in
+     c("all", all_crispy_filtered %>% distinct(target_duo) %>% pull()))
+{
+  # compute volumes and correlations
+  if (scenario == "all") {
+    scenarios_correlations <-
+      correl_npv_roc_between_scenarios(all_crispy_filtered)
+    match_volumes <- count_matching_volumes(all_crispy_filtered)
+    size <- 1
+    fontsize <- 8
+  } else{
+    scenarios_correlations <-
+      correl_npv_roc_between_scenarios(all_crispy_filtered %>%
+                                          filter(target_duo == scenario))
+    match_volumes <- count_matching_volumes(all_crispy_filtered %>%
+                                              filter(target_duo == scenario))
+    size <- 6
+    fontsize <- 12
+  }
+
+  # pivot correlations to source->target scenario_duo, correlation as values
+  data_plot <-
+    scenarios_correlations %>%
+    mutate(source_scenario = row.names(scenarios_correlations)) %>%
+    tidyr::pivot_longer(!source_scenario,
+                        names_to = "dest_scenario",
+                        values_to = "correlation") %>%
+    left_join(
+      all_crispy_filtered %>% distinct(scenario_duo, scenario_provider),
+      by = c("source_scenario" = "scenario_duo")
+    ) %>%
+    rename(source_scenario_provider = scenario_provider) %>%
+    left_join(
+      all_crispy_filtered %>% distinct(scenario_duo, scenario_provider),
+      by = c("dest_scenario" = "scenario_duo")
+    ) %>%
+    rename(dest_scenario_provider = scenario_provider) %>%
+    filter(source_scenario != dest_scenario)
+  data_plot <- data_plot %>% tidyr::drop_na()
+
+  # adds volume of match to scenario_pair source/target
+  match_volumes_plot <- match_volumes %>%
+    mutate(source_scenario = row.names(scenarios_correlations)) %>%
+    tidyr::pivot_longer(!source_scenario,
+                        names_to = "dest_scenario",
+                        values_to = "volume")
+
+  data_plot <- data_plot %>% left_join(match_volumes_plot)
+
+  # assign colors to points
+  data_plot <- data_plot %>%
+    mutate(
+      source_scenario_provider_color = mapper_scenario_provider_color[source_scenario_provider],
+      dest_scenario_provider_color = mapper_scenario_provider_color[dest_scenario_provider]
+    )
+
+  # assign colors to axis text, and arrange x labels order from lowest average corr to highest
+  scenario_axis_color_order <- data_plot %>%
+    group_by(source_scenario,
+             source_scenario_provider,
+             source_scenario_provider_color) %>%
+    summarise(avg_correlation = mean(correlation),
+              .groups = "drop") %>%
+    arrange(avg_correlation) %>%
+    select(source_scenario, source_scenario_provider_color)
+  data_plot$source_scenario <-
+    factor(data_plot$source_scenario, levels = scenario_axis_color_order$source_scenario)
+
+
+  le_plot <- ggplot(data=data_plot) + 
+    geom_violin(aes(
+        x = source_scenario,
+        y = correlation,
+        fill = source_scenario_provider),
+        scale="width",
+        position="dodge", color = NA, alpha=0.5) +
+    geom_point(aes(
+        x = source_scenario,
+        y = correlation),
+        size=size+1, color="black")+
+    geom_point(aes(
+        x = source_scenario,
+        y = correlation),
+        size=size, color=data_plot$dest_scenario_provider_color)+
+         stat_summary(
+          aes(
+        x = source_scenario,
+        y = correlation),
+          fun = "mean",
+               geom = "crossbar",
+               width=0.5,
+               color="red", size=0.5)+
+    theme(
+      axis.text.x = element_text(
+        angle = 45,
+        hjust = 1,
+        size = fontsize,
+        # color = scenario_axis_color_order$source_scenario_provider_color,
+        # face = "bold"
+      ),
+      axis.text.y = element_text(
+        size = fontsize
+      )
+    ) +
+    scale_fill_manual(values = mapper_scenario_provider_color)+
+    scale_color_manual(values = NA) +
+    ggtitle(
+        "Correlations of NPV Rate of Change between companies, obtained on scenarios from different IAMs",
+    )  + 
+    guides(size = "legend", colour = "none")  +
+    ylim(0.75, 1)
+
+  ggplot2::ggsave(
+    filename = fs::path(output_dir,
+                        swarm_plot_dir,
+                        scenario,
+                        ext = "png"),
+    plot = le_plot,
+    width = 30,
+    height = 20,
+    units = "cm"
+  )
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# AVG CORR NPV ROC
+
+swarm_plot_dir <- "avg_corr_npv_roc"
+
+dir.create(
+fs::path(output_dir,
+          swarm_plot_dir),
+recursive = T,
+showWarnings = F
+)
+
+avg_scenario_correlations <- list()
+original_scenario_correlations <- tibble::tribble()
+for (scenario in all_crispy_filtered %>% distinct(target_duo) %>% pull()){
+# compute volumes and correlations
+    scenarios_correlations <-
+      correl_npv_roc_between_scenarios(all_crispy_filtered %>%
+                                          filter(target_duo == scenario))
+    match_volumes <- count_matching_volumes(all_crispy_filtered %>%
+                                              filter(target_duo == scenario))
+  
+  scenarios_correlations <- as.matrix(scenarios_correlations)
+  lower_tri_corrs <- scenarios_correlations[lower.tri(scenarios_correlations, diag=F)]
+  avg_scenario_corrs <- mean(lower_tri_corrs)
+
+  avg_scenario_correlations[[scenario]] = c(scenario, avg_scenario_corrs)
+  
+  orig_rows = bind_cols(rep(scenario ,length(lower_tri_corrs)), lower_tri_corrs)
+  names(orig_rows) = c("scenario_type", "original_correlation")
+  original_scenario_correlations = dplyr::bind_rows(
+    original_scenario_correlations,orig_rows
+  )
+}
+
+# avg_scenario_correlations <- tibble::as_tibble_row(avg_scenario_correlations)
+avg_scenario_correlations = bind_rows(purrr::map(avg_scenario_correlations, ~ tibble::as_tibble_row(.x, .name_repair = "minimal")))
+names(avg_scenario_correlations) <- c("scenario_type", "average_corr")
+avg_scenario_correlations$average_corr = as.numeric(avg_scenario_correlations$average_corr)
+avg_scenario_correlations = avg_scenario_correlations %>% left_join(original_scenario_correlations, by="scenario_type")
+
+
+  le_plot <- ggplot(data=avg_scenario_correlations, aes(
+        x = factor(scenario_type, levels=c("NZ2050", "DN0", "DT", "B2DS")),
+        y = original_correlation)) + 
+      geom_violin(,
+        fill=NA,
+        scale="width",
+        position="dodge", alpha=0.5) +
+         stat_summary(fun = "mean",
+               geom = "crossbar",
+               width=0.5,
+               color="red", size=1)+
+    # geom_point(aes(
+    #     x = factor(scenario_type, levels=c("NZ2050", "DN0", "DT", "B2DS")),
+    #     y = average_corr),
+    #     size=11, color="black")+
+    # geom_point(aes(
+    #     x = source_scenario,
+    #     y = correlation),
+    #     size=10, color=data_plot$dest_scenario_provider_color)+
+    theme(
+      axis.text.x = element_text(
+        size = 18,
+        # color = scenario_axis_color_order$source_scenario_provider_color,
+        # face = "bold"
+      ),
+      axis.text.y = element_text(
+        size = 18
+      )
+    ) +
+    # scale_fill_manual(values = mapper_scenario_provider_color)+
+    # scale_color_manual(values = NA) +
+    # ggtitle(
+    #     "Correlations of NPV Rate of Change between companies, obtained on scenarios from different IAMs",
+    # )  + 
+    # guides(size = "legend", colour = "none")  +
+    ylim(0.75, 1) +
+    ylab("Correlation in NPV change") 
+
+ggplot2::ggsave(
+  filename = fs::path(output_dir,
+                      swarm_plot_dir,
+                      scenario,
+                      ext = "png"),
+  plot = le_plot,
+  width = 30,
+  height = 20,
+  units = "cm"
+)
+
+
+
+
+# B2DS correlatiosn
+original_scenario_correlations=tibble::tribble()
+scenario = "B2DS"
+# compute volumes and correlations
+    scenarios_correlations <-
+      correl_npv_roc_between_scenarios(all_crispy_filtered %>%
+                                          filter(target_duo == scenario))
+    match_volumes <- count_matching_volumes(all_crispy_filtered %>%
+                                              filter(target_duo == scenario))
+  
+  scenarios_correlations <- as.matrix(scenarios_correlations)
+  diag(scenarios_correlations) <-  NA
+  # scenarios_correlations[lower.tri(scenarios_correlations, diag=T)] = NA
+  
+  orig_rows = bind_cols(rep(scenario ,length(lower_tri_corrs)), lower_tri_corrs)
+  names(orig_rows) = c("scenario_type", "original_correlation")
+  original_scenario_correlations = dplyr::bind_rows(
+    original_scenario_correlations,orig_rows
+  )
+
+ tidyr::pivot_longer(as_tibble(scenarios_correlations), 
+ cols=c("IPR2021_FPS",
+ "NGFS2021_GCAM_B2DS",
+ "NGFS2021_MESSAGE_B2DS",
+ "NGFS2021_REMIND_B2DS",
+ "Oxford2021_fast",
+ "WEO2021_SDS"))
+ggplot(data=original_scenario_correlations, aes(x=))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# CORRELATIONS DENSITY PD DIFF
+
+swarm_plot_dir <- "correl_density_plots_pd_diff"
+
+dir.create(
+  fs::path(output_dir,
+           swarm_plot_dir),
+  recursive = T,
+  showWarnings = F
+)
+
+for (scenario in
+     c("all", all_crispy_filtered %>% distinct(target_duo) %>% pull()))
+{
+  # compute volumes and correlations
+  if (scenario == "all") {
+    scenarios_correlations <-
+      correl_pd_diff_between_scenarios(all_crispy_filtered)
+    match_volumes <- count_matching_volumes(all_crispy_filtered)
+    size <- 1
+    fontsize <- 8
+  } else{
+    scenarios_correlations <-
+      correl_pd_diff_between_scenarios(all_crispy_filtered %>%
+                                          filter(target_duo == scenario))
+    match_volumes <- count_matching_volumes(all_crispy_filtered %>%
+                                              filter(target_duo == scenario))
+    size <- 6
+    fontsize <- 12
+  }
+
+  # pivot correlations to source->target scenario_duo, correlation as values
+  data_plot <-
+    scenarios_correlations %>%
+    mutate(source_scenario = row.names(scenarios_correlations)) %>%
+    tidyr::pivot_longer(!source_scenario,
+                        names_to = "dest_scenario",
+                        values_to = "correlation") %>%
+    left_join(
+      all_crispy_filtered %>% distinct(scenario_duo, scenario_provider),
+      by = c("source_scenario" = "scenario_duo")
+    ) %>%
+    rename(source_scenario_provider = scenario_provider) %>%
+    left_join(
+      all_crispy_filtered %>% distinct(scenario_duo, scenario_provider),
+      by = c("dest_scenario" = "scenario_duo")
+    ) %>%
+    rename(dest_scenario_provider = scenario_provider) %>%
+    filter(source_scenario != dest_scenario)
+  data_plot <- data_plot %>% tidyr::drop_na()
+
+  # adds volume of match to scenario_pair source/target
+  match_volumes_plot <- match_volumes %>%
+    mutate(source_scenario = row.names(scenarios_correlations)) %>%
+    tidyr::pivot_longer(!source_scenario,
+                        names_to = "dest_scenario",
+                        values_to = "volume")
+
+  data_plot <- data_plot %>% left_join(match_volumes_plot)
+
+  # assign colors to points
+  data_plot <- data_plot %>%
+    mutate(
+      source_scenario_provider_color = mapper_scenario_provider_color[source_scenario_provider],
+      dest_scenario_provider_color = mapper_scenario_provider_color[dest_scenario_provider]
+    )
+
+  # assign colors to axis text, and arrange x labels order from lowest average corr to highest
+  scenario_axis_color_order <- data_plot %>%
+    group_by(source_scenario,
+             source_scenario_provider,
+             source_scenario_provider_color) %>%
+    summarise(avg_correlation = mean(correlation),
+              .groups = "drop") %>%
+    arrange(avg_correlation) %>%
+    select(source_scenario, source_scenario_provider_color)
+  data_plot$source_scenario <-
+    factor(data_plot$source_scenario, levels = scenario_axis_color_order$source_scenario)
+
+
+  le_plot <- ggplot(data=data_plot) + 
+    geom_violin(aes(
+        x = source_scenario,
+        y = correlation,
+        fill = source_scenario_provider),
+        scale="width",
+        position="dodge", color = NA, alpha=0.5) +
+    geom_point(aes(
+        x = source_scenario,
+        y = correlation),
+        size=size+1, color="black")+
+    geom_point(aes(
+        x = source_scenario,
+        y = correlation),
+        size=size, color=data_plot$dest_scenario_provider_color)+
+         stat_summary(
+          aes(
+        x = source_scenario,
+        y = correlation),
+          fun = "mean",
+               geom = "crossbar",
+               width=0.5,
+               color="red", size=0.5)+
+    theme(
+      axis.text.x = element_text(
+        angle = 45,
+        hjust = 1,
+        size = fontsize,
+        # color = scenario_axis_color_order$source_scenario_provider_color,
+        # face = "bold"
+      ),
+      axis.text.y = element_text(
+        size = fontsize
+      )
+    ) +
+    scale_fill_manual(values = mapper_scenario_provider_color)+
+    scale_color_manual(values = NA) +
+    ggtitle(
+        "Correlations of PD Difference between companies, obtained on scenarios from different IAMs",
+    )  + 
+    guides(size = "legend", colour = "none")  +
+    ylim(0.4, 1)
+
+  ggplot2::ggsave(
+    filename = fs::path(output_dir,
+                        swarm_plot_dir,
+                        scenario,
+                        ext = "png"),
+    plot = le_plot,
+    width = 30,
+    height = 20,
+    units = "cm"
+  )
+
+}
+
