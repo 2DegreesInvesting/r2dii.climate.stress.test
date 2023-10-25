@@ -140,9 +140,9 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars, risk_type) 
     company_trajectories <- results_list$company_trajectories %>%
       dplyr::select(
         .data$scenario_name, .data$company_name, .data$year,
-        .data$scenario_geography, .data$ald_sector, .data$ald_business_unit,
+        .data$scenario_geography, .data$ald_sector, .data$technology,
         .data$plan_tech_prod, .data$phase_out, .data$baseline,
-        .data$scen_to_follow_aligned, .data$late_sudden, .data$company_id,
+        .data$scen_to_follow_aligned, .data$late_sudden, .data$id,
         .data$pd, .data$net_profit_margin, .data$debt_equity_ratio,
         .data$volatility, .data$Baseline_price, .data$late_sudden_price,
         .data$net_profits_baseline, .data$net_profits_ls,
@@ -154,9 +154,9 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars, risk_type) 
     company_trajectories <- results_list$company_trajectories %>%
       dplyr::select(
         .data$scenario_name, .data$company_name, .data$year,
-        .data$scenario_geography, .data$ald_sector, .data$ald_business_unit,
+        .data$scenario_geography, .data$ald_sector, .data$technology,
         .data$plan_tech_prod, .data$phase_out, .data$baseline,
-        .data$scen_to_follow_aligned, .data$late_sudden, .data$company_id,
+        .data$scen_to_follow_aligned, .data$late_sudden, .data$id,
         .data$pd, .data$net_profit_margin, .data$debt_equity_ratio,
         .data$volatility, .data$Baseline_price, .data$late_sudden_price,
         .data$net_profits_baseline, .data$net_profits_ls,
@@ -167,7 +167,7 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars, risk_type) 
 
   company_trajectories <- company_trajectories %>%
     dplyr::rename(
-      company_id = .data$company_id,
+      company_id = .data$id,
       production_plan_company_technology = .data$plan_tech_prod,
       # TODO: add once ADO3530 is merged
       # direction_of_target = .data$direction,
@@ -203,13 +203,13 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars, risk_type) 
     )
 
   if (risk_type == "lrisk") {
-    select_cols <- c(merge_by_cols, "ald_business_unit", "company_is_litigated", "settlement")
+    select_cols <- c(merge_by_cols, "technology", "company_is_litigated", "settlement")
     crispy_output <- crispy_output %>%
       dplyr::inner_join(
         results_list$company_trajectories %>%
           dplyr::select(!!select_cols) %>%
           dplyr::distinct_all(),
-        by = c(merge_by_cols, "ald_business_unit") # inlcuding since settlement is a ald_business_unit level variable
+        by = c(merge_by_cols, "technology") # inlcuding since settlement is a technology level variable
       )
 
     crispy_output <- crispy_output %>%
@@ -224,7 +224,7 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars, risk_type) 
     dplyr::mutate(roll_up_type = "equity_ownership") %>%
     dplyr::rename(
       sector = .data$ald_sector,
-      business_unit = .data$ald_business_unit,
+      business_unit = .data$technology,
       baseline_scenario = .data$baseline_scenario_arg,
       shock_scenario = .data$shock_scenario_arg,
       lgd = .data$lgd_arg,
@@ -260,7 +260,7 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars, risk_type) 
   } else {
     crispy_output <- crispy_output %>%
       dplyr::select(
-        .data$company_id, .data$company_name, .data$sector, .data$business_unit,
+        .data$id, .data$company_name, .data$sector, .data$business_unit,
         .data$roll_up_type, .data$scenario_geography,
         .data$baseline_scenario, .data$shock_scenario, .data$lgd,
         .data$risk_free_rate, .data$discount_rate, .data$dividend_rate,
@@ -297,7 +297,7 @@ check_results <- function(wrangled_results_list, sensitivity_analysis_vars, risk
     check_expected_missings() %>%
     report_all_duplicate_kinds(
       composite_unique_cols = c(
-        "company_name", "year", "scenario_geography", "ald_sector", "ald_business_unit",
+        "company_name", "year", "scenario_geography", "ald_sector", "technology",
         sensitivity_analysis_vars
       )
     ) %>%

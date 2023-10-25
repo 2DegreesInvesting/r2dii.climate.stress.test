@@ -71,11 +71,11 @@ countries_for_regions_mapper_lookup <- tibble::tibble(
   source = rep(c("weo_2019", "weo_2020"), 6)
 )
 
-cuc_capacity_factors_power <- c("scenario", "scenario_geography", "ald_business_unit", "year")
-cuc_price_data <- c("year", "ald_sector", "ald_business_unit", "scenario")
+cuc_capacity_factors_power <- c("scenario", "scenario_geography", "technology", "year")
+cuc_price_data <- c("year", "ald_sector", "technology", "scenario")
 cuc_financial_data <- c("company_id")
-cuc_scenario_data <- c("scenario_geography", "scenario", "ald_sector", "ald_business_unit", "year")
+cuc_scenario_data <- c("scenario_geography", "scenario", "ald_sector", "technology", "year")
 
 cuc_production_data <- c(
-  "company_name", "company_id", "year", "ald_sector", "ald_business_unit", "scenario_geography"
+  "company_name", "id", "year", "ald_sector", "technology", "scenario_geography"
 )
