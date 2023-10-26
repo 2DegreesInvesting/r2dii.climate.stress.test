@@ -22,7 +22,7 @@ step after the baseline trajectories are calculated.}
 
 \item{litigation_scenario}{Character. A string that indicates which
 of the scenarios included in the analysis should be used to set the
-technology trajectories post litigation event.}
+ald_business_unit trajectories post litigation event.}
 
 \item{shock_scenario}{A dataframe that contains information about the
 transition scenario, specifically the shock year and, duration of the
@@ -30,7 +30,7 @@ shock and the name of the shock scenario}
 
 \item{litigation_scenario_aligned}{Character. A string that indicates which
 of the scenarios included in the analysis should be used to set the
-technology trajectories post litigation event in case the company is
+ald_business_unit trajectories post litigation event in case the company is
 aligned after the forecast period.}
 
 \item{start_year}{Numeric. A numeric vector of length 1 that contains the
@@ -60,7 +60,7 @@ shift of the original scenario values. If not included, the trajectories
 replicate externally provided scenario trajectories at least until the
 year of the policy shock.
 Trajectories are calculated for each company by sector, scenario_geography,
-technology, year.
-If no "id" or "company_name" are provided, the calculation switches to
-portfolio/technology level.
+ald_business_unit, year.
+If no "company_id" or "company_name" are provided, the calculation switches to
+portfolio/ald_business_unit level.
 }

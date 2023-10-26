@@ -2,13 +2,13 @@
 % Please edit documentation in R/financial_functions.R
 \name{calculate_net_profits_shock_increasing_technologies}
 \alias{calculate_net_profits_shock_increasing_technologies}
-\title{Calculates annual net profits on the company-technology level for the shock scenario for increasing technologies.
+\title{Calculates annual net profits on the company-ald_business_unit level for the shock scenario for increasing technologies.
 Climate laggards which need to build out their production in increasing technologies to compensate for their
 missed targets, are "punished" by adjusting the net profit margin on their
 additional build out based on their proximity to target within the given
-technology. Specifically, we measure the ratio of how much of the required
-build out or reduction in a technology the company will have done at the end
-of the forecast period. If the technology has an increasing target and the
+ald_business_unit. Specifically, we measure the ratio of how much of the required
+build out or reduction in a ald_business_unit the company will have done at the end
+of the forecast period. If the ald_business_unit has an increasing target and the
 ratio of completion is below one, the net_profit_margin on the additional production build out
 is multiplied with the proximity to the target. This approximates the additional capital investment
 such a company would have to make in a short time, which leads to added costs. This ensures that late
@@ -19,22 +19,22 @@ calculate_net_profits_shock_increasing_technologies(data, financial_stimulus)
 \arguments{
 \item{data}{A data frame containing the production forecasts of companies with increasing under the late and sudden,
 market prices/costs, company net profit margins, the proximity to target in the production forecast period and an
-indication of the direction of the technology.}
+indication of the direction of the ald_business_unit.}
 
 \item{financial_stimulus}{Additional channel through which the net profits of green
 companies can be boosted under a shock scenario}
 }
 \value{
-A data frame with net profits of companies with a increasing technology
+A data frame with net profits of companies with a increasing ald_business_unit
 }
 \description{
-Calculates annual net profits on the company-technology level for the shock scenario for increasing technologies.
+Calculates annual net profits on the company-ald_business_unit level for the shock scenario for increasing technologies.
 Climate laggards which need to build out their production in increasing technologies to compensate for their
 missed targets, are "punished" by adjusting the net profit margin on their
 additional build out based on their proximity to target within the given
-technology. Specifically, we measure the ratio of how much of the required
-build out or reduction in a technology the company will have done at the end
-of the forecast period. If the technology has an increasing target and the
+ald_business_unit. Specifically, we measure the ratio of how much of the required
+build out or reduction in a ald_business_unit the company will have done at the end
+of the forecast period. If the ald_business_unit has an increasing target and the
 ratio of completion is below one, the net_profit_margin on the additional production build out
 is multiplied with the proximity to the target. This approximates the additional capital investment
 such a company would have to make in a short time, which leads to added costs. This ensures that late

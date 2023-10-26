@@ -2,7 +2,7 @@
 % Please edit documentation in R/check_data.R
 \name{check_sector_tech_mapping}
 \alias{check_sector_tech_mapping}
-\title{Check that sector to technology mapping corresponds to template}
+\title{Check that sector to ald_business_unit mapping corresponds to template}
 \usage{
 check_sector_tech_mapping(
   data,
@@ -23,5 +23,5 @@ technologies.}
 Returns \code{data} invisibly.
 }
 \description{
-Check that sector to technology mapping corresponds to template
+Check that sector to ald_business_unit mapping corresponds to template
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/financial_functions.R
 \name{calculate_net_profits_without_carbon_tax}
 \alias{calculate_net_profits_without_carbon_tax}
-\title{Calculates annual net profits on the company-technology level for the
+\title{Calculates annual net profits on the company-ald_business_unit level for the
 baseline and late and sudden scenarios - without a carbon tax being added.}
 \usage{
 calculate_net_profits_without_carbon_tax(data)
@@ -11,12 +11,12 @@ calculate_net_profits_without_carbon_tax(data)
 \item{data}{A data frame containing the production forecasts of companies
 under baseline and late and sudden, market prices/costs, company net profit
 margins, the proximity to target in the production forecast period and an
-indication of the direction of the technology.}
+indication of the direction of the ald_business_unit.}
 }
 \value{
 Data frame with annual netprofits for all cases without carbon tax
 }
 \description{
-Calculates annual net profits on the company-technology level for the
+Calculates annual net profits on the company-ald_business_unit level for the
 baseline and late and sudden scenarios - without a carbon tax being added.
 }
