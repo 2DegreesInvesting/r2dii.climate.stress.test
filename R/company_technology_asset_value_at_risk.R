@@ -1,5 +1,5 @@
 #' Calculate percentage value change between scenarios for equity (and
-#' temporarily other asset types) on the company-technology level
+#' temporarily other asset types) on the company-ald_business_unit level
 #'
 #' @param data A dataframe containing the (discounted) annual profits
 #' @param shock_scenario A dataframe containing the specification of the
@@ -22,7 +22,7 @@ company_technology_asset_value_at_risk <- function(data,
   validate_data_has_expected_cols(
     data = data,
     expected_columns = c(
-      "company_name", "year", "scenario_geography", "ald_sector", "technology",
+      "company_name", "year", "scenario_geography", "ald_sector", "ald_business_unit",
       "discounted_net_profit_ls", "discounted_net_profit_baseline"
     )
   )
@@ -40,7 +40,7 @@ company_technology_asset_value_at_risk <- function(data,
       !is.na(.data$discounted_net_profit_baseline)
     ) %>%
     dplyr::group_by(
-      .data$company_name, .data$ald_sector, .data$technology,
+      .data$company_name, .data$ald_sector, .data$ald_business_unit,
       .data$scenario_geography
     ) %>%
     dplyr::summarise(

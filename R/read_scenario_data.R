@@ -13,7 +13,7 @@ read_scenario_data <- function(path) {
         scenario = "c",
         ald_sector = "c",
         units = "c",
-        technology = "c",
+        ald_business_unit = "c",
         year = "d",
         direction = "c",
         fair_share_perc = "d"
@@ -24,7 +24,7 @@ read_scenario_data <- function(path) {
     data = scenario_data,
     expected_columns = c(
       "scenario_geography", "scenario",
-      "ald_sector", "units", "technology", "year",
+      "ald_sector", "units", "ald_business_unit", "year",
       "direction", "fair_share_perc"
     )
   )
