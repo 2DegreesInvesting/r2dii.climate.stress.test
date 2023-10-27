@@ -19,15 +19,15 @@ write_stress_test_results <- function(results_list, iter_var, shock_scenario, sc
     if(financial_stimulus > 1 ){
 
     results_list$company_trajectories %>%
-      readr::write_csv(file.path(
+      arrow::write_parquet(file.path(
         output_path,
-        glue::glue("company_trajectories_{iter_var}_{shock_scenario}_{scenario_geography}_{carbon_price_model}_{financial_stimulus}.csv")
+        glue::glue("company_trajectories_{iter_var}_{shock_scenario}_{scenario_geography}_{carbon_price_model}_{financial_stimulus}.parquet")
       )) }
     else {
       results_list$company_trajectories %>%
-        readr::write_csv(file.path(
+        arrow::write_parquet(file.path(
           output_path,
-          glue::glue("company_trajectories_{iter_var}_{shock_scenario}_{scenario_geography}_{carbon_price_model}.csv")
+          glue::glue("company_trajectories_{iter_var}_{shock_scenario}_{scenario_geography}_{carbon_price_model}.parquet")
         ))
 
     }
@@ -35,9 +35,9 @@ write_stress_test_results <- function(results_list, iter_var, shock_scenario, sc
 
   if (risk_type == "lrisk") {
     results_list$company_trajectories %>%
-      readr::write_csv(file.path(
+      arrow::write_parquet(file.path(
         output_path,
-        glue::glue("company_trajectories_{iter_var}_{shock_scenario}_{scenario_geography}.csv")
+        glue::glue("company_trajectories_{iter_var}_{shock_scenario}_{scenario_geography}.parquet")
       ))
   }
 
@@ -47,15 +47,15 @@ write_stress_test_results <- function(results_list, iter_var, shock_scenario, sc
     if(financial_stimulus > 1){
 
     results_list$crispy_output %>%
-      readr::write_csv(file.path(
+      arrow::write_parquet(file.path(
         output_path,
-        glue::glue("crispy_output_{iter_var}_{shock_scenario}_{scenario_geography}_{carbon_price_model}_{financial_stimulus}.csv")
+        glue::glue("crispy_output_{iter_var}_{shock_scenario}_{scenario_geography}_{carbon_price_model}_{financial_stimulus}.parquet")
       ))} else
       {
         results_list$crispy_output %>%
-          readr::write_csv(file.path(
+          arrow::write_parquet(file.path(
             output_path,
-            glue::glue("crispy_output_{iter_var}_{shock_scenario}_{scenario_geography}_{carbon_price_model}.csv")
+            glue::glue("crispy_output_{iter_var}_{shock_scenario}_{scenario_geography}_{carbon_price_model}.parquet")
           ))
 
 
@@ -64,9 +64,9 @@ write_stress_test_results <- function(results_list, iter_var, shock_scenario, sc
 
   if (risk_type == "lrisk") {
     results_list$crispy_output %>%
-      readr::write_csv(file.path(
+      arrow::write_parquet(file.path(
         output_path,
-        glue::glue("crispy_output_{iter_var}_{shock_scenario}_{scenario_geography}.csv")
+        glue::glue("crispy_output_{iter_var}_{shock_scenario}_{scenario_geography}.parquet")
       ))
   }
 }

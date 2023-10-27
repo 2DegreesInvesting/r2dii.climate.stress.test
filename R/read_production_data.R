@@ -8,7 +8,7 @@ read_production_data <- function(path = NULL) {
   path %||% stop("Must provide 'path'")
 
   data <- validate_file_exists(path) %>%
-    readr::read_csv(
+    arrow::read_parquet(
       col_types = readr::cols_only(
         company_id = "d",
         company_name = "c",

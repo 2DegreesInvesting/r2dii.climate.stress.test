@@ -9,7 +9,7 @@ read_carbon_data <- function(path = NULL) {
   path %||% stop("Must provide 'path'")
 
   data <- validate_file_exists(file.path(path)) %>%
-    readr::read_csv(
+    arrow::read_parquet(
       col_types = readr::cols_only(
         year = "d",
         model = "c",

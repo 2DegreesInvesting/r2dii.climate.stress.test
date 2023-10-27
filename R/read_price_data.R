@@ -8,7 +8,7 @@
 #' @return A tibble holding price data in long format.
 read_price_data <- function(path) {
   data <- validate_file_exists(path) %>%
-    readr::read_csv(
+    arrow::read_parquet(
       col_types = readr::cols(
         year = "d",
         scenario = "c",

@@ -8,7 +8,7 @@ read_capacity_factors_power <- function(path = NULL) {
   path %||% stop("Must provide 'path'")
 
   data <- validate_file_exists(path) %>%
-    readr::read_csv(col_types = readr::cols())
+    arrow::read_parquet(col_types = readr::cols())
 
   validate_data_has_expected_cols(
     data = data,

@@ -7,7 +7,7 @@
 #' @return A tibble holding scenario data.
 read_scenario_data <- function(path) {
   scenario_data <- validate_file_exists(path) %>%
-    readr::read_csv(
+    arrow::read_parquet(
       col_types = readr::cols(
         scenario_geography = "c",
         scenario = "c",
