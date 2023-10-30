@@ -30,7 +30,8 @@ calculate_net_profits <- function(data,
   baseline <- calculate_net_profits_baseline(data)
 
   shock_increasing_technologies <- calculate_net_profits_shock_increasing_technologies(data = data %>% dplyr::filter(.data$direction == "increasing"),
-                                                                                       financial_stimulus = financial_stimulus)
+                                                                                       financial_stimulus = financial_stimulus,
+                                                                                       shock_year = shock_year)
 
   shock_declining_technologies <- calculate_net_profits_shock_declining_technologies_carbon_tax(
     data = data %>% dplyr::filter(.data$direction == "declining"),
@@ -188,15 +189,16 @@ calculate_net_profits_shock_declining_technologies_without_carbon_tax <- functio
 #' indication of the direction of the technology.
 #' @param financial_stimulus Additional channel through which the net profits of green
 #' companies can be boosted under a shock scenario
+#' @param shock_year Year of the shock.
 #'
 #' @return  A data frame with net profits of companies with a increasing technology
 
-calculate_net_profits_shock_increasing_technologies <- function(data, financial_stimulus) {
+calculate_net_profits_shock_increasing_technologies <- function(data, financial_stimulus, shock_year) {
 
   data_overshoot_increasing <- data %>% dplyr::filter(.data$overshoot_direction == "Increasing") %>%
     dplyr::mutate(
       production_compensation = .data$late_sudden - .data$baseline,
-      financial_stimulus = ifelse(year > shock_year, .data$financial_stimulus, 1),
+      financial_stimulus = ifelse(year > shock_year, financial_stimulus, 1),
       net_profits_ls = .data$late_sudden * .data$late_sudden_price * .data$net_profit_margin * financial_stimulus-
         .data$production_compensation * .data$late_sudden_price * .data$net_profit_margin * (1 - .data$proximity_to_target)
     )  %>%
@@ -205,7 +207,7 @@ calculate_net_profits_shock_increasing_technologies <- function(data, financial_
   data_overshoot_decreasing <- data %>% dplyr::filter(.data$overshoot_direction == "Decreasing") %>%
     dplyr::mutate(
       production_compensation = 0,
-      financial_stimulus = ifelse(year > shock_year, .data$financial_stimulus, 1),
+      financial_stimulus = ifelse(year > shock_year, financial_stimulus, 1),
       net_profits_ls = .data$late_sudden * .data$late_sudden_price * .data$net_profit_margin * financial_stimulus -
         .data$production_compensation * .data$late_sudden_price * .data$net_profit_margin * (1 - .data$proximity_to_target)
     )  %>%
