@@ -199,8 +199,8 @@ calculate_net_profits_shock_increasing_technologies <- function(data, financial_
     dplyr::mutate(
       production_compensation = .data$late_sudden - .data$baseline,
       financial_stimulus = ifelse(year > shock_year, financial_stimulus, 1),
-      net_profits_ls = .data$late_sudden * .data$late_sudden_price * .data$net_profit_margin * financial_stimulus-
-        .data$production_compensation * .data$late_sudden_price * .data$net_profit_margin * (1 - .data$proximity_to_target)
+      net_profits_ls = (.data$late_sudden * .data$late_sudden_price * .data$net_profit_margin -
+        .data$production_compensation * .data$late_sudden_price * .data$net_profit_margin * (1 - .data$proximity_to_target)) * financial_stimulus
     )  %>%
    dplyr::select(-c("proximity_to_target", "production_compensation"))
 
@@ -208,8 +208,8 @@ calculate_net_profits_shock_increasing_technologies <- function(data, financial_
     dplyr::mutate(
       production_compensation = 0,
       financial_stimulus = ifelse(year > shock_year, financial_stimulus, 1),
-      net_profits_ls = .data$late_sudden * .data$late_sudden_price * .data$net_profit_margin * financial_stimulus -
-        .data$production_compensation * .data$late_sudden_price * .data$net_profit_margin * (1 - .data$proximity_to_target)
+      net_profits_ls = (.data$late_sudden * .data$late_sudden_price * .data$net_profit_margin  -
+        .data$production_compensation * .data$late_sudden_price * .data$net_profit_margin * (1 - .data$proximity_to_target)) * financial_stimulus
     )  %>%
     dplyr::select(-c("proximity_to_target", "production_compensation"))
 
