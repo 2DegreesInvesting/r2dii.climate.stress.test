@@ -223,8 +223,8 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars, risk_type) 
   crispy_output <- crispy_output %>%
     dplyr::mutate(roll_up_type = "equity_ownership") %>%
     dplyr::rename(
-      sector = .data$ald_sector,
-      business_unit = .data$ald_business_unit,
+      # sector = .data$ald_sector,
+      # business_unit = .data$ald_business_unit,
       baseline_scenario = .data$baseline_scenario_arg,
       shock_scenario = .data$shock_scenario_arg,
       lgd = .data$lgd_arg,
@@ -247,7 +247,7 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars, risk_type) 
   if (risk_type == "lrisk") {
     crispy_output <- crispy_output %>%
       dplyr::select(
-        .data$company_name, .data$sector, .data$business_unit,
+        .data$company_name, .data$ald_sector, .data$ald_business_unit,
         .data$roll_up_type, .data$scenario_geography,
         .data$baseline_scenario, .data$shock_scenario, .data$lgd,
         .data$risk_free_rate, .data$discount_rate, .data$dividend_rate,
@@ -260,7 +260,7 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars, risk_type) 
   } else {
     crispy_output <- crispy_output %>%
       dplyr::select(
-        .data$company_id, .data$company_name, .data$sector, .data$business_unit,
+        .data$company_id, .data$company_name, .data$ald_sector, .data$ald_business_unit,
         .data$roll_up_type, .data$scenario_geography,
         .data$baseline_scenario, .data$shock_scenario, .data$lgd,
         .data$risk_free_rate, .data$discount_rate, .data$dividend_rate,
