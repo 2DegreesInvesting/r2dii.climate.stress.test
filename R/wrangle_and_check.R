@@ -311,7 +311,7 @@ check_results <- function(wrangled_results_list, sensitivity_analysis_vars, risk
   # crispy results ----------------------------------------------------
 
   composite_unique_cols_crispy_results <- c(
-    "company_name", "sector", "business_unit", "roll_up_type",
+    "company_name", "ald_sector", "ald_business_unit", "roll_up_type",
     "scenario_geography", "baseline_scenario", "shock_scenario", "lgd",
     "risk_free_rate", "discount_rate", "dividend_rate", "growth_rate",
     "shock_year", "term"
