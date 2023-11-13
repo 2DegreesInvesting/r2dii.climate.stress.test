@@ -13,9 +13,9 @@ The goal of r2dii.climate.stress.test is to provide a tool that can be
 used to conduct what-if climate stress test analyses for financial
 institutions, supervisors, regulators and other stakeholders. The tool
 aims at highlighting potential financial risk in especially climate
-relevant sectors, split by production technology where required. The
-sectors covered by the 2DII climate stress test and therefore by this
-package, follow mostly the logic of the Paris Agreement Capital
+relevant sectors, split by production ald_business_unit where required.
+The sectors covered by the 2DII climate stress test and therefore by
+this package, follow mostly the logic of the Paris Agreement Capital
 Transition Assessment (PACTA) tool, but can in principle be adapted to
 other settings. Application of the code requires availability of custom
 data. For more information about the methodology and inquiries on
@@ -42,17 +42,13 @@ devtools::install_github("2DegreesInvesting/r2dii.climate.stress.test")
 
 ## Example
 
-  - Use `library()` to attach the package
-
-<!-- end list -->
+- Use `library()` to attach the package
 
 ``` r
 library(r2dii.climate.stress.test)
 ```
 
-  - Run climate stress tests
-
-<!-- end list -->
+- Run climate stress tests
 
 ``` r
 ## run stress testing for assets of type corporate loans using default parameters
@@ -73,10 +69,10 @@ run_lrisk(
 
 To actually run an analysis…
 
-  - the project directories must be set up,
-  - input data must be prepared and
-  - the detailed options available for running the functions ought to be
-    understood.
+- the project directories must be set up,
+- input data must be prepared and
+- the detailed options available for running the functions ought to be
+  understood.
 
 Detailed information for all these steps and on interpreting the
 outcomes can be found in the articles linked
