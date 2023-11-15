@@ -1,5 +1,5 @@
-test_that("company-ald_business_unit target production after extension equals SMSP for
-          low carbon ald_business_unit", {
+test_that("company-technology target production after extension equals SMSP for
+          low carbon technology", {
   test_data <- read_test_data("new_extend_scenario_trajectories.csv")
   test_scenario <- read_test_data("scenario_data.csv")
 
@@ -24,7 +24,7 @@ test_that("company-ald_business_unit target production after extension equals SM
   initial_tech_target_electric <- test_data %>%
     dplyr::filter(
       .data$year == test_start,
-      .data$ald_business_unit == verify_technology
+      .data$technology == verify_technology
     ) %>%
     dplyr::pull(.data$plan_tech_prod)
 
@@ -46,7 +46,7 @@ test_that("company-ald_business_unit target production after extension equals SM
   verify_scenario_change_end_year_electric_target <- test_scenario %>%
     dplyr::filter(
       .data$year == test_end,
-      .data$ald_business_unit == verify_technology,
+      .data$technology == verify_technology,
       .data$scenario == verify_scenario
     ) %>%
     dplyr::pull(.data$fair_share_perc)
@@ -57,7 +57,7 @@ test_that("company-ald_business_unit target production after extension equals SM
   verify_result_electric <- test_results %>%
     dplyr::filter(
       .data$year == test_end,
-      .data$ald_business_unit == verify_technology
+      .data$technology == verify_technology
     ) %>%
     dplyr::pull(verify_scenario)
 
@@ -67,8 +67,8 @@ test_that("company-ald_business_unit target production after extension equals SM
   )
 })
 
-test_that("company-ald_business_unit target production after extension equals TMSR for
-          high carbon ald_business_unit", {
+test_that("company-technology target production after extension equals TMSR for
+          high carbon technology", {
   test_data <- read_test_data("new_extend_scenario_trajectories.csv")
   test_scenario <- read_test_data("scenario_data.csv")
 
@@ -92,14 +92,14 @@ test_that("company-ald_business_unit target production after extension equals TM
   initial_tech_target_coal <- test_data %>%
     dplyr::filter(
       .data$year == test_start,
-      .data$ald_business_unit == verify_technology
+      .data$technology == verify_technology
     ) %>%
     dplyr::pull(.data$plan_tech_prod)
 
   verify_scenario_change_end_year_coal_target <- test_scenario %>%
     dplyr::filter(
       .data$year == test_end,
-      .data$ald_business_unit == verify_technology,
+      .data$technology == verify_technology,
       .data$scenario == verify_scenario
     ) %>%
     dplyr::pull(.data$fair_share_perc)
@@ -110,7 +110,7 @@ test_that("company-ald_business_unit target production after extension equals TM
   verify_result_coal <- test_results %>%
     dplyr::filter(
       .data$year == test_end,
-      .data$ald_business_unit == verify_technology
+      .data$technology == verify_technology
     ) %>%
     dplyr::pull(verify_scenario)
 

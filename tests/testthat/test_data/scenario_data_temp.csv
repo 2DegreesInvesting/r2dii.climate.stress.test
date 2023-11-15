@@ -1,4 +1,4 @@
-scenario_source,ald_business_unit,scenario_geography,ald_sector,units,scenario,year,direction,fair_share_perc
+scenario_source,technology,scenario_geography,ald_sector,units,scenario,year,direction,fair_share_perc
 test_source,NuclearCap,Global,Power,MW,NPS,2020,increasing,0
 test_source,NuclearCap,Global,Power,MW,NPS,2021,increasing,-3.08e-5
 test_source,NuclearCap,Global,Power,MW,NPS,2022,increasing,-6.15e-5

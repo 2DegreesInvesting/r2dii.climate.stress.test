@@ -1,4 +1,4 @@
-investor_name,portfolio_name,company_id,company_name,year,scenario_geography,ald_sector,ald_business_unit,plan_tech_prod,NPS,SDS,emission_factor
+investor_name,portfolio_name,id,company_name,year,scenario_geography,ald_sector,technology,plan_tech_prod,NPS,SDS,emission_factor
 Meta Investor,Meta Portfolio,PortfolioLevel,PortfolioLevel,2020,Global,Automotive,Electric,584.5344979178582,584.5344979178582,584.5344979178582,0
 Meta Investor,Meta Portfolio,PortfolioLevel,PortfolioLevel,2021,Global,Automotive,Electric,801.0985427935286,585.0348331440234,587.6539966171899,0
 Meta Investor,Meta Portfolio,PortfolioLevel,PortfolioLevel,2022,Global,Automotive,Electric,1055.86313666419,585.5351677856543,590.7734953165216,0

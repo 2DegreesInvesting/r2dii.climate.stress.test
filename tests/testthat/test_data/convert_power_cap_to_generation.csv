@@ -1,4 +1,4 @@
-year,ald_sector,ald_business_unit,scenario_geography,plan_tech_prod,plan_sec_prod,company_id,company_name,NPS,SDS
+year,ald_sector,technology,scenario_geography,plan_tech_prod,plan_sec_prod,id,company_name,NPS,SDS
 2020,Automotive,Electric,Global,100,100,PortfolioLevel,PortfolioLevel,100,100
 2020,Coal,Coal,Global,100,100,PortfolioLevel,PortfolioLevel,100,100
 2020,Power,NuclearCap,Global,100,100,PortfolioLevel,PortfolioLevel,100,100

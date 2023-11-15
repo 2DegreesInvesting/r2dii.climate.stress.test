@@ -27,15 +27,15 @@ test_that("multiplies the power capacity by hours per year and the capacity
   )
 
   verify_input_data <- test_data %>%
-    dplyr::filter(ald_business_unit == "NuclearCap")
+    dplyr::filter(technology == "NuclearCap")
   verify_capacity_factors <- test_capacity_factors %>%
-    dplyr::filter(.data$ald_business_unit == "NuclearCap") %>%
+    dplyr::filter(.data$technology == "NuclearCap") %>%
     dplyr::pull(.data$capacity_factor)
   hours_to_year <- 24 * 365
   verify_multiplier <- hours_to_year * verify_capacity_factors
 
   verify_results <- test_results %>%
-    dplyr::filter(ald_business_unit == "NuclearCap")
+    dplyr::filter(technology == "NuclearCap")
 
   testthat::expect_equal(
     verify_results$scen_tech_prod, verify_input_data$scen_tech_prod * verify_multiplier
@@ -48,7 +48,7 @@ test_that("multiplies the power capacity by hours per year and the capacity
 
 # convert_power_cap_to_generation -----------------------------------------
 new_capacity_factors <- tibble::tibble(
-  ald_business_unit = c(rep("HydroCap", 8), rep("NuclearCap", 8)),
+  technology = c(rep("HydroCap", 8), rep("NuclearCap", 8)),
   scenario_geography = c(rep(c(rep("Global", 4), rep("Brazil", 4)), 2)),
   scenario = c(rep(c(rep("NPS", 2), rep("SDS", 2)), 4)),
   year = c(rep(c(2021, 2022), 8)),

@@ -1,3 +1,3 @@
-year,investor_name,portfolio_name,ald_sector,ald_business_unit,scenario_geography,plan_carsten,plan_sec_carsten
+year,investor_name,portfolio_name,ald_sector,technology,scenario_geography,plan_carsten,plan_sec_carsten
 2020,Meta Investor,Meta Portfolio,Automotive,Electric,Global,0.001,0.01
 2020,Meta Investor,Meta Portfolio,Coal,Coal,Global,0.001,0.01

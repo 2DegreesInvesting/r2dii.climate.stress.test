@@ -1,4 +1,4 @@
-ald_business_unit,capacity_factor,scenario_geography
+technology,capacity_factor,scenario_geography
 HydroCap,0.5,Global
 NuclearCap,0.5,Global
 RenewablesCap,0.5,Global

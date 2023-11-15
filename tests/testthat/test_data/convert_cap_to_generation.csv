@@ -1,4 +1,4 @@
-year,investor_name,portfolio_name,equity_market,ald_sector,ald_business_unit,scenario,allocation,scenario_geography,plan_tech_prod,plan_carsten,scen_tech_prod,plan_sec_prod,plan_sec_carsten,company_id,company_name
+year,investor_name,portfolio_name,equity_market,ald_sector,technology,scenario,allocation,scenario_geography,plan_tech_prod,plan_carsten,scen_tech_prod,plan_sec_prod,plan_sec_carsten,id,company_name
 2020,Meta Investor,Meta Portfolio,GlobalMarket,Automotive,Electric,NPS,portfolio_weight,Global,100,0.01,100,100,0.05,PortfolioLevel,PortfolioLevel
 2020,Meta Investor,Meta Portfolio,GlobalMarket,Automotive,Electric,SDS,portfolio_weight,Global,100,0.01,100,100,0.05,PortfolioLevel,PortfolioLevel
 2020,Meta Investor,Meta Portfolio,GlobalMarket,Coal,Coal,NPS,portfolio_weight,Global,100,0.01,100,100,0.05,PortfolioLevel,PortfolioLevel
