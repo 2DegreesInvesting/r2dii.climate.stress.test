@@ -76,6 +76,7 @@ cuc_price_data <- c("year", "ald_sector", "ald_business_unit", "scenario")
 cuc_financial_data <- c("company_id")
 cuc_scenario_data <- c("scenario_geography", "scenario", "ald_sector", "ald_business_unit", "year")
 
+
 cuc_production_data <- c(
   "company_name", "company_id", "year", "ald_sector", "ald_business_unit", "scenario_geography"
 )
