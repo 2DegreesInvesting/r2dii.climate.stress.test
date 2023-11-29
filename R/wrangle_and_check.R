@@ -223,8 +223,8 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars, risk_type) 
   crispy_output <- crispy_output %>%
     dplyr::mutate(roll_up_type = "equity_ownership") %>%
     dplyr::rename(
-      sector = .data$ald_sector,
-      business_unit = .data$ald_business_unit,
+      ald_sector = .data$ald_sector,
+      ald_business_unit = .data$ald_business_unit,
       baseline_scenario = .data$baseline_scenario_arg,
       shock_scenario = .data$shock_scenario_arg,
       lgd = .data$lgd_arg,
