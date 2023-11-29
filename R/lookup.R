@@ -73,7 +73,7 @@ countries_for_regions_mapper_lookup <- tibble::tibble(
 
 cuc_capacity_factors_power <- c("scenario", "scenario_geography", "technology", "year")
 cuc_price_data <- c("year", "ald_sector", "technology", "scenario")
-cuc_financial_data <- c("company_name", "company_id")
+cuc_financial_data <- c("company_id")
 cuc_scenario_data <- c("scenario_geography", "scenario", "ald_sector", "technology", "year")
 
 cuc_production_data <- c(

@@ -24,7 +24,7 @@
 check_financial_data <- function(financial_data,
                                  interactive_mode = FALSE) {
   expected_columns <- c(
-    "company_name", "company_id", "pd", "net_profit_margin",
+    "company_id", "pd", "net_profit_margin",
     "debt_equity_ratio", "volatility"
   )
 
@@ -38,7 +38,7 @@ check_financial_data <- function(financial_data,
   # since financial data is always equal for these columns
   financial_data <- financial_data %>%
     dplyr::select(
-      .data$company_name, .data$company_id, .data$pd, .data$net_profit_margin,
+      .data$company_id, .data$pd, .data$net_profit_margin,
       .data$debt_equity_ratio, .data$volatility
     ) %>%
     dplyr::distinct_all()
@@ -52,7 +52,7 @@ check_financial_data <- function(financial_data,
   report_all_duplicate_kinds(
     data = financial_data,
     composite_unique_cols = c(
-      "company_name", "company_id"
+      "company_id"
     )
   )
 

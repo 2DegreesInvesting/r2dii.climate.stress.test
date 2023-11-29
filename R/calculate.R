@@ -45,12 +45,12 @@ calculate_trisk_trajectory <- function(input_data_list,
       transition_scenario = transition_scenario,
       start_year = start_year
     )
-
+  
   merge_cols <- c("id" = "company_id")
 
   full_trajectory <- production_data %>%
     dplyr::inner_join(
-      y = input_data_list$financial_data %>% dplyr::select(!c(company_name)),
+      y = input_data_list$financial_data,
       by = merge_cols
     ) %>%
     stop_if_empty(data_name = "Production data joined with Financial data") %>%
@@ -207,7 +207,7 @@ subtract_settlement <- function(data,
     dplyr::mutate(
       scc_liability =
         .data$overshoot_emissions * .env$scc *
-          .env$exp_share_damages_paid
+        .env$exp_share_damages_paid
     ) %>%
     dplyr::group_by(.data$company_name, .data$ald_sector, .data$technology) %>%
     dplyr::mutate(
