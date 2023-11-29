@@ -7,7 +7,7 @@
 #' @param div_netprofit_prop_coef Numeric. A coefficient that determines how
 #'   strongly the future dividends propagate to the company value
 #' @param plan_carsten A dataframe that contains the share of the portfolio
-#'   value of each company-technology combination. Used to quantify the impact of
+#'   value of each company-ald_business_unit combination. Used to quantify the impact of
 #'   the company-tech level shock on higher levels of aggregation in the pf
 #' @param port_aum A dataframe containing the value of the portfolio for
 #'   the asset type at hand
@@ -31,7 +31,7 @@ asset_value_at_risk <- function(data,
     data = data,
     expected_columns = c(
       "investor_name", "portfolio_name", "year", "scenario_geography",
-      "ald_sector", "technology", "discounted_net_profit_ls",
+      "ald_sector", "ald_business_unit", "discounted_net_profit_ls",
       "discounted_net_profit_baseline"
     )
   )
@@ -47,7 +47,7 @@ asset_value_at_risk <- function(data,
     data = plan_carsten,
     expected_columns = c(
       "investor_name", "portfolio_name", "year", "scenario_geography",
-      "ald_sector", "technology", "plan_carsten", "plan_sec_carsten"
+      "ald_sector", "ald_business_unit", "plan_carsten", "plan_sec_carsten"
     )
   )
 
@@ -59,7 +59,7 @@ asset_value_at_risk <- function(data,
     ) %>%
     dplyr::group_by(
       .data$investor_name, .data$portfolio_name, .data$ald_sector,
-      .data$technology, .data$scenario_geography
+      .data$ald_business_unit, .data$scenario_geography
     ) %>%
     dplyr::summarise(
       total_disc_npv_ls = sum(.data$discounted_net_profit_ls, na.rm = TRUE),
@@ -77,7 +77,7 @@ asset_value_at_risk <- function(data,
   data <- data %>%
     dplyr::inner_join(
       plan_carsten,
-      by = c("investor_name", "portfolio_name", "technology", "ald_sector", "scenario_geography")
+      by = c("investor_name", "portfolio_name", "ald_business_unit", "ald_sector", "scenario_geography")
     )
 
   data <- data %>%

@@ -1,11 +1,11 @@
-#' Calculates annual net profits on the company-technology level for the
+#' Calculates annual net profits on the company-ald_business_unit level for the
 #' baseline and late and sudden scenarios. Climate laggards which need to build
 #' out their production in increasing technologies to compensate for their
 #' missed targets, are "punished" by adjusting the net profit margin on their
 #' additional build out based on their proximity to target within the given
-#' technology. Specifically, we measure the ratio of how much of the required
-#' build out or reduction in a technology the company will have done at the end
-#' of the forecast period. If the technology has an increasing target and the
+#' ald_business_unit. Specifically, we measure the ratio of how much of the required
+#' build out or reduction in a ald_business_unit the company will have done at the end
+#' of the forecast period. If the ald_business_unit has an increasing target and the
 #' ratio of completion is below one, the net_profit_margin on the additional
 #' production build out is multiplied with the proximity to the target. This
 #' approximates the additional capital investment such a company would have to
@@ -15,7 +15,7 @@
 #' @param data A data frame containing the production forecasts of companies
 #'   under baseline and late and sudden, market prices/costs, company net profit
 #'   margins, the proximity to target in the production forecast period and an
-#'   indication of the direction of the technology.
+#'   indication of the direction of the ald_business_unit.
 #' @param shock_year A numeric vector of length one that indicates in which year
 #'   the policy shock strikes in a given scenario.
 #' @param market_passthrough A firm's ability to pass a carbon tax onto the consumer.
@@ -46,13 +46,13 @@ calculate_net_profits <- function(data,
   return(data)
 }
 
-#' Calculates annual net profits on the company-technology level for the
+#' Calculates annual net profits on the company-ald_business_unit level for the
 #' baseline and late and sudden scenarios - with a carbon tax being added.
 #'
 #' @param data A data frame containing the production forecasts of companies
 #'   under baseline and late and sudden, market prices/costs, company net profit
 #'   margins, the proximity to target in the production forecast period and an
-#'   indication of the direction of the technology.
+#'   indication of the direction of the ald_business_unit.
 #' @param shock_year A numeric vector of length one that indicates in which year
 #'   the policy shock strikes in a given scenario.
 #' @param carbon_data  NGFS carbon prices.
@@ -105,13 +105,13 @@ calculate_net_profits_shock_declining_technologies_carbon_tax <- function(data, 
 }
 
 
-#' Calculates annual net profits on the company-technology level for the
+#' Calculates annual net profits on the company-ald_business_unit level for the
 #' baseline and late and sudden scenarios - without a carbon tax being added.
 #'
 #' @param data A data frame containing the production forecasts of companies
 #'   under baseline and late and sudden, market prices/costs, company net profit
 #'   margins, the proximity to target in the production forecast period and an
-#'   indication of the direction of the technology.
+#'   indication of the direction of the ald_business_unit.
 #'
 #' @return Data frame with annual netprofits for all cases without carbon tax
 calculate_net_profits_without_carbon_tax <- function(data) {
@@ -126,12 +126,12 @@ calculate_net_profits_without_carbon_tax <- function(data) {
 }
 
 
-#' Calculates annual net profits on the company-technology level for the baseline scenario
+#' Calculates annual net profits on the company-ald_business_unit level for the baseline scenario
 #'
 #' @param data A data frame containing the production forecasts of companies
 #'   under baseline and late and sudden, market prices/costs, company net profit
 #'   margins, the proximity to target in the production forecast period and an
-#'   indication of the direction of the technology.
+#'   indication of the direction of the ald_business_unit.
 #'
 #' @return A data frame with net profits for the baseline scenario.
 
@@ -143,14 +143,14 @@ calculate_net_profits_baseline <- function(data) {
 }
 
 
-#' Calculates annual net profits on the company-technology level for the shock scenario for declining technologies
+#' Calculates annual net profits on the company-ald_business_unit level for the shock scenario for declining technologies
 #'
 #' @param data A data frame containing the production forecasts of companies
 #'   under baseline and late and sudden, market prices/costs, company net profit
 #'   margins, the proximity to target in the production forecast period and an
-#'   indication of the direction of the technology.
+#'   indication of the direction of the ald_business_unit.
 #'
-#' @return A data frame with net profits of companies with a declining technology
+#' @return A data frame with net profits of companies with a declining ald_business_unit
 
 calculate_net_profits_shock_declining_technologies <- function(data) {
 
@@ -172,13 +172,13 @@ calculate_net_profits_shock_declining_technologies_without_carbon_tax <- functio
 }
 
 
-#' Calculates annual net profits on the company-technology level for the shock scenario for increasing technologies.
+#' Calculates annual net profits on the company-ald_business_unit level for the shock scenario for increasing technologies.
 #' Climate laggards which need to build out their production in increasing technologies to compensate for their
 #' missed targets, are "punished" by adjusting the net profit margin on their
 #' additional build out based on their proximity to target within the given
-#' technology. Specifically, we measure the ratio of how much of the required
-#' build out or reduction in a technology the company will have done at the end
-#' of the forecast period. If the technology has an increasing target and the
+#' ald_business_unit. Specifically, we measure the ratio of how much of the required
+#' build out or reduction in a ald_business_unit the company will have done at the end
+#' of the forecast period. If the ald_business_unit has an increasing target and the
 #' ratio of completion is below one, the net_profit_margin on the additional production build out
 #' is multiplied with the proximity to the target. This approximates the additional capital investment
 #' such a company would have to make in a short time, which leads to added costs. This ensures that late
@@ -186,12 +186,12 @@ calculate_net_profits_shock_declining_technologies_without_carbon_tax <- functio
 #'
 #' @param data A data frame containing the production forecasts of companies with increasing under the late and sudden,
 #' market prices/costs, company net profit margins, the proximity to target in the production forecast period and an
-#' indication of the direction of the technology.
+#' indication of the direction of the ald_business_unit.
 #' @param financial_stimulus Additional channel through which the net profits of green
 #' companies can be boosted under a shock scenario
 #' @param shock_year Year of the shock.
 #'
-#' @return  A data frame with net profits of companies with a increasing technology
+#' @return  A data frame with net profits of companies with a increasing ald_business_unit
 
 calculate_net_profits_shock_increasing_technologies <- function(data, financial_stimulus, shock_year) {
 
@@ -235,13 +235,13 @@ return(data)
 #' Calculates discounted net profits based on a dividends discount model
 #'
 #' @param data A data frame containing the annual net profits on company
-#'   technology level
+#'   ald_business_unit level
 #' @param discount_rate Numeric, that holds the discount rate of dividends per
 #'   year in the DCF.
 dividend_discount_model <- function(data, discount_rate) {
   data <- data %>%
     dplyr::group_by(
-      .data$id, .data$company_name, .data$ald_sector, .data$technology,
+      .data$company_id, .data$company_name, .data$ald_sector, .data$ald_business_unit,
       .data$scenario_geography
     ) %>%
     dplyr::mutate(

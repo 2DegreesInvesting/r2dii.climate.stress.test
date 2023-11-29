@@ -17,6 +17,6 @@ Input tibble with potentially removed rows.
 }
 \description{
 Function checks for negative values on variable late_and_sudden. All
-technology x company_name combinations holding >= 1 negative value are
+ald_business_unit x company_name combinations holding >= 1 negative value are
 removed.
 }

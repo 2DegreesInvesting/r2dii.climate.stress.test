@@ -2,7 +2,7 @@
 % Please edit documentation in R/set_tech_trajectories.R
 \name{calc_late_sudden_traj}
 \alias{calc_late_sudden_traj}
-\title{Calculate how the production trajectory for a company/technology changes
+\title{Calculate how the production trajectory for a company/ald_business_unit changes
 after the policy shock hits.}
 \usage{
 calc_late_sudden_traj(
@@ -36,45 +36,45 @@ the duration of the shock in years. I.e. the number of years it takes until
 the trajectory of the company/sector reaches a new equilibrium pathway.}
 
 \item{shock_strength}{Numeric. A numeric vector that contains the shock
-size for the given company/technology at hand, in case shock size is not
+size for the given company/ald_business_unit at hand, in case shock size is not
 calculated endogenously by using the overshoot/carbon budget method.
 TODO: (move to data argument)}
 
 \item{scen_to_follow}{Numeric. A numeric vector that contains the production
 trajectory of the scenario indicated to use as the target for the
-company/technology at hand.
+company/ald_business_unit at hand.
 TODO: (move to data argument)}
 
 \item{planned_prod}{Numeric vector that includes the production plans for a
-company or (aggregated) technology to be included. The length of the vector
+company or (aggregated) ald_business_unit to be included. The length of the vector
 for each company is from the start year of the analysis to the end year of
 the analysis, which means that in most cases, this vector will include NAs
 after the final forecast year. This usually comes from a PACTA analysis.
 TODO: (move to data argument)}
 
 \item{late_and_sudden}{Numeric. A numeric vector that contains the
-late & sudden production trajectory for the company/technology at hand.
+late & sudden production trajectory for the company/ald_business_unit at hand.
 Before applying the shock, this follows the baseline scenario.
 TODO: (move to data argument)}
 
 \item{scenario_change}{Numeric. A numeric vector that contains the
 absolute changes of the target scenario in yearly steps for the
-company/technology at hand.
+company/ald_business_unit at hand.
 TODO: (move to data argument)}
 
 \item{scenario_change_baseline}{Numeric. A numeric vector that contains the
 absolute changes of the baseline scenario in yearly steps for the
-company/technology at hand.
+company/ald_business_unit at hand.
 TODO: (move to data argument)}
 
 \item{scenario_change_aligned}{Numeric. A numeric vector that contains the
 absolute changes of the aligned target scenario in yearly steps for the
-company/technology at hand, in case the company/technology is aligned
+company/ald_business_unit at hand, in case the company/ald_business_unit is aligned
 with the target after the forecast period.
 TODO: (move to data argument)}
 
 \item{overshoot_direction}{Character. A character vector that indicates if
-the technology at hand is increasing or decreasing over the time frame of
+the ald_business_unit at hand is increasing or decreasing over the time frame of
 the analysis.
 TODO: (move to data argument)}
 
@@ -88,9 +88,9 @@ numeric vector
 Prior to the shock, this will keep the
 trajectory untouched, i.e., the trajectory follows baseline up until the
 shock. After the shock hits, the development depends on whether or not
-the company/technology is already aligned and on what type of calculation
+the company/ald_business_unit is already aligned and on what type of calculation
 is selected for the shock. Overall the outcome should lead the
-company/technology to stay within the bounds of the carbon budget, if the
+company/ald_business_unit to stay within the bounds of the carbon budget, if the
 method applied is the overshoot/carbon budget method.
 }
 \seealso{

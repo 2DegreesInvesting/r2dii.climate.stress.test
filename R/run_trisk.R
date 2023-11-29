@@ -227,7 +227,7 @@ read_and_process_and_calc <- function(args_list) {
     carbon_data = processed$carbon_data
   )
 
-  # TODO: this requires company id to work for all companies, i.e. using 2021Q4 PAMS data
+  # TODO: this requires company company_id to work for all companies, i.e. using 2021Q4 PAMS data
   report_company_drops(
     data_list = input_data_list,
     log_path = log_path

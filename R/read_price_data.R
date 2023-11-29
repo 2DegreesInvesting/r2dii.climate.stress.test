@@ -13,7 +13,7 @@ read_price_data <- function(path) {
         year = "d",
         scenario = "c",
         scenario_geography = "c",
-        technology = "c",
+        ald_business_unit = "c",
         indicator = "c",
         unit = "c",
         price = "d"
@@ -23,7 +23,7 @@ read_price_data <- function(path) {
   validate_data_has_expected_cols(
     data = data,
     expected_columns = c(
-      "year", "scenario", "scenario_geography", "technology",
+      "year", "scenario", "scenario_geography", "ald_business_unit",
       "indicator", "unit", "price"
     )
   )
@@ -32,7 +32,7 @@ read_price_data <- function(path) {
     # doing hardcoded filtering directly upon import as we currently do not
     # differentiate scenario_geographies for price data
     dplyr::filter(scenario_geography == "Global") %>%
-    dplyr::select(dplyr::all_of(c("year", "scenario", "ald_sector" = "sector", "technology", "price")))
+    dplyr::select(dplyr::all_of(c("year", "scenario", "ald_sector" = "sector", "ald_business_unit", "price")))
 
   return(data)
 }

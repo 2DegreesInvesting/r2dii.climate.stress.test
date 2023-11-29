@@ -1,4 +1,4 @@
-year,investor_name,portfolio_name,ald_sector,technology,scenario_geography,company_name,plan_carsten,plan_sec_carsten,id
+year,investor_name,portfolio_name,ald_sector,ald_business_unit,scenario_geography,company_name,plan_carsten,plan_sec_carsten,company_id
 2020,Meta Investor,Meta Portfolio,Automotive,Electric,Global,Car Manufacturer,0.001,0.01,1
 2020,Meta Investor,Meta Portfolio,Coal,Coal,Global,Coal Company,0.001,0.01,3
 2020,Meta Investor,Meta Portfolio,Power,NuclearCap,Global,Power Company,0.001,0.01,2

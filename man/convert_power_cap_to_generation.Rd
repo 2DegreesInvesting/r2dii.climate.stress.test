@@ -18,7 +18,7 @@ output.}
 
 \item{capacity_factors_power}{A data frame containing capacity factors to
 translate company level power capacity to units sold. Contains information
-on the technology (power sector only) and scenario_geography levels.}
+on the ald_business_unit (power sector only) and scenario_geography levels.}
 
 \item{baseline_scenario}{String holding name of baseline scenario.}
 
@@ -29,7 +29,7 @@ Units of generated power are assumed to be sold and hence get priced in the
 net profit calculations. This also entails converting MWh into MW per year,
 since we calculate yearly profits. Note: For use in webscripts
 \code{\link[=convert_cap_to_generation]{convert_cap_to_generation()}} is used currently, which only distinguishes
-capacity factor by technology and scenario_geography, whereas this function
+capacity factor by ald_business_unit and scenario_geography, whereas this function
 distinguishes further by year and scenario. Also note that for generation of
 variable \code{plan_tech_prod} (planned capacity) capacity factors from baseline
 scenario are used.

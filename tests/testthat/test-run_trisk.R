@@ -35,7 +35,7 @@ test_that("without iteration, using maximum values of input arguments output is 
   out <- tempfile()
   fs::dir_create(out)
 
-  suppressed_console_output <- suppressWarnings(suppressMessages(capture.output(
+
     results <- run_trisk(
       input_path = in_agnostic,
       output_path = out,
@@ -48,7 +48,7 @@ test_that("without iteration, using maximum values of input arguments output is 
       shock_year = get_st_argument("shock_year", "max"),
       return_results = TRUE
     )
-  )))
+
 
   expect_snapshot(lapply(results, as.data.frame))
 })

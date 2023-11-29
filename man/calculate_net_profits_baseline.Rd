@@ -2,7 +2,7 @@
 % Please edit documentation in R/financial_functions.R
 \name{calculate_net_profits_baseline}
 \alias{calculate_net_profits_baseline}
-\title{Calculates annual net profits on the company-technology level for the baseline scenario}
+\title{Calculates annual net profits on the company-ald_business_unit level for the baseline scenario}
 \usage{
 calculate_net_profits_baseline(data)
 }
@@ -10,11 +10,11 @@ calculate_net_profits_baseline(data)
 \item{data}{A data frame containing the production forecasts of companies
 under baseline and late and sudden, market prices/costs, company net profit
 margins, the proximity to target in the production forecast period and an
-indication of the direction of the technology.}
+indication of the direction of the ald_business_unit.}
 }
 \value{
 A data frame with net profits for the baseline scenario.
 }
 \description{
-Calculates annual net profits on the company-technology level for the baseline scenario
+Calculates annual net profits on the company-ald_business_unit level for the baseline scenario
 }
