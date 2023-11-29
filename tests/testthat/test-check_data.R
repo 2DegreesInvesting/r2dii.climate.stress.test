@@ -18,7 +18,7 @@ test_that("informative error is thrown if levels are missing", {
 test_that("input is returned if mapping is correct", {
   test_data <- tibble::tibble(
     sector = c("Oil&Gas", "Oil&Gas"),
-    technology = c("Oil", "Gas")
+    ald_business_unit = c("Oil", "Gas")
   )
 
   test_data_checked <- check_sector_tech_mapping(
@@ -29,10 +29,10 @@ test_that("input is returned if mapping is correct", {
   expect_equal(test_data, test_data_checked)
 })
 
-test_that("error is thrown in case technology expected for ald_sector is missing.", {
+test_that("error is thrown in case ald_business_unit expected for ald_sector is missing.", {
   test_data <- tibble::tibble(
     ald_sector = c("Oil&Gas"),
-    technology = c("Oil")
+    ald_business_unit = c("Oil")
   )
 
   expect_error(check_sector_tech_mapping(
@@ -40,10 +40,10 @@ test_that("error is thrown in case technology expected for ald_sector is missing
   ), "Incorrect mapping")
 })
 
-test_that("error is thrown in case technology not expected for ald_sector is present.", {
+test_that("error is thrown in case ald_business_unit not expected for ald_sector is present.", {
   test_data <- tibble::tibble(
     ald_sector = c("Oil&Gas", "Oil&Gas", "Oil&Gas"),
-    technology = c("Oil", "Gas", "&")
+    ald_business_unit = c("Oil", "Gas", "&")
   )
 
   expect_error(check_sector_tech_mapping(

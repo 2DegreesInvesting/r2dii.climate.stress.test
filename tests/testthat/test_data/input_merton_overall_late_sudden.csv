@@ -1,4 +1,4 @@
-investor_name,portfolio_name,scenario_name,scenario_geography,id,company_name,ald_sector,technology,equity_0_baseline,equity_0_late_sudden,debt,volatility,risk_free_rate,term,Maturity,Vt,St,Dt,Survival
+investor_name,portfolio_name,scenario_name,scenario_geography,company_id,company_name,ald_sector,ald_business_unit,equity_0_baseline,equity_0_late_sudden,debt,volatility,risk_free_rate,term,Maturity,Vt,St,Dt,Survival
 Meta Investor,Meta Investor,Carbon balance 2025,Global,PortfolioLevel,Power Company,Power,NuclearCap,10000000,10000000,5000000,0.2,0.05,1,1,15000000,10000000,5000000,0.99
 Meta Investor,Meta Investor,Carbon balance 2025,Global,PortfolioLevel,Power Company,Power,NuclearCap,10000000,10000000,5000000,0.2,0.05,2,2,15000000,10000000,5000000,0.99
 Meta Investor,Meta Investor,Carbon balance 2025,Global,PortfolioLevel,Power Company,Power,NuclearCap,10000000,10000000,5000000,0.2,0.05,3,3,15000000,10000000,5000000,0.99
