@@ -11,8 +11,8 @@ original scenario values. If not included, the trajectories replicate
 externally provided scenario trajectories.
 Trajectories are furthermore differentiated by scenario_geography, if
 multiple are passed.
-If no "id" or "company_name" are provided, the calculation switches to
-portfolio/technology level.'><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
+If no "company_id" or "company_name" are provided, the calculation switches to
+portfolio/ald_business_unit level.'><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]--></head><body data-spy="scroll" data-target="#toc">
@@ -86,8 +86,8 @@ original scenario values. If not included, the trajectories replicate
 externally provided scenario trajectories.
 Trajectories are furthermore differentiated by scenario_geography, if
 multiple are passed.
-If no "id" or "company_name" are provided, the calculation switches to
-portfolio/technology level.</p>
+If no "company_id" or "company_name" are provided, the calculation switches to
+portfolio/ald_business_unit level.</p>
     </div>
 
     <div id="ref-usage">
@@ -97,16 +97,16 @@ portfolio/technology level.</p>
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
-<dd><p>A dataframe that contains scenario trajectories by technology
+<dd><p>A dataframe that contains scenario trajectories by ald_business_unit
 until 2040 for all the scenarios included in the analysis and
-production build out plans by technology or company and technology,
+production build out plans by ald_business_unit or company and ald_business_unit,
 usually for 5 years, based on PACTA results.</p></dd>
 
 
 <dt>baseline_scenario</dt>
 <dd><p>Character. A string that indicates which
 of the scenarios included in the analysis should be used to set the
-baseline technology trajectories.</p></dd>
+baseline ald_business_unit trajectories.</p></dd>
 
 </dl></div>
     <div id="value">
