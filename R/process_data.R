@@ -429,7 +429,7 @@ st_process <- function(data, scenario_geography, baseline_scenario,
       time_frame = time_horizon_lookup,
       target_scenario = shock_scenario
     )
-browser()
+
   # capacity_factors are only applied for power sector
   if ("Power" %in% sectors) {
     capacity_factors_power <- process_capacity_factors_power(
