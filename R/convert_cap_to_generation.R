@@ -126,7 +126,7 @@ convert_power_cap_to_generation <- function(data,
     )
 
   hours_to_year <- 24 * 365
-
+browser()
   data <- data %>%
     dplyr::mutate(
       # the planned generation is assumed to follow baseline

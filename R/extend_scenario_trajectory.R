@@ -48,7 +48,7 @@ extend_scenario_trajectory <- function(data,
       "scenario", "year", "direction", "fair_share_perc"
     )
   )
-
+browser()
   data <- data %>%
     summarise_production_technology_forecasts(
       start_analysis = start_analysis,
@@ -90,6 +90,7 @@ extend_scenario_trajectory <- function(data,
     tidyr::pivot_wider(
       id_cols = dplyr::all_of(c(
         "company_id", "company_name", "year", "scenario_geography", "ald_sector",
+        "ald_production_unit", "ald_emissions_unit",
         "ald_business_unit", "plan_tech_prod", "phase_out", "emission_factor",
         "proximity_to_target", "direction"
       )),
