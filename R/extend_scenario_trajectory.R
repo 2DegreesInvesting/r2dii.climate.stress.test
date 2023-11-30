@@ -32,22 +32,6 @@ extend_scenario_trajectory <- function(data,
                                        end_analysis,
                                        time_frame,
                                        target_scenario) {
-  validate_data_has_expected_cols(
-    data = data,
-    expected_columns = c(
-      "company_id", "company_name", "year", "ald_sector", "ald_business_unit",
-      "scenario_geography", "plan_tech_prod", "plan_emission_factor",
-      "plan_sec_prod"
-    )
-  )
-
-  validate_data_has_expected_cols(
-    data = scenario_data,
-    expected_columns = c(
-      "ald_business_unit", "scenario_geography", "ald_sector", "units",
-      "scenario", "year", "direction", "fair_share_perc"
-    )
-  )
 
   data <- data %>%
     summarise_production_technology_forecasts(
@@ -59,7 +43,7 @@ extend_scenario_trajectory <- function(data,
       start_analysis = start_analysis,
       end_analysis = end_analysis
     )
-
+  
   data <- data %>%
     dplyr::inner_join(
       scenario_data,

@@ -16,6 +16,8 @@ read_production_data <- function(path = NULL) {
         year = "d",
         ald_sector = "c",
         ald_business_unit = "c",
+        ald_production_unit="c",
+        emissions_factor_unit="c",
         plan_tech_prod = "d",
         plan_emission_factor = "d",
         plan_sec_prod = "d"
@@ -26,6 +28,7 @@ read_production_data <- function(path = NULL) {
     data = data,
     expected_columns = c(
       "company_id", "company_name", "scenario_geography", "year", "ald_sector",
+      "ald_production_unit", "emissions_factor_unit",
       "ald_business_unit", "plan_tech_prod", "plan_emission_factor", "plan_sec_prod"
     )
   )
