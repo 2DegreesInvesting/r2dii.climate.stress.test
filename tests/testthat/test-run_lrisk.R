@@ -4,7 +4,7 @@ test_that("with iteration, using default settings output is unchanged", {
   skip_on_cran()
   skip_slow_tests()
 
-  in_agnostic <- here::here(fs::path("tests", "testthat", "test_data","ST_INPUTS_DEV"))
+  in_agnostic <- here::here(fs::path("test_data","ST_INPUTS_DEV"))
   out <- tempfile()
   fs::dir_create(out)
 
