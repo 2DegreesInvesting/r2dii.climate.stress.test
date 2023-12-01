@@ -241,6 +241,7 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars, risk_type) 
   crispy_output <- crispy_output %>%
     dplyr::mutate(
       net_present_value_difference = .data$net_present_value_shock - .data$net_present_value_baseline,
+      net_present_value_roc = .data$net_present_value_shock/.data$net_present_value_baseline -1,
       pd_difference = .data$pd_shock - .data$pd_baseline
     )
 
@@ -265,7 +266,7 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars, risk_type) 
         .data$baseline_scenario, .data$shock_scenario, .data$lgd,
         .data$risk_free_rate, .data$discount_rate, .data$dividend_rate,
         .data$growth_rate, .data$shock_year, .data$net_present_value_baseline,
-        .data$net_present_value_shock, .data$net_present_value_difference,
+        .data$net_present_value_shock, .data$net_present_value_difference, .data$net_present_value_roc,
         .data$term, .data$pd_baseline, .data$pd_shock, .data$pd_difference
       )
   }
