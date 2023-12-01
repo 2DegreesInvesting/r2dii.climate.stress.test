@@ -4,7 +4,7 @@ test_that("without iteration, using minimum values of input arguments output is 
   skip_on_cran()
   skip_slow_tests()
 
-  in_agnostic <- here::here(fs::path("test_data","ST_INPUTS_DEV"))
+  in_agnostic <- fs::path("test_data","ST_INPUTS_DEV")
   out <- tempfile()
   fs::dir_create(out)
 
@@ -31,7 +31,7 @@ test_that("without iteration, using maximum values of input arguments output is 
   skip_on_cran()
   skip_slow_tests()
 
-  in_agnostic <- here::here(fs::path("test_data","ST_INPUTS_DEV"))
+  in_agnostic <- fs::path("test_data","ST_INPUTS_DEV")
   out <- tempfile()
   fs::dir_create(out)
 
