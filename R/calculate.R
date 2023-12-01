@@ -130,7 +130,7 @@ calculate_lrisk_trajectory <- function(input_data_list,
       late_sudden_price = !!rlang::sym(glue::glue("price_{target_scenario}"))
     )
 
-  merge_cols <- c("company_name", "company_id" = "company_id")
+  merge_cols <- c("company_id" = "company_id")
 
   full_trajectory <- production_data %>%
     dplyr::inner_join(
