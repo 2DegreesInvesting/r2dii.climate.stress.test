@@ -3,7 +3,7 @@ test_that("calculate_net_profits penalizes companies for late build out of low
   input_data <- tibble::tribble(
     ~company_name, ~baseline, ~late_sudden, ~Baseline_price, ~late_sudden_price, ~net_profit_margin, ~direction, ~overshoot_direction, ~proximity_to_target, ~scenario_geography, ~year, ~emission_factor,
     "laggard_with_overshoot", 100, 150, 10, 10, 0.1, "increasing", "Increasing", 0.5, "Global", 2030, 1,
-    "laggard_with_no_overshoot", 100, 150, 10, 10, 0.1, "increasing","Decreasing",  0.5, "Global", 2030, 1
+    "laggard_with_no_overshoot", 100, 150, 10, 10, 0.1, "increasing", "Decreasing", 0.5, "Global", 2030, 1
   )
 
   carbon_data_test <- tibble::tribble(
@@ -28,7 +28,7 @@ test_that("calculate_net_profits penalizes companies for late build out of low
     dplyr::filter(.data$company_name == "laggard_with_no_overshoot") %>%
     dplyr::pull(.data$net_profits_baseline)
 
-  net_profits_baseline_climate_laggard_with_overshoot<- net_profits %>%
+  net_profits_baseline_climate_laggard_with_overshoot <- net_profits %>%
     dplyr::filter(.data$company_name == "laggard_with_overshoot") %>%
     dplyr::pull(.data$net_profits_baseline)
 
@@ -121,7 +121,7 @@ test_that("calculate_net_profits does not apply carbon tax on high
   test_shock_year_early <- 2025
   test_shock_year_late <- 2035
   test_market_passthrough <- 0
-  test_financial_stimulus <-1
+  test_financial_stimulus <- 1
 
 
 
@@ -157,7 +157,7 @@ test_that("calculate_net_profits does not apply carbon tax on high
 test_that("calculate_net_profits penalizes companies for late build out of low
           carbon technologies", {
   input_data <- tibble::tribble(
-    ~company_name, ~baseline, ~late_sudden, ~Baseline_price, ~late_sudden_price, ~net_profit_margin, ~direction,  ~overshoot_direction, ~proximity_to_target, ~year,
+    ~company_name, ~baseline, ~late_sudden, ~Baseline_price, ~late_sudden_price, ~net_profit_margin, ~direction, ~overshoot_direction, ~proximity_to_target, ~year,
     "leader", 100, 150, 10, 10, 0.1, "increasing", "Increasing", 1, 2030,
     "laggard", 100, 150, 10, 10, 0.1, "increasing", "Increasing", 0.5, 2030,
   )
@@ -198,7 +198,7 @@ test_that("calculate_net_profits penalizes companies for late build out of low
 test_that("a higher market passthrough has a weaker impact on a company's net profits", {
   input_data <- tibble::tribble(
     ~company_name, ~baseline, ~late_sudden, ~Baseline_price, ~late_sudden_price, ~net_profit_margin, ~direction, ~overshoot_direction, ~proximity_to_target, ~year, ~emission_factor,
-    "high carbon ald_business_unit after shock year", 100, 50, 10, 10, 0.1, "declining","Decreasing", 0, 2030, 1
+    "high carbon ald_business_unit after shock year", 100, 50, 10, 10, 0.1, "declining", "Decreasing", 0, 2030, 1
   )
 
   carbon_data_test <- tibble::tribble(
@@ -262,10 +262,10 @@ test_that("calculate_net_profits does only apply a financial stimulus on low car
 
 
   net_profits <- calculate_net_profits(input_data,
-                                       carbon_data = carbon_data_test,
-                                       shock_year = test_shock_year,
-                                       market_passthrough = test_market_passthrough,
-                                       financial_stimulus = test_financial_stimulus
+    carbon_data = carbon_data_test,
+    shock_year = test_shock_year,
+    market_passthrough = test_market_passthrough,
+    financial_stimulus = test_financial_stimulus
   )
 
   net_profits_baseline_climate_low_carbon_technology_company <- net_profits %>%
@@ -299,7 +299,7 @@ test_that("calculate_net_profits supports a low carbon technology company more t
   input_data <- tibble::tribble(
     ~company_name, ~baseline, ~late_sudden, ~Baseline_price, ~late_sudden_price, ~net_profit_margin, ~direction, ~overshoot_direction, ~proximity_to_target, ~scenario_geography, ~year, ~emission_factor,
     "low_carbon_technology_company", 100, 50, 10, 10, 0.1, "increasing", "Decreasing", 0.5, "Global", 2030, 1
-    )
+  )
 
   carbon_data_test <- tibble::tribble(
     ~year, ~model, ~scenario, ~variable, ~unit, ~carbon_tax,
@@ -313,17 +313,17 @@ test_that("calculate_net_profits supports a low carbon technology company more t
   high_test_financial_stimulus <- 2.5
 
   net_profits_low_financial_stimulus <- calculate_net_profits(input_data,
-                                             carbon_data = carbon_data_test,
-                                             shock_year = test_shock_year,
-                                             market_passthrough = test_market_passthrough,
-                                             financial_stimulus = low_test_financial_stimulus
+    carbon_data = carbon_data_test,
+    shock_year = test_shock_year,
+    market_passthrough = test_market_passthrough,
+    financial_stimulus = low_test_financial_stimulus
   )
 
   net_profits_high_financial_stimulus <- calculate_net_profits(input_data,
-                                            carbon_data = carbon_data_test,
-                                            shock_year = test_shock_year,
-                                            market_passthrough = test_market_passthrough,
-                                            financial_stimulus = high_test_financial_stimulus
+    carbon_data = carbon_data_test,
+    shock_year = test_shock_year,
+    market_passthrough = test_market_passthrough,
+    financial_stimulus = high_test_financial_stimulus
   )
 
   net_profits_late_sudden_low_financial_stimulus <- net_profits_low_financial_stimulus %>%
@@ -336,6 +336,4 @@ test_that("calculate_net_profits supports a low carbon technology company more t
     net_profits_late_sudden_high_financial_stimulus,
     net_profits_late_sudden_low_financial_stimulus
   )
-
 })
-
