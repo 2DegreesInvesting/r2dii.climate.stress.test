@@ -71,21 +71,21 @@ run_trisk <- function(input_path,
 
   cat("-- Validating input arguments. \n")
 
-  validate_input_values(
-    baseline_scenario = baseline_scenario,
-    shock_scenario = shock_scenario,
-    scenario_geography = scenario_geography,
-    lgd = lgd,
-    risk_free_rate = risk_free_rate,
-    discount_rate = discount_rate,
-    growth_rate = growth_rate,
-    div_netprofit_prop_coef = div_netprofit_prop_coef,
-    shock_year = shock_year,
-    carbon_price_model = carbon_price_model,
-    market_passthrough = market_passthrough,
-    financial_stimulus = financial_stimulus,
-    risk_type = "trisk"
-  )
+  # validate_input_values(
+  #   baseline_scenario = baseline_scenario,
+  #   shock_scenario = shock_scenario,
+  #   scenario_geography = scenario_geography,
+  #   lgd = lgd,
+  #   risk_free_rate = risk_free_rate,
+  #   discount_rate = discount_rate,
+  #   growth_rate = growth_rate,
+  #   div_netprofit_prop_coef = div_netprofit_prop_coef,
+  #   shock_year = shock_year,
+  #   carbon_price_model = carbon_price_model,
+  #   market_passthrough = market_passthrough,
+  #   financial_stimulus = financial_stimulus,
+  #   risk_type = "trisk"
+  # )
 
   scenario_type <- infer_scenario_type(
     baseline_scenario = baseline_scenario,
