@@ -241,7 +241,7 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars, risk_type) 
   crispy_output <- crispy_output %>%
     dplyr::mutate(
       net_present_value_difference = .data$net_present_value_shock - .data$net_present_value_baseline,
-      net_present_value_roc = .data$net_present_value_shock/.data$net_present_value_baseline -1,
+      net_present_value_roc = .data$net_present_value_shock / .data$net_present_value_baseline - 1,
       pd_difference = .data$pd_shock - .data$pd_baseline
     )
 
@@ -270,6 +270,14 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars, risk_type) 
         .data$term, .data$pd_baseline, .data$pd_shock, .data$pd_difference
       )
   }
+
+  # add a random uuid as the run_id
+  run_id <- uuid::UUIDgenerate()
+  company_trajectories <- company_trajectories %>%
+    dplyr::mutate(run_id = .env$run_id)
+  crispy_output <- crispy_output %>%
+    dplyr::mutate(run_id = .env$run_id)
+
   return(list(
     company_trajectories = company_trajectories,
     crispy_output = crispy_output

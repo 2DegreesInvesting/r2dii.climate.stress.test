@@ -39,6 +39,7 @@ Imports:
     rlang,
     tibble,
     tidyr,
+    uuid,
     withr,
     zoo
 Suggests: 
