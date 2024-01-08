@@ -105,7 +105,15 @@ run_trisk <- function(input_path,
 
   args_list$end_year <- end_year_lookup(scenario_type = scenario_type)
 
-  st_result <- read_and_process_and_calc(args_list)
+
+  st_results_list <- run_stress_test_iteration(args_list)
+
+  result_names <- names(st_results_list[[1]])
+  st_results <- result_names %>%
+    purrr::map(function(tib) {
+      purrr::map_dfr(st_results_list, `[[`, tib)
+    }) %>%
+    purrr::set_names(result_names)
 
   st_results_wrangled_and_checked <- wrangle_results(
     results_list = st_results,
@@ -120,7 +128,7 @@ run_trisk <- function(input_path,
   if (return_results) {
     return(st_results_wrangled_and_checked)
   }
-browser()
+
   write_stress_test_results(
     results_list = st_results_wrangled_and_checked,
     iter_var = iter_var,
@@ -135,6 +143,32 @@ browser()
   cat("-- Exported results to designated output path. \n")
 }
 
+run_stress_test_iteration <- function(args_list) {
+  run_stress_test_iteration_once <- function(arg_tibble_row) {
+    arg_list_row <- arg_tibble_row %>%
+      dplyr::select(-.data$return_results) %>%
+      as.list()
+
+    arg_tibble_row <- arg_tibble_row %>%
+      dplyr::select(-dplyr::all_of(setup_vars_lookup)) %>%
+      dplyr::rename_with(~ paste0(.x, "_arg"))
+
+    st_result <- read_and_process_and_calc(arg_list_row) %>%
+      purrr::map(dplyr::bind_cols, data_y = arg_tibble_row)
+
+    return(st_result)
+  }
+
+  iter_var <- get_iter_var(args_list)
+  args_tibble <- tibble::as_tibble(args_list) %>%
+    dplyr::mutate(iter_var = .env$iter_var)
+
+  out <- iteration_sequence(args_list) %>%
+    purrr::map(~ dplyr::slice(args_tibble, .x)) %>%
+    purrr::map(run_stress_test_iteration_once)
+
+  return(out)
+}
 
 # Avoid R CMD check NOTE: "Undefined global functions or variables"
 globalVariables(c(names(formals(run_trisk)), "iter_var", "end_year", "risk_type"))
@@ -143,10 +177,11 @@ read_and_process_and_calc <- function(args_list) {
   list2env(args_list, envir = rlang::current_env())
 
   if (financial_stimulus > 1) {
-    log_path <- file.path(output_path, sprintf("log_file_%s_%s_%s_%s.txt", shock_scenario, scenario_geography, carbon_price_model, financial_stimulus))
+    log_path <- file.path(output_path, sprintf("log_file_%s_%s_%s_%s_%s.txt", iter_var, shock_scenario, scenario_geography, carbon_price_model, financial_stimulus))
   } else {
-    log_path <- file.path(output_path, sprintf("log_file_%s_%s_%s.txt", shock_scenario, scenario_geography, carbon_price_model))
+    log_path <- file.path(output_path, sprintf("log_file_%s_%s_%s_%s.txt", iter_var, shock_scenario, scenario_geography, carbon_price_model))
   }
+
   paste_write("\n\nIteration with parameter settings:", log_path = log_path)
   purrr::walk(names(args_list), function(name) {
     paste(name, magrittr::extract2(args_list, name), sep = ": ") %>%
@@ -244,4 +279,13 @@ read_and_process_and_calc <- function(args_list) {
       company_technology_npv = company_technology_npv
     )
   )
+}
+
+iteration_sequence <- function(args_list) {
+  iter_var <- get_iter_var(args_list)
+  if (identical(iter_var, "standard")) {
+    return(1L)
+  } else {
+    return(seq_along(args_list[[iter_var]]))
+  }
 }

@@ -134,8 +134,7 @@ check_valid_financial_data_values <- function(financial_data) {
 #' @return A list of wrangled results.
 wrangle_results <- function(results_list, sensitivity_analysis_vars, risk_type) {
   sensitivity_analysis_vars <- paste0(sensitivity_analysis_vars, "_arg")
-  cat(timestamp())
-  browser()
+
   # company trajectories ----------------------------------------------------
   if (risk_type == "lrisk") {
     company_trajectories <- results_list$company_trajectories %>%
