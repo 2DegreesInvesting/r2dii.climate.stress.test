@@ -1,3 +1,58 @@
+#' Title
+#'
+#' @param data trisk loaded data
+#' @inheritParams scenario_geography
+#' @inheritParams baseline_scenario
+#' @inheritParams shock_scenario
+#' @inheritParams sectors_and_technologies_list
+#' @inheritParams start_year
+#' @inheritParams carbon_price_model
+#' @inheritParams end_year
+#' @inheritParams carbon_price_model
+#'
+#' @return processed input trisk data
+#'
+st_process_agnostic <-
+  function(data,
+           scenario_geography,
+           baseline_scenario,
+           shock_scenario,
+           sectors_and_technologies_list,
+           start_year ,
+           carbon_price_model,
+           end_year,
+           log_path) {
+
+    processed <- data %>%
+      st_process(
+        scenario_geography = scenario_geography,
+        baseline_scenario = baseline_scenario,
+        shock_scenario = shock_scenario,
+        sectors = sectors_and_technologies_list$sectors,
+        technologies = sectors_and_technologies_list$technologies,
+        start_year = start_year,
+        carbon_price_model = carbon_price_model,
+        log_path = log_path,
+        end_year = end_year
+      )
+
+    input_data_list <- list(
+      capacity_factors_power = processed$capacity_factors_power,
+      scenario_data = processed$scenario_data,
+      df_price = processed$df_price,
+      financial_data = processed$financial_data,
+      production_data = processed$production_data,
+      carbon_data = processed$carbon_data
+    )
+
+    # TODO: this requires company company_id to work for all companies, i.e. using 2021Q4 PAMS data
+    report_company_drops(data_list = input_data_list,
+                         log_path = log_path)
+
+    return(input_data_list)
+  }
+
+
 is_scenario_geography_in_pacta_results <- function(data, scenario_geography_filter) {
   if (!scenario_geography_filter %in% unique(data$scenario_geography)) {
     stop(paste0(
@@ -378,7 +433,7 @@ st_process <- function(data, scenario_geography, baseline_scenario,
                        log_path, end_year) {
   scenarios_filter <- c(baseline_scenario, shock_scenario)
 
-  df_price <- process_price_data(
+    df_price <- process_price_data(
     data$df_price,
     technologies = technologies,
     sectors = sectors,
@@ -481,6 +536,7 @@ st_process <- function(data, scenario_geography, baseline_scenario,
 process_production_data <- function(data, start_year, end_year, time_horizon,
                                     scenario_geography_filter, sectors,
                                     technologies, log_path) {
+
   data_processed <- data %>%
     dplyr::filter(.data$scenario_geography %in% .env$scenario_geography_filter) %>%
     dplyr::filter(.data$ald_sector %in% .env$sectors) %>%
@@ -512,12 +568,14 @@ process_production_data <- function(data, start_year, end_year, time_horizon,
         ),
       throw_error = FALSE
     ) %>%
-    report_missing_col_combinations(col_names = c("scenario_geography", "ald_business_unit", "year")) %>%
-    report_all_duplicate_kinds(composite_unique_cols = cuc_production_data)
+    report_missing_col_combinations(col_names = c("scenario_geography", "ald_business_unit", "year"))
+
+  # Commented for speed  improvement
+  #%>% report_all_duplicate_kinds(composite_unique_cols = cuc_production_data)
 
   # checks that no missing values exist in the data
-  data_processed %>%
-    report_missings(name_data = "production data", throw_error = TRUE)
+  # Commented for speed improvement
+  # data_processed %>% report_missings(name_data = "production data", throw_error = TRUE)
 
   return(data_processed)
 }

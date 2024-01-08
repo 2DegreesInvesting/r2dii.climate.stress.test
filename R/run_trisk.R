@@ -105,15 +105,7 @@ run_trisk <- function(input_path,
 
   args_list$end_year <- end_year_lookup(scenario_type = scenario_type)
 
-
-  st_results_list <- run_stress_test_iteration(args_list)
-
-  result_names <- names(st_results_list[[1]])
-  st_results <- result_names %>%
-    purrr::map(function(tib) {
-      purrr::map_dfr(st_results_list, `[[`, tib)
-    }) %>%
-    purrr::set_names(result_names)
+  st_result <- read_and_process_and_calc(args_list)
 
   st_results_wrangled_and_checked <- wrangle_results(
     results_list = st_results,
@@ -128,7 +120,7 @@ run_trisk <- function(input_path,
   if (return_results) {
     return(st_results_wrangled_and_checked)
   }
-
+browser()
   write_stress_test_results(
     results_list = st_results_wrangled_and_checked,
     iter_var = iter_var,
@@ -143,32 +135,6 @@ run_trisk <- function(input_path,
   cat("-- Exported results to designated output path. \n")
 }
 
-run_stress_test_iteration <- function(args_list) {
-  run_stress_test_iteration_once <- function(arg_tibble_row) {
-    arg_list_row <- arg_tibble_row %>%
-      dplyr::select(-.data$return_results) %>%
-      as.list()
-
-    arg_tibble_row <- arg_tibble_row %>%
-      dplyr::select(-dplyr::all_of(setup_vars_lookup)) %>%
-      dplyr::rename_with(~ paste0(.x, "_arg"))
-
-    st_result <- read_and_process_and_calc(arg_list_row) %>%
-      purrr::map(dplyr::bind_cols, data_y = arg_tibble_row)
-
-    return(st_result)
-  }
-
-  iter_var <- get_iter_var(args_list)
-  args_tibble <- tibble::as_tibble(args_list) %>%
-    dplyr::mutate(iter_var = .env$iter_var)
-
-  out <- iteration_sequence(args_list) %>%
-    purrr::map(~ dplyr::slice(args_tibble, .x)) %>%
-    purrr::map(run_stress_test_iteration_once)
-
-  return(out)
-}
 
 # Avoid R CMD check NOTE: "Undefined global functions or variables"
 globalVariables(c(names(formals(run_trisk)), "iter_var", "end_year", "risk_type"))
@@ -177,11 +143,10 @@ read_and_process_and_calc <- function(args_list) {
   list2env(args_list, envir = rlang::current_env())
 
   if (financial_stimulus > 1) {
-    log_path <- file.path(output_path, sprintf("log_file_%s_%s_%s_%s_%s.txt", iter_var, shock_scenario, scenario_geography, carbon_price_model, financial_stimulus))
+    log_path <- file.path(output_path, sprintf("log_file_%s_%s_%s_%s.txt", shock_scenario, scenario_geography, carbon_price_model, financial_stimulus))
   } else {
-    log_path <- file.path(output_path, sprintf("log_file_%s_%s_%s_%s.txt", iter_var, shock_scenario, scenario_geography, carbon_price_model))
+    log_path <- file.path(output_path, sprintf("log_file_%s_%s_%s.txt", shock_scenario, scenario_geography, carbon_price_model))
   }
-
   paste_write("\n\nIteration with parameter settings:", log_path = log_path)
   purrr::walk(names(args_list), function(name) {
     paste(name, magrittr::extract2(args_list, name), sep = ": ") %>%
@@ -197,45 +162,27 @@ read_and_process_and_calc <- function(args_list) {
     scenario_geography = scenario_geography
   )
 
+  transition_scenario <- generate_transition_shocks(
+    start_of_analysis = start_year,
+    end_of_analysis = end_year,
+    shock_year = shock_year
+  )
+
   cat("-- Reading input data from designated input path. \n")
 
   data <- st_read_agnostic(input_path, start_year = start_year, sectors = sectors_and_technologies_list$sectors, risk_type = "trisk")
 
   cat("-- Processing input data. \n")
 
-  processed <- data %>%
-    st_process(
-      scenario_geography = scenario_geography,
-      baseline_scenario = baseline_scenario,
-      shock_scenario = shock_scenario,
-      sectors = sectors_and_technologies_list$sectors,
-      technologies = sectors_and_technologies_list$technologies,
-      start_year = start_year,
-      carbon_price_model = carbon_price_model,
-      log_path = log_path,
-      end_year = end_year
-    )
-
-  input_data_list <- list(
-    capacity_factors_power = processed$capacity_factors_power,
-    scenario_data = processed$scenario_data,
-    df_price = processed$df_price,
-    financial_data = processed$financial_data,
-    production_data = processed$production_data,
-    carbon_data = processed$carbon_data
-  )
-
-  # TODO: this requires company company_id to work for all companies, i.e. using 2021Q4 PAMS data
-  report_company_drops(
-    data_list = input_data_list,
-    log_path = log_path
-  )
-
-  transition_scenario <- generate_transition_shocks(
-    start_of_analysis = start_year,
-    end_of_analysis = end_year,
-    shock_year = shock_year
-  )
+  input_data_list <- st_process_agnostic(data=data,
+                                         scenario_geography=scenario_geography,
+                                         baseline_scenario=baseline_scenario,
+                                         shock_scenario=shock_scenario,
+                                         sectors_and_technologies_list=sectors_and_technologies_list,
+                                         start_year=start_year ,
+                                         carbon_price_model=carbon_price_model,
+                                         end_year=end_year,
+                                         log_path=log_path)
 
   cat("-- Calculating production trajectory under trisk shock. \n")
 
@@ -297,13 +244,4 @@ read_and_process_and_calc <- function(args_list) {
       company_technology_npv = company_technology_npv
     )
   )
-}
-
-iteration_sequence <- function(args_list) {
-  iter_var <- get_iter_var(args_list)
-  if (identical(iter_var, "standard")) {
-    return(1L)
-  } else {
-    return(seq_along(args_list[[iter_var]]))
-  }
 }

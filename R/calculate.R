@@ -46,12 +46,10 @@ calculate_trisk_trajectory <- function(input_data_list,
       start_year = start_year
     )
 
-  merge_cols <- c("company_id" = "company_id")
-
   full_trajectory <- production_data %>%
     dplyr::inner_join(
       y = input_data_list$financial_data,
-      by = merge_cols
+      by = c("company_id")
     ) %>%
     stop_if_empty(data_name = "Production data joined with Financial data") %>%
     fill_annual_profit_cols()
