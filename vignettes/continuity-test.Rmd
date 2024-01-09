@@ -1,0 +1,91 @@
+---
+title: "continuity-test"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{continuity-test}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+```{r}
+# Set to FALSE if modifications in the code are expected to alter the model results 
+# compared to the results obtained with the master branch
+# If set to FALSE to merge a PR, the merge should then be followed by a 
+# reactivation PR setting this value back to TRUE.
+USE_AS_TEST <- TRUE 
+```
+
+
+# Get ST results from current branch
+
+```{r setup}
+library(r2dii.climate.stress.test)
+library(dplyr)
+```
+
+```{r message=FALSE}
+st_results_branch <- run_trisk(input_path = here::here("tests","testthat","test_data","ST_INPUTS_DEV"), output_path = tempdir(), return_results = TRUE)
+```
+
+# Uninstall current branch and install ST from master branch
+
+```{r message=FALSE}
+remove.packages("r2dii.climate.stress.test")
+devtools::install_github("2DegreesInvesting/r2dii.climate.stress.test", upgrade = "never")
+```
+
+# Get ST results from master branch
+
+```{r setup}
+library(r2dii.climate.stress.test)
+```
+
+
+```{r message=FALSE}
+st_results_master<- run_trisk(input_path = here::here("tests","testthat","test_data","ST_INPUTS_DEV"), output_path = tempdir(), return_results = TRUE)
+```
+# Compare results
+
+```{r}
+
+st_crispy_comparison <- dplyr::inner_join(
+  st_results_master$crispy_output %>%
+    select(
+      company_id,
+      company_name,
+      ald_sector,
+      ald_business_unit,
+      net_present_value_baseline,
+      net_present_value_shock,
+      pd_baseline,
+      pd_shock
+    )
+  ,
+  st_results_branch$crispy_output %>%     
+    select(
+      company_id,
+      company_name,
+      ald_sector,
+      ald_business_unit,
+      net_present_value_baseline,
+      net_present_value_shock,
+      pd_baseline,
+      pd_shock
+    )
+)
+
+if (USE_AS_TEST){
+  st_crispy_comparison %>%
+    assertr::verify(nrow(.) == nrow(st_results_master$crispy_output))
+}
+
+```
+

@@ -46,7 +46,8 @@ Suggests:
     rmarkdown,
     r2dii.plot,
     testthat (>= 3.0.0),
-    spelling
+    spelling,
+    knitr
 Config/testthat/edition: 3
 Encoding: UTF-8
 LazyData: true
@@ -54,3 +55,4 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 URL: https://2degreesinvesting.github.io/r2dii.climate.stress.test
 Language: en-US
+VignetteBuilder: knitr
