@@ -56,16 +56,16 @@ set_baseline_trajectory <- function(data,
     ) %>%
     dplyr::mutate(
       # compute per group the cumulative sum of the scenario change derivatives at each year
-      cumsum_scenario_change = cumsum(.data$scenario_change),
       # add the cumsum to the input production , so that the latest non-NA value is incremented
       # by the cumulative sum of all scenario change local derivative value
-      baseline=.data$baseline + .data$cumsum_scenario_change
+      baseline=.data$baseline + cumsum(.data$scenario_change)
     ) %>%
     dplyr::ungroup() %>%
     dplyr::mutate(
-      baseline = dplyr::if_else(.data$baseline < 0, 0, .data$baseline)
+      baseline = dplyr::if_else(.data$baseline < 0, 0, .data$baseline),
+      baseline_change=.data$scenario_change
     ) %>%
-    dplyr::select(-dplyr::all_of(c("scenario_change", "scen_to_follow", "cumsum_scenario_change")))
+    dplyr::select(-dplyr::all_of(c("scenario_change", "scen_to_follow")))
 
   return(data)
 }
@@ -95,10 +95,15 @@ set_baseline_trajectory <- function(data,
 #' @family scenario definition
 #'
 #' @return numeric vector
-calc_future_prod_follows_scen <- function(data,
-                                          planned_prod = .data$plan_tech_prod,
-                                          scenario_change = .data$scenario_change) {
+calc_future_prod_follows_scen <- function(planned_prod = .data$plan_tech_prod,
+                                          change_scen_prod = .data$scenario_change) {
+  first_production_na <- which(is.na(planned_prod))[1]
 
+  for (i in seq(first_production_na, length(planned_prod))) {
+    planned_prod[i] <- planned_prod[i - 1] + change_scen_prod[i]
+  }
+
+  planned_prod
 }
 
 #' Defines which scenario values to use for the late & sudden trajectory in the

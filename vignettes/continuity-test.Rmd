@@ -21,6 +21,11 @@ knitr::opts_chunk$set(
 # If set to FALSE to merge a PR, the merge should then be followed by a 
 # reactivation PR setting this value back to TRUE.
 USE_AS_TEST <- FALSE 
+
+
+# Default input folder is the test data
+# ST_INPUTS_FOLDER <- fs::path("..","tests","testthat","test_data","ST_INPUTS_DEV")
+ST_INPUTS_FOLDER <- fs::path("..","workspace","st_inputs_sampled")
 ```
 
 
@@ -32,7 +37,7 @@ library(ggplot2)
 library(tidyr)
 library(scales)
 
-if ("r2dii.climate.stress.test" %in% installed.packages()){
+if (requireNamespace("r2dii.climate.stress.test", quietly = TRUE)){
   remove.packages("r2dii.climate.stress.test")
 }
 devtools::install(upgrade="never")
@@ -40,7 +45,7 @@ library(r2dii.climate.stress.test)
 ```
 
 ```{r message=FALSE}
-st_results_branch <- r2dii.climate.stress.test::run_trisk(input_path = fs::path("..", "tests","testthat","test_data","ST_INPUTS_DEV"), output_path = tempdir(), return_results = TRUE)
+st_results_branch <- r2dii.climate.stress.test::run_trisk(input_path = ST_INPUTS_FOLDER, output_path = tempdir(), return_results = TRUE)
 ```
 
 # Uninstall current branch and install ST from master branch
@@ -59,7 +64,7 @@ library(r2dii.climate.stress.test)
 
 
 ```{r message=FALSE}
-st_results_master<- r2dii.climate.stress.test::run_trisk(input_path = fs::path("..","tests","testthat","test_data","ST_INPUTS_DEV"), output_path = tempdir(), return_results = TRUE)
+st_results_master<- r2dii.climate.stress.test::run_trisk(input_path = ST_INPUTS_FOLDER, output_path = tempdir(), return_results = TRUE)
 ```
 # Compare results
 
