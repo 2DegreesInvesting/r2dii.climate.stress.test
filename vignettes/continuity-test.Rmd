@@ -37,12 +37,14 @@ library(ggplot2)
 library(tidyr)
 library(scales)
 library(purrr)
-library(r2dii.climate.stress.test)
 ```
 
 
 ```{r}
 if ("r2dii.climate.stress.test" %in% installed.packages()){
+  if (requireNamespace("package_name", quietly = TRUE)) {
+    detach("package:r2dii.climate.stress.test", unload=TRUE)
+  }
   remove.packages("r2dii.climate.stress.test")
 }
 devtools::install(upgrade="never")
@@ -229,8 +231,8 @@ process_and_plot <- function(root) {
 
   # Select the top 10 RMSEs
   top_rmse <- rmse %>%
-    arrange(desc(RMSE)) %>%
-    slice_head(n = 5)
+    arrange(desc(RMSE), company_id) %>%
+    slice_head(n = 6)
 
   # Join with original data to get values for plotting
   plot_data <- mix %>%

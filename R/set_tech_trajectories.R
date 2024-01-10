@@ -286,7 +286,8 @@ calc_late_sudden_traj <- function(start_year, end_year, year_of_shock, duration_
   # calculate the position where the shock kicks in
   position_shock_year <- year_of_shock - start_year + 1
 
-  na_range_to_shockyear <- which(is.na(late_sudden[1:position_shock_year]))
+  # get the NA indexes of values from last known planned prodcucion to the shock year
+  na_range_to_shockyear <- which(is.na(planned_prod[1:position_shock_year]))
 
   if (length(na_range_to_shockyear) > 0) {
     # if this is true, then there are NA's in the period after the company prod
@@ -340,7 +341,7 @@ calc_late_sudden_traj <- function(start_year, end_year, year_of_shock, duration_
     # negative production adjustment: if shock production goes below 0
     # then this and future production stays constant at 0.
 
-    first_production_na <- which(is.na(late_sudden))[1]
+    first_production_na <- which(is.na(planned_prod))[1]
 
     # Calculate the cumulative sum starting from first_production_na
     cumulsum_change_aligned <- cumsum(scenario_change_aligned[first_production_na:length(scenario_change_aligned)])
