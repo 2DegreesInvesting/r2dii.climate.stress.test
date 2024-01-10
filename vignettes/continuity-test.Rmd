@@ -41,7 +41,7 @@ library(purrr)
 
 ```{r}
 if (!"devtools" %in% installed.packages()){
-  install.packages("devtools")
+  install.packages("devtools", repos = "http://cran.us.r-project.org")
 }
 ```
 
