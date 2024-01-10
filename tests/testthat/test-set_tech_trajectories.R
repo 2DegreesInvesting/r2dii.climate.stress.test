@@ -50,7 +50,7 @@ test_that("set_baseline_trajectories replicates provided production trajectory
 })
 
 
-test_that("calc_future_prod_follows_scen sets baseline values to prod forecast
+test_that("set_baseline_trajectory sets baseline values to prod forecast
           for the forecast period", {
   test_data_calc_future_prod <- read_test_data("data_calc_future_prod.csv")
 

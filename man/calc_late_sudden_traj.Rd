@@ -13,7 +13,7 @@ calc_late_sudden_traj(
   shock_strength,
   scen_to_follow,
   planned_prod,
-  late_and_sudden,
+  late_sudden,
   scenario_change,
   scenario_change_baseline,
   scenario_change_aligned,
@@ -52,11 +52,6 @@ the analysis, which means that in most cases, this vector will include NAs
 after the final forecast year. This usually comes from a PACTA analysis.
 TODO: (move to data argument)}
 
-\item{late_and_sudden}{Numeric. A numeric vector that contains the
-late & sudden production trajectory for the company/ald_business_unit at hand.
-Before applying the shock, this follows the baseline scenario.
-TODO: (move to data argument)}
-
 \item{scenario_change}{Numeric. A numeric vector that contains the
 absolute changes of the target scenario in yearly steps for the
 company/ald_business_unit at hand.
@@ -80,6 +75,11 @@ TODO: (move to data argument)}
 
 \item{time_frame}{Numeric. A vector of length 1 indicating the number of years
 for which forward looking production data is considered.}
+
+\item{late_and_sudden}{Numeric. A numeric vector that contains the
+late & sudden production trajectory for the company/ald_business_unit at hand.
+Before applying the shock, this follows the baseline scenario.
+TODO: (move to data argument)}
 }
 \value{
 numeric vector

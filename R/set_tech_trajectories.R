@@ -71,41 +71,6 @@ set_baseline_trajectory <- function(data,
 }
 
 
-#' Calculates the production trajectory in case the initial production plans
-#' are to be included.
-#'
-#' @description
-#' In this case, the production trajectory between the
-#' end of the actual production forecast and the end of the analysis need to
-#' be recalculated. They follow the initial baseline scenario, offset by the
-#' production plans.
-#'
-#' @param planned_prod Numeric vector that includes the production plans for a
-#'   company or (aggregated) ald_business_unit to be included. The length of the vector
-#'   for each company is from the start year of the analysis to the end year of
-#'   the analysis, which means that in most cases, this vector will include NAs
-#'   after the final forecast year. This usually comes from a PACTA analysis.
-#' @param change_scen_prod Numeric vector that contains the absolute changes of
-#'   the production trajectories according to the baseline scenario. After the
-#'   end of the production forecast period (i.e. the first NA in planned_prod),
-#'   the planned production is extended until the end of the analysis period
-#'   using these absolute changes. This results in an offset that is a parallel
-#'   shift relative to the original baseline scenario.
-#'
-#' @family scenario definition
-#'
-#' @return numeric vector
-calc_future_prod_follows_scen <- function(planned_prod = .data$plan_tech_prod,
-                                          change_scen_prod = .data$scenario_change) {
-  first_production_na <- which(is.na(planned_prod))[1]
-
-  for (i in seq(first_production_na, length(planned_prod))) {
-    planned_prod[i] <- planned_prod[i - 1] + change_scen_prod[i]
-  }
-
-  planned_prod
-}
-
 #' Defines which scenario values to use for the late & sudden trajectory in the
 #' stress test.
 #'
@@ -321,11 +286,9 @@ calc_late_sudden_traj <- function(start_year, end_year, year_of_shock, duration_
   # calculate the position where the shock kicks in
   position_shock_year <- year_of_shock - start_year + 1
 
-  na_range <- which(is.na(late_sudden[1:position_shock_year]))
-  # first position for which future production is unknown
-  first_production_na <- na_range[1]
+  na_range_to_shockyear <- which(is.na(late_sudden[1:position_shock_year]))
 
-  if (length(na_range) > 0) {
+  if (length(na_range_to_shockyear) > 0) {
     # if this is true, then there are NA's in the period after the company prod
     # forecasts and the shock period
     # i.e. we need to fill the values between the last year we have production
@@ -334,11 +297,14 @@ calc_late_sudden_traj <- function(start_year, end_year, year_of_shock, duration_
     # until 2024, we need to calculate L&S production for 2025 (we follow
     # baseline as it is the late & sudden scen)
 
+    # first position for which future production before shock year is unknown
+    first_production_na_sy <- na_range_to_shockyear[1]
+
     # Calculate the cumulative sum for the scenario_change_baseline
     # Update the late_and_sudden values
-    late_sudden[first_production_na:position_shock_year] <-
-      late_sudden[first_production_na - 1] +
-      cumsum(scenario_change_baseline)[first_production_na:position_shock_year]
+    late_sudden[first_production_na_sy:position_shock_year] <-
+      late_sudden[first_production_na_sy - 1] +
+      cumsum(scenario_change_baseline)[first_production_na_sy:position_shock_year]
   }
 
   # integral/overshoot compensation method
@@ -374,13 +340,26 @@ calc_late_sudden_traj <- function(start_year, end_year, year_of_shock, duration_
     # negative production adjustment: if shock production goes below 0
     # then this and future production stays constant at 0.
 
-    for (k in seq(first_production_na, length(scen_to_follow))) {
-      late_sudden[k] <- late_sudden[k - 1] + scenario_change_aligned[k]
-      if (late_sudden[k] < 0) {
-        late_sudden[k:length(late_sudden)] <- 0
-        break
-      }
+    first_production_na <- which(is.na(late_sudden))[1]
+
+    # Calculate the cumulative sum starting from first_production_na
+    cumulsum_change_aligned <- cumsum(scenario_change_aligned[first_production_na:length(scenario_change_aligned)])
+
+    # Add the last non-NA value of late_sudden to the cumulative sum
+    last_value_before_na <- late_sudden[first_production_na - 1]
+    cumulsum_change_aligned <- last_value_before_na + cumulsum_change_aligned
+
+    # Find the first index where cumulative sum becomes negative
+    first_negative_index <- which(cumulsum_change_aligned < 0)[1]
+
+    # If there is a negative value, set all subsequent values to 0
+    if (!is.na(first_negative_index)) {
+      cumulsum_change_aligned[first_negative_index:length(cumulsum_change_aligned)] <- 0
     }
+
+    # Update late_sudden vector
+    late_sudden[first_production_na:length(late_sudden)] <- cumulsum_change_aligned
+
   }
   return(late_sudden)
 }
