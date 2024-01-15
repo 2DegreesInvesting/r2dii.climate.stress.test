@@ -21,6 +21,11 @@ knitr::opts_chunk$set(
 # If set to FALSE to merge a PR, the merge should then be followed by a 
 # reactivation PR setting this value back to TRUE.
 USE_AS_TEST <- FALSE 
+
+
+# Default input folder is the test data
+# ST_INPUTS_FOLDER <- fs::path("..","tests","testthat","test_data","ST_INPUTS_DEV")
+ST_INPUTS_FOLDER <- fs::path("..","tests","testthat", "test_data", "ST_INPUTS_DEV")
 ```
 
 
@@ -31,16 +36,30 @@ library(dplyr)
 library(ggplot2)
 library(tidyr)
 library(scales)
+library(purrr)
+```
 
+```{r}
+if (!"devtools" %in% installed.packages()){
+  install.packages("devtools", repos = "http://cran.us.r-project.org")
+}
+```
+
+
+```{r}
 if ("r2dii.climate.stress.test" %in% installed.packages()){
+  if (requireNamespace("package_name", quietly = TRUE)) {
+    detach("package:r2dii.climate.stress.test", unload=TRUE)
+  }
   remove.packages("r2dii.climate.stress.test")
 }
 devtools::install(upgrade="never")
 library(r2dii.climate.stress.test)
 ```
 
+
 ```{r message=FALSE}
-st_results_branch <- r2dii.climate.stress.test::run_trisk(input_path = fs::path("..", "tests","testthat","test_data","ST_INPUTS_DEV"), output_path = tempdir(), return_results = TRUE)
+st_results_branch <- r2dii.climate.stress.test::run_trisk(input_path = ST_INPUTS_FOLDER, output_path = tempdir(), return_results = TRUE)
 ```
 
 # Uninstall current branch and install ST from master branch
@@ -59,7 +78,7 @@ library(r2dii.climate.stress.test)
 
 
 ```{r message=FALSE}
-st_results_master<- r2dii.climate.stress.test::run_trisk(input_path = fs::path("..","tests","testthat","test_data","ST_INPUTS_DEV"), output_path = tempdir(), return_results = TRUE)
+st_results_master<- r2dii.climate.stress.test::run_trisk(input_path = ST_INPUTS_FOLDER, output_path = tempdir(), return_results = TRUE)
 ```
 # Compare results
 
@@ -101,7 +120,7 @@ if (USE_AS_TEST) {
 }
 
 ```
-# Inquire
+# Investigate crispy differences
 
 ```{r}
 mix <- dplyr::inner_join(old_crispy, new_crispy, by=c("company_id", "company_name", "ald_sector", "ald_business_unit", "term"))
@@ -150,6 +169,117 @@ ggplot(long_df, aes(x = value, fill = variable)) +
   labs(title = "Distribution of '_diff' Columns", x = "Value (Scientific Notation)", y = "Count") +
   theme(legend.position = "none",
         axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+
+
+
+# Investigate trajectories differences
+
+```{r}
+new_trajectories <- st_results_branch$company_trajectories %>%
+  select(
+    company_id,
+    company_name,
+    ald_sector,
+    ald_business_unit,
+    year,
+    production_plan_company_technology,
+    production_baseline_scenario,
+    production_target_scenario,
+    production_shock_scenario
+  )
+
+old_trajectories <- st_results_master$company_trajectories %>%
+  select(
+    company_id,
+    company_name,
+    ald_sector,
+    ald_business_unit,
+    year,
+    production_plan_company_technology,
+    production_baseline_scenario,
+    production_target_scenario,
+    production_shock_scenario
+    )
+
+
+mix <- dplyr::inner_join(old_trajectories, new_trajectories, by=dplyr::join_by(    company_id,
+    company_name,
+    ald_sector,
+    ald_business_unit,
+    year))
+
+```
+
+### Define functions
+
+```{r}
+
+# Assuming your dataframe is named mix
+
+# Function to compute RMSE
+compute_rmse <- function(x, y) {
+  sqrt(mean((x - y)^2, na.rm = TRUE))
+}
+
+# Function to process and plot data for each root
+process_and_plot <- function(root) {
+  x_col <- paste0(root, ".x")
+  y_col <- paste0(root, ".y")
+  
+  # Compute RMSE
+  rmse <- mix %>%
+    select(company_id, company_name, ald_sector, ald_business_unit, year, x_col, y_col) %>%
+    group_by(company_id, company_name, ald_sector, ald_business_unit) %>%
+    summarise(RMSE = compute_rmse(!!sym(x_col), !!sym(y_col)), .groups = "drop") %>%
+    mutate(root = root)
+
+  # Select the top 10 RMSEs
+  top_rmse <- rmse %>%
+    arrange(desc(RMSE), company_id) %>%
+    slice_head(n = 6)
+
+  # Join with original data to get values for plotting
+  plot_data <- mix %>%
+      pivot_longer(cols = -c(company_id, company_name, ald_sector, ald_business_unit, year),
+                 names_to = c("root", "set"), names_pattern = "(.*)\\.(.*)") %>%
+    filter(.data$root == root) %>%
+    inner_join(top_rmse, by = c("company_id", "company_name", "ald_sector", "ald_business_unit", "root"))
+
+  # Plotting
+  p <- ggplot(plot_data, aes(x = year, y = value, group = set, color = set)) +
+    geom_line() +
+    facet_wrap(~ company_id + company_name + ald_sector + ald_business_unit + root, scales = "free_y") +
+    labs(title = paste("Top 10 RMSE for", root, "- by Group"), x = "Year", y = "Value") +
+    theme_minimal()
+
+  return(p)
+}
+
+```
+
+### plot most different trajectories
+
+```{r, fig.height=6, fig.width=9}
+process_and_plot("production_plan_company_technology")
+```
+
+
+```{r, fig.height=6, fig.width=9}
+process_and_plot("production_baseline_scenario")
+```
+
+
+
+```{r, fig.height=6, fig.width=9}
+process_and_plot("production_target_scenario")
+```
+
+
+
+```{r, fig.height=6, fig.width=9}
+process_and_plot("production_shock_scenario")
 ```
 
 
