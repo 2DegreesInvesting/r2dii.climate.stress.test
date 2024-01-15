@@ -1,18 +1,6 @@
 # FIXME: Add tests and documentation
 
 
-# FIXME: can probably be removed
-f <- function(shock_strength_calc) {
-  sum(scen_to_follow[1:(position_shock_year + duration_of_shock - 1)]) -
-    sum(late_and_sudden[1:(position_shock_year - 1)]) -
-    late_and_sudden[position_shock_year - 1] * sum(seq(1, duration_of_shock)) * sum(seq(1, duration_of_shock)) * (100 - shock_strength_calc / 100) -
-    (length(late_and_sudden) - (position_shock_year + duration_of_shock) + 1) *
-      (scen_to_follow[duration_of_shock + position_shock_year - 1] -
-        late_and_sudden[position_shock_year - 1] * (100 + duration_of_shock * shock_strength_calc) / 100)
-}
-
-
-
 # LATE AND SUDDEN PRICES ----------------------------------------
 
 late_sudden_prices <- function(target_price,
@@ -38,20 +26,6 @@ join_price_data <- function(df, df_prices) {
     dplyr::inner_join(df_prices, by = c("ald_business_unit", "ald_sector", "year"))
 }
 
-dcf_model_techlevel <- function(data, discount_rate) {
-  # TODO IS THIS FUNCTION STILL IN USE ?
-
-  # Calculates the annual discounted net profits on technology level
-  data %>%
-    dplyr::group_by(investor_name, portfolio_name, id, company_name, ald_sector, ald_business_unit, scenario_geography) %>%
-    dplyr::mutate(
-      t_calc = seq(0, (dplyr::n() - 1)),
-      discounted_net_profit_baseline = net_profits_baseline / (1 + discount_rate)^t_calc,
-      discounted_net_profit_ls = net_profits_ls / (1 + discount_rate)^t_calc
-    ) %>%
-    dplyr::select(-t_calc) %>%
-    dplyr::ungroup()
-}
 
 # run basic portfolio data consistency checks that are required for further data processing
 check_portfolio_consistency <- function(df, start_year) {

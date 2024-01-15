@@ -92,7 +92,7 @@ generate_litigation_shocks <- function(start_of_analysis,
   data <- tibble::tibble(
     year_of_shock = shock_year,
     scenario_name = glue::glue("SCC_{year_of_shock}"),
-    duration_of_shock = end_of_analysis - year_of_shock + 1,
+    duration_of_shock = end_of_analysis - shock_year + 1,
     scc = scc,
     exp_share_damages_paid = exp_share_damages_paid
   )
