@@ -1,14 +1,18 @@
-#' Title
+#' Process input ST data
+#'
+#' @description
+#' Preprocess the input data before applying the ST model
 #'
 #' @param data trisk loaded data
-#' @inheritParams scenario_geography
-#' @inheritParams baseline_scenario
-#' @inheritParams shock_scenario
-#' @inheritParams sectors_and_technologies_list
-#' @inheritParams start_year
-#' @inheritParams carbon_price_model
-#' @inheritParams end_year
-#' @inheritParams carbon_price_model
+#' @param scenario_geography scenario_geography
+#' @param baseline_scenario baseline_scenario
+#' @param shock_scenario shock_scenario
+#' @param sectors_and_technologies_list sectors_and_technologies_list
+#' @param start_year start_year
+#' @param carbon_price_model carbon_price_model
+#' @param end_year end_year
+#' @param carbon_price_model carbon_price_model
+#' @param log_path log_path
 #'
 #' @return processed input trisk data
 #'

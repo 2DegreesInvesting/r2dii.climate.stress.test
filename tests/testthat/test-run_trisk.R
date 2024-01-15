@@ -22,6 +22,9 @@ test_that("without iteration, using minimum values of input arguments output is 
     )
   )))
 
+  results$crispy_output <- results$crispy_output |> dplyr::select(-c(.data$run_id))
+  results$company_trajectories <- results$company_trajectories |> dplyr::select(-c(.data$run_id))
+
   expect_snapshot(lapply(results, as.data.frame))
 })
 
@@ -35,7 +38,7 @@ test_that("without iteration, using maximum values of input arguments output is 
   out <- tempfile()
   fs::dir_create(out)
 
-
+  suppressed_console_output <- suppressWarnings(suppressMessages(capture.output(
   results <- run_trisk(
     input_path = in_agnostic,
     output_path = out,
@@ -48,7 +51,10 @@ test_that("without iteration, using maximum values of input arguments output is 
     shock_year = get_st_argument("shock_year", "max"),
     return_results = TRUE
   )
+  )))
 
+  results$crispy_output <- results$crispy_output |> dplyr::select(-c(.data$run_id))
+  results$company_trajectories <- results$company_trajectories |> dplyr::select(-c(.data$run_id))
 
   expect_snapshot(lapply(results, as.data.frame))
 })

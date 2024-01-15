@@ -2,7 +2,7 @@
 % Please edit documentation in R/process_data.R
 \name{st_process_agnostic}
 \alias{st_process_agnostic}
-\title{Title}
+\title{Process input ST data}
 \usage{
 st_process_agnostic(
   data,
@@ -18,10 +18,26 @@ st_process_agnostic(
 }
 \arguments{
 \item{data}{trisk loaded data}
+
+\item{scenario_geography}{scenario_geography}
+
+\item{baseline_scenario}{baseline_scenario}
+
+\item{shock_scenario}{shock_scenario}
+
+\item{sectors_and_technologies_list}{sectors_and_technologies_list}
+
+\item{start_year}{start_year}
+
+\item{carbon_price_model}{carbon_price_model}
+
+\item{end_year}{end_year}
+
+\item{log_path}{log_path}
 }
 \value{
 processed input trisk data
 }
 \description{
-Title
+Preprocess the input data before applying the ST model
 }

@@ -248,7 +248,7 @@ set_trisk_trajectory <- function(data,
 #'   the analysis, which means that in most cases, this vector will include NAs
 #'   after the final forecast year. This usually comes from a PACTA analysis.
 #'   TODO: (move to data argument)
-#' @param late_and_sudden Numeric. A numeric vector that contains the
+#' @param late_sudden Numeric. A numeric vector that contains the
 #'   late & sudden production trajectory for the company/ald_business_unit at hand.
 #'   Before applying the shock, this follows the baseline scenario.
 #'   TODO: (move to data argument)
