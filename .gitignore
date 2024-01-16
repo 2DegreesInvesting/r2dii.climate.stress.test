@@ -51,3 +51,4 @@ tests/testthat/_snaps/run_trisk*
 tests/testthat/_snaps/run_lrisk*
 data-test/
 .vscode
+inst/doc
