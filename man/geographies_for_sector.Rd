@@ -4,13 +4,10 @@
 \alias{geographies_for_sector}
 \title{Obtain available geographies for sector}
 \usage{
-geographies_for_sector(sector, overview = scenario_geography_x_ald_sector)
+geographies_for_sector(sector)
 }
 \arguments{
 \item{sector}{String of length 1 holding sector name.}
-
-\item{overview}{A tibble holding valid combinations of \code{scenario_geography}
-and \code{ald_sector}.}
 }
 \value{
 A string vector holding supported scenario_geographies.

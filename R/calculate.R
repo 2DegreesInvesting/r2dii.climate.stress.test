@@ -214,7 +214,7 @@ subtract_settlement <- function(data,
     dplyr::ungroup() %>%
     dplyr::mutate(
       net_profits_ls = dplyr::if_else(
-        year == .env$shock_year,
+        .data$year == .env$shock_year,
         .data$net_profits_ls - .data$settlement,
         .data$net_profits_ls
       )

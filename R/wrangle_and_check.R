@@ -78,16 +78,16 @@ check_financial_data <- function(financial_data,
 fill_annual_profit_cols <- function(annual_profits) {
   annual_profits_filled <- annual_profits %>%
     dplyr::arrange(
-      scenario_name, scenario_geography, company_id, company_name, ald_sector, ald_business_unit, year
+      .data$scenario_name, .data$scenario_geography, .data$company_id, .data$company_name, .data$ald_sector, .data$ald_business_unit, .data$year
     ) %>%
     dplyr::group_by(
-      scenario_name, scenario_geography, company_id, company_name, ald_sector, ald_business_unit
+      .data$scenario_name, .data$scenario_geography, .data$company_id, .data$company_name, .data$ald_sector, .data$ald_business_unit
     ) %>%
     # NOTE: this assumes emissions factors stay constant after forecast and prod not continued
     tidyr::fill(
       # TODO: what is company_id even doing here?
       # company_id,
-      pd, net_profit_margin, debt_equity_ratio, volatility,
+      .data$pd, .data$net_profit_margin, .data$debt_equity_ratio, .data$volatility,
       .direction = "down"
     ) %>%
     dplyr::ungroup()

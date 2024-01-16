@@ -474,6 +474,8 @@ stop_if_empty <- function(data, data_name) {
 #' @return A list with entries sectors and technologies
 #' @noRd
 infer_sectors_and_technologies <- function(baseline_scenario, shock_scenario, scenario_geography) {
+  data("scenario_geography_x_ald_sector", package="r2dii.climate.stress.test", envir = environment())
+
   sectors_baseline <- scenario_geography_x_ald_sector %>%
     dplyr::filter(.data$scenario == !!baseline_scenario & .data$scenario_geography == !!scenario_geography) %>%
     dplyr::pull(.data$ald_sector)
