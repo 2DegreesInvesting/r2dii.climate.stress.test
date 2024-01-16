@@ -76,33 +76,13 @@ validate_input_values <- function(baseline_scenario, shock_scenario, scenario_ge
 #'
 #' @return NULL
 validate_values_in_values <- function(var, args_list) {
-  data("stress_test_arguments", package="r2dii.climate.stress.test", envir = environment())
+  data("stress_test_arguments_combinations", package="r2dii.climate.stress.test", envir = environment())
 
-  arg_type <- stress_test_arguments %>%
-    dplyr::filter(.data$name == .env$var) %>%
-    dplyr::pull(.data$type)
-
-  allowed_values <- stress_test_arguments %>%
-    dplyr::filter(.data$name == .env$var) %>%
-    dplyr::pull(.data$allowed) %>%
-    strsplit(",") %>%
-    purrr::pluck(1) %>%
-    purrr::map_chr(trimws) # FIXME: configure in stress_test_arguments without whitespace
+  allowed_values <- stress_test_arguments_combinations %>%
+    dplyr::distinct(!!rlang::sym(var)) %>%
+    dplyr::pull()
 
   arg_val <- get(var, args_list)
-
-  if (arg_type == "logical") {
-    allowed_values <- as.logical(allowed_values)
-    if (!is.logical(arg_val)) {
-      rlang::abort(
-        c(
-          glue::glue("Must provide valid data type for variable {var}."),
-          x = glue::glue("Invalid type: {typeof(arg_val)}."),
-          i = glue::glue("Valid type is: logical.")
-        )
-      )
-    }
-  }
 
   if (!all(arg_val %in% allowed_values)) {
     arg_vals_invalid <- arg_val[!(arg_val %in% allowed_values)]
@@ -130,14 +110,14 @@ validate_values_in_values <- function(var, args_list) {
 validate_values_in_range <- function(var, args_list) {
   data("stress_test_arguments", package="r2dii.climate.stress.test", envir = environment())
 
-  min <- stress_test_arguments %>%
+  min <- stress_test_arguments_numeric %>%
     dplyr::filter(.data$name == .env$var) %>%
     dplyr::pull(.data$min) %>%
     as.numeric()
 
   stopifnot(length(min) == 1)
 
-  max <- stress_test_arguments %>%
+  max <- stress_test_arguments_numeric %>%
     dplyr::filter(.data$name == .env$var) %>%
     dplyr::pull(.data$max) %>%
     as.numeric()
