@@ -194,10 +194,6 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars, risk_type) 
     )
 
 
-
-
-
-
   if (risk_type == "lrisk") {
     select_cols <- c(merge_by_cols, "ald_business_unit", "company_is_litigated", "settlement")
     crispy_output <- crispy_output %>%
@@ -234,7 +230,7 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars, risk_type) 
       shock_scenario = .data$shock_scenario_arg,
       lgd = .data$lgd_arg,
       discount_rate = .data$discount_rate_arg,
-      dividend_rate = .data$div_netprofit_prop_coef_arg,
+      div_netprofit_prop_coef = .data$div_netprofit_prop_coef_arg,
       growth_rate = .data$growth_rate_arg,
       shock_year = .data$shock_year_arg,
       net_present_value_baseline = .data$total_disc_npv_baseline,
@@ -255,7 +251,7 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars, risk_type) 
         .data$company_name, .data$ald_sector, .data$ald_business_unit,
         .data$roll_up_type, .data$scenario_geography,
         .data$baseline_scenario, .data$shock_scenario, .data$lgd,
-        .data$risk_free_rate, .data$discount_rate, .data$dividend_rate,
+        .data$risk_free_rate, .data$discount_rate, .data$div_netprofit_prop_coef,
         .data$growth_rate, .data$scc, .data$settlement_factor,
         .data$exp_share_damages_paid, .data$shock_year,
         .data$net_present_value_baseline,
@@ -269,7 +265,7 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars, risk_type) 
         .data$company_id, .data$company_name, .data$ald_sector, .data$ald_business_unit,
         .data$roll_up_type, .data$scenario_geography,
         .data$baseline_scenario, .data$shock_scenario, .data$lgd,
-        .data$risk_free_rate, .data$discount_rate, .data$dividend_rate,
+        .data$risk_free_rate, .data$discount_rate, .data$div_netprofit_prop_coef,
         .data$carbon_price_model, .data$market_passthrough,
         .data$financial_stimulus,
         .data$growth_rate, .data$shock_year, .data$net_present_value_baseline,
@@ -321,7 +317,7 @@ check_results <- function(wrangled_results_list, sensitivity_analysis_vars, risk
   composite_unique_cols_crispy_results <- c(
     "company_name", "ald_sector", "ald_business_unit", "roll_up_type",
     "scenario_geography", "baseline_scenario", "shock_scenario", "lgd",
-    "risk_free_rate", "discount_rate", "dividend_rate", "growth_rate",
+    "risk_free_rate", "discount_rate", "div_netprofit_prop_coef", "growth_rate",
     "shock_year", "term"
   )
 
