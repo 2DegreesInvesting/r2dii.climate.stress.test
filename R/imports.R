@@ -7,5 +7,6 @@
 NULL
 globalVariables(c(
   "scenario_geography_x_ald_sector",
-  "stress_test_arguments"
+  "stress_test_arguments_combinations",
+  "stress_test_arguments_numeric"
 ))
