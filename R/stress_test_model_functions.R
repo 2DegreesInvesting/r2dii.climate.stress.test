@@ -1,18 +1,6 @@
 # FIXME: Add tests and documentation
 
 
-# FIXME: can probably be removed
-f <- function(shock_strength_calc) {
-  sum(scen_to_follow[1:(position_shock_year + duration_of_shock - 1)]) -
-    sum(late_and_sudden[1:(position_shock_year - 1)]) -
-    late_and_sudden[position_shock_year - 1] * sum(seq(1, duration_of_shock)) * sum(seq(1, duration_of_shock)) * (100 - shock_strength_calc / 100) -
-    (length(late_and_sudden) - (position_shock_year + duration_of_shock) + 1) *
-      (scen_to_follow[duration_of_shock + position_shock_year - 1] -
-        late_and_sudden[position_shock_year - 1] * (100 + duration_of_shock * shock_strength_calc) / 100)
-}
-
-
-
 # LATE AND SUDDEN PRICES ----------------------------------------
 
 late_sudden_prices <- function(target_price,
@@ -38,20 +26,6 @@ join_price_data <- function(df, df_prices) {
     dplyr::inner_join(df_prices, by = c("ald_business_unit", "ald_sector", "year"))
 }
 
-dcf_model_techlevel <- function(data, discount_rate) {
-  # TODO IS THIS FUNCTION STILL IN USE ?
-
-  # Calculates the annual discounted net profits on technology level
-  data %>%
-    dplyr::group_by(investor_name, portfolio_name, id, company_name, ald_sector, ald_business_unit, scenario_geography) %>%
-    dplyr::mutate(
-      t_calc = seq(0, (dplyr::n() - 1)),
-      discounted_net_profit_baseline = net_profits_baseline / (1 + discount_rate)^t_calc,
-      discounted_net_profit_ls = net_profits_ls / (1 + discount_rate)^t_calc
-    ) %>%
-    dplyr::select(-t_calc) %>%
-    dplyr::ungroup()
-}
 
 # run basic portfolio data consistency checks that are required for further data processing
 check_portfolio_consistency <- function(df, start_year) {
@@ -75,21 +49,21 @@ check_price_consistency <- function(df, start_year) {
 
 check_scenario_availability <- function(portfolio, scen_data, scenarios = scenarios) {
   # check that scenarios in portfolio are allowed
-  if (!all(portfolio %>% dplyr::pull(scenario) %>% unique() %in% scenarios)) {
+  if (!all(portfolio %>% dplyr::pull(.data$scenario) %>% unique() %in% scenarios)) {
     stop(
       "Some scenarios in this data frame are not in the list allowed of scenarios.
       Please check!"
     )
   }
   # check that at least two allowed scenarios remain in portfolio
-  if (length(portfolio %>% dplyr::pull(scenario) %>% unique()) < 2) {
+  if (length(portfolio %>% dplyr::pull(.data$scenario) %>% unique()) < 2) {
     stop(
       "There are less than two allowed scenarios in the portfolio. Stress test
       requires at least two!"
     )
   }
   # check scenarios in portfolio correspond to scenarios in scen data
-  if (!all(portfolio %>% dplyr::pull(scenario) %>% unique() %in% (scen_data %>% dplyr::pull(scenario) %>% unique()))) {
+  if (!all(portfolio %>% dplyr::pull(.data$scenario) %>% unique() %in% (scen_data %>% dplyr::pull(.data$scenario) %>% unique()))) {
     stop(
       "Scenarios differ between portfolio and scenario trajectory data. Check if
       correct inputs were used."
@@ -99,7 +73,7 @@ check_scenario_availability <- function(portfolio, scen_data, scenarios = scenar
 
 # check if the imported scenario data covers every year within the timeframe of analysis
 check_scenario_timeframe <- function(scenario_data, start_year = start_year, end_year = end_year) {
-  if (!all(seq(start_year, end_year) %in% (scenario_data %>% dplyr::pull(year) %>% unique()))) {
+  if (!all(seq(start_year, end_year) %in% (scenario_data %>% dplyr::pull(.data$year) %>% unique()))) {
     stop(
       glue::glue(
         "Imported scenario data does not cover the full time frame of the

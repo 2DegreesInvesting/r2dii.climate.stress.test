@@ -5,15 +5,16 @@
 #' `scenario_geography_x_ald_sector` per default. In case `sector` is not
 #' available an error is thrown.
 #' @param sector String of length 1 holding sector name.
-#' @param overview A tibble holding valid combinations of `scenario_geography`
-#'   and `ald_sector`.
 #'
 #' @return A string vector holding supported scenario_geographies.
 #' @export
 #'
 #' @examples
 #' geographies_for_sector("Coal")
-geographies_for_sector <- function(sector, overview = scenario_geography_x_ald_sector) {
+geographies_for_sector <- function(sector) {
+  data("scenario_geography_x_ald_sector", package="r2dii.climate.stress.test", envir = environment())
+  overview <- scenario_geography_x_ald_sector
+
   if (length(sector) > 1) {
     rlang::abort(c(
       "Sector must be of length 1.",
@@ -56,8 +57,11 @@ geographies_for_sector <- function(sector, overview = scenario_geography_x_ald_s
 #' @export
 #'
 #' @examples scenario_for_sector_x_geography("Coal", "Europe")
-scenario_for_sector_x_geography <- function(sector, scenario_geography,
-                                            overview = scenario_geography_x_ald_sector) {
+scenario_for_sector_x_geography <- function(sector, scenario_geography) {
+  data("scenario_geography_x_ald_sector", package="r2dii.climate.stress.test", envir = environment())
+
+  overview <- scenario_geography_x_ald_sector
+
   if (length(sector) > 1) {
     rlang::abort(c(
       "Sector must be of length 1.",

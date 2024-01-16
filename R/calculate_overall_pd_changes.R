@@ -60,7 +60,7 @@ calculate_pd_change_overall <- function(data,
     ) %>%
     dplyr::select(-"debt_equity_ratio")
 
-  nesting_names <- c(colnames(data %>% dplyr::select(-term)))
+  nesting_names <- c(colnames(data %>% dplyr::select(-.data$term)))
 
   data <- data %>%
     # ADO 1943 - this remains set to 1:5 irrespective of the main input argument,

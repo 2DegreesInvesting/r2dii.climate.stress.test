@@ -4,19 +4,12 @@
 \alias{scenario_for_sector_x_geography}
 \title{Obtain available scenario_x_source for geography - sector combinations}
 \usage{
-scenario_for_sector_x_geography(
-  sector,
-  scenario_geography,
-  overview = scenario_geography_x_ald_sector
-)
+scenario_for_sector_x_geography(sector, scenario_geography)
 }
 \arguments{
 \item{sector}{String of length 1 holding sector name.}
 
 \item{scenario_geography}{String of length 1 holding sector name.}
-
-\item{overview}{A tibble holding valid combinations of \code{scenario_geography}
-and \code{ald_sector}.}
 }
 \value{
 A string holding valid scenario names.
