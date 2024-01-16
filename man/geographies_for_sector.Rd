@@ -8,9 +8,6 @@ geographies_for_sector(sector)
 }
 \arguments{
 \item{sector}{String of length 1 holding sector name.}
-
-\item{overview}{A tibble holding valid combinations of \code{scenario_geography}
-and \code{ald_sector}.}
 }
 \value{
 A string vector holding supported scenario_geographies.

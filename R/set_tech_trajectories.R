@@ -58,7 +58,7 @@ set_baseline_trajectory <- function(data,
     dplyr::group_by(.data$company_id, .data$company_name, .data$ald_sector, .data$ald_business_unit, .data$scenario_geography, .data$year) %>%
     dplyr::mutate(baseline_adj = dplyr::if_else(.data$baseline < 0 & dplyr::lag(.data$baseline, default = 0) >= 0, 0, .data$baseline)) %>%
     dplyr::ungroup() %>%
-    dplyr::select(-baseline) %>%
+    dplyr::select(-.data$baseline) %>%
     dplyr::rename(baseline = .data$baseline_adj)
 
   data <- data %>%

@@ -35,7 +35,7 @@ generate_transition_shocks <- function(start_of_analysis,
   data <- tibble::tibble(
     year_of_shock = shock_year,
     scenario_name = glue::glue("Carbon balance {year_of_shock}"),
-    duration_of_shock = end_of_analysis - year_of_shock + 1
+    duration_of_shock = end_of_analysis - .data$year_of_shock + 1
   )
 
   validate_data_has_expected_cols(
