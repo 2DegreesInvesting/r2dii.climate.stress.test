@@ -504,7 +504,7 @@ infer_sectors_and_technologies <- function(baseline_scenario, shock_scenario, sc
 }
 
 infer_scenario_type <- function(baseline_scenario, shock_scenario) {
-  if (grepl("NGFS2021", baseline_scenario) & grepl("NGFS2021", shock_scenario)) {
+  if (grepl("NGFS2022", baseline_scenario) & grepl("NGFS2022", shock_scenario)) {
     return("is_ngfs")
   }
 

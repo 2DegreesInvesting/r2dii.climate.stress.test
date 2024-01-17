@@ -108,7 +108,7 @@ validate_values_in_values <- function(var, args_list) {
 #'
 #' @return NULL
 validate_values_in_range <- function(var, args_list) {
-  data("stress_test_arguments", package="r2dii.climate.stress.test", envir = environment())
+  data("stress_test_arguments_numeric", package="r2dii.climate.stress.test", envir = environment())
 
   min <- stress_test_arguments_numeric %>%
     dplyr::filter(.data$name == .env$var) %>%
