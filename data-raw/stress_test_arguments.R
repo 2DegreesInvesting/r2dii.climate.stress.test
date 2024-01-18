@@ -1,6 +1,6 @@
 #styler: off
 
-stress_test_arguments_numeric <- tibble::tribble(
+stress_test_arguments <- tibble::tribble(
                       ~name,       ~type,        ~default,                                                                                                                                                                                                                                                                                                                                                          ~allowed,    ~min,    ~max,
                "asset_type", "character",              NA,                                                                                                                                                                                                                                                                                                                                            "equity, bonds, loans",      NA,      NA,
                       "lgd",    "double",          "0.45",                                                                                                                                                                                                                                                                                                                                                                NA,   "0.3",   "0.9",
@@ -20,4 +20,4 @@ stress_test_arguments_numeric <- tibble::tribble(
 
 # styler: on
 
-usethis::use_data(stress_test_arguments_numeric, overwrite = TRUE)
+usethis::use_data(stress_test_arguments, overwrite = TRUE)

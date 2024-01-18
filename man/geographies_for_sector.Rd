@@ -4,9 +4,11 @@
 \alias{geographies_for_sector}
 \title{Obtain available geographies for sector}
 \usage{
-geographies_for_sector(sector)
+geographies_for_sector(st_input_folder, sector)
 }
 \arguments{
+\item{st_input_folder}{path to the input folder containing stress test input files}
+
 \item{sector}{String of length 1 holding sector name.}
 }
 \value{

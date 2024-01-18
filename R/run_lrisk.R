@@ -14,9 +14,9 @@
 #'   that will be generated automatically. The name of the subdirectory is the
 #'   timestamp of the run of the analysis.
 #' @param baseline_scenario Holds the name of the baseline scenario to be used
-#'   in the stress test, for accepted value range check `stress_test_arguments`.
+#'   in the stress test.
 #' @param shock_scenario Holds the name of the shock scenario to be used in the
-#'   stress test, for accepted value range check `stress_test_arguments`.
+#'   stress test.
 #' @param lgd Numeric, holding the loss given default, for accepted value range
 #'   check `stress_test_arguments`.
 #' @param risk_free_rate Numeric that indicates the risk free rate of interest.
