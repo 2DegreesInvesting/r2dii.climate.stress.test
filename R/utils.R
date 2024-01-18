@@ -475,6 +475,52 @@ stop_if_empty <- function(data, data_name) {
 #' @noRd
 infer_sectors_and_technologies <- function(price_data, scenario_data, baseline_scenario, shock_scenario, scenario_geography) {
 
+  baseline_type <- scenario_data %>%
+    dplyr::distinct(.data$scenario, .data$scenario_type) %>%
+    dplyr::filter(
+      .data$scenario == !!baseline_scenario & .data$scenario_type == "baseline"
+    )
+
+  if (nrow(baseline_type)  == 0){
+
+    available_baselines <- scenario_data %>%
+      dplyr::filter(.data$scenario_type == "baseline") %>%
+      dplyr::distinct(.data$scenario) %>%
+      dplyr::pull()
+
+    rlang::abort(
+      c(
+        "The selected baseline scenario is not of a baseline type",
+        x = glue::glue("baseline scenario: {baseline_scenario}, shock_scenario: {shock_scenario}, scenario_geography: {scenario_geography}"),
+        i = glue::glue("Available baseline scenarios : {available_baselines}")
+      )
+    )
+  }
+
+
+  shock_type <- scenario_data %>%
+    dplyr::distinct(.data$scenario, .data$scenario_type) %>%
+    dplyr::filter(
+      .data$scenario == !!shock_scenario & .data$scenario_type == "shock"
+    )
+
+  if (nrow(shock_type)  == 0){
+
+    available_shocks <- scenario_data %>%
+      dplyr::filter(.data$scenario_type == "shock") %>%
+      dplyr::distinct(.data$scenario) %>%
+      dplyr::pull()
+
+    rlang::abort(
+      c(
+        "The selected baseline scenario is not of a shock type",
+        x = glue::glue("baseline scenario: {baseline_scenario}, shock_scenario: {shock_scenario}, scenario_geography: {scenario_geography}"),
+        i = glue::glue("Available shock scenarios : {available_shocks}")
+      )
+    )
+  }
+
+
   available_scenario_data <- scenario_data %>%
     dplyr::distinct(.data$scenario, .data$ald_sector, .data$ald_business_unit, .data$scenario_geography) %>%
     dplyr::filter(.data$scenario %in% c(baseline_scenario, shock_scenario))
@@ -487,7 +533,7 @@ infer_sectors_and_technologies <- function(price_data, scenario_data, baseline_s
       c(
         "Could not find scenario data matching the provided geography.",
         x = glue::glue("baseline scenario: {baseline_scenario}, shock_scenario: {shock_scenario}, scenario_geography: {scenario_geography}"),
-        i = "Please use function scenario_for_sector_x_geography to identify a valid geography for those scenarios."
+        i = "Please use function geographies_for_sector to identify a valid geography for those scenarios."
       )
     )
   }
