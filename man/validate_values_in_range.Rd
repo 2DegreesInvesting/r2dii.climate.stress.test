@@ -6,6 +6,11 @@
 \usage{
 validate_values_in_range(var, args_list)
 }
+\arguments{
+\item{var}{String holding name of variable.}
+
+\item{args_list}{Named list holding arguments of parent function call and their values.}
+}
 \description{
 Checks that values of variable \code{var} are in valid range as defined in
 r2dii.climate_stress_test::stress_test_arguments.
