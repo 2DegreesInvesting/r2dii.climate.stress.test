@@ -30,14 +30,6 @@ validate_input_values <- function(baseline_scenario, shock_scenario, scenario_ge
     input_args[which(names(input_args) %in% c("carbon_price_model", "market_passthrough", "financial_stimulus"))] <- NULL
   }
 
-  vector_character_args <- c("baseline_scenario", "shock_scenario", "scenario_geography", "carbon_price_model")
-
-  if (risk_type == "lrisk") {
-    vector_character_args <- vector_character_args[!vector_character_args %in% c("carbon_price_model")]
-  }
-
-  vector_character_args %>%
-    purrr::walk(validate_values_in_values, args_list = input_args)
 
   vector_numeric_args <- c(
     "lgd", "risk_free_rate", "discount_rate", "growth_rate",
@@ -65,59 +57,26 @@ validate_input_values <- function(baseline_scenario, shock_scenario, scenario_ge
   }
 }
 
-#'  Validate that values are in within values
-#'
-#' #' Checks that values of variable `var` are in valid values as defined in
-#' r2dii.climate_stress_test::stress_test_arguments.
-#'
-#' @param var String holding name of variable.
-#' @param args_list Named list holding arguments of parent function call and
-#'   their values.
-#'
-#' @return NULL
-validate_values_in_values <- function(var, args_list) {
-  data("stress_test_arguments_combinations", package="r2dii.climate.stress.test", envir = environment())
-
-  allowed_values <- stress_test_arguments_combinations %>%
-    dplyr::distinct(!!rlang::sym(var)) %>%
-    dplyr::pull()
-
-  arg_val <- get(var, args_list)
-
-  if (!all(arg_val %in% allowed_values)) {
-    arg_vals_invalid <- arg_val[!(arg_val %in% allowed_values)]
-    arg_vals_invalid_collapsed <- paste0(arg_vals_invalid, collapse = ", ")
-    allowed_values_collapsed <- paste0(allowed_values, collapse = ", ")
-    rlang::abort(
-      c(
-        glue::glue("Must provide valid input for argument {var}."),
-        x = glue::glue("Invalid input: {arg_vals_invalid_collapsed}."),
-        i = glue::glue("Valid values are: {allowed_values_collapsed}.")
-      )
-    )
-  }
-  invisible()
-}
-
 #' Validate that values are within range
 #'
 #' Checks that values of variable `var` are in valid range as defined in
 #' r2dii.climate_stress_test::stress_test_arguments.
 #'
-#' @inheritParams validate_values_in_values
+#' @param var String holding name of variable.
+#' @param args_list Named list holding arguments of parent function call and their values.
 #'
 #' @return NULL
 validate_values_in_range <- function(var, args_list) {
   data("stress_test_arguments_numeric", package="r2dii.climate.stress.test", envir = environment())
 
-  min <- stress_test_arguments_numeric %>%
+  min <- stress_test_arguments %>%
     dplyr::filter(.data$name == .env$var) %>%
     dplyr::pull(.data$min) %>%
     as.numeric()
 
   stopifnot(length(min) == 1)
 
-  max <- stress_test_arguments_numeric %>%
+  max <- stress_test_arguments %>%
     dplyr::filter(.data$name == .env$var) %>%
     dplyr::pull(.data$max) %>%
     as.numeric()

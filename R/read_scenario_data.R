@@ -11,6 +11,7 @@ read_scenario_data <- function(path) {
       col_types = readr::cols(
         scenario_geography = "c",
         scenario = "c",
+        scenario_type = "c",
         ald_sector = "c",
         units = "c",
         ald_business_unit = "c",
@@ -23,7 +24,7 @@ read_scenario_data <- function(path) {
   validate_data_has_expected_cols(
     data = scenario_data,
     expected_columns = c(
-      "scenario_geography", "scenario",
+      "scenario_geography", "scenario", "scenario_type",
       "ald_sector", "units", "ald_business_unit", "year",
       "direction", "fair_share_perc"
     )

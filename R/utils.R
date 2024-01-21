@@ -473,8 +473,88 @@ stop_if_empty <- function(data, data_name) {
 #'
 #' @return A list with entries sectors and technologies
 #' @noRd
-infer_sectors_and_technologies <- function(baseline_scenario, shock_scenario, scenario_geography) {
-  data("scenario_geography_x_ald_sector", package="r2dii.climate.stress.test", envir = environment())
+infer_sectors_and_technologies <- function(price_data, scenario_data, baseline_scenario, shock_scenario, scenario_geography) {
+
+  baseline_type <- scenario_data %>%
+    dplyr::distinct(.data$scenario, .data$scenario_type) %>%
+    dplyr::filter(
+      .data$scenario == !!baseline_scenario & .data$scenario_type == "baseline"
+    )
+
+  if (nrow(baseline_type)  == 0){
+
+    available_baselines <- scenario_data %>%
+      dplyr::filter(.data$scenario_type == "baseline") %>%
+      dplyr::distinct(.data$scenario) %>%
+      dplyr::pull()
+
+    rlang::abort(
+      c(
+        "The selected baseline scenario is not of a baseline type",
+        x = glue::glue("baseline scenario: {baseline_scenario}, shock_scenario: {shock_scenario}, scenario_geography: {scenario_geography}"),
+        i = glue::glue("Available baseline scenarios : {available_baselines}")
+      )
+    )
+  }
+
+
+  shock_type <- scenario_data %>%
+    dplyr::distinct(.data$scenario, .data$scenario_type) %>%
+    dplyr::filter(
+      .data$scenario == !!shock_scenario & .data$scenario_type == "shock"
+    )
+
+  if (nrow(shock_type)  == 0){
+
+    available_shocks <- scenario_data %>%
+      dplyr::filter(.data$scenario_type == "shock") %>%
+      dplyr::distinct(.data$scenario) %>%
+      dplyr::pull()
+
+    rlang::abort(
+      c(
+        "The selected baseline scenario is not of a shock type",
+        x = glue::glue("baseline scenario: {baseline_scenario}, shock_scenario: {shock_scenario}, scenario_geography: {scenario_geography}"),
+        i = glue::glue("Available shock scenarios : {available_shocks}")
+      )
+    )
+  }
+
+
+  available_scenario_data <- scenario_data %>%
+    dplyr::distinct(.data$scenario, .data$ald_sector, .data$ald_business_unit, .data$scenario_geography) %>%
+    dplyr::filter(.data$scenario %in% c(baseline_scenario, shock_scenario))
+
+  available_scenario_geography_data <- available_scenario_data %>%
+    dplyr::filter(.data$scenario_geography == .env$scenario_geography)
+
+  if ((nrow(available_scenario_data) > 0) & (nrow(available_scenario_geography_data) == 0)){
+    rlang::abort(
+      c(
+        "Could not find scenario data matching the provided geography.",
+        x = glue::glue("baseline scenario: {baseline_scenario}, shock_scenario: {shock_scenario}, scenario_geography: {scenario_geography}"),
+        i = "Please use function geographies_for_sector to identify a valid geography for those scenarios."
+      )
+    )
+  }
+
+  available_price_data <- price_data %>%
+    dplyr::distinct(.data$scenario, .data$ald_sector, .data$ald_business_unit) %>%
+    dplyr::filter(.data$scenario %in% c(baseline_scenario, shock_scenario))
+
+
+  scenario_geography_x_ald_sector <- dplyr::inner_join(available_scenario_geography_data, available_price_data)
+
+  if (nrow(scenario_geography_x_ald_sector) != nrow(available_scenario_geography_data) |
+      nrow(scenario_geography_x_ald_sector) != nrow(available_price_data) ) {
+    rlang::abort(
+      c(
+        "Could not match all the data points between price and scenario datasets.",
+        x = glue::glue("baseline scenario: {baseline_scenario}, shock_scenario: {shock_scenario}, scenario_geography: {scenario_geography}"),
+        i = "Please solve the mismatch of datapoints that appear on the given perimeter, between price_data_long.csv and Scenarios_AnalysisInput.csv ."
+      )
+    )
+  }
 
   sectors_baseline <- scenario_geography_x_ald_sector %>%
     dplyr::filter(.data$scenario == !!baseline_scenario & .data$scenario_geography == !!scenario_geography) %>%
@@ -496,31 +576,42 @@ infer_sectors_and_technologies <- function(baseline_scenario, shock_scenario, sc
     )
   }
 
-  technologies <- p4i_p4b_sector_technology_lookup %>%
-    dplyr::filter(.data$sector_p4i %in% !!shared_sectors) %>%
-    dplyr::pull(.data$technology_p4i)
+  technologies_baseline <- scenario_geography_x_ald_sector %>%
+    dplyr::filter(.data$scenario == !!baseline_scenario & .data$scenario_geography == !!scenario_geography) %>%
+    dplyr::pull(.data$ald_business_unit)
+
+  technologies_shock <- scenario_geography_x_ald_sector %>%
+    dplyr::filter(.data$scenario == !!shock_scenario & .data$scenario_geography == !!scenario_geography) %>%
+    dplyr::pull(.data$ald_business_unit)
+
+  technologies <- dplyr::intersect(technologies_baseline, technologies_shock)
 
   return(list(sectors = shared_sectors, technologies = technologies))
 }
 
 infer_scenario_type <- function(baseline_scenario, shock_scenario) {
-  if (grepl("NGFS2022", baseline_scenario) & grepl("NGFS2022", shock_scenario)) {
+  if (startsWith(baseline_scenario, "NGFS") &
+      startsWith(shock_scenario, "NGFS")) {
     return("is_ngfs")
   }
 
-  if (grepl("IPR2021", baseline_scenario) & grepl("IPR2021", shock_scenario)) {
+  if (startsWith(baseline_scenario, "IPR") &
+      startsWith(shock_scenario, "IPR")) {
     return("is_ipr")
   }
 
-  if (grepl("GECO2021", baseline_scenario) & grepl("GECO2021", shock_scenario)) {
+  if (startsWith(baseline_scenario, "GECO") &
+      startsWith(shock_scenario, "GECO")) {
     return("is_geco")
   }
 
-  if (grepl("Oxford2021", baseline_scenario) & grepl("Oxford2021", shock_scenario)) {
+  if (startsWith(baseline_scenario, "Oxford") &
+      startsWith(shock_scenario, "Oxford")) {
     return("is_oxford")
   }
 
-  if (grepl("WEO2021", baseline_scenario) & grepl("WEO2021", shock_scenario)) {
+  if (startsWith(baseline_scenario, "WEO") &
+      startsWith(shock_scenario, "WEO")) {
     return("is_weo")
   } else {
     rlang::abort(

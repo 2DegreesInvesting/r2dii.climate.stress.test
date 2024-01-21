@@ -25,10 +25,10 @@ validate_input_values(
 }
 \arguments{
 \item{baseline_scenario}{Holds the name of the baseline scenario to be used
-in the stress test, for accepted value range check \code{stress_test_arguments}.}
+in the stress test.}
 
 \item{shock_scenario}{Holds the name of the shock scenario to be used in the
-stress test, for accepted value range check \code{stress_test_arguments}.}
+stress test.}
 
 \item{scenario_geography}{Character vector, indicating which geographical
 region(s) (concerning asset location) results shall be calculated for. For
