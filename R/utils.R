@@ -532,7 +532,6 @@ infer_sectors_and_technologies <- function(price_data, scenario_data, baseline_s
     dplyr::distinct(.data$scenario, .data$ald_sector, .data$ald_business_unit) %>%
     dplyr::filter(.data$scenario %in% c(baseline_scenario, shock_scenario))
 
-
   scenario_geography_x_ald_sector <- dplyr::inner_join(available_scenario_geography_data, available_price_data)
 
   if (nrow(scenario_geography_x_ald_sector) != nrow(available_scenario_geography_data) |

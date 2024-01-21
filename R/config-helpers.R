@@ -18,10 +18,21 @@ get_scenario_geography_x_ald_sector <- function(st_input_folder) {
   price_data_available <- st_data$df_price %>%
     dplyr::distinct(.data$scenario, .data$ald_sector)
 
-  scenario_geography_x_ald_sector <- dplyr::inner_join(
-    dplyr::inner_join(production_data_available, scenario_data_available),
-    price_data_available
-  )
+
+  capacity_factor_available <- st_data$capacity_factors_power %>%
+    dplyr::distinct(.data$scenario, .data$scenario_geography)
+
+  scenario_geography_x_ald_sector <-
+    dplyr::inner_join(
+      dplyr::inner_join(
+        dplyr::inner_join(
+          production_data_available,
+          scenario_data_available
+          ),
+        price_data_available
+        ),
+      capacity_factor_available
+    )
 
   # Splitting the scenario into prefix and type
   scenario_geography_x_ald_sector$scenario_prefix <- sub("_.*", "", scenario_geography_x_ald_sector$scenario)
