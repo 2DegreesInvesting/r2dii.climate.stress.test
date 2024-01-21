@@ -210,12 +210,12 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars, risk_type) 
         settlement_factor = .data$settlement_factor_arg,
         exp_share_damages_paid = .data$exp_share_damages_paid_arg
       )
-  } else{
+  } else {
     crispy_output <- crispy_output %>%
       dplyr::rename(
-        carbon_price_model=.data$carbon_price_model_arg,
-        market_passthrough=.data$market_passthrough_arg,
-        financial_stimulus=.data$financial_stimulus_arg
+        carbon_price_model = .data$carbon_price_model_arg,
+        market_passthrough = .data$market_passthrough_arg,
+        financial_stimulus = .data$financial_stimulus_arg
       )
   }
 

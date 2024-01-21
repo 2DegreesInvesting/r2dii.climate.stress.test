@@ -39,18 +39,18 @@ test_that("without iteration, using maximum values of input arguments output is 
   fs::dir_create(out)
 
   suppressed_console_output <- suppressWarnings(suppressMessages(capture.output(
-  results <- run_trisk(
-    input_path = in_agnostic,
-    output_path = out,
-    scenario_geography = "OECD",
-    lgd = get_st_argument("lgd", "max"),
-    risk_free_rate = get_st_argument("risk_free_rate", "max"),
-    discount_rate = get_st_argument("discount_rate", "max"),
-    growth_rate = get_st_argument("growth_rate", "max"),
-    div_netprofit_prop_coef = get_st_argument("div_netprofit_prop_coef", "max"),
-    shock_year = get_st_argument("shock_year", "max"),
-    return_results = TRUE
-  )
+    results <- run_trisk(
+      input_path = in_agnostic,
+      output_path = out,
+      scenario_geography = "OECD",
+      lgd = get_st_argument("lgd", "max"),
+      risk_free_rate = get_st_argument("risk_free_rate", "max"),
+      discount_rate = get_st_argument("discount_rate", "max"),
+      growth_rate = get_st_argument("growth_rate", "max"),
+      div_netprofit_prop_coef = get_st_argument("div_netprofit_prop_coef", "max"),
+      shock_year = get_st_argument("shock_year", "max"),
+      return_results = TRUE
+    )
   )))
 
   results$crispy_output <- results$crispy_output |> dplyr::select(-c(.data$run_id))

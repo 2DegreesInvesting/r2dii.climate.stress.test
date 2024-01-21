@@ -196,14 +196,16 @@ read_and_process_and_calc <- function(args_list) {
 
   cat("-- Processing input data. \n")
 
-  input_data_list <- st_process_agnostic(data=data,
-                                         scenario_geography=scenario_geography,
-                                         baseline_scenario=baseline_scenario,
-                                         shock_scenario=shock_scenario,
-                                         start_year=start_year ,
-                                         carbon_price_model=carbon_price_model,
-                                         end_year=end_year,
-                                         log_path=log_path)
+  input_data_list <- st_process_agnostic(
+    data = data,
+    scenario_geography = scenario_geography,
+    baseline_scenario = baseline_scenario,
+    shock_scenario = shock_scenario,
+    start_year = start_year,
+    carbon_price_model = carbon_price_model,
+    end_year = end_year,
+    log_path = log_path
+  )
 
   # TODO: this requires company company_id to work for all companies, i.e. using 2021Q4 PAMS data
   report_company_drops(

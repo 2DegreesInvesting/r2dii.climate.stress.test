@@ -414,13 +414,10 @@ customise_output_path <- function(output_path, iter_var, shock_scenario, scenari
   }
 
   if (risk_type == "trisk") {
-
-    if(financial_stimulus > 1){
-
-    timestamp <- paste(format(Sys.time(), "%Y_%m_%d_%H_%M_%S"), iter_var, shock_scenario, scenario_geography, carbon_price_model, financial_stimulus, sep = "_")
+    if (financial_stimulus > 1) {
+      timestamp <- paste(format(Sys.time(), "%Y_%m_%d_%H_%M_%S"), iter_var, shock_scenario, scenario_geography, carbon_price_model, financial_stimulus, sep = "_")
     } else {
-    timestamp <- paste(format(Sys.time(), "%Y_%m_%d_%H_%M_%S"), iter_var, shock_scenario, scenario_geography, carbon_price_model, sep = "_")
-
+      timestamp <- paste(format(Sys.time(), "%Y_%m_%d_%H_%M_%S"), iter_var, shock_scenario, scenario_geography, carbon_price_model, sep = "_")
     }
   }
 
@@ -435,14 +432,10 @@ customise_output_path <- function(output_path, iter_var, shock_scenario, scenari
   if (risk_type == "trisk") {
     # FIXME: quick solution to avoid empty output dirs in case of failing calculations
 
-    if(financial_stimulus > 1 ){
-      paste_write("Starting analysis.", log_path = file.path(output_path_custom, paste0("log_file_", iter_var, sep = "_", shock_scenario, sep = "_", scenario_geography, sep = "_", carbon_price_model,sep = "_", financial_stimulus, ".txt")))
-
-    } else
-    {
+    if (financial_stimulus > 1) {
+      paste_write("Starting analysis.", log_path = file.path(output_path_custom, paste0("log_file_", iter_var, sep = "_", shock_scenario, sep = "_", scenario_geography, sep = "_", carbon_price_model, sep = "_", financial_stimulus, ".txt")))
+    } else {
       paste_write("Starting analysis.", log_path = file.path(output_path_custom, paste0("log_file_", iter_var, sep = "_", shock_scenario, sep = "_", scenario_geography, sep = "_", carbon_price_model, ".txt")))
-
-
     }
 
     paste_write("Starting analysis.", log_path = file.path(output_path_custom, paste0("log_file_", iter_var, sep = "_", shock_scenario, sep = "_", scenario_geography, sep = "_", carbon_price_model, ".txt")))
@@ -474,15 +467,13 @@ stop_if_empty <- function(data, data_name) {
 #' @return A list with entries sectors and technologies
 #' @noRd
 infer_sectors_and_technologies <- function(price_data, scenario_data, baseline_scenario, shock_scenario, scenario_geography) {
-
   baseline_type <- scenario_data %>%
     dplyr::distinct(.data$scenario, .data$scenario_type) %>%
     dplyr::filter(
       .data$scenario == !!baseline_scenario & .data$scenario_type == "baseline"
     )
 
-  if (nrow(baseline_type)  == 0){
-
+  if (nrow(baseline_type) == 0) {
     available_baselines <- scenario_data %>%
       dplyr::filter(.data$scenario_type == "baseline") %>%
       dplyr::distinct(.data$scenario) %>%
@@ -504,8 +495,7 @@ infer_sectors_and_technologies <- function(price_data, scenario_data, baseline_s
       .data$scenario == !!shock_scenario & .data$scenario_type == "shock"
     )
 
-  if (nrow(shock_type)  == 0){
-
+  if (nrow(shock_type) == 0) {
     available_shocks <- scenario_data %>%
       dplyr::filter(.data$scenario_type == "shock") %>%
       dplyr::distinct(.data$scenario) %>%
@@ -528,7 +518,7 @@ infer_sectors_and_technologies <- function(price_data, scenario_data, baseline_s
   available_scenario_geography_data <- available_scenario_data %>%
     dplyr::filter(.data$scenario_geography == .env$scenario_geography)
 
-  if ((nrow(available_scenario_data) > 0) & (nrow(available_scenario_geography_data) == 0)){
+  if ((nrow(available_scenario_data) > 0) & (nrow(available_scenario_geography_data) == 0)) {
     rlang::abort(
       c(
         "Could not find scenario data matching the provided geography.",
@@ -546,7 +536,7 @@ infer_sectors_and_technologies <- function(price_data, scenario_data, baseline_s
   scenario_geography_x_ald_sector <- dplyr::inner_join(available_scenario_geography_data, available_price_data)
 
   if (nrow(scenario_geography_x_ald_sector) != nrow(available_scenario_geography_data) |
-      nrow(scenario_geography_x_ald_sector) != nrow(available_price_data) ) {
+    nrow(scenario_geography_x_ald_sector) != nrow(available_price_data)) {
     rlang::abort(
       c(
         "Could not match all the data points between price and scenario datasets.",
@@ -591,27 +581,27 @@ infer_sectors_and_technologies <- function(price_data, scenario_data, baseline_s
 
 infer_scenario_type <- function(baseline_scenario, shock_scenario) {
   if (startsWith(baseline_scenario, "NGFS") &
-      startsWith(shock_scenario, "NGFS")) {
+    startsWith(shock_scenario, "NGFS")) {
     return("is_ngfs")
   }
 
   if (startsWith(baseline_scenario, "IPR") &
-      startsWith(shock_scenario, "IPR")) {
+    startsWith(shock_scenario, "IPR")) {
     return("is_ipr")
   }
 
   if (startsWith(baseline_scenario, "GECO") &
-      startsWith(shock_scenario, "GECO")) {
+    startsWith(shock_scenario, "GECO")) {
     return("is_geco")
   }
 
   if (startsWith(baseline_scenario, "Oxford") &
-      startsWith(shock_scenario, "Oxford")) {
+    startsWith(shock_scenario, "Oxford")) {
     return("is_oxford")
   }
 
   if (startsWith(baseline_scenario, "WEO") &
-      startsWith(shock_scenario, "WEO")) {
+    startsWith(shock_scenario, "WEO")) {
     return("is_weo")
   } else {
     rlang::abort(

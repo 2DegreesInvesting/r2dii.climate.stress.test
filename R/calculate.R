@@ -205,7 +205,7 @@ subtract_settlement <- function(data,
     dplyr::mutate(
       scc_liability =
         .data$overshoot_emissions * .env$scc *
-        .env$exp_share_damages_paid
+          .env$exp_share_damages_paid
     ) %>%
     dplyr::group_by(.data$company_name, .data$ald_sector, .data$ald_business_unit) %>%
     dplyr::mutate(

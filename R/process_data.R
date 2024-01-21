@@ -20,11 +20,10 @@ st_process_agnostic <-
            scenario_geography,
            baseline_scenario,
            shock_scenario,
-           start_year ,
+           start_year,
            carbon_price_model,
            end_year,
            log_path) {
-
     processed <- data %>%
       st_process(
         scenario_geography = scenario_geography,
@@ -46,8 +45,10 @@ st_process_agnostic <-
     )
 
     # TODO: this requires company company_id to work for all companies, i.e. using 2021Q4 PAMS data
-    report_company_drops(data_list = input_data_list,
-                         log_path = log_path)
+    report_company_drops(
+      data_list = input_data_list,
+      log_path = log_path
+    )
 
     return(input_data_list)
   }
@@ -431,18 +432,17 @@ process_financial_data <- function(data) {
 st_process <- function(data, scenario_geography, baseline_scenario,
                        shock_scenario, start_year, carbon_price_model,
                        log_path, end_year) {
-
   scenarios_filter <- c(baseline_scenario, shock_scenario)
 
   sectors_and_technologies_list <- infer_sectors_and_technologies(
-    price_data=data$df_price,
-    scenario_data=data$scenario_data,
+    price_data = data$df_price,
+    scenario_data = data$scenario_data,
     baseline_scenario = baseline_scenario,
     shock_scenario = shock_scenario,
     scenario_geography = scenario_geography
   )
 
-    df_price <- process_price_data(
+  df_price <- process_price_data(
     data$df_price,
     technologies = sectors_and_technologies_list$technologies,
     sectors = sectors_and_technologies_list$sectors,
@@ -545,7 +545,6 @@ st_process <- function(data, scenario_geography, baseline_scenario,
 process_production_data <- function(data, start_year, end_year, time_horizon,
                                     scenario_geography_filter, sectors,
                                     technologies, log_path) {
-
   data_processed <- data %>%
     dplyr::filter(.data$scenario_geography %in% .env$scenario_geography_filter) %>%
     dplyr::filter(.data$ald_sector %in% .env$sectors) %>%
@@ -580,7 +579,7 @@ process_production_data <- function(data, start_year, end_year, time_horizon,
     report_missing_col_combinations(col_names = c("scenario_geography", "ald_business_unit", "year"))
 
   # Commented for speed  improvement
-  #%>% report_all_duplicate_kinds(composite_unique_cols = cuc_production_data)
+  # %>% report_all_duplicate_kinds(composite_unique_cols = cuc_production_data)
 
   # checks that no missing values exist in the data
   # Commented for speed improvement

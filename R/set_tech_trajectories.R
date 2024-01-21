@@ -58,12 +58,12 @@ set_baseline_trajectory <- function(data,
       # compute per group the cumulative sum of the scenario change derivatives at each year
       # add the cumsum to the input production , so that the latest non-NA value is incremented
       # by the cumulative sum of all scenario change local derivative value
-      baseline=.data$baseline + cumsum(.data$scenario_change)
+      baseline = .data$baseline + cumsum(.data$scenario_change)
     ) %>%
     dplyr::ungroup() %>%
     dplyr::mutate(
       baseline = dplyr::if_else(.data$baseline < 0, 0, .data$baseline),
-      baseline_change=.data$scenario_change
+      baseline_change = .data$scenario_change
     ) %>%
     dplyr::select(-dplyr::all_of(c("scenario_change", "scen_to_follow")))
 
@@ -163,11 +163,11 @@ set_trisk_trajectory <- function(data,
         .data$baseline - dplyr::lag(.data$baseline),
         0
       )
-      )
+    )
 
 
 
-    data <- data %>%
+  data <- data %>%
     dplyr::group_by(
       .data$company_id, .data$company_name, .data$ald_sector, .data$ald_business_unit,
       .data$scenario_geography
@@ -279,7 +279,6 @@ calc_late_sudden_traj <- function(start_year, end_year, year_of_shock, duration_
                                   shock_strength, scen_to_follow, planned_prod, late_sudden,
                                   scenario_change, scenario_change_baseline, scenario_change_aligned,
                                   overshoot_direction, time_frame) {
-
   time_frame %||% stop("Must provide input for 'time_frame'", call. = FALSE)
 
 
@@ -316,7 +315,6 @@ calc_late_sudden_traj <- function(start_year, end_year, year_of_shock, duration_
     (overshoot_direction == "Decreasing" & sum(scen_to_follow[1:time_frame + 1]) < sum(late_sudden[1:time_frame + 1])) |
       (overshoot_direction == "Increasing" & sum(scen_to_follow[1:time_frame + 1]) > sum(late_sudden[1:time_frame + 1]))
   ) {
-
     x <- (
       sum(scen_to_follow) -
         sum(late_sudden[1:(position_shock_year - 1)]) -
@@ -333,7 +331,6 @@ calc_late_sudden_traj <- function(start_year, end_year, year_of_shock, duration_
       late_sudden[position_shock_year - 1] - (sequence_length - position_shock_year + 1) * x,
       0
     )
-
   } else {
     # company plans are already aligned
     # no need for overshoot in production cap, set LS trajectory to follow
@@ -360,7 +357,6 @@ calc_late_sudden_traj <- function(start_year, end_year, year_of_shock, duration_
 
     # Update late_sudden vector
     late_sudden[first_production_na:length(late_sudden)] <- cumulsum_change_aligned
-
   }
   return(late_sudden)
 }

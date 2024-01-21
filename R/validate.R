@@ -14,7 +14,6 @@ validate_input_values <- function(baseline_scenario, shock_scenario, scenario_ge
                                   lgd, risk_free_rate, discount_rate, growth_rate,
                                   div_netprofit_prop_coef, shock_year,
                                   settlement_factor, exp_share_damages_paid, scc, risk_type, carbon_price_model, market_passthrough, financial_stimulus) {
-
   input_args <- mget(names(formals()), sys.frame(sys.nframe()))
   input_args <- input_args[-which(names(input_args) == "risk_type")]
 
@@ -67,7 +66,7 @@ validate_input_values <- function(baseline_scenario, shock_scenario, scenario_ge
 #'
 #' @return NULL
 validate_values_in_range <- function(var, args_list) {
-  data("stress_test_arguments", package="r2dii.climate.stress.test", envir = environment())
+  data("stress_test_arguments", package = "r2dii.climate.stress.test", envir = environment())
 
   min <- stress_test_arguments %>%
     dplyr::filter(.data$name == .env$var) %>%

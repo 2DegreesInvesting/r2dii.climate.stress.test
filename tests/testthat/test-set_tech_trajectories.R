@@ -70,9 +70,9 @@ test_that("set_baseline_trajectory sets baseline values to prod forecast
   )] <- NA
 
   scen_follows_prod <- set_baseline_trajectory(
-      data = test_data_calc_future_prod,
-      baseline_scenario = "TEST_BASELINE"
-    )
+    data = test_data_calc_future_prod,
+    baseline_scenario = "TEST_BASELINE"
+  )
 
   forecast_length <- sum(!is.na(scen_follows_prod$plan_tech_prod))
 
@@ -104,13 +104,13 @@ test_that("set_baseline_trajectory sets baseline CHANGE values to prod forecast
 
   scen_follows_change <- set_baseline_trajectory(
     test_data_calc_future_prod,
-    baseline_scenario="TEST_BASELINE"
+    baseline_scenario = "TEST_BASELINE"
   )
 
   post_forecast_length <- sum(is.na(scen_follows_change$plan_tech_prod))
 
   scen_follows_change <- scen_follows_change %>%
-    dplyr::bind_cols(test_data_calc_future_prod%>%dplyr::select(scenario_change)) %>%
+    dplyr::bind_cols(test_data_calc_future_prod %>% dplyr::select(scenario_change)) %>%
     dplyr::mutate(
       baseline_change = baseline - dplyr::lag(baseline),
       baseline_change = round(baseline_change, 7),
