@@ -20,6 +20,3 @@ provided \code{sector}. Source of truth is the \code{overview}
 \code{scenario_geography_x_ald_sector} per default. In case \code{sector} is not
 available an error is thrown.
 }
-\examples{
-geographies_for_sector("Coal")
-}

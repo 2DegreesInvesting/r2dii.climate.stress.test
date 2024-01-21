@@ -6,5 +6,5 @@
 #' @importFrom utils data
 NULL
 globalVariables(c(
-  "stress_test_arguments_numeric"
+  "stress_test_arguments"
 ))

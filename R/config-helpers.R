@@ -1,6 +1,28 @@
-
+#' Get scenario_geography_x_ald_sector
+#'
+#' @param st_input_folder path to the folder containing the stress test files
+#'
+#' @return scenario_geography_x_ald_sector
+#' @export
+#'
 get_scenario_geography_x_ald_sector <- function(st_input_folder){
+  st_data <- st_read_agnostic(st_input_folder, risk_type = "trisk")
 
+
+  production_data_available <- st_data$production_data %>%
+    dplyr::distinct(.data$ald_sector, .data$scenario_geography)
+
+  scenario_data_available <- st_data$scenario_data %>%
+    dplyr::distinct(.data$scenario, .data$ald_sector, .data$scenario_geography)
+
+  price_data_available <- st_data$df_price %>%
+    dplyr::distinct(.data$scenario, .data$ald_sector)
+
+  scenario_geography_x_ald_sector <- dplyr::inner_join(
+    dplyr::inner_join(production_data_available, scenario_data_available),
+    price_data_available)
+
+  return(scenario_geography_x_ald_sector)
 }
 
 
@@ -16,18 +38,9 @@ get_scenario_geography_x_ald_sector <- function(st_input_folder){
 #' @return A string vector holding supported scenario_geographies.
 #' @export
 #'
-#' @examples
-#' geographies_for_sector("Coal")
 geographies_for_sector <- function(st_input_folder, sector) {
-  data <- st_read_agnostic(st_input_folder, risk_type = "trisk")
 
-
-  production_data_available <- data$production_data %>%
-    dplyr::distinct(.data$ald_sector, .data$ald_business_unit, .data$scenario_geography)
-
-  scenario_data_available <-
-
-  overview <- scenario_geography_x_ald_sector
+  overview <- get_scenario_geography_x_ald_sector(st_input_folder)
 
   if (length(sector) > 1) {
     rlang::abort(c(
@@ -70,10 +83,9 @@ geographies_for_sector <- function(st_input_folder, sector) {
 #' @return A string holding valid scenario names.
 #' @export
 #'
-#' @examples scenario_for_sector_x_geography("Coal", "Europe")
-scenario_for_sector_x_geography <- function(st_input_folder, scenario_geography) {
+scenario_for_sector_x_geography <- function(st_input_folder, sector, scenario_geography) {
 
-  overview <- scenario_geography_x_ald_sector
+  overview <- get_scenario_geography_x_ald_sector(st_input_folder)
 
   if (length(sector) > 1) {
     rlang::abort(c(

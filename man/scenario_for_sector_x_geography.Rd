@@ -4,10 +4,12 @@
 \alias{scenario_for_sector_x_geography}
 \title{Obtain available scenario_x_source for geography - sector combinations}
 \usage{
-scenario_for_sector_x_geography(st_input_folder, scenario_geography)
+scenario_for_sector_x_geography(st_input_folder, sector, scenario_geography)
 }
 \arguments{
 \item{st_input_folder}{path to the input folder containing stress test input files}
+
+\item{sector}{String of length 1 holding sector name.}
 
 \item{scenario_geography}{String of length 1 holding sector name.}
 }
@@ -20,7 +22,4 @@ and \code{scenario_geography}. To identify valid \code{sector} x \code{scenario_
 combinations refer to \code{\link[=geographies_for_sector]{geographies_for_sector()}}. Source of truth is the
 \code{overview} \code{scenario_geography_x_ald_sector} per default. In case combination
 of \code{sector} and \code{scenario_geography} is not available an error is thrown.
-}
-\examples{
-scenario_for_sector_x_geography("Coal", "Europe")
 }
