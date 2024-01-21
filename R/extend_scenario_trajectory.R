@@ -64,7 +64,14 @@ extend_scenario_trajectory <- function(data,
     dplyr::inner_join(
       scenario_data,
       by = c("ald_sector", "ald_business_unit", "scenario_geography", "year")
-    )
+    ) 
+    # %>%
+    # report_all_duplicate_kinds(
+    #   composite_unique_cols = c(
+    #     "year", "company_id", "company_name", "ald_sector", "ald_business_unit", "scenario",
+    #     "scenario_geography", "units"
+    #   )
+    # )
 
   data <- data %>%
     summarise_production_sector_forecasts()

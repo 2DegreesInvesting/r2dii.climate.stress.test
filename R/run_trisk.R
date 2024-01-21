@@ -189,31 +189,21 @@ read_and_process_and_calc <- function(args_list) {
   })
   paste_write("\n", log_path = log_path)
 
+
   cat("-- Reading input data from designated input path. \n")
 
   data <- st_read_agnostic(input_path, risk_type = "trisk")
 
   cat("-- Processing input data. \n")
 
-  processed <- data %>%
-    st_process(
-      scenario_geography = scenario_geography,
-      baseline_scenario = baseline_scenario,
-      shock_scenario = shock_scenario,
-      start_year = start_year,
-      carbon_price_model = carbon_price_model,
-      log_path = log_path,
-      end_year = end_year
-    )
-
-  input_data_list <- list(
-    capacity_factors_power = processed$capacity_factors_power,
-    scenario_data = processed$scenario_data,
-    df_price = processed$df_price,
-    financial_data = processed$financial_data,
-    production_data = processed$production_data,
-    carbon_data = processed$carbon_data
-  )
+  input_data_list <- st_process_agnostic(data=data,
+                                         scenario_geography=scenario_geography,
+                                         baseline_scenario=baseline_scenario,
+                                         shock_scenario=shock_scenario,
+                                         start_year=start_year ,
+                                         carbon_price_model=carbon_price_model,
+                                         end_year=end_year,
+                                         log_path=log_path)
 
   # TODO: this requires company company_id to work for all companies, i.e. using 2021Q4 PAMS data
   report_company_drops(
@@ -227,21 +217,6 @@ read_and_process_and_calc <- function(args_list) {
     shock_year = shock_year
   )
 
-  cat("-- Reading input data from designated input path. \n")
-
-  data <- st_read_agnostic(input_path, start_year = start_year, sectors = sectors_and_technologies_list$sectors, risk_type = "trisk")
-
-  cat("-- Processing input data. \n")
-
-  input_data_list <- st_process_agnostic(data=data,
-                                         scenario_geography=scenario_geography,
-                                         baseline_scenario=baseline_scenario,
-                                         shock_scenario=shock_scenario,
-                                         sectors_and_technologies_list=sectors_and_technologies_list,
-                                         start_year=start_year ,
-                                         carbon_price_model=carbon_price_model,
-                                         end_year=end_year,
-                                         log_path=log_path)
 
   cat("-- Calculating production trajectory under trisk shock. \n")
 

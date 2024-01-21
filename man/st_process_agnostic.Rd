@@ -9,7 +9,6 @@ st_process_agnostic(
   scenario_geography,
   baseline_scenario,
   shock_scenario,
-  sectors_and_technologies_list,
   start_year,
   carbon_price_model,
   end_year,
@@ -24,8 +23,6 @@ st_process_agnostic(
 \item{baseline_scenario}{baseline_scenario}
 
 \item{shock_scenario}{shock_scenario}
-
-\item{sectors_and_technologies_list}{sectors_and_technologies_list}
 
 \item{start_year}{start_year}
 

@@ -7,7 +7,6 @@
 #' @param scenario_geography scenario_geography
 #' @param baseline_scenario baseline_scenario
 #' @param shock_scenario shock_scenario
-#' @param sectors_and_technologies_list sectors_and_technologies_list
 #' @param start_year start_year
 #' @param carbon_price_model carbon_price_model
 #' @param end_year end_year
@@ -21,7 +20,6 @@ st_process_agnostic <-
            scenario_geography,
            baseline_scenario,
            shock_scenario,
-           sectors_and_technologies_list,
            start_year ,
            carbon_price_model,
            end_year,
@@ -32,8 +30,6 @@ st_process_agnostic <-
         scenario_geography = scenario_geography,
         baseline_scenario = baseline_scenario,
         shock_scenario = shock_scenario,
-        sectors = sectors_and_technologies_list$sectors,
-        technologies = sectors_and_technologies_list$technologies,
         start_year = start_year,
         carbon_price_model = carbon_price_model,
         log_path = log_path,
