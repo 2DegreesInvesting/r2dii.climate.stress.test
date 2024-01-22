@@ -1,19 +1,46 @@
+#' Get scenario_geography_x_ald_sector
+#'
+#' @param st_input_folder path to the folder containing the stress test files
+#'
+#' @return scenario_geography_x_ald_sector
+#' @export
+#'
+get_scenario_geography_x_ald_sector <- function(st_input_folder){
+  st_data <- st_read_agnostic(st_input_folder, risk_type = "trisk")
+
+
+  production_data_available <- st_data$production_data %>%
+    dplyr::distinct(.data$ald_sector, .data$scenario_geography)
+
+  scenario_data_available <- st_data$scenario_data %>%
+    dplyr::distinct(.data$scenario, .data$ald_sector, .data$scenario_geography)
+
+  price_data_available <- st_data$df_price %>%
+    dplyr::distinct(.data$scenario, .data$ald_sector)
+
+  scenario_geography_x_ald_sector <- dplyr::inner_join(
+    dplyr::inner_join(production_data_available, scenario_data_available),
+    price_data_available)
+
+  return(scenario_geography_x_ald_sector)
+}
+
+
 #' Obtain available geographies for sector
 #'
 #' Function returns a vector holding names of scenario_geographies for a
 #' provided `sector`. Source of truth is the `overview`
 #' `scenario_geography_x_ald_sector` per default. In case `sector` is not
 #' available an error is thrown.
+#' @param st_input_folder path to the input folder containing stress test input files
 #' @param sector String of length 1 holding sector name.
 #'
 #' @return A string vector holding supported scenario_geographies.
 #' @export
 #'
-#' @examples
-#' geographies_for_sector("Coal")
-geographies_for_sector <- function(sector) {
-  data("scenario_geography_x_ald_sector", package="r2dii.climate.stress.test", envir = environment())
-  overview <- scenario_geography_x_ald_sector
+geographies_for_sector <- function(st_input_folder, sector) {
+
+  overview <- get_scenario_geography_x_ald_sector(st_input_folder)
 
   if (length(sector) > 1) {
     rlang::abort(c(
@@ -56,11 +83,9 @@ geographies_for_sector <- function(sector) {
 #' @return A string holding valid scenario names.
 #' @export
 #'
-#' @examples scenario_for_sector_x_geography("Coal", "Europe")
-scenario_for_sector_x_geography <- function(sector, scenario_geography) {
-  data("scenario_geography_x_ald_sector", package="r2dii.climate.stress.test", envir = environment())
+scenario_for_sector_x_geography <- function(st_input_folder, sector, scenario_geography) {
 
-  overview <- scenario_geography_x_ald_sector
+  overview <- get_scenario_geography_x_ald_sector(st_input_folder)
 
   if (length(sector) > 1) {
     rlang::abort(c(

@@ -32,10 +32,10 @@ that will be generated automatically. The name of the subdirectory is the
 timestamp of the run of the analysis.}
 
 \item{baseline_scenario}{Holds the name of the baseline scenario to be used
-in the stress test, for accepted value range check \code{stress_test_arguments}.}
+in the stress test.}
 
 \item{shock_scenario}{Holds the name of the shock scenario to be used in the
-stress test, for accepted value range check \code{stress_test_arguments}.}
+stress test.}
 
 \item{lgd}{Numeric, holding the loss given default, for accepted value range
 check \code{stress_test_arguments}.}

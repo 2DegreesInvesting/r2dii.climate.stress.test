@@ -4,9 +4,11 @@
 \alias{geographies_for_sector}
 \title{Obtain available geographies for sector}
 \usage{
-geographies_for_sector(sector)
+geographies_for_sector(st_input_folder, sector)
 }
 \arguments{
+\item{st_input_folder}{path to the input folder containing stress test input files}
+
 \item{sector}{String of length 1 holding sector name.}
 }
 \value{
@@ -17,7 +19,4 @@ Function returns a vector holding names of scenario_geographies for a
 provided \code{sector}. Source of truth is the \code{overview}
 \code{scenario_geography_x_ald_sector} per default. In case \code{sector} is not
 available an error is thrown.
-}
-\examples{
-geographies_for_sector("Coal")
 }

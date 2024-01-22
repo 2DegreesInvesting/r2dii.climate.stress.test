@@ -14,9 +14,9 @@
 #'   that will be generated automatically. The name of the subdirectory is the
 #'   timestamp of the run of the analysis.
 #' @param baseline_scenario Holds the name of the baseline scenario to be used
-#'   in the stress test, for accepted value range check `stress_test_arguments`.
+#'   in the stress test.
 #' @param shock_scenario Holds the name of the shock scenario to be used in the
-#'   stress test, for accepted value range check `stress_test_arguments`.
+#'   stress test.
 #' @param lgd Numeric, holding the loss given default, for accepted value range
 #'   check `stress_test_arguments`.
 #' @param risk_free_rate Numeric that indicates the risk free rate of interest.
@@ -185,17 +185,9 @@ read_and_process_and_calc_lrisk <- function(args_list) {
   })
   paste_write("\n", log_path = log_path)
 
-  cat("-- Configuring analysis settings. \n")
-
-  sectors_and_technologies_list <- infer_sectors_and_technologies(
-    baseline_scenario = baseline_scenario,
-    shock_scenario = shock_scenario,
-    scenario_geography = scenario_geography
-  )
-
   cat("-- Reading input data from designated input path. \n")
 
-  data <- st_read_agnostic(input_path, start_year = start_year, sectors = sectors_and_technologies_list$sectors, risk_type = "lrisk")
+  data <- st_read_agnostic(input_path, risk_type = "lrisk")
 
   cat("-- Processing input data. \n")
 
@@ -204,8 +196,6 @@ read_and_process_and_calc_lrisk <- function(args_list) {
       scenario_geography = scenario_geography,
       baseline_scenario = baseline_scenario,
       shock_scenario = shock_scenario,
-      sectors = sectors_and_technologies_list$sectors,
-      technologies = sectors_and_technologies_list$technologies,
       start_year = start_year,
       carbon_price_model = carbon_price_model,
       log_path = log_path,

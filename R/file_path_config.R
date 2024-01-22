@@ -8,8 +8,8 @@ price_data_file <- function(dir) {
   return(out)
 }
 
-scenario_data_file <- function(dir, start_year) {
-  out <- file.path(dir, glue::glue("Scenarios_AnalysisInput_{start_year}.csv"))
+scenario_data_file <- function(dir) {
+  out <- file.path(dir, glue::glue("Scenarios_AnalysisInput.csv"))
   return(out)
 }
 
