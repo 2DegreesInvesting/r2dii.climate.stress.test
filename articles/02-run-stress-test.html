@@ -159,66 +159,21 @@ R.</p>
 geographies and four of the PACTA for Banks sectors of company
 production. They are the following:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sectors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">scenario_geography_x_ald_sector</span><span class="op">$</span><span class="va">ald_sector</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">sectors</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "Coal"       "Oil&amp;Gas"    "Power"      "Automotive"</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">scenario_geography_x_ald_sector</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_scenario_geography_x_ald_sector.html">get_scenario_geography_x_ald_sector</a></span><span class="op">(</span><span class="st">"/example_project/project_input/"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">sectors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">scenario_geography_x_ald_sector</span><span class="op">$</span><span class="va">ald_sector</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">sectors</span><span class="op">)</span></span></code></pre></div>
 <p>Note that the supported sectors do depend on the
 <code>scenario_geography</code> (i.e. the geographical region
 (concerning asset location) results shall be calculated for). All
 supported scenario geographies are the following:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">scenario_geographies</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">scenario_geography_x_ald_sector</span><span class="op">$</span><span class="va">scenario_geography</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">scenario_geographies</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  [1] "AdvancedEconomies"                   </span></span>
-<span><span class="co">#&gt;  [2] "Africa"                              </span></span>
-<span><span class="co">#&gt;  [3] "Asia"                                </span></span>
-<span><span class="co">#&gt;  [4] "AsiaPacific"                         </span></span>
-<span><span class="co">#&gt;  [5] "Brazil"                              </span></span>
-<span><span class="co">#&gt;  [6] "China"                               </span></span>
-<span><span class="co">#&gt;  [7] "EmergingMarketAndDevelopingEconomies"</span></span>
-<span><span class="co">#&gt;  [8] "Eurasia"                             </span></span>
-<span><span class="co">#&gt;  [9] "Europe"                              </span></span>
-<span><span class="co">#&gt; [10] "Global"                              </span></span>
-<span><span class="co">#&gt; [11] "India"                               </span></span>
-<span><span class="co">#&gt; [12] "Indonesia"                           </span></span>
-<span><span class="co">#&gt; [13] "Japan"                               </span></span>
-<span><span class="co">#&gt; [14] "LatinAmerica"                        </span></span>
-<span><span class="co">#&gt; [15] "MiddleEast"                          </span></span>
-<span><span class="co">#&gt; [16] "MiddleEastAndAfrica"                 </span></span>
-<span><span class="co">#&gt; [17] "Non-OECD"                            </span></span>
-<span><span class="co">#&gt; [18] "NorthAmerica"                        </span></span>
-<span><span class="co">#&gt; [19] "OECD"                                </span></span>
-<span><span class="co">#&gt; [20] "OecdAndEu"                           </span></span>
-<span><span class="co">#&gt; [21] "ReformingEconomies"                  </span></span>
-<span><span class="co">#&gt; [22] "Russia"                              </span></span>
-<span><span class="co">#&gt; [23] "SoutheastAsia"                       </span></span>
-<span><span class="co">#&gt; [24] "UnitedStates"</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">scenario_geographies</span><span class="op">)</span></span></code></pre></div>
 <p>One can use a helper function to obtain the supported
 scenario_geographies for a sector as follows:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/geographies_for_sector.html">geographies_for_sector</a></span><span class="op">(</span><span class="st">"Coal"</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  [1] "AdvancedEconomies"                   </span></span>
-<span><span class="co">#&gt;  [2] "Africa"                              </span></span>
-<span><span class="co">#&gt;  [3] "Asia"                                </span></span>
-<span><span class="co">#&gt;  [4] "AsiaPacific"                         </span></span>
-<span><span class="co">#&gt;  [5] "China"                               </span></span>
-<span><span class="co">#&gt;  [6] "EmergingMarketAndDevelopingEconomies"</span></span>
-<span><span class="co">#&gt;  [7] "Eurasia"                             </span></span>
-<span><span class="co">#&gt;  [8] "Europe"                              </span></span>
-<span><span class="co">#&gt;  [9] "Global"                              </span></span>
-<span><span class="co">#&gt; [10] "India"                               </span></span>
-<span><span class="co">#&gt; [11] "Indonesia"                           </span></span>
-<span><span class="co">#&gt; [12] "Japan"                               </span></span>
-<span><span class="co">#&gt; [13] "LatinAmerica"                        </span></span>
-<span><span class="co">#&gt; [14] "MiddleEast"                          </span></span>
-<span><span class="co">#&gt; [15] "MiddleEastAndAfrica"                 </span></span>
-<span><span class="co">#&gt; [16] "Non-OECD"                            </span></span>
-<span><span class="co">#&gt; [17] "NorthAmerica"                        </span></span>
-<span><span class="co">#&gt; [18] "OECD"                                </span></span>
-<span><span class="co">#&gt; [19] "OecdAndEu"                           </span></span>
-<span><span class="co">#&gt; [20] "ReformingEconomies"                  </span></span>
-<span><span class="co">#&gt; [21] "SoutheastAsia"                       </span></span>
-<span><span class="co">#&gt; [22] "UnitedStates"</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/geographies_for_sector.html">geographies_for_sector</a></span><span class="op">(</span><span class="st">"/example_project/project_input/"</span>, <span class="st">"Coal"</span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="input-arguments">Input arguments<a class="anchor" aria-label="anchor" href="#input-arguments"></a>
 </h3>
@@ -232,48 +187,13 @@ logical or character variables refer to column <code>allowed</code>, for
 numeric variables the allowed values are the range from <code>min</code>
 (inclusive) to <code>max</code> (inclusive).</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">stress_test_arguments</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 17 × 6</span></span></span>
-<span><span class="co">#&gt;    name                    type      default       allowed           min   max  </span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> asset_type              character <span style="color: #BB0000;">NA</span>            equity, bonds, l… <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> baseline_scenario       character WEO2021_STEPS WEO2021_STEPS, G… <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> shock_scenario          character WEO2021_SDS   WEO2021_SDS, WEO… <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> lgd                     double    0.45          <span style="color: #BB0000;">NA</span>                0.3   0.9  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> risk_free_rate          double    0.02          <span style="color: #BB0000;">NA</span>                0     0.05 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> discount_rate           double    0.07          <span style="color: #BB0000;">NA</span>                0.015 0.1  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> growth_rate             double    0.03          <span style="color: #BB0000;">NA</span>                0.01  0.099</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> div_netprofit_prop_coef double    1             <span style="color: #BB0000;">NA</span>                0.8   1    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> shock_year              double    2030          <span style="color: #BB0000;">NA</span>                2025  2035 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> scenario_geography      character Global        AdvancedEconomie… <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> start_year              double    2022          <span style="color: #BB0000;">NA</span>                2022  2022 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> settlement_factor       double    1             <span style="color: #BB0000;">NA</span>                0     1    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">13</span> exp_share_damages_paid  double    0.027         <span style="color: #BB0000;">NA</span>                0     1    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">14</span> scc                     double    40            <span style="color: #BB0000;">NA</span>                0     10000</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">15</span> carbon_price_model      character no_carbon_tax no_carbon_tax, N… <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">16</span> market_passthrough      double    0             <span style="color: #BB0000;">NA</span>                0     1    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">17</span> financial_stimulus      double    1             <span style="color: #BB0000;">NA</span>                1     5</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">stress_test_arguments</span></span></code></pre></div>
 <p>Note that special special rules apply for the variables
 <code>baseline_scenario</code> and <code>shock_scenario</code>. Baseline
 and shock scenarios can in principle be selected from the following:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">scenarios</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">scenario_geography_x_ald_sector</span><span class="op">$</span><span class="va">scenario</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">scenarios</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  [1] "WEO2021_APS"             "WEO2021_SDS"            </span></span>
-<span><span class="co">#&gt;  [3] "WEO2021_STEPS"           "NGFS2021_GCAM_B2DS"     </span></span>
-<span><span class="co">#&gt;  [5] "NGFS2021_GCAM_CP"        "NGFS2021_GCAM_DN0"      </span></span>
-<span><span class="co">#&gt;  [7] "NGFS2021_GCAM_DT"        "NGFS2021_GCAM_NDC"      </span></span>
-<span><span class="co">#&gt;  [9] "NGFS2021_GCAM_NZ2050"    "NGFS2021_MESSAGE_B2DS"  </span></span>
-<span><span class="co">#&gt; [11] "NGFS2021_MESSAGE_CP"     "NGFS2021_MESSAGE_DN0"   </span></span>
-<span><span class="co">#&gt; [13] "NGFS2021_MESSAGE_DT"     "NGFS2021_MESSAGE_NDC"   </span></span>
-<span><span class="co">#&gt; [15] "NGFS2021_MESSAGE_NZ2050" "NGFS2021_REMIND_B2DS"   </span></span>
-<span><span class="co">#&gt; [17] "NGFS2021_REMIND_CP"      "NGFS2021_REMIND_DN0"    </span></span>
-<span><span class="co">#&gt; [19] "NGFS2021_REMIND_DT"      "NGFS2021_REMIND_NDC"    </span></span>
-<span><span class="co">#&gt; [21] "NGFS2021_REMIND_NZ2050"  "IPR2021_FPS"            </span></span>
-<span><span class="co">#&gt; [23] "IPR2021_RPS"             "IPR2021_baseline"       </span></span>
-<span><span class="co">#&gt; [25] "GECO2021_1.5C-Unif"      "GECO2021_CurPol"        </span></span>
-<span><span class="co">#&gt; [27] "GECO2021_NDC-LTS"        "Oxford2021_base"        </span></span>
-<span><span class="co">#&gt; [29] "Oxford2021_fast"         "WEO2021_NZE_2050"</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">scenarios</span><span class="op">)</span></span></code></pre></div>
 <p>Which scenarios are supported however depends on the analysed
 <code>sector</code> and <code>scenario_geography</code>.</p>
 <p><strong>NOTE:</strong> It is <strong>strongly recommended</strong> to

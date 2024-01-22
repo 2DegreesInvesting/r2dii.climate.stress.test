@@ -74,12 +74,16 @@ of <code>sector</code> and <code>scenario_geography</code> is not available an e
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">scenario_for_sector_x_geography</span><span class="op">(</span><span class="va">sector</span>, <span class="va">scenario_geography</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">scenario_for_sector_x_geography</span><span class="op">(</span><span class="va">st_input_folder</span>, <span class="va">sector</span>, <span class="va">scenario_geography</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>sector</dt>
+    <dl><dt>st_input_folder</dt>
+<dd><p>path to the input folder containing stress test input files</p></dd>
+
+
+<dt>sector</dt>
 <dd><p>String of length 1 holding sector name.</p></dd>
 
 
@@ -94,12 +98,6 @@ of <code>sector</code> and <code>scenario_geography</code> is not available an e
 <p>A string holding valid scenario names.</p>
     </div>
 
-    <div id="ref-examples">
-    <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">scenario_for_sector_x_geography</span><span class="op">(</span><span class="st">"Coal"</span>, <span class="st">"Europe"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "WEO2021_APS"   "WEO2021_SDS"   "WEO2021_STEPS"</span>
-</code></pre></div>
-    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>

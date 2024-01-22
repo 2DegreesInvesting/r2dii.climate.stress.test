@@ -145,6 +145,9 @@
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/get_iter_var.html</loc>
   </url>
   <url>
+    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/get_scenario_geography_x_ald_sector.html</loc>
+  </url>
+  <url>
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/index.html</loc>
   </url>
   <url>
@@ -208,9 +211,6 @@
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/scenario_for_sector_x_geography.html</loc>
   </url>
   <url>
-    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/scenario_geography_x_ald_sector.html</loc>
-  </url>
-  <url>
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/set_baseline_trajectory.html</loc>
   </url>
   <url>
@@ -236,9 +236,6 @@
   </url>
   <url>
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/validate_values_in_range.html</loc>
-  </url>
-  <url>
-    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/validate_values_in_values.html</loc>
   </url>
   <url>
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/wrangle_results.html</loc>
