@@ -547,11 +547,21 @@ infer_sectors_and_technologies <- function(price_data, scenario_data, baseline_s
 
   if (nrow(scenario_geography_x_ald_sector) != nrow(available_scenario_geography_data) |
       nrow(scenario_geography_x_ald_sector) != nrow(available_price_data) ) {
+
+    anti_joined_rows <- dplyr::bind_rows(
+      dplyr::anti_join(available_scenario_geography_data, available_price_data),
+      dplyr::anti_join(available_price_data, available_scenario_geography_data)
+    )
+    # Convert the dataframe to a string
+    rows_as_string <- apply(anti_joined_rows, 1, function(x) paste(x, collapse = ", "))
+    formatted_rows <- paste(rows_as_string, collapse = "\n")
+
+
     rlang::abort(
       c(
         "Could not match all the data points between price and scenario datasets.",
         x = glue::glue("baseline scenario: {baseline_scenario}, shock_scenario: {shock_scenario}, scenario_geography: {scenario_geography}"),
-        i = "Please solve the mismatch of datapoints that appear on the given perimeter, between price_data_long.csv and Scenarios_AnalysisInput.csv ."
+        i = glue::glue("Please solve the mismatch of datapoints that appear on the given perimeter, between price_data_long.csv and Scenarios_AnalysisInput.csv . \n Mismatching rows : \n {formatted_rows}")
       )
     )
   }
