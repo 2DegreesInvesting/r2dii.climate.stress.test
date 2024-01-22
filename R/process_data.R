@@ -458,8 +458,6 @@ st_process <- function(data, scenario_geography, baseline_scenario,
     end_year = end_year,
     sectors = sectors_and_technologies_list$sectors,
     technologies = sectors_and_technologies_list$technologies,
-    sectors = sectors_and_technologies_list$sectors,
-    technologies = sectors_and_technologies_list$technologies,
     scenario_geography_filter = scenario_geography,
     scenarios_filter = scenarios_filter
   )
@@ -484,8 +482,6 @@ st_process <- function(data, scenario_geography, baseline_scenario,
     scenario_geography_filter = scenario_geography,
     sectors = sectors_and_technologies_list$sectors,
     technologies = sectors_and_technologies_list$technologies,
-    sectors = sectors_and_technologies_list$sectors,
-    technologies = sectors_and_technologies_list$technologies,
     log_path = log_path
   )
 
@@ -500,7 +496,6 @@ st_process <- function(data, scenario_geography, baseline_scenario,
     )
 
   # capacity_factors are only applied for power sector
-  if ("Power" %in% sectors_and_technologies_list$sectors) {
   if ("Power" %in% sectors_and_technologies_list$sectors) {
     capacity_factors_power <- process_capacity_factors_power(
       data$capacity_factors_power,
