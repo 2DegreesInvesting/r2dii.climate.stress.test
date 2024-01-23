@@ -374,14 +374,23 @@ process_financial_data <- function(data) {
 }
 
 st_process <- function(data, scenario_geography, baseline_scenario,
-                       shock_scenario, sectors, technologies, start_year, carbon_price_model,
+                       shock_scenario, start_year, carbon_price_model,
                        log_path, end_year) {
+
   scenarios_filter <- c(baseline_scenario, shock_scenario)
+
+  sectors_and_technologies_list <- infer_sectors_and_technologies(
+    price_data=data$df_price,
+    scenario_data=data$scenario_data,
+    baseline_scenario = baseline_scenario,
+    shock_scenario = shock_scenario,
+    scenario_geography = scenario_geography
+  )
 
   df_price <- process_price_data(
     data$df_price,
-    technologies = technologies,
-    sectors = sectors,
+    technologies = sectors_and_technologies_list$technologies,
+    sectors = sectors_and_technologies_list$sectors,
     start_year = start_year,
     end_year = end_year,
     scenarios_filter = scenarios_filter
@@ -391,8 +400,8 @@ st_process <- function(data, scenario_geography, baseline_scenario,
     data$scenario_data,
     start_year = start_year,
     end_year = end_year,
-    sectors = sectors,
-    technologies = technologies,
+    sectors = sectors_and_technologies_list$sectors,
+    technologies = sectors_and_technologies_list$technologies,
     scenario_geography_filter = scenario_geography,
     scenarios_filter = scenarios_filter
   )
@@ -415,8 +424,8 @@ st_process <- function(data, scenario_geography, baseline_scenario,
     end_year = end_year,
     time_horizon = time_horizon_lookup,
     scenario_geography_filter = scenario_geography,
-    sectors = sectors,
-    technologies = technologies,
+    sectors = sectors_and_technologies_list$sectors,
+    technologies = sectors_and_technologies_list$technologies,
     log_path = log_path
   )
 
@@ -431,12 +440,12 @@ st_process <- function(data, scenario_geography, baseline_scenario,
     )
 
   # capacity_factors are only applied for power sector
-  if ("Power" %in% sectors) {
+  if ("Power" %in% sectors_and_technologies_list$sectors) {
     capacity_factors_power <- process_capacity_factors_power(
       data$capacity_factors_power,
       scenarios_filter = scenarios_filter,
       scenario_geography_filter = scenario_geography,
-      technologies = technologies,
+      technologies = sectors_and_technologies_list$technologies,
       start_year = start_year,
       end_year = end_year
     )

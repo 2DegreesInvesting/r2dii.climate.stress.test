@@ -6,6 +6,5 @@
 #' @importFrom utils data
 NULL
 globalVariables(c(
-  "scenario_geography_x_ald_sector",
   "stress_test_arguments"
 ))
