@@ -629,7 +629,8 @@ infer_scenario_type <- function(baseline_scenario, shock_scenario) {
     rlang::abort(
       c(
         "The chosen baseline and shock scenario cannot be combined with one another",
-        x = glue::glue("baseline scenario: {baseline_scenario}, shock_scenario: {shock_scenario}")
+        x = glue::glue("baseline scenario: {baseline_scenario}, shock_scenario: {shock_scenario}"),
+        i = "Use function get_scenario_geography_x_ald_sector(st_input_folder) to find an appropriate pair."
       )
     )
   }
