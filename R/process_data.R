@@ -363,6 +363,7 @@ st_process <- function(data, scenario_geography, baseline_scenario,
   sectors_and_technologies_list <- infer_sectors_and_technologies(
     price_data=data$df_price,
     scenario_data=data$scenario_data,
+    production_data=data$production_data,
     baseline_scenario = baseline_scenario,
     shock_scenario = shock_scenario,
     scenario_geography = scenario_geography

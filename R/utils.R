@@ -473,7 +473,14 @@ stop_if_empty <- function(data, data_name) {
 #'
 #' @return A list with entries sectors and technologies
 #' @noRd
-infer_sectors_and_technologies <- function(price_data, scenario_data, baseline_scenario, shock_scenario, scenario_geography) {
+infer_sectors_and_technologies <-
+  function(price_data,
+           scenario_data,
+           production_data,
+           baseline_scenario,
+           shock_scenario,
+           scenario_geography) {
+
 
   baseline_type <- scenario_data %>%
     dplyr::distinct(.data$scenario, .data$scenario_type) %>%
@@ -543,7 +550,7 @@ infer_sectors_and_technologies <- function(price_data, scenario_data, baseline_s
     dplyr::filter(.data$scenario %in% c(baseline_scenario, shock_scenario))
 
 
-  scenario_geography_x_ald_sector <- dplyr::inner_join(available_scenario_geography_data, available_price_data)
+  scenario_geography_x_ald_sector <- dplyr::inner_join( available_scenario_geography_data, available_price_data)
 
   if (nrow(scenario_geography_x_ald_sector) != nrow(available_scenario_geography_data) |
       nrow(scenario_geography_x_ald_sector) != nrow(available_price_data) ) {
@@ -565,6 +572,11 @@ infer_sectors_and_technologies <- function(price_data, scenario_data, baseline_s
       )
     )
   }
+
+  available_production_data <- production_data %>%
+    dplyr::distinct(.data$ald_sector, .data$ald_business_unit)
+
+  scenario_geography_x_ald_sector <- dplyr::inner_join( scenario_geography_x_ald_sector, available_production_data)
 
   sectors_baseline <- scenario_geography_x_ald_sector %>%
     dplyr::filter(.data$scenario == !!baseline_scenario & .data$scenario_geography == !!scenario_geography) %>%

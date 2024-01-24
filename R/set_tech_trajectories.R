@@ -153,6 +153,7 @@ set_trisk_trajectory <- function(data,
                                  end_year,
                                  analysis_time_frame,
                                  log_path) {
+
   validate_data_has_expected_cols(
     data = data,
     expected_columns = c(

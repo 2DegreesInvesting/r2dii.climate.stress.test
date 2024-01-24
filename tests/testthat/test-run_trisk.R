@@ -61,25 +61,29 @@ test_that("All scenario combinations are valid", {
 
   in_agnostic <- fs::path("test_data", "ST_INPUTS_DEV")
   scenario_geography_x_ald_sector <- get_scenario_geography_x_ald_sector(in_agnostic) |>
-    dplyr::distinct(.data$baseline_scenario, .data$shock_scenario)
+    dplyr::distinct(.data$baseline_scenario, .data$shock_scenario, .data$scenario_geography)
 
   error_happened <- FALSE
-  for (i in 1:nrow(scenario_geography_x_ald_sector)){
-    row_params <- scenario_geography_x_ald_sector[i,]
-    tryCatch(
-    {suppressWarnings(suppressMessages(capture.output(run_trisk(
-      input_path = in_agnostic,
-      output_path = tempdir(),
-      baseline_scenario = row_params$baseline_scenario,
-      shock_scenario = row_params$shock_scenario)
-    )))
+  for (i in 1:nrow(scenario_geography_x_ald_sector)) {
+    row_params <- scenario_geography_x_ald_sector[i, ]
+    tryCatch({
+      suppressWarnings(suppressMessages(capture.output(
+        run_trisk(
+          input_path = in_agnostic,
+          output_path = tempdir(),
+          baseline_scenario = row_params$baseline_scenario,
+          shock_scenario = row_params$shock_scenario,
+          scenario_geography = row_params$scenario_geography
+        )
+      )))
 
-    cat(paste("Pass", row_params, '\n'))
+      cat(paste("Pass", row_params, '\n'))
     },
-    error=function(e){
+    error = function(e) {
       cat(paste("Failed", row_params, '\n'))
       error_happened <- TRUE
     })
   }
+
   expect_false(error_happened)
 })
