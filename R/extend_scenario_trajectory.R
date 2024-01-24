@@ -32,6 +32,7 @@ extend_scenario_trajectory <- function(data,
                                        end_analysis,
                                        time_frame,
                                        target_scenario) {
+
   validate_data_has_expected_cols(
     data = data,
     expected_columns = c(

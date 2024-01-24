@@ -252,26 +252,6 @@ harmonise_cap_fac_geo_names <- function(data) {
 #' @noRd
 process_price_data <- function(data, technologies, sectors, start_year, end_year,
                                scenarios_filter) {
-  # adding dummy unit price data for automotive data
-  if ("Automotive" %in% sectors) {
-    auto_tech <- p4i_p4b_sector_technology_lookup %>%
-      dplyr::filter(.data$sector_p4i == "Automotive") %>%
-      dplyr::pull(.data$technology_p4i)
-
-    automotive_data <- tidyr::expand_grid(
-      year = min(data$year):max(data$year),
-      scenario = scenarios_filter,
-      ald_sector = "Automotive",
-      ald_business_unit = auto_tech,
-      price = 1
-    )
-
-    data <- data %>%
-      dplyr::bind_rows(automotive_data) %>%
-      dplyr::arrange(
-        .data$scenario, .data$ald_sector, .data$ald_business_unit, .data$year
-      )
-  }
 
   data_processed <- data %>%
     dplyr::filter(.data$ald_sector %in% .env$sectors) %>%
@@ -306,6 +286,7 @@ process_price_data <- function(data, technologies, sectors, start_year, end_year
 #' @noRd
 process_scenario_data <- function(data, start_year, end_year, sectors, technologies,
                                   scenario_geography_filter, scenarios_filter) {
+
   data_processed <- data %>%
     dplyr::filter(.data$scenario %in% .env$scenarios_filter) %>%
     dplyr::filter(.data$scenario_geography %in% .env$scenario_geography_filter) %>%
