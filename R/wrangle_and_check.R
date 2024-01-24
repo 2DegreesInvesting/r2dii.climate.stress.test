@@ -219,9 +219,6 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars, risk_type) 
       )
   }
 
-
-
-
   crispy_output <- crispy_output %>%
     dplyr::rename(
       ald_sector = .data$ald_sector,
