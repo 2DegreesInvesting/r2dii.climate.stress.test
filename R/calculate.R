@@ -24,6 +24,7 @@ calculate_trisk_trajectory <- function(input_data_list,
                                        end_year,
                                        time_horizon,
                                        log_path) {
+
   production_data <- input_data_list$production_data %>%
     set_baseline_trajectory(
       baseline_scenario = baseline_scenario

@@ -5,7 +5,7 @@
 #' @return scenario_geography_x_ald_sector
 #' @export
 #'
-get_scenario_geography_x_ald_sector <- function(st_input_folder){
+get_scenario_geography_x_ald_sector <- function(st_input_folder) {
   st_data <- st_read_agnostic(st_input_folder, risk_type = "trisk")
 
 
@@ -13,14 +13,42 @@ get_scenario_geography_x_ald_sector <- function(st_input_folder){
     dplyr::distinct(.data$ald_sector, .data$scenario_geography)
 
   scenario_data_available <- st_data$scenario_data %>%
-    dplyr::distinct(.data$scenario, .data$ald_sector, .data$scenario_geography)
+    dplyr::distinct(.data$scenario, .data$ald_sector, .data$scenario_geography, .data$scenario_type)
 
   price_data_available <- st_data$df_price %>%
     dplyr::distinct(.data$scenario, .data$ald_sector)
 
-  scenario_geography_x_ald_sector <- dplyr::inner_join(
-    dplyr::inner_join(production_data_available, scenario_data_available),
-    price_data_available)
+  capacity_factor_available <- st_data$capacity_factors_power %>%
+    dplyr::distinct(.data$scenario, .data$scenario_geography)
+
+  scenario_geography_x_ald_sector <-
+    dplyr::inner_join(
+      dplyr::inner_join(
+        dplyr::inner_join(
+          production_data_available,
+          scenario_data_available
+          ),
+        price_data_available
+        ),
+      capacity_factor_available
+    )
+
+  # Splitting the scenario into prefix and type
+  scenario_geography_x_ald_sector$scenario_prefix <- sub("_.*", "", scenario_geography_x_ald_sector$scenario)
+
+  # Separating the dataframe into baseline and shock scenarios
+  baseline_df <- dplyr::filter(scenario_geography_x_ald_sector, .data$scenario_type == "baseline")
+  shock_df <- dplyr::filter(scenario_geography_x_ald_sector, .data$scenario_type == "shock")
+
+  # Merging baseline and shock scenarios based on sector, geography, and scenario prefix
+  scenario_geography_x_ald_sector <- dplyr::left_join(baseline_df, shock_df, by = c("ald_sector", "scenario_geography", "scenario_prefix"), suffix = c("_baseline", "_shock")) |>
+    dplyr::select(
+      .data$ald_sector,
+      .data$scenario_geography,
+      baseline_scenario = .data$scenario_baseline,
+      shock_scenario = .data$scenario_shock
+    )
+
 
   return(scenario_geography_x_ald_sector)
 }
@@ -39,7 +67,6 @@ get_scenario_geography_x_ald_sector <- function(st_input_folder){
 #' @export
 #'
 geographies_for_sector <- function(st_input_folder, sector) {
-
   overview <- get_scenario_geography_x_ald_sector(st_input_folder)
 
   if (length(sector) > 1) {
@@ -84,7 +111,6 @@ geographies_for_sector <- function(st_input_folder, sector) {
 #' @export
 #'
 scenario_for_sector_x_geography <- function(st_input_folder, sector, scenario_geography) {
-
   overview <- get_scenario_geography_x_ald_sector(st_input_folder)
 
   if (length(sector) > 1) {
