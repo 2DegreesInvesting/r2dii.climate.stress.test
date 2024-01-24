@@ -13,11 +13,10 @@ get_scenario_geography_x_ald_sector <- function(st_input_folder) {
     dplyr::distinct(.data$ald_sector, .data$scenario_geography)
 
   scenario_data_available <- st_data$scenario_data %>%
-    dplyr::distinct(.data$scenario, .data$ald_sector, .data$scenario_geography, .data$scenario_type)
+    dplyr::distinct(.data$scenario, .data$ald_sector, .data$scenario_geography, .data$scenario_type, .data$scenario_type)
 
   price_data_available <- st_data$df_price %>%
     dplyr::distinct(.data$scenario, .data$ald_sector)
-
 
   capacity_factor_available <- st_data$capacity_factors_power %>%
     dplyr::distinct(.data$scenario, .data$scenario_geography)
