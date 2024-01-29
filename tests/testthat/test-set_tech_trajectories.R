@@ -50,17 +50,29 @@ test_that("set_baseline_trajectories replicates provided production trajectory
 })
 
 
-test_that("calc_future_prod_follows_scen sets baseline values to prod forecast
+test_that("set_baseline_trajectory sets baseline values to prod forecast
           for the forecast period", {
   test_data_calc_future_prod <- read_test_data("data_calc_future_prod.csv")
 
-  scen_follows_prod <- test_data_calc_future_prod %>%
+  # data adaptation to the function
+  test_data_calc_future_prod <- test_data_calc_future_prod %>%
     dplyr::mutate(
-      baseline = calc_future_prod_follows_scen(
-        planned_prod = test_data_calc_future_prod$plan_tech_prod,
-        change_scen_prod = test_data_calc_future_prod$scenario_change
-      )
+      scenario_change = .data$scenario_change * 10,
+      TEST_BASELINE = cumsum(tidyr::replace_na(.data$scenario_change, 0))
     )
+  test_data_calc_future_prod[, c(
+    "ald_business_unit",
+    "ald_sector",
+    "company_id",
+    "company_name",
+    "emission_factor",
+    "scenario_geography"
+  )] <- NA
+
+  scen_follows_prod <- set_baseline_trajectory(
+    data = test_data_calc_future_prod,
+    baseline_scenario = "TEST_BASELINE"
+  )
 
   forecast_length <- sum(!is.na(scen_follows_prod$plan_tech_prod))
 
@@ -71,21 +83,34 @@ test_that("calc_future_prod_follows_scen sets baseline values to prod forecast
   )
 })
 
-test_that("calc_future_prod_follows_scen sets baseline values to prod forecast
+test_that("set_baseline_trajectory sets baseline CHANGE values to prod forecast
           for the forecast period", {
   test_data_calc_future_prod <- read_test_data("data_calc_future_prod.csv")
 
-  scen_follows_change <- test_data_calc_future_prod %>%
+  # data adaptation to the function
+  test_data_calc_future_prod <- test_data_calc_future_prod %>%
     dplyr::mutate(
-      baseline = calc_future_prod_follows_scen(
-        planned_prod = test_data_calc_future_prod$plan_tech_prod,
-        change_scen_prod = test_data_calc_future_prod$scenario_change
-      )
+      scenario_change = .data$scenario_change * 10,
+      TEST_BASELINE = cumsum(tidyr::replace_na(.data$scenario_change, 0))
     )
+  test_data_calc_future_prod[, c(
+    "ald_business_unit",
+    "ald_sector",
+    "company_id",
+    "company_name",
+    "emission_factor",
+    "scenario_geography"
+  )] <- NA
+
+  scen_follows_change <- set_baseline_trajectory(
+    test_data_calc_future_prod,
+    baseline_scenario = "TEST_BASELINE"
+  )
 
   post_forecast_length <- sum(is.na(scen_follows_change$plan_tech_prod))
 
   scen_follows_change <- scen_follows_change %>%
+    dplyr::bind_cols(test_data_calc_future_prod %>% dplyr::select(scenario_change)) %>%
     dplyr::mutate(
       baseline_change = baseline - dplyr::lag(baseline),
       baseline_change = round(baseline_change, 7),

@@ -17,5 +17,8 @@ test_that("with iteration, using default settings output is unchanged", {
     )
   ))
 
+  results$crispy_output <- results$crispy_output |> dplyr::select(-c(.data$run_id))
+  results$company_trajectories <- results$company_trajectories |> dplyr::select(-c(.data$run_id))
+
   expect_snapshot(lapply(results, as.data.frame))
 })

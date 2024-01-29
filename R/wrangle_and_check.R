@@ -210,17 +210,14 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars, risk_type) 
         settlement_factor = .data$settlement_factor_arg,
         exp_share_damages_paid = .data$exp_share_damages_paid_arg
       )
-  } else{
+  } else {
     crispy_output <- crispy_output %>%
       dplyr::rename(
-        carbon_price_model=.data$carbon_price_model_arg,
-        market_passthrough=.data$market_passthrough_arg,
-        financial_stimulus=.data$financial_stimulus_arg
+        carbon_price_model = .data$carbon_price_model_arg,
+        market_passthrough = .data$market_passthrough_arg,
+        financial_stimulus = .data$financial_stimulus_arg
       )
   }
-
-
-
 
   crispy_output <- crispy_output %>%
     dplyr::rename(
@@ -242,7 +239,7 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars, risk_type) 
     dplyr::mutate(roll_up_type = "equity_ownership") %>%
     dplyr::mutate(
       net_present_value_difference = .data$net_present_value_shock - .data$net_present_value_baseline,
-      net_present_value_roc = .data$net_present_value_shock/.data$net_present_value_baseline -1,
+      net_present_value_roc = .data$net_present_value_shock / .data$net_present_value_baseline - 1,
       pd_difference = .data$pd_shock - .data$pd_baseline
     )
 
@@ -274,6 +271,14 @@ wrangle_results <- function(results_list, sensitivity_analysis_vars, risk_type) 
         .data$term, .data$pd_baseline, .data$pd_shock, .data$pd_difference
       )
   }
+
+  # add a random uuid as the run_id
+  run_id <- uuid::UUIDgenerate()
+  company_trajectories <- company_trajectories %>%
+    dplyr::mutate(run_id = .env$run_id)
+  crispy_output <- crispy_output %>%
+    dplyr::mutate(run_id = .env$run_id)
+
   return(list(
     company_trajectories = company_trajectories,
     crispy_output = crispy_output

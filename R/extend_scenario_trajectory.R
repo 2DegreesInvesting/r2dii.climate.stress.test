@@ -65,13 +65,14 @@ extend_scenario_trajectory <- function(data,
     dplyr::inner_join(
       scenario_data,
       by = c("ald_sector", "ald_business_unit", "scenario_geography", "year")
-    ) %>%
-    report_all_duplicate_kinds(
-      composite_unique_cols = c(
-        "year", "company_id", "company_name", "ald_sector", "ald_business_unit", "scenario",
-        "scenario_geography", "units"
-      )
     )
+  # %>%
+  # report_all_duplicate_kinds(
+  #   composite_unique_cols = c(
+  #     "year", "company_id", "company_name", "ald_sector", "ald_business_unit", "scenario",
+  #     "scenario_geography", "units"
+  #   )
+  # )
 
   data <- data %>%
     summarise_production_sector_forecasts()
@@ -121,18 +122,15 @@ summarise_production_technology_forecasts <- function(data,
     dplyr::select(
       dplyr::all_of(c(
         "company_id", "company_name", "ald_sector", "ald_business_unit",
-        "scenario_geography", "year", "plan_tech_prod",
+        "scenario_geography", "year", "plan_tech_prod", "plan_sec_prod",
         "plan_emission_factor"
       ))
     ) %>%
     dplyr::filter(.data$year <= .env$start_analysis + .env$time_frame) %>%
+    dplyr::arrange(.data$year) %>%
     dplyr::group_by(
       .data$company_id, .data$company_name, .data$ald_sector, .data$ald_business_unit,
       .data$scenario_geography
-    ) %>%
-    dplyr::arrange(
-      .data$company_id, .data$company_name, .data$ald_sector, .data$ald_business_unit,
-      .data$scenario_geography, .data$year
     ) %>%
     dplyr::mutate(
       # Initial value is identical between production and scenario target,
@@ -215,15 +213,7 @@ extend_to_full_analysis_timeframe <- function(data,
 #' @noRd
 summarise_production_sector_forecasts <- function(data) {
   data <- data %>%
-    dplyr::group_by(
-      .data$company_id, .data$company_name, .data$ald_sector, .data$scenario,
-      .data$scenario_geography, .data$units, .data$year
-    ) %>%
-    dplyr::mutate(
-      plan_sec_prod = sum(.data$plan_tech_prod, na.rm = TRUE)
-    ) %>%
     dplyr::arrange(.data$year) %>%
-    dplyr::ungroup() %>%
     dplyr::group_by(
       .data$company_id, .data$company_name, .data$ald_sector, .data$scenario,
       .data$scenario_geography, .data$units

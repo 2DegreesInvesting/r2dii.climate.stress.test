@@ -28,7 +28,6 @@ License: MIT + file LICENSE
 Depends:
     R (>= 3.4)
 Imports: 
-    config,
     dplyr,
     fs,
     ggplot2,
@@ -39,6 +38,7 @@ Imports:
     rlang,
     tibble,
     tidyr,
+    uuid,
     withr,
     zoo
 Suggests: 

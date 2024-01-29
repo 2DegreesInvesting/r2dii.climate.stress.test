@@ -414,13 +414,10 @@ customise_output_path <- function(output_path, iter_var, shock_scenario, scenari
   }
 
   if (risk_type == "trisk") {
-
-    if(financial_stimulus > 1){
-
-    timestamp <- paste(format(Sys.time(), "%Y_%m_%d_%H_%M_%S"), iter_var, shock_scenario, scenario_geography, carbon_price_model, financial_stimulus, sep = "_")
+    if (financial_stimulus > 1) {
+      timestamp <- paste(format(Sys.time(), "%Y_%m_%d_%H_%M_%S"), iter_var, shock_scenario, scenario_geography, carbon_price_model, financial_stimulus, sep = "_")
     } else {
-    timestamp <- paste(format(Sys.time(), "%Y_%m_%d_%H_%M_%S"), iter_var, shock_scenario, scenario_geography, carbon_price_model, sep = "_")
-
+      timestamp <- paste(format(Sys.time(), "%Y_%m_%d_%H_%M_%S"), iter_var, shock_scenario, scenario_geography, carbon_price_model, sep = "_")
     }
   }
 
@@ -435,14 +432,10 @@ customise_output_path <- function(output_path, iter_var, shock_scenario, scenari
   if (risk_type == "trisk") {
     # FIXME: quick solution to avoid empty output dirs in case of failing calculations
 
-    if(financial_stimulus > 1 ){
-      paste_write("Starting analysis.", log_path = file.path(output_path_custom, paste0("log_file_", iter_var, sep = "_", shock_scenario, sep = "_", scenario_geography, sep = "_", carbon_price_model,sep = "_", financial_stimulus, ".txt")))
-
-    } else
-    {
+    if (financial_stimulus > 1) {
+      paste_write("Starting analysis.", log_path = file.path(output_path_custom, paste0("log_file_", iter_var, sep = "_", shock_scenario, sep = "_", scenario_geography, sep = "_", carbon_price_model, sep = "_", financial_stimulus, ".txt")))
+    } else {
       paste_write("Starting analysis.", log_path = file.path(output_path_custom, paste0("log_file_", iter_var, sep = "_", shock_scenario, sep = "_", scenario_geography, sep = "_", carbon_price_model, ".txt")))
-
-
     }
 
     paste_write("Starting analysis.", log_path = file.path(output_path_custom, paste0("log_file_", iter_var, sep = "_", shock_scenario, sep = "_", scenario_geography, sep = "_", carbon_price_model, ".txt")))
@@ -607,39 +600,49 @@ infer_sectors_and_technologies <-
     dplyr::pull(.data$ald_business_unit)
 
   technologies <- dplyr::intersect(technologies_baseline, technologies_shock)
+  technologies_baseline <- scenario_geography_x_ald_sector %>%
+    dplyr::filter(.data$scenario == !!baseline_scenario & .data$scenario_geography == !!scenario_geography) %>%
+    dplyr::pull(.data$ald_business_unit)
+
+  technologies_shock <- scenario_geography_x_ald_sector %>%
+    dplyr::filter(.data$scenario == !!shock_scenario & .data$scenario_geography == !!scenario_geography) %>%
+    dplyr::pull(.data$ald_business_unit)
+
+  technologies <- dplyr::intersect(technologies_baseline, technologies_shock)
 
   return(list(sectors = shared_sectors, technologies = technologies))
 }
 
 infer_scenario_type <- function(baseline_scenario, shock_scenario) {
   if (startsWith(baseline_scenario, "NGFS") &
-      startsWith(shock_scenario, "NGFS")) {
+    startsWith(shock_scenario, "NGFS")) {
     return("is_ngfs")
   }
 
   if (startsWith(baseline_scenario, "IPR") &
-      startsWith(shock_scenario, "IPR")) {
+    startsWith(shock_scenario, "IPR")) {
     return("is_ipr")
   }
 
   if (startsWith(baseline_scenario, "GECO") &
-      startsWith(shock_scenario, "GECO")) {
+    startsWith(shock_scenario, "GECO")) {
     return("is_geco")
   }
 
   if (startsWith(baseline_scenario, "Oxford") &
-      startsWith(shock_scenario, "Oxford")) {
+    startsWith(shock_scenario, "Oxford")) {
     return("is_oxford")
   }
 
   if (startsWith(baseline_scenario, "WEO") &
-      startsWith(shock_scenario, "WEO")) {
+    startsWith(shock_scenario, "WEO")) {
     return("is_weo")
   } else {
     rlang::abort(
       c(
         "The chosen baseline and shock scenario cannot be combined with one another",
-        x = glue::glue("baseline scenario: {baseline_scenario}, shock_scenario: {shock_scenario}")
+        x = glue::glue("baseline scenario: {baseline_scenario}, shock_scenario: {shock_scenario}"),
+        i = "Use function get_scenario_geography_x_ald_sector(st_input_folder) to find an appropriate pair."
       )
     )
   }

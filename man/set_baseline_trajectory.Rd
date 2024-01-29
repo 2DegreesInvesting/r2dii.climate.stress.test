@@ -36,7 +36,6 @@ portfolio/ald_business_unit level.
 }
 \seealso{
 Other scenario definition: 
-\code{\link{calc_future_prod_follows_scen}()},
 \code{\link{calc_late_sudden_traj}()},
 \code{\link{set_trisk_trajectory}()}
 }
