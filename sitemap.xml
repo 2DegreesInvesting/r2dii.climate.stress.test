@@ -40,9 +40,6 @@
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/asset_value_at_risk.html</loc>
   </url>
   <url>
-    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/calc_future_prod_follows_scen.html</loc>
-  </url>
-  <url>
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/calc_late_sudden_traj.html</loc>
   </url>
   <url>
@@ -218,6 +215,9 @@
   </url>
   <url>
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/set_trisk_trajectory.html</loc>
+  </url>
+  <url>
+    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/st_process_agnostic.html</loc>
   </url>
   <url>
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/stress_test_arguments.html</loc>
