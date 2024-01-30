@@ -4,7 +4,7 @@
 \alias{read_carbon_data}
 \title{Read in carbon price data from ngfs data}
 \usage{
-read_carbon_data(path = NULL)
+read_carbon_data()
 }
 \arguments{
 \item{path}{A string that points to the location of the file containing the

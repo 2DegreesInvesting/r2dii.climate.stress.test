@@ -4,7 +4,7 @@
 \alias{read_price_data}
 \title{Read in price data}
 \usage{
-read_price_data(path)
+read_price_data()
 }
 \arguments{
 \item{path}{A string that points to the location of the file containing the
