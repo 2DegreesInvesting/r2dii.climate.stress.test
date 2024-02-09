@@ -5,11 +5,13 @@
 #'   capacity factors.
 #' @family import functions
 read_capacity_factors_power <- function(path = NULL) {
-  path %||% stop("Must provide 'path'")
-
+  if (is.null(path)) {
+    data <- STDataMGMT::prewrangled_capacity_factors
+  }
+  else{
   data <- validate_file_exists(path) %>%
     readr::read_csv(col_types = readr::cols())
-
+  }
   validate_data_has_expected_cols(
     data = data,
     expected_columns = c(
@@ -18,4 +20,5 @@ read_capacity_factors_power <- function(path = NULL) {
   )
 
   return(data)
+  
 }
