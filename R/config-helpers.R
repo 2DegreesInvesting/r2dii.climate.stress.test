@@ -22,7 +22,7 @@ get_scenario_geography_x_ald_sector <- function(st_input_folder) {
     dplyr::distinct(.data$scenario, .data$scenario_geography)
 
   scenario_geography_x_ald_sector <-
-    dplyr::inner_join(
+    dplyr::left_join(
       dplyr::inner_join(
         dplyr::inner_join(
           production_data_available,
@@ -41,7 +41,11 @@ get_scenario_geography_x_ald_sector <- function(st_input_folder) {
   shock_df <- dplyr::filter(scenario_geography_x_ald_sector, .data$scenario_type == "shock")
 
   # Merging baseline and shock scenarios based on sector, geography, and scenario prefix
-  scenario_geography_x_ald_sector <- dplyr::left_join(baseline_df, shock_df, by = c("ald_sector", "scenario_geography", "scenario_prefix"), suffix = c("_baseline", "_shock")) |>
+  scenario_geography_x_ald_sector <-
+    dplyr::inner_join(
+      baseline_df, shock_df,
+      by = c("ald_sector", "scenario_geography", "scenario_prefix"),
+      suffix = c("_baseline", "_shock")) |>
     dplyr::select(
       .data$ald_sector,
       .data$scenario_geography,

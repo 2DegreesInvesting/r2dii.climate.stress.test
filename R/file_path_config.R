@@ -1,18 +1,15 @@
 capacity_factor_file <- function(dir) {
-  fp <- file.path(dir, "prewrangled_capacity_factors.csv")
-  out <- ifelse(file.exists(fp), fp, NULL)
+  out <- file.path(dir, "prewrangled_capacity_factors.csv")
   return(out)
 }
 
 price_data_file <- function(dir) {
-  fp <- file.path(dir, "price_data_long.csv")
-  out <- ifelse(file.exists(fp), fp, NULL)
+  out <- file.path(dir, "price_data_long.csv")
   return(out)
 }
 
 scenario_data_file <- function(dir) {
-  fp <- file.path(dir, glue::glue("Scenarios_AnalysisInput.csv"))
-  out <- ifelse(file.exists(fp), fp, NULL)
+  out <- file.path(dir, glue::glue("Scenarios_AnalysisInput.csv"))
   return(out)
 }
 
@@ -27,7 +24,6 @@ production_data_file <- function(dir) {
 }
 
 carbon_price_data_file <- function(dir) {
-  fp <- file.path(dir, "ngfs_carbon_price.csv")
-  out <- ifelse(file.exists(fp), fp, NULL)
+  out <- file.path(dir, "ngfs_carbon_price.csv")
   return(out)
 }

@@ -4,7 +4,7 @@
 \alias{read_scenario_data}
 \title{Read in scenario data}
 \usage{
-read_scenario_data(path = NULL)
+read_scenario_data(path)
 }
 \arguments{
 \item{path}{Path to dir holding scenario data.}

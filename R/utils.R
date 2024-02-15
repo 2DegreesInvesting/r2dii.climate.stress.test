@@ -513,7 +513,7 @@ infer_sectors_and_technologies <-
 
     rlang::abort(
       c(
-        "The selected baseline scenario is not of a shock type",
+        "The selected shock scenario is not of a shock type",
         x = glue::glue("baseline scenario: {baseline_scenario}, shock_scenario: {shock_scenario}, scenario_geography: {scenario_geography}"),
         i = glue::glue("Available shock scenarios : {available_shocks}")
       )
@@ -619,10 +619,16 @@ infer_scenario_type <- function(baseline_scenario, shock_scenario) {
     return("is_ngfs")
   }
 
-  if (startsWith(baseline_scenario, "IPR") &
-    startsWith(shock_scenario, "IPR")) {
+  if (startsWith(baseline_scenario, "IPR2023_") &
+      startsWith(shock_scenario, "IPR2023_")) {
     return("is_ipr")
   }
+
+  if (startsWith(baseline_scenario, "IPR2023Automotive_") &
+      startsWith(shock_scenario, "IPR2023Automotive_")) {
+    return("is_iprAuto")
+  }
+
 
   if (startsWith(baseline_scenario, "GECO") &
     startsWith(shock_scenario, "GECO")) {
