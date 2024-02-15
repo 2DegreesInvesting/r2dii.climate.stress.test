@@ -6,12 +6,8 @@
 #' @param path A string that points to the location of the file containing the
 #'   price data
 #' @return A tibble holding price data in long format.
-read_price_data <- function(path = NULL) {
-  if (is.null(path)) {
-    data <- STDataMGMT::price_data_long
-  }
-  else{
-    data <- validate_file_exists(path) %>%
+read_price_data <- function(path) {
+  data <- validate_file_exists(path) %>%
     readr::read_csv(
       col_types = readr::cols(
         year = "d",
@@ -23,8 +19,6 @@ read_price_data <- function(path = NULL) {
         price = "d"
       )
     )
-  }
-
 
   validate_data_has_expected_cols(
     data = data,
