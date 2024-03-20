@@ -87,12 +87,6 @@ run_trisk <- function(input_path,
     risk_type = "trisk"
   )
 
-  scenario_type <- infer_scenario_type(
-    baseline_scenario = baseline_scenario,
-    shock_scenario = shock_scenario
-  )
-
-
   args_list$output_path <- customise_output_path(
     output_path = args_list$output_path,
     iter_var = iter_var,
@@ -102,9 +96,6 @@ run_trisk <- function(input_path,
     carbon_price_model = carbon_price_model,
     risk_type = "trisk"
   )
-
-  args_list$end_year <- end_year_lookup(scenario_type = scenario_type)
-
 
   st_results_list <- run_stress_test_iteration(args_list)
 
@@ -171,7 +162,7 @@ run_stress_test_iteration <- function(args_list) {
 }
 
 # Avoid R CMD check NOTE: "Undefined global functions or variables"
-globalVariables(c(names(formals(run_trisk)), "iter_var", "end_year", "risk_type"))
+globalVariables(c(names(formals(run_trisk)), "iter_var", "risk_type"))
 
 read_and_process_and_calc <- function(args_list) {
   list2env(args_list, envir = rlang::current_env())
@@ -193,7 +184,6 @@ read_and_process_and_calc <- function(args_list) {
   cat("-- Reading input data from designated input path. \n")
 
   data <- st_read_agnostic(input_path, risk_type = "trisk")
-  data <- st_read_agnostic(input_path, risk_type = "trisk")
 
   cat("-- Processing input data. \n")
 
@@ -204,7 +194,6 @@ read_and_process_and_calc <- function(args_list) {
     shock_scenario = shock_scenario,
     start_year = start_year,
     carbon_price_model = carbon_price_model,
-    end_year = end_year,
     log_path = log_path
   )
 
