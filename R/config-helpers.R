@@ -1,15 +1,16 @@
 #' Get scenario_geography_x_ald_sector
 #'
 #' @param st_input_folder path to the folder containing the stress test files
+#' @param whitelist_sectors only sectors to use if any (leave NULL to use all sectors)
 #'
 #' @return scenario_geography_x_ald_sector
 #' @export
 #'
 get_scenario_geography_x_ald_sector <- function(st_input_folder, whitelist_sectors=NULL) {
 
-  capacity_factors_power = read_capacity_factors_power(capacity_factor_file(st_input_folder)),
-  df_price = read_price_data(price_data_file(st_input_folder)),
-  scenario_data = read_scenario_data(scenario_data_file(st_input_folder)),
+  capacity_factors_power = read_capacity_factors_power(capacity_factor_file(st_input_folder))
+  df_price = read_price_data(price_data_file(st_input_folder))
+  scenario_data = read_scenario_data(scenario_data_file(st_input_folder))
 
   scenario_data_available <- scenario_data %>%
     dplyr::distinct(.data$scenario, .data$ald_sector, .data$scenario_geography, .data$scenario_type)
@@ -24,15 +25,15 @@ get_scenario_geography_x_ald_sector <- function(st_input_folder, whitelist_secto
     dplyr::distinct(.data$scenario, .data$scenario_geography)
 
   scenario_geography_x_ald_sector <- dplyr::bind_rows(
-    scenario_geography_x_ald_sector %>% 
-      dplyr::filter(.data$ald_sector == "Power") %>% 
-      inner_join(capacity_factor_available),
+    scenario_geography_x_ald_sector %>%
+      dplyr::filter(.data$ald_sector == "Power") %>%
+      dplyr::inner_join(capacity_factor_available),
     scenario_geography_x_ald_sector %>% dplyr::filter(.data$ald_sector != "Power")
   )
 
   if (!is.null(whitelist_sectors)){
     scenario_geography_x_ald_sector <- scenario_geography_x_ald_sector |>
-      dplyr::filter(ald_sector %in% whitelist_sectors)
+      dplyr::filter(.data$ald_sector %in% whitelist_sectors)
   }
 
   # Splitting the scenario into prefix and type
