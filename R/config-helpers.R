@@ -5,33 +5,35 @@
 #' @return scenario_geography_x_ald_sector
 #' @export
 #'
-get_scenario_geography_x_ald_sector <- function(st_input_folder) {
-  st_data <- st_read_agnostic(st_input_folder, risk_type = "trisk")
+get_scenario_geography_x_ald_sector <- function(st_input_folder, whitelist_sectors=NULL) {
 
+  capacity_factors_power = read_capacity_factors_power(capacity_factor_file(st_input_folder)),
+  df_price = read_price_data(price_data_file(st_input_folder)),
+  scenario_data = read_scenario_data(scenario_data_file(st_input_folder)),
 
-  production_data_available <- st_data$production_data %>%
-    dplyr::distinct(.data$ald_sector, .data$scenario_geography)
+  scenario_data_available <- scenario_data %>%
+    dplyr::distinct(.data$scenario, .data$ald_sector, .data$scenario_geography, .data$scenario_type)
 
-  scenario_data_available <- st_data$scenario_data %>%
-    dplyr::distinct(.data$scenario, .data$ald_sector, .data$scenario_geography, .data$scenario_type, .data$scenario_type)
-
-  price_data_available <- st_data$df_price %>%
+  price_data_available <- df_price %>%
     dplyr::distinct(.data$scenario, .data$ald_sector)
 
-  capacity_factor_available <- st_data$capacity_factors_power %>%
+  scenario_geography_x_ald_sector <- dplyr::inner_join(price_data_available,scenario_data_available)
+
+
+  capacity_factor_available <- capacity_factors_power %>%
     dplyr::distinct(.data$scenario, .data$scenario_geography)
 
-  scenario_geography_x_ald_sector <-
-    dplyr::left_join(
-      dplyr::inner_join(
-        dplyr::inner_join(
-          production_data_available,
-          scenario_data_available
-          ),
-        price_data_available
-        ),
-      capacity_factor_available
-    )
+  scenario_geography_x_ald_sector <- dplyr::bind_rows(
+    scenario_geography_x_ald_sector %>% 
+      dplyr::filter(.data$ald_sector == "Power") %>% 
+      inner_join(capacity_factor_available),
+    scenario_geography_x_ald_sector %>% dplyr::filter(.data$ald_sector != "Power")
+  )
+
+  if (!is.null(whitelist_sectors)){
+    scenario_geography_x_ald_sector <- scenario_geography_x_ald_sector |>
+      dplyr::filter(ald_sector %in% whitelist_sectors)
+  }
 
   # Splitting the scenario into prefix and type
   scenario_geography_x_ald_sector$scenario_prefix <- sub("_.*", "", scenario_geography_x_ald_sector$scenario)
@@ -52,7 +54,6 @@ get_scenario_geography_x_ald_sector <- function(st_input_folder) {
       baseline_scenario = .data$scenario_baseline,
       shock_scenario = .data$scenario_shock
     )
-
 
   return(scenario_geography_x_ald_sector)
 }
