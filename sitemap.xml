@@ -91,9 +91,6 @@
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/check_results.html</loc>
   </url>
   <url>
-    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/check_sector_tech_mapping.html</loc>
-  </url>
-  <url>
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/check_valid_financial_data_values.html</loc>
   </url>
   <url>
@@ -137,6 +134,9 @@
   </url>
   <url>
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/geographies_for_sector.html</loc>
+  </url>
+  <url>
+    <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/get_end_year.html</loc>
   </url>
   <url>
     <loc>https://2degreesinvesting.github.io/r2dii.climate.stress.test/reference/get_iter_var.html</loc>
