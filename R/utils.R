@@ -613,6 +613,8 @@ infer_sectors_and_technologies <-
   return(list(sectors = shared_sectors, technologies = technologies))
 }
 
+# TODO THIS FUNCTION IS ONLY USED IN LRISK
+# REMOVE ASAP WHEN USING LRISK
 infer_scenario_type <- function(baseline_scenario, shock_scenario) {
   if (startsWith(baseline_scenario, "NGFS") &
     startsWith(shock_scenario, "NGFS")) {
