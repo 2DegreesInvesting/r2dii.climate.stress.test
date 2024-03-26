@@ -11,7 +11,6 @@ st_process_agnostic(
   shock_scenario,
   start_year,
   carbon_price_model,
-  end_year,
   log_path
 )
 }
@@ -27,8 +26,6 @@ st_process_agnostic(
 \item{start_year}{start_year}
 
 \item{carbon_price_model}{carbon_price_model}
-
-\item{end_year}{end_year}
 
 \item{log_path}{log_path}
 }

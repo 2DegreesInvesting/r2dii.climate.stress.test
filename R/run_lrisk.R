@@ -198,9 +198,8 @@ read_and_process_and_calc_lrisk <- function(args_list) {
       shock_scenario = shock_scenario,
       start_year = start_year,
       carbon_price_model = carbon_price_model,
-      log_path = log_path,
-      end_year = end_year
-    )
+      log_path = log_path
+      )
 
   input_data_list <- list(
     capacity_factors_power = processed$capacity_factors_power,

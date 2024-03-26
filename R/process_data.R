@@ -9,8 +9,6 @@
 #' @param shock_scenario shock_scenario
 #' @param start_year start_year
 #' @param carbon_price_model carbon_price_model
-#' @param end_year end_year
-#' @param carbon_price_model carbon_price_model
 #' @param log_path log_path
 #'
 #' @return processed input trisk data
@@ -22,8 +20,8 @@ st_process_agnostic <-
            shock_scenario,
            start_year,
            carbon_price_model,
-           end_year,
            log_path) {
+
     processed <- data %>%
       st_process(
         scenario_geography = scenario_geography,
@@ -31,8 +29,7 @@ st_process_agnostic <-
         shock_scenario = shock_scenario,
         start_year = start_year,
         carbon_price_model = carbon_price_model,
-        log_path = log_path,
-        end_year = end_year
+        log_path = log_path
       )
 
     input_data_list <- list(
@@ -311,7 +308,6 @@ process_price_data <- function(data, technologies, sectors, start_year, end_year
 
   data_processed <- data %>%
     dplyr::filter(.data$ald_sector %in% .env$sectors) %>%
-    check_sector_tech_mapping(sector_col = "ald_sector") %>%
     dplyr::filter(.data$ald_business_unit %in% .env$technologies) %>%
     dplyr::filter(.data$scenario %in% .env$scenarios_filter) %>%
     dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year)) %>%
@@ -348,7 +344,6 @@ process_scenario_data <- function(data, start_year, end_year, sectors, technolog
     dplyr::filter(.data$scenario_geography %in% .env$scenario_geography_filter) %>%
     dplyr::filter(.data$ald_sector %in% .env$sectors) %>%
     stop_if_empty(data_name = "Scenario Data") %>%
-    check_sector_tech_mapping() %>%
     dplyr::filter(.data$ald_business_unit %in% .env$technologies) %>%
     dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year)) %>%
     stop_if_empty(data_name = "Scenario Data") %>%
@@ -412,9 +407,11 @@ process_financial_data <- function(data) {
 
 st_process <- function(data, scenario_geography, baseline_scenario,
                        shock_scenario, start_year, carbon_price_model,
-                       log_path, end_year) {
+                       log_path) {
 
   scenarios_filter <- c(baseline_scenario, shock_scenario)
+
+  end_year <- get_end_year(data, scenarios_filter)
 
   sectors_and_technologies_list <- infer_sectors_and_technologies(
     price_data=data$df_price,
@@ -569,4 +566,38 @@ process_production_data <- function(data, start_year, end_year, time_horizon,
   # data_processed %>% report_missings(name_data = "production data", throw_error = TRUE)
 
   return(data_processed)
+}
+
+
+#' Get End year from data
+#'
+#' @param data data
+#' @param scenarios_filter scenarios to use
+#'
+#' @return the end year
+get_end_year <- function(data, scenarios_filter){
+
+  available_min_of_max_years <- dplyr::bind_rows(
+    data$df_price %>%
+      dplyr::distinct(.data$year, .data$scenario) %>%
+      dplyr::group_by(.data$scenario) %>%
+      dplyr::summarise(year=max(.data$year)),
+    data$capacity_factors_power %>%
+      dplyr::distinct(.data$year, .data$scenario) %>%
+      dplyr::group_by(.data$scenario) %>%
+      dplyr::summarise(year=max(.data$year)),
+    data$scenario_data %>%
+      dplyr::distinct(.data$year, .data$scenario) %>%
+      dplyr::group_by(.data$scenario) %>%
+      dplyr::summarise(year=max(.data$year))
+  ) %>%
+    dplyr::group_by(.data$scenario) %>%
+    dplyr::summarise(year=min(.data$year)) %>%
+    dplyr::filter(.data$scenario %in% scenarios_filter) %>%
+    dplyr::pull(.data$year)
+
+  end_year <- min(MAX_POSSIBLE_YEAR, min(available_min_of_max_years))
+
+  return(end_year)
+
 }
