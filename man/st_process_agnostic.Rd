@@ -28,8 +28,6 @@ st_process_agnostic(
 \item{carbon_price_model}{carbon_price_model}
 
 \item{log_path}{log_path}
-
-\item{end_year}{end_year}
 }
 \value{
 processed input trisk data

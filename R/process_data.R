@@ -308,7 +308,6 @@ process_price_data <- function(data, technologies, sectors, start_year, end_year
 
   data_processed <- data %>%
     dplyr::filter(.data$ald_sector %in% .env$sectors) %>%
-    check_sector_tech_mapping(sector_col = "ald_sector") %>%
     dplyr::filter(.data$ald_business_unit %in% .env$technologies) %>%
     dplyr::filter(.data$scenario %in% .env$scenarios_filter) %>%
     dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year)) %>%
@@ -345,7 +344,6 @@ process_scenario_data <- function(data, start_year, end_year, sectors, technolog
     dplyr::filter(.data$scenario_geography %in% .env$scenario_geography_filter) %>%
     dplyr::filter(.data$ald_sector %in% .env$sectors) %>%
     stop_if_empty(data_name = "Scenario Data") %>%
-    check_sector_tech_mapping() %>%
     dplyr::filter(.data$ald_business_unit %in% .env$technologies) %>%
     dplyr::filter(dplyr::between(.data$year, .env$start_year, .env$end_year)) %>%
     stop_if_empty(data_name = "Scenario Data") %>%
