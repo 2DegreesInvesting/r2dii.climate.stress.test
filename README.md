@@ -3,7 +3,7 @@
 <h1>
 r2dii.climate.stress.test <span style="float: left;">
 <a href='https://github.com/2DegreesInvesting/r2dii.climate.stress.test'>
-<img src='https://cinea.ec.europa.eu/sites/default/files/styles/oe_theme_medium_no_crop/public/2021-01/life_1.jpg?itok=J1KQ12Nw' align='right' style="height: 43px; padding-right: 10px;" />
+<img src='Life_logo.png' align='right' style="height: 43px; padding-right: 10px;" />
 <img src='https://imgur.com/A5ASZPE.png' align='right' style="height: 43px;" />
 </a> </span>
 </h1>
