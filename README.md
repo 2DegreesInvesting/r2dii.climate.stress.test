@@ -77,11 +77,14 @@ Detailed information for all these steps and on interpreting the
 outcomes can be found in the articles linked
 [here](https://2degreesinvesting.github.io/r2dii.climate.stress.test/articles/).
 
+
 ## Funding
 
-The development of the stress test methodology and the technical
-software implementation was funded by the EU - LIFE PACTA 2.0 (LIFE19
-GIC/DE/001294). The views expressed are the sole responsibility of the
-authors and do not necessarily reflect the views of the funders. The
-funders are not responsible for any use that may be made of the
-information it contains.
+EU LIFE Project Grant
+
+Co-funded by the European Union. Views and opinions expressed are however those of the author(s) only and do not necessarily reflect those of the European Union or CINEA. Neither the European Union nor the granting authority can be held responsible for them.
+
+Scientific Transition Risk Exercises for Stress tests & Scenario Analysis has received funding from the European Union’s Life programme under Grant No. LIFE21-GIC-DE-Stress under the LIFE-2021-SAP-CLIMA funding call.
+
+![](data-raw/LifeLogo2.jpg)
+
