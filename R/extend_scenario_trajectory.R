@@ -269,7 +269,8 @@ handle_phase_out_and_negative_targets <- function(data) {
 #' This ratio will later serve to adjust the net profit margin for companies
 #' that have not built out enough production capacity in increasing technologies
 #' and hence need to scale up production to compensate for their lag in buildout.
-#'
+#' Update: Code is adjusted to deal with double negatives, when the required production
+#' is negative due to unique scenario dynamics.
 #' @param data A data frame containing the production forecasts of companies
 #'   (in the portfolio). Pre-processed to fit analysis parameters and after
 #'   conversion of power capacity to generation.
@@ -307,7 +308,11 @@ calculate_proximity_to_target <- function(data,
     ) %>%
     dplyr::ungroup() %>%
     dplyr::mutate(
-      ratio_realised_required = .data$sum_realised_change / .data$sum_required_change,
+      ratio_realised_required = dplyr::case_when(
+        sum_required_change < 0 & sum_realised_change > 0 ~ 1, #adjusting the code for unique cases of negative required change
+        sum_required_change < 0 & sum_realised_change <= 0 ~ 0,
+        sum_required_change >= 0 ~ sum_realised_change / sum_required_change
+      ),
       proximity_to_target = dplyr::case_when(
         .data$ratio_realised_required < 0 ~ 0,
         .data$ratio_realised_required > 1 ~ 1,
